@@ -53,6 +53,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox fontOverervingCB;
 	private JCheckBox fontOverervingFormCB;
 	private JCheckBox scoresZichtbaarCB;
+	private JCheckBox templateEditCB;
 	
 	
 	private JLabel wiskundeLabel, navigatieLabel, layoutLabel, nakijkenLabel;
@@ -375,6 +376,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		abcDeelOpdrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_deelOpdr"), boxv3, false);//"F-toetsen gebruiken of niet"
 		fontOverervingCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOvererving"), boxv3, false);//"Font-overerving tekstvakken"
 		fontOverervingFormCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOverervingForm"), boxv3, false);
+		templateEditCB = maakCheckBox(WiskOpdr.rb.getString("OPT_templateEditor"), boxv3, false);
 		
 		boxv3.add(Box.createVerticalStrut(70));
 		
@@ -571,6 +573,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		String[] mccCategorieString = null;
 		boolean scoresZichtbaar = true;
 		int aftrekCorrectieZelftoets = 5;
+		boolean templateEdit = false;
 		
 		try
 		{	fontSize = Integer.parseInt(fontSizeTF.getText());
@@ -629,6 +632,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		categorieString = objectivesButton.getCategories();
 		mccCategorieString = misconceptionsButton.getCategories();
 		scoresZichtbaar = scoresZichtbaarCB.isSelected();
+		templateEdit = templateEditCB.isSelected();
 		
 		try{aftrekCorrectieZelftoets = Integer.parseInt(aftrekCorrectieZelftoetsTF.getText());
 		}
@@ -693,6 +697,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			h.put("mccCategorieString", mccCategorieString);
 		}
 		h.put("scoresZichtbaar", new Boolean(scoresZichtbaar));
+		h.put("templateEdit", new Boolean(templateEdit));
 		h.put("aftrekCorrectieZelftoets", new Integer(aftrekCorrectieZelftoets));
 		
 		return h;
@@ -750,6 +755,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		String[] mccCategorieString = null;
 		boolean scoresZichtbaar = true;
 		int aftrekCorrectieZelftoets = 5;
+		boolean templateEdit = false;
 		
 		if(h.containsKey("fontSize")) fontSize = ((Integer)h.get("fontSize")).intValue();
 		if(h.containsKey("maalTeken")) maalTeken = ((Boolean)h.get("maalTeken")).booleanValue();
@@ -809,6 +815,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			}
 		if(h.containsKey("mccCategorieString")) mccCategorieString = (String[])h.get("mccCategorieString");
 		if(h.containsKey("scoresZichtbaar")) scoresZichtbaar = ((Boolean)h.get("scoresZichtbaar")).booleanValue();
+		if(h.containsKey("templateEdit")) templateEdit = ((Boolean)h.get("templateEdit")).booleanValue();
 		
 		fontSizeTF.setText(""+fontSize);
 		navigatieSizeTF.setText(""+navigatieSize);
@@ -878,6 +885,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			misconceptionsButton.setCategories(mccCategorieString);
 		}
 		scoresZichtbaarCB.setSelected(scoresZichtbaar);
+		templateEditCB.setSelected(templateEdit);
 	}
 	
 	public void cancel()
@@ -935,6 +943,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			WiskOpdr.setMccCategories(misconceptionsButton.getCategories());
 		}
 		//opdrNavStruct.zetScoresZichtbaar(scoresZichtbaarCB.isSelected());
+		TekstVakPanel.setTemplateEditor(templateEditCB.isSelected());
 		
 		dialog.setVisible(false);
 	}

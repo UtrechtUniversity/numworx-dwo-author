@@ -308,6 +308,7 @@ public class Text_es extends java.util.ListResourceBundle
 				{"OPT_fontOvererving" , "Font-inheritance text boxes"},
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
 				{"OPT_scoreZichtbaar" , "Scores visible for student"},
+				{"OPT_templateEditor" , "Template editor"},
 				
 				{"OBJ_leerdoel", "Objetivo"},
 				{"OBJ_categorie", "Categoría"},

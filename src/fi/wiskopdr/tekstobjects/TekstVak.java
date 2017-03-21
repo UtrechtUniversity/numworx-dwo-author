@@ -1097,7 +1097,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	}
 	public void mousePressed(MouseEvent e)
 	{	
-		boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill);
+		boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
 		if(!templateEditable)
 			return;
 		int x = e.getX();
@@ -1173,7 +1173,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 
 	}
 	public void keyPressed(KeyEvent e)
-	{   boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill);
+	{   boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
 		if (editable && templateEditable)
 		{   keyStrokeUpdated = false;
 			kc = e.getKeyCode();
@@ -1318,7 +1318,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
     }
     public void keyTyped(KeyEvent e)
     {	int kt = e.getKeyChar();
-    	boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill);
+    	boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
     	if (editable && templateEditable)
 		{   if (kt == KeyEvent.VK_ENTER)
             {	if(tekst.charAt(caretPos)==' ')tekst.replace(caretPos,'\n');

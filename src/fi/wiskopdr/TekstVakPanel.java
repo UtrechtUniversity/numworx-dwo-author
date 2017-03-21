@@ -73,7 +73,7 @@ import fi.wiskopdr.tekstobjects.TekstVak;
 public class TekstVakPanel extends RoundedPanel implements TabletOwner, InteractiePanel, ActionListener, MouseListener, MouseMotionListener, CBookAware
 {
 	public static Map<String,Map> styles = new Hashtable<String,Map>();
-	public static boolean TEMPLATE_MODE;
+	public static boolean TEMPLATE_EDITOR;
 	
 	
 	/**
@@ -288,6 +288,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	
 	public static void zetFontOvererving(boolean b)
 	{	fontOvererving = b;
+	}
+	
+	public static void setTemplateEditor(boolean b)
+	{	TEMPLATE_EDITOR = b;
 	}
 
 	public void zetTeksten(String[][] teksten)
@@ -653,7 +657,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		Color bgColor = null;
 		Color fgColor = Color.black;
 		Color randColor = Color.gray;
-		Color selectieColor = Color.white;
+		Color selectieColor = new Color(255, 128, 0, 128);
 		int hoek = 0;
 		boolean centerH = false;
 		boolean centerV = false;
@@ -1673,7 +1677,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		Color bgColor = null;
 		Color fgColor = Color.black;
 		Color randColor = Color.gray;
-		Color selectieColor = new Color(255, 128, 0, 128);;
+		Color selectieColor = new Color(255, 128, 0, 128);
 		int hoek = 0;
 		boolean centerH = false;
 		boolean centerV = false;
@@ -2456,7 +2460,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		Color bgColor = null;
 		Color fgColor = Color.black;
 		Color randColor = Color.gray;
-		Color selectieColor = Color.white;
+		Color selectieColor = new Color(255, 128, 0, 128);
 		int hoek = 0;
 		boolean centerH = false;
 		boolean centerV = false;

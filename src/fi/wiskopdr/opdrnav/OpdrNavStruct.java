@@ -1035,6 +1035,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		String[] mccCategorieString = null;
 		boolean scoresZichtbaar = true;
 		Hashtable styles = null;
+		boolean templateEdit = false;
 		
 		if (h != null && h.containsKey("fontSize"))
 			fontSize = ((Integer) h.get("fontSize")).intValue();
@@ -1145,6 +1146,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			scoresZichtbaar = ((Boolean) h.get("scoresZichtbaar")).booleanValue();
 		if (h != null && h.containsKey("TekstVakPanelStyles"))
 			styles = (Hashtable) h.get("TekstVakPanelStyles");
+		if (h != null && h.containsKey("templateEdit"))
+			templateEdit = ((Boolean) h.get("templateEdit")).booleanValue();
 
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
@@ -1216,6 +1219,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		Expressie.zetHoekGraden(hoekGraden);
 		zetMarges(margeLinks, margeRechts, margeBoven, margeOnder);
 		WiskOpdr.setFToets(fToets);
+		TekstVakPanel.setTemplateEditor(templateEdit);
 
 		if(condNav)
 		{	setCondNavPerc(condNavPerc, condPerc);

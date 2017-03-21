@@ -323,6 +323,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
 		Hashtable styles = null;
+		boolean templateEdit = false;
 
 		if (h != null && h.containsKey("fontSize"))
 			fontSize = ((Integer) h.get("fontSize")).intValue();
@@ -372,6 +373,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			mccCategorieString = (String[]) h.get("mccCategorieString");
 		if (h != null && h.containsKey("TekstVakPanelStyles"))
 			styles = (Hashtable) h.get("TekstVakPanelStyles");
+		if (h != null && h.containsKey("templateEdit"))
+			templateEdit = ((Boolean) h.get("templateEdit")).booleanValue();
 		
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
@@ -386,6 +389,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		if(styles != null)
 			TekstVakPanel.styles = styles;
 		
+		
 		FormuleTeken.zetMaalTeken(maalTeken);
 		FormuleTeken.zetDiffOperatoren(diffOperatoren);
 		FormuleParser.zetDiffOperatoren(diffOperatoren);
@@ -394,6 +398,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		FormuleParser.zetSignificantie(significantie);
 		AntwoordFormuleVakEditPanel.zetSignificantieAan(significantie);
 		AntwoordVergelijkingVakEditPanel.zetSignificantieAan(significantie);
+		TekstVakPanel.setTemplateEditor(templateEdit);
 
 		this.abcDeelOpdr = abcDeelOpdr;
 		this.globalParam = globalParam;

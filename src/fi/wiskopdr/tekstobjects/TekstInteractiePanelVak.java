@@ -1380,15 +1380,20 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     		{	afdekPanel.setBounds(0,0,6,6);
     			afdekPanel.setOpaque(true);
     			afdekPanel.setBackground(Color.black);
-    			
+    			    			
     			resizePanel.setBounds(getSize().width-6,getSize().height-6,6,6);
     			resizePanel.setOpaque(true);
     			resizePanel.setBackground(Color.black);
+    			
     			add(resizePanel,0);
     			
-    			boolean templateEdit = ((TekstVakPanel)interactiePanel).templateModeEdit;
+    			boolean templateEdit = ((TekstVakPanel)interactiePanel).templateModeEdit && !TekstVakPanel.TEMPLATE_EDITOR;
     			afdekPanel.setVisible(!templateEdit);
     			resizePanel.setVisible(!templateEdit);
+    			if(TekstVakPanel.TEMPLATE_EDITOR && ((TekstVakPanel)interactiePanel).templateModeEdit)
+    			{	afdekPanel.setBackground(Color.red);
+    				resizePanel.setBackground(Color.red);
+    			}
     			
     		}
     		/*
@@ -2233,6 +2238,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public boolean isSelected()
 	{	return selected;
+	}
+	
+	public boolean isTemplateEditable()
+	{	return  !(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
 	}
 	
 	public void zetMaat()

@@ -634,7 +634,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	}*/
 	
 	public void mousePressed(MouseEvent e)
-	{	boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill);
+	{	boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
 		if(selectable && templateEditable)
 		{	tekstVak.zetTekstFocus();
 			startx = e.getX();
@@ -650,7 +650,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	}
 	
 	public void mouseDragged(MouseEvent e)
-	{	boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill);
+	{	boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
 		if(selectable && templateEditable)
 		{	/*if(e.getX()<0 || e.getX()>getSize().width || e.getY()<0 || e.getY()>getSize().height)
 			{	terug = false;

@@ -111,6 +111,7 @@ public class CrossWidgetViewPanel extends JPanel implements MouseListener
         connectionInfo.clear();
 		for (int i=0 ; i<crossWidgetContainers.size() ; i++)
     	{	TekstInteractiePanelVak eindVak = crossWidgetContainers.get(i);
+    		boolean templateEditable = eindVak.isTemplateEditable();
     		if(eindVak!=null)
     		{	Point eind = calculatePosInTekstVak(eindVak);
 	    		//List connections = crossWidgetContainers.get(i).getConnections();
@@ -130,12 +131,15 @@ public class CrossWidgetViewPanel extends JPanel implements MouseListener
 					if(startVak != null && !startVakken.contains(startVak))
 					{	startVakken.add(startVak);
 						Point start = calculatePosInTekstVak(startVak);
-						drawArrow(g, start.x, start.y, eind.x, eind.y);
+						if(templateEditable)
+							drawArrow(g, start.x, start.y, eind.x, eind.y);
 						double dx = eind.x-start.x;
 						double dy = eind.y-start.y;
 						double length = Math.sqrt(dx*dx+dy*dy);
 						Point p = new Point((int)(start.x+dx/2-dx/length*1.5*ARR_SIZE), (int)(start.y+dy/2-dy/length*1.5*ARR_SIZE));
 						Rectangle clickRect = new Rectangle(p.x-ARR_SIZE, p.y-ARR_SIZE, 2*ARR_SIZE, 2*ARR_SIZE);
+						if(!templateEditable)
+							clickRect = new Rectangle(p.x-ARR_SIZE, p.y-ARR_SIZE, 0, 0);
 						HashMap<String,Object> connection = new HashMap<String,Object>();
 						connection.put(KEY_SENDER, startVak);
 						connection.put(KEY_LISTENER, eindVak);

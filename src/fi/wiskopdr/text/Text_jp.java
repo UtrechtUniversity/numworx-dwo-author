@@ -323,6 +323,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"OPT_fontOverervingForm" , "フォントをそのままにした公式ボックス  "}, 
 				{"OPT_misconceptions" , "Error analysis"},
 				{"OPT_scoreZichtbaar" , "Scores visible for student"},
+				{"OPT_templateEditor" , "Template editor"},
 				
 				{"OBJ_leerdoel", "目標"}, 
 				{"OBJ_categorie", "カテゴリー"}, 
