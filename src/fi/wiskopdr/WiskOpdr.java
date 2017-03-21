@@ -129,6 +129,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static boolean formTimes = true;
 	public static boolean fToets = true;
 	public static boolean launchDataChanged = false;
+
+	public static String dwo_env; // "dummy", "test", "app" of null
+	public static boolean isExperimental() {
+		return "test".equals(dwo_env);
+	}
 	
 	public static String[][] objectives = null;
 	public static String[] categorieString = null;
@@ -666,6 +671,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 		//else return; 
 
+		dwo_env = getParameter("dwo_env"); // Zie Wiskopdr.isExperimental();
+		
 		doJSON = "true".equals(getParameter("JSON"));
 		doCAS  = CAS_LOCAL;
 		String doCASString  = getParameter("CAS");
