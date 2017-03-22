@@ -477,9 +477,9 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("ingevuld"))
 		{	
 			String inputString = formuleComponent.toString();
+			inputString = inputString.substring(2,inputString.length()-1);
 			if(cbookEventHandler.hasListeners("input"))
 			{
-				inputString = inputString.substring(2,inputString.length()-1);
 				cbookEventHandler.fire("input",formuleComponent.toString());
 			}
 			if(cbookEventHandler.hasListeners("double"))
