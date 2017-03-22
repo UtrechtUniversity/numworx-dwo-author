@@ -27,6 +27,7 @@ import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Model;
+import fi.euclides.proof.Const;
 import fi.euclides.proof.LabelValue;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 
@@ -205,6 +206,11 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 
 	public String[] getAcceptedCmds() {
+		boolean isConst = true;
+		return getCmds(isConst);
+	}
+
+	public String[] getCmds(boolean isConst) {
 		List<String> cmds;
 		cmds = new ArrayList<String>();
 		AbstractViewer v = instance.getViewer();
@@ -213,8 +219,13 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 		for(Destroyable item : m.getLijnen()) {
 			if(item instanceof Label) {
 				Label label = (Label) item;
-				boolean isValue = label.getRegistered() instanceof LabelValue;
+				
+				boolean isValue = 
+						isConst ? label.getSubKey() == Const.TYPE :
+						label.getRegistered() instanceof LabelValue;
+				
 				String naam = mapper.toString(label);
+				if("i".equals(naam)) continue;
 				if(isValue) 
 				{
 					cmds.add("double." + naam);
@@ -225,11 +236,13 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 
 	public String getLocalizedCmd(String cmd) {
+		if(cmd.startsWith("double."))
+			return cmd.substring(7);
 		return cmd;
 	}
 
 	public String[] getSendCmds() {
-		return getAcceptedCmds();
+		return getCmds(false);
 	}
 
 	public void removeCBookEventListener(CBookEventListener arg0, String arg1) {

@@ -23,7 +23,7 @@ public class IntervalModel extends TextModel {
 	Animate animate = Animate.NONE;
 	double length = 50, x, y;
 	int interval = 2000;
-	Double step;
+	Number step;
 	Float  width;
 	
 	@Override
@@ -97,7 +97,7 @@ public class IntervalModel extends TextModel {
 		map.put("animate", animate.name());
 		map.put("interval", interval);
 		map.put("length", length);
-		if(step!=null) map.put("step", step); else map.remove("step");
+		if(step!=null) map.put("step", step.doubleValue()); else map.remove("step");
 		if(width!= null) map.put("width", width.doubleValue());
 		if(item != null) {
 			Segment s = (Segment) item.getP().getDepend()[0];

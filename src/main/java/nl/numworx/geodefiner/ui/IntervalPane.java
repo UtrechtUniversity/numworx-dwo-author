@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner.ui;
 
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Locale;
 
 import javax.swing.Box;
@@ -61,12 +62,28 @@ public class IntervalPane extends TextPane<IntervalModel> {
 		hbox.add(new JLabel("interval"));hbox.add(intervalField);hbox.add(new JLabel("s"));hbox.add(Box.createGlue()); add(hbox); 
 	}
 
+	protected void commitFields(JFormattedTextField... fields) {
+		for( JFormattedTextField field: fields) {
+			try {
+				if(field.getText().isEmpty()) {
+					field.setValue(null);
+					continue;
+				}
+				field.commitEdit();
+			} catch(ParseException pe) {
+				field.setValue(null);
+			}
+		}
+	}
+	
 	@Override
 	public void commit() {
+		commitFields(lengthField, intervalField, stepField, widthField);
+		
 		model.animate = (Animate) animateBox.getSelectedItem();
 		model.length = ((Number) lengthField.getValue()).doubleValue();
 		model.interval = Math.round( ((Number) intervalField.getValue()).floatValue()*1000.0f);
-		model.step = (Double) stepField.getValue();
+		model.step = (Number) stepField.getValue();
 		Number number = (Number) widthField.getValue();
 		if (number != null) model.width = number.floatValue();
 		else model.width = null;

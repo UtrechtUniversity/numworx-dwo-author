@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.WeakHashMap;
 
 import javax.swing.AbstractAction;
@@ -904,7 +905,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		// command is double.NAAM
 		if(command != null && command.startsWith("double.")) {
 			int dot = command.indexOf('.');
-			String name = command.substring(dot+1);
+			final String name = command.substring(dot+1);
 			Destroyable f = viewer.getMapper().fromString(name);
 			if(f == null) {
 				System.err.println("addCBookEventListener " + command + " not found");
@@ -915,7 +916,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 				public void update(Observable observable, Object arg) {
 					if(arg == null)
-						handler.fire(command, "value", label.value.doubleValue());
+					{	Map<String,Object> map = new TreeMap<String,Object>();
+						map.put("value", label.value.doubleValue());
+						map.put("name", name);
+						handler.fire(command, map);
+					}
 				}});
 		}
 	}
@@ -1006,8 +1011,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			}
 			Label label = (Label) getViewer().getMapper().fromString(name);
 			if(label.getSubKey() == Const.TYPE) { 
-				label.setValue(Numbers.createDouble(number.doubleValue()));
 				label.setString(Numbers.toString(label.value));
+				label.setValue(Numbers.createDouble(number.doubleValue()));
 				label.notifyObservers();
 			}
 		}
