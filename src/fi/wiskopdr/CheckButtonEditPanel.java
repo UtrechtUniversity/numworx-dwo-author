@@ -9,8 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -24,6 +26,14 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	private Iconan iconman;
 	private String knopImageString = "";
 	private Image knopImage;
+	
+	private JCheckBox kijkNaCB;
+	private JCheckBox bewaarCB;
+	private JCheckBox rondAfCB;
+	
+	private JRadioButton kijkNaEigenVak;
+	private JRadioButton kijkNaAlles;
+	
 	
 	public CheckButtonEditPanel()
 	{
