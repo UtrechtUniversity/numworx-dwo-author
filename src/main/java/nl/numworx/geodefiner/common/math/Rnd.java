@@ -31,7 +31,7 @@ public class Rnd extends Som {
 		if(y != 0 && Math.abs(x)>= Integer.MAX_VALUE)
 			n = Numbers.createDouble(x);
 		else
-			n = Numbers.createInteger((int)x);
+			n = Numbers.createRational(Math.round(x),1);
 		if(l.isDefined())
 			l.setString(toString(x, y));
 		else
