@@ -28,7 +28,7 @@ public class Rnd extends Som {
 		int y = (int) Numbers.round(value).longValue();
 		x = roundToSignificantFigures(x, Math.abs(y));
 		Numbers n;
-		if(y != 0 && Math.abs(x)>= Integer.MAX_VALUE)
+		if(y != 0 || Math.abs(x)>= Integer.MAX_VALUE)
 			n = Numbers.createDouble(x);
 		else
 			n = Numbers.createRational(Math.round(x),1);
