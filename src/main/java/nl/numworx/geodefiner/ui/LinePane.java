@@ -36,6 +36,7 @@ public class LinePane<M extends LineModel> extends ColorPane<M> {
 		add(panel);
 	}
 	public void commit() {
+		commitFields(widthField);
 		model.type = (LineType) type.getSelectedItem();
 		try {
 			widthField.commitEdit();

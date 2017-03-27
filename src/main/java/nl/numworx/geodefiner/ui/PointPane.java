@@ -47,13 +47,10 @@ public class PointPane extends ColorPane<PointModel> {
 		}
 
 	public void commit() {
+		commitFields(sizeField);
 		model.type = (PointType) type.getSelectedItem();
 		model.rigid = !rigid.isSelected();
 
-		try {
-			sizeField.commitEdit();
-		} catch (ParseException e) {
-		}
 		model.size  = ((Number) sizeField.getValue()).intValue();
 		super.commit();
 	}

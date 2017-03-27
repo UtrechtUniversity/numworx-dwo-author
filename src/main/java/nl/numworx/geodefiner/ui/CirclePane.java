@@ -72,6 +72,7 @@ public class CirclePane extends UIEditor {
 
 	@Override
 	public void commit() {
+		commitFields(widthField);
 		model.color = stroke.getColor();
 		model.fill  = fill.getColor();
 		model.width = ((Number) widthField.getValue()).floatValue();

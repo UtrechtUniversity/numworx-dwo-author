@@ -1,7 +1,6 @@
 package nl.numworx.geodefiner.ui;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Locale;
 
 import javax.swing.Box;
@@ -41,10 +40,13 @@ public class IntervalPane extends TextPane<IntervalModel> {
 		lengthField.setColumns(5);
 		lengthField.setMaximumSize(lengthField.getPreferredSize());
 		stepField = new JFormattedTextField(NumberFormat.getInstance(Locale.US)); // sets DoubleFormat
+		stepField.setFocusLostBehavior(JFormattedTextField.PERSIST);
 		stepField.setColumns(10);
-		stepField.setValue(model.step);
+		if(model.step!= null)
+			stepField.setValue(model.step.doubleValue());
 		stepField.setMaximumSize(stepField.getPreferredSize());
 		widthField = new JFormattedTextField(NumberFormat.getInstance(Locale.US));
+		widthField.setFocusLostBehavior(JFormattedTextField.PERSIST);
 		widthField.setColumns(5);
 		if(model.width != null) widthField.setValue(model.width+0.0);
 		widthField.setMaximumSize(widthField.getPreferredSize());
@@ -62,20 +64,6 @@ public class IntervalPane extends TextPane<IntervalModel> {
 		hbox.add(new JLabel("interval"));hbox.add(intervalField);hbox.add(new JLabel("s"));hbox.add(Box.createGlue()); add(hbox); 
 	}
 
-	protected void commitFields(JFormattedTextField... fields) {
-		for( JFormattedTextField field: fields) {
-			try {
-				if(field.getText().isEmpty()) {
-					field.setValue(null);
-					continue;
-				}
-				field.commitEdit();
-			} catch(ParseException pe) {
-				field.setValue(null);
-			}
-		}
-	}
-	
 	@Override
 	public void commit() {
 		commitFields(lengthField, intervalField, stepField, widthField);

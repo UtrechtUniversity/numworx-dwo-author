@@ -14,6 +14,7 @@ import fi.euclides.model.math.Numbers;
 import fi.euclides.util.DefaultAdapter;
 
 public class TextModel extends ColorModel<Label> {
+	public static final float DEFAULT_SIZE = 16;
 	Align align = Align.BASE;
 	Font  font  = fi.wiskopdr.WiskOpdr.formuleFont0; // bijvoorbeeld.
 	private float dx,dy;

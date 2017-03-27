@@ -76,8 +76,12 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 	}
 	@Override
 	public void commit() {
+		commitFields(fontSize);
 		model.align = alignBox.getItemAt(alignBox.getSelectedIndex());
-		float size = ((Number) fontSize.getValue()).floatValue();
+		Object value = fontSize.getValue();
+		float size = TextModel.DEFAULT_SIZE;
+		if(value != null)
+			size =	((Number) value).floatValue();
 		model.font = model.font.deriveFont(size);
 		model.alwaysF = Boolean.valueOf(alwaysF.isSelected());
 		super.commit();
