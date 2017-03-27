@@ -3,12 +3,14 @@ package fi.wiskopdr;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -31,8 +33,11 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	private JCheckBox bewaarCB;
 	private JCheckBox rondAfCB;
 	
-	private JRadioButton kijkNaEigenVak;
-	private JRadioButton kijkNaAlles;
+	private JRadioButton kijkNaEigenVakRB;
+	private JRadioButton kijkNaAllesRB;
+	private JRadioButton kijkNaXWidgetRB;
+	
+	private Font ifFont = new Font("SansSerif",Font.PLAIN,12);
 	
 	
 	public CheckButtonEditPanel()
@@ -44,16 +49,82 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		knopImageButton.setBounds(550,50,80,20);
 		knopImageButton.addActionListener(this);
 		add(knopImageButton);
+		
+		kijkNaCB = new JCheckBox("Kijk na");
+		kijkNaCB.setBounds(20,50,100,20);
+		kijkNaCB.setOpaque(false);
+		kijkNaCB.setFont(ifFont);
+		kijkNaCB.setSelected(true);
+		kijkNaCB.addActionListener(this);
+		add(kijkNaCB);
+		
+		bewaarCB = new JCheckBox("Bewaar");
+		bewaarCB.setBounds(20,125,100,20);
+		bewaarCB.setOpaque(false);
+		bewaarCB.setFont(ifFont);
+		bewaarCB.addActionListener(this);
+		add(bewaarCB);
+		
+		rondAfCB = new JCheckBox("Rond af");
+		rondAfCB.setBounds(20,150,100,20);
+		rondAfCB.setOpaque(false);
+		rondAfCB.setFont(ifFont);
+		rondAfCB.addActionListener(this);
+		add(rondAfCB);
+		
+		kijkNaEigenVakRB = new JRadioButton("Alles in eigen vak");
+		kijkNaEigenVakRB.setBounds(130,50,200,20);
+		kijkNaEigenVakRB.setOpaque(false);
+		kijkNaEigenVakRB.setFont(ifFont);
+		kijkNaEigenVakRB.setSelected(true);
+		kijkNaEigenVakRB.addActionListener(this);
+		add(kijkNaEigenVakRB);
+		
+		kijkNaAllesRB = new JRadioButton("Alles op pagina");
+		kijkNaAllesRB.setBounds(130,75,200,20);
+		kijkNaAllesRB.setOpaque(false);
+		kijkNaAllesRB.setFont(ifFont);
+		kijkNaAllesRB.addActionListener(this);
+		add(kijkNaAllesRB);
+		
+		kijkNaXWidgetRB = new JRadioButton("alles verbonden via x-widget");
+		kijkNaXWidgetRB.setBounds(130,100,200,20);
+		kijkNaXWidgetRB.setOpaque(false);
+		kijkNaXWidgetRB.setFont(ifFont);
+		kijkNaXWidgetRB.addActionListener(this);
+		add(kijkNaXWidgetRB);
+		
+		ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(kijkNaEigenVakRB);
+		buttonGroup.add(kijkNaAllesRB);
+		buttonGroup.add(kijkNaXWidgetRB);
+		
+		
 	}
 	
 	@Override
 	public void setEditState(Hashtable h) {
 
 		String knopImageString = "";
+		boolean nakijkenVak=true;
+		boolean nakijkenPagina=false;
+		boolean nakijkenXWidget=false;
+		boolean actieBewaren=false;
+		boolean actieAfronden=false;
 		
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
+		if(h.containsKey("nakijkenPagina")) nakijkenPagina = ((Boolean)h.get("nakijkenPagina")).booleanValue();
+		if(h.containsKey("nakijkenVak")) nakijkenVak = ((Boolean)h.get("nakijkenVak")).booleanValue();
+		if(h.containsKey("nakijkenXWidget")) nakijkenXWidget = ((Boolean)h.get("nakijkenXWidget")).booleanValue();
+		if(h.containsKey("actieBewaren")) actieBewaren = ((Boolean)h.get("actieBewaren")).booleanValue();
+		if(h.containsKey("actieAfronden")) actieAfronden = ((Boolean)h.get("actieAfronden")).booleanValue();
 		
 		this.knopImageString = knopImageString;
+		kijkNaEigenVakRB.setSelected(nakijkenVak);
+		kijkNaAllesRB.setSelected(nakijkenPagina);
+		kijkNaEigenVakRB.setSelected(nakijkenXWidget);
+		bewaarCB.setSelected(actieBewaren);
+		rondAfCB.setSelected(actieAfronden);
 		
 		knopImageButton.setPopupButtonImage(knopImage);
 	    iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
@@ -71,11 +142,26 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	public Hashtable getEditState() {
 
 		String knopImageString = "";
+		boolean nakijkenVak=true;
+		boolean nakijkenPagina=false;
+		boolean nakijkenXWidget=false;
+		boolean actieBewaren=false;
+		boolean actieAfronden=false;
 		
 		knopImageString = this.knopImageString;
+		nakijkenVak = kijkNaEigenVakRB.isSelected();
+		nakijkenPagina = kijkNaAllesRB.isSelected();
+		nakijkenXWidget = kijkNaEigenVakRB.isSelected();
+		actieBewaren = bewaarCB.isSelected();
+		actieAfronden = rondAfCB.isSelected();
 		
 		Hashtable h = new Hashtable();
 		h.put("knopImageString", knopImageString);
+		h.put("nakijkenPagina", new Boolean(nakijkenPagina));
+		h.put("nakijkenVak", new Boolean(nakijkenVak));
+		h.put("nakijkenXWidget", new Boolean(nakijkenXWidget));
+		h.put("actieBewaren", new Boolean(actieBewaren));
+		h.put("actieAfronden", new Boolean(actieAfronden));
 		
 		return h;
 	}

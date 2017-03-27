@@ -24,6 +24,12 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 	FormuleButton checkButton;
 	boolean fout = false;
 	
+	boolean nakijkenVak=true;
+	boolean nakijkenPagina=false;
+	boolean nakijkenXWidget=false;
+	boolean actieBewaren=false;
+	boolean actieAfronden=false;
+	
 	public CheckButtonPanel() {
 		
 		setLayout(null);
@@ -44,10 +50,26 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 	
 	@Override
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) {
-
+		
 		String knopImageString = "";
-
+		boolean nakijkenVak=true;
+		boolean nakijkenPagina=false;
+		boolean nakijkenXWidget=false;
+		boolean actieBewaren=false;
+		boolean actieAfronden=false;
+		
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
+		if(h.containsKey("nakijkenPagina")) nakijkenPagina = ((Boolean)h.get("nakijkenPagina")).booleanValue();
+		if(h.containsKey("nakijkenVak")) nakijkenVak = ((Boolean)h.get("nakijkenVak")).booleanValue();
+		if(h.containsKey("nakijkenXWidget")) nakijkenXWidget = ((Boolean)h.get("nakijkenXWidget")).booleanValue();
+		if(h.containsKey("actieBewaren")) actieBewaren = ((Boolean)h.get("actieBewaren")).booleanValue();
+		if(h.containsKey("actieAfronden")) actieAfronden = ((Boolean)h.get("actieAfronden")).booleanValue();
+		
+		this.nakijkenPagina = nakijkenPagina;
+		this.nakijkenVak = nakijkenVak;
+		this.nakijkenXWidget = nakijkenXWidget;
+		this.actieBewaren = actieBewaren;
+		this.actieAfronden = actieAfronden;
 		
 		if(knopImageString!=null && !"".equals(knopImageString))
        	{  	Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
@@ -212,14 +234,34 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		fout = false;
-		Vector v = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanels();
-		for (int i = 0; i < v.size(); i++)
-		{	((InteractiePanelContainerIF) v.elementAt(i)).kijkNa();
-			((InteractiePanelContainerIF) v.elementAt(i)).zetNagekeken(true);
-			fout = fout || ((InteractiePanelContainerIF) v.elementAt(i)).isFout();
+		
+		if(nakijkenVak)
+		{	Vector v = ((TekstInteractiePanelVak)getParent()).zoekInteractiePanels();
+			for (int i = 0; i < v.size(); i++)
+			{	((InteractiePanelContainerIF) v.elementAt(i)).kijkNa();
+				((InteractiePanelContainerIF) v.elementAt(i)).zetNagekeken(true);
+				fout = fout || ((InteractiePanelContainerIF) v.elementAt(i)).isFout();
+				produceAction("checked");
+				// TODO  dit werkt nog niet goed in geval attempts en errors in de log belangrijk zijn
+			}
 		}
-		produceAction("checked");
-		// TODO  dit werkt nog niet goed in geval attempts en errors in de log belangrijk zijn
+		if(nakijkenPagina)
+		{
+			
+		}
+		if(nakijkenXWidget)
+		{
+			
+		}
+		if(actieBewaren)
+		{
+			
+		}
+		if(actieAfronden)
+		{
+			
+		}
+			
 	}
 	
 	//ActionProducer
