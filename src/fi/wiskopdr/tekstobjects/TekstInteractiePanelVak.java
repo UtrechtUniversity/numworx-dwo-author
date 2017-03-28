@@ -25,6 +25,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.AbstractMap;
@@ -1963,11 +1965,18 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	}
 
 	private static Properties jarOfMap = new Properties();
-// TODO Dit moet uit een resource komen
+// Dit moet uit een resource komen
 	static {
-		jarOfMap.setProperty("nl.numworx.geodefiner.GeoDefiner", "geodefiner.jar");
-		jarOfMap.setProperty("fi.algebrapijlenopdr.AlgebraPijlenOpdr", "algebrapijlenopdr.jar");
-		jarOfMap.setProperty("fi.javalogoweb3d.JavaLogoWeb3d", "javalogoweb3d.jar");
+//		jarOfMap.setProperty("nl.numworx.geodefiner.GeoDefiner", "geodefiner.jar");
+//		jarOfMap.setProperty("fi.algebrapijlenopdr.AlgebraPijlenOpdr", "algebrapijlenopdr.jar");
+//		jarOfMap.setProperty("fi.javalogoweb3d.JavaLogoWeb3d", "javalogoweb3d.jar");
+		try {
+			InputStream in = WiskOpdr.class.getResourceAsStream("resources/jarof.properties");
+			jarOfMap.load(in);
+			in.close();
+		} catch (Exception e) {
+			Logger.getLogger(TekstInteractiePanelVak.class.getName()).warning(e.toString());
+		}
 	}
 		
 	public static String jarOf(String name) {
