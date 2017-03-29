@@ -45,7 +45,7 @@ public class TraceBeheerder extends JPanel implements ActionListener, ItemListen
 		this.tb = tb;
 		jlsveld = v;
 		traceAan = false;
-		setComponentVisibilty(false);
+		setComponentVisibility(false);
 	}
 	
 	private void makeGUI()
@@ -101,7 +101,7 @@ public class TraceBeheerder extends JPanel implements ActionListener, ItemListen
 		vartracer.setBounds(JavaLogoSchuifVeld.ccx, JavaLogoSchuifVeld.ccy, 2*JavaLogoSchuifVeld.ccsw+10, 515);
 	}
 	
-	private void setComponentVisibilty(boolean b)
+	private void setComponentVisibility(boolean b)
 	{	methodeVeld.setVisible(b);
 		beginKnop.setVisible(b);
 		stapKnop.setVisible(b);
@@ -154,7 +154,8 @@ public class TraceBeheerder extends JPanel implements ActionListener, ItemListen
 	 */
 	public boolean commandExecuted(int commandLevel)
 	{
-		if ( !traceAan ) return false;
+		if ( !traceAan ) 
+			return false;
 		aantalStappen++;
 		if ( aantalStappen == maxAantalStappen )
 		{
@@ -164,16 +165,19 @@ public class TraceBeheerder extends JPanel implements ActionListener, ItemListen
 				{										// lower then skipLevel, return to normal tracing
 					isSkipping = false;
 					return true;
-				} else
+				} 
+				else
 				{										// in skipped block				
 					maxAantalStappen++;					// new max after skipping this command, increase max here
-					return false;						// ... to make next command satify the first if
+					return false;						// ... to make next command satisfy the first if
 				}
-			} else
+			} 
+			else
 			{											// not skipping, stop at this command
 				return true;
 			}
-		} else
+		} 
+		else
 		{
 			return false;
 		}
@@ -206,7 +210,7 @@ public class TraceBeheerder extends JPanel implements ActionListener, ItemListen
 		traceAan = false;
 		showVariables.setSelected(false);
 		setVartracing(false);
-		setComponentVisibilty(false);
+		setComponentVisibility(false);
 		traceKnop.setText(JavaLogoWeb3d.rb.getString("traceOnLabel"));
 	}
 	
@@ -223,7 +227,8 @@ public class TraceBeheerder extends JPanel implements ActionListener, ItemListen
 		if(e.getSource() == terugKnop)
 		{	
 			maxAantalStappen--;
-			if(maxAantalStappen<0)maxAantalStappen=0;
+			if(maxAantalStappen<0)
+				maxAantalStappen=0;
 			tb.paintDrawing(true);
 		}
 		if(e.getSource() == skipKnop)
@@ -250,7 +255,7 @@ public class TraceBeheerder extends JPanel implements ActionListener, ItemListen
 				methodeVeld.setText("");
 				tb.paintDrawing(true);
 				traceKnop.setText(JavaLogoWeb3d.rb.getString("traceOffLabel"));
-				setComponentVisibilty(true);
+				setComponentVisibility(true);
 			}
 			else
 			{	

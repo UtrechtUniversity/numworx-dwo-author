@@ -149,7 +149,7 @@ public class Lichaam3D
 	
 	public void voegPolygonToe(Color vulkl, Color lijnkl, boolean isOmlnd )
 	{	
-System.out.println("voegPolygonToe");
+//System.out.println("voegPolygonToe");
 
 		huidigePolygon = new Polygon3D();
 		huidigePolygon.pol = new Polygon(xcoor,ycoor,aantalPunten);

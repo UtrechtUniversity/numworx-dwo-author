@@ -70,6 +70,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "uitvoerVeldCBLabel" , "Uitvoerpanel" },
 				{ "transparantCBLabel" , "Transparantoptie" },
 				{ "draadFiguurCBLabel" , "Draadfiguuroptie" },
+				{ "zoomCBLabel" , "Zoomoptie" },
 				{ "programmaVeldCBLabel" , "Programmapanel" },
 				{ "deeltakenCBLabel" , "Deeltaken" },
 				{ "whileLoopCBLabel" , "While loop" },

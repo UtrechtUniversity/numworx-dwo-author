@@ -92,6 +92,18 @@ public class TekenApplet3D extends JPanel
 	{	return mb.geefY();
 	}
 
+	public double geefDraaiX()
+	{	return tb.geefDraaiX();
+	}
+
+	public void zetBeginHoeken(double hx, double hy)
+	{	tb.zetBeginHoeken(hx,hy);
+	}
+
+	public double geefDraaiY()
+	{	return tb.geefDraaiY();
+	}
+
 
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in de animatiehandler en doorgegeven aan AnimatieBeheerder ab
@@ -129,7 +141,22 @@ public class TekenApplet3D extends JPanel
 	{	tb.zetWireFrame(b);
 	}
 
+	public void zoomIn()
+	{
+		tb.zoomIn();
+	}
 	
+	public void zoomUit()
+	{
+		tb.zoomUit();
+	}
+
+	public void zoom(double fac)
+	{
+		tb.zoom(fac);
+	}
+	
+
   	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt in "initialiseer" en doorgegeven aan Tekenblad tb (of 
 	//Matrix2d) 

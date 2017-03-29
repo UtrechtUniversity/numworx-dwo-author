@@ -171,4 +171,13 @@ public class Matrix3D
 		ep.z = bp.z + dx*zx + dy*zy + dz*zz;
 		return ep;
 	}
+	
+	public double geefStartschaal()
+	{	return startschaal;
+	}
+
+	public void zetStartschaal(double ss)
+	{	startschaal = ss;
+	}
+
 }

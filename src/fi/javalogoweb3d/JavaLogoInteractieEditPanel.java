@@ -26,6 +26,7 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 		private JCheckBox uitvoerVeldCB;
 		private JCheckBox transparantCB;
 		private JCheckBox draadFiguurCB;
+		private JCheckBox zoomCB;
 		private JCheckBox programmaVeldCB;
 		private JCheckBox deeltakenCB;
 		private JCheckBox whileLoopCB;
@@ -75,8 +76,15 @@ System.out.println("jliep " + defaultIpWidth);
 			draadFiguurCB.addActionListener(this);
 			draadFiguurCB.setSelected(true);
 			optionsPanel.add(draadFiguurCB);
+			currentY += 30; 
+
+			zoomCB = new JCheckBox(JavaLogoWeb3d.rb.getString("zoomCBLabel"));
+			zoomCB.setBounds(currentX, currentY, 200, 20);
+			zoomCB.addActionListener(this);
+			zoomCB.setSelected(true);
+			optionsPanel.add(zoomCB);
 			currentY += 40; 
-			
+
 			programmaVeldCB = new JCheckBox(JavaLogoWeb3d.rb.getString("programmaVeldCBLabel"));
 			programmaVeldCB.setBounds(currentX, currentY, 200, 20);
 			programmaVeldCB.addActionListener(this);
@@ -145,6 +153,7 @@ System.out.println("jliep " + defaultIpWidth);
 			h.put("uitvoerVeldZichtbaar",  new Boolean(uitvoerVeldCB.isSelected()));
 			h.put("transparantOptie",  new Boolean(transparantCB.isSelected()));
 			h.put("draadFiguurOptie",  new Boolean(draadFiguurCB.isSelected()));
+			h.put("zoomOptie",  new Boolean(zoomCB.isSelected()));
 			h.put("programmaVeldZichtbaar",  new Boolean(programmaVeldCB.isSelected()));
 			h.put("deeltakenZichtbaar",  new Boolean(deeltakenCB.isSelected()));
 			h.put("whileLoopZichtbaar",  new Boolean(whileLoopCB.isSelected()));
@@ -168,6 +177,8 @@ System.out.println("jliep " + defaultIpWidth);
 				transparantCB.setSelected((Boolean)h.get("transparantOptie"));
 			if(h.containsKey("draadFiguurOptie")) 
 				draadFiguurCB.setSelected((Boolean)h.get("draadFiguurOptie"));
+			if(h.containsKey("zoomOptie")) 
+				zoomCB.setSelected((Boolean)h.get("zoomOptie"));
 			if(h.containsKey("programmaVeldZichtbaar")) programmaVeldCB.setSelected((Boolean)h.get("programmaVeldZichtbaar"));
 			if(h.containsKey("deeltakenZichtbaar")) deeltakenCB.setSelected((Boolean)h.get("deeltakenZichtbaar"));
 			if(h.containsKey("whileLoopZichtbaar")) whileLoopCB.setSelected((Boolean)h.get("whileLoopZichtbaar"));
@@ -181,6 +192,7 @@ System.out.println("jliep " + defaultIpWidth);
 			interactiePanel.zetUitvoerVeldZichtbaar(uitvoerVeldCB.isSelected());
 			interactiePanel.zetTransparantOptie(transparantCB.isSelected());
 			interactiePanel.zetDraadFiguurOptie(draadFiguurCB.isSelected());
+			interactiePanel.zetZoomOptie(zoomCB.isSelected());
 			interactiePanel.zetProgrammaVeldZichtbaar(programmaVeldCB.isSelected());
 			interactiePanel.zetDeeltaken(deeltakenCB.isSelected());
 			interactiePanel.zetWhileLoopZichtbaar(whileLoopCB.isSelected());
@@ -236,7 +248,8 @@ System.out.println("jliep " + defaultIpWidth);
 				
 		}
 		
-		public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent e) 
+		{
 			if(e.getSource()==uitvoerVeldCB) {
 				interactiePanel.zetUitvoerVeldZichtbaar(uitvoerVeldCB.isSelected());
 			}
@@ -245,6 +258,9 @@ System.out.println("jliep " + defaultIpWidth);
 			}
 			if(e.getSource()==draadFiguurCB) {
 				interactiePanel.zetDraadFiguurOptie(draadFiguurCB.isSelected());
+			}
+			if(e.getSource()==zoomCB) {
+				interactiePanel.zetZoomOptie(zoomCB.isSelected());
 			}
 			if(e.getSource()==programmaVeldCB) {
 				interactiePanel.zetProgrammaVeldZichtbaar(programmaVeldCB.isSelected());

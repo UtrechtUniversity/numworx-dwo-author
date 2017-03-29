@@ -26,12 +26,14 @@ public class Tekenblad3D extends JPanel //Canvas
 	
 	Color achterkantKleur = new Color(192,192,192);
 	
-	double hoekX, hoekY;
+	double hoekX, hoekY,beginx,beginy; 
 	
 	boolean cursorAan = false;
 	boolean transparant = false;
 	int transparantAlpha = 125;
 	boolean wireFrame = false; 
+	
+	double zoomFactor = 1;
 
 	public Tekenblad3D(TekenApplet3D ap)
 	{	
@@ -57,31 +59,35 @@ public class Tekenblad3D extends JPanel //Canvas
 	public void paintComponent(Graphics g)
   	{ 	
 		
-//System.out.println("tb paintComponent");
+System.out.println("tb paintComponent");
 
-		//gIm = getGraphics();
+		gIm = g;
 		
 //if (gIm == null)
 //System.out.println("paint gIm == null");	
 		
 
 		bezigMetTekenen = true;
-		if (im == null)
-		{	
+//		if (im == null)
+//		{
+			
+//System.out.println("paint im == null");
+
 			breedte = getSize().width;
 			hoogte = getSize().height;	
 			double startschaal = Math.min((double)breedte/500,(double)hoogte/500);
+			startschaal *= zoomFactor;
 			mat.initialiseer(0,0,0,startschaal);	
 			startpunt = new Punt3D(breedte/2,hoogte/2,0);
 			l.maakNulpunt(breedte/2,hoogte/2,0);
-			im = createImage(breedte,hoogte);
+//			im = createImage(breedte,hoogte);
 //if (im == null)
 //System.out.println("paint gIm == null");	
-  			gIm = im.getGraphics();
+// 			gIm = im.getGraphics();
   			//initializeDrawing(eigenaar.eigenaar.trb.isTraceAan());
 			tekenOpImage(eigenaar.eigenaar.trb.isTraceAan());
-		}
-    	g.drawImage(im, 0, 0, null);
+//		}
+//    	g.drawImage(im, 0, 0, null);
 		bezigMetTekenen = false;
   	}
 	  
@@ -156,23 +162,26 @@ System.out.println("tb initializeDrawing");
 //if (gIm == null)
 //System.out.println("gIm == null");	
 		
-		tekenOpImage(cursor);
+		//tekenOpImage(cursor);
 		
-		Graphics g = getGraphics();
-		if(g!=null)
-			g.drawImage(im, 0, 0, null);
+		tekenOpnieuw();
+		
+//		Graphics g = getGraphics();
+//		if(g!=null)
+//			g.drawImage(im, 0, 0, null);
 	}
 
   	public void tekenOpImage(boolean cursor)
   	{ 	
   		
-//System.out.println("tb tekenOpImage " + cursor);
+System.out.println("tb tekenOpImage " + cursor);
 
 		startpunt = new Punt3D(breedte/2,hoogte/2,0);
 
   		beginpunt = new Punt3D(startpunt);
     	eindpunt = new Punt3D(beginpunt);
 		mat.initialiseer();
+
 if (gIm == null)
 {System.out.println("toi gIm == null");
 return;
@@ -185,8 +194,8 @@ return;
     	//penAan(0,0,0);
     	pen = false;
 		vul = false;
-		mat.xdraai(hoekX); 
-		mat.ydraai(hoekY);
+		mat.xdraai(beginx+hoekX); 
+		mat.ydraai(beginy+hoekY);
     	if (cursor)
     	{	eigenaar.eigenaar.trb.traceProgram();
     		tekenCursor();
@@ -286,22 +295,38 @@ return;
 	//-------------------------------------------------------------------------------------------
 	void tekenOpnieuw()
 	{	
-System.out.println("tekenOpnieuw " + cursorAan);		
+		repaint();
+		
+//if (im == null)
+//{	
+//System.out.println("tekenOpnieuw im == null");	
+//	return;
+//}
+//System.out.println("tekenOpnieuw " + cursorAan);
+/*		
 		bezigMetTekenen = true;
 		tekenOpImage(cursorAan);
 		Graphics g = getGraphics();
 		g.drawImage(im, 0, 0, null); 
 		bezigMetTekenen = false;
+*/		
 	}
   
   	void tekenErbij()
-	{	
-System.out.println("tekenErbij " + cursorAan);  		
+	{
+  		
+  		repaint();
+//if (im == null)
+//	return;
+
+//System.out.println("tekenErbij " + cursorAan);
+/*  		
   		bezigMetTekenen = true;
 		tekenOpImage(cursorAan);
 		Graphics g = getGraphics();
 		g.drawImage(im, 0, 0, null);
 		bezigMetTekenen = false;
+*/		
 	}
   	
 	public Punt3D geefBeginpunt()
@@ -322,6 +347,31 @@ System.out.println("tekenErbij " + cursorAan);
 	{	wireFrame = b;
 		tekenOpnieuw();
 	}
+
+	public void zoomIn()
+	{
+//System.out.println("tb zoomIn");		
+		//mat.zetStartschaal(mat.geefStartschaal()*(11e-1d));
+		zoomFactor *= 11e-1d;
+		tekenOpnieuw();
+	}
+	
+	public void zoomUit()
+	{
+		//mat.zetStartschaal(mat.geefStartschaal()*(9e-1d));
+		zoomFactor *= 91e-2d;
+		tekenOpnieuw();
+		
+	}
+
+	public void zoom(double fac)
+	{
+//System.out.println("tb zoomIn");		
+		//mat.zetStartschaal(mat.geefStartschaal()*fac);
+		zoomFactor *= fac;
+		tekenOpnieuw();
+	}
+	
 
 	//-------------------------------------------------------------------------------------------
 	//deze methoden worden gebruikt door het Tekenblad om de lijnen en vlakken te tekenen
@@ -435,6 +485,25 @@ System.out.println("tekenErbij " + cursorAan);
 			return Color.black;		
 	}	
 	
+	public double geefDraaiX()
+	{
+		return beginx+hoekX;
+	}
+
+	public void zetBeginHoeken(double hx, double hy)
+	{
+		beginx = hx;
+		beginy = hy;
+		hoekX = 0;
+		hoekY = 0;
+	}
+
+	public double geefDraaiY()
+	{
+		return beginy+hoekY;
+	}
+
+
 	public void muisSleepActie()
 	{	if (eigenaar.geefMuisBeheerder() != null)
 		{	hoekX = hoekX - eigenaar.geefSleepdy();
