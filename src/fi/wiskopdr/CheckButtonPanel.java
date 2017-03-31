@@ -10,7 +10,13 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+import org.cbook.cbookif.Constants;
+
 import fi.beans.iconan.Iconan;
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.wiskopdr.formuleobjects.FormuleButton;
@@ -18,7 +24,7 @@ import fi.wiskopdr.tekstobjects.TekstElement;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
-public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionListener {
+public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionListener, CBookAware {
 
 	
 	FormuleButton checkButton;
@@ -57,17 +63,19 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 		boolean nakijkenXWidget=false;
 		boolean actieBewaren=false;
 		boolean actieAfronden=false;
+		boolean nakijken = true;
 		
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		if(h.containsKey("nakijkenPagina")) nakijkenPagina = ((Boolean)h.get("nakijkenPagina")).booleanValue();
 		if(h.containsKey("nakijkenVak")) nakijkenVak = ((Boolean)h.get("nakijkenVak")).booleanValue();
+		if(h.containsKey("nakijken")) nakijkenVak = ((Boolean)h.get("nakijken")).booleanValue();
 		if(h.containsKey("nakijkenXWidget")) nakijkenXWidget = ((Boolean)h.get("nakijkenXWidget")).booleanValue();
 		if(h.containsKey("actieBewaren")) actieBewaren = ((Boolean)h.get("actieBewaren")).booleanValue();
 		if(h.containsKey("actieAfronden")) actieAfronden = ((Boolean)h.get("actieAfronden")).booleanValue();
 		
-		this.nakijkenPagina = nakijkenPagina;
-		this.nakijkenVak = nakijkenVak;
-		this.nakijkenXWidget = nakijkenXWidget;
+		this.nakijkenPagina = nakijkenPagina && nakijken;
+		this.nakijkenVak = nakijkenVak && nakijken;
+		this.nakijkenXWidget = nakijkenXWidget && nakijken;
 		this.actieBewaren = actieBewaren;
 		this.actieAfronden = actieAfronden;
 		
@@ -125,7 +133,6 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 
 	@Override
 	public InteractieEditPanel getEditPanel() {
-		// TODO Auto-generated method stub
 		return new CheckButtonEditPanel();
 	}
 
@@ -251,7 +258,7 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 		}
 		if(nakijkenXWidget)
 		{
-			
+			handler.fire(Constants.CHECK);
 		}
 		if(actieBewaren)
 		{
@@ -282,5 +289,71 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 	 		}
 	 	}
 	 	//end ActionProducer
+
+
+
+
+
+
+		@Override
+		public void acceptCBookEvent(CBookEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+
+
+
+
+		@Override
+		public void addCBookEventListener(CBookEventListener listener,
+				String command) {
+			handler.addCBookEventListener(listener, command);		
+		}
+
+
+
+		CBookEventHandler handler = new CBookEventHandler(this);
+
+
+		@Override
+		public void removeCBookEventListener(CBookEventListener listener,
+				String command) {
+			handler.removeCBookEventListener(listener, command);			
+		}
+
+
+
+
+
+
+		@Override
+		public String[] getSendCmds() {
+			if(nakijkenXWidget)
+				return new String[] { "check" };
+			return null;
+		}
+
+
+
+
+
+
+		@Override
+		public String[] getAcceptedCmds() {
+			return null;
+		}
+
+
+
+
+
+
+		@Override
+		public String getLocalizedCmd(String cmd) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 }

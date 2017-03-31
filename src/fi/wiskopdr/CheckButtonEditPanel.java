@@ -107,6 +107,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 
 		String knopImageString = "";
 		boolean nakijkenVak=true;
+		boolean nakijken = true;
 		boolean nakijkenPagina=false;
 		boolean nakijkenXWidget=false;
 		boolean actieBewaren=false;
@@ -115,14 +116,16 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		if(h.containsKey("nakijkenPagina")) nakijkenPagina = ((Boolean)h.get("nakijkenPagina")).booleanValue();
 		if(h.containsKey("nakijkenVak")) nakijkenVak = ((Boolean)h.get("nakijkenVak")).booleanValue();
+		if(h.containsKey("nakijken")) nakijken = ((Boolean)h.get("nakijken")).booleanValue();
 		if(h.containsKey("nakijkenXWidget")) nakijkenXWidget = ((Boolean)h.get("nakijkenXWidget")).booleanValue();
 		if(h.containsKey("actieBewaren")) actieBewaren = ((Boolean)h.get("actieBewaren")).booleanValue();
 		if(h.containsKey("actieAfronden")) actieAfronden = ((Boolean)h.get("actieAfronden")).booleanValue();
 		
 		this.knopImageString = knopImageString;
-		kijkNaEigenVakRB.setSelected(nakijkenVak);
-		kijkNaAllesRB.setSelected(nakijkenPagina);
-		kijkNaEigenVakRB.setSelected(nakijkenXWidget);
+		kijkNaCB.setSelected(nakijken);
+		kijkNaEigenVakRB.setSelected(nakijkenVak); kijkNaEigenVakRB.setEnabled(nakijken);
+		kijkNaAllesRB.setSelected(nakijkenPagina); kijkNaAllesRB.setEnabled(nakijken);
+		kijkNaXWidgetRB.setSelected(nakijkenXWidget); kijkNaXWidgetRB.setEnabled(nakijken);
 		bewaarCB.setSelected(actieBewaren);
 		rondAfCB.setSelected(actieAfronden);
 		
@@ -147,16 +150,19 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		boolean nakijkenXWidget=false;
 		boolean actieBewaren=false;
 		boolean actieAfronden=false;
+		boolean nakijken = true;
 		
 		knopImageString = this.knopImageString;
+		nakijken = kijkNaCB.isSelected();
 		nakijkenVak = kijkNaEigenVakRB.isSelected();
 		nakijkenPagina = kijkNaAllesRB.isSelected();
-		nakijkenXWidget = kijkNaEigenVakRB.isSelected();
+		nakijkenXWidget = kijkNaXWidgetRB.isSelected();
 		actieBewaren = bewaarCB.isSelected();
 		actieAfronden = rondAfCB.isSelected();
 		
 		Hashtable h = new Hashtable();
 		h.put("knopImageString", knopImageString);
+		h.put("nakijken", new Boolean(nakijken));
 		h.put("nakijkenPagina", new Boolean(nakijkenPagina));
 		h.put("nakijkenVak", new Boolean(nakijkenVak));
 		h.put("nakijkenXWidget", new Boolean(nakijkenXWidget));
@@ -208,6 +214,12 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == kijkNaCB) {
+			boolean selected = kijkNaCB.isSelected();
+			kijkNaEigenVakRB.setEnabled(selected);
+			kijkNaAllesRB.setEnabled(selected);
+			kijkNaXWidgetRB.setEnabled(selected);
+		} else
 		if(e.getSource()==knopImageButton)
 	    {   editImage();
 	            
