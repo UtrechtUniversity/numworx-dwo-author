@@ -207,10 +207,12 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 
 	public String[] getAcceptedCmds() {
 		boolean isConst = true;
-		return getCmds(isConst);
+		List<String> cmds = getCmds(isConst);
+		cmds.add(Constants.CHECK);
+		return cmds.toArray(new String[cmds.size()]);
 	}
 
-	public String[] getCmds(boolean isConst) {
+	public List<String> getCmds(boolean isConst) {
 		List<String> cmds;
 		cmds = new ArrayList<String>();
 		AbstractViewer v = instance.getViewer();
@@ -232,7 +234,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 				}
 			}
 		}
-		return cmds.toArray(new String[cmds.size()]);
+		return cmds;
 	}
 
 	public String getLocalizedCmd(String cmd) {
@@ -242,7 +244,8 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 
 	public String[] getSendCmds() {
-		return getCmds(false);
+		List<String> cmds = getCmds(false);
+		return cmds.toArray(new String[cmds.size()]);
 	}
 
 	public void removeCBookEventListener(CBookEventListener arg0, String arg1) {
