@@ -44,6 +44,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 
 	private boolean correct;
 	private boolean fout;
+	private boolean editable = true;
 
 	private int score;
 	private int scoreMax = 10;
@@ -374,6 +375,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 	{
 		boolean ingevuld = false;
 		boolean nagekeken = false;
+		boolean editable = true;
 		String antwoord = "";
 		Vector attempts = new Vector();
 		int attemptsCount = 0;
@@ -391,13 +393,16 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 			attemptsCount = ((Number) h.get("attemptsCount")).intValue();
 		if (h.containsKey("errorCount"))
 			errorCount = ((Number) h.get("errorCount")).intValue();
+		if(h.containsKey("editable")) 
+			editable = ((Boolean)h.get("editable")).booleanValue();
 
 		this.ingevuld = ingevuld;
 		this.nagekeken = nagekeken;
 		this.attempts = attempts;
 		this.attemptsCount = attemptsCount;
 		this.errorCount = errorCount;
-
+		this.editable = editable;
+		
 		antwoordKV.removeActionListener(this);
 		antwoordKV.setSelectedItem(antwoord.trim());
 		antwoordKV.addActionListener(this);
@@ -405,6 +410,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 		if (ingevuld && (mode == 0 || nagekeken))
 		{	kijkNa();
 		}
+		antwoordKV.setEnabled(editable);
 	}
 
 	public void setEditState(Hashtable h)
@@ -420,6 +426,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 		Vector attempts = new Vector();
 		int attemptsCount = 0;
 		int errorCount = 0;
+		boolean editable;
 
 		ingevuld = this.ingevuld;
 		nagekeken = this.nagekeken;
@@ -427,6 +434,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 		attempts = this.attempts;
 		attemptsCount = this.attemptsCount;
 		errorCount = this.errorCount;
+		editable = this.editable;
 
 		if (!("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant)))
 			kijkNa(false);
@@ -452,6 +460,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 		Hashtable h = new Hashtable();
 		h.put("ingevuld", new Boolean(ingevuld));
 		h.put("nagekeken", new Boolean(nagekeken));
+		h.put("editable", Boolean.valueOf(editable));
 		h.put("antwoord", antwoord);
 		h.put("attempts", attempts);
 		h.put("attemptsCount", new Integer(attemptsCount));
@@ -912,9 +921,11 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 
 	 @Override
 		public void acceptCBookEvent(CBookEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+		 if(event.getCommand().equals("action.setNotEditable"))
+			{	editable = false;
+				antwoordKV.setEnabled(editable);
+			}
+		 }
 	    
 	    @Override
 		public void addCBookEventListener(CBookEventListener listener, String command) {
@@ -942,8 +953,9 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 
 		@Override
 		public String[] getAcceptedCmds() {
-			// TODO Auto-generated method stub
-			return null;
+			String[] commands = {
+				"action.setNotEditable"};
+			return commands;
 		}
 
 		@Override
