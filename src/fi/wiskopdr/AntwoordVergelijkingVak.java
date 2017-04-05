@@ -4021,7 +4021,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] commands = {"balansvergelijking", "maakStap", "equation"};
+		String[] commands = {"balansvergelijking", "maakStap", "equation", "action.setNotEditable" };
 		return commands;
 	}
 

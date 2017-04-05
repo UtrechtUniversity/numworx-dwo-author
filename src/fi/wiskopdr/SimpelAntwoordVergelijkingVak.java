@@ -736,7 +736,7 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	}
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] s = {"equation"};
+		String[] s = {"equation", "action.setNotEditable" };
 		return s;
 	}
 

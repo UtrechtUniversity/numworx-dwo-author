@@ -900,7 +900,8 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 	}
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] s = {//org.cbook.cbookif.Constants.USER_INPUT, 
+		String[] s = {//org.cbook.cbookif.Constants.USER_INPUT,
+				"action.setNotEditable",
 				"double", 
 				"expression"};
 		return s;

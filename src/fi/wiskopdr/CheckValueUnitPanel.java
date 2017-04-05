@@ -697,8 +697,7 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
 
 	@Override
 	public String[] getAcceptedCmds() {
-		// TODO Auto-generated method stub
-		return null;
+		return new String[] { "action.setNotEditable" };
 	}
 
 	@Override
