@@ -71,5 +71,15 @@ public class IntegerValue extends Exact {
 		return Numbers.createInteger(-value);
 	}
 	
+	public boolean equals (Object other) {
+		if (other == this) return true;
+		if (other instanceof IntegerValue) {
+			return value == ((IntegerValue) other).value;
+		}
+		return false;
+	}
 	
+	public int hashCode() {
+		return value;
+	}
 }

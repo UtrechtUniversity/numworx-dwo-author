@@ -122,7 +122,6 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 	protected void createY(Label f, Tracker tracker) {
 		this.f = f;
 		this.output = varsOf(f);
-		for(Destroyable i: output) i.addObserver(this);
 		F = mapper.toString(f);
 		OMVariable fvar, xvar;
 		xvar = new OMVariable("x");
@@ -134,6 +133,8 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 			expression = new Expression(tracker);
 		y = new Label();
 		y = (Label) expression.interpret(oma, y, this);
+
+		for(Destroyable i: output) i.addObserver(this);
 	}
 
 

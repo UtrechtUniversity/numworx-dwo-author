@@ -102,7 +102,7 @@ public class PuntOp<T extends Destroyable> extends Punt implements Observer, Fre
 	public void update(Observable observable, Object arg) {
 		if(arg == DESTROY)
 			destroy();
-		else if (observable == op ){
+		else if (observable == op && arg != VISIBLE){
 			setDefined(op.isDefined());
 			//recalc(getX(), getY());
 			pon.update(op, this);
