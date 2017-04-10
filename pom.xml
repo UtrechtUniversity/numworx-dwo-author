@@ -66,7 +66,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>nl.numworx.geodefiner</Export-Package>
-						<Import-Package>!com.google.*,!com.googlecode.*,*</Import-Package>
+						<Import-Package>!com.google.*,!com.googlecode.*,!nl.uu.fi.dwo.interaction.client.*,*</Import-Package>
 						<Private-Package>
 							fi.euclides.*,
 							nl.numworx.geodefiner.*,
