@@ -3,6 +3,7 @@ package fi.euclides.proof;
 import java.io.IOException;
 import java.util.Vector;
 
+import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Codec;
 import fi.euclides.model.Destroyable;
@@ -128,6 +129,11 @@ public class AfstandHandler extends LabelValue {
 		{
 			p1 = ((Cirkel)d1).getRadius();
 			p2 = ((Cirkel)d1).getRadius2();
+		} else if (d1 instanceof Boog) 
+		{
+			Boog b = (Boog)d1;
+			p1 = b.getCenter();
+			p2 = Boog.startOf(b);
 		}
 		Numbers x = Numbers.sub(p1.getX(),p2.getX());
 		Numbers y = Numbers.sub(p1.getY(),p2.getY());
@@ -142,6 +148,9 @@ public class AfstandHandler extends LabelValue {
 			String s = Numbers.toString(value) + " π";
 			value = Numbers.mul(Numbers.PI, value);
 			return s;
+		} else if (d1 instanceof Boog) {
+			Numbers length = Numbers.createDouble(((Boog) d1).length());
+			value = Numbers.mul(value, Numbers.abs(length));
 		}
 		return Numbers.toString(value);
 	}

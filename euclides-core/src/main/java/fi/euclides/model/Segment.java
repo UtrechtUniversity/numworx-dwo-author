@@ -34,7 +34,8 @@ public class Segment extends PuntenLijn {
 	 * @param p2
 	 */
 	public Segment(Punt p1, Punt p2) {
-		super(p1, p2);
+		setP1(p1); // NO SWAP, Voor de pijlpunten!
+		setP2(p2);
 	}
 
 	public Observable newInstance() {
