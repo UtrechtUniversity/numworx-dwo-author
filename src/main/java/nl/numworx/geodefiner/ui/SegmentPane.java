@@ -4,6 +4,7 @@ import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
+import fi.euclides.util.Messages;
 import nl.numworx.geodefiner.common.Tips;
 
 class SegmentPane extends LinePane<SegmentModel> {
@@ -15,7 +16,7 @@ class SegmentPane extends LinePane<SegmentModel> {
 		tips = new JComboBox<Tips>(Tips.values());
 		tips.setSelectedItem(model.tip);
 		Box panel = Box.createHorizontalBox();
-		panel.add(new JLabel("pijlpunten"));
+		panel.add(new JLabel(Messages.getString("SegmentPane.1")));
 		panel.add(tips);
 		panel.add(Box.createGlue());
 		add(panel);

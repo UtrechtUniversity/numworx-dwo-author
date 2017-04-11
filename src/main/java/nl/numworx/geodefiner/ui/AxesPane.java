@@ -13,7 +13,7 @@ public class AxesPane extends LinePane<AxesModel> {
 		Box hbox = Box.createHorizontalBox();
 		numbers = new JCheckBox("getallen");
 		numbers.setSelected(model.numbers);
-		hbox.add(new JLabel("bij de as"));
+		hbox.add(new JLabel("Bij de as"));
 		hbox.add(numbers);
 		hbox.add(Box.createGlue());
 		add(hbox);

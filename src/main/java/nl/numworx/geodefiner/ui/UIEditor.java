@@ -5,6 +5,7 @@ import java.text.ParseException;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public abstract class UIEditor extends JPanel {
 
 	public abstract void commit();

@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import nl.numworx.geodefiner.ui.color.ColorChooser;
+import fi.euclides.util.Messages;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
 public class ColorPane<T extends ColorModel<?>> extends UIEditor {
@@ -32,12 +33,12 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 
 	void addComponents() {
 		Box hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("Zichtbaarheid"));hbox.add(Box.createGlue());
+		hbox.add(new JLabel(Messages.getString("ColorPane.1")));hbox.add(Box.createGlue());
 		add(hbox);
 		add(visibilityEditor);
 		add(Box.createVerticalStrut(10));
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("Kleur"));hbox.add(Box.createGlue());
+		hbox.add(new JLabel(Messages.getString("ColorPane.2")));hbox.add(Box.createGlue());
 		add(hbox);
 		add(chooser);
 	}

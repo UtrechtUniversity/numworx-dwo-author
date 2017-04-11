@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 
 import fi.euclides.util.Messages;
 
+@SuppressWarnings("serial")
 public class GridPane extends LinePane<GridModel> {
 
 	JCheckBox gravity;
@@ -15,7 +16,7 @@ public class GridPane extends LinePane<GridModel> {
 		gravity = new JCheckBox(Messages.getString("gravity"));
 		gravity.setSelected(model.gravity);
 		Box hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("Op het rooster"));
+		hbox.add(new JLabel(Messages.getString("GridPane.1")));
 		hbox.add(gravity);
 		hbox.add(Box.createGlue());
 		add(hbox);

@@ -9,6 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
+import fi.euclides.util.Messages;
 import nl.numworx.geodefiner.common.LineType;
 
 public class LinePane<M extends LineModel> extends ColorPane<M> {
@@ -20,7 +21,7 @@ public class LinePane<M extends LineModel> extends ColorPane<M> {
 		super(model);
 		Box panel; 
 		panel = Box.createHorizontalBox();
-		sample = new JLabel("lijntype"); 
+		sample = new JLabel(Messages.getString("LinePane.1")); 
 		type   = new JComboBox<LineType>(LineType.values());
 		type.setSelectedItem(model.type);
 		NumberFormat format = NumberFormat.getInstance(Locale.US);
@@ -31,7 +32,7 @@ public class LinePane<M extends LineModel> extends ColorPane<M> {
 		panel.add(sample); panel.add(type);panel.add(Box.createGlue());
 		add(panel);
 		panel = Box.createHorizontalBox();
-		panel.add(new JLabel("lijndikte"));panel.add(widthField);panel.add(new JLabel("px"));
+		panel.add(new JLabel(Messages.getString("LinePane.2")));panel.add(widthField);panel.add(new JLabel("px"));
 		panel.add(Box.createGlue());
 		add(panel);
 	}

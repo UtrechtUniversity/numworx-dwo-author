@@ -13,6 +13,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import fi.euclides.util.Messages;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 import nl.numworx.geodefiner.common.LineType;
 import nl.numworx.geodefiner.ui.color.ColorChooser;
@@ -47,25 +48,25 @@ public class CirclePane extends UIEditor {
 		setLayout(layout);
 // TODO mooie layout, tabbladen?
 		Box hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("Zichtbaarheid"));hbox.add(Box.createGlue());
+		hbox.add(new JLabel(Messages.getString("CirclePane.1")));hbox.add(Box.createGlue());
 		add(hbox);
 		add(visibilityEditor);
 		add(Box.createVerticalStrut(10));
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("Lijnkleur"));hbox.add(Box.createGlue());
+		hbox.add(new JLabel(Messages.getString("CirclePane.2")));hbox.add(Box.createGlue());
 		add(hbox);
 		add(stroke);
 		add(Box.createVerticalStrut(10));
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("lijntype"));hbox.add(type);hbox.add(Box.createGlue());
+		hbox.add(new JLabel(Messages.getString("CirclePane.3")));hbox.add(type);hbox.add(Box.createGlue());
 		add(hbox);
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("lijndikte"));
+		hbox.add(new JLabel(Messages.getString("CirclePane.4")));
 		hbox.add(widthField);hbox.add(new JLabel("px"));hbox.add(Box.createGlue());
 		add(hbox);
 		add(Box.createVerticalStrut(10));
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("Vulkleur"));hbox.add(Box.createGlue());
+		hbox.add(new JLabel(Messages.getString("CirclePane.5")));hbox.add(Box.createGlue());
 		add(hbox);
 		add (fill);
 	}

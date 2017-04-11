@@ -10,6 +10,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
+import fi.euclides.util.Messages;
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.Animate;
 
@@ -52,16 +53,16 @@ public class IntervalPane extends TextPane<IntervalModel> {
 		widthField.setMaximumSize(widthField.getPreferredSize());
 		Box hbox;
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("stapgrootte")); hbox.add(stepField);hbox.add(Box.createGlue()); add(hbox);
+		hbox.add(new JLabel(Messages.getString("IntervalPane.1"))); hbox.add(stepField);hbox.add(Box.createGlue()); add(hbox);
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("lengte"));hbox.add(lengthField);hbox.add(new JLabel("px"));hbox.add(Box.createGlue()); add(hbox); 
+		hbox.add(new JLabel(Messages.getString("IntervalPane.2")));hbox.add(lengthField);hbox.add(new JLabel("px"));hbox.add(Box.createGlue()); add(hbox); 
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("dikte"));hbox.add(widthField);hbox.add(new JLabel("px"));hbox.add(Box.createGlue()); add(hbox); 
+		hbox.add(new JLabel(Messages.getString("IntervalPane.3")));hbox.add(widthField);hbox.add(new JLabel("px"));hbox.add(Box.createGlue()); add(hbox); 
 
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("animatietype"));hbox.add(animateBox);hbox.add(Box.createGlue()); add(hbox); 
+		hbox.add(new JLabel(Messages.getString("IntervalPane.4")));hbox.add(animateBox);hbox.add(Box.createGlue()); add(hbox); 
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("interval"));hbox.add(intervalField);hbox.add(new JLabel("s"));hbox.add(Box.createGlue()); add(hbox); 
+		hbox.add(new JLabel(Messages.getString("IntervalPane.5")));hbox.add(intervalField);hbox.add(new JLabel("s"));hbox.add(Box.createGlue()); add(hbox); 
 	}
 
 	@Override

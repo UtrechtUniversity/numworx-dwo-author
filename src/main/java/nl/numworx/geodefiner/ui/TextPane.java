@@ -20,6 +20,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import fi.euclides.util.Messages;
 import nl.numworx.geodefiner.common.Align;
 
 public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon, ItemListener {
@@ -53,23 +54,23 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 			}
 			
 		});
-		alwaysF = new JCheckBox("altijd formule");
+		alwaysF = new JCheckBox(Messages.getString("TextPane.1"));
 		alwaysF.setSelected(Boolean.TRUE.equals(model.alwaysF));
 		chooser.setPreviewPanel(preview);
 		add(Box.createVerticalStrut(10));
 		Box hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("Uitlijning"));
+		hbox.add(new JLabel(Messages.getString("TextPane.2")));
 		hbox.add(alignBox);
 		hbox.add(Box.createGlue());
 		add(hbox);
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("Textgrootte"));
+		hbox.add(new JLabel(Messages.getString("TextPane.3")));
 		hbox.add(fontSize);
 		hbox.add(new JLabel("px"));
 		hbox.add(Box.createGlue());
 		add(hbox);
 		hbox = Box.createHorizontalBox();
-		hbox.add(new JLabel("Formule?"));
+		hbox.add(new JLabel(Messages.getString("TextPane.4")));
 		hbox.add(alwaysF);
 		hbox.add(Box.createGlue());
 		add(hbox);
