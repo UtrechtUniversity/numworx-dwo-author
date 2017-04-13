@@ -15,6 +15,7 @@ public class LineModel extends ColorModel<Destroyable> {
 
 	LineType type = LineType.SOLID;
 	float width = 1.0f;
+	boolean rigid; // default beweeglijk
 
 	public UIModel<Destroyable, UIEditor> init(Lijn item) {
 		return super.init(item);
@@ -24,11 +25,14 @@ public class LineModel extends ColorModel<Destroyable> {
 		Map<String, Object> map = super.toMap();
 		map.put("width", Double.valueOf(width)); // float not supported?
 		map.put("type", type.name());
+		map.put("rigid", rigid);
 		return map;
 	}
 
 	public void fromMap(ObjectMap map) {
 		super.fromMap(map);
+		rigid = map.getBoolean("rigid", false);
+		
 		try {
 			width = (float) map.getDouble("width");
 			if(Float.isNaN(width)) width = 1.0f;
@@ -52,7 +56,9 @@ public class LineModel extends ColorModel<Destroyable> {
 	public void install(Destroyable item) {
 		float[] dash = dashes[type.ordinal()];
 		BasicStroke stroke = new BasicStroke(width,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
-		DefaultAdapter.getDefault(item).put(Stroke.class, stroke);
+		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
+		adapter.put(Stroke.class, stroke);
+		adapter.put(Boolean.valueOf(rigid));
 		super.install(item);
 	}
 

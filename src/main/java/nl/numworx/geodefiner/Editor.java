@@ -37,11 +37,14 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetEditIF;
 
+import fi.euclides.event.NameMapper;
 import fi.euclides.expr.InterpretException;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.Token;
 import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.AbstractViewer;
+import fi.euclides.model.Coordinaten;
+import fi.euclides.model.Punt;
 import fi.wiskopdr.TabletOwningLayeredPane;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleVakHouder;
@@ -186,7 +189,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		launchdata.put("configuration", configuration);
 		launchdata.put("axes", axes.toMap());
 		instance.installPrepare(); // voor instance.getstate().get("model")
-		launchdata.put("positions", instance.getState().get("positions"));
+		launchdata.put("positions", filterCoordinaten((Map)instance.getState().get("positions")));
 		launchdata.put("random", random.getText());
 		launchdata.put("checkDWO", checkDWO.toMap());
 		launchdata.put("toolbox", toolbox.toList());
@@ -195,6 +198,16 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		if(div>0)launchdata.put("split", div);
 		launchdata.put("command", command.toString());
 		return launchdata;
+	}
+
+	private Map filterCoordinaten(Map map) {
+		NameMapper mapper = instance.getViewer().getMapper();
+		for(Punt p : instance.getViewer().getModel().getPunten()) {
+			if( p instanceof Coordinaten) {
+				map.remove(mapper.toString(p));
+			}
+		}
+		return map;
 	}
 
 	public String getLocalizedCmd(String cmd) {

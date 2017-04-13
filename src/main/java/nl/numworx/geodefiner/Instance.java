@@ -337,7 +337,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			}
 		}
 
-		private static final float DEFAULT_POINTSIZE = 5f;
+		static final float DEFAULT_POINTSIZE = 5f;
 
 		private NamingModel nameMapper;
 		private Snapper snapper = new Snapper();
@@ -521,7 +521,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		InstanceViewer() {
 			super();
 			getModel().addObserver(this);
-			hitTester = (new HitTester2(content.getFontMetrics(content.getFont())));
+			hitTester = (new HitTester3(content.getFontMetrics(content.getFont())));
 			nameMapper = new NamingModel(this, cache);
 		}
 

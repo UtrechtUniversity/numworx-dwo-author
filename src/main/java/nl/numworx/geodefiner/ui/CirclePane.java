@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -25,6 +26,7 @@ public class CirclePane extends UIEditor {
 	private JFormattedTextField widthField;
 	private ColorChooser stroke, fill;
 	private FormuleEditor  visibilityEditor;
+	private JCheckBox rigid;
 
 	public CirclePane(CircleModel model) {
 		this.model = model;
@@ -43,6 +45,8 @@ public class CirclePane extends UIEditor {
 			visibilityEditor.formuleVak.vulVak(model.getVisibility());
 		visibilityEditor.setHeader(false);
 		visibilityEditor.setPreferredSize(new Dimension(240,40));
+		rigid = new JCheckBox(Messages.getString("rigid"));
+		rigid.setSelected(!model.rigid);			
 // Wat nu:
 		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		setLayout(layout);
@@ -64,6 +68,10 @@ public class CirclePane extends UIEditor {
 		hbox.add(new JLabel(Messages.getString("CirclePane.4")));
 		hbox.add(widthField);hbox.add(new JLabel("px"));hbox.add(Box.createGlue());
 		add(hbox);
+		Box panel;
+		panel = Box.createHorizontalBox();
+		panel.add(new JLabel(Messages.getString("PointPane.2"))); panel.add(rigid); panel.add(Box.createGlue());
+		add(panel);
 		add(Box.createVerticalStrut(10));
 		hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("CirclePane.5")));hbox.add(Box.createGlue());
@@ -79,7 +87,7 @@ public class CirclePane extends UIEditor {
 		model.width = ((Number) widthField.getValue()).floatValue();
 		model.type = (LineType) type.getSelectedItem();
 		model.visibility.setString(visibilityEditor.formuleVak.toString());
-
+		model.rigid = !rigid.isSelected();
 		model.install();
 	}
 
