@@ -16,7 +16,7 @@ import fi.euclides.model.Punt;
 
 public class HitTester2 extends HitTester {
 
-	private FontMetrics fm;
+	protected FontMetrics fm;
 	
 	public HitTester2(FontMetrics fm) {
 		this.fm = fm;
