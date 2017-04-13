@@ -18,11 +18,13 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.model.Cirkel;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
+import fi.euclides.model.MP;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
@@ -63,6 +65,26 @@ public abstract class Instance /*implements Observer*/ {
 				return;
 			}
 			super.visitLabel(l);
+		}
+
+		@Override
+		protected boolean freePuntenLine(Lijn l) {			
+			return super.freePuntenLine(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
+		}
+
+		@Override
+		protected boolean freeCombiLijn(Lijn l) {
+			return super.freeCombiLijn(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
+		}
+
+		@Override
+		protected boolean freeCirkel(Cirkel c) {
+			return super.freeCirkel(c) && !Boolean.TRUE.equals(c.adapt(Boolean.class));
+		}
+
+		@Override
+		protected boolean freeMP(MP l) {
+			return super.freeMP(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
 		}
 
 		@Override
