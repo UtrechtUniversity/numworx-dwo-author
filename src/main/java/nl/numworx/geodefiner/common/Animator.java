@@ -74,7 +74,7 @@ public class Animator implements Observer {
 			Pmin = s.getP1();
 			Xmax = Pmax.getX();
 			Xmin = Pmin.getX();
-			period = 100; // 10 Hz
+			period = 1000/25; // 24 Hz
 			Xstep = Numbers.div(s.getDXn(), Numbers.createInteger(interval/period));
 			if(Xstep.doubleValue() < 1.0) {
 				Xstep = Numbers.ONE;
