@@ -30,6 +30,7 @@ public class HitTester implements Visitor, SegmentVisitor  {
 	private Visitor v;
 	protected double lastx;
 	protected double lasty;
+	protected double marge = 5;
 	 
 	public void visitCirkel(Cirkel c) {
 		// FIXME deze moet /max(r,1);
@@ -37,7 +38,7 @@ public class HitTester implements Visitor, SegmentVisitor  {
 		double x = c.getCenter().getXd()-lastx;
 		double y = c.getCenter().getYd()-lasty;
 		double r2 =  JMath.hypot(x,y);
-		boolean done = Math.abs(r2-r) < 5; // TODO instelbare 70
+		boolean done = Math.abs(r2-r) < marge;
 		if(done)
 			call(c);
 	}
@@ -48,7 +49,7 @@ public class HitTester implements Visitor, SegmentVisitor  {
 		double x = b.getCenter().getXd()-lastx;
 		double y = b.getCenter().getYd()-lasty;
 		double r2 = JMath.hypot(x,y);
-		boolean done = Math.abs(r2-r) < 5; // TODO instelbare 70
+		boolean done = Math.abs(r2-r) < marge;
 		if(!done) return;
 		double h = JMath.atan2(y, -x);
 		double s = b.getStart();
@@ -76,7 +77,7 @@ public class HitTester implements Visitor, SegmentVisitor  {
 		double len = dx * dx + dy * dy;
 		double d = (uit * uit / len );
 //System.out.println(d + " " + uit + " " + len);
-		if( (d) <= 16)
+		if ( (d) <= (marge*marge) )
 		{
 			if(tmp != null)
 			{
@@ -111,8 +112,8 @@ public class HitTester implements Visitor, SegmentVisitor  {
 	}
 
 	public void visitPunt(Punt p) {
-		if(Math.abs(p.getXd()-lastx)<=4 &&
-				Math.abs(p.getYd()-lasty)<=4
+		if(Math.abs(p.getXd()-lastx)<=marge &&
+				Math.abs(p.getYd()-lasty)<=marge
 		)
 		{	
 			v.visitPunt(p);
@@ -137,10 +138,10 @@ public class HitTester implements Visitor, SegmentVisitor  {
 		double minY = s.getY2();
 		if(minY>maxY) { double t= maxY; maxY=minY; minY=t; }
 		if(
-				lastx > minX-4 &&
-				lastx < maxX+4 &&
-				lasty > minY-4 &&
-				lasty < maxY+4
+				lastx > minX-marge &&
+				lastx < maxX+marge &&
+				lasty > minY-marge &&
+				lasty < maxY+marge
 		)		
 				visitLijn(s);		
 	}

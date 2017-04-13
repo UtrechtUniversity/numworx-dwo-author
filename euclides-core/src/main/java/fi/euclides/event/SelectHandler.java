@@ -161,11 +161,11 @@ public class SelectHandler extends EventHandler {
 	 * @param p
 	 * @return
 	 */
-	private boolean freePunt(Punt p) {
+	protected boolean freePunt(Punt p) {
 		return p.isFree();
 	}
 	
-	private boolean freePunt(Punt[] ps)
+	protected boolean freePunt(Punt[] ps)
 	{
 		for (int i = 0; i < ps.length; i++) {
 			Punt p = ps[i];
@@ -183,28 +183,28 @@ public class SelectHandler extends EventHandler {
 			super.visitLijn(l);
 		else if(track == null) {
 			
-			if(freeLine(l))
+			if(freePuntenLine(l))
 			{
 				track = new Track(new LineMover(lastx, lasty, (PuntenLijn)l));
 			} else if(freeCombiLijn(l))
 			{
-				track = new Track(new LineMover(lastx, lasty, (LijnPuntCombi)l));
+				track = new Track(new LineMover(lastx, lasty, (LijnPuntCombi<?>)l));
 			}
 		}
 	}
 
-	private boolean freeCombiLijn(Lijn l) {
+	protected boolean freeCombiLijn(Lijn l) {
 		if (l instanceof Poollijn)
 			return false;
 		if (l instanceof LijnPuntCombi)
 		{
-			LijnPuntCombi lp = (LijnPuntCombi)l;
+			LijnPuntCombi<?> lp = (LijnPuntCombi<?>)l;
 			return freePunt(lp.getPunt());
 		}
 		return false;
 	}
 
-	private boolean freeLine(Lijn l) {
+	protected boolean freePuntenLine(Lijn l) {
 		if(l instanceof PuntenLijn)
 		{
 			return freePunt((Punt[])l.getDepend());
@@ -212,7 +212,7 @@ public class SelectHandler extends EventHandler {
 		return false;
 	}
 	
-	private boolean freeCirkel(Cirkel c)
+	protected boolean freeCirkel(Cirkel c)
 	{
 		if(c instanceof Cirkel3)
 			return freePunt((Punt[])c.getDepend());
@@ -246,8 +246,12 @@ public class SelectHandler extends EventHandler {
 	public void visitMP(MP l) {
 		if(click)
 			super.visitMP(l);
-		else if(track == null && l.getDepend() instanceof Punt[] && freePunt((Punt[])l.getDepend()))
+		else if(track == null && freeMP(l))
 			track = new Track(new LineMover(lastx, lasty, l));
+	}
+
+	protected boolean freeMP(MP l) {
+		return l.getDepend() instanceof Punt[] && freePunt((Punt[])l.getDepend());
 	}
 
 	/* Empty...
