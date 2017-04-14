@@ -24,8 +24,13 @@ public class IntervalModel extends TextModel {
 	double length = 50, x, y;
 	int interval = 2000;
 	Number step;
-	Float  width;
+	Float  width = Float.valueOf(1f);
 	
+	public IntervalModel() {
+		super();
+		align = Align.TOP;
+	}
+
 	@Override
 	public void install(Label item) {
 		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
@@ -70,6 +75,12 @@ public class IntervalModel extends TextModel {
 	@Override
 	public UIModel<Label, UIEditor> init(Label item) {
 		if(item == null) {
+			if(this.item != null && this.item.getP() instanceof fi.euclides.model.PuntOp ) {
+				Segment s = (Segment) this.item.getP().getDepend()[0];
+				length = s.getDX();
+				x = s.getX1(); 
+				y = s.getY1();
+			}
 			this.item = null;
 			return this; // skip iff null
 		}

@@ -245,10 +245,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	public final class Snapper extends nl.numworx.geodefiner.common.Snapper {
 		private final int SNAP = 3;
-
-		public boolean isGravity() {
-			return gravity;
-		}
 		
 		public void translate(MouseEvent ev) {
 			if (gravity) {
@@ -350,6 +346,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		@Override
 		public <T> T adapt(Class<T> cls) {
+			if(cls == nl.numworx.geodefiner.common.Snapper.class) return (T) snapper;
 			if(cls == Snapper.class) return (T) snapper;
 			if(cls == Expression.class) return (T) expression;
 			if(cls == Randomizer.class) return (T) randomizer;

@@ -19,7 +19,7 @@ public class LinePane<M extends LineModel> extends ColorPane<M> {
 	JComboBox<LineType> type;
 	JFormattedTextField widthField;
 	JLabel sample;
-	private JCheckBox  rigid;
+	JCheckBox  rigid;
 
 	public LinePane(M model) {
 		super(model);

@@ -13,6 +13,7 @@ import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
 import nl.numworx.geodefiner.common.CELL;
+import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.Volgpunt;
 import nl.numworx.geodefiner.ui.UIModelFactory;
@@ -258,8 +259,9 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
 			cell.config.install();
 		} else {
 			if(cell.item instanceof Label) {
-				if( ((Label)cell.item).getP() instanceof Volgpunt )
-				cell.config = factory.build(cell.item); // save dx,dy in configuration
+				Label label = (Label)cell.item;
+				if( label.getP() instanceof Volgpunt || label.getRegistered() instanceof Interval)
+					cell.config = factory.build(cell.item); // save dx,dy in configuration
 			}
 		}
 		super.installConfig(cell, config, name);

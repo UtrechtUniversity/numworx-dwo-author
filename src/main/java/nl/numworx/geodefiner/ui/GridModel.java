@@ -1,9 +1,11 @@
 package nl.numworx.geodefiner.ui;
 
+import java.awt.Color;
 import java.util.Map;
 
 import nl.numworx.geodefiner.Instance;
 import nl.numworx.geodefiner.Instance.Snapper;
+import nl.numworx.geodefiner.common.LineType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Destroyable;
@@ -39,6 +41,13 @@ public class GridModel extends LineModel {
 	}
 	
 	public UIModel<Destroyable, UIEditor> init(Locus item) {
-		return super.init(item);
+		type = LineType.DOTTED;
+		this.item = item;
+		if(item != null) {
+			color = item.getAdapter().adapt(Color.class);
+			visible = item.isVisible();
+		}
+		if(color == null) color = Color.gray;
+		return this;
 	}
 }

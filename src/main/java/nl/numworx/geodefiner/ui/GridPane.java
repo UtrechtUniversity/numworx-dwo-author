@@ -13,6 +13,7 @@ public class GridPane extends LinePane<GridModel> {
 	
 	public GridPane(GridModel model) {
 		super(model);
+		remove(rigid.getParent()); // ons kent ons.
 		gravity = new JCheckBox(Messages.getString("gravity"));
 		gravity.setSelected(model.gravity);
 		Box hbox = Box.createHorizontalBox();

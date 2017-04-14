@@ -7,13 +7,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +27,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 
 import nl.numworx.geodefiner.common.CELL;
+import nl.numworx.geodefiner.common.State;
 import nl.numworx.geodefiner.ui.Axes;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
@@ -44,11 +42,10 @@ import fi.euclides.formuleobjects.Token;
 import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Coordinaten;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.Punt;
 import fi.wiskopdr.TabletOwningLayeredPane;
 import fi.wiskopdr.WiskOpdr;
-import fi.wiskopdr.formuleobjects.FormuleVakHouder;
-import fi.wiskopdr.formuleobjects.Tablet;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.tekstobjects.FeedbackTekstArea;
 
@@ -203,7 +200,12 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	private Map filterCoordinaten(Map map) {
 		NameMapper mapper = instance.getViewer().getMapper();
 		for(Punt p : instance.getViewer().getModel().getPunten()) {
-			if( p instanceof Coordinaten) {
+			if( State.INITIAL.equals(p.adapt(State.class))) {
+				map.remove(mapper.toString(p));
+			}
+		}
+		for(Destroyable p : instance.getViewer().getModel().getLijnen()) {
+			if( State.INITIAL.equals(p.adapt(State.class))) {
 				map.remove(mapper.toString(p));
 			}
 		}

@@ -67,6 +67,8 @@ public class CellItem extends JPanel {
 			} else if ( ok == JOptionPane.NO_OPTION) {
 				CellItem.this.
 				firePropertyChange("item", getCell().item, null);
+				UIModel<?, ?> cnf = getCell().config;
+				if(cnf != null) cnf.init(null);
 				getCell().item.destroy();
 			}
 		}
