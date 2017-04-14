@@ -37,9 +37,11 @@ public class PointOnLine implements PointOnAlgorithm<Lijn> {
 			double dy, double inp) {
 		if(Math.abs(dx)>Math.abs(dy))
 		{
-			// horizontal line, round to x pixels
-			long lx = JMath.round(x1 + inp*dx);
-			Numbers lxn = Numbers.createRational(lx, 1);
+// horizontal line, round to x pixels
+//			long lx = JMath.round(x1 + inp*dx);
+//			Numbers lxn = Numbers.createRational(lx, 1);
+			double lx = x1 + inp*dx;
+			Numbers lxn = Numbers.createDouble(lx);
 			Numbers rat = Numbers.sub(lxn, lijn.getX1n());
 			rat = Numbers.div(rat,  lijn.getDXn());
 			Numbers lyn = Numbers.add(lijn.getY1n(), Numbers.mul(rat, lijn.getDYn()));

@@ -58,11 +58,15 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 		OMObject obj = f.adapt(OMObject.class);
 		if(obj != null) {
 			NameMapper mapper = f.getRegistered().getTracker().getMapper();
-			return varsOf(obj, mapper, Collections.EMPTY_SET, new ArrayList<Destroyable> ());
+			return varsOf(obj, mapper);
 		}		
 		return Collections.EMPTY_LIST;
 	}
 	
+	public static List<Destroyable> varsOf(OMObject obj, NameMapper mapper) {
+		return varsOf(obj, mapper, Collections.EMPTY_SET, new ArrayList<Destroyable> ());
+	}
+
 	protected static List<Destroyable> varsOf(Object obj, NameMapper mapper, Set<String> bindvars, ArrayList<Destroyable> output) {
 		if(obj instanceof OMVariable) {
 			String name = ((OMVariable) obj).getName();

@@ -24,7 +24,7 @@ public abstract class Destroyable extends Observable implements Observer {
 		Destroyable[] dd = getDepend();
 		for (int i = 0; i < dd.length; i++) {
 			Destroyable d = dd[i];
-			dd[i] = null;
+			//dd[i] = null; TODO probleem met observer als dependency niet meer bestaat
 			if(d != null)
 			{
 				d.deleteObserver(this);

@@ -24,7 +24,6 @@ public class DefaultAdapter implements Adapter {
 		}
 	}
 	
-	@Deprecated
 	public static DefaultAdapter getDefault(Observable d) {
 		return getDefault( (Adaptee) d);
 	}
