@@ -50,8 +50,10 @@ public class PointOnLine implements PointOnAlgorithm<Lijn> {
 			return;
 		}
 		// vertical line, round to y pixels
-		long ly = JMath.round(y1 + inp*dy);
-		Numbers lyn = Numbers.createRational(ly, 1);
+//		long ly = JMath.round(y1 + inp*dy);
+//		Numbers lyn = Numbers.createRational(ly, 1);
+		double ly = y1 + inp*dy;
+		Numbers lyn = Numbers.createDouble(ly);
 		Numbers rat = Numbers.sub(lyn,lijn.getY1n());
 		rat = Numbers.div(rat, lijn.getDYn());
 		Numbers lxn = Numbers.add(lijn.getX1n(), Numbers.mul(rat, lijn.getDXn()));
