@@ -39,12 +39,17 @@ public class TextModel extends ColorModel<Label> {
 		if(align == null) align= Align.BASE;
 		if(item != null) alwaysF = item.adapt(Boolean.class);
 		if(item == null && this.item != null && this.item.getP() instanceof Volgpunt)
-		{	Volgpunt p = (Volgpunt) this.item.getP();
-			dx = (float) p.getDx().doubleValue();
-			dy = (float) p.getDy().doubleValue();
+		{	setdxy();
 		}
 		return super.init(item);
 	}
+
+	private void setdxy() {
+		if(item.getP()instanceof Volgpunt) {
+		Volgpunt p = (Volgpunt) this.item.getP();
+			dx = (float) p.getDx().doubleValue();
+			dy = (float) p.getDy().doubleValue();
+	}}
 
 	@Override
 	public Map<String, Object> toMap() {
@@ -88,6 +93,7 @@ public class TextModel extends ColorModel<Label> {
 
 	@Override
 	public UIEditor editor() {
+		setdxy();
 		return new TextPane(this);
 	}
 	
