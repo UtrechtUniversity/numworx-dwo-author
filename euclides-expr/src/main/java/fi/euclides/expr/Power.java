@@ -49,11 +49,61 @@ public class Power extends Som {
 			return Numbers.div(Numbers.ONE, s(root, !isRoot));
 		}		
 // TODO complex^complex
-		double r = root.doubleValue();
-		double p    = pow.doubleValue();
-		if(isRoot) p = 1.0/p;
-		double result = Math.pow(r, p);
-		return Numbers.createDouble(result);
+		if(root instanceof fi.euclides.model.math.Complex) {
+			double abs = Numbers.abs(root).doubleValue();
+			double arg = Math.atan2(Numbers.imag(root).doubleValue(), Numbers.real(root).doubleValue());
+			if(isRoot) pow = Numbers.div(Numbers.ONE, pow);
+			if(pow instanceof fi.euclides.model.math.Complex) 
+			{
+				double re = Numbers.real(pow).doubleValue();
+				double im = Numbers.imag(pow).doubleValue();
+
+				double r = Math.pow(abs, re) * Math.exp(-im*arg);
+				double ang = Math.log(abs)*im + arg * re;
+				Numbers Re = Numbers.createDouble(r*Math.cos(ang));
+				Numbers Im = Numbers.createDouble(r*Math.sin(ang));
+				return Numbers.createComplex(Re, Im);
+				
+// complex ^ complex = (r*e^(i*phi))^(re+i*im) =
+// r^re * r^(i*im) * e^(i*phi*(re+i*im))
+// r^re * r^(i*im) * e^(i*phi*re)* e^(-im*phi)
+// r^re * e^(lnr*i*im) * e^(i*phi*re) * e^(-im*phi)
+// r^re * e^(-im*phi) * e^(i* (im*lnr + phi*re))
+
+			} else {
+// complex ^ real
+				double re = (pow).doubleValue();
+				double im = 0.0;
+
+				double r = Math.pow(abs, re) /* * Math.exp(-im*arg)*/;
+				double ang = /* Math.log(abs)*im + */ arg * re;
+				Numbers Re = Numbers.createDouble(r*Math.cos(ang));
+				Numbers Im = Numbers.createDouble(r*Math.sin(ang));
+				return Numbers.createComplex(Re, Im);
+
+			
+			}
+		} else if (pow instanceof fi.euclides.model.math.Complex)
+		{
+// real ^ complex
+			double abs = Numbers.abs(root).doubleValue();
+			double arg = Math.atan2(Numbers.imag(root).doubleValue(), Numbers.real(root).doubleValue());
+			if(isRoot) pow = Numbers.div(Numbers.ONE, pow);
+			double re = Numbers.real(pow).doubleValue();
+			double im = Numbers.imag(pow).doubleValue();
+
+			double r = Math.pow(abs, re) * Math.exp(-im*arg);
+			double ang = Math.log(abs)*im + arg * re;
+			Numbers Re = Numbers.createDouble(r*Math.cos(ang));
+			Numbers Im = Numbers.createDouble(r*Math.sin(ang));
+			return Numbers.createComplex(Re, Im);
+		} else {		
+			double r = root.doubleValue();
+			double p    = pow.doubleValue();
+			if(isRoot) p = 1.0/p;
+			double result = Math.pow(r, p);
+			return Numbers.createDouble(result);
+		}
 	}
 
 	public String getSymbolicValue(Label l) {
