@@ -92,4 +92,7 @@ public class NumberIO implements NumberCodec, DataInput {
 		return Long.parseLong(readUTF());
 	}
 
+	public void writeUTF(String utf) {
+		output.add(utf);
+	}
 }

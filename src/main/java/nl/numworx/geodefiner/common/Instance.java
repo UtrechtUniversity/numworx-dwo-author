@@ -11,6 +11,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.uibinder.client.UiFactory;
+
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
@@ -33,6 +35,8 @@ import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
+import fi.euclides.proof.LabelDelegate;
+import fi.euclides.proof.LabelTester;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 
@@ -91,11 +95,56 @@ public abstract class Instance /*implements Observer*/ {
 		public void visitPunt(Punt p) {
 			if (!click && getTrack() == null && p.adapt(Label.class) != null) {
 				setTrack(new IntervalLabelTrack(p.adapt(Label.class), lastx, lasty));
+				setGravity(false);
 				return;
 			}
+			boolean gOff = isGOff(p);
 			super.visitPunt(p);
+			if (gOff && getTrack() != null) { setGravity(false); }
 		}
 		
+		boolean isGOff(Punt p ) {
+			Model m = getTracker().getModel();
+			return 	!click && 
+					getTrack() == null &&
+					freePunt(p) && 
+					( m.getO() == p || m.getU() == p);
+		}
+		
+		
+		boolean gravity;
+		private void saveGravity() {
+			Snapper snap = getTracker().adapt(Snapper.class);
+			gravity = snap.isGravity();
+		}
+		
+		private void restoreGravity() {
+			setGravity(gravity);
+		}
+		
+		private void setGravity(boolean gravity) {
+			Snapper snap = getTracker().adapt(Snapper.class);
+			snap.setGravity(gravity);
+		}
+
+		/* (non-Javadoc)
+		 * @see fi.euclides.event.SelectHandler#pointerPressed(fi.euclides.model.math.Numbers, fi.euclides.model.math.Numbers)
+		 */
+		@Override
+		public void pointerPressed(Numbers x, Numbers y) {
+			saveGravity();
+			super.pointerPressed(x, y);
+		}
+
+		/* (non-Javadoc)
+		 * @see fi.euclides.event.SelectHandler#pointerReleased(fi.euclides.model.math.Numbers, fi.euclides.model.math.Numbers)
+		 */
+		@Override
+		public void pointerReleased(Numbers x, Numbers y) {
+			super.pointerReleased(x, y);
+			restoreGravity();
+		}
+ 		
 	};
 	
 	protected ObjectMap launchData, state;
@@ -254,6 +303,7 @@ public abstract class Instance /*implements Observer*/ {
 
 	protected Map<String, Object> getState(Map<String, Object> map) {
 		Map<String, List<Object>> positions = new HashMap<String, List<Object>>();
+		Map<String, List<Object>> values = new HashMap<String, List<Object>>();
 		List<Destroyable> punten;
 		punten = new ArrayList<Destroyable> (viewer.getModel().getPunten());
 		punten.addAll(viewer.getModel().getLijnen());
@@ -273,7 +323,21 @@ public abstract class Instance /*implements Observer*/ {
 				} catch (IOException e) {
 				}
 			}
+			if(next instanceof Label && !"i".equals(name)) {
+				Label label = (Label) next;
+				String subkey = label.getSubKey();
+// Which values to save
+				if (FlipFlop.TYPE == subkey|| Const.TYPE == subkey) {
+				try { NumberIO io = new NumberIO();
+					label.value.writeNumber(io);
+					io.writeUTF(label.getString());
+					values.put(name, io.toList());
+				} catch (IOException e) {
+				}}
+			}
+			
 		}
+		map.put("values",  values);
 		map.put("positions", positions);
 		if(launchData != null) {
 		
@@ -335,9 +399,12 @@ public abstract class Instance /*implements Observer*/ {
 		
 		Grid grid = new Grid(viewer);
 		DefaultAdapter.getDefault(grid).put("$#@");
+		UIModel<?, ?> uimodel = uiModelFactory.build(grid);
+		uimodel.install();
 		m.add(grid);
 		
 		Label i = new Label();
+		DefaultAdapter.getDefault(i).put(State.INITIAL);
 	    i.setValue(Numbers.createComplex(Numbers.ZERO, Numbers.ONE));
 	    i.register(new Const());
 	    i.setString("i");
@@ -351,6 +418,7 @@ public abstract class Instance /*implements Observer*/ {
 	public void setState(Map<String, ?> state) {
 		if(state == null) state = Collections.emptyMap();
 		this.state = JSONUtilities.wrapMap(state);
+		setValues(this.state.getObjectMap("values"));
 		setPositions(this.state.getObjectMap("positions"));
 		setModelState(this.state.getObjectList("model"), this.state.getObjectList("toolbox"));
 		nagekeken = this.state.getBoolean("nagekeken", false);
@@ -358,6 +426,27 @@ public abstract class Instance /*implements Observer*/ {
 			viewer.getModel().executeDelay(); // essentieel.
 			fetchScore();
 		}
+	}
+
+	private void setValues(ObjectMap objectMap) {
+		if(objectMap == null || objectMap.isEmpty()) return;
+		for(Destroyable d : viewer.getModel().getLijnen()) {
+			String name = viewer.getMapper().toString(d);
+			if ( objectMap.containsKey(name) && d instanceof Label) {
+				Label l = (Label) d;
+				NumberIO io = new NumberIO(objectMap.getObjectList(name));
+				try {
+					Numbers v = io.readNumber();
+					l.setString(io.readUTF());
+					l.setValue(v);
+					if(l.registered instanceof FlipFlop) 
+						((FlipFlop) l.registered).test(l);
+				} catch (IOException e) {
+				}
+				
+			}
+		}
+		
 	}
 
 	public void update(Observable observable, Object arg) {

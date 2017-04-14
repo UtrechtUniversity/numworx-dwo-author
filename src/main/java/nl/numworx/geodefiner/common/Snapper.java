@@ -8,4 +8,7 @@ public abstract class Snapper {
 		this.gravity = gravity;
 	}
 
+	public boolean isGravity() {
+		return gravity;
+	}
 }

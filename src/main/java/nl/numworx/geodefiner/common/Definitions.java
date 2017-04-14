@@ -32,6 +32,7 @@ import fi.euclides.model.math.Numbers;
 import fi.euclides.expr.DestroyDependency;
 import fi.euclides.expr.InterpretException;
 import fi.euclides.expr.Lambda;
+import fi.euclides.openmath.LocusModelF;
 import fi.euclides.openmath.OMConstants;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.DefaultAdapter;
@@ -66,6 +67,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 	static final OMSymbol POLYGON = new OMSymbol("geodefiner","polygon");
 	static final OMSymbol TEXT   = new OMSymbol("geodefiner", "text");
 	static final OMSymbol INTERVAL = OMConstants.INTERVAL1_INTERVAL;
+	static final OMSymbol LIST_SELECTOR = OMConstants.LIST2_LIST_SELECTOR;
 	static final OMSymbol INT = new OMSymbol("calculus1", "int");
 	static final OMSymbol DEFINT = new OMSymbol("calculus1", "defint");
 	
@@ -102,7 +104,10 @@ public class Definitions implements Observer /*, ListModel*/ {
 						throw new RuntimeException("readonly");
 					if(cell >= 0) {
 						UIModel<?, ?> cellConfig = getElementAt(cell).config;
-						if(cellConfig != null) config = cellConfig.toMap();
+						if(cellConfig != null) {
+							unlink(fs); // BEFORE destroy, FIXME patch op patch? destroy doet depend[i] = null, is dat niet fout?
+							config = cellConfig.toMap();
+						}
 					}
 					destroy(fs, var.getName());
 					fs.destroy(); 
@@ -145,6 +150,9 @@ public class Definitions implements Observer /*, ListModel*/ {
 							p.destroy();
 							p = op.pointOn(p.getX(), p.getY());
 							model.add(p);
+							DefaultAdapter.getDefault(p).put(State.INITIAL);
+						} else {
+							DefaultAdapter.getDefault(p).put(State.INITIAL);
 						}
 					} else {
 						model.getSelect().clear();
@@ -253,30 +261,44 @@ public class Definitions implements Observer /*, ListModel*/ {
 					installConfig(new CELL(text, t3, var), config);
 					return;				
 				}
+				
+				if (LIST_SELECTOR.isSame(f) && oma.getElementAt(1) instanceof OMApplication ) {
+					OMApplication inner = (OMApplication) oma.getElementAt(1);
+					if(INTERVAL.isSame(inner.firstElement())) {
+						OMObject initValue = oma.getElementAt(2);
+						destroy(depend);
+						Label[] minmax = new Label[2];
+						expression.copy(inner, viewer.getMapper(), minmax);
+						Label l = viewer.getRegistered("..").define(minmax);
+						Label initLabel = (Label) expression.interpret(initValue, new Label(), viewer.getMapper());
+						Numbers min = minmax[0].value;
+						Numbers max = minmax[1].value;
+						Numbers init = initLabel.value;
+						l.setString(Numbers.toString(init));
+						l.setValue(init);
+						List<Destroyable> list = LocusModelF.varsOf(initValue, viewer.getMapper());
+						DestroyDependency observer = new DestroyDependency(l);
+						for(Observable observable: list) {
+							observable.addObserver(observer);
+						}
+						destroy(initLabel);
+						init = Numbers.div(Numbers.sub(init, min), Numbers.sub(max, min));
+						double frac = Math.min(1.0, Math.max(init.doubleValue(),0.0));
+						Numbers x = Numbers.createDouble(25 + frac * 50);
+						intervalTail(text, model, config, var, l, x);
+	// Marker: has initialvalue
+						DefaultAdapter.getDefault(l).put(State.INITIAL);
+						return;
+					}
+				}
+				
+				
 // $l := interval1.interval($a,$b)
 				if (INTERVAL.isSame(f)) {
 					LabelDelegate ld = viewer.getRegistered("..");
 					Label l = ld.define(depend);
-					Model m = model;
-// place at random
-					Punt x1 = m.buildPunt(Numbers.createInteger(25), Numbers.createInteger(50));
-					Punt x2 = new HorizontalPunt(Numbers.createInteger(75), x1.getY(), x1);
-					x1.setVisible(false);
-					x2.setVisible(false);
-					m.add(x2);
-					Segment s = m.buildSegment(new Punt[] { x1, x2 } );
-					PuntOp<?> x3 = s.pointOn(Numbers.createInteger(50), x1.getY());
-					x3.setFree(true);
-					m.add(x3);
-					x3.addObserver(l);
-					x1.addObserver(l);
-					x2.addObserver(l);
-					l.setP(x3);
-// FIXED NAMES
-					viewer.getMapper().rename(x1, var.getName() + "%min");
-					viewer.getMapper().rename(x2, var.getName() + "%max");
-					m.add(l);
-					installConfig(new CELL(text, l, var), config);
+					Numbers x = Numbers.createInteger(50);
+					intervalTail(text, model, config, var, l, x);
 					return;
 				}
 // $c := curve( $f, $f )
@@ -467,7 +489,32 @@ public class Definitions implements Observer /*, ListModel*/ {
 		}
 	}
 
-	private void destroy(Destroyable[] depend) {
+	private void intervalTail(String text, Model model, Map<String, ?> config,
+			OMVariable var, Label l, Numbers x) {
+		Model m = model;
+// place at random
+		Punt x1 = m.buildPunt(Numbers.createInteger(25), Numbers.createInteger(50));
+		Punt x2 = new HorizontalPunt(Numbers.createInteger(75), x1.getY(), x1);
+		x1.setVisible(false);
+		x2.setVisible(false);
+		m.add(x2);
+		Segment s = m.buildSegment(new Punt[] { x1, x2 } );
+		PuntOp<?> x3 = s.pointOn(x, x1.getY());
+		x3.setFree(true);
+		m.add(x3);
+		x3.addObserver(l);
+		x1.addObserver(l);
+		x2.addObserver(l);
+		l.setP(x3);
+// FIXED NAMES
+		viewer.getMapper().rename(x1, var.getName() + "%min");
+		viewer.getMapper().rename(x2, var.getName() + "%max");
+		m.add(l);
+		CELL cell = new CELL(text, l, var);
+		installConfig(cell, config);
+	}
+
+	private void destroy(Destroyable... depend) {
 		for (int i = 0; i < depend.length; i++) {
 			Destroyable destroyable = depend[i];
 			if (destroyable.getIndex() == 0) // only anonymous objects
