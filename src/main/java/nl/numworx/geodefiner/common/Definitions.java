@@ -155,11 +155,11 @@ public class Definitions implements Observer /*, ListModel*/ {
 							DefaultAdapter.getDefault(p).put(State.INITIAL);
 						}
 					} else {
-						model.getSelect().clear();
+						model.clearSelection();
 						model.toggle(arg0);
 						model.toggle(arg1);
 						p = model.buildPunt(Numbers.ZERO, Numbers.ZERO);
-						model.getSelect().clear();
+						model.clearSelection();
 						if ( p instanceof PuntOp2 && depend.length == 3)
 						{	PuntOp2 p2 = (PuntOp2)p;
 							Destroyable arg2 = depend[2];
