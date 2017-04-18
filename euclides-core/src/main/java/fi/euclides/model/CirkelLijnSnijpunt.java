@@ -4,12 +4,12 @@ import fi.euclides.model.math.Exact;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.IncidentHandler; // TODO deze methode verplaatsen
 
-public class CirkelLijnSnijpunt extends PuntOp2<Lijn,Cirkel> {
+public class CirkelLijnSnijpunt extends PuntOp2<Lijn,Rondje> {
 
 	public static final String TYPE = "Pcl";
 
-	public CirkelLijnSnijpunt(Lijn lijn, Cirkel cirkel, Numbers x, Numbers y) {
-		super(lijn, cirkel);
+	public CirkelLijnSnijpunt(Lijn lijn, Rondje o2, Numbers x, Numbers y) {
+		super(lijn, o2);
 		setXY(x,y);
 		setOther();		
 		recalc();
@@ -42,7 +42,7 @@ public class CirkelLijnSnijpunt extends PuntOp2<Lijn,Cirkel> {
 		
 	}
 
-	private void setOtherFromDepend(Cirkel d) {
+	private void setOtherFromDepend(Rondje d) {
 		Punt p[] = (Punt[])d.getDepend();
 		for (int i = 0; i < p.length; i++) {
 			if(IncidentHandler.incident(p[i], lijn1))
@@ -118,7 +118,7 @@ public class CirkelLijnSnijpunt extends PuntOp2<Lijn,Cirkel> {
 				Numbers.sub(x, Numbers.mul(hn, lijn1.getDXn())),
 				Numbers.sub(y, Numbers.mul(hn, lijn1.getDYn()))
 		);
-		setDefined(lijn1.contains(this));
+		setDefined(lijn1.contains(this) && lijn2.contains(this));
 	
 	}
 

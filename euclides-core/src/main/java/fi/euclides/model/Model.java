@@ -270,15 +270,15 @@ public class Model extends Observable implements Observer, NameMapper {
 			if(o1 instanceof Lijn && o2 instanceof Lijn) 
 			{
 				p = new SnijPunt((Lijn)o1,(Lijn)o2);
-			} else if(o1 instanceof Cirkel && o2 instanceof Cirkel)
+			} else if(o1 instanceof Rondje && o2 instanceof Rondje)
 			{
-				p = new CirkelSnijpunt( (Cirkel)o1, (Cirkel) o2, x, y);
-			} else if(o1 instanceof Lijn && o2 instanceof Cirkel)
+				p = new CirkelSnijpunt( (Rondje)o1, (Rondje) o2, x, y);
+			} else if(o1 instanceof Lijn && o2 instanceof Rondje)
 			{
-				p = new CirkelLijnSnijpunt( (Lijn)o1, (Cirkel)o2, x, y);
-			} else if(o2 instanceof Lijn && o1 instanceof Cirkel)
+				p = new CirkelLijnSnijpunt( (Lijn)o1, (Rondje)o2, x, y);
+			} else if(o2 instanceof Lijn && o1 instanceof Rondje)
 			{
-				p = new CirkelLijnSnijpunt( (Lijn)o2, (Cirkel)o1, x, y);
+				p = new CirkelLijnSnijpunt( (Lijn)o2, (Rondje)o1, x, y);
 			} else if(o1 instanceof Kegelsnede2 && o2 instanceof Lijn)
 			{
 				p = new SnijpuntLijn((Kegelsnede2)o1, (Lijn)o2, x, y);

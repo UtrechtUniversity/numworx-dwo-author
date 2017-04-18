@@ -163,7 +163,7 @@ abstract public class PuntOp2<D1 extends Destroyable, D2 extends Destroyable> ex
 	 * @param cirkel
 	 * @return
 	 */
-	public static boolean incident(Punt punt, Cirkel cirkel) {
+	public static boolean incident(Punt punt, Rondje cirkel) {
 		
 		if(cirkel.incident(punt) || punt.incident(cirkel))
 			return true;
@@ -211,7 +211,7 @@ abstract public class PuntOp2<D1 extends Destroyable, D2 extends Destroyable> ex
 	 * @param cirkel
 	 * @param op
 	 */
-	private static boolean middelpuntregel(Punt punt, Cirkel cirkel,
+	private static boolean middelpuntregel(Punt punt, Rondje cirkel,
 			final Destroyable op) {
 		if(op instanceof LoodLijn)
 		{

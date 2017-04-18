@@ -9,7 +9,7 @@ import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
-public class Cirkel extends Destroyable implements Observer, OpObject<Cirkel> {
+public class Cirkel extends Rondje implements Observer, OpObject<Cirkel> {
 
 	public static final String TYPE = "c";
 	private double x, y, d;
@@ -319,6 +319,11 @@ public class Cirkel extends Destroyable implements Observer, OpObject<Cirkel> {
 		}
 		Punt p1 = getCenter().getImage(mirror, this); p1.setVisible(false);
 		return new Destroyable[] { p1, new Cirkel(p1, getRadius(), getRadius2())};
+	}
+
+	@Override
+	boolean contains(Punt p) {
+		return true;
 	}
 	
 

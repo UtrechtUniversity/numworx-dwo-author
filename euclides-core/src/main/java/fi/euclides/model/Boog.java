@@ -8,7 +8,7 @@ import fi.euclides.model.math.Numbers;
 import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 
-public class Boog extends Destroyable implements OpObject<Boog> {
+public class Boog extends Rondje implements OpObject<Boog> {
 
 // Trapdoor voor SVG
 	public static Punt startOf(Boog b) {
@@ -169,6 +169,48 @@ public class Boog extends Destroyable implements OpObject<Boog> {
 	@Override
 	public boolean isDefined() {
 		return base.isDefined();
+	}
+
+	@Override
+	Punt getRadius() {
+		return base.getRadius();
+	}
+	@Override
+	Numbers getR2n() {
+		return base.getR2n();
+	}
+
+	@Override
+	boolean isr2c() {
+		return base.isr2c();
+	}
+
+	@Override
+	double getD() {
+		return base.getD();
+	}
+	@Override
+	boolean contains(Punt p) {
+		double lastx = p.getXd();
+		double lasty = p.getYd();
+		double r = getR();
+		double x = getCenter().getXd()-lastx;
+		double y = getCenter().getYd()-lasty;
+		double r2 = JMath.hypot(x,y);
+		double marge = 0.01;
+		boolean done = Math.abs(r2-r) < marge;
+		if(!done) return false;
+		double h = JMath.atan2(y, -x);
+		double s = getStart();
+		double l = length();
+		if(l >= 0) {
+			if(h < s) h += Math.PI * 2.0;
+			done = s <= h && h <= s+l;
+		} else {
+			if(h > s) h -= Math.PI * 2.0;
+			done = s+l <= h && h <= s;
+		}
+		return done;
 	}
 
 }

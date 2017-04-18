@@ -4,12 +4,12 @@ import fi.euclides.model.math.Exact;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.JMath;
 
-public class CirkelSnijpunt extends PuntOp2<Cirkel,Cirkel> {
+public class CirkelSnijpunt extends PuntOp2<Rondje,Rondje> {
 
 
 	public static final String TYPE = "Pcc";
 
-	public CirkelSnijpunt(Cirkel cirkel1, Cirkel lijn2, Numbers x, Numbers y) {
+	public CirkelSnijpunt(Rondje cirkel1, Rondje lijn2, Numbers x, Numbers y) {
 		super(cirkel1, lijn2);
 		setOther();
 		setXY(x,y);
@@ -100,7 +100,7 @@ public class CirkelSnijpunt extends PuntOp2<Cirkel,Cirkel> {
 		Numbers p2xn = Numbers.sub(x, Numbers.mul(h, dy));
 		Numbers p2yn = Numbers.add(y, Numbers.mul(h, dx));
 		setFusedXY(p1xn, p1yn, p2xn, p2yn);
-		
+		setDefined(isDefined() && lijn1.contains(this) && lijn2.contains(this));
 		//return new Coordinates(x+h*dy,y-h*dx,x-h*dy,y+h*dx);
 			
 
