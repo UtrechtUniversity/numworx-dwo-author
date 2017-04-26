@@ -17,10 +17,14 @@ import fi.euclides.util.Observable;
 
 public class List extends LabelDelegate implements Visitor {
 
-	private StringBuffer sb;
+	private StringBuilder sb;
 
-	private List() {
+	protected List() {
 		super("[]");
+	}
+
+	protected List(String string) {
+		super(string);
 	}
 
 	public static final List INSTANCE = new List();
@@ -35,37 +39,49 @@ public class List extends LabelDelegate implements Visitor {
 		if(arg == null)
 		{
 			Destroyable depend[] = l.getDepend();
-			sb = new StringBuffer();
+			sb = createBuffer();
 			for (int i = 0; i < depend.length; i++) {
 				depend[i].visit(this);
 			}
-			l.setString(sb.toString());
+			setString(l, sb);
 		}
 		
+	}
+
+	protected StringBuilder createBuffer() {
+		return new StringBuilder();
+	}
+
+	protected void setString(Label l, StringBuilder sb) {
+		l.setString(sb.toString());
 	}
 
 	public void visitLabel(Label label) {
 		sb.append(label.getString());
 	}
 
-	public void visitCirkel(Cirkel c) {
+	protected void appendName(Destroyable c) {
 		sb.append(getTracker().getMapper().toString(c));
+	}
+	
+	public void visitCirkel(Cirkel c) {
+		appendName(c);
 	}
 
 	public void visitLijn(Lijn l) {
-		sb.append(getTracker().getMapper().toString(l));
+		appendName(l);
 	}
 
 	public void visitMP(MP l) {
-		sb.append(getTracker().getMapper().toString(l));
+		appendName(l);
 	}
 
 	public void visitPunt(Punt p) {
-		sb.append(getTracker().getMapper().toString(p));
+		appendName(p);
 	}
 
 	public void visitSegment(Segment s) {
-		sb.append(getTracker().getMapper().toString(s));
+		appendName(s);
 	}
 
 	public void prepareDepend(Codec codec, Label label) throws IOException {

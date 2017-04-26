@@ -196,7 +196,7 @@ TOKEN : /* VAKKEN */
 TOKEN:
 {
   < GEODEFINER : ( "point" | "line" | "segment" | "text" | "circle" | "equals"
-                 | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd"
+                 | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd"|"rnq"
                  | "sgf" | "binomcdf" | "binompdf" | "invNorm"| "normalcdf" | "poissoncdf" | "poissonpdf") >
 | < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln"|"log"|"sec"|"csc"|"cot") >
 | < MAP : "map" >

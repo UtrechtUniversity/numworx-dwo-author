@@ -36,6 +36,7 @@ public class XXXAction extends AbstractAction implements Observer {
 		{ 
 			Icon icn = reduced(icon);
 			putValue(SMALL_ICON, icn);
+			putValue(LARGE_ICON_KEY, icn);
 			
 		} 
 		//putValue(SHORT_DESCRIPTION, "dit is een tooltip");

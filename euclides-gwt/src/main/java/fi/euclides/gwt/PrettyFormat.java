@@ -19,7 +19,7 @@ public class PrettyFormat extends DoubleFormat {
 	protected void setMaxDigits(int value) {
 		char ch = value < 0 ? '#' : '0';
 		value = Math.min(10, Math.abs(value));
-		String formule = "0.";
+		String formule = value != 0 ? "0." : "0";
 		for(int i = 0 ; i < value ; i++) formule += ch;
 		format = NumberFormat.getFormat(formule);
 	}
