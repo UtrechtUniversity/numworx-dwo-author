@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.euclides</groupId>
 	<artifactId>euclides-parent</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Euclides Multi module</name>
 	<modules>
@@ -46,6 +46,6 @@
 	</distributionManagement>
 
 	<scm>
-		<developerConnection>scm:svn:https://svn.science.uu.nl/repos/project.fisme.java/Euclides/euclides-parent/tags/0.0.2</developerConnection>
+		<developerConnection>scm:svn:https://svn.science.uu.nl/repos/project.fisme.java/Euclides/euclides-parent/trunk</developerConnection>
 	</scm>
 </project>
