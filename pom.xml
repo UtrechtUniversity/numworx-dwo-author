@@ -7,7 +7,7 @@
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<euclidesVersion>0.0.2-SNAPSHOT</euclidesVersion>
+		<euclidesVersion>0.0.2</euclidesVersion>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>nl.uu.fi.dwo.mobile</groupId>
 			<artifactId>interaction</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.3</version>
 		</dependency>
 
 		<dependency>
@@ -72,4 +72,7 @@
 			<url>https://repos.dwo.nl/artifactory/libs-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<scm>
+		<developerConnection>scm:svn:https://svn.science.uu.nl/repos/sci.velth101.numworx/geodefiner-common/trunk</developerConnection>
+	</scm>
 </project>
