@@ -25,6 +25,7 @@ public class Expression extends fi.euclides.openmath.Expression {
 		value.setTracker(tracker);
 		symbolmap.put("geodefiner.phi", value);
 		install(new Rnd(), tracker);
+		install(new Rnq(), tracker);
 		value = new Equals();
 		value.setTracker(tracker);
 		symbolmap.put("geodefiner.equals", value);

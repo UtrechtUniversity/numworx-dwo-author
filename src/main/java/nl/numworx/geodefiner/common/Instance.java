@@ -153,7 +153,11 @@ public abstract class Instance /*implements Observer*/ {
 	public void setLaunchData(Map<String, ? extends Object> launchData, Map<String, Number> random) {
 		this.launchData = JSONUtilities.wrapMap(launchData);
 		this.random = random;		
-		installPositions(); // Prepare O en e 
+		installLaunchData();
+	}
+
+	protected void installLaunchData() {
+		installPositions(); // of O,e 
 		createDefinitions();
 		installAxes();
 		installConfiguration();

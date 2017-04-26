@@ -47,7 +47,7 @@ import fi.euclides.util.Observer;
 public class Definitions implements Observer /*, ListModel*/ {
 
 	protected final List<CELL> delegate = new Vector<CELL>();
-	final private Tracker viewer;
+	protected final Tracker viewer;
 	public int readonly = 4;
 
 	public Definitions(Tracker viewer) {
@@ -103,18 +103,13 @@ public class Definitions implements Observer /*, ListModel*/ {
 					if(fs.getIndex() <= readonly)
 						throw new RuntimeException("readonly");
 					if(cell >= 0) {
-						UIModel<?, ?> cellConfig = getElementAt(cell).config;
-						if(cellConfig != null) {
-							unlink(fs); // BEFORE destroy, FIXME patch op patch? destroy doet depend[i] = null, is dat niet fout?
-							config = cellConfig.toMap();
-						}
+						config = createRemovedConfig(cell);
 					}
 					destroy(fs, var.getName());
 					fs.destroy(); 
 				} else {
 					if(cell >= 0) {
-						UIModel<?, ?> cellConfig = getElementAt(cell).config;
-						if(cellConfig != null) config = cellConfig.toMap();
+						config = createRemovedConfig(cell);
 						remove(cell);
 					}
 				}
@@ -487,6 +482,16 @@ public class Definitions implements Observer /*, ListModel*/ {
 				}
 			}
 		}
+	}
+
+	protected Map<String, Object> createRemovedConfig(int cell) {
+		UIModel<?, ?> cellConfig = getElementAt(cell).config;
+		Map<String, Object> config = null;
+		if(cellConfig != null) {
+			//unlink(fs)? nog nodig?
+			config = cellConfig.toMap();
+		}
+		return config;
 	}
 
 	private void intervalTail(String text, Model model, Map<String, ?> config,

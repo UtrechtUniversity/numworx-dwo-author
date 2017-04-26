@@ -9,6 +9,7 @@ public class CELL {
 	public Destroyable item;
 	public UIModel<?, ?> config;
 	public final String var;
+	public Object extra;
 	
 	public CELL(String text, Destroyable item, OMVariable var) {
 		this(text, item, var.getName());
