@@ -19,6 +19,7 @@ public class TextModel extends ColorModel<Label> {
 	Font  font  = fi.wiskopdr.WiskOpdr.tekstFont; // bijvoorbeeld.
 	private float dx,dy;
 	Boolean alwaysF;
+	Boolean herleid;
 
 	@Override
 	public void install(Label item) {

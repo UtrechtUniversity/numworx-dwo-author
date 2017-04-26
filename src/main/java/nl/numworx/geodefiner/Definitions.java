@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner;
 
+import java.util.Collections;
 import java.util.EventListener;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -24,6 +25,7 @@ import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.TokenMgrError;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.util.Observer;
 
@@ -57,6 +59,12 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
 		int s = getSize();
 		super.addElement(element);
 		fireIntervalAdded(this, s, s);
+	}
+	
+	private void addElement(CELL element, int pos) {
+		int s = getSize();
+		super.addElement(element);
+		fireIntervalAdded(this, s, pos);
 	}
 
 	@Override
@@ -250,13 +258,29 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
 	}
 
 	private UIModelFactory factory;
+	
+	interface PosConvert { int to(int from); }
+	PosConvert ps = (i) -> (i);
+	
+	@Override
+	protected Map<String, Object> createRemovedConfig(int cell) {
+		Map<String, Object> config = super.createRemovedConfig(cell);
+		if(config == null) config = Collections.singletonMap("list.position", ps.to(cell));
+		else config.put("list.position", ps.to(cell));
+		return config;
+	}
 
 	protected void installConfig(CELL cell, Map<String, ?> config, String name) {
+		int s = getSize();
 		if(config != null && !config.isEmpty()) {
 			ObjectMap cellConfig = JSONUtilities.wrapMap(config);
 			cell.config = factory.build(cell.item);
 			cell.config.fromMap(cellConfig);
 			cell.config.install();
+			if(cellConfig.containsKey("list.position"))
+				cell.extra = cellConfig.getInt("list.position");
+			else 
+				cell.extra = null;
 		} else {
 			if(cell.item instanceof Label) {
 				Label label = (Label)cell.item;

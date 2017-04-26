@@ -35,8 +35,8 @@ public class PointModel extends ColorModel<Punt> implements UIModel<Punt, UIEdit
 	
 	public void fromMap(ObjectMap map) {
 		super.fromMap(map);
-		size  = map.getInt("size");
-		type  = PointType.valueOf( map.getString("type"));
+		if(map.containsKey("size")) size  = map.getInt("size");
+		if(map.containsKey("type")) type  = PointType.valueOf( map.getString("type"));
 		rigid = map.getBoolean("rigid", true);
 	}
 	

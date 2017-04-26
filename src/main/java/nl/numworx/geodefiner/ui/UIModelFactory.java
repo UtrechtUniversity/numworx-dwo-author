@@ -32,7 +32,12 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 	}
 	
 	public void visitPunt(Punt p) {
-		model = new PointModel().init(p);
+		if(p == tracker.getModel().getO())
+			model = new OModel().init(p);
+		else if (p == tracker.getModel().getU())
+			model = new UModel().init(p);
+		else
+			model = new PointModel().init(p);
 	}
 
 	public void visitLijn(Lijn l) {

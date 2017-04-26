@@ -15,13 +15,13 @@ import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.Messages;
 
 @SuppressWarnings("serial")
-public class PointPane extends ColorPane<PointModel> {
+class PointPane<T extends PointModel> extends ColorPane<T> {
 
 	private JComboBox<PointType> type;
 	private JFormattedTextField sizeField;
 	private JCheckBox  rigid;
 	
-	PointPane(PointModel model) {
+	PointPane(T model) {
 		super(model);
 		type = new JComboBox<PointType>(PointType.values());
 		type.setSelectedItem(model.type);

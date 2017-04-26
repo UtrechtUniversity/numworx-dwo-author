@@ -351,6 +351,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			if(cls == Expression.class) return (T) expression;
 			if(cls == Randomizer.class) return (T) randomizer;
 			if(cls == AbstractViewer.class) return (T) this;
+			if(cls == Component.class) return (T) content;
 			return super.adapt(cls);
 		}
 
@@ -853,6 +854,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	{
 		viewer = new InstanceViewer();
 		getViewer().expression = new nl.numworx.geodefiner.common.math.Expression(viewer); // Inject!!! 
+		getViewer().expression.symbolmap.put("list1.list", new HerleidList(viewer));
+		
 		definitions = new Definitions(viewer);
 		uiModelFactory = new UIModelFactory(viewer);
 		tiptest = viewer.getHitTester().copy();
@@ -931,7 +934,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void destroy() {
-		getViewer().getModel().destroy();
+		getViewer().getModel().destroyAll();
 	}
 
 	
@@ -973,7 +976,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void reset() {
-		
+		stop();
+		destroy();
+		init();
+		installLaunchData();
+		start();
 	}
 
 	public void setAssessmentMode(AssessmentMode mode) {
@@ -1071,12 +1078,15 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public void start() {
 		startToolbox();
 		super.start();
+		getDefinitions().readonly = viewer.getModel().getIndex();
 	}
 
 	void startToolbox() {
 		ToolboxPanel p = new ToolboxPanel();
 		p.viewer = getViewer();
 		p.selector = selector;
+		p.resetter.instance = this;
+		p.formule.definitions = getDefinitions();
 		p.setToolbox(toolbox);
 		p.fromList(launchData.getObjectList("toolbox"));
 	}	

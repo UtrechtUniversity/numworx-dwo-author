@@ -30,6 +30,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 	boolean visible;
 	Label visibility = new Label();
 	Tracker tracker;
+	Integer zOrder;
 	
 	public  void setVisible(boolean visible) {
 		this.visible = visible;
@@ -90,7 +91,8 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 	}
 
 	public void fromMap(ObjectMap map) {
-		color = new Color( map.getInt("color"), true);
+		if(map.containsKey("color"))
+			color = new Color( map.getInt("color"), true);
 		visible = map.getBoolean("visible", true);
 		visibility.setString(map.getString("visibility"));
 	}

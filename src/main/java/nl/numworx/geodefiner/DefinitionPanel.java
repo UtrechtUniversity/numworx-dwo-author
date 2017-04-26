@@ -18,13 +18,14 @@ import javax.swing.TransferHandler;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import nl.numworx.geodefiner.Definitions.PosConvert;
 import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.common.Randomizer;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.model.AbstractViewer;
 
 @SuppressWarnings("serial")
-class DefinitionPanel extends JPanel implements PropertyChangeListener {
+class DefinitionPanel extends JPanel implements PropertyChangeListener, PosConvert {
 
 	Box list;
 	AbstractViewer viewer;
@@ -61,12 +62,17 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 
 		public void intervalAdded(ListDataEvent e) {
 			int i0 = e.getIndex0();
+
 			CELL cell = model.getElementAt(i0);
+			Object i1 = cell.extra;
 			CellItem cellItem = new CellItem(cell,viewer, i0);
 			cellItem.addPropertyChangeListener("item", DefinitionPanel.this);
 // where to start?
 			cellItem.center.formuleVak.geefKind1().addMouseListener(new Click(cellItem));
-			list.add( cellItem);
+			if(i1 instanceof Number) {
+			list.add(cellItem, ((Number)i1).intValue());
+			} else 
+				list.add(cellItem);
 			DefinitionPanel.this.validate();
 		}
 
@@ -114,6 +120,7 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 		setBackground(Color.white);
 		list = Box.createVerticalBox();
 		model.addListDataListener(updater);
+		model.ps = this;
 		add(new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
 	}
 
@@ -168,5 +175,16 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener {
 			}
 		}
 		repaint();
+	}
+
+	@Override
+	public int to(int from) {
+		CELL m = model.getElementAt(from);
+		int size = list.getComponentCount();
+		for(int i=0; i < size; i++) {
+			CellItem item = (CellItem) list.getComponent(i);
+			if(item.cell == m) return i;
+		}
+		return from;
 	}
 }

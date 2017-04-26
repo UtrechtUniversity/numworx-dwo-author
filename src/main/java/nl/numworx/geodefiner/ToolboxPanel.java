@@ -3,34 +3,55 @@ package nl.numworx.geodefiner;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.TransferHandler;
 
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
+import fi.euclides.event.AddBissectriceHandler;
+import fi.euclides.event.AddBoogHandler;
 import fi.euclides.event.AddCirkelHandler;
+import fi.euclides.event.AddFocusHandler;
+import fi.euclides.event.AddKegelsnedeHandler;
 import fi.euclides.event.AddLijnHandler;
+import fi.euclides.event.AddLocusHandler;
+import fi.euclides.event.AddLoodLijnHandler;
+import fi.euclides.event.AddMiddelPuntHandler;
+import fi.euclides.event.AddParallelHandler;
+import fi.euclides.event.AddPoollijnHandler;
 import fi.euclides.event.AddPuntHandler;
+import fi.euclides.event.AddRaakLijnHandler;
+import fi.euclides.event.AddSpiegelHandler;
 import fi.euclides.event.AddTriangleHandler2;
 import fi.euclides.event.DestroyHandler;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.swing.CirkelAction;
+import fi.euclides.swing.PanHandler;
 import fi.euclides.swing.PuntAction;
+import fi.euclides.swing.TrailAction;
 import fi.euclides.util.Messages;
 import fi.euclides.swing.XXXAction;
 
@@ -44,13 +65,55 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 		return icon;
 	}
 	
-	JCheckBox createCheckBox(String label, String name) {
-		Icon icon = getIcon(name);
+	public class ToolPanel extends JPanel {
+		ToolPanel(String name) {
+			super(new FlowLayout(FlowLayout.LEADING,0,0));
+			setBackground(Color.white);
+			setName(name);
+			setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 10));
+			TransferHandler newHandler = new TransferHandler("pos");
+			this.setTransferHandler(newHandler);
+			addMouseListener(new MouseAdapter(){
+				            public void mousePressed(MouseEvent e){
+				                ToolPanel  button = (ToolPanel)e.getSource();
+				                TransferHandler handle = button.getTransferHandler();
+				                handle.exportAsDrag(button, e, TransferHandler.COPY);
+				            }
+				        });
+		}
+
+		public String getPos() {
+			return getName();
+		}
+		public void setPos(String var) {
+			System.out.println("setPos " + var);
+			if(var.equals(getPos())) return;
+			Container parent = getParent();
+			int cnt = parent.getComponentCount();
+			int s = cnt, d = 0;
+			Component c = null;
+			for(int i = 0; i < cnt; i++) {
+				ToolPanel item = (ToolPanel) parent.getComponent(i);
+				if(item == this) s = i;
+				if(item.getPos().equals(var)) { c = item; d = i; }
+			}
+			parent.remove(d);
+			parent.add(c, s);
+			parent.invalidate();
+			parent.validate();
+			parent.repaint();
+
+		}
+	}
+	
+	JComponent createCheckBox(String label, Icon icon) {
 		JCheckBox check = new JCheckBox(label, icon);
 		check.setSelectedIcon(selectedIcon(icon));
 		check.addItemListener(this);
 		boxes.add(check);
-		return check;
+		ToolPanel panel = new ToolPanel(label);
+		panel.add(check);
+		return panel;
 	}
 	
 	private Icon selectedIcon(final Icon icon) {
@@ -81,6 +144,9 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 	void createActions() {
 		actions.clear();
 		actions.add(new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer));
+		XXXAction xaction=new XXXAction(Messages.getString("Euclides.41"), null, new PanHandler(Messages.getString("Euclides.41"), viewer), viewer);
+		xaction.cursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
+		actions.add(xaction);
 		actions.add(new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddPuntHandler(),viewer));
 		actions.add(new XXXAction(Messages.getString("Euclides.50"), "/line.png", new AddLijnHandler(AddLijnHandler.LINE),viewer));
 		actions.add(new XXXAction(Messages.getString("Euclides.48"), "/segment.png", new AddLijnHandler(AddLijnHandler.SEGMENT),viewer));
@@ -88,23 +154,43 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 		actions.add(new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer));
 
 		actions.add(new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new DestroyHandler(),viewer));
-	
+
+		actions.add(new XXXAction(Messages.getString("Euclides.49"), "/ray.png", new AddLijnHandler(AddLijnHandler.RAY),viewer));
+		actions.add(new XXXAction("Boog", "/angle.png", new AddBoogHandler("Boog"),viewer));
+		actions.add(new XXXAction(Messages.getString("Euclides.54"), "/midpoint.png", new AddMiddelPuntHandler(),viewer));
+		actions.add(new XXXAction(Messages.getString("Euclides.56"), "/plumb.png", new AddLoodLijnHandler(),viewer));
+		actions.add(new XXXAction(Messages.getString("Euclides.58"), "/parallel.png", new AddParallelHandler(),viewer));
+		actions.add(new XXXAction(Messages.getString("Euclides.60"), "/bissectrice.png", new AddBissectriceHandler(),viewer));
+		actions.add(new XXXAction(Messages.getString("Euclides.62"), "/mirror.png", new AddSpiegelHandler(), viewer));
+		actions.add(new XXXAction("Kegelsnede", "/quadric.png", new AddKegelsnedeHandler("Kegelsnede"), viewer));
+		actions.add(new XXXAction("Brandpunt", "/quadric.png", new AddFocusHandler(), viewer));
+		actions.add(new XXXAction("Meetkundige plaats", "/objecttracker.png", new AddLocusHandler("Meetkundige plaats"), viewer));
+		actions.add(new XXXAction("Raaklijn", "/line.png", new AddRaakLijnHandler(), viewer));
+		actions.add(new XXXAction("Poollijn", "/line.png", new AddPoollijnHandler(), viewer));
+
+		actions.add(new XXXAction("Definitie", "/formuleknop.gif", formule, viewer));
+
+		actions.add(new TrailAction(Messages.getString("Euclides.44"), viewer)); //$NON-NLS-1$
+
+		actions.add(new XXXAction("Reset", "/reseticon.gif", resetter, viewer));
+		
+		
+		for(Action action: actions) {
+			vbox.add(createCheckBox(action));
+		}
 	}
 	
 	ToolboxPanel() {
 		super(new BorderLayout());
 		setName("Toolbox");
-		Box vbox = Box.createVerticalBox();		
+		vbox = Box.createVerticalBox();		
 		add(new JScrollPane(vbox));
+	}
 
-		vbox.add( createCheckBox(Messages.getString("Euclides.35"), "/move.png"));
-		vbox.add( createCheckBox(Messages.getString("Euclides.46"), "/point.png"));
-		vbox.add( createCheckBox(Messages.getString("Euclides.50"), "/line.png"));
-		vbox.add( createCheckBox(Messages.getString("Euclides.48"), "/segment.png"));
-		vbox.add( createCheckBox("Driehoek", "/triangle.png"));
-		vbox.add( createCheckBox(Messages.getString("Euclides.52"), "/circle.png"));
-
-		vbox.add( createCheckBox(Messages.getString("Euclides.37"), "/delete.png"));
+	private Component createCheckBox(Action action) {
+		Icon icon = (Icon) action.getValue(Action.LARGE_ICON_KEY);
+		String name = (String) action.getValue(Action.NAME);
+		return createCheckBox(name, icon);
 	}
 
 	public JToolBar getToolbox() {
@@ -118,6 +204,10 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 
 	boolean hold = false;
 	SelectHandler selector = new SelectHandler();
+	ResetHandler  resetter = new ResetHandler("Reset");
+	FormuleHandler formule = new FormuleHandler("Definitie");
+	
+	private Box vbox;
 	public void itemStateChanged(ItemEvent e) {
 		if(!hold)
 			insertActions();
