@@ -54,6 +54,7 @@ public class List extends LabelDelegate implements Visitor {
 
 	protected void setString(Label l, StringBuilder sb) {
 		l.setString(sb.toString());
+		l.notifyObservers();
 	}
 
 	public void visitLabel(Label label) {
