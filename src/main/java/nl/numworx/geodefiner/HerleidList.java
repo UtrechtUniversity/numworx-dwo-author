@@ -1,12 +1,15 @@
 package nl.numworx.geodefiner;
 
-import java.io.IOException;
-
+import nl.numworx.geodefiner.common.CELL;
+import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.ui.TextModel;
 import fi.euclides.event.Tracker;
 import fi.euclides.expr.List;
 import fi.euclides.model.Label;
 import fi.euclides.util.Observable;
-import fi.wiskopdr.expressies.*;
+import fi.wiskopdr.expressies.Algebra;
+import fi.wiskopdr.expressies.Expressie;
+import fi.wiskopdr.formuleobjects.FormuleParser;
 
 public class HerleidList extends List {
 
@@ -26,11 +29,16 @@ public class HerleidList extends List {
 	protected StringBuilder createBuffer() {
 		return new StringBuilder("$f");
 	}
-
+	
 	protected void setString(Label l, StringBuilder sb) {
+		if(normal(l)) {
+			l.setString(sb.substring(2));
+			l.notifyObservers();
+			return;
+		}
 		sb.append("@");
 		String s1 = sb.toString();
-		Expressie e1 = fi.wiskopdr.FormuleParser.geefExpressie(s1);
+		Expressie e1 = FormuleParser.geefExpressie(s1);
 		if(e1!=null)
 		{	
 			e1 = Algebra.herleidMild(e1, true);
@@ -41,6 +49,16 @@ public class HerleidList extends List {
 			sb.setLength(sb.length()-1);
 		}
 		super.setString(l, sb);
+	}
+
+	private boolean normal(Label l) {
+		CELL c = l.adapt(CELL.class);
+		if(c == null) return true;
+		UIModel<?, ?> model = c.config;
+		if(model instanceof TextModel) {
+			return !((TextModel) model).isHerleid();
+		}
+		return true;
 	}
 
 }

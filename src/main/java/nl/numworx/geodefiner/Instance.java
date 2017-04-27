@@ -366,6 +366,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		@Override
 		public void drawAxes() {
+			if(getModel().getLijnen().size() < 3) return;
 			Destroyable grid = getModel().getLijnen().elementAt(2);
 			if(grid.isVisible()) grid.visit(this);
 // draw grid

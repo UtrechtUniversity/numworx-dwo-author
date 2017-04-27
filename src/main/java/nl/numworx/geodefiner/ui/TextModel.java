@@ -21,6 +21,15 @@ public class TextModel extends ColorModel<Label> {
 	Boolean alwaysF;
 	Boolean herleid;
 
+	public boolean isAlwaysF() {
+		return Boolean.TRUE.equals(alwaysF);
+	}
+
+	public boolean isHerleid() {
+		return isAlwaysF() && Boolean.TRUE.equals(herleid);
+	}
+	
+	
 	@Override
 	public void install(Label item) {
 		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
@@ -57,8 +66,10 @@ public class TextModel extends ColorModel<Label> {
 		Map<String, Object> map = super.toMap();
 		map.put("align", align.name());
 		map.put("font", Collections.singletonMap("size", font.getSize()));
-		if(Boolean.TRUE.equals(alwaysF))
+		if(isAlwaysF())
 			map.put("alwaysF", Boolean.TRUE);
+		if(isHerleid())
+			map.put("herleid", Boolean.TRUE);
 		Punt p = item != null ? item.getP() : null;
 		if(p instanceof Volgpunt) {
 			map.put("dx", ((Volgpunt) p).getDx().doubleValue());
@@ -89,6 +100,7 @@ public class TextModel extends ColorModel<Label> {
 			dy = (float)map.getDouble("dy");
 		}
 		alwaysF = Boolean.valueOf(map.getBoolean("alwaysF", false));
+		herleid = Boolean.valueOf(map.getBoolean("herleid", false));
 		super.fromMap(map);
 	}
 

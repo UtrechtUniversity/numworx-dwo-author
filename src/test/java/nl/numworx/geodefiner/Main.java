@@ -24,6 +24,7 @@ import org.cbook.cbookif.rm.ResourceManager;
 import org.json.simple.parser.ParseException;
 
 import cbookeditor.CBookEditor;
+import fi.wiskopdr.WiskOpdr;
 
 public class Main {
 
@@ -32,6 +33,11 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		Locale.setDefault(new Locale("nl")); // define your locale here 
+		
+// Alleen met cbookeditor
+		WiskOpdr.applet = new WiskOpdr();
+		WiskOpdr.dwo_env = "test";
+
 		appcontext = new AppContext();
 		CBookService service = new ServiceImpl();
 

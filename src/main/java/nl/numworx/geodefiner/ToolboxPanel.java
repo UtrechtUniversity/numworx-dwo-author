@@ -47,6 +47,10 @@ import fi.euclides.event.AddSpiegelHandler;
 import fi.euclides.event.AddTriangleHandler2;
 import fi.euclides.event.DestroyHandler;
 import fi.euclides.event.SelectHandler;
+import fi.euclides.proof.AfstandHandler;
+import fi.euclides.proof.HoekHandler;
+import fi.euclides.proof.OppHandler;
+import fi.euclides.proof.VectorHandler;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.swing.CirkelAction;
 import fi.euclides.swing.PanHandler;
@@ -168,11 +172,29 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 		actions.add(new XXXAction("Raaklijn", "/line.png", new AddRaakLijnHandler(), viewer));
 		actions.add(new XXXAction("Poollijn", "/line.png", new AddPoollijnHandler(), viewer));
 
+/*			case 19:
+				btn = newBtn(url + "/segment.png", new AfstandHandler("lengte"), tracker); break;
+			case 20:
+				btn = newBtn(url + "/triangle.png", new OppHandler("oppervlakte"), tracker); break;
+			case 21:
+				btn = newBtn(url + "/angle.png", new HoekHandler("hoek"), tracker); break;
+			case 22:
+				btn = newBtn(url + "/ray.png", new VectorHandler("vector"), tracker); break;
+
+	*/	
+		actions.add(new XXXAction(Messages.getString("Euclides.88"), "/distance.png", new AfstandHandler(Messages.getString("Euclides.90")), viewer));
+		actions.add(new XXXAction(Messages.getString("Euclides.91"), "/area.png", new OppHandler(Messages.getString("Euclides.93")), viewer));
+		actions.add(new XXXAction(Messages.getString("Euclides.85"), "/angle.png", new HoekHandler(Messages.getString("Euclides.85")), viewer));
+		actions.add(new XXXAction("Vector", "/ray.png", new VectorHandler("Vector"), viewer));
+		
+		
 		actions.add(new XXXAction("Definitie", "/formuleknop.gif", formule, viewer));
 
 		actions.add(new TrailAction(Messages.getString("Euclides.44"), viewer)); //$NON-NLS-1$
 
 		actions.add(new XXXAction("Reset", "/reseticon.gif", resetter, viewer));
+
+		
 		
 		
 		for(Action action: actions) {

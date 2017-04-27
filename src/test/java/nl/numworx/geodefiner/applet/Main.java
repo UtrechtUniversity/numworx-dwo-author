@@ -34,6 +34,7 @@ public class Main extends JApplet implements CBookContext, Constants, CBookEvent
 		
 		WiskOpdr wiskopdr = new WiskOpdr();
 		WiskOpdr.applet = wiskopdr;
+		WiskOpdr.dwo_env = "test";
 		wiskopdr.setStub(this);
 		
 // request some sort of identifier.

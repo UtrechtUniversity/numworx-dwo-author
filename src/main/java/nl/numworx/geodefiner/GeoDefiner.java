@@ -26,11 +26,11 @@ public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet
 
 	private static final long serialVersionUID = -8167425499542355350L;
 
+	public static final boolean isExperimental;
+	
 	static {
 //		Popcorn.map = new SwingSymbols();
-// FIXME Alleen met cbookeditor, verplaatsen naar Main en applet.Main
-		if(WiskOpdr.applet == null)
-			WiskOpdr.applet = new WiskOpdr();
+		isExperimental = WiskOpdr.isExperimental();
 		Numbers.setFactory(IntegerFactory.INSTANCE);
 	}
 		

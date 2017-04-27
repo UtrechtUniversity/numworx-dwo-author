@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import fi.euclides.util.Messages;
+import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.common.Align;
 
 public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon, ItemListener {
@@ -29,7 +30,7 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 	JLabel sampleLabel;
 	JPanel preview = new JPanel();
 	JFormattedTextField fontSize;
-	JCheckBox alwaysF;
+	JCheckBox alwaysF, herleid;
 	
 	public TextPane(T model) {
 		super(model);
@@ -55,7 +56,17 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 			
 		});
 		alwaysF = new JCheckBox(Messages.getString("TextPane.1"));
-		alwaysF.setSelected(Boolean.TRUE.equals(model.alwaysF));
+		alwaysF.setSelected(model.isAlwaysF());
+		herleid = new JCheckBox(Messages.getString("TextPane.5"));
+		herleid.setSelected(model.isHerleid());
+		herleid.setVisible(model.isAlwaysF());
+		alwaysF.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				herleid.setVisible(alwaysF.isSelected());
+			}
+		});
 		chooser.setPreviewPanel(preview);
 		add(Box.createVerticalStrut(10));
 		Box hbox = Box.createHorizontalBox();
@@ -72,6 +83,8 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 		hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("TextPane.4")));
 		hbox.add(alwaysF);
+		if(GeoDefiner.isExperimental)
+			hbox.add(herleid);
 		hbox.add(Box.createGlue());
 		add(hbox);
 	}
@@ -85,6 +98,7 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 			size =	((Number) value).floatValue();
 		model.font = model.font.deriveFont(size);
 		model.alwaysF = Boolean.valueOf(alwaysF.isSelected());
+		model.herleid = Boolean.valueOf(herleid.isSelected());
 		super.commit();
 	}
 	public void paintIcon(Component c, Graphics g, int x, int y) {
