@@ -25,7 +25,7 @@ public class AddBissectriceHandler extends EventHandler {
 	 * @see euclides.event.EventHandler#command()
 	 */
 	public void command() {
-		final Vector select = getModel().getSelect();
+		final Vector<?> select = getModel().getSelect();
 		state = select.size();
 		switch(state) {
 		case 3: 
@@ -36,7 +36,10 @@ public class AddBissectriceHandler extends EventHandler {
 				if(o2 instanceof Punt)
 				{
 					p2 = (Punt) o2;
-					createTrack();
+					if(select.firstElement() instanceof Punt) {
+						p1 = (Punt) select.firstElement();
+						createTrack(); // uses p1 and p2
+					}
 				} else {
 					state = 0;
 				}
