@@ -1,7 +1,10 @@
 package nl.numworx.geodefiner.common;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import nl.numworx.geodefiner.common.CELL;
@@ -16,6 +19,7 @@ import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Groep;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
 import fi.euclides.model.Locus;
@@ -70,6 +74,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 	static final OMSymbol LIST_SELECTOR = OMConstants.LIST2_LIST_SELECTOR;
 	static final OMSymbol INT = new OMSymbol("calculus1", "int");
 	static final OMSymbol DEFINT = new OMSymbol("calculus1", "defint");
+	static final OMSymbol MAP = OMConstants.LIST1_MAP;
 	
 	private fi.euclides.openmath.Expression expression;
 		
@@ -205,21 +210,24 @@ public class Definitions implements Observer /*, ListModel*/ {
 					return;
 				}
 // $t := text("text", $P)
-				if(TEXT.isSame(f)) {
-					Destroyable dp = depend[1];
-					if(dp instanceof Label) {
-						dp = ((Label)dp).getP();
+				if(TEXT.isSame(f)) {				
+					Destroyable dp;
+					if(depend.length == 1)
+						dp = null;
+					else {
+						dp = depend[1];
+						if(dp instanceof Label) {
+							dp = ((Label)dp).getP();
+						}
 					}
 					Punt  p = (Punt) dp;
 					Label t = (Label) depend[0]; // "text", ["x=",$x]  FIXME if label is defined make indirection
 					if(t.getIndex() > 0) return; // FIXME
 // t = text("label", label) en dan destroy label
-					if(dp != depend[1])
+					if(dp != null && dp != depend[1])
 					{
 						depend[1].addObserver(new DestroyDependency(t));
-					}
-					
-					
+					}			
 // "te{x}t" -> [ "te",x,"t" ]
 					if( "".equals(t.getSubKey())) {
 						String plain = t.getString();
@@ -237,7 +245,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 							}
 						}
 					}
-					t.setP(new Volgpunt(p));
+					if(p != null) t.setP(new Volgpunt(p));
 					
 					model.add(t);
 					installConfig(new CELL(text, t, var), config);
@@ -256,7 +264,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					installConfig(new CELL(text, t3, var), config);
 					return;				
 				}
-				
+// $l =: list_selector($a .. $b, $i )				
 				if (LIST_SELECTOR.isSame(f) && oma.getElementAt(1) instanceof OMApplication ) {
 					OMApplication inner = (OMApplication) oma.getElementAt(1);
 					if(INTERVAL.isSame(inner.firstElement())) {
@@ -286,8 +294,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 						return;
 					}
 				}
-				
-				
+							
 // $l := interval1.interval($a,$b)
 				if (INTERVAL.isSame(f)) {
 					LabelDelegate ld = viewer.getRegistered("..");
@@ -333,7 +340,17 @@ public class Definitions implements Observer /*, ListModel*/ {
 				    model.add(locus);
 					installConfig(new CELL(text, locus, var), config);
 					return;
-				} 
+				}
+				if(MAP.isSame(f)) {
+					Groep groep = groupOf(depend);
+					model.add(groep);
+					installConfig(new CELL(text, groep, var), config);
+					return;
+				}
+				
+				
+				
+				
 				destroy(depend);
 // $w := 1+2
 				}
@@ -484,6 +501,11 @@ public class Definitions implements Observer /*, ListModel*/ {
 		}
 	}
 
+	private Groep groupOf(Destroyable[] depend) {
+		// TODO Auto-generated method stub
+		return new GroupOf(depend, expression, viewer);
+	}
+
 	protected Map<String, Object> createRemovedConfig(int cell) {
 		UIModel<?, ?> cellConfig = getElementAt(cell).config;
 		Map<String, Object> config = null;
@@ -533,6 +555,21 @@ public class Definitions implements Observer /*, ListModel*/ {
 		addElement(c);
 	}
 
+	
+	// geodefiner1
+	static final Collection<String> GEODEFINER1 =
+			new TreeSet<String> (
+			Arrays.asList(
+					POINT.getName(), 
+					LINE.getName(), 
+					SEGMENT.getName(), 
+					POLYGON.getName(), 
+					ARC.getName(), 
+					CIRCLE.getName(), 
+					CURVE.getName(),
+					TEXT.getName()));
+	
+	
 	protected boolean isYFX(Label f) {
 		boolean typeOk = f.getSubKey().equals(Lambda.TYPE);
 		if(typeOk) {
@@ -542,6 +579,13 @@ public class Definitions implements Observer /*, ListModel*/ {
 			}
 			if(obj instanceof OMApplication) {
 				obj = ((OMApplication) obj).firstElement();
+			}
+			if (obj instanceof OMSymbol) {
+				String cd = ((OMSymbol) obj).getCd();
+				String name = ((OMSymbol) obj).getName();
+				if("geodefiner".equals(cd)) {
+					return !GEODEFINER1.contains(name);
+				}
 			}
 			// symbol, variable, float int.
 		}
