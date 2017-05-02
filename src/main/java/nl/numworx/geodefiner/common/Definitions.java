@@ -246,6 +246,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 						}
 					}
 					if(p != null) t.setP(new Volgpunt(p));
+					else t.getP().setXY(30, 30);
 					
 					model.add(t);
 					installConfig(new CELL(text, t, var), config);
