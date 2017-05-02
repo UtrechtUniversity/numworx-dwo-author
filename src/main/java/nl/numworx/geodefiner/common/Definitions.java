@@ -62,14 +62,14 @@ public class Definitions implements Observer /*, ListModel*/ {
 		delegate.setTracker(viewer);
 		expression.put(INTERVAL, delegate);
 	}
-	static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
-	static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");
-	static final OMSymbol CIRCLE = new OMSymbol("geodefiner", "circle");
-	static final OMSymbol ARC    = new OMSymbol("geodefiner", "arc");
-	static final OMSymbol SEGMENT = new OMSymbol("geodefiner", "segment");
-	static final OMSymbol CURVE   = new OMSymbol("geodefiner", "curve");
-	static final OMSymbol POLYGON = new OMSymbol("geodefiner","polygon");
-	static final OMSymbol TEXT   = new OMSymbol("geodefiner", "text");
+	public static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
+	public static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");
+	public static final OMSymbol CIRCLE = new OMSymbol("geodefiner", "circle");
+	public static final OMSymbol ARC    = new OMSymbol("geodefiner", "arc");
+	public static final OMSymbol SEGMENT = new OMSymbol("geodefiner", "segment");
+	public static final OMSymbol CURVE   = new OMSymbol("geodefiner", "curve");
+	public static final OMSymbol POLYGON = new OMSymbol("geodefiner","polygon");
+	public static final OMSymbol TEXT   = new OMSymbol("geodefiner", "text");
 	static final OMSymbol INTERVAL = OMConstants.INTERVAL1_INTERVAL;
 	static final OMSymbol LIST_SELECTOR = OMConstants.LIST2_LIST_SELECTOR;
 	static final OMSymbol INT = new OMSymbol("calculus1", "int");
