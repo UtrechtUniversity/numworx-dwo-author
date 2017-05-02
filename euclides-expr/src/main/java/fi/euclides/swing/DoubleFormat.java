@@ -8,6 +8,7 @@ public class DoubleFormat extends fi.euclides.model.math.DoubleFormat {
 	
 	private DoubleFormat(Locale locale, int maximum) {
 		f = NumberFormat.getNumberInstance(locale);
+		f.setGroupingUsed(false);
 		setMaxDigits(maximum);
 	}
 

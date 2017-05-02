@@ -914,6 +914,15 @@ public class Model extends Observable implements Observer, NameMapper {
 	}
 
 	public Cirkel buildCirkel(Destroyable[] depend) {
+		Cirkel cirkel = createCirkel(depend);
+		if(cirkel != null)
+		{
+			add(cirkel, lijnen);
+		}
+		return cirkel;
+	}
+
+	public Cirkel createCirkel(Destroyable[] depend) {
 		Cirkel cirkel = null;
 		if(depend.length == 3)
 		{
@@ -943,14 +952,18 @@ public class Model extends Observable implements Observer, NameMapper {
 				cirkel = new CirkelRadius((Punt)o2, (Label)o1, getO(), getU());
 			}
 		}
-		if(cirkel != null)
-		{
-			add(cirkel, lijnen);
-		}
 		return cirkel;
 	}
 
 	public Boog buildBoog(Destroyable[] depend) {
+		Boog boog = createBoog(depend);
+		if(boog != null) {
+			add(boog, lijnen);
+		}
+		return boog;
+	}
+
+	public Boog createBoog(Destroyable[] depend) {
 		Boog boog = null;
 		
 		if (depend.length == 3) {
@@ -975,12 +988,6 @@ public class Model extends Observable implements Observer, NameMapper {
 			if (o1 instanceof Punt && o2 instanceof Label && o3 instanceof Label && o4 instanceof Label) {
 				boog = new BoogRadiusHoek( (Punt)o1, (Label)o2, (Label)o3, (Label)o4, getO(), getU());
 			}	
-		}
-		
-		
-		
-		if(boog != null) {
-			add(boog, lijnen);
 		}
 		return boog;
 	}

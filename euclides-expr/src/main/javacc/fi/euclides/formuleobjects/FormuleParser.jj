@@ -520,8 +520,8 @@ OMApplication bracket() :
 	    return expr;
 
 	}
-| < MAP > ( "(" expr = sum() < KOMMA > expr2 = sum() ")" |
-			< HAAKJES > expr = sum() < KOMMA > expr2=sum() < AT > )
+| < MAP > ( "(" expr = expr() < KOMMA > expr2 = interval() ")" |
+			< HAAKJES > expr = expr() < KOMMA > expr2=interval() < AT > )
 {
        return binop(LIST1_MAP, expr, expr2);
     }
