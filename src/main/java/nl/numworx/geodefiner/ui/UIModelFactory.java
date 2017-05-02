@@ -19,7 +19,7 @@ import fi.euclides.model.Visitor;
 
 public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory implements Visitor {
 
-	private UIModel<?, UIEditor> model;
+	private UIModel<? extends Destroyable, UIEditor> model;
 	private Tracker tracker;
 	public UIModelFactory(Tracker viewer) {
 		this.tracker = viewer;
