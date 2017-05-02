@@ -1011,13 +1011,19 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			int dot = ev.getCommand().indexOf('.');
 			String name = ev.getCommand().substring(dot+1);
 			Number number = (Number)ev.getParameter("value");
+			String message = ev.getMessage();
+			Numbers value;
 			if(number == null) {
-				number = Double.valueOf(ev.getMessage());
+				number = Double.valueOf(message);
+				value = Numbers.createDouble(number.doubleValue());
+			} else {
+				value = Numbers.createDouble(number.doubleValue());
+				message = Numbers.toString(value);
 			}
 			Label label = (Label) getViewer().getMapper().fromString(name);
 			if(label.getSubKey() == Const.TYPE) { 
-				label.setString(Numbers.toString(label.value));
-				label.setValue(Numbers.createDouble(number.doubleValue()));
+				label.setString(message);
+				label.setValue(value);
 				label.notifyObservers();
 			}
 		}
