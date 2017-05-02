@@ -3728,7 +3728,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		{
 			if (dragColomsRects[i].contains(e.getX(), e.getY()))
 			{
-				if (!pasAanB)
+				if (!pasAanB && (!templateModeEdit || TEMPLATE_EDITOR))
 					setCursor(new Cursor(Cursor.W_RESIZE_CURSOR));
 				return;
 			}
@@ -3737,7 +3737,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		{
 			if (dragRowsRects[i].contains(e.getX(), e.getY()))
 			{
-				if (!pasAanH)
+				if (!pasAanH && (!templateModeEdit || TEMPLATE_EDITOR))
 					setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
 				return;
 			}
@@ -3840,7 +3840,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			return;
 		for (int i = 0; i < aantalKolommen; i++)
 		{
-			if (dragColomsRects[i].contains(e.getX(), e.getY()))
+			if (dragColomsRects[i].contains(e.getX(), e.getY()) && (!templateModeEdit || TEMPLATE_EDITOR))
 			{
 				dragModeColoms = true;
 				dragNumber = i;
@@ -3850,7 +3850,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 		for (int i = 0; i < aantalRijen; i++)
 		{
-			if (dragRowsRects[i].contains(e.getX(), e.getY()))
+			if (dragRowsRects[i].contains(e.getX(), e.getY()) && (!templateModeEdit || TEMPLATE_EDITOR))
 			{
 				dragModeRows = true;
 				dragNumber = i;
