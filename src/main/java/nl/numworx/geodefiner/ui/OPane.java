@@ -14,17 +14,19 @@ public class OPane extends PointPane<OModel> {
 		super(model);
 		xField = new JFormattedTextField();
 		yField = new JFormattedTextField();
-		xField.setValue(model.item.getXd());
-		yField.setValue(model.item.getYd());
+		xField.setValue(model.item.getXd());xField.setColumns(5);
+		xField.setMaximumSize(xField.getPreferredSize());
+		yField.setValue(model.item.getYd());yField.setColumns(5);
+		yField.setMaximumSize(yField.getPreferredSize());
 		Box panel = Box.createHorizontalBox();
 		panel.add(new JLabel("x-positie"));
 		panel.add(xField);
-		panel.add(new JLabel("px"));
+		panel.add(new JLabel("px"));panel.add(Box.createGlue());
 		add(panel);
 		panel = Box.createHorizontalBox();
 		panel.add(new JLabel("y-positie"));
 		panel.add(yField);
-		panel.add(new JLabel("px"));
+		panel.add(new JLabel("px"));panel.add(Box.createGlue());
 		add(panel);
 	}
 

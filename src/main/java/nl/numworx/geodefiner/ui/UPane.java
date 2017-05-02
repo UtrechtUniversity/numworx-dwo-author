@@ -16,11 +16,12 @@ class UPane extends PointPane<UModel> {
 		super(model);
 		dField = new JFormattedTextField();
 		u = (HorizontalPunt) model.item;
-		dField.setValue(u.getDistance().doubleValue());
+		dField.setValue(u.getDistance().doubleValue());dField.setColumns(5);
+		dField.setMaximumSize(dField.getPreferredSize());
 		Box panel = Box.createHorizontalBox();
 		panel.add(new JLabel("roostermaat"));
 		panel.add(dField);
-		panel.add(new JLabel("px"));
+		panel.add(new JLabel("px"));panel.add(Box.createGlue());
 		add(panel);
 	}
 
