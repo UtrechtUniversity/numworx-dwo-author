@@ -224,7 +224,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	EventHandler handler;
 	private boolean moved;
 	private AbstractViewer extra;
-	private double offX, offY;
+	double offX;
+	double offY;
 	
 	public void processMouseDown(int x, int y) {
 		handler.pointerPressed(x, y);
@@ -355,5 +356,11 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		}
 		drawString(value, x, y);
 		
+	}
+
+	@Override
+	public EventHandler getPanHandler() {
+		PanHandler hander = new PanHandler("Pan", this);
+		return handler;
 	}
 }

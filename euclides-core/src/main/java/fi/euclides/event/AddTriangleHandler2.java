@@ -8,7 +8,7 @@ public class AddTriangleHandler2 extends AddBissectriceHandler {
 	public AddTriangleHandler2() {
 	}
 	protected void createTrack() {
-		Triangle bs = new Triangle();
+		Triangle bs = new Triangle(3);
 		bs.setA(p1);
 		bs.setB(p2);
 		track = new LijnTrack(p1.getX(), p1.getY(), bs);

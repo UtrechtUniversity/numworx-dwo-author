@@ -4,11 +4,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 import fi.euclides.event.NameMapper;
 import fi.euclides.model.AbstractViewer;
+import fi.euclides.event.EventHandler;
 
 public interface ViewerWidget extends IsWidget {
 
 	AbstractViewer getViewer();
-
+	EventHandler   getPanHandler();
+	
 	void processMouseDown(int x, int y);
 
 	void processMouseUp(int x, int y);

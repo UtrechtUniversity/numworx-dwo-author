@@ -326,4 +326,10 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 		}
 	}
 
+	@Override
+	public EventHandler getPanHandler() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
