@@ -5,16 +5,17 @@ import java.util.Map;
 import nl.numworx.geodefiner.common.PointType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.DefaultAdapter;
 
-public class PointModel extends ColorModel<Punt> implements UIModel<Punt, UIEditor> {
+public class PointModel extends ColorModel<Destroyable> implements UIModel<Destroyable, UIEditor> {
 	int   size = 5;
 	PointType  type = PointType.DISK;
 	boolean rigid = true;
 
-	public void install(Punt item) {
+	public void install(Destroyable item) {
 		if(item instanceof FreePoint) {
 			FreePoint r = (FreePoint) item;
 			r.setFree(!rigid);
@@ -44,9 +45,12 @@ public class PointModel extends ColorModel<Punt> implements UIModel<Punt, UIEdit
 		return new PointPane(this);
 	}
 
-	public UIModel<Punt, UIEditor> init(Punt item) {
+	public UIModel<Destroyable, UIEditor> init(Punt item) {
 		if (item != null) this.rigid = !item.isFree();
 		return super.init(item);
 	}
 
+	public UIModel<Destroyable, UIEditor> init(Destroyable item) {
+		return super.init(item);
+	}
 }

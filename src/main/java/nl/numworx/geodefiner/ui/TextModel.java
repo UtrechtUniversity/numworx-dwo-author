@@ -8,6 +8,7 @@ import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.common.Volgpunt;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
@@ -20,6 +21,7 @@ public class TextModel extends ColorModel<Label> {
 	private float dx,dy;
 	Boolean alwaysF;
 	Boolean herleid;
+	Label item;
 
 	public boolean isAlwaysF() {
 		return Boolean.TRUE.equals(alwaysF);
@@ -28,9 +30,11 @@ public class TextModel extends ColorModel<Label> {
 	public boolean isHerleid() {
 		return isAlwaysF() && Boolean.TRUE.equals(herleid);
 	}
+
+	public void install() {
+		install(item);
+	}
 	
-	
-	@Override
 	public void install(Label item) {
 		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
 		adapter.put(align);
@@ -51,6 +55,7 @@ public class TextModel extends ColorModel<Label> {
 		if(item == null && this.item != null && this.item.getP() instanceof Volgpunt)
 		{	setdxy();
 		}
+		this.item = item;
 		return super.init(item);
 	}
 

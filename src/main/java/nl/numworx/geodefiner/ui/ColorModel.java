@@ -25,7 +25,7 @@ import fi.euclides.util.DefaultAdapter;
 public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 
 	private static final OMObject EUCLIDES_VISIBLE = new OMSymbol("euclides", "visible");
-	T item;
+	Destroyable item;
 	Color color = Color.black;
 	boolean visible;
 	Label visibility = new Label();
@@ -36,7 +36,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		this.visible = visible;
 	}
 
-	public void install(T item) {
+	public void install(Destroyable item) {
 		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
 		adapter.put(color);
 		item.setVisible(visible);
@@ -70,13 +70,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 	}
 
 	public UIModel<T, UIEditor> init(T item) {
-		this.item = item;
-		if(item != null) {
-			color = item.getAdapter().adapt(Color.class);
-			visible = item.isVisible();
-		}
-		if(color == null) color = Color.black;
-		return this;
+		return init2(item);
 	}
 
 	public Map<String, Object> toMap() {
@@ -107,6 +101,17 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 
 	public UIModel<T, UIEditor> set(Tracker tracker) {
 		this.tracker = tracker;
+		return this;
+	}
+
+	@Override
+	public UIModel<T, UIEditor> init2(Destroyable item) {
+		this.item = item;
+		if(item != null) {
+			color = item.getAdapter().adapt(Color.class);
+			visible = item.isVisible();
+		}
+		if(color == null) color = Color.black;
 		return this;
 	}
 

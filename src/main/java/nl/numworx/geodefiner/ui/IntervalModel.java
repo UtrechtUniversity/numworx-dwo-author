@@ -13,7 +13,6 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
-import fi.euclides.model.Lijn;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.math.Numbers;

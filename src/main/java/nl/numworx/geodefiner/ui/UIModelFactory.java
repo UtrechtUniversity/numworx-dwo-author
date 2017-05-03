@@ -8,6 +8,7 @@ import fi.euclides.event.Tracker;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Groep;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
@@ -27,6 +28,11 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 
 	public UIModel<?, UIEditor> build(Destroyable d) {
 		model = null;
+		if(d instanceof Groep) {
+			Groep g = (Groep)d;
+			build(g.elements().nextElement()); // what if 0 elements?
+			return model.init2(d);
+		}
 		d.visit(this);
 		return model.set(tracker);
 	}
