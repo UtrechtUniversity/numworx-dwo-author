@@ -12,8 +12,11 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -28,6 +31,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
 
+import nl.numworx.geodefiner.common.ResetHandler;
+import nl.numworx.geodefiner.common.Tools;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.AddBissectriceHandler;
@@ -59,7 +64,7 @@ import fi.euclides.swing.TrailAction;
 import fi.euclides.util.Messages;
 import fi.euclides.swing.XXXAction;
 
-public class ToolboxPanel extends JPanel implements ItemListener {
+public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 
 	private JToolBar toolbox;
 	AWTViewer viewer;
@@ -106,7 +111,13 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 			parent.invalidate();
 			parent.validate();
 			parent.repaint();
+			if(!hold)
+				insertActions();
 
+		}
+
+		public JCheckBox getCheck() {
+			return (JCheckBox) getComponent(0);
 		}
 	}
 	
@@ -114,6 +125,7 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 		JCheckBox check = new JCheckBox(label, icon);
 		check.setSelectedIcon(selectedIcon(icon));
 		check.addItemListener(this);
+		check.setBackground(Color.white);
 		boxes.add(check);
 		ToolPanel panel = new ToolPanel(label);
 		panel.add(check);
@@ -142,13 +154,17 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 		};
 	}
 
-	List<Action> actions = new ArrayList<Action>();
+	Vector<Action> actions = new Vector<Action>();
 	List<JCheckBox> boxes = new ArrayList<JCheckBox>();
 	
 	void createActions() {
 		actions.clear();
-		actions.add(new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer));
-		XXXAction xaction=new XXXAction(Messages.getString("Euclides.41"), null, new PanHandler(Messages.getString("Euclides.41"), viewer), viewer);
+
+		actions.setSize(1);
+		actions.set(SELECTOR, new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer));
+		
+		
+		XXXAction xaction=new XXXAction(Messages.getString("Euclides.41"), "/pan.png", new PanHandler(Messages.getString("Euclides.41"), viewer), viewer);
 		xaction.cursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
 		actions.add(xaction);
 		actions.add(new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddPuntHandler(),viewer));
@@ -238,8 +254,13 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 	private void insertActions() {
 		toolbox.removeAll();
 		for(int i = 0; i < actions.size(); i++) {
-			if(boxes.get(i).isSelected())
-				toolbox.add(actions.get(i));
+			JCheckBox box = ((ToolPanel) vbox.getComponent(i)).getCheck();
+			if(box.isSelected())
+			{
+				int n = boxes.indexOf(box);
+				toolbox.add(actions.get(n));
+			}
+				
 		}
 		toolbox.setVisible(toolbox.getComponentCount()>0);
 		toolbox.getParent().repaint();
@@ -248,8 +269,9 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 	List<Integer> toList() {
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for(int i = 0; i < actions.size(); i++) {
-			if(boxes.get(i).isSelected())
-				list.add(i);
+			JCheckBox box = ((ToolPanel) vbox.getComponent(i)).getCheck();
+			if(box.isSelected())
+				list.add(boxes.indexOf(box));
 		}
 		return list;
 	}
@@ -257,15 +279,36 @@ public class ToolboxPanel extends JPanel implements ItemListener {
 	void fromList(ObjectList list) {
 		int size = list == null ? 0 : list.size();
 		hold = true; // on hold
+		int nn[] = new int[size];
 		try {
-		int last = 0;
+		for(JCheckBox box: boxes) box.setSelected(false);
 		for(int i = 0; i < size; i++) {
 			int n = list.getInt(i);
-			for(; last < n; last ++ )
-				boxes.get(last).setSelected(false);
+			nn[i] = n;
 			boxes.get(n).setSelected(true);
-			last = n+1;
 		} } finally {
+			Component[] cc = vbox.getComponents();
+			vbox.removeAll();
+			Arrays.sort(cc, new Comparator<Component>() {
+
+				@Override
+				public int compare(Component o1, Component o2) {
+					if(o1 == o2) return 0;
+					int a = boxes.indexOf(((ToolPanel)o1).getCheck());
+					int b = boxes.indexOf(((ToolPanel)o2).getCheck());
+					if(a==b) return 0;
+					if(a>b) return +1;
+					return -1;
+				}});
+			for(int i = 0; i < size; i++) {
+				vbox.add(cc[nn[i]]);
+				cc[nn[i]]=null;
+			}
+			for(int i = 0; i < cc.length; i++) {
+				if (cc[i]!= null) vbox.add(cc[i]);
+			}
+			
+			
 			hold = false;
 			insertActions();
 		}

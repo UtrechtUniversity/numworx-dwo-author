@@ -966,8 +966,10 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		panel.doLayout();
 		createModel(viewer.getModel(), content.getWidth(), content.getHeight());
 		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
-		getViewer().height = content.getHeight();
-		getViewer().width = content.getWidth();
+		InstanceViewer view = getViewer();
+		view.height = content.getHeight();
+		view.width = content.getWidth();
+		view.offX = view.offY = 0;
 		selector.command();
 		definitions.clear();
 	}
