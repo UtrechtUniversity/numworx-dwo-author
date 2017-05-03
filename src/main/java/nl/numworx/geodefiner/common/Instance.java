@@ -495,4 +495,7 @@ public abstract class Instance /*implements Observer*/ {
 		viewer.paint();
 	}
 	
+	protected void reset() {
+	}
+	
 }
