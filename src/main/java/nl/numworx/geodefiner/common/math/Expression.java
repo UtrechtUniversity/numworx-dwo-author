@@ -139,7 +139,7 @@ public class Expression extends fi.euclides.openmath.Expression {
 		if (OMConstants.LIST1_MAP.isSame(func)) {
 			Destroyable depend[] = new Destroyable[oma.getLength()-1];
 			copy(oma, mapper, depend);
-			return new GroupOf(depend, this, toc.getTracker());
+			return new GroupOf(depend, this, mapper);
 		}
 		if (OMConstants.LIST2_LIST_SELECTOR.isSame(func)) {
 			// map(f,1..n)_i === f(i)

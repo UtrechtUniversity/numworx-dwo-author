@@ -1,6 +1,8 @@
 package nl.numworx.geodefiner.common;
 
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMBinding;
@@ -14,26 +16,28 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.Expression;
+import fi.euclides.openmath.LocusModelF;
 import fi.euclides.util.Adapter;
 import fi.euclides.util.DefaultAdapter;
+import fi.euclides.util.Observable;
 
 
 public class GroupOf extends Groep {
 	
-	private Tracker viewer;
 	private Expression expression;
 	private OMBinding  formula;
 	private Strategy   strategy;
+	private List<Destroyable> vars;
+	private NameMapper mapper;
 	
-	abstract static class Strategy implements NameMapper { 
+	abstract class Strategy implements NameMapper { 
 		abstract void recalc();
 		
 		Strategy() {} 
-		Strategy(NameMapper mapper) {this.mapper = mapper; }
-		NameMapper mapper;
 		String name;
 		Destroyable argument;
 	
+		
 		@Override
 		public Destroyable fromString(String name) {
 			if(this.name.equals(name)) return argument;
@@ -59,19 +63,17 @@ public class GroupOf extends Groep {
 		@Override
 		public void rename(Destroyable p, String name) {
 		}
-		
-		
 	}
 	
 	class IntervalStrategy extends Strategy {
 		Label interval;
 
 		IntervalStrategy(Label interval) {
-			super(viewer.getMapper());
 			this.interval = interval;
+			Destroyable[] depend = interval.getDepend();
+			vars.addAll(Arrays.asList(depend));
 		}
-
-
+		
 		@Override
 		void recalc() {
 			clear();
@@ -115,7 +117,6 @@ public class GroupOf extends Groep {
 		}
 
 		GroupStrategy(Groep l) {
-			super(viewer.getMapper());
 			this.grp = l;
 		}
 		
@@ -125,7 +126,6 @@ public class GroupOf extends Groep {
 
 		private Label list;
 		public ListStrategy(Label l) {
-			super(viewer.getMapper());
 			list = l;
 		}
 		
@@ -146,8 +146,13 @@ public class GroupOf extends Groep {
 	}
 	
 	public GroupOf(Destroyable[] depend, Expression expression, Tracker viewer) {
+		this(depend, expression, viewer.getMapper());
+	}
+
+	public GroupOf(Destroyable[] depend, Expression expression,
+			NameMapper mapper) {
 		super(depend);
-		this.viewer = viewer;
+		this.mapper = mapper;
 		this.expression = expression;
 		Label l = (Label) depend[0];
 		OMObject obj = l.adapt(OMObject.class);
@@ -156,6 +161,7 @@ public class GroupOf extends Groep {
 		} else {
 			formula = createBinding(obj);
 		}
+		vars = LocusModelF.varsOf(formula, mapper);
 		if ( depend[1] instanceof Groep) {
 			strategy = new GroupStrategy((Groep)depend[1]);
 		} else {
@@ -166,7 +172,24 @@ public class GroupOf extends Groep {
 			else
 				strategy = new ListStrategy(l);
 		}
+		for (Destroyable destroyable : vars) {
+			destroyable.addObserver(this);
+		}
 		recalc();
+	}
+
+	@Override
+	public void update(Observable observable, Object arg) {
+		super.update(observable, arg);
+		if(arg == null)
+			recalc();
+	}
+	
+
+	@Override
+	public void destroy() {
+		for(Destroyable d: vars) d.deleteObserver(this);
+		super.destroy();
 	}
 
 	private OMBinding createBinding(OMObject obj) {
@@ -183,6 +206,16 @@ public class GroupOf extends Groep {
 			destroyable.setAdapter(adapter);
 		}
 		notifyObservers();
+	}
+
+	@Override
+	public void setAdapter(Adapter adapter) {
+		super.setAdapter(adapter);
+		Enumeration<Destroyable> items = elements();
+		while (items.hasMoreElements()) {
+			Destroyable destroyable = (Destroyable) items.nextElement();
+			destroyable.setAdapter(adapter);
+		}
 	}
 
 }

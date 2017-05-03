@@ -9,6 +9,7 @@ import fi.euclides.model.Destroyable;
 public interface UIModel<T extends Destroyable, U> {
 	
 	UIModel<T, U> init(T item);
+	UIModel<T, U> init2(Destroyable item);
 	void install();
 	Map<String, Object> toMap();
 	void fromMap(ObjectMap value);
