@@ -360,7 +360,6 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public EventHandler getPanHandler() {
-		PanHandler hander = new PanHandler("Pan", this);
-		return handler;
+		return new PanHandler("Pan", this);
 	}
 }

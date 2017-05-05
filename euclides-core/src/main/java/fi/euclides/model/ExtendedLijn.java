@@ -3,11 +3,22 @@ package fi.euclides.model;
 import java.io.IOException;
 
 import fi.euclides.model.math.Numbers;
+import fi.euclides.util.Adapter;
 
-public class ExtendedLijn extends PuntenLijn {
+public class ExtendedLijn extends Segment {
 
 	Lijn lijn;
 	
+	public Adapter getAdapter() {
+		return lijn.getAdapter();
+	}
+
+
+	public <T> T adapt(Class<T> clz) {
+		return lijn.adapt(clz);
+	}
+
+
 	double x1, x2, y1, y2;
 	
 	double bx, by, ex, ey;

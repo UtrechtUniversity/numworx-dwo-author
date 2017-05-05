@@ -909,6 +909,9 @@ public class Model extends Observable implements Observer, NameMapper {
 		return twoPuntBuilder(new PuntenLijn(), true, depend);
 	}
 	
+	public Ray buildRay(Destroyable[] depend) {
+		return twoPuntBuilder(new Ray(), false, depend);
+	}
 	public Segment buildSegment(Destroyable[] depend) {
 		return twoPuntBuilder(new Segment(), false, depend);		
 	}
