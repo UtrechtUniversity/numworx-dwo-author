@@ -13,13 +13,17 @@ class SegmentPane extends LinePane<SegmentModel> {
 	
 	public SegmentPane(SegmentModel model) {
 		super(model);
-		tips = new JComboBox<Tips>(Tips.values());
+		tips = new JComboBox<Tips>(tips());
 		tips.setSelectedItem(model.tip);
 		Box panel = Box.createHorizontalBox();
 		panel.add(new JLabel(Messages.getString("SegmentPane.1")));
 		panel.add(tips);
 		panel.add(Box.createGlue());
 		add(panel);
+	}
+
+	Tips[] tips() {
+		return Tips.values();
 	}
 
 	@Override

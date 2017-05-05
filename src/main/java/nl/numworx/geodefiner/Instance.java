@@ -77,6 +77,8 @@ import fi.euclides.model.Locus;
 import fi.euclides.model.MP;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
+import fi.euclides.model.PuntenLijn;
+import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.SegmentVisitor;
 import fi.euclides.model.Triangle;
@@ -564,9 +566,18 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			s = drawTips(s);
 			super.visitSegment(s);
 		}
+	
+		public void visitRay(Lijn r) {
+			rr.setLijn(r);
+			Segment l;
+			l = drawTips(rr);
+			super.visitSegment(l);
+		}
 
-		
-		
+		public void visitLijn(Lijn l) {
+			if(l instanceof Ray) visitRay(l);
+			else super.visitLijn(l);
+		}
 		private Segment drawTips(Segment s) {
 			Tips tip = s.adapt(Tips.class);
 			if(tip == null) return s;
@@ -581,18 +592,18 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			dx *= tiplen / len; 
 			dy *= tiplen/len; 
 			switch(tip) {
-			case ATEND: tip(s.getP2(), -dx, -dy); break;
-			case ATSTARTEND: tip(s.getP2(),-(dx), -(dy));
-			case ATSTART: tip(s.getP1(), dx, dy); break;
+			case ATEND: tip(s.getP2(), -dx, -dy, s.getX2(), s.getY2()); break;
+			case ATSTARTEND: tip(s.getP2(),-(dx), -(dy), s.getX2(), s.getY2());
+			case ATSTART: tip(s.getP1(), dx, dy, s.getX1(), s.getY1()); break;
 			case NOTIP: return s;
 			}
 			return new ShortSegment(s, dx, dy, tip);
 		}
 
-		private void tip(Punt p1, double dx, double dy) {
+		private void tip(Punt p1, double dx, double dy, double xd, double yd) {
 			Path2D.Double path = new Path2D.Double();
-			double x = p1.getXd();
-			double y = p1.getYd();
+			double x = xd;
+			double y = yd;
 			path.moveTo(x, y);
 			path.lineTo(x + dx + dy/2, y + dy -dx/2);
 			path.lineTo(x + dx - dy/2, y + dy +dx/2);
