@@ -14,6 +14,7 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntenLijn;
+import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.openmath.OMConstants;
@@ -116,6 +117,11 @@ public class Expression extends fi.euclides.openmath.Expression {
 			Punt depend[] = new Punt[2];
 			copy(oma, mapper, depend);
 			return new Segment(depend[0], depend[1]);
+		}
+		if(Definitions.HALFLINE.isSame(func)) {
+			Punt depend[] = new Punt[2];
+			copy(oma, mapper, depend);
+			return new Ray(depend[0], depend[1]);
 		}
 		if (Definitions.CIRCLE.isSame(func)) {
 			Destroyable depend[] = new Destroyable[oma.getLength()-1];

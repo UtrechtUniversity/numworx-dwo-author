@@ -70,6 +70,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 	public static final OMSymbol CURVE   = new OMSymbol("geodefiner", "curve");
 	public static final OMSymbol POLYGON = new OMSymbol("geodefiner","polygon");
 	public static final OMSymbol TEXT   = new OMSymbol("geodefiner", "text");
+	public static final OMSymbol HALFLINE = new OMSymbol("geodefiner", "halfline");
+	
 	static final OMSymbol INTERVAL = OMConstants.INTERVAL1_INTERVAL;
 	static final OMSymbol LIST_SELECTOR = OMConstants.LIST2_LIST_SELECTOR;
 	static final OMSymbol INT = new OMSymbol("calculus1", "int");
@@ -185,6 +187,13 @@ public class Definitions implements Observer /*, ListModel*/ {
 				if (LINE.isSame(f)) {
 					Destroyable l = model.buildLijn(depend);
 					if(l == null) throw new InterpretException("line error");
+					installConfig(new CELL(text, l, var), config);
+					return;
+				}
+				// $l := line($P, $Q)
+				if (HALFLINE.isSame(f)) {
+					Destroyable l = model.buildRay(depend);
+					if(l == null) throw new InterpretException("halfline error");
 					installConfig(new CELL(text, l, var), config);
 					return;
 				}

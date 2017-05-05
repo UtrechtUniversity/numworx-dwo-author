@@ -1,11 +1,12 @@
 package nl.numworx.geodefiner.common;
 
+import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Segment;
 import fi.euclides.util.Adapter;
 
 public class ShortSegment extends Segment {
 	double dx, dy;
-	Segment org;
+	PuntenLijn org;
 	Tips tip;
 	@Override
 	public double getX1() {
@@ -40,8 +41,8 @@ public class ShortSegment extends Segment {
 		return org.getAdapter();
 	}
 	
-	public ShortSegment(Segment org, double dx, double dy, Tips tip) {
-		this.org = org;
+	public ShortSegment(PuntenLijn s, double dx, double dy, Tips tip) {
+		this.org = s;
 		this.dx = dx;
 		this.dy = dy;
 		this.tip = tip;
