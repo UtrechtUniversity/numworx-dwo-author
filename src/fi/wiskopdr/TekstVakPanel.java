@@ -72,7 +72,7 @@ import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class TekstVakPanel extends RoundedPanel implements TabletOwner, InteractiePanel, ActionListener, MouseListener, MouseMotionListener, CBookAware
 {
-	public static Map<String,Map> styles = new Hashtable<String,Map>();
+	public static Map<String,Map<String,Object>> styles = new Hashtable<String,Map<String,Object>>();
 	public static boolean TEMPLATE_EDITOR;
 	
 	

@@ -138,7 +138,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean checkUitklapVak;
 	
 	private JCheckBox stylesCB;
-	private boolean styles;
+	//private boolean styles;
 	private JComboBox kiesStyleChoice;
 	private StyleManager styleManager;
 	private JLabel styleSettingsLabel;
@@ -299,7 +299,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		zichtbaarNaNakijkenCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_zichtbaarNaNakijken"), 10,195,240,20, zichtbaarNaNakijken, interactionOptionsPanel);
 		balansVergComCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_balansVergCom"), 10,673,240,20, balansVergCom, interactionOptionsPanel);
 		aftrekPopupCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_aftrekPopup"), 10,220,225,20, aftrekPopup, interactionOptionsPanel);
-		stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, manageStyles, layoutOptionsPanel);
+		//stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, manageStyles, layoutOptionsPanel);
 		templateModeEditCB= maakCheckBox("Template mode (edit)", 10,590,150,20, templateModeEdit, layoutOptionsPanel);
 		templateModeFillCB= maakCheckBox("Template mode (fill)", 10,615,150,20, templateModeFill, layoutOptionsPanel);
 		
@@ -334,13 +334,16 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		logIDLabelLabel.setVisible(false);
 		interactionOptionsPanel.add(logIDLabelLabel);
         
-		
+		balansVergComCB.setVisible(false);
 		sleepHandleCB.setVisible(false);
 		colorSelectionCB.setVisible(false);
 		selectedCB.setVisible(false);
 		checkUitklapVakCB.setVisible(false);
 		sleepbaarCB.setEnabled(false);
 		sleepdoelCB.setEnabled(false);
+		templateModeEditCB.setVisible(WiskOpdr.isExperimental());
+		templateModeFillCB.setVisible(WiskOpdr.isExperimental());
+		ideasCB.setVisible(WiskOpdr.isExperimental());
 		
 		kopLayoutLabel = new JLabel(WiskOpdr.rb.getString("TVEP_layoutLabel"));//"Layout tekstvak");
 		kopLayoutLabel.setBounds(10,10,150,20);
@@ -1056,8 +1059,6 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			interlinieTF.setText(Integer.toString(interlinie));
 			cellSpaceColumnTF.setText(Integer.toString(cellSpaceColumn));
 			cellSpaceRowTF.setText(Integer.toString(cellSpaceRow));
-			
-			
 		}
 	}
 	public void setEditState(Hashtable h)
@@ -2246,7 +2247,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		callOutCB.setVisible(!b);
 		inklapbaarCB.setVisible(!b);
 		visibleCB.setVisible(!b);
-		stylesCB.setVisible(!b);
+		//stylesCB.setVisible(!b);
 		
 		knopImageButton1.setVisible(!b && inklapbaarCB.isSelected());
 		knopImageButton2.setVisible(!b && inklapbaarCB.isSelected());

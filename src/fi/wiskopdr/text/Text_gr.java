@@ -311,6 +311,9 @@ public class Text_gr extends java.util.ListResourceBundle
 				{"OPT_fontOverervingForm" , "Font-inheritance formula boxes"},
 				{"OPT_scoreZichtbaar" , "Scores visible for student"},
 				{"OPT_templateEditor" , "Template editor"},
+				{"OPT_styles" , "Use styles"},
+				{"OPT_importStyles" , "Import"},
+				{"OPT_exportStyles" , "Export"},
 				
 				{"OBJ_leerdoel", "Στόχος"},
 				{"OBJ_categorie", "Κατηγορία"},

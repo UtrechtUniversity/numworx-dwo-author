@@ -54,6 +54,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox fontOverervingFormCB;
 	private JCheckBox scoresZichtbaarCB;
 	private JCheckBox templateEditCB;
+	private JCheckBox stylesCB;
+	private JButton importStylesButton;
+	private JButton exportStylesButton;
 	
 	
 	private JLabel wiskundeLabel, navigatieLabel, layoutLabel, nakijkenLabel;
@@ -113,6 +116,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JButton okButton, cancelButton;
 	
 	private DialogFacade dialog;
+	private DialogFacade stylesExportDialog;
+	private JTextArea stylesExportTekstArea;
 	
 	
 	private Font font = new Font("SansSerif",Font.PLAIN,12);
@@ -129,7 +134,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		mainPanel.setOpaque(false);
 		JPanel bottomPanel = new JPanel();
 		
-		
+		stylesExportDialog = DialogFacade.newInstance(this, "styles", true);
+		stylesExportTekstArea = new JTextArea();
+		stylesExportDialog.getContentPane().add(stylesExportTekstArea);
+		stylesExportTekstArea.setBounds(0, 0, 300, 400);
 		
 		
 		//add(mainPanel);
@@ -187,6 +195,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(writeMathCombobox);
 		boxh.add(Box.createHorizontalStrut(80));
 		boxv1.add(boxh);
+		boxv1.add(Box.createVerticalStrut(70));
 		
 		//Navigatie-opties
 		Box boxv2 = Box.createVerticalBox();
@@ -377,6 +386,25 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		fontOverervingCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOvererving"), boxv3, false);//"Font-overerving tekstvakken"
 		fontOverervingFormCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOverervingForm"), boxv3, false);
 		templateEditCB = maakCheckBox(WiskOpdr.rb.getString("OPT_templateEditor"), boxv3, false);
+		
+		boxh = Box.createHorizontalBox();
+		boolean manageStyles = TekstVakPanel.styles!=null;
+		stylesCB = maakCheckBox(WiskOpdr.rb.getString("OPT_styles"), boxh, manageStyles);
+		stylesCB.addActionListener(this);
+		boxh.add(Box.createHorizontalStrut(10));
+		importStylesButton = new JButton(WiskOpdr.rb.getString("OPT_importStyles"));
+		importStylesButton.addActionListener(this);
+		importStylesButton.setFont(font);
+		importStylesButton.setPreferredSize(new Dimension(100,24));
+		boxh.add(importStylesButton);
+		boxh.add(Box.createHorizontalStrut(10));
+		exportStylesButton = new JButton(WiskOpdr.rb.getString("OPT_exportStyles"));
+		exportStylesButton.addActionListener(this);
+		exportStylesButton.setFont(font);
+		exportStylesButton.setPreferredSize(new Dimension(100,24));
+		boxh.add(exportStylesButton);
+		boxh.add(Box.createHorizontalStrut(10));
+		boxv3.add(boxh);
 		
 		boxv3.add(Box.createVerticalStrut(70));
 		
@@ -948,6 +976,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		dialog.setVisible(false);
 	}
 	
+	
+	
 	public void actionPerformed(ActionEvent e)
 	{	
 		if(e.getSource().equals(okButton))
@@ -1001,9 +1031,41 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			}
 			
 		}
-
-
-		
+		if(e.getSource().equals(stylesCB))
+		{	boolean manageStyles = stylesCB.isSelected();
+			if(TekstVakPanel.styles!=null) System.out.println(TekstVakPanel.styles.toString());
+			if(manageStyles){
+				TekstVakPanel.styles = new Hashtable();
+				
+			}
+			else {
+				int b = JOptionPane.showConfirmDialog(null,"Alle ingestelde styles gaan verloren. Akkoord?", "", JOptionPane.YES_NO_OPTION);
+				System.out.println("confirm "+b);
+				if(b==0)
+					TekstVakPanel.styles = null;
+				else
+					stylesCB.setSelected(true);
+			}
+		}
+		if(e.getSource().equals(exportStylesButton))
+		{
+			String contents = "";
+			if(TekstVakPanel.styles != null)
+				for (String key : TekstVakPanel.styles.keySet()) 
+				{	
+					contents =contents+"."+key+" {\n";
+					
+					Map<String,Object> map = TekstVakPanel.styles.get(key);
+					for (String innerkey : map.keySet()) 
+					{
+						Object o = map.get(innerkey);
+						contents =contents+"\t"+innerkey+":"+o.toString()+";\n";
+					}
+					contents =contents+"}\n";
+				}
+			stylesExportTekstArea.setText(contents);
+			stylesExportDialog.setVisible(true);
+		}
 	}
 	
 	//ActionProducer
