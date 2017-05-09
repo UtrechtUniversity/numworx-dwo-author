@@ -87,7 +87,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 	public void fromMap(ObjectMap map) {
 		if(map.containsKey("color"))
 			color = new Color( map.getInt("color"), true);
-		visible = map.getBoolean("visible", true);
+		visible = map.getBoolean("visible", visible);
 		visibility.setString(map.getString("visibility"));
 	}
 
@@ -110,6 +110,9 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		if(item != null) {
 			color = item.getAdapter().adapt(Color.class);
 			visible = item.isVisible();
+		} else if (this.item != null) 
+		{
+			visible = this.item.isVisible();
 		}
 		if(color == null) color = Color.black;
 		return this;
