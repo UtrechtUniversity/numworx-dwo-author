@@ -577,6 +577,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					ARC.getName(), 
 					CIRCLE.getName(), 
 					CURVE.getName(),
+					HALFLINE.getName(),
 					TEXT.getName()));
 	
 	
