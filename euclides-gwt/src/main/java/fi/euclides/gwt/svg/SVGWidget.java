@@ -332,4 +332,10 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 		return null;
 	}
 
+	@Override
+	public void setBackground(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -362,4 +362,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	public EventHandler getPanHandler() {
 		return new PanHandler("Pan", this);
 	}
+
+	@Override
+	public void setBackground(String string) {		
+	}
 }

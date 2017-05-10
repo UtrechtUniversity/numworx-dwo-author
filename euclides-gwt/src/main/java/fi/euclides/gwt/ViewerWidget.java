@@ -35,5 +35,6 @@ public interface ViewerWidget extends IsWidget {
 	String TEXT_END = "end";
 	void drawString(String string, double x, double y, String textEnd,
 			String textTop, String background);
+	void setBackground(String string);
 
 }
