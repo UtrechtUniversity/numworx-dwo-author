@@ -1562,7 +1562,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				else
 					times[i][j] = null;
 				
-				if (mode != 3 || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review"))
+				if (mode!=2 && (mode != 3 || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review")))
 				{
 					or[i].zetGemaakt(j + 1, getBoolean(orGoedFout, i, j));
 					allCorrect = allCorrect && getBoolean(orGoedFout, i, j);
@@ -1593,9 +1593,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (mode == 2 && aantalNakijken[activiteitNr] > 0 && !zelftoetsGeenCorr)
 			aantalNakijkLabel.setVisible(true);
 		
-		if (mode == 3)
-		{	scoresObjectivesKnop.setVisible(false);
-			viewMisconceptionsKnop.setVisible(false);
+		if (mode == 3 || mode==2)
+		{	if (mode == 3){
+				scoresObjectivesKnop.setVisible(false);
+				viewMisconceptionsKnop.setVisible(false);
+			}
+			
 			for (int i = 0; i < aantalActiviteiten; i++)
 			{
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
@@ -1608,7 +1611,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		
 		
-		if (mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked))
+		if (mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked) || mode == ZELFTOETS && zelftoetsNagekeken)
 		{	scoresObjectivesKnop.setVisible(objectivesAanwezig);
 			viewMisconceptionsKnop.setVisible(possibleMisconceptions!=null);
 		
@@ -1627,7 +1630,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (states[activiteitNr][opdrachtNr] != null)
 		{
 			opdrContainer.zetOpdrachtPlusState(opdrachten[activiteitNr][opdrachtNr], !(gekoppeldeOpdrachten || globalParam), states[activiteitNr][opdrachtNr]);
-			if (mode == EINDTOETS && (lessonMode.equals("review") || toetsLocked))
+			if (mode == EINDTOETS && (lessonMode.equals("review") || toetsLocked)  || mode == ZELFTOETS && zelftoetsNagekeken)
 			{
 				opdrContainer.kijkNa();
 				opdrContainer.zetNagekeken(true);
@@ -1983,7 +1986,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				opdrContStates[i][j] = states[i][j];
 				orGoedFout[i][j] = or[i].geefGoedFout(j + 1);
 				orScores[i][j] = or[i].geefScore(j + 1);
-				if (mode == 3) 
+				if (mode == 3 || mode==2) 
 				{
 					orScores[i][j] = scores[i][j];
 					orGoedFout[i][j] = isCorrect[i][j];
@@ -2547,7 +2550,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		{
 			opdrContainer.zetOpdrachtPlusState(opdrachten[activiteitNr][opdrachtNr], !(gekoppeldeOpdrachten || globalParam), states[activiteitNr][opdrachtNr]);
 			opdrContainer.setInitialTime(times[activiteitNr][opdrachtNr]);
-			if (mode == EINDTOETS && (lessonMode.equals("review") || toetsLocked))
+			if (mode == EINDTOETS && (lessonMode.equals("review") || toetsLocked) || mode == ZELFTOETS && zelftoetsNagekeken)
 			{
 				opdrContainer.kijkNa();
 				opdrContainer.zetNagekeken(true);
@@ -2805,7 +2808,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				aantalNakijken[activiteitNr]++;
 			int totaal = 0;
 			states[activiteitNr][opdrachtNr] = opdrContainer.getState();
-			for (int j = 0; j < aantalOpdrachten[activiteitNr]; j++)
+			/*for (int j = 0; j < aantalOpdrachten[activiteitNr]; j++)
 			{
 				//if (states[activiteitNr][opdrachtNr] != null)
 				if (states[activiteitNr][j] != null)
@@ -2830,8 +2833,19 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				or[activiteitNr].zetGemaakt(j + 1, correct);
 				or[activiteitNr].zetScore(j + 1, score);
 				totaal += score;
+			}*/
+			
+			opdrContainer.kijkNa();
+			opdrContainer.zetNagekeken(true);
+			
+			for (int j = 0; j < aantalOpdrachten[activiteitNr]; j++)
+			{
+				or[activiteitNr].zetGemaakt(j + 1, isCorrect[0][j]);
+				or[activiteitNr].zetScore(j + 1, scores[0][j]);
+				totaal += scores[0][j];
 			}
-			opdrContainer.zetOpdrachtPlusState(opdrachten[activiteitNr][opdrachtNr], !(gekoppeldeOpdrachten || globalParam), states[activiteitNr][opdrachtNr]);
+			
+			//opdrContainer.zetOpdrachtPlusState(opdrachten[activiteitNr][opdrachtNr], !(gekoppeldeOpdrachten || globalParam), states[activiteitNr][opdrachtNr]);
 			if (mode == 2 || mode == 3)
 			{
 				if (mode == 2 && zelftoetsGeenCorr)
