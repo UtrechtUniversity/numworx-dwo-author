@@ -166,8 +166,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		@Override
 		public void setBounds(int x, int y, int width, int height) {
 			super.setBounds(x, y, width, height);
+			boolean same = getViewer().height == height && getViewer().width == width;
 			getViewer().height = height;
 			getViewer().width = width;
+			if(!same)
+				getViewer().notifyViewport();
 		}
 
 		@Override
@@ -333,6 +336,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 					g.draw(path);
 				path = null;
 			}
+		}
+
+		public void notifyViewport() {
+			setChanged();
+			super.notifyObservers();
 		}
 
 		static final float DEFAULT_POINTSIZE = 5f;

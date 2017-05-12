@@ -102,6 +102,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		JComponent component = instance.asComponent();
 		component.setPreferredSize(instanceSize);
 		component.setSize(instanceSize);
+		component.setMaximumSize(instanceSize);
+		component.setMinimumSize(instanceSize);
 		component.setBorder(BorderFactory.createEtchedBorder());
 		flow.add(component);
 		tabs = new JTabbedPane();
@@ -231,6 +233,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		JComponent c = instance.asComponent();
 		c.setSize(instanceSize);
 		c.setPreferredSize(instanceSize);
+		c.setMaximumSize(instanceSize);
+		c.setMinimumSize(instanceSize);
 		c.invalidate();
 		c.getParent().validate();
 	}
@@ -240,6 +244,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		JComponent c = instance.asComponent();
 		c.setSize(instanceSize);
 		c.setPreferredSize(instanceSize);
+		c.setMaximumSize(instanceSize);
+		c.setMinimumSize(instanceSize);
 		c.invalidate();
 		c.getParent().validate();
 	}
