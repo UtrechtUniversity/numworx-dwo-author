@@ -160,11 +160,14 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	public void paint() {
 		context.save();
 		context.clearRect(0, 0, width, height);
-		context.translate(-offX, -offY);
+		context.translate(offX, offY);
 		context.beginPath();
-		context.rect(0, 0, width, height);
-		context.closePath();
-		context.clip();
+//		context.rect(0, 0, width, height);
+//		context.closePath();
+//		context.clip();
+// FIXME alleen als offX,offY verandert
+		ll.setClip(-offX,-offY, width, height);
+		rr.setClip(-offX,-offY, width, height);
 		context.setFillStyle(black);
 		context.setStrokeStyle(black);
 		this.update();
@@ -224,11 +227,11 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	EventHandler handler;
 	private boolean moved;
 	private AbstractViewer extra;
-	double offX;
-	double offY;
+	int offX;
+	int offY;
 	
 	public void processMouseDown(int x, int y) {
-		handler.pointerPressed(x, y);
+		handler.pointerPressed(x-offX, y-offY);
 		moved = false;
 		paint();
 	}
@@ -240,11 +243,12 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	public void processMouseDrag(int x, int y) {
 		moved=true;
-		handler.pointerDragged(x, y);
+		handler.pointerDragged(x-offX, y-offY);
 		paint();
 	}
 
 	public void processMouseUp(int x, int y) {
+		x -= offX; y -= offY;
 		if (!moved)
 			handler.pointerClicked(x, y);
 		handler.pointerReleased(x, y);
@@ -253,22 +257,22 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public Numbers clipTop() {
-		return Numbers.ZERO;
+		return Numbers.createInteger(-offY);
 	}
 
 	@Override
 	public Numbers clipBottom() {
-		return Numbers.createInteger(height);
+		return Numbers.createInteger(height-offY);
 	}
 
 	@Override
 	public Numbers clipLeft() {
-		return Numbers.ZERO;
+		return Numbers.createInteger(-offX);
 	}
 
 	@Override
 	public Numbers clipRight() {
-		return Numbers.createInteger(width);
+		return Numbers.createInteger(width-offX);
 	}
 
 	public void add(AbstractViewer extra) {
@@ -295,6 +299,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	public void init(int w, int h) {
 		width = w;
 		height = h;
+		offX=0;
+		offY=0;
 		canvas.setPixelSize(width,height);
 	    canvas.setCoordinateSpaceWidth(width);
 	    canvas.setCoordinateSpaceHeight(height);
@@ -315,7 +321,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	@Override
 	public void moveBack() {
 		mouse = null;
-		offX = 0; offY = 0;
+		//offX = 0; offY = 0;
 	}
 
 	@Override
