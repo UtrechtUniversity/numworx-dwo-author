@@ -16,6 +16,7 @@ import fi.euclides.openmath.LocusModelF;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.proof.LabelValue;
 import fi.euclides.util.Observable;
+import fi.euclides.util.Observer;
 
 public class LocusModelFX extends LocusModelF {
 
@@ -50,11 +51,32 @@ public class LocusModelFX extends LocusModelF {
 	}
 
 	AbstractViewer tracker;
-	class HSegment extends Segment implements PointOnAlgorithm<Lijn> {
+	class HSegment extends Segment implements PointOnAlgorithm<Lijn>, Observer {
+
+		{ 
+			tracker.addObserver(this);
+		}
+		
+		@Override
+		public void update(Observable o, Object arg) {
+			// TODO Auto-generated method stub
+			super.update(o, arg);
+		}
+
+		@Override
+		public boolean isDefined() {
+			return true;
+		}
 
 		@Override
 		public PointOnAlgorithm<Lijn> getAlgo() {
 			return this;
+		}
+
+		@Override
+		public void destroy() {
+			tracker.deleteObserver(this);
+			super.destroy();
 		}
 
 		@Override
@@ -110,9 +132,10 @@ public class LocusModelFX extends LocusModelF {
 		this.tracker = tracker.adapt(AbstractViewer.class);
 		Punt O = mapper.getO();
 		Punt U = mapper.getU();
-		//O.addObserver(this); changes in O propagates to U
+		O.addObserver(this); //changes in O propagates to U
 		U.addObserver(this);
 		xas = new HSegment();
+		xas.addObserver(this);
 		source = xas.pointOn(Numbers.ZERO, Numbers.ONE);
 		LabelDelegate coordX = new XCoord();
 		Destroyable depend[] = coordX.createDepend();
@@ -125,6 +148,7 @@ public class LocusModelFX extends LocusModelF {
 		super.createY(f, tracker);
 		output.add(mapper.getU());
 		output.add(mapper.getO());
+		output.add(xas);
 	}
 
 	@Override
