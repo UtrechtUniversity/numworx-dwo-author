@@ -157,15 +157,25 @@ public class LocusModelFX extends LocusModelF {
 		Punt U = mapper.getU();
 		O.deleteObserver(this);
 		U.deleteObserver(this);
+		xas.deleteObserver(this);
 		x.destroy();
 		source.destroy();
 		dest.destroy();
 	}
 
 	public void update(Observable observable, Object arg) {
+		if(arg == Label.DESTROY) {
+			for(Destroyable d: output) {
+				d.deleteObserver(this);
+			}
+		}
 		if(output.contains(observable))
 		{	setChanged();
 			notifyObservers(arg);
+		}
+		if(arg == Label.DESTROY) {
+			output.clear();
+			destroy();
 		}
 	}
 
