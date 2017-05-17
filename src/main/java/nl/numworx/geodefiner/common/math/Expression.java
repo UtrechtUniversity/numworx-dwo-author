@@ -7,7 +7,11 @@ import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.event.NameMapper;
 import fi.euclides.event.Tracker;
+import fi.euclides.expr.DestroyDependency;
 import fi.euclides.expr.InterpretException;
+import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.formuleobjects.ParseException;
+import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
@@ -147,6 +151,34 @@ public class Expression extends fi.euclides.openmath.Expression {
 			copy(oma, mapper, depend);
 			return new GroupOf(depend, this, mapper);
 		}
+		if (Definitions.TEXT.isSame(func)) {
+			Destroyable depend[] = new Destroyable[2];
+			copy(oma, mapper, depend);
+			if(depend[1] instanceof Punt && depend[0] instanceof Label) {
+				Label t = (Label) depend[0];
+				t.setP((Punt) depend[1]);
+				depend[1].addObserver(new DestroyDependency(t));
+				if( "".equals(t.getSubKey())) {
+					String plain = t.getString();
+					if(plain.contains("{") && plain.contains("}"))
+					{
+						plain = plain.replace("{", "\",").replace("}",",\"");
+						FormuleParser parser = new FormuleParser("[\""+plain+"\"]");
+						try {
+							OMObject obj = parser.bracket();
+							depend[0] = interpret(obj, t, mapper);
+						} catch (ParseException e) {
+							// log.fine(e.toString())
+							;
+						} catch (TokenMgrError tme) {							
+						}
+					}
+				}
+				return depend[0];
+
+			}
+		}
+		
 		if (OMConstants.LIST2_LIST_SELECTOR.isSame(func)) {
 			// map(f,1..n)_i === f(i)
 			// [a1,a2,a3,a4]_i === a_i
