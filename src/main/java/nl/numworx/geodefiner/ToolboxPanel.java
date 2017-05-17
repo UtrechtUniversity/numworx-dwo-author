@@ -52,6 +52,7 @@ import fi.euclides.event.AddSpiegelHandler;
 import fi.euclides.event.AddTriangleHandler2;
 import fi.euclides.event.DestroyHandler;
 import fi.euclides.event.SelectHandler;
+import fi.euclides.expr.TrailHandler;
 import fi.euclides.proof.AfstandHandler;
 import fi.euclides.proof.HoekHandler;
 import fi.euclides.proof.OppHandler;
@@ -60,7 +61,6 @@ import fi.euclides.swing.AWTViewer;
 import fi.euclides.swing.CirkelAction;
 import fi.euclides.swing.PanHandler;
 import fi.euclides.swing.PuntAction;
-import fi.euclides.swing.TrailAction;
 import fi.euclides.util.Messages;
 import fi.euclides.swing.XXXAction;
 
@@ -217,7 +217,15 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 			vbox.add(createCheckBox(action));
 		}
 	}
-	
+
+	class TrailAction extends XXXAction {
+
+		public TrailAction(String name, AWTViewer viewer) {
+			super(name, null, new TrailHandler(name), viewer);
+		}
+
+	}
+
 	ToolboxPanel() {
 		super(new BorderLayout());
 		setName("Toolbox");
