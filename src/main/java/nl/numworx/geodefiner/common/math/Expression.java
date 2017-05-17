@@ -3,6 +3,8 @@ package nl.numworx.geodefiner.common.math;
 import nl.numworx.geodefiner.common.Definitions;
 import nl.numworx.geodefiner.common.GroupOf;
 import nl.numworx.geodefiner.common.Polygon;
+import nl.numworx.geodefiner.common.State;
+import nl.numworx.geodefiner.common.index.ListSelector;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.event.NameMapper;
@@ -14,18 +16,24 @@ import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Groep;
 import fi.euclides.model.Label;
 import fi.euclides.model.Model;
+import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
+import fi.euclides.model.PuntOp2;
 import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
+import fi.euclides.model.VrijPunt;
+import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.OMConstants;
 import fi.euclides.proof.HoekHandler;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.proof.LabelValue;
 import fi.euclides.util.DComparator;
+import fi.euclides.util.DefaultAdapter;
 
 public class Expression extends fi.euclides.openmath.Expression {
 
@@ -102,15 +110,69 @@ public class Expression extends fi.euclides.openmath.Expression {
 		}
 	}
 
+	
+	Punt createPunt(Destroyable[] depend, NameMapper mapper) {
+		Destroyable arg0 = depend[0];
+		Destroyable arg1;
+		Punt p = null;
+		if(depend[1] == null) {
+			LabelDelegate d = CONST;
+			Label l = d.define(Label.EMPTY);
+			l.setValue(Numbers.ZERO);l.setString("0");
+			arg1 = l;
+		} else 
+			arg1 = depend[1];
+		if(arg0 instanceof Label && arg1 instanceof Label) {
+//$P := point(1,2)
+			Label ix = (Label) arg0; // toNumber(object)
+			Label iy = (Label) arg1;
+			p = new Coordinaten(ix, iy, mapper.getO(), mapper.getU());
+			if(depend[2] instanceof OpObject) {
+//$P := point(1, 2, $lijn)
+				Destroyable on = depend[2];
+				OpObject op = (OpObject) on;
+				p.destroy();
+				p = op.pointOn(p.getX(), p.getY());
+			} else {
+
+			}
+		} else {
+//			model.clearSelection();
+//			model.toggle(arg0);
+//			model.toggle(arg1);
+//			p = model.buildPunt(Numbers.ZERO, Numbers.ZERO);
+//			model.clearSelection();
+//			if ( p instanceof PuntOp2 && depend.length == 3)
+//			{	PuntOp2 p2 = (PuntOp2)p;
+//				Destroyable arg2 = depend[2];
+//				if(arg2 instanceof Label) {
+//					byte b = (byte) ((Label) arg2).value.doubleValue();
+//					p2.setFuse(b);
+//					p2.update(arg0, arg1);
+//				}
+//			}
+//			if (p instanceof VrijPunt) { 
+//				p.destroy();
+//				p = null;
+//			}
+		}
+		if(p == null) {
+			throw new InterpretException("wrong point");
+		}
+		return p;		
+	}
+	
+	
+	
 	@Override
 	public Destroyable copyOMA(Label l, OMObject o, NameMapper mapper) {
 		OMApplication oma = (OMApplication)o;
 		OMObject func = oma.firstElement();
 		Model model = toc.getTracker().getModel();
 		if(Definitions.POINT.isSame(func)) {
-			Label depend[] = new Label[2];
+			Destroyable depend[] = new Destroyable[3];
 			copy(oma, mapper, depend);
-			return new Coordinaten(depend[0], depend[1], mapper.getO(), mapper.getU());
+			return createPunt(depend, mapper);
 		}
 		if(Definitions.LINE.isSame(func)) {
 			Punt depend[] = new Punt[2];
@@ -180,6 +242,11 @@ public class Expression extends fi.euclides.openmath.Expression {
 		}
 		
 		if (OMConstants.LIST2_LIST_SELECTOR.isSame(func)) {
+			Destroyable depend[] = new Destroyable[2];
+			copy(oma, mapper, depend);
+			if(depend[0] instanceof Groep && depend[1] instanceof Label) {
+				return new ListSelector((Groep)depend[0], (Label)depend[1]).get();
+			}
 			// map(f,1..n)_i === f(i)
 			// [a1,a2,a3,a4]_i === a_i
 			// f_i == f(i)

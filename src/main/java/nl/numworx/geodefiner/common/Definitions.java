@@ -357,10 +357,6 @@ public class Definitions implements Observer /*, ListModel*/ {
 					installConfig(new CELL(text, groep, var), config);
 					return;
 				}
-				
-				
-				
-				
 				destroy(depend);
 // $w := 1+2
 				}

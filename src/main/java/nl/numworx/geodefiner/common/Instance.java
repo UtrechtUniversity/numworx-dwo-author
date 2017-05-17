@@ -64,6 +64,11 @@ public abstract class Instance /*implements Observer*/ {
 					return;
 				}
 			}
+			if (click && testLabel && l.getRegistered() instanceof Animator) {
+				Animator anima = (Animator) l.getRegistered();
+				anima.command();
+				return;
+			}
 			if (!click && getTrack() == null && l.adapt(StepValue.class) != null) {
 				setTrack(new IntervalLabelTrack(l, lastx, lasty));
 				return;

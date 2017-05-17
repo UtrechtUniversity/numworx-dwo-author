@@ -1,17 +1,21 @@
 package nl.numworx.geodefiner.common;
 
 import fi.euclides.event.Tracker;
+import fi.euclides.expr.DestroyDependency;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
 import fi.euclides.model.Segment;
+import fi.euclides.model.ZwaartePunt;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.proof.LabelTester;
+import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 import fi.euclides.util.Timer;
 
-public class Animator implements Observer {
+public class Animator extends LabelTester implements Observer {
 	final public Animate animate;
 	final public int interval;
 
@@ -22,22 +26,34 @@ public class Animator implements Observer {
 	private Numbers Xstep = Numbers.ONE;
 	private volatile boolean dir;
 	private volatile T running;
+	private Label button;
 	
 	private class T extends Timer {
 		@Override
 		public void run() {
 			do1step();
-			tracker.paint();
+			getTracker().paint();
 		}
 	}
 	
-	private Tracker tracker;
 	private int period;
+	private Align align = Align.BOTTOM;
 	
-	public Animator(Animate animate, int interval) {
+	public Animator(Animate animate, int interval, Tracker tracker, Align align) {
+		super("animate");
+		setTracker(tracker);
 		this.animate = animate;
 		this.interval = interval;
+		this.align = reverse(align);
 		dir = animate != Animate.SAW;
+	}
+
+	private Align reverse(Align other) {
+		switch(other) {
+		case BOTTOM: return Align.TOP;
+		case TOP: case BASE: return Align.BOTTOM;
+		}
+		return align;
 	}
 
 	public synchronized void start() {
@@ -45,6 +61,7 @@ public class Animator implements Observer {
 		{
 			running = new T();
 			running.scheduleRepeating(period);
+			button.setString("||");
 		}
 	}
 	
@@ -52,6 +69,7 @@ public class Animator implements Observer {
 		if(running != null) {
 			running.cancel();
 			running = null;
+			button.setString("\u25B6");
 		}
 	}
 	
@@ -90,7 +108,19 @@ public class Animator implements Observer {
 			}
 			Pmax.addObserver(this);
 			Pmin.addObserver(this);
-			tracker = label.getRegistered().getTracker();
+			ZwaartePunt p = new ZwaartePunt(s);
+			button = define(Label.EMPTY);
+			p.addObserver(new DestroyDependency(button));
+			button.setString("\u25B6");
+			button.setP(p);
+			DefaultAdapter.getDefault(button).put(align);
+			getTracker().getModel().add(button);
+		} else {
+			if(button != null)
+			{
+				button.destroy();
+				button = null;
+			}
 		}
 	}
 		
@@ -135,5 +165,22 @@ public class Animator implements Observer {
 			Xmin = Pmin.getX();
 		}
  	}
+
+	@Override
+	public Destroyable[] createDepend() {
+		return Label.EMPTY;
+	}
+
+	@Override
+	protected boolean test(Label l) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean define(Label l) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
