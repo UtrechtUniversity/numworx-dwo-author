@@ -2,6 +2,7 @@ package nl.numworx.geodefiner;
 
 import java.util.Collections;
 import java.util.EventListener;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.swing.event.ListDataListener;
 import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.Randomizer;
+import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.common.Volgpunt;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.tue.win.riaca.openmath.lang.OMObject;
@@ -270,11 +272,23 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
 		return config;
 	}
 
+	private Map<String,Object> installMap = Collections.EMPTY_MAP;
+	
+	
 	protected void installConfig(CELL cell, Map<String, ?> config, String name) {
-		int s = getSize();
+		//int s = getSize();
+
+		UIModel<?, ?> build = factory.build(cell.item);
+		if(build.toString().equals(installMap.get("class")))
+		{ 
+			Map<String,Object> cfg = new HashMap<String,Object>(installMap);
+			if(config != null) cfg.putAll(config);
+			config = cfg;
+		}
+		
 		if(config != null && !config.isEmpty()) {
 			ObjectMap cellConfig = JSONUtilities.wrapMap(config);
-			cell.config = factory.build(cell.item);
+			cell.config = build;
 			cell.config.fromMap(cellConfig);
 			cell.config.install();
 			if(cellConfig.containsKey("list.position"))
@@ -285,10 +299,22 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
 			if(cell.item instanceof Label) {
 				Label label = (Label)cell.item;
 				if( label.getP() instanceof Volgpunt || label.getRegistered() instanceof Interval)
-					cell.config = factory.build(cell.item); // save dx,dy in configuration
+					cell.config = build; // save dx,dy in configuration
 			}
 		}
 		super.installConfig(cell, config, name);
+	}
+
+	/* (non-Javadoc)
+	 * @see nl.numworx.geodefiner.common.Definitions#define(java.lang.String, nl.tue.win.riaca.openmath.lang.OMObject)
+	 */
+	public void define(String text, OMObject object, Map<String,Object> initalmap) {
+		try { 
+			installMap = initalmap;
+			define(text,object);
+		} finally {
+			installMap = Collections.EMPTY_MAP;
+		}
 	}
 
 

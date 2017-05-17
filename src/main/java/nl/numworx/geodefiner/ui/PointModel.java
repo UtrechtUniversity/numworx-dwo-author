@@ -53,4 +53,8 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 	public UIModel<Destroyable, UIEditor> init(Destroyable item) {
 		return super.init(item);
 	}
+	
+	public String toString() {
+		return "point";
+	}
 }

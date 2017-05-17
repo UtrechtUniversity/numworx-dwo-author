@@ -26,6 +26,9 @@ public class TextModel extends ColorModel<Label> {
 	public boolean isAlwaysF() {
 		return Boolean.TRUE.equals(alwaysF);
 	}
+	public String toString() {
+		return "text";
+	}
 
 	public boolean isHerleid() {
 		return isAlwaysF() && Boolean.TRUE.equals(herleid);

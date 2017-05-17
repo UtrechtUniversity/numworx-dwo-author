@@ -9,7 +9,9 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -21,6 +23,7 @@ import javax.swing.event.ListDataListener;
 import nl.numworx.geodefiner.Definitions.PosConvert;
 import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.common.Randomizer;
+import nl.numworx.geodefiner.common.UIModel;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.model.AbstractViewer;
 
@@ -40,7 +43,15 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener, PosConve
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			String text = cellItem.getCell().text;
-			DefinitionPanel.this.firePropertyChange("command", null, text);
+			UIModel<?, ?> config = cellItem.getCell().config;
+			Object map = config == null ? Collections.EMPTY_MAP : toMap(config);
+			DefinitionPanel.this.firePropertyChange("command", map, text);
+		}
+
+		private Map<String, Object> toMap(UIModel<?, ?> config) {
+			Map<String, Object> map = config.toMap();
+			map.put("class", config.toString());
+			return map;
 		}
 
 		@Override
@@ -110,6 +121,7 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener, PosConve
 	Randomizer randomizer = new Randomizer() {
 		public String randomize(String input) { return input; }
 	};
+	private Map<String, Object> config = Collections.EMPTY_MAP;
 	
 	DefinitionPanel(Definitions model, AbstractViewer viewer) {
 		super(new BorderLayout());
@@ -131,10 +143,15 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener, PosConve
 			remove(source);
 			return;
 		}
-		String text = (String) evt.getOldValue();
-		OMObject object = (OMObject) evt.getNewValue();
-		model.define(text, object);
-		model.redefine(randomizer);
+		if("command".equals(name))
+		{ 	String text = (String) evt.getOldValue();
+			OMObject object = (OMObject) evt.getNewValue();
+			model.define(text, object, config);
+			model.redefine(randomizer);
+		}
+		if("config".equals(name)) {
+			config = (Map<String, Object>) evt.getNewValue();
+		}
 	}
 
 	void remove(CellItem source) {

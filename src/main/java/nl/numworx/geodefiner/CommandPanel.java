@@ -34,6 +34,8 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 	//@Inject
 	nl.numworx.geodefiner.Instance instance;
 
+	private Object config;
+
 
 	CommandPanel() {
 		super(new BorderLayout());
@@ -79,6 +81,9 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 	public void propertyChange(PropertyChangeEvent evt) {
 		if("command".equals(evt.getPropertyName())) {
 			String cmd = (String) evt.getNewValue();
+			Object config = evt.getOldValue();
+			firePropertyChange("config", this.config, config);
+			this.config = config;
 			editor.formuleVak.vulVak(cmd);
 		}
 	}

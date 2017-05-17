@@ -12,7 +12,11 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 class SegmentModel extends LineModel {
 
 	Tips tip = Tips.NOTIP;
-	
+
+	public String toString() {
+		return "segment";
+	}
+
 	@Override
 	public UIModel<Destroyable, UIEditor> init(Lijn item) {
 		return super.init(item);

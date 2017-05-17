@@ -18,6 +18,10 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 	ColorChooser  chooser;
 	FormuleEditor  visibilityEditor;
 
+	public String toString() {
+		return "*";
+	}
+	
 	public ColorPane(T model) {
 		visibilityEditor = new FormuleEditor(false);
 		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);

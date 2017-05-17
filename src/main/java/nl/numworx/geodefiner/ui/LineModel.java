@@ -21,6 +21,10 @@ public class LineModel extends ColorModel<Destroyable> {
 		return super.init(item);
 	}
 
+	public String toString() {
+		return "line";
+	}
+
 	public Map<String, Object> toMap() {
 		Map<String, Object> map = super.toMap();
 		map.put("width", Double.valueOf(width)); // float not supported?

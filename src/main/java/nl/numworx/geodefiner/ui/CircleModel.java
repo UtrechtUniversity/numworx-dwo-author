@@ -17,6 +17,10 @@ public class CircleModel extends LineModel {
 	static final Color TRANSPARANT = new Color(0, true);
 	
 	public Paint fill = TRANSPARANT;
+
+	public String toString() {
+		return "circle";
+	}
 	
 	public UIModel<Destroyable, UIEditor> init(Cirkel item) {
 		return super.init(item);

@@ -137,6 +137,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		checkDWO.setTracker(instance.getViewer());
 // 
 		command.addPropertyChangeListener("command", definition);
+		command.addPropertyChangeListener("config", definition);
 		command.addPropertyChangeListener("feedback", this);
 		checkObjects.addPropertyChangeListener("feedback", this);
 		definition.addPropertyChangeListener("command", command);

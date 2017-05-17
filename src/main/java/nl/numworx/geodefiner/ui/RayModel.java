@@ -13,6 +13,10 @@ public class RayModel extends SegmentModel {
 			default:
 		}
 	}
+
+	public String toString() {
+		return "halfline";
+	}
 	
 	@Override
 	public void fromMap(ObjectMap map) {
