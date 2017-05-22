@@ -23,6 +23,10 @@ public class Triangle extends MP {
 		return depend;
 	}
 	
+	public Punt[] getElements() {
+		return depend;
+	}
+	
 	@Override
 	public PointOnAlgorithm<MP> getAlgo() {
 		return PointInTriangle.INSTANCE;

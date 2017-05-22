@@ -39,7 +39,7 @@ public class XXXAction extends AbstractAction implements Observer {
 			putValue(LARGE_ICON_KEY, icn);
 			
 		} 
-		//putValue(SHORT_DESCRIPTION, "dit is een tooltip");
+		putValue(SHORT_DESCRIPTION, name);
 		this.handler = handler;
 		handler.setTracker(viewer);
 		this.viewer = viewer;
