@@ -388,8 +388,13 @@ public class Definitions implements Observer /*, ListModel*/ {
 					     f = locus;
 					     CELL c = new CELL(text, f, var);
 					     installConfig(c, config, name);
-					} else
+					} else {
+// f(x)=point(g(x),h(x)) / is depend h en g
+						List<Destroyable> depend = LocusModelF.varsOf(l);
+						for(Destroyable d:depend) d.addObserver(new DestroyDependency(f));
+
 						installConfig(new CELL(text, f, var), config);
+					}
 					return;
 				}
 			} else if ( first.isSame(OMConstants.RELATION1_EQ)) {
