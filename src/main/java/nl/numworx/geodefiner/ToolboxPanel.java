@@ -160,26 +160,29 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	void createActions() {
 		actions.clear();
 
-		actions.setSize(1);
+		actions.setSize(7);
 		actions.set(SELECTOR, new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer));
-		
+		actions.set(POINT, new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddPuntHandler(),viewer));
+
+		actions.set(LINE, new XXXAction(Messages.getString("Euclides.50"), "/line.png", new AddLijnHandler(AddLijnHandler.LINE),viewer));
+		actions.set(HALFLINE, new XXXAction(Messages.getString("Euclides.49"), "/ray.png", new AddLijnHandler(AddLijnHandler.RAY),viewer));
+		actions.set(SEGMENT, new XXXAction(Messages.getString("Euclides.48"), "/segment.png", new AddLijnHandler(AddLijnHandler.SEGMENT),viewer));
+
+		actions.set(PERPENDICULAR, new XXXAction(Messages.getString("Euclides.56"), "/plumb.png", new AddLoodLijnHandler(),viewer));
+		actions.set(PARALLEL, new XXXAction(Messages.getString("Euclides.58"), "/parallel.png", new AddParallelHandler(),viewer));
+
 		
 		XXXAction xaction=new XXXAction(Messages.getString("Euclides.41"), "/pan.png", new PanHandler(Messages.getString("Euclides.41"), viewer), viewer);
 		xaction.cursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
 		actions.add(xaction);
-		actions.add(new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddPuntHandler(),viewer));
-		actions.add(new XXXAction(Messages.getString("Euclides.50"), "/line.png", new AddLijnHandler(AddLijnHandler.LINE),viewer));
-		actions.add(new XXXAction(Messages.getString("Euclides.48"), "/segment.png", new AddLijnHandler(AddLijnHandler.SEGMENT),viewer));
+		
 		actions.add(new XXXAction("Driehoek", "/triangle.png", new AddTriangleHandler2(), viewer));
 		actions.add(new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer));
 
 		actions.add(new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new DestroyHandler(),viewer));
 
-		actions.add(new XXXAction(Messages.getString("Euclides.49"), "/ray.png", new AddLijnHandler(AddLijnHandler.RAY),viewer));
 		actions.add(new XXXAction("Boog", "/angle.png", new AddBoogHandler("Boog"),viewer));
 		actions.add(new XXXAction(Messages.getString("Euclides.54"), "/midpoint.png", new AddMiddelPuntHandler(),viewer));
-		actions.add(new XXXAction(Messages.getString("Euclides.56"), "/plumb.png", new AddLoodLijnHandler(),viewer));
-		actions.add(new XXXAction(Messages.getString("Euclides.58"), "/parallel.png", new AddParallelHandler(),viewer));
 		actions.add(new XXXAction(Messages.getString("Euclides.60"), "/bissectrice.png", new AddBissectriceHandler(),viewer));
 		actions.add(new XXXAction(Messages.getString("Euclides.62"), "/mirror.png", new AddSpiegelHandler(), viewer));
 		actions.add(new XXXAction("Kegelsnede", "/quadric.png", new AddKegelsnedeHandler("Kegelsnede"), viewer));

@@ -558,7 +558,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			Color c = a.adapt(Color.class);
 			if (c != null) {
 				if (getModel().getSelect().contains(object))
-					g.setColor(c.brighter());	// grijs wordt wit...			
+					g.setColor(c.brighter());	// grijs wordt wit...		
+					//g.setColor(Color.red);
 				else
 					g.setColor(c);
 				return;
@@ -738,7 +739,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		public void visitTriangle(Triangle t)
 		{
-			Punt[] depend = (Punt[]) t.getDepend();
+			Punt[] depend = t.getElements();
 			int length = depend.length;
 			Path2D path = new Path2D.Double(Path2D.WIND_EVEN_ODD, length+1);
 			path.moveTo(depend[0].getXd(), depend[0].getYd());
