@@ -1,85 +1,82 @@
 package nl.numworx.geodefiner.common.index;
 
-import java.io.IOException;
-
-import fi.euclides.model.Codec;
 import fi.euclides.model.Destroyable;
-import fi.euclides.model.Groep;
-import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
+import fi.euclides.model.PuntenLijn;
+import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 
-class LijnIndex extends Lijn implements Indexed {
+class LijnIndex extends PuntenLijn implements Indexed<Lijn> {
 
+	private Lijn delegate;
+	private boolean defined;
+	private ListSelector selector;
+	
+	LijnIndex(ListSelector s) {
+		super(new VrijPunt(), new VrijPunt());
+		selector = s;
+	}
+	
 	@Override
-	public Destroyable asDestroyable() {
+	public Lijn asDestroyable() {
 		return this;
 	}
 
 	@Override
-	public void setGrp(Groep grp) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setIdx(Label idx) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void recalc() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public Numbers getX1n() {
-		// TODO Auto-generated method stub
-		return null;
+		return delegate.getX1n();
 	}
 
 	@Override
 	public Numbers getX2n() {
-		// TODO Auto-generated method stub
-		return null;
+		return delegate.getX2n();
 	}
 
 	@Override
 	public Numbers getY1n() {
-		// TODO Auto-generated method stub
-		return null;
+		return delegate.getY1n();
 	}
 
 	@Override
 	public Numbers getY2n() {
-		// TODO Auto-generated method stub
-		return null;
+		return delegate.getY2n();
 	}
 
 	@Override
 	public boolean isDefined() {
-		// TODO Auto-generated method stub
-		return false;
+		return defined;
 	}
 
 	@Override
-	public String key() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setDelegate(Lijn d) {
+		delegate = d;		
 	}
 
 	@Override
-	public void write(Codec codec) throws IOException {
-		// TODO Auto-generated method stub
-
+	public Lijn getDelegate() {
+		return delegate;
 	}
 
 	@Override
-	public void read(Codec codec) throws IOException {
-		// TODO Auto-generated method stub
+	public void changed() {
+		getP1().setXY(delegate.getX1n(), delegate.getY1n());
+		getP2().setXY(delegate.getX2n(), delegate.getY2n());
+		setChanged();
+	}
 
+	@Override
+	public void setDefined(boolean defined) {
+		this.defined = defined;
+	}
+
+	@Override
+	public void destroy() {
+		delegate.deleteObserver(selector);
+		super.destroy();
+	}
+
+	public Destroyable[] getDepend() {
+		return selector.getDepend();
 	}
 
 }

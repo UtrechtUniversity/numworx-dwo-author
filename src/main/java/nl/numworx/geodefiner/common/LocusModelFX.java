@@ -1,13 +1,11 @@
 package nl.numworx.geodefiner.common;
 
 import fi.euclides.event.Tracker;
-import fi.euclides.expr.Coord;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Punt;
-import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Segment;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.algo.PointOnAlgorithm;
@@ -155,8 +153,8 @@ public class LocusModelFX extends LocusModelF {
 	public void destroy() {
 		Punt O = mapper.getO();
 		Punt U = mapper.getU();
-		O.deleteObserver(this);
-		U.deleteObserver(this);
+		if(O!=null) O.deleteObserver(this);
+		if(U!=null) U.deleteObserver(this);
 		xas.deleteObserver(this);
 		x.destroy();
 		source.destroy();

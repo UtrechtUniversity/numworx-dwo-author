@@ -270,7 +270,11 @@ public class Definitions implements Observer /*, ListModel*/ {
 						model.add(t3);
 					}
 					else
-						t3 = model.buildTriangle(depend);
+						if(depend.length == 1 && depend[0] instanceof Groep)
+						{	t3 = new GroepPolygon((Groep) depend[0]);
+							model.add(t3);
+						} else
+							t3 = model.buildTriangle(depend);
 					installConfig(new CELL(text, t3, var), config);
 					return;				
 				}
