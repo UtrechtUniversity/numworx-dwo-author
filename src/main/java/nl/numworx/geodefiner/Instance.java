@@ -45,6 +45,7 @@ import javax.swing.ToolTipManager;
 
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.CELL;
+import nl.numworx.geodefiner.common.CheckObject;
 import nl.numworx.geodefiner.common.Check_DWO;
 import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
@@ -127,6 +128,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			else if(status.booleanValue())
 				putValue(LARGE_ICON_KEY, current = goed);
 			else putValue(LARGE_ICON_KEY, current = fout);
+			if(checkObjects != null)
+				checkObjects.feedback();
 		}
 
 
@@ -561,9 +564,18 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 					g.setColor(c.brighter());	// grijs wordt wit...		
 					//g.setColor(Color.red);
 				else
+				{
 					g.setColor(c);
+				}
 				return;
 			}
+// feedback color.
+			CheckObject co = a.adapt(CheckObject.class);
+			if(co != null)
+			{   // extra verificatie?
+				g.setColor(Color.green);
+			} else
+
 			super.selectColor(object);
 		}
 		
@@ -955,6 +967,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void destroy() {
+		if(checkObjects != null) checkObjects.destroy();
 		getViewer().getModel().destroyAll();
 	}
 
@@ -1012,7 +1025,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void stop() {
-
+		if(checkObjects != null) checkObjects.stop();
 	}
 
 	@Override
@@ -1072,13 +1085,16 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	protected boolean installCheckDWO() {
 		if  (super.installCheckDWO())
 		{
-			action = new KijkNaAction();
-			checkBtn.addActionListener(action);
+			if(action == null)
+			{	action = new KijkNaAction();
+				checkBtn.addActionListener(action);
+				action.addPropertyChangeListener(this);
+			}
 			checkBtn.setVisible(!checkDWO.isExtern());
-			action.addPropertyChangeListener(this);
 			checkLabel.setIcon(action);
 			checkLabel.setVisible(true);
 			checkDWO.addObserver(action);
+			action.update(checkDWO, null);
 			checkBtn.invalidate();
 			checkLabel.invalidate();
 			panel.validate();
@@ -1108,6 +1124,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		startToolbox();
 		super.start();
 		getDefinitions().readonly = viewer.getModel().getIndex();
+		if(checkObjects != null)
+			checkObjects.start();
 	}
 
 	void startToolbox() {
