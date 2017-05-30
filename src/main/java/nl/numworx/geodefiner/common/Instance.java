@@ -47,6 +47,8 @@ public abstract class Instance /*implements Observer*/ {
 	protected Definitions definitions;
 	protected Tracker viewer;
 	protected boolean nagekeken;
+	protected CheckObjectList checkObjects;
+	
 	//protected int width, height;
 	
 	protected final SelectHandler selector = new SelectHandler() {
@@ -169,7 +171,19 @@ public abstract class Instance /*implements Observer*/ {
 		installPositions(); // Prepare the rest
 		installCheckDWO();
 		installToolbox();
+		installCheckObjects();
 		installPrepare();
+	}
+
+	protected void installCheckObjects() {
+		ObjectList list = launchData.getObjectList("checkObjects");
+		if(list != null && list.size() > 0) {
+			checkObjects = new CheckObjectList(viewer);
+			checkObjects.fromList(list);
+			if(checkObjects.getMaxScore() == 0) 
+				checkObjects = null;
+		}
+		fetchScore();
 	}
 
 	List<Destroyable> resetItems;
@@ -465,11 +479,20 @@ public abstract class Instance /*implements Observer*/ {
 	}
 
 	protected void fetchScore() {
-		score = checkDWO.getScore(); // + checkObjects.getScore();
-		status = checkDWO.isStatus(); // && checkObjects.isStatus();
+		score = checkDWO.getScore();
+		status = checkDWO.isStatus(); 
+		if(checkObjects != null) {
+			checkObjects.verify();
+			score += checkObjects.getScore();
+			if(Boolean.TRUE == status) {
+				status = checkObjects.isStatus();
+			}
+		}
 	}
+
 	public int getMaxScore() {
-		return checkDWO.getMaxScore();
+		return checkDWO.getMaxScore() +
+			(checkObjects == null ? 0 : checkObjects.getMaxScore());
 	}
 
 	public void start() {

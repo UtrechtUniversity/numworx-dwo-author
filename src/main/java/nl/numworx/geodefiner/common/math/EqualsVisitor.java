@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.common.math;
 
+import fi.euclides.event.NameMapper;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
@@ -17,7 +18,7 @@ import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.math.Numbers;
 
-class EqualsVisitor implements Visitor {
+public class EqualsVisitor implements Visitor {
 
 	private static Numbers bracket(Numbers x1, Numbers y1, Lijn l) {
 		Numbers x2 = l.getX1n();
@@ -32,18 +33,30 @@ class EqualsVisitor implements Visitor {
 	}
 
 	
-	private Tracker tracker;
+	private NameMapper model;
+
 	private Numbers getScale() {
-		Model model = tracker.getModel();
 		return Numbers.abs(Numbers.sub(model.getO().getX(), model.getU().getX()));
 	}
 
 	Numbers test = Numbers.ONE;
 	Destroyable b;
 	
-	EqualsVisitor(Destroyable b, Tracker t) {
+	public void reset() {
+		test = Numbers.ONE;
+	}
+
+	public Numbers test() {
+		return test;
+	}
+	
+	public EqualsVisitor(Destroyable b, Tracker t) {
 		this.b = b;
-		tracker = t;
+		model = t.getMapper();
+	}
+	public EqualsVisitor(Destroyable b, NameMapper m) {
+		this.b = b;
+		this.model = m;
 	}
 
 	@Override

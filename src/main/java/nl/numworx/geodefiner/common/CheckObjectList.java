@@ -1,27 +1,35 @@
 package nl.numworx.geodefiner.common;
 
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import nl.numworx.geodefiner.common.math.Expression;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.Tracker;
+import fi.euclides.model.Destroyable;
+import fi.euclides.model.Groep;
 import fi.euclides.model.Label;
+import fi.euclides.openmath.Expression;
+import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
-public class CheckObjectList implements Observer {
+public class CheckObjectList extends Groep implements Observer {
 	protected final Vector<CheckObject> list = new Vector<CheckObject>();
 	protected Set<CheckObject> running = new HashSet<CheckObject>();
+	protected Map<Destroyable,CheckObject> userItems = new HashMap<Destroyable,CheckObject>();
+	private int userIndex;
 	
 	final private Tracker tracker;
 	private Expression expression;
 	
 	public CheckObjectList(Tracker tracker) {
 		this.tracker = tracker;
-		expression = new Expression(tracker);
+		expression = tracker.adapt(Expression.class);
 	}
 
 	public int getSize() {
@@ -48,28 +56,64 @@ public class CheckObjectList implements Observer {
 		int s = getSize();
 		for(int i = 0; i < s; i++) {
 			CheckObject co = list.elementAt(i);
-			if(co.cache != null) {
-				co.cache.deleteObserver(this);
-				co.cache = null;
-				co.present = Label.FALSE;
-			}
+			co.destroy();
 		}
 		list.clear();
 	}
 
 	@Override
 	public void update(Observable observable, Object arg) {
-		if (observable == tracker.getModel()) {
-			// arg is a new object
-			
+		if (observable == tracker.getModel()) { // something added
+			if(arg instanceof Destroyable) {
+				Destroyable d = (Destroyable)arg;
+				userItems.put(d,null);
+				d.addObserver(this);
+				Iterator<CheckObject> i = running.iterator();
+				while(i.hasNext()) {
+					CheckObject co = i.next();
+					if(co.getCache() == null) {
+						co.createObject(expression, tracker.getMapper(), tracker.adapt(Randomizer.class));
+					}
+					if(co.verify(d))
+					{	co.addObserver(this);
+						i.remove();
+						break;
+					}
+				}
+			}
+		} else if(arg == Destroyable.DESTROY) {
+			observable.deleteObserver(this);
+			CheckObject co = findCO(observable);
+			if(co != null) 
+			{	co.deleteObserver(this);
+				co.destroy();
+				running.add(co);
+			}
+			userItems.remove(observable);
+		} else if(arg == null) {
+			CheckObject co = findCO(observable);
+			if (co != null && !co.verify() ) {
+				co.deleteObserver(this);
+				running.add(co);
+			}
 		}
 	}
 	
-	public Vector toList() {
-		Vector result = new Vector(list.size());
+	private CheckObject findCO(Observable observable) {
+		CheckObject result = observable.adapt(CheckObject.class);
+		if(result != null) return result;
+		for(CheckObject i: list) {
+			if(i.getItem() == observable)
+				return i;
+		}
+		return null;
+	}
+
+	public Vector<Map<String, ?>> toList() {
+		Vector<Map<String,?>> result = new Vector<Map<String,?>>(list.size());
 		Enumeration<CheckObject> e = list.elements();
 		while (e.hasMoreElements()) {
-			CheckObject checkObject = (CheckObject) e.nextElement();
+			CheckObject checkObject = e.nextElement();
 			result.add(checkObject.toMap());
 		}
 		return result;
@@ -83,9 +127,89 @@ public class CheckObjectList implements Observer {
 			co.fromMap(list.getObjectMap(i));
 			addElement(co);
 		}
+	}
+	
+	public int getMaxScore() {
+		int sum = 0;
+		for(CheckObject co: list) {
+			sum += co.getMaxScore();
+		}
+		return sum;
+	}
+	
+	public int getScore() {
+		int sum = 0;
+		for(CheckObject co: list) {
+			sum += co.getScore();
+		}
+		return sum;
+		
+	}
+
+	public Boolean isStatus() {
+		int s = getScore();
+		int m = getMaxScore();
+		if  ( s == m ) return Boolean.TRUE;
+		if  ( s == 0 ) return Boolean.FALSE;
+		return null;
+	}
+	
+	public void start() {
+		userIndex = tracker.getModel().getIndex();
+		tracker.getModel().addObserver(this);
 		
 	}
 	
+	public void stop() {		
+		tracker.getModel().deleteObserver(this);
+	}
+
+	public void feedback() {
+		for(CheckObject co: list) {
+			if(co.getItem() != null) {
+				DefaultAdapter.getDefault(co.getItem()).put(co);
+			}
+		}
+		tracker.paint();
+	}
 	
-	
+	public void removeFeedback() {
+		for(CheckObject co: list) {
+			if(co.getItem() != null) {
+				DefaultAdapter.getDefault(co.getItem()).put(CheckObject.class,null);
+			}
+		}
+		tracker.paint();
+	}
+
+	/**
+	 * Verify userItems.
+	 */
+	public void verify() {
+		Set<Destroyable> userItems = new HashSet<Destroyable>(this.userItems.keySet());
+		for(CheckObject co: list) {
+			if(co.verify()) { // side effect: adds to running if failed
+				userItems.remove(co.getItem());
+			}
+		}
+		
+		Iterator<CheckObject> i = running.iterator();
+		while (i.hasNext()) {
+			CheckObject co = i.next();
+			if(co.getItem() != null) {
+				i.remove(); // should not happen
+				
+			} else
+			for(Iterator<Destroyable> u = userItems.iterator(); u.hasNext(); ) {
+				Destroyable d = u.next();
+				if(co.verify(d))
+				{
+					co.addObserver(this);
+					i.remove();
+					u.remove();
+					break;
+				}
+			}
+		}
+	}
 }
