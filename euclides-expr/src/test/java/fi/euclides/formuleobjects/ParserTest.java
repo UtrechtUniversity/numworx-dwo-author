@@ -236,4 +236,12 @@ public class ParserTest extends TestCase {
 		assertNotNull(copy);
 		
 	}
+	
+	public void testSuchThat() throws Exception {
+		FormuleParser p = new FormuleParser("m=suchthat(1..2, x-> x > 2)");
+		OMObject result = p.parse();
+		assertNotNull(result);
+		System.out.println(result);
+		assertEquals("OMA", result.getType());
+	}
 }

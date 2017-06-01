@@ -192,13 +192,14 @@ TOKEN : /* VAKKEN */
 | < DEFINT: "$i" >
 | < PRV : "$q" >
 | < LIM : "$T" >
-}
+}
 TOKEN:
 {
   < GEODEFINER : ( "point" | "line" | "segment" | "text" | "circle" | "equals" | "halfline"
                  | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd"|"rnq"
                  | "sgf" | "binomcdf" | "binompdf" | "invNorm"| "normalcdf" | "poissoncdf" | "poissonpdf") >
 | < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln"|"log"|"sec"|"csc"|"cot") >
+| < SUCHTHAT : "suchthat" >
 | < MAP : "map" >
 | < COMPLEX : ("argument"|"real"|"imaginary") >
 | < MINMAX: ( "max" | "min" ) >
@@ -524,6 +525,11 @@ OMApplication bracket() :
 			< HAAKJES > expr = expr() < KOMMA > expr2=interval() < AT > )
 {
        return binop(LIST1_MAP, expr, expr2);
+    }
+| < SUCHTHAT > ( "(" expr = interval() < KOMMA > expr2 = expr() ")" |
+			< HAAKJES > expr = expr() < KOMMA > expr2=interval() < AT > )
+{
+       return binop(LIST1_SUCHTHAT, expr, expr2);
     }
 | < LIM > expr = sum() < N > (tok=< X >) < K > expr2=sum() < L > breuk = < CONSTANT > <AT><AT><AT><AT> {
 	return limit(expr, tok, expr2, breuk);
