@@ -108,6 +108,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "nakijkOpties", "check options" },
 				
 				{ "kijkNa", "Enable check" },
+				{ "checkExternal", "External check" },
 				
 				{ "controleer", "Check" },
 				
