@@ -15,6 +15,10 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 			                                       implements InteractieEditPanel, ActionListener 
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	NabouwenAanzichtenInteractiePanel naip;
 	int editWidth = 180;
 	int editHeight = 550;
@@ -50,6 +54,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 	
 	// nakijkOptiesPanel
 	JCheckBox nakijkBox;
+	JCheckBox checkExternalBox;
 	JLabel checkLabel;
 	ButtonGroup checkAanzichtGroup;
 	JRadioButton checkBouwselButton, checkDrieButton, checkVoorZijButton, checkBovenVoorButton,   
@@ -381,6 +386,15 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		
 		currentY += height + 3 * offset / 2;
 		
+		checkExternalBox = new JCheckBox(NabouwenAanzichten.rb.getString("checkExternal"));
+		checkExternalBox.setFont(theFont);
+		width = theFM.stringWidth(checkExternalBox.getText()) + 40;
+		checkExternalBox.setBounds(currentX2, currentY, width, height);
+		nakijkOptiesPanel.add(checkExternalBox);
+		checkExternalBox.addActionListener(this);
+
+		currentY += height + 3 * offset / 2;
+		
 		checkLabel = new JLabel(NabouwenAanzichten.rb.getString("controleer"));
 		checkLabel.setFont(theFont);
 		//checkLabel.setBackground(Color.white);
@@ -697,6 +711,11 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel
 		if (b.containsKey("kijkNaActief"))
 			kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
 		nakijkBox.setSelected(kijkNaActief);
+		
+		boolean checkExternal = false;
+		if (b.containsKey("checkExternal"))
+			checkExternal = ((Boolean) b.get("checkExternal")).booleanValue();
+		checkExternalBox.setSelected(checkExternal);
 
 		if (nakijkBox.isSelected())
 		{	checkBouwselButton.setEnabled(true);
@@ -1196,9 +1215,10 @@ System.out.println("naiep setBounds return");
 		}
 	
 		else if (e.getSource() == nakijkBox)
-		{	naip.zetKijkNaActief(nakijkBox.isSelected());
+		{	
+			naip.zetKijkNaActief(nakijkBox.isSelected());
 		
-			if (nakijkBox.isSelected())
+			if (checkExternalBox.isSelected() || nakijkBox.isSelected())
 			{	checkBouwselButton.setEnabled(true);
 				checkDrieButton.setEnabled(true);
 				checkVoorZijButton.setEnabled(true);
@@ -1222,8 +1242,36 @@ System.out.println("naiep setBounds return");
 				aantalKubusBox.setEnabled(false);
 				maxScoreVeld.setEditable(false);
 			}
-		
-		
+		}
+		else if (e.getSource() == checkExternalBox)
+		{	
+			naip.zetCheckExternal(checkExternalBox.isSelected());
+			
+			if (checkExternalBox.isSelected() || nakijkBox.isSelected())
+			{	
+				checkBouwselButton.setEnabled(true);
+				checkDrieButton.setEnabled(true);
+				checkVoorZijButton.setEnabled(true);
+				checkBovenVoorButton.setEnabled(true);
+				checkBovenZijButton.setEnabled(true);
+				checkBovenButton.setEnabled(true);
+				checkVoorButton.setEnabled(true);
+				checkRechtsButton.setEnabled(true);
+				aantalKubusBox.setEnabled(true);
+				maxScoreVeld.setEditable(true);
+			}
+			else
+			{	checkBouwselButton.setEnabled(false);
+				checkDrieButton.setEnabled(false);
+				checkVoorZijButton.setEnabled(false);
+				checkBovenVoorButton.setEnabled(false);
+				checkBovenZijButton.setEnabled(false);
+				checkBovenButton.setEnabled(false);
+				checkVoorButton.setEnabled(false);
+				checkRechtsButton.setEnabled(false);
+				aantalKubusBox.setEnabled(false);
+				maxScoreVeld.setEditable(false);
+			}
 		}
 		else if (e.getSource() == checkBouwselButton)
 		{	if (checkBouwselButton.isSelected())
@@ -1648,11 +1696,13 @@ System.out.println("naiep setBounds return");
 			int index = tabbedPane.getSelectedIndex();
 			// terug naar viewerOptionsPanel
 			if (index == 0)
-			{	naip.toonDocentViewer(false);
-				
+			{
+				naip.toonDocentViewer(false);
+
 			}
 			else // naar nakijkOptiesPanel
-			{	if (nakijkBox.isSelected())
+			{
+				if (nakijkBox.isSelected() || checkExternalBox.isSelected())
 					naip.toonDocentViewer(true);
 			}
 		}
