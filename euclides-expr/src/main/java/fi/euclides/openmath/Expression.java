@@ -130,7 +130,7 @@ public class Expression implements OMConstants {
 			delegate.setTracker(tracker);
 		CONST.setTracker(tracker);
 		LAMBDA.setTracker(tracker);
-		
+		FLIP_FLOP.setTracker(tracker);
 		LijnLijnTest P = new LijnLijnTest(" \u2225 ", true);P.setTracker(tracker);
 		LijnLijnTest L = new LijnLijnTest(" \u22A5 ", false);L.setTracker(tracker);
 		symbolmap.put(nm(PARALLEL), P);
