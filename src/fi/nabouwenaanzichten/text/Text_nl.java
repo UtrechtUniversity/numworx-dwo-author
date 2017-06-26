@@ -107,6 +107,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "nakijkOpties", "nakijk opties" },
 				
 				{ "kijkNa", "Kijk na actief" },
+				{ "checkExternal", "Extern controleren" },
 				
 				{ "controleer", "Controleer" },
 				
