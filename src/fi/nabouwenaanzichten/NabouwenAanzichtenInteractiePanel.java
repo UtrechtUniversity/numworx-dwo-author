@@ -39,6 +39,11 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 
 	protected SCORM12APIInterface api;
 	
+	public static int OEFENEN = 0;
+	public static int OEFENEN_STRAFPUNTEN = 1;
+	public static int ZELFTOETS = 2;
+	public static int EINDTOETS = 3;
+
 	private FIButton fiButton;
 	protected static ResourceBundle rb;
 	private String langArg;
@@ -1885,28 +1890,54 @@ System.out.println("kijkNa setVis false");
 		if (h.containsKey("docentState"))
 			docentState = (String) h.get("docentState");
 
-		if (docentState == null)
-			return;
-
-		Object o = StringCodeObject.decodeStringToObject(docentState);
-		boolean[][][][] booleanDocentKRs = (boolean[][][][]) o;
-
-		for (int i = 0; i < booleanDocentKRs.length; i++)
+		if (docentState != null)
 		{
-			docentKr = new KubusRooster(booleanDocentKRs[i], 1); // later uitbreiden naar meer kubusroosters
+			Object o = StringCodeObject.decodeStringToObject(docentState);
+			boolean[][][][] booleanDocentKRs = (boolean[][][][]) o;
+	
+			for (int i = 0; i < booleanDocentKRs.length; i++)
+			{
+				docentKr = new KubusRooster(booleanDocentKRs[i], 1); // later uitbreiden naar meer kubusroosters
+			}
+			docentV.zetKubusRooster(docentKr);
+	
+			ingevuld = false;
 		}
-		docentV.zetKubusRooster(docentKr);
-
-		ingevuld = false;
 
 		if (h.containsKey("ingevuld"))
 			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
 		if (h.containsKey("nagekeken"))
 			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
-		if (ingevuld && (mode == 0 || nagekeken))
+		if (nakijkenNodig())
 			kijkNa();
 	}
 	
+	/**
+	 * Retourneert true als er nagekeken moet worden (en vinkje/kruis getoond).
+	 * Retourneert false als er niet nagekeken moet worden.
+	 * 
+	 * @return
+	 */
+	boolean nakijkenNodig()
+	{
+		boolean nodig = false;
+		
+		if (ingevuld)
+		{
+//			if (mode == ZELFTOETS && nagekeken && !isVeranderdNaNakijken) // isVeranderdNaNakijken is niet geimplementeerd in java-versie
+			if (mode == ZELFTOETS && nagekeken)
+			{
+				nodig = true;
+			}
+			else if ((checkExternal && mode != ZELFTOETS) || mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN)
+			{
+				nodig = true;
+			}
+		}
+		
+		return nodig;
+	}
+
 	public void zetOpdracht(Hashtable h , String[] variables, Hashtable values)
 	{
 		//System.out.println("naip zetOpdracht begin");	
@@ -2063,12 +2094,13 @@ System.out.println("kijkNa setVis false");
 			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		this.scoreMax = scoreMax;
 		
-		if (!isNakijkModus())
-			this.scoreMax = 0;
-		
 		//zetKijkNaActief(kijkNaActief);
 		this.kijkNaActief = kijkNaActief;
 		this.checkExternal = checkExternal;
+
+		if (!isNakijkModus())
+			this.scoreMax = 0;
+		
 		zetCheckBlokkenBouwsel(checkBlokkenBouwsel);
 		zetCheckDrieAanzichten(checkDrieAanzichten);
 	    zetCheckVoorZijAanzicht(checkVoorZijAanzicht);
@@ -2778,7 +2810,7 @@ System.out.println("kijkNa setVis false");
 	public void zetMode(int mode)
     {   
 		this.mode = mode;
-		kijkNaButton.setVisible((mode == 0 || mode == 1) && !checkExternal);
+		kijkNaButton.setVisible(showKijkNaKnop());
     }
 	
 	public void zetNagekeken(boolean b)
