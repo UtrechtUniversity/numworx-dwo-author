@@ -106,6 +106,7 @@ public class Text_gr extends java.util.ListResourceBundle
 				{ "nakijkOpties", "check options" },
 				
 				{ "kijkNa", "Enable check" },
+				{ "checkExternal", "External check" },
 				
 				{ "controleer", "Check" },
 				
