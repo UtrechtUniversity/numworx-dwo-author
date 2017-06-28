@@ -42,6 +42,7 @@ public class Text_es extends java.util.ListResourceBundle
 				
 				{ "kijkNaTekst" , "Check" },
 				{ "kijkNaActief" , "Checking active" },
+				{ "checkExternal" , "External check" },
 				{ "maxScoreTekst" , "Maximum score" },
 				{ "toonDocExpTekst" , "Target expressions" },
 				

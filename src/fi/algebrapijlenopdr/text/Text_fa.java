@@ -42,6 +42,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				
 				{ "kijkNaTekst" , "?ک" },
 				{ "kijkNaActief" , "?ک کردن فعال" },
+				{ "checkExternal" , "External check" },
 				{ "maxScoreTekst" , "حداکثر نمره" },
 				{ "toonDocExpTekst" , "عبارت نهايي" },
 				

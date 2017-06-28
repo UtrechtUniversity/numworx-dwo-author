@@ -42,6 +42,7 @@ public class Text_in extends java.util.ListResourceBundle
 				
 				{ "kijkNaTekst" , "Cek" },
 				{ "kijkNaActief" , "Pengecekan aktif" },
+				{ "checkExternal" , "External check" },
 				{ "maxScoreTekst" , "Skor maksimum" },
 				{ "toonDocExpTekst" , "Bentuk aljabar target" },
 				
