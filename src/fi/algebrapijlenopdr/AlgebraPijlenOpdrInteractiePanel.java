@@ -17,212 +17,198 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class AlgebraPijlenOpdrInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel,
-																		ActionListener			
-{	
+public class AlgebraPijlenOpdrInteractiePanel extends JPanel
+	implements InteractiePanel, InteractieEditPanel, ActionListener
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	public static int OEFENEN = 0;
+	public static int OEFENEN_STRAFPUNTEN = 1;
+	public static int ZELFTOETS = 2;
+	public static int EINDTOETS = 3;
+
 	AlgebraPijlenOpdr applet;
 	ImageIcon goedkrulIcon, foutkruisIcon, halfkrulIcon;
 	Image goedkrul, foutkruis, halfkrul;
-	
+
 	private AlgebraSchuifVeld algebraSchuifVeld;
 
 	boolean kijkNaActief = false;
+	boolean checkExternal = false;
 
 	int score = 0;
-    int scoreMax = 10;
+	int scoreMax = 10;
 
-    boolean ingevuld;
+	boolean ingevuld;
 	private boolean nagekeken;
 	private int mode;
 	boolean correct = false;
 	boolean fout = false;
-	
+
 	Vector docentExpressieStrings = new Vector();
 	Vector docentExpressies = new Vector();
-	
-    Vector listeners = new Vector();
-    
+
+	Vector listeners = new Vector();
+
 	public AlgebraPijlenOpdrInteractiePanel()
-	{	
-		
-//System.out.println(Color.gray.toString());		
-		
+	{
 		setLayout(null);
 		// echte initiatie vind pas plaats na setBounds
-		
+
 		java.net.URL imageURL = AlgebraPijlenOpdr.class.getResource("resources/goedkrul.gif");
-		if (imageURL != null) 
+		if (imageURL != null)
 		{
-		    goedkrulIcon = new ImageIcon(imageURL);
+			goedkrulIcon = new ImageIcon(imageURL);
 		}
-		else 
+		else
 		{
 			System.out.println("Error reading goedkrul.gif.");
 		}
 		imageURL = AlgebraPijlenOpdr.class.getResource("resources/foutkruis.gif");
-		if (imageURL != null) 
+		if (imageURL != null)
 		{
 			foutkruisIcon = new ImageIcon(imageURL);
 		}
-		else 
+		else
 		{
 			System.out.println("Error reading foutkruis.");
 		}
 		imageURL = AlgebraPijlenOpdr.class.getResource("resources/goedkrulhalf.gif");
-		if (imageURL != null) 
+		if (imageURL != null)
 		{
 			halfkrulIcon = new ImageIcon(imageURL);
 		}
-		else 
+		else
 		{
 			System.out.println("Error reading goedkrulhalf.");
 		}
-		
+
 		goedkrul = goedkrulIcon.getImage();
 		foutkruis = foutkruisIcon.getImage();
 		halfkrul = halfkrulIcon.getImage();
-	
-//System.out.println("APO-IPa");	
 	}
-	
+
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
-	{	
-		
-//System.out.println("zetOpdracht");
-//System.out.println("nagekeken " + nagekeken);
-	
+	{
 		if (h.containsKey("docentExpressieStrings"))
 			docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
-		
+
 		if (h.containsKey("kijkNaActief"))
 			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 		zetKijkNaActief(kijkNaActief);
 
+		if (h.containsKey("checkExternal"))
+			checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
+		zetCheckExternal(checkExternal);
+
 		if (h.containsKey("scoreMax"))
 			scoreMax = ((Integer) h.get("scoreMax")).intValue();
-		
+
 		algebraSchuifVeld.setEditModeState(h);
-		
-//System.out.println("changed " + algebraSchuifVeld.changed);
-		
+
 		algebraSchuifVeld.changed = false;
 		ingevuld = false;
 	}
-	
-	public void setState(Hashtable h)
-	{	
-		
-//System.out.println("setState");
 
+	public void setState(Hashtable h)
+	{
 		algebraSchuifVeld.setState(h);
 
 		ingevuld = false;
-		
+
 		if (h.containsKey("nagekeken"))
 			nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
-		
+
 		if (h.containsKey("ingevuld"))
 			ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
-		
-		
-//System.out.println("nagekeken " + nagekeken);
-//System.out.println("ingevuld " + ingevuld);
-//System.out.println("kijkNaActief " + kijkNaActief);
 
-		//algebraSchuifVeld.setState(h);
-		
 		if (!ingevuld)
-		{	algebraSchuifVeld.changed = false;
+		{
+			algebraSchuifVeld.changed = false;
 		}
-		
-//System.out.println("nagekeken " + nagekeken);		
-		if (ingevuld && (mode == 0 || nagekeken))
-		//if (nagekeken)
-		{	kijkNa();
-//System.out.println("na kijkNa");		
+
+		if (ingevuld && (mode == OEFENEN || nagekeken))
+		{
+			kijkNa();
 		}
 	}
-	
+
 	public void setEditState(Hashtable h)
-	{	
+	{
 		if (algebraSchuifVeld != null)
 		{
 			if (h.containsKey("docentExpressiesString"))
 				docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
-			
+
 			if (h.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 			zetKijkNaActief(kijkNaActief);
 
+			if (h.containsKey("checkExternal"))
+				checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
+			zetCheckExternal(checkExternal);
+
 			if (h.containsKey("scoreMax"))
 				scoreMax = ((Integer) h.get("scoreMax")).intValue();
-			
-			
+
 			algebraSchuifVeld.setEditModeState(h);
-//System.out.println("as not null");		
-		}
-		else
-		{
-//System.out.println("as null");			
 		}
 	}
-	
-	public Hashtable getState()
-	{	
-		
-System.out.println("getState");
 
+	public Hashtable getState()
+	{
 		boolean nagekeken = false;
 		boolean ingevuld = false;
-	    
+
 		nagekeken = this.nagekeken;
 		ingevuld = this.ingevuld;
 
-System.out.println("nagekeken " + nagekeken);
-System.out.println("ingevuld " + ingevuld);
-		
 		Hashtable h = algebraSchuifVeld.getState();
-		h.put("nagekeken",new Boolean(nagekeken));
-		h.put("ingevuld",new Boolean(ingevuld));
-		
+		h.put("nagekeken", new Boolean(nagekeken));
+		h.put("ingevuld", new Boolean(ingevuld));
+
 		return h;
 	}
-	
+
 	public Hashtable getEditState()
-	{	
+	{
 		Hashtable h = algebraSchuifVeld.getState();
-		
+
 		h.put("kijkNaActief", new Boolean(kijkNaActief));
-		//h.put("scoreMax", new Integer(scoreMax));
-		
+		h.put("checkExternal", new Boolean(checkExternal));
+		// h.put("scoreMax", new Integer(scoreMax));
+
 		return h;
 	}
-	
+
 	public void zetToolkit(boolean b)
 	{
 		algebraSchuifVeld.zetToolkit(b);
 	}
-	
+
 	public void zetAlleenInvullen(boolean b)
 	{
 		algebraSchuifVeld.zetAlleenInvullen(b);
 	}
-	
+
 	public void zetIsDemo(boolean b)
 	{
 		algebraSchuifVeld.zetIsDemo(b);
 	}
-	
+
 	public void zetBrugklas(boolean b)
 	{
 		algebraSchuifVeld.zetBrugklas(b);
 	}
-	
+
 	public void zetTerugHeen(boolean b)
 	{
 		algebraSchuifVeld.zetTerugHeen(b);
 	}
-	
+
 	public void zetTabelOptie(boolean b)
 	{
 		algebraSchuifVeld.zetTabelOptie(b);
@@ -242,190 +228,214 @@ System.out.println("ingevuld " + ingevuld);
 	{
 		algebraSchuifVeld.zetZoomOptie(b);
 	}
-	
+
 	public void zetBeginExpressie(Expressie exp)
 	{
 		if (algebraSchuifVeld != null)
 			algebraSchuifVeld.zetBeginExpressie(exp);
 	}
-	
+
 	public void zetKijkNaActief(boolean b)
 	{
 		kijkNaActief = b;
+
 		if (algebraSchuifVeld != null)
 			algebraSchuifVeld.zetKijkNaActief(kijkNaActief);
-
 	}
+
+	public void zetCheckExternal(boolean b)
+	{
+		checkExternal = b;
+
+		if (algebraSchuifVeld != null)
+			algebraSchuifVeld.zetCheckExternal(checkExternal);
+	}
+
 	public InteractieEditPanel getEditPanel()
-	{	//return new AlgebraPijlenOpdrInteractiePanel();
+	{
 		return new AlgebraPijlenOpdrInteractieEditPanel();
-	}	
-	
+	}
+
 	public void setBounds(int x, int y, int b, int h)
-	{	
-//System.out.println("apoip set bounds " + b + " " + h);
-		
+	{
 		if (h == 1)
 			return;
-		
+
 		super.setBounds(x, y, b, h);
-		if (algebraSchuifVeld == null) 
-		{	algebraSchuifVeld = new AlgebraSchuifVeld(0, 0, b, h, this);
+		
+		if (algebraSchuifVeld == null)
+		{
+			algebraSchuifVeld = new AlgebraSchuifVeld(0, 0, b, h, this);
 			add(algebraSchuifVeld, 0);
 			algebraSchuifVeld.zetPlaatjes(goedkrul, foutkruis, halfkrul);
 			algebraSchuifVeld.kijkNaKnop.addActionListener(this);
-			//algebraSchuifVeld.zetKijkNaActief(kijkNaActief);
-//System.out.println("as created");			
 		}
 		else
-		{	algebraSchuifVeld.setSize(b, h);
+		{
+			algebraSchuifVeld.setSize(b, h);
 			algebraSchuifVeld.kijkNaKnop.setLocation(110 + (getSize().width - 110 - 90) / 2, getSize().height - 30);
-//System.out.println("as sized");		
 		}
 		algebraSchuifVeld.start();
-		
+
 		algebraSchuifVeld.tekenOpnieuw();
 	}
-	
+
 	public void zetBreedte(int b)
-	{	algebraSchuifVeld.setSize(b, algebraSchuifVeld.getSize().height);
-	
+	{
+		algebraSchuifVeld.setSize(b, algebraSchuifVeld.getSize().height);
+
 		algebraSchuifVeld.tekenOpnieuw();
 	}
-	
+
 	public void zetHoogte(int h)
-	{	algebraSchuifVeld.setSize(algebraSchuifVeld.getSize().width, h);
-	
+	{
+		algebraSchuifVeld.setSize(algebraSchuifVeld.getSize().width, h);
+
 		algebraSchuifVeld.tekenOpnieuw();
 	}
-	
+
 	public void disableElements(boolean b)
 	{
 		algebraSchuifVeld.disableElements(b);
 	}
-	
-	public void wis(){}
-	
-	public void zetMaat(){}
-	
+
+	public void wis()
+	{
+	}
+
+	public void zetMaat()
+	{
+	}
+
 	public int geefAsHoogte()
-	{	return 0;
+	{
+		return 0;
 	}
-	
+
 	public int getIpId()
-	{	return 0;
+	{
+		return 0;
 	}
-	
+
 	public String getIpExpString()
-	{	return null;
+	{
+		return null;
+	}
+
+	/**
+	 * Retourneert true als in nakijk-modus en
+	 * er nagekeken moet worden. 
+	 * 
+	 * @return
+	 */
+	boolean isNakijkModus()
+	{
+		return kijkNaActief || checkExternal;
 	}
 	
 	public int getScore()
-	{	if (kijkNaActief)
+	{
+		if (isNakijkModus())
 			return score;
-		return 0;
+		else
+			return 0;
 	}
-	
+
 	public int getScoreMax()
-	{	if (kijkNaActief)
+	{
+		if (isNakijkModus())
 			return scoreMax;
-		return 0;
+		else
+			return 0;
 	}
-	
+
 	public boolean isCorrect()
-	{	if (kijkNaActief)
+	{
+		if (isNakijkModus())
 			return correct;
 		else
 			return true;
 	}
-	
+
 	public boolean isFout()
-	{	if (kijkNaActief)
+	{
+		if (isNakijkModus())
 			return fout;
 		else
 			return false;
 	}
-	
-	public void zetMode(int mode)
-    {   this.mode = mode;
-    	if (kijkNaActief)    
-    		zetKijkNaActief(mode == 0 || mode == 1);
-    }
 
-	
+	public void zetMode(int mode)
+	{
+		this.mode = mode;
+		if (kijkNaActief) // zet het uit als mode niet oefenen of oefenen met strafpunten is
+			zetKijkNaActief(mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN);
+		if (checkExternal) // zet het uit als mode niet oefenen of oefenen met strafpunten is
+			zetCheckExternal(mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN);
+	}
+
 	public void zetNagekeken(boolean b)
-	{	if (ingevuld) 
+	{
+		if (ingevuld)
 			nagekeken = b;
 	}
-	
-    public void stop()
-    {
-    	//kijkNa();
-    }
-    
-    public void start()
-    {	algebraSchuifVeld.tekenOpnieuw();
-    }
-    
-    public void destroy(){}
-    
-    public void opnieuw(){}
-    
-    public void maakDocentExpressies()
-    {	docentExpressies.removeAllElements();
-    	for (int i = 0; i < docentExpressieStrings.size(); i++)
-    	{	String text = (String) docentExpressieStrings.elementAt(i);
-    		String formuleText = "$f" + text + "@";
-    		Expressie exp = FormuleParser_ap.geefExpressie(formuleText);
-    		docentExpressies.addElement(exp);
-    	}
-    	
-    }
-    
-    public void kijkNa()
-    {	
-//System.out.println("kijkNa pre");    	
-    	
-    	if (!kijkNaActief)
-    		return;
-  
-//System.out.println("kijkNa");    
-    
-    	//ingevuld = !algebraSchuifVeld.veldIsLeeg();
-//   	ingevuld = algebraSchuifVeld.changed;
+
+	public void stop()
+	{
+		// kijkNa();
+	}
+
+	public void start()
+	{
+		algebraSchuifVeld.tekenOpnieuw();
+	}
+
+	public void destroy()
+	{
+	}
+
+	public void opnieuw()
+	{
+	}
+
+	public void maakDocentExpressies()
+	{
+		docentExpressies.removeAllElements();
+		for (int i = 0; i < docentExpressieStrings.size(); i++)
+		{
+			String text = (String) docentExpressieStrings.elementAt(i);
+			String formuleText = "$f" + text + "@";
+			Expressie exp = FormuleParser_ap.geefExpressie(formuleText);
+			docentExpressies.addElement(exp);
+		}
+
+	}
+
+	public void kijkNa()
+	{
+		if (!isNakijkModus())
+			return;
+
 		ingevuld = true;
-    	
-//System.out.println("ingevuld " + ingevuld);    	
-    	
-//    	if (!ingevuld)
-//    		return;
 
-//    	if (!nagekeken)
-//    	{
-//System.out.println("not nagekeken");    		
-//    		return;
-//    	}
-    	
-//System.out.println("KijkNa");
+		maakDocentExpressies();
 
-    	maakDocentExpressies();
-    	
-    	// geen opdracht, alles goed
-    	if (docentExpressies.size() == 0)
-    	{	score = scoreMax;
-    		fireChangeEvent();
-    		return;
-    	}
-    	
-    	Vector leerlingExpressieUVS = algebraSchuifVeld.vindExpressieUVS();
-//System.out.println("llgUVS = " + leerlingExpressieUVS.size());    	
-//System.out.println("docS = " + docentExpressieStrings.size());
-//System.out.println("docE = " + docentExpressies.size());    
+		// geen opdracht, alles goed
+		if (docentExpressies.size() == 0)
+		{
+			score = scoreMax;
+			fireChangeEvent();
+			return;
+		}
+
+		Vector leerlingExpressieUVS = algebraSchuifVeld.vindExpressieUVS();
 
 		int hits = 0;
+
 		// hier zijn er docent expressies
 		for (int lCnt = 0; lCnt < leerlingExpressieUVS.size(); lCnt++)
-		{	UitvoerSchuifComponent uvs = (UitvoerSchuifComponent) leerlingExpressieUVS.elementAt(lCnt);
+		{
+			UitvoerSchuifComponent uvs = (UitvoerSchuifComponent) leerlingExpressieUVS.elementAt(lCnt);
 			Expressie llgExp = null;
 			if (uvs.geefUitvoer(0) != null)
 				llgExp = uvs.geefUitvoer(0);
@@ -433,112 +443,106 @@ System.out.println("ingevuld " + ingevuld);
 				llgExp = uvs.geefVerborgenUitvoer(0);
 
 			String llgExpStr = llgExp.toString();
-//System.out.println(llgExpStr);
-//System.out.println(uvs.geefBronDefaultVarnaam());
 			String llgExpStrC = llgExpStr.replaceAll(uvs.geefBronDefaultVarnaam(), "x");
-//System.out.println(llgExpStrC);
 			llgExp = FormuleParser_ap.geefExpressie("$f" + llgExpStrC + "@");
 
 			boolean correct = false;
 			if (llgExp != null)
-			{	
-				
+			{
 				for (int dCnt = 0; dCnt < docentExpressies.size(); dCnt++)
-				{	Expressie docExp = (Expressie) docentExpressies.elementAt(dCnt);
-//System.out.println("docExp = " + docExp.toString());
-//System.out.println("llgExp = " + llgExp.toString());
+				{
+					Expressie docExp = (Expressie) docentExpressies.elementAt(dCnt);
 					if (Algebra.isGelijkwaardig(docExp, llgExp))
-					{	hits++;
+					{
+						hits++;
 						correct = true;
 					}
 				}
-				
+
 				if (correct)
-				{	uvs.pijlUit[0].im = goedkrul;
+				{
+					uvs.pijlUit[0].im = goedkrul;
 				}
 				else
 				{
 					uvs.pijlUit[0].im = foutkruis;
 				}
 			}
-		}	
-//System.out.println("hits = " + hits);
-		
+		}
+
 		int scorePerExpressie = scoreMax / docentExpressies.size();
 		if (hits == 0)
-		{	score = 0;
+		{
+			score = 0;
 			correct = false;
 			fout = true;
 		}
 		else if (hits == docentExpressies.size())
-		{	score = scoreMax;
+		{
+			score = scoreMax;
 			correct = true;
 			fout = false;
 		}
 		else
-		{	score = hits * scorePerExpressie;
+		{
+			score = hits * scorePerExpressie;
 			correct = true;
 			fout = false;
 		}
 
 		nagekeken = true;
-/*		
-		// leerlingExpressieUVS.size() - hits is aantal foute expressies
-		if (leerlingExpressieUVS.size() >= docentExpressies.size())
-			score = Math.max(0, scoreMax - (leerlingExpressieUVS.size() - hits));
-		else
-			score = Math.max(0, scoreMax - (docentExpressies.size() - leerlingExpressieUVS.size() - hits));
-*/			
+		/*
+		 * // leerlingExpressieUVS.size() - hits is aantal foute expressies if
+		 * (leerlingExpressieUVS.size() >= docentExpressies.size()) score =
+		 * Math.max(0, scoreMax - (leerlingExpressieUVS.size() - hits)); else
+		 * score = Math.max(0, scoreMax - (docentExpressies.size() -
+		 * leerlingExpressieUVS.size() - hits));
+		 */
 
 		algebraSchuifVeld.tekenOpnieuw();
-		
-		fireChangeEvent();
 
-/*
-    	//fire actionEvent
+		fireChangeEvent();
+	}
+
+	public void answerChanged()
+	{
+		if (isNakijkModus())
+		{
+			algebraSchuifVeld.changed = true;
+			correct = false;
+			fout = false;
+			score = 0;
+			nagekeken = false;
+			ingevuld = true;
+			fireChangeEvent();
+		}
+	}
+
+	public void fireChangeEvent()
+	{
 		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
 		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
 		{
 			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
 		}
-*/		
-    	
-    }
-    
-    public void answerChanged()
-    {
-    	if (kijkNaActief)
-    	{	
-    		algebraSchuifVeld.changed = true;
-    		correct = false;
-    		fout = false;
-    		score = 0;
-    		nagekeken = false;
-    		ingevuld = true;
-    		fireChangeEvent();
-    	}	
-    }
-    public void fireChangeEvent()
-    {	ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
-		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
-		{
-			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
-		}
-    	
-    }
-    public void kijkNa(int stapNr)
-    {	kijkNa();
-    }
-    
-    public void addActionListener(ActionListener al)
-    {	listeners.addElement(al);
-    }
-    
+
+	}
+
+	public void kijkNa(int stapNr)
+	{
+		kijkNa();
+	}
+
+	public void addActionListener(ActionListener al)
+	{
+		listeners.addElement(al);
+	}
+
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getSource() == algebraSchuifVeld.kijkNaKnop)
 		{
-			//nagekeken = true;
+			// nagekeken = true;
 			kijkNa();
 		}
 	}
