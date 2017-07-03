@@ -132,7 +132,7 @@ public class Main {
 				BufferedReader br = new BufferedReader(input);
 				line = br.readLine();
 				br.close();
-			} catch (Exception _) {}
+			} catch (Exception __) {}
 			if(line != null)
 				learner_id = line.trim();
 			line = null; // line = JOptionPane.showInputDialog("Username", learner_id);
@@ -142,7 +142,7 @@ public class Main {
 					FileWriter output = new FileWriter("cmi.learner_id");
 					output.write(learner_id);
 					output.close();
-				} catch(Exception _) {}
+				} catch(Exception __) {}
 			}
 		}
 		
