@@ -78,9 +78,8 @@ public class Animator extends LabelTester implements Observer {
 		else start();
 	}
 	
-
 	@SuppressWarnings("unchecked")
-	public synchronized void install(Label label) {
+	public synchronized Label install(Label label) {
 		stop();
 		pos = null;
 		if(Pmin != null) Pmin.deleteObserver(this);
@@ -122,6 +121,7 @@ public class Animator extends LabelTester implements Observer {
 				button = null;
 			}
 		}
+		return button;
 	}
 		
 	private synchronized void do1step() {
