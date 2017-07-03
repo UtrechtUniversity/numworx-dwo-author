@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner.ui;
 
 import java.awt.BasicStroke;
+import java.awt.Font;
 import java.awt.Stroke;
 import java.util.Map;
 
@@ -41,11 +42,10 @@ public class IntervalModel extends TextModel {
 		if (instance != null) instance.install(null);
 		if (animate == Animate.NONE) {
 			adapter.put(Animator.class, null);
+			instance = null;
 		} else {
 			instance = new Animator(animate, interval, tracker, align);
-			
 			adapter.put(instance);
-			instance.install(item);
 		}
 		DefaultAdapter adapterP = DefaultAdapter.getDefault(item.getP());
 		if (step == null || step.doubleValue() == 0.0)
@@ -74,6 +74,12 @@ public class IntervalModel extends TextModel {
 		h0.setXY(x, y);
 		hp.setDistance(Numbers.createDouble(length));
 		super.install(item);
+		if (instance != null) {
+			Label button = 
+			instance.install(item);
+			DefaultAdapter.getDefault(button).put(Font.class, font);
+			
+		}
 	}
 
 	@Override
