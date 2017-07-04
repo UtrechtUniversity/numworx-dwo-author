@@ -1110,27 +1110,22 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel implements Int
 		{
 			naip.zetKijkNaActief(nakijkBox.isSelected());
 
-			if (checkExternalBox.isSelected() || nakijkBox.isSelected())
+			if (nakijkBox.isSelected())
 			{
 				setVisibleNakijkModusFields(true);
+				// extern controleren is alleen mogelijk als kijk na actief
+				checkExternalBox.setEnabled(true);
 			}
 			else
 			{
 				setVisibleNakijkModusFields(false);
+				// als kijk na niet actief kun je ook niet extern controleren
+				checkExternalBox.setEnabled(false);
 			}
 		}
 		else if (e.getSource() == checkExternalBox)
 		{
 			naip.zetCheckExternal(checkExternalBox.isSelected());
-
-			if (checkExternalBox.isSelected() || nakijkBox.isSelected())
-			{
-				setVisibleNakijkModusFields(true);
-			}
-			else
-			{
-				setVisibleNakijkModusFields(false);
-			}
 		}
 		else if (e.getSource() == checkBouwselButton)
 		{
