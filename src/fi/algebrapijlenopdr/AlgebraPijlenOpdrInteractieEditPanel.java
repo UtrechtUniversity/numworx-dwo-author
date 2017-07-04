@@ -592,7 +592,6 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel implements Inte
 				grafiekBox.setEnabled(true);
 				scrollBox.setEnabled(true);
 				zoomBox.setEnabled(true);
-
 			}
 		}
 		else if (e.getSource() == invulButton)
@@ -607,7 +606,6 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel implements Inte
 				grafiekBox.setEnabled(false);
 				scrollBox.setEnabled(true);
 				zoomBox.setEnabled(true);
-
 			}
 		}
 		else if (e.getSource() == demoButton)
@@ -656,7 +654,6 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel implements Inte
 			apoip.disableElements(true);
 
 			docentExpressiePanel.setVisible(false);
-
 		}
 		else if (e.getSource() == beginExpBox)
 		{
@@ -685,33 +682,26 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel implements Inte
 					apoip.zetBeginExpressie(beginExp);
 				}
 			}
-
 		}
-
 		else if (e.getSource() == kijkNaBox)
 		{
-			if (checkExternalBox.isSelected() || kijkNaBox.isSelected())
+			if (kijkNaBox.isSelected())
 			{
 				setVisibleNakijkModusFields(true);
+				// extern controleren is alleen mogelijk als kijk na actief
+				checkExternalBox.setEnabled(true);
 			}
 			else
 			{
 				setVisibleNakijkModusFields(false);
+				// als kijk na niet actief kun je ook niet extern controleren
+				checkExternalBox.setEnabled(false);
 			}
 
 			apoip.zetKijkNaActief(kijkNaBox.isSelected());
 		}
 		else if (e.getSource() == checkExternalBox)
 		{
-			if (checkExternalBox.isSelected() || kijkNaBox.isSelected())
-			{
-				setVisibleNakijkModusFields(true);
-			}
-			else
-			{
-				setVisibleNakijkModusFields(false);
-			}
-
 			apoip.zetCheckExternal(checkExternalBox.isSelected());
 		}
 		else if (e.getSource() == toonDocExpButton)
@@ -722,7 +712,6 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel implements Inte
 			beginExpressiePanel.setVisible(false);
 			maakBeginExpressie();
 		}
-
 	}
 
 	/**
