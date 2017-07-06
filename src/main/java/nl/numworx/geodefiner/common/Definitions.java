@@ -186,35 +186,35 @@ public class Definitions implements Observer /*, ListModel*/ {
 // $l := line($P, $Q)
 				if (LINE.isSame(f)) {
 					Destroyable l = model.buildLijn(depend);
-					if(l == null) throw new InterpretException("line error");
+					n(l,"line error");
 					installConfig(new CELL(text, l, var), config);
 					return;
 				}
 				// $l := line($P, $Q)
 				if (HALFLINE.isSame(f)) {
 					Destroyable l = model.buildRay(depend);
-					if(l == null) throw new InterpretException("halfline error");
+					n(l,"halfline error");
 					installConfig(new CELL(text, l, var), config);
 					return;
 				}
 // $l := segment($P, $Q)
 				if (SEGMENT.isSame(f)) {
 					Destroyable l = model.buildSegment(depend);
-					if(l == null) throw new InterpretException("segment error");
+					n(l,"segment error");
 					installConfig(new CELL(text, l, var), config);
 					return;
 				}
 // $l := arc($P, ... )
 				if (ARC.isSame(f)) {
 					Destroyable l = model.buildBoog(depend);
-					if(l == null) throw new InterpretException("arc error");
+					n(l,"arc error");
 					installConfig(new CELL(text, l, var), config);
 					return;
 				}				
 // $l := circle($P, $Q)
 				if (CIRCLE.isSame(f)) {
 					Destroyable l = model.buildCirkel(depend);
-					if(l == null) throw new InterpretException("circle error");
+					n(l,"circle error");
 					installConfig(new CELL(text, l, var), config);
 					return;
 				}
@@ -264,7 +264,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 // $l := polygon($P, ...)
 				if (POLYGON.isSame(f)) {
 					Triangle t3;
-					if(depend.length > 3)
+					if(depend.length >= 3)
 					{
 						t3 = new Polygon(depend);
 						model.add(t3);
@@ -274,11 +274,11 @@ public class Definitions implements Observer /*, ListModel*/ {
 						{	t3 = new GroepPolygon((Groep) depend[0]);
 							model.add(t3);
 						} else
-							t3 = model.buildTriangle(depend);
+							n(t3 = model.buildTriangle(depend), "polygon error");
 					installConfig(new CELL(text, t3, var), config);
 					return;				
 				}
-// $l =: list_selector($a .. $b, $i )				
+// $l := list_selector($a .. $b, $i )				
 				if (LIST_SELECTOR.isSame(f) && oma.getElementAt(1) instanceof OMApplication ) {
 					OMApplication inner = (OMApplication) oma.getElementAt(1);
 					if(INTERVAL.isSame(inner.firstElement())) {
@@ -307,6 +307,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 						DefaultAdapter.getDefault(l).put(State.INITIAL);
 						return;
 					}
+// $l := list_selector($group, $index)
+					throw new InterpretException("undefined");
 				}
 							
 // $l := interval1.interval($a,$b)
@@ -367,11 +369,11 @@ public class Definitions implements Observer /*, ListModel*/ {
 // $f := lambda[[$x] ->	$f($x) ]
 // $a := 1
 				{
-					Label l = new Label();l.setString(text.substring(2));
+					Label l = new Label();l.setString(text.substring(2, text.length()-1));
 					l.setVisible(false);
 					l.setX(20);l.setY(30);
 					Destroyable f = expression.interpret(oma, l, viewer.getMapper());
-					if(f != l) {
+					if(f != l && f.getIndex() > 0) {
 						throw new InterpretException("Exists:" + viewer.getMapper().toString(f));
 					}
 					viewer.getMapper().rename(f, var.getName());
@@ -516,6 +518,12 @@ public class Definitions implements Observer /*, ListModel*/ {
 		}
 	}
 
+	
+	private void n(Object n, String m) {
+		if(n == null)
+			throw new InterpretException(m);
+	}
+	
 	private Groep groupOf(Destroyable[] depend) {
 		// TODO Auto-generated method stub
 		return new GroupOf(depend, expression, viewer);

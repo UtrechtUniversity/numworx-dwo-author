@@ -14,6 +14,7 @@ class LabelIndex extends Label implements Indexed<Label> {
 
 	public void setDelegate(Label delegate) {
 		this.delegate = delegate;
+		changed();
 	}
 
 	LabelIndex(ListSelector selector) {
@@ -31,6 +32,7 @@ class LabelIndex extends Label implements Indexed<Label> {
 		setString(delegate.getString());
 		setValue(delegate.value);
 		setState(delegate.getState());
+		getP().setXY(delegate.getX(), delegate.getY());
 	}
 
 	@Override

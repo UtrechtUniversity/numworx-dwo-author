@@ -24,9 +24,9 @@ public class ListSelector implements Visitor, Observer {
 	private Label index;
 
 	public ListSelector(Groep grp, Label index) {
-		this.grp = grp;
-		this.index = index;
-		Destroyable element = grp.elementAt(0);
+		setGrp(grp);
+		setIdx(index);
+		Destroyable element = grp.prototype();
 		if(element instanceof Groep) 
 			indexed = new GroepIndex(this);
 		else
@@ -113,7 +113,12 @@ public class ListSelector implements Visitor, Observer {
 	@Override
 	public void update(Observable observable, Object arg) {
 		if(arg == Destroyable.DESTROY)
+		{
+			if(grp != null) grp.deleteObserver(this);
+			if(index != null) index.deleteObserver(this);
+			if(indexed.getDelegate() != null) indexed.getDelegate().deleteObserver(this);
 			indexed.destroy();
+		}
 		else if(arg == null || arg == Label.STATE) {
 			if(observable == grp || observable == index)
 				recalc();
