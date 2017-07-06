@@ -54,6 +54,7 @@ import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.ShortSegment;
 import nl.numworx.geodefiner.common.Tips;
 import nl.numworx.geodefiner.ui.AxesModel;
+import nl.numworx.geodefiner.ui.TextModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
 import org.cbook.cbookif.AssessmentMode;
@@ -694,6 +695,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		public void visitLabel(Label label) {
 			selectColor(label);
 			Font f = label.adapt(Font.class);
+			if(f==null) f = fi.wiskopdr.WiskOpdr.tekstFont; // NEVER NULL
 			g.setFont(f);
 			String string = label.getString();
 			if(label.getRegistered() instanceof FlipFlop) {
