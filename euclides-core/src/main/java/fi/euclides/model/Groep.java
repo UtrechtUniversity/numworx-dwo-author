@@ -43,6 +43,10 @@ public class Groep extends Destroyable {
 		}
 	}
 
+	public Destroyable prototype() {
+		return items.firstElement();
+	}
+	
 	@Override
 	public String key() {
 		return TYPE;
