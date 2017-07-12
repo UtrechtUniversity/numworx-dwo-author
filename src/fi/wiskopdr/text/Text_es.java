@@ -300,6 +300,8 @@ public class Text_es extends java.util.ListResourceBundle
 				{"OPT_allesCorrect", "Siguiente página sólo si todo está correcto (verde)"},
 				{"OPT_deelOpdr" , "número de ítems a,b,c etc"},
 				{"OPT_zelftoetsGeenCorr" , "Test personalizado sin correcciones"},
+				{"OPT_zelftoetsGeschiedenis" , "self-test history"},
+				{"OPT_zelftoetsHighScore" , "highscore"},
 				{"OPT_eerderGeenCorr" , "Páginas previas sin corrección"},
 				{"OPT_zelftoetsCorrAftrek" , "reduction score correction selftest"},
 				{"OPT_significantie" , "Comprobar la opción número significativo"},

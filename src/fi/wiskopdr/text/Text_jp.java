@@ -315,6 +315,8 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"OPT_allesCorrect", "全部正解なら、次ページへ(緑)"}, 
 				{"OPT_deelOpdr" , " a,b,c等の数を表す記号"}, 
 				{"OPT_zelftoetsGeenCorr" , "自己テストを訂正しません"}, 
+				{"OPT_zelftoetsGeschiedenis" , "self-test history"},
+				{"OPT_zelftoetsHighScore" , "highscore"},
 				{"OPT_zelftoetsCorrAftrek" , "reduction score correction selftest"},
 				{"OPT_eerderGeenCorr" , "前のページを訂正しません"}, 
 				{"OPT_significantie" , "重要な数のオプションを確かめます"}, 

@@ -292,6 +292,8 @@ public class Text_in extends java.util.ListResourceBundle
 				{"OPT_conditionalPercLabel" , "Perc."},
 				{"OPT_deelOpdr" , "Bilangan-bilangan Item a,b,c dll"},
 				{"OPT_zelftoetsGeenCorr" , "No correction self test"},
+				{"OPT_zelftoetsGeschiedenis" , "self-test history"},
+				{"OPT_zelftoetsHighScore" , "highscore"},
 				{"OPT_zelftoetsCorrAftrek" , "reduction score correction selftest"},
 				{"OPT_significantie" , "check option significant numbers"},
 				{"OPT_objectives" , "Objectives"},

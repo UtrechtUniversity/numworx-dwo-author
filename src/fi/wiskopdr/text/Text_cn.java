@@ -313,6 +313,8 @@ public class Text_cn extends java.util.ListResourceBundle
 				{"OPT_allesCorrect", "Next page only if everything correct (green)"},
 				{"OPT_deelOpdr" , "Item numbers a,b,c etc"},
 				{"OPT_zelftoetsGeenCorr" , "No correction self test"},
+				{"OPT_zelftoetsGeschiedenis" , "self-test history"},
+				{"OPT_zelftoetsHighScore" , "highscore"},
 				{"OPT_zelftoetsCorrAftrek" , "reduction score correction selftest"},
 				{"OPT_eerderGeenCorr" , "No correction previous pages"},
 				{"OPT_significantie" , "Check option significant numbers"},
