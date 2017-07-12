@@ -45,6 +45,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox abcDeelOpdrCB;
 	private JCheckBox zelftoetsGeenCorrCB;
 	private JCheckBox aftrekCorrectieZelftoetsCB;
+	private JCheckBox zelftoetsGeschiedenisCB;
+	private JCheckBox zelftoetsHighScoreCB;
 	private JCheckBox eerderGeenCorrCB;
 	private JCheckBox significantieCB;
 	private JCheckBox objectivesCB;
@@ -134,10 +136,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		mainPanel.setOpaque(false);
 		JPanel bottomPanel = new JPanel();
 		
-		stylesExportDialog = DialogFacade.newInstance(this, "styles", true);
 		stylesExportTekstArea = new JTextArea();
-		stylesExportDialog.getContentPane().add(stylesExportTekstArea);
 		stylesExportTekstArea.setBounds(0, 0, 300, 400);
+		
+		stylesExportDialog = DialogFacade.newInstance(this, "styles", true);
+		stylesExportDialog.setSize(stylesExportTekstArea.getSize());
+		stylesExportDialog.getContentPane().add(stylesExportTekstArea);
 		
 		
 		//add(mainPanel);
@@ -418,6 +422,14 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		zelftoetsGeenCorrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsGeenCorr"), boxv4, false);//"F-toetsen gebruiken of niet"
 		
 		boxh = Box.createHorizontalBox();
+		zelftoetsGeschiedenisCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsGeschiedenis"), boxh, false);//zelftoets geschiedenis tonen of niet"
+		zelftoetsGeschiedenisCB.addActionListener(this);
+		boxh.add(Box.createHorizontalStrut(10));
+		zelftoetsHighScoreCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsHighScore"), boxh, false);
+		zelftoetsHighScoreCB.setVisible(false);
+		boxv4.add(boxh);
+		
+		boxh = Box.createHorizontalBox();
 		aftrekCorrectieZelftoetsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsCorrAftrek"), boxh, true);
 		aftrekCorrectieZelftoetsCB.addActionListener(this);
 		boxh.add(Box.createHorizontalStrut(10));
@@ -520,6 +532,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 	}
 	
+	
+	
 	private JCheckBox maakCheckBox(String s, Container c, boolean selected)
 	{	
 		Box boxh = Box.createHorizontalBox();
@@ -590,6 +604,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean allesCorrectNodig = false;
 		boolean abcDeelOpdr = false;
 		boolean zelftoetsGeenCorr = false;
+		boolean zelftoetsGeschiedenis = false;
+		boolean zelftoetsHighScore = false;
 		boolean eerderGeenCorr = false;
 		boolean significantie = false;
 		boolean hasObjectives = false;
@@ -650,6 +666,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		}
 		abcDeelOpdr = abcDeelOpdrCB.isSelected();
 		zelftoetsGeenCorr = zelftoetsGeenCorrCB.isSelected();
+		zelftoetsGeschiedenis = zelftoetsGeschiedenisCB.isSelected();
+		zelftoetsHighScore = zelftoetsHighScoreCB.isSelected();
 		eerderGeenCorr = eerderGeenCorrCB.isSelected();
 		significantie = significantieCB.isSelected();
 		hasObjectives = objectivesCB.isSelected();
@@ -711,6 +729,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("abcDeelOpdr", new Boolean(abcDeelOpdr));
 		h.put("condPerc", new Integer(condPerc));
 		h.put("zelftoetsGeenCorr", new Boolean(zelftoetsGeenCorr));
+		h.put("zelftoetsGeschiedenis", new Boolean(zelftoetsGeschiedenis));
+		h.put("zelftoetsHighScore", new Boolean(zelftoetsHighScore));
 		h.put("eerderGeenCorr", new Boolean(eerderGeenCorr));
 		h.put("significantie", new Boolean(significantie));
 		h.put("hasObjectives", new Boolean(hasObjectives));
@@ -772,6 +792,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		int condPerc = 100;
 		boolean abcDeelOpdr = false;
 		boolean zelftoetsGeenCorr = false;
+		boolean zelftoetsGeschiedenis = false;
+		boolean zelftoetsHighScore = false;
 		boolean eerderGeenCorr = false;
 		boolean significantie = false;
 		boolean hasObjectives = false;
@@ -822,6 +844,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("allesCorrectNodig")) allesCorrectNodig = ((Boolean)h.get("allesCorrectNodig")).booleanValue();
 		if(h.containsKey("abcDeelOpdr")) abcDeelOpdr = ((Boolean)h.get("abcDeelOpdr")).booleanValue();
 		if(h.containsKey("zelftoetsGeenCorr")) zelftoetsGeenCorr = ((Boolean)h.get("zelftoetsGeenCorr")).booleanValue();
+		if(h.containsKey("zelftoetsGeschiedenis")) zelftoetsGeschiedenis = ((Boolean)h.get("zelftoetsGeschiedenis")).booleanValue();
+		if(h.containsKey("zelftoetsHighScore")) zelftoetsHighScore = ((Boolean)h.get("zelftoetsHighScore")).booleanValue();
 		if(h.containsKey("aftrekCorrectieZelftoets")) aftrekCorrectieZelftoets = ((Integer)h.get("aftrekCorrectieZelftoets")).intValue();
 		if(h.containsKey("eerderGeenCorr")) eerderGeenCorr = ((Boolean)h.get("eerderGeenCorr")).booleanValue();
 		if(h.containsKey("significantie")) significantie = ((Boolean)h.get("significantie")).booleanValue();
@@ -890,7 +914,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		}
 		abcDeelOpdrCB.setSelected(abcDeelOpdr);
 		condPercTF.setText(""+condPerc);
+		
 		zelftoetsGeenCorrCB.setSelected(zelftoetsGeenCorr);
+		zelftoetsGeschiedenisCB.setSelected(zelftoetsGeschiedenis);
+		zelftoetsHighScoreCB.setVisible(zelftoetsGeschiedenis);
+		zelftoetsHighScoreCB.setSelected(zelftoetsHighScore);
+		
 		aftrekCorrectieZelftoetsTF.setText(""+aftrekCorrectieZelftoets);
 		if(aftrekCorrectieZelftoets==0) {
 			//aftrekCorrectieZelftoetsTF.setVisible(false);
@@ -1030,6 +1059,14 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				aftrekCorrectieZelftoetsTF.setText(""+aftrekCorrectieZelftoets);
 			}
 			
+		}
+		if(e.getSource()==zelftoetsGeschiedenisCB)
+		{
+			boolean b = zelftoetsGeschiedenisCB.isSelected();
+			zelftoetsHighScoreCB.setVisible(b);
+			if(!b) {
+				zelftoetsHighScoreCB.setSelected(false);
+			}
 		}
 		if(e.getSource().equals(stylesCB))
 		{	boolean manageStyles = stylesCB.isSelected();

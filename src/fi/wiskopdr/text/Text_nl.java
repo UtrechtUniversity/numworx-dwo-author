@@ -341,6 +341,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_deelOpdr" , "Deelopdrachten a,b,c etc"},
 				{"OPT_zelftoetsGeenCorr" , "Geen correctiemogelijkheid zelftoets"},
 				{"OPT_zelftoetsCorrAftrek" , "puntenaftrek bij correctie zelftoets"},
+				{"OPT_zelftoetsGeschiedenis" , "zelftoets geschiedenis"},
+				{"OPT_zelftoetsHighScore" , "highscore"},
 				{"OPT_eerderGeenCorr" , "Geen correctiemogelijkheid eerdere pagina's"},
 				{"OPT_significantie" , "Checkmogelijkheid significante getallen"},
 				{"OPT_objectives" , "Leerdoelen"},
