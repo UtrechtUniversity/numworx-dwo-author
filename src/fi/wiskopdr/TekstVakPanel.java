@@ -229,6 +229,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private int stapNr = 0;
 	private String[] stappen = null;
 	private boolean ideasStatistiek = false;
+	private boolean backButton = false;
 	public boolean templateModeEdit;
 	public boolean templateModeFill;
 	
@@ -711,6 +712,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String logIDLabel = "";
 		boolean visible = true;
 		boolean ideasStatistiek = false;
+		boolean backButton = false;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) 
@@ -889,6 +891,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	visible = ((Boolean)h.get("visible")).booleanValue();
         if(h.containsKey("ideasStatistiek"))
         	ideasStatistiek = ((Boolean)h.get("ideasStatistiek")).booleanValue();
+        if(h.containsKey("backButton"))
+        	backButton = ((Boolean)h.get("backButton")).booleanValue();
 
 		this.zichtbaarNaNakijken = zichtbaarNaNakijken;
 		this.balansVergCom = balansVergCom;
@@ -966,6 +970,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.logIDLabel = logIDLabel;
 	    this.visible = visible;
 	    this.ideasStatistiek = ideasStatistiek;
+	    this.backButton = backButton;
 	    
 		if (isLink) {
 			if(!linkUrl.equals("")) {
@@ -1731,6 +1736,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String logIDLabel = "";
 		boolean visible = true;
 		boolean ideasStatistiek = false;
+		boolean backButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
 
@@ -1802,6 +1808,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		logIDLabel = this.logIDLabel;
 		visible = this.visible;
 		ideasStatistiek = this.ideasStatistiek;
+		backButton = this.backButton;
 		templateModeEdit = this.templateModeEdit;
 		templateModeFill = this.templateModeFill;
 
@@ -1936,6 +1943,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("logIDLabel",logIDLabel);
 		h.put("visible", new Boolean(visible));
 		h.put("ideasStatistiek", new Boolean(ideasStatistiek));
+		h.put("backButton", new Boolean(backButton));
 		h.put("templateModeEdit", new Boolean(templateModeEdit));
 		h.put("templateModeFill", new Boolean(templateModeFill));
 		
@@ -2514,6 +2522,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String logIDLabel = "";
 		boolean visible = true;
 		boolean ideasStatistiek = false;
+		boolean backButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
 
@@ -2681,6 +2690,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	visible = ((Boolean) h.get("visible")).booleanValue();
         if (h.containsKey("ideasStatistiek"))
         	ideasStatistiek = ((Boolean) h.get("ideasStatistiek")).booleanValue();
+        if (h.containsKey("backButton"))
+        	backButton = ((Boolean) h.get("backButton")).booleanValue();
         if (h.containsKey("templateModeEdit"))
         	templateModeEdit = ((Boolean) h.get("templateModeEdit")).booleanValue();
         if (h.containsKey("templateModeFill"))
@@ -2776,6 +2787,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.logIDLabel = logIDLabel;
 	    this.visible = visible;
 	    this.ideasStatistiek = ideasStatistiek;
+	    this.backButton = backButton;
 	    this.templateModeEdit = templateModeEdit;
 	    this.templateModeFill = templateModeFill;
 

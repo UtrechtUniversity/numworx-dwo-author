@@ -207,6 +207,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	
 	private boolean ideasStatistiek = false;
 	private JCheckBox ideasCB;
+	private boolean backButton = false;
+	private JCheckBox backButtonCB;
 	
 	public TekstVakEditPanel(XWidgetManager manager)
 	{	
@@ -311,7 +313,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,250,70,20,false,interactionOptionsPanel);
 		visibleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_visible"), 10,530,225,20, visible, layoutOptionsPanel);
 		ideasCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_ideasStatistiek"), 10, 555, 150, 20, ideasStatistiek, interactionOptionsPanel);
-        
+		backButtonCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_backButton"), 10, 580, 150, 20, backButton, interactionOptionsPanel);
+		
 		logIDField = new JTextField("0");
 		logIDField.setBounds(100,250,70,20);
 		logIDField.setFont(ifFont);
@@ -344,6 +347,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		templateModeEditCB.setVisible(WiskOpdr.isExperimental());
 		templateModeFillCB.setVisible(WiskOpdr.isExperimental());
 		ideasCB.setVisible(WiskOpdr.isExperimental());
+		backButtonCB.setVisible(WiskOpdr.isExperimental());
 		
 		kopLayoutLabel = new JLabel(WiskOpdr.rb.getString("TVEP_layoutLabel"));//"Layout tekstvak");
 		kopLayoutLabel.setBounds(10,10,150,20);
@@ -842,7 +846,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		String logID = "";
 		String logIDLabel = "";
 		boolean visible = true;
-		boolean ideasStatistiek = true;
+		boolean ideasStatistiek = false;
+		boolean backButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
 				
@@ -910,6 +915,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		logIDLabel = logIDLabelField.getText();
 		visible = this.visible;
 		ideasStatistiek = this.ideasStatistiek;
+		backButton = this.backButton;
 		templateModeEdit = this.templateModeEdit;
 		templateModeFill = this.templateModeFill;
 			
@@ -998,6 +1004,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		h.put("logIDLabel",logIDLabel);
 		h.put("visible", new Boolean(visible));
 		h.put("ideasStatistiek", new Boolean(ideasStatistiek));
+		h.put("backButton", new Boolean(backButton));
 		h.put("templateModeEdit", new Boolean(templateModeEdit));
 		h.put("templateModeFill", new Boolean(templateModeFill));
 		
@@ -1123,6 +1130,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		String logIDLabel = "";
 		boolean visible = true;
 		boolean ideasStatistiek = false;
+		boolean backButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
 		
@@ -1227,6 +1235,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("logIDLabel")) logIDLabel = (String)h.get("logIDLabel");
         if(h.containsKey("visible")) visible = ((Boolean) h.get("visible")).booleanValue();
         if(h.containsKey("ideasStatistiek")) ideasStatistiek = ((Boolean) h.get("ideasStatistiek")).booleanValue();
+        if(h.containsKey("backButton")) backButton = ((Boolean) h.get("backButton")).booleanValue();
         if(h.containsKey("templateModeEdit")) templateModeEdit = ((Boolean) h.get("templateModeEdit")).booleanValue();
         if(h.containsKey("templateModeFill")) templateModeFill = ((Boolean) h.get("templateModeFill")).booleanValue();
 		
@@ -1282,6 +1291,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.defaultBijNull = defaultBijNull;
 		this.visible = visible;
 		this.ideasStatistiek = ideasStatistiek;
+		this.backButton = backButton;
 		this.templateModeEdit = templateModeEdit;
 		this.templateModeFill = templateModeFill;
 		
@@ -1388,6 +1398,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		sleepHandleCB.setVisible(sleepbaar);
 		visibleCB.setSelected(visible);
 		ideasCB.setSelected(ideasStatistiek);
+		backButtonCB.setSelected(backButton);
 		
 		if(teksten!=null)
 		{	aantalRijenTF.setText(Integer.toString(teksten.length));
@@ -2057,6 +2068,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	    if(e.getSource().equals(ideasCB))
 	    {
 	    	ideasStatistiek = ideasCB.isSelected();
+	    }
+	    if(e.getSource().equals(backButtonCB))
+	    {
+	    	backButton = backButtonCB.isSelected();
 	    }
 	    
 	    if(e.getSource().equals(stylesCB))
