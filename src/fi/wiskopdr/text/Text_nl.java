@@ -486,6 +486,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_ideasStatistiek", "Ideas Statistiek"},
                 {"TVEP_templateMode", "Template modus"},
                 {"TVEP_backButton", "Terugknop"},
+                {"TVEP_hintButton", "Hintknop"},
                 
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Bewaaroptie"},
