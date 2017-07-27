@@ -160,7 +160,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	void createActions() {
 		actions.clear();
 
-		actions.setSize(7);
+		actions.setSize(TOOL_SIZE);
 		actions.set(SELECTOR, new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer));
 		actions.set(POINT, new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddPuntHandler(),viewer));
 
@@ -174,22 +174,22 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		
 		XXXAction xaction=new XXXAction(Messages.getString("Euclides.41"), "/pan.png", new PanHandler(Messages.getString("Euclides.41"), viewer), viewer);
 		xaction.cursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
-		actions.add(xaction);
+		actions.set(PAN, xaction);
 		
-		actions.add(new XXXAction("Driehoek", "/triangle.png", new AddTriangleHandler2(), viewer));
-		actions.add(new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer));
+		actions.set(TRIANGLE, new XXXAction("Driehoek", "/triangle.png", new AddTriangleHandler2(), viewer));
+		actions.set(CIRCLE, new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer));
 
-		actions.add(new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new DestroyHandler(),viewer));
+		actions.set(DESTROY,new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new DestroyHandler(),viewer));
 
-		actions.add(new XXXAction("Boog", "/angle.png", new AddBoogHandler("Boog"),viewer));
-		actions.add(new XXXAction(Messages.getString("Euclides.54"), "/midpoint.png", new AddMiddelPuntHandler(),viewer));
-		actions.add(new XXXAction(Messages.getString("Euclides.60"), "/bissectrice.png", new AddBissectriceHandler(),viewer));
-		actions.add(new XXXAction(Messages.getString("Euclides.62"), "/mirror.png", new AddSpiegelHandler(), viewer));
-		actions.add(new XXXAction("Kegelsnede", "/quadric.png", new AddKegelsnedeHandler("Kegelsnede"), viewer));
-		actions.add(new XXXAction("Brandpunt", "/quadric.png", new AddFocusHandler(), viewer));
-		actions.add(new XXXAction("Meetkundige plaats", "/objecttracker.png", new AddLocusHandler("Meetkundige plaats"), viewer));
-		actions.add(new XXXAction("Raaklijn", "/line.png", new AddRaakLijnHandler(), viewer));
-		actions.add(new XXXAction("Poollijn", "/line.png", new AddPoollijnHandler(), viewer));
+		actions.set(ARC, new XXXAction("Boog", "/angle.png", new AddBoogHandler("Boog"),viewer));
+		actions.set(MIDPOINT, new XXXAction(Messages.getString("Euclides.54"), "/midpoint.png", new AddMiddelPuntHandler(),viewer));
+		actions.set(BISECTRICE, new XXXAction(Messages.getString("Euclides.60"), "/bissectrice.png", new AddBissectriceHandler(),viewer));
+		actions.set(MIRROR, new XXXAction(Messages.getString("Euclides.62"), "/mirror.png", new AddSpiegelHandler(), viewer));
+		actions.set(CONIC_SECTION, new XXXAction("Kegelsnede", "/quadric.png", new AddKegelsnedeHandler("Kegelsnede"), viewer));
+		actions.set(FOCUS, new XXXAction("Brandpunt", "/quadric.png", new AddFocusHandler(), viewer));
+		actions.set(LOCUS, new XXXAction("Meetkundige plaats", "/objecttracker.png", new AddLocusHandler("Meetkundige plaats"), viewer));
+		actions.set(TANGENT, new XXXAction("Raaklijn", "/line.png", new AddRaakLijnHandler(), viewer));
+		actions.set(POLELINE, new XXXAction("Poollijn", "/line.png", new AddPoollijnHandler(), viewer));
 
 /*			case 19:
 				btn = newBtn(url + "/segment.png", new AfstandHandler("lengte"), tracker); break;
@@ -201,17 +201,17 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 				btn = newBtn(url + "/ray.png", new VectorHandler("vector"), tracker); break;
 
 	*/	
-		actions.add(new XXXAction(Messages.getString("Euclides.88"), "/distance.png", new AfstandHandler(Messages.getString("Euclides.90")), viewer));
-		actions.add(new XXXAction(Messages.getString("Euclides.91"), "/area.png", new OppHandler(Messages.getString("Euclides.93")), viewer));
-		actions.add(new XXXAction(Messages.getString("Euclides.85"), "/angle.png", new HoekHandler(Messages.getString("Euclides.85")), viewer));
-		actions.add(new XXXAction("Vector", "/ray.png", new VectorHandler("Vector"), viewer));
+		actions.set(DISTANCE,new XXXAction(Messages.getString("Euclides.88"), "/distance.png", new AfstandHandler(Messages.getString("Euclides.90")), viewer));
+		actions.set(AREA,new XXXAction(Messages.getString("Euclides.91"), "/area.png", new OppHandler(Messages.getString("Euclides.93")), viewer));
+		actions.set(ANGLE, new XXXAction(Messages.getString("Euclides.85"), "/angle.png", new HoekHandler(Messages.getString("Euclides.85")), viewer));
+		actions.set(VECTOR,new XXXAction("Vector", "/ray.png", new VectorHandler("Vector"), viewer));
 		
 		
-		actions.add(new XXXAction("Definitie", "/formuleknop.gif", formule, viewer));
+		actions.set(FORMULA, new XXXAction("Definitie", "/formuleknop.gif", formule, viewer));
 
-		actions.add(new TrailAction(Messages.getString("Euclides.44"), viewer)); //$NON-NLS-1$
+		actions.set(TRAIL, new TrailAction(Messages.getString("Euclides.44"), viewer)); //$NON-NLS-1$
 
-		actions.add(new XXXAction("Reset", "/reseticon.gif", resetter, viewer));
+		actions.set(RESET, new XXXAction("Reset", "/reseticon.gif", resetter, viewer));
 
 		
 		
@@ -224,7 +224,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	class TrailAction extends XXXAction {
 
 		public TrailAction(String name, AWTViewer viewer) {
-			super(name, null, new TrailHandler(name), viewer);
+			super(name, "/thickness2.png", new TrailHandler(name), viewer);
 		}
 
 	}
