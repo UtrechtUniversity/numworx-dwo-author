@@ -48,11 +48,11 @@ Class-Path:
  calculatordwo.jar 
  statsim.jar 
  stroomdiagrammen.jar 
+ statistiek.jar 
 Attic: 
  vergroten.jar 
  vangen.jar 
  tekenveelvlakopdr.jar 
- statistiek.jar 
  sliderwidget.jar 
  oppervlaktealgebra.jar 
  omtrekapplet.jar 
