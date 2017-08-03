@@ -49,6 +49,7 @@ Class-Path:
  statsim.jar 
  stroomdiagrammen.jar 
  statistiek.jar 
+ flowdiagrams.jar 
 Attic: 
  vergroten.jar 
  vangen.jar 
@@ -59,7 +60,6 @@ Attic:
  normaleverdeling.jar 
  nabouwenaanzichten.jar 
  geodefull.jar 
- flowdiagrams.jar 
  binomverdeling.jar 
  algebrapijlenopdr.jar 
  figuursnijden.jar 

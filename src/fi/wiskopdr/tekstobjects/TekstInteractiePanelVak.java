@@ -1980,7 +1980,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	}
 		
 	public static String jarOf(String name) {
-		return jarOfMap.getProperty(name);
+		String property = jarOfMap.getProperty(name, "");
+		if("".equals(property))
+			return null;
+		return property;
 	}
 
 	public void setState(Hashtable h)
