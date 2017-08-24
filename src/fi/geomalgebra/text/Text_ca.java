@@ -35,6 +35,7 @@ public class Text_ca extends java.util.ListResourceBundle
 				
 				{ "werkbladTekst", "Work area" },
 				{ "kijkNaActiefTekst", "Checking active" },
+				{ "checkExternal", "External check" },
 				{ "kijkNaTekst", "Check" },				
 				{ "equivalentTekst", "Equivalent formula" },
 				{ "gelijkTekst", "Identical formula" },

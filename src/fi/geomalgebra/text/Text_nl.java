@@ -33,13 +33,12 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "werkbladTekst", "Werkblad" },
 				{ "kijkNaActiefTekst", "Kijk na actief" },
+				{ "checkExternal", "Extern controleren" },
 				{ "kijkNaTekst", "Kijk na" },
 				{ "equivalentTekst", "Equivalente formule" },
 				{ "gelijkTekst", "Identieke formule" },
 				{ "doelFormuleTekst", "Doelformule" },				
 				{ "scoreMaxTekst", "Maximum score" },
-				
-				
         };
 }
 
