@@ -44,6 +44,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	boolean puzzelen = false;
 
 	boolean kijkNaActief;
+	boolean checkExternal;
 	boolean equivalent = true;
 	String antwoordFormuleStringCorrect = "";
 	
@@ -232,6 +233,8 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			
 			if (b.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
+			if (b.containsKey("checkExternal"))
+				checkExternal = ((Boolean) b.get("checkExternal")).booleanValue();
 			if (b.containsKey("equivalent"))
 				equivalent = ((Boolean) b.get("equivalent")).booleanValue();
 			if (b.containsKey("antwoordFormuleStringCorrect"))
@@ -332,6 +335,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		boolean puzzelen = false;
 
 		boolean kijkNaActief = false;
+		boolean checkExternal = false;
 		boolean equivalent = true;
 		String antwoordFormuleStringCorrect = "";
 		int scoreMax = 10;
@@ -400,6 +404,8 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 			
 			if (b.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
+			if (b.containsKey("checkExternal"))
+				checkExternal = ((Boolean) b.get("checkExternal")).booleanValue();
 			if (b.containsKey("equivalent"))
 				equivalent = ((Boolean) b.get("equivalent")).booleanValue();
 			if (b.containsKey("antwoordFormuleStringCorrect"))
@@ -423,6 +429,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		zetPuzzelen(puzzelen);
 		
 		zetKijkNaActief(kijkNaActief);
+		this.checkExternal = checkExternal;
 		this.equivalent = equivalent;
 		this.antwoordFormuleStringCorrect = antwoordFormuleStringCorrect;
 		this.scoreMax = scoreMax;
@@ -496,6 +503,7 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		h.put("puzzelen", new Boolean(puzzelen));
 		
 		h.put("kijkNaActief", new Boolean(kijkNaActief));
+		h.put("checkExternal", new Boolean(checkExternal));
 		h.put("equivalent", new Boolean(equivalent));
 		
 		State state = av.getStateState();
@@ -589,11 +597,20 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 	public void zetKijkNaActief(boolean b)
 	{
 		kijkNaActief = b;
-		kijkNaPanel.setVisible(kijkNaActief);
+		kijkNaPanel.setVisible(kijkNaActief && !checkExternal);
 		kijkNaChanged = true;
 		setBounds(getLocation().x, getLocation().y, getSize().width, getSize().height);
 		kijkNaChanged = false;
 		//av.zetKijkNaActief(kijkNaActief);
+	}
+
+	public void zetCheckExternal(boolean b)
+	{
+		checkExternal = b;
+		kijkNaPanel.setVisible(!checkExternal);
+		kijkNaChanged = true;
+		setBounds(getLocation().x, getLocation().y, getSize().width, getSize().height);
+		kijkNaChanged = false;
 	}
 
 	// !equivalent is gelijk
