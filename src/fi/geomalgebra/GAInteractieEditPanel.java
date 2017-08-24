@@ -41,6 +41,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 	          negatieveWaardenBox, puzzelenBox;
 	
 	JCheckBox kijkNaActiefBox;
+	JCheckBox checkExternalBox;
 	ButtonGroup naKijkGroup;
 	JRadioButton equivalentButton, gelijkButton;
 	JButton antwoordFormuleButton;
@@ -183,6 +184,15 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		
 		currentY += height + offset / 2;
 		
+		checkExternalBox = new JCheckBox(GeomAlgebra.rb.getString("checkExternal"), false);
+		checkExternalBox.setFont(theFont);
+		checkExternalBox.setBackground(Color.white);
+		checkExternalBox.setBounds(currentX, currentY, width, height);
+		add(checkExternalBox);
+		checkExternalBox.addActionListener(this);
+		
+		currentY += height + offset / 2;
+		
 		naKijkGroup = new ButtonGroup();
 
 		equivalentButton = new JRadioButton(GeomAlgebra.rb.getString("equivalentTekst"), true);
@@ -263,20 +273,17 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 			puzzelenBox.setLocation(gaip.getSize().width + offset, puzzelenBox.getLocation().y);
 			
 			kijkNaActiefBox.setLocation(gaip.getSize().width + offset, kijkNaActiefBox.getLocation().y);
+			checkExternalBox.setLocation(gaip.getSize().width + offset, checkExternalBox.getLocation().y);
 			equivalentButton.setLocation(gaip.getSize().width + 2 * offset, equivalentButton.getLocation().y);
 			gelijkButton.setLocation(gaip.getSize().width + 2 * offset, gelijkButton.getLocation().y);
 						
 			maxScoreLabel.setLocation(gaip.getSize().width + 2 * offset, maxScoreLabel.getLocation().y);
 			maxScoreVeld.setLocation(gaip.getSize().width + 3 * offset, maxScoreVeld.getLocation().y);
-			
 		}
 	}
 	
 	public void setEditState(Hashtable b)
 	{
-		
-//System.out.println("gaiep setEditState");
-
 		boolean varWaardeZichtbaar = false;
 		boolean oppWaardeZichtbaar = false;
 		boolean formuleZichtbaar = true;
@@ -289,6 +296,7 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		boolean puzzelen = false;
 		
 		boolean kijkNaActief = false;
+		boolean checkExternal = false;
 		boolean equivalent = true;
 		// antwoord ophalen
 		String antwoordFormuleString = "";
@@ -297,8 +305,6 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 
 		if (b.containsKey("appletLaunchData"))
 		{
-//System.out.println("aLD found");
-
 			Hashtable appletLaunchData = (Hashtable) b.get("appletLaunchData");
 			
 			String varWaardeZichtbaarString = "false";
@@ -327,9 +333,6 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 				alleenOppervlaktesString = (String) appletLaunchData.get("alleenOppervlaktes");
 			if (alleenOppervlaktesString.equals("true") || alleenOppervlaktesString.equals("yes"))
 				alleenOppervlaktes = true;
-						
-			
-
 		}
 		else
 		{
@@ -357,18 +360,17 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 			
 			if (b.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) b.get("kijkNaActief")).booleanValue();
+			if (b.containsKey("checkExternal"))
+				checkExternal = ((Boolean) b.get("checkExternal")).booleanValue();
 			if (b.containsKey("equivalent"))
 				equivalent = ((Boolean) b.get("equivalent")).booleanValue();
 
-//System.out.println("equivalent = " + equivalent);			
-			
 			if (b.containsKey("antwoordFormuleString"))
 			{	antwoordFormuleString = (String) b.get("antwoordFormuleString");
 			}
 
 			if (b.containsKey("scoreMax"))
 				scoreMax = ((Integer) b.get("scoreMax")).intValue();
-
 		}
 		
 		varWaardeBox.setSelected(varWaardeZichtbaar);
@@ -384,10 +386,9 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		puzzelenBox.setSelected(puzzelen);
 		
 		kijkNaActiefBox.setSelected(kijkNaActief);
+		checkExternalBox.setSelected(checkExternal); 
 		equivalentButton.setSelected(equivalent);
 		gelijkButton.setSelected(!equivalent);
-		
-//System.out.println("set afs = " + antwoordFormuleString);		
 		antwoordFormulePanel.zetExpressieString(antwoordFormuleString);
 		
 		maxScoreVeld.setText("" + scoreMax);
@@ -411,20 +412,13 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 			doelFormuleLabel.setVisible(true);
 		}
 		
-		// HIER !!
 		gaip.setEditState(b);		
-		
 	}
 	
 	public Hashtable getEditState()
 	{
-//System.out.println("gaiep getEditState");
-
 		Hashtable h = gaip.getEditState(); 
-		
-	
-//System.out.println("get afs = " + antwoordFormulePanel.getExpressieString());
-//System.out.println("get afscorr = " + antwoordFormulePanel.getCorrectExpressieString());
+
 		h.put("antwoordFormuleString", antwoordFormulePanel.getExpressieString());
 		h.put("antwoordFormuleStringCorrect", antwoordFormulePanel.getCorrectExpressieString());
 
@@ -441,7 +435,6 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		h.put("gaipHoogte", new Integer(gaipHoogte));
 		
 		return h;
-		
 	}
 		
 	public void setBounds(int x, int y, int b, int h)
@@ -450,16 +443,12 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		{	noSetBounds = false;
 			return;
 		}
-//System.out.println("spiep setBounds raw " + x + " " + y + " " + b + " " + h);
 
 		if ((h <= 1) || (x < 0) || (b <= 1))
 			return;
 		
 		super.setBounds(x, y, gaipBreedte + editWidth, Math.max(gaipHoogte, editHeight));
 		
-//System.out.println("spiep setBounds " + x + " " + y + " " + (spipBreedte + editWidth) + " " + 
-//					Math.max(spipHoogte, editHeight));
-	
 		if (gaip != null)
 		{	gaip.setBounds(0, 0, gaipBreedte, gaipHoogte);
 		
@@ -477,9 +466,6 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		//antwoordFormulePanel.setLocation(gaipBreedte / 2, gaipHoogte - ePanelHeight);
 		
 		plaatsComponenten();
-		
-//System.out.println("setBounds " + x + " " + y + " " + b + " " + h);		
-		
 	}
 	
 	public void zetBreedte(int b)
@@ -557,21 +543,29 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		{
 			gaip.zetPuzzelen(puzzelenBox.isSelected());
 		}
-		
-		
 		else if (e.getSource() == kijkNaActiefBox)
 		{
+			if (kijkNaActiefBox.isSelected())
+			{
+				setVisibleNakijkModusFields(true);
+				// extern controleren is alleen mogelijk als kijk na actief
+				checkExternalBox.setEnabled(true);
+			}
+			else
+			{
+				setVisibleNakijkModusFields(false);
+				// als kijk na niet actief kun je ook niet extern controleren
+				checkExternalBox.setEnabled(false);
+			}
+
 			gaip.zetKijkNaActief(kijkNaActiefBox.isSelected());
-			doelFormuleLabel.setVisible(kijkNaActiefBox.isSelected());
-			antwoordFormulePanel.setVisible(kijkNaActiefBox.isSelected());
-			
-			
-			equivalentButton.setVisible(kijkNaActiefBox.isSelected());
-			gelijkButton.setVisible(kijkNaActiefBox.isSelected());
-			maxScoreLabel.setVisible(kijkNaActiefBox.isSelected());
-			maxScoreVeld.setVisible(kijkNaActiefBox.isSelected());
-			
-			if(!kijkNaActiefBox.isSelected()) scoreMax = 0;
+
+			if (!isNakijkModus())
+				scoreMax = 0;
+		}
+		else if (e.getSource() == checkExternalBox)
+		{
+			gaip.zetCheckExternal(checkExternalBox.isSelected());
 		}
 		else if (e.getSource() == equivalentButton)
 		{
@@ -581,12 +575,36 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		{
 			gaip.zetEquivalent(equivalentButton.isSelected());
 		}
-					
-
-			
+	}
+	
+	/**
+	 * Set visible van de componenten die horen bij de nakijkmodus.
+	 */
+	void setVisibleNakijkModusFields(boolean b)
+	{
+		doelFormuleLabel.setVisible(b);
+		antwoordFormulePanel.setVisible(b);
 		
+		equivalentButton.setVisible(b);
+		gelijkButton.setVisible(b);
+		maxScoreLabel.setVisible(b);
+		maxScoreVeld.setVisible(b);
 	}
 
+    /**
+     * Retourneert of is nakijkmodus en nagekeken moet worden.
+     * 
+     * @return
+     */
+    private boolean isNakijkModus()
+    {
+    	boolean b = false;
+    	
+    	b = kijkNaActiefBox.isSelected() || checkExternalBox.isSelected();
+    	
+    	return b;
+    }
+    
 	class TextFL2 implements FocusListener
 	{		
 		JTextField inputTextField;
@@ -615,7 +633,6 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 			}
 			catch (NumberFormatException nfe)
 			{	error = true;
-//System.out.println("nfe");			
 			}
 			// dit zou niet moeten gebeuren
 			// Peter: nu wel bij de definitie van een random variabele ipv een double			
@@ -636,7 +653,6 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 					inputTextField.setText(oldText);
 				}
 			}
-			
 		} // focusLost
 	}
 
@@ -688,8 +704,6 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 					inputTextField.setText(oldText);
 				}
 			}
-			
-			
 		} // actionPerformed
 	}
 	
@@ -739,34 +753,32 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 		
 			String txt = inputTextField.getText();
 			
-//System.out.println(txt);
-				
 			boolean corrected = false;
 
 			// kijk of txt illegale characters bevat
 			// dit zou er maximaal 1 moeten zijn
 			int index = -1;
 			for (int cCnt = 0; cCnt < txt.length(); cCnt++)
-			{	char c = txt.charAt(cCnt);
+			{	
+				char c = txt.charAt(cCnt);
 				if (!isLegal(c))
-				{	index = cCnt;
-//System.out.println("illegal " + index);				
+				{	
+					index = cCnt;
 				}
 			}	
 			// verwijder illegaal karakter
 			if (index >= 0)
-			{	txt = removeCharAt(txt, index);
+			{	
+				txt = removeCharAt(txt, index);
 				corrected = true;
-//System.out.println("corr " + txt);							
 			}
-			
-//System.out.println(txt);			
 			
 			// leading zeros, leiden niet tot een NumberFormatException	
 			// geen minteken
 			if ((txt.indexOf('-') < 0) && (txt.length() >= 2) &&
 				(txt.charAt(0) == '0') && Character.isDigit(txt.charAt(1)))
-			{	txt = removeCharAt(txt, 0);
+			{	
+				txt = removeCharAt(txt, 0);
 				corrected = true;
 			}
 			
@@ -774,18 +786,14 @@ public class GAInteractieEditPanel extends JPanel implements InteractieEditPanel
 			// bij actionPerformed of focusLost			
 
 			if (corrected)
-			{	
-//System.out.println("corr " + txt);							
+			{							
 				inputTextField.setText(txt);
-			
 			}
-			
 		}
-		
 		
 		public boolean isLegal(char c)
-		{	return Character.isDigit(c);
+		{	
+			return Character.isDigit(c);
 		}
 	}	
-	
 }
