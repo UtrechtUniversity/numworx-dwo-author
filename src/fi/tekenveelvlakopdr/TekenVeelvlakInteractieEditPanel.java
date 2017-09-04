@@ -27,7 +27,7 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
 public class TekenVeelvlakInteractieEditPanel extends JPanel implements InteractieEditPanel, ActionListener, ItemListener
 {
-	int editWidth = 190;
+	int editWidth = 220;
 	int editHeight = 450; 
 	int tvipBreedte = 500; // startbreedte tvip
 	int tvipHoogte = 450; // starthoogte tvip
@@ -63,12 +63,14 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 	JPanel tekenVVOptiesPanel, nakijkOptiesPanel;
     
 	JCheckBox kijkDraaihoekNaCB;
+	JCheckBox checkExternalDraaihoekBox;
 	
 	JRadioButton dezeDraaihoekRB, voorkantRB, achterkantRB, bovenkantRB, onderkantRB, linkerkantRB, rechterkantRB;
     ButtonGroup kijkDraaihoekNaGroup;
     
 	JCheckBox kijkVlakkenNaCB;
 	JLabel kijkVlakkenNaLabel;
+	JCheckBox checkExternalVlakkenBox;
 	
 	//JRadioButton profielenKleurenRB, viewerKleurenRB;
     //ButtonGroup kleurGroup;
@@ -231,9 +233,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         
         currentY += height + offSet;
 
-        
-        zetViewerOptiesEnabled(false);
-
         profilesOnlyCB = new JCheckBox(TekenVeelvlakOpdr.rb.getString("alleenProfielenCBLabel"));
         profilesOnlyCB.setBounds(currentX,currentY,width,height);
         profilesOnlyCB.setOpaque(false);
@@ -248,7 +247,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         vlakkenKleurenCB.setOpaque(false);
         tekenVVOptiesPanel.add(vlakkenKleurenCB);
         vlakkenKleurenCB.addItemListener(this);
-        //vlakkenKleurenCB.addActionListener(this);
         vlakkenKleurenCB.setEnabled(false);
         
         currentY += height; // + offSet;
@@ -261,9 +259,16 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         kijkDraaihoekNaCB.setOpaque(false);
         nakijkOptiesPanel.add(kijkDraaihoekNaCB);
         kijkDraaihoekNaCB.addItemListener(this);
-        //kijkDraaihoekNaCB.addActionListener(this);
 
         currentY += height; // + offSet/4;
+        
+        checkExternalDraaihoekBox = new JCheckBox(TekenVeelvlakOpdr.rb.getString("checkExternalDraaihoek"));
+        checkExternalDraaihoekBox.setBounds(currentX, currentY, width, height);
+        checkExternalDraaihoekBox.setOpaque(false);
+        nakijkOptiesPanel.add(checkExternalDraaihoekBox);
+        checkExternalDraaihoekBox.addItemListener(this);
+
+        currentY += height;
         
         kijkDraaihoekNaGroup = new ButtonGroup();
         
@@ -329,6 +334,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         kijkDraaihoekNaGroup.add(rechterkantRB);
         
         zetDraaihoekOptiesEnabled(false);
+        zetViewerOptiesEnabled(false);
         
         currentY += height + 2 * offSet;
 
@@ -337,7 +343,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         kijkVlakkenNaCB.setOpaque(false);
         nakijkOptiesPanel.add(kijkVlakkenNaCB);
         kijkVlakkenNaCB.addItemListener(this);
-        //kijkVlakkenNaCB.addActionListener(this);
         
         currentY += height - 5;
         
@@ -346,30 +351,16 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         kijkVlakkenNaLabel.setOpaque(false);
         nakijkOptiesPanel.add(kijkVlakkenNaLabel);
                 
-        currentY += height + offSet;
+        currentY += height;
   
-/*        
-        kleurGroup = new ButtonGroup();
+        checkExternalVlakkenBox = new JCheckBox(TekenVeelvlakOpdr.rb.getString("checkExternalVlakken"));
+        checkExternalVlakkenBox.setBounds(currentX,currentY,width,height);
+        checkExternalVlakkenBox.setOpaque(false);
+        nakijkOptiesPanel.add(checkExternalVlakkenBox);
+        checkExternalVlakkenBox.addItemListener(this);
         
-        profielenKleurenRB = new JRadioButton(TekenVeelvlakOpdr.rb.getString("inProfielenRBLabel"),false);
-        profielenKleurenRB.setBounds(currentX,currentY,width,height);
-        profielenKleurenRB.setOpaque(false);
-        //nakijkOptiesPanel.add(profielenKleurenRB);
-        //profielenKleurenRB.addItemListener(this);
-        //kleurGroup.add(profielenKleurenRB);
-        
-        currentY += height; // + offSet/4;
-*/        
-/*
-        viewerKleurenRB = new JRadioButton(TekenVeelvlakOpdr.rb.getString("inFiguurRBLabel"),true);
-        viewerKleurenRB.setBounds(currentX,currentY,width,height);
-        viewerKleurenRB.setOpaque(false);
-        //nakijkOptiesPanel.add(viewerKleurenRB);
-        //viewerKleurenRB.addItemListener(this);
-        //kleurGroup.add(viewerKleurenRB);
-        
-        currentY += height + 4 * offSet;
-*/        
+        currentY += height + offSet;
+                
         zetVlakkenKleurenEnabled(false);
         
 		maxScoreLabel = new JLabel(TekenVeelvlakOpdr.rb.getString("maxScoreTekst"));
@@ -377,8 +368,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 		maxScoreLabel.setBackground(Color.white);
 		width = theFM.stringWidth(maxScoreLabel.getText());
 		maxScoreLabel.setBounds(currentX + offSet, currentY + 3, width, theFM.getHeight());
-		//maxScoreLabel.setEnabled(false);
-		//maxScoreLabel.setVisible(false);
 		nakijkOptiesPanel.add(maxScoreLabel);
 		
 		currentY += height; // + offset;
@@ -388,19 +377,13 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 		maxScoreVeld.setBackground(Color.white);
 		width = theFM.stringWidth("XXXXXX");
 		maxScoreVeld.setBounds(currentX + 2 * offSet, currentY, width, height);
-				//maxScoreLabel.getLocation().x + maxScoreLabel.getSize().width + offset,
-				//currentY, width, height);
 		nakijkOptiesPanel.add(maxScoreVeld);
-		//maxScoreVeld.setEditable(false);
-		//maxScoreVeld.setVisible(false);
 
 		maxScoreVeld.addKeyListener(new InputKL2(maxScoreVeld));
 		maxScoreVeld.addActionListener(new TextAL2(maxScoreVeld));
 		maxScoreVeld.addFocusListener(new TextFL2(maxScoreVeld));
-
         
 		componentsCreated = true;
-		
     }
 
     public void showNakijkOpties(boolean b)
@@ -410,8 +393,10 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     	{
     	}
     	else
-    	{	kijkDraaihoekNaCB.setSelected(false);
+    	{	
+    		kijkDraaihoekNaCB.setSelected(false);
     		kijkDraaihoekNaCB.setEnabled(false);
+    		checkExternalDraaihoekBox.setEnabled(false);
     		dezeDraaihoekRB.setSelected(true);
     		zetDraaihoekOptiesEnabled(false);
     		tvip.docentDraaihoekX = 1e-5d;
@@ -419,10 +404,11 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     		
     		kijkVlakkenNaCB.setSelected(false);
     		kijkVlakkenNaCB.setEnabled(false);
+    		kijkVlakkenNaLabel.setEnabled(false);
+    		checkExternalVlakkenBox.setEnabled(false);
     		tvip.docentKleuren = null;
     		tvip.viewer.kijkNaPanel.setVisible(false);
     		tvip.vaktek.kijkNaPanel.setVisible(false);
-    	
     	}
     }
     
@@ -466,22 +452,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     
     public void itemStateChanged(ItemEvent e)
     {
-
-//    	if (e.getSource() == frontArrowCB)
-//   	{
-//    		tvip.toonVooraanzichtPijl(frontArrowCB.isSelected());
-//    	}
-    	if (e.getSource() == viewerOnlyCB)
-    	{
-    		
-//System.out.println("viewerOnlyCB item");
-
-    		tvip.setViewerOnly(viewerOnlyCB.isSelected());
-    		zetViewerOptiesEnabled(viewerOnlyCB.isSelected());
-    		if (viewerOnlyCB.isSelected())
-    			profilesOnlyCB.setSelected(false);
-    	}
-    	else if (e.getSource() == moveableRB)
+   		if (e.getSource() == moveableRB)
     	{
     		if (moveableRB.isSelected()) 
     			tvip.zetViewerPosition(TekenVeelvlakInteractiePanel.MOVEABLE);
@@ -494,8 +465,11 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     	
     	else if (e.getSource() == frontViewRB)
     	{
-    		if (frontViewRB.isSelected()) 
+    		if (frontViewRB.isSelected())
+    		{
     			tvip.zetViewerPosition(TekenVeelvlakInteractiePanel.FRONTVIEW);
+        		// moet kijk draaihoekna uit?... en bij andere opties?
+    		}
     	}
     	else if (e.getSource() == backViewRB)
     	{
@@ -539,9 +513,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     		
     		moveableRB.setSelected(true);
     		zetViewerOptiesEnabled(!vlakkenKleurenCB.isSelected() && viewerOnlyCB.isSelected());
-    		   		
-    		 
-    		
     	}
     	else if (e.getSource() == kijkDraaihoekNaCB)
     	{
@@ -549,24 +520,37 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     		
     		if (kijkDraaihoekNaCB.isSelected())
     		{
-    			zetDraaihoekOptiesEnabled(true);
-    			kijkVlakkenNaCB.setSelected(false);
-    			zetVlakkenKleurenOptiesEnabled(false);
-    			tvip.viewer.kijkNaPanel.setVisible(true);
-    			//tvip.vaktek.kijkNaPanel.setVisible(true);
+    			zetDraaihoekOpties(true);
+    			checkExternalDraaihoekBox.setEnabled(true);
+    			kijkVlakkenNaCB.setEnabled(false);
+    			kijkVlakkenNaLabel.setEnabled(false);
+    			checkExternalVlakkenBox.setEnabled(false);
     		}
     		else
     		{
-    			zetDraaihoekOptiesEnabled(false);
-    			tvip.viewer.kijkNaPanel.setVisible(false);
-    			tvip.vaktek.kijkNaPanel.setVisible(false);
+    			zetDraaihoekOpties(false);
+    			checkExternalDraaihoekBox.setEnabled(false);
+    			kijkVlakkenNaCB.setEnabled(true);
+    			kijkVlakkenNaLabel.setEnabled(true);
+    			if (kijkVlakkenNaCB.isSelected())
+    				checkExternalVlakkenBox.setEnabled(true);
+    			else
+    				checkExternalVlakkenBox.setEnabled(false);
+
     		}
+    		
+    		zetKijkNaKnop();
+    	}
+    	else if (e.getSource() == checkExternalDraaihoekBox)
+    	{
+    		tvip.zetCheckExternalDraaihoek(checkExternalDraaihoekBox.isSelected());
+    		
+    		zetKijkNaKnop();
     	}
     	else if (e.getSource() == dezeDraaihoekRB)
     	{
     		if (dezeDraaihoekRB.isSelected())
-    		{	
-//System.out.println("dezeDraaihoekRB");    			
+    		{
     			zetDocentDraaihoek(laatsteDraaiX, laatsteDraaiY);    		
     			tvip.viewer.zetAfstand(1000);
 				tvip.viewer.zetSchaduw(true);
@@ -577,8 +561,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     	else if (e.getSource() == voorkantRB)
     	{
     		if (voorkantRB.isSelected())
-    		{	
-//System.out.println("voorkantRB");
+    		{
     			if (tvip.viewer.muisAan)
     			{	laatsteDraaiX = tvip.viewer.geefDraaiX();
     				laatsteDraaiY = tvip.viewer.geefDraaiY();
@@ -673,81 +656,90 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 
     		if (kijkVlakkenNaCB.isSelected())
     		{
-    			zetVlakkenKleurenOptiesEnabled(true);
-    			kijkDraaihoekNaCB.setSelected(false);
-    			zetDraaihoekOptiesEnabled(false);
-/*    			
-    			// we hebben al een viewer
-    			if (profielenKleurenRB.isSelected())
-    			{
-    				tvip.setProfilesOnly(true);
-    				//tvip.zetProfielenKleurenOptie(true);
-    				tvip.vaktek.zetDocentModus(true);
-    				tvip.vaktek.zetKlikAan(true);
-    				tvip.vaktek.kijkNaPanel.setVisible(true);
-    				tvip.vaktek.updateViewerKleuren();
-    				
-    			}
-    			else
-    			{
-*/    			
-    				//tvip.zetProfielenKleurenOptie(false);
-    				tvip.viewer.zetDocentModus(true);
-    				tvip.viewer.zetKlikAan(true); 
-    				tvip.viewer.kijkNaPanel.setVisible(true);
-    				tvip.viewer.updateViewerKleuren();
-//    			}
-    			
+    			zetVlakkenOpties(true);
+    			checkExternalVlakkenBox.setEnabled(true);
+    			kijkDraaihoekNaCB.setEnabled(false);
+    			checkExternalDraaihoekBox.setEnabled(false);
     		}
     		else
     		{
-  //  			zetVlakkenKleurenOptiesEnabled(false);
-    			tvip.vaktek.zetDocentModus(false);
-				tvip.vaktek.zetKlikAan(false);
-				tvip.vaktek.resetColors();
-    			tvip.viewer.zetDocentModus(false);
-				tvip.viewer.zetKlikAan(false);
-				tvip.viewer.resetColors();
-				tvip.viewer.kijkNaPanel.setVisible(false);
-				tvip.vaktek.kijkNaPanel.setVisible(false);
+    			zetVlakkenOpties(false);
+    			checkExternalVlakkenBox.setEnabled(false);
+    			kijkDraaihoekNaCB.setEnabled(true);
+    			if (kijkDraaihoekNaCB.isSelected())
+    				checkExternalDraaihoekBox.setEnabled(true);
+    			else
+    				checkExternalDraaihoekBox.setEnabled(false);
     		}
+    		
+    		zetKijkNaKnop();
     	}
-/*    	
-    	else if (e.getSource() == profielenKleurenRB)
-    	{
-    		//tvip.zetProfielenKleurenOptie(profielenKleurenRB.isSelected());
-    		tvip.setProfilesOnly(true);
-    		tvip.setViewerOnly(false);
-    		tvip.vaktek.zetDocentModus(true);
-			tvip.vaktek.zetKlikAan(true);
-    		tvip.viewer.zetDocentModus(false);
-			tvip.viewer.zetKlikAan(false);
-			tvip.viewer.resetColors();
-			tvip.viewer.kijkNaPanel.setVisible(false);
-			tvip.vaktek.kijkNaPanel.setVisible(true);
-
+    	else if (e.getSource() == checkExternalVlakkenBox)
+    	{	
+    		tvip.zetCheckExternalVlakken(checkExternalVlakkenBox.isSelected());
+    		
+    		zetKijkNaKnop();
     	}
-*/    	
-/*    	
-    	else if (e.getSource() == viewerKleurenRB)
-    	{
-    		//tvip.zetProfielenKleurenOptie(!viewerKleurenRB.isSelected());
-    		tvip.setViewerOnly(true);
-    		tvip.setProfilesOnly(false);
-    		tvip.viewer.zetDocentModus(true);
-			tvip.viewer.zetKlikAan(true);
-    		tvip.vaktek.zetDocentModus(false);
-			tvip.vaktek.zetKlikAan(false);
-			tvip.vaktek.resetColors();
-			tvip.viewer.kijkNaPanel.setVisible(true);
-			tvip.vaktek.kijkNaPanel.setVisible(false);
-			
-    	}
-*/    	
-    	
     }
 
-    public void zetDocentDraaihoek(double ddhX, double ddhY)
+    private void zetKijkNaKnop()
+	{
+		if (checkExternalDraaihoekBox.isSelected() || checkExternalVlakkenBox.isSelected())
+			tvip.viewer.setVisibleKijkNaButton(false);
+		else
+			tvip.viewer.setVisibleKijkNaButton(true);
+	}
+
+	private void zetDraaihoekOpties(boolean b)
+	{
+    	if (b)
+    	{
+			kijkVlakkenNaCB.setSelected(false);
+			checkExternalVlakkenBox.setSelected(false);
+			
+			zetVlakkenKleurenOptiesEnabled(false);
+    	}
+    	else
+    	{
+			tvip.vaktek.kijkNaPanel.setVisible(false);
+    	}
+    	
+		zetDraaihoekOptiesEnabled(b);
+		tvip.viewer.kijkNaPanel.setVisible(b);
+	}
+
+	/**
+     * Zet de vlakken-nakijk-opties aan of uit.
+     * 
+     * @param b
+     */
+    private void zetVlakkenOpties(boolean b)
+	{
+    	if (b)
+    	{
+			zetVlakkenKleurenOptiesEnabled(true);
+			
+			kijkDraaihoekNaCB.setSelected(false);
+			checkExternalDraaihoekBox.setSelected(false);
+			zetDraaihoekOptiesEnabled(false);
+			
+			tvip.viewer.updateViewerKleuren();
+    	}
+    	else
+    	{
+			tvip.vaktek.zetDocentModus(false);
+			tvip.vaktek.zetKlikAan(false);
+			tvip.vaktek.resetColors();
+			tvip.viewer.resetColors();
+			tvip.vaktek.kijkNaPanel.setVisible(false);
+    	}
+    	
+		tvip.viewer.zetDocentModus(b);
+		tvip.viewer.zetKlikAan(b); 
+		tvip.viewer.kijkNaPanel.setVisible(b);
+	}
+
+	public void zetDocentDraaihoek(double ddhX, double ddhY)
     {
     	tvip.zetDocentDraaihoek(ddhX, ddhY);
     	tvip.viewer.zetBeginHoeken(ddhX, ddhY);
@@ -798,8 +790,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 
     	else if (e.getSource() == viewerOnlyCB)
     	{
-//System.out.println("viewerOnlyCB action");
-
     		tvip.setViewerOnly(viewerOnlyCB.isSelected());
     		zetViewerOptiesEnabled(viewerOnlyCB.isSelected());
     		if (viewerOnlyCB.isSelected())
@@ -811,7 +801,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     	
     	else if (e.getSource() == profilesOnlyCB)
     	{
-//System.out.println("profilesOnlyCB action");    		
     		tvip.setProfilesOnly(profilesOnlyCB.isSelected());
     		zetViewerOptiesEnabled(false);
     		if (profilesOnlyCB.isSelected())
@@ -990,7 +979,10 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 		rightViewRB.setEnabled(b);
 		//teacherViewRB.setEnabled(b);
 		
-    	
+    	// zet kijk na draaihoek (in)actief
+		kijkDraaihoekNaCB.setEnabled(b);
+		if (!b)
+			checkExternalDraaihoekBox.setEnabled(b);
     }
 
     public void zetDraaihoekOptiesEnabled(boolean b)
@@ -1023,12 +1015,14 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     	{	
     		kijkVlakkenNaCB.setEnabled(b);
     		kijkVlakkenNaLabel.setEnabled(b);
+    		checkExternalVlakkenBox.setEnabled(b);
     		//zetVlakkenKleurenOptiesEnabled(b);
     	}
     	else
     	{	kijkVlakkenNaCB.setSelected(false);
     		kijkVlakkenNaCB.setEnabled(b);
 			kijkVlakkenNaLabel.setEnabled(b);
+			checkExternalVlakkenBox.setEnabled(b);
 			tvip.docentKleuren = null;
 			
 			//zetVlakkenKleurenOptiesEnabled(b);
@@ -1049,14 +1043,12 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     
     public Hashtable getEditState() 
     {
-    	
-//System.out.println("tviep getEditState");
         Hashtable h = tvip.getEditState();
 
         h.put("tvipBreedte", new Integer(tvipBreedte));
 		h.put("tvipHoogte", new Integer(tvipHoogte));
 
-		if (kijkDraaihoekNaCB.isSelected() || kijkVlakkenNaCB.isSelected())
+		if (isNakijkModus())
 			h.put("scoreMax", new Integer(scoreMax));
 		else
 			h.put("scoreMax", new Integer(0));
@@ -1064,19 +1056,26 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 		return h;
     }
 
+    /**
+     * Retourneert of is nakijkmodus en nagekeken moet worden.
+     * 
+     * @return
+     */
+    private boolean isNakijkModus()
+    {
+    	boolean b = false;
+    	
+    	b = kijkDraaihoekNaCB.isSelected() || kijkVlakkenNaCB.isSelected()
+    		|| checkExternalDraaihoekBox.isSelected() || checkExternalVlakkenBox.isSelected();
+    	
+    	return b;
+    }
     
     public void setBounds(int x, int y, int b, int h) 
     {
     	if ((x < 0) || (y < 0) || (h < 5)) return;    	
 
-//System.out.println("tviep setBounds " + x + " " + y + " " + b + " " + h);
-
-        //super.setBounds(x,y,b,h);
-        
-        super.setBounds(x, y, tvipBreedte + editWidth, Math.max(tvipHoogte, editHeight));
-		
-//System.out.println("tviep setBounds " + x + " " + y + " " + (tvipBreedte + editWidth) + " " + 
-//      					Math.max(tvipHoogte, editHeight));
+    	super.setBounds(x, y, tvipBreedte + editWidth, Math.max(tvipHoogte, editHeight));
 
       	if (tvip != null)
       		tvip.setBounds(0, 0, tvipBreedte, tvipHoogte);
@@ -1088,9 +1087,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     
     public void setEditState(Hashtable h) 
     {
-    	
-//System.out.println("tviep setEditState");    	
-
     	// tekenVVOptiesPanel
 
     	boolean toonVooraanzichtPijl = false;
@@ -1108,8 +1104,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
         	viewerOnly = ((Boolean)h.get("viewerOnly")).booleanValue();
         if(h.containsKey("profilesOnly"))
         	profilesOnly = ((Boolean)h.get("profilesOnly")).booleanValue();
-
-//System.out.println("profilesOnly = " + profilesOnly);
 
         if(h.containsKey("viewerPosition"))
         	viewerPosition = ((Integer) h.get("viewerPosition")).intValue();
@@ -1160,14 +1154,18 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 	    // nakijkOptiesPanel
 	    
 	    boolean kijkDraaihoekNa = false;
+	    boolean checkExternalDraaihoek = false;
 	    double docentDraaihoekX = 20;
 	    double docentDraaihoekY = -30;
 	    	    
         if (h.containsKey("kijkDraaihoekNa"))
         	kijkDraaihoekNa = ((Boolean) h.get("kijkDraaihoekNa")).booleanValue();
         kijkDraaihoekNaCB.setSelected(kijkDraaihoekNa);
+        if (h.containsKey("checkExternalDraaihoek"))
+        	checkExternalDraaihoek = ((Boolean) h.get("checkExternalDraaihoek")).booleanValue();
+        checkExternalDraaihoekBox.setSelected(checkExternalDraaihoek);
         
-        zetDraaihoekOptiesEnabled(kijkDraaihoekNa);
+        zetDraaihoekOptiesEnabled(kijkDraaihoekNa || checkExternalDraaihoek);
         
         if (h.containsKey("docentDraaihoekX"))
         	docentDraaihoekX = ((Double) h.get("docentDraaihoekX")).doubleValue();
@@ -1193,15 +1191,16 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
     			dezeDraaihoekRB.setSelected(true);
     	}
         
-        
-        
         boolean kijkVlakkenNa = false;
+        boolean checkExternalVlakken = false;
         
         if (h.containsKey("kijkVlakkenNa"))
         	kijkVlakkenNa = ((Boolean) h.get("kijkVlakkenNa")).booleanValue();
+        if (h.containsKey("checkExternalVlakken"))
+        	checkExternalVlakken = ((Boolean) h.get("checkExternalVlakken")).booleanValue();
         
-	
 	    kijkVlakkenNaCB.setSelected(kijkVlakkenNa);
+	    checkExternalVlakkenBox.setSelected(checkExternalVlakken);
 	    
 	    if (viewerOnly || profilesOnly)
 	    	tabbedPane.setEnabledAt(1,true);
@@ -1212,7 +1211,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 	    
 	    setBounds(getLocation().x, getLocation().y, tvipBreedte + editWidth, Math.max(tvipHoogte, editHeight));
 	    
-		// HIER !!
 		tvip.setEditState(h);	    
     }
 
@@ -1288,7 +1286,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 			}
 			catch (NumberFormatException nfe)
 			{	error = true;
-//System.out.println("nfe");			
 			}
 			// dit zou niet moeten gebeuren
 			// Peter: nu wel bij de definitie van een random variabele ipv een double			
@@ -1309,7 +1306,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 					inputTextField.setText(oldText);
 				}
 			}
-			
 		} // focusLost
 	}
 
@@ -1361,8 +1357,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 					inputTextField.setText(oldText);
 				}
 			}
-			
-			
 		} // actionPerformed
 	}
 	
@@ -1411,8 +1405,6 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 			inputTextField.setForeground(Color.black);
 		
 			String txt = inputTextField.getText();
-			
-//System.out.println(txt);
 				
 			boolean corrected = false;
 
@@ -1423,17 +1415,13 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 			{	char c = txt.charAt(cCnt);
 				if (!isLegal(c))
 				{	index = cCnt;
-//System.out.println("illegal " + index);				
 				}
 			}	
 			// verwijder illegaal karakter
 			if (index >= 0)
 			{	txt = removeCharAt(txt, index);
 				corrected = true;
-//System.out.println("corr " + txt);							
 			}
-			
-//System.out.println(txt);			
 			
 			// leading zeros, leiden niet tot een NumberFormatException	
 			// geen minteken
@@ -1447,19 +1435,14 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel implements Interact
 			// bij actionPerformed of focusLost			
 
 			if (corrected)
-			{	
-//System.out.println("corr " + txt);							
+			{
 				inputTextField.setText(txt);
-			
 			}
-			
 		}
-		
 		
 		public boolean isLegal(char c)
-		{	return Character.isDigit(c);
+		{
+			return Character.isDigit(c);
 		}
 	}	
-
 }
-
