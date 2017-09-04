@@ -25,7 +25,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "kleurVlakKnopLabel" , "Kleur vlakken" },
                 { "wisKleurKnopLabel" , "Wis gekleurd" },
                 
-                { "hulpPuntenCBLabel" , "hulppunten op ribben" },
+                { "hulpPuntenCBLabel" , "Hulppunten op ribben" },
                 
                 { "vooraanzichtPijlCBLabel" , "Pijl voor vooraanzicht" },
                 
@@ -46,12 +46,14 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "inProfielenRBLabel" , "van de profielen" },
                 { "inFiguurRBLabel" , "van de figuur" },
                 
-                { "tekenVVOptiesLabel" , "Teken Veelvlak Opties" },
+                { "tekenVVOptiesLabel" , "Tekenveelvlak-opties" },
                 { "nakijkOptiesLabel" , "Nakijkopties" },
                 
                 { "kijkDraaihoekNaCBLabel" , "Kijk de draaihoek na" },
                 { "kijkVlakkenNaCBLabel" , "Kijk de gekleurde" },
                 { "kijkVlakkenNaCBLabel2" , "vlakken na" },
+				{ "checkExternalDraaihoek" , "Draaihoek extern controleren" },
+				{ "checkExternalVlakken" , "Vlakken extern controleren" },
                 { "kijkNaLabel" , "Kijk na" }, 
                 
                 { "dezeDraaihoekRBLabel" , "Deze draaihoek" },

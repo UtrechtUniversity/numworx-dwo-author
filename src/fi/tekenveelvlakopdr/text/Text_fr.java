@@ -48,6 +48,8 @@ public class Text_fr extends java.util.ListResourceBundle
                 { "kijkDraaihoekNaCBLabel" , "Check the rotation" },
                 { "kijkVlakkenNaCBLabel" , "Check the coloured" },
                 { "kijkVlakkenNaCBLabel2" , "faces" },
+				{ "checkExternalDraaihoek" , "External check rotation" },
+				{ "checkExternalVlakken" , "External check faces" },
                 { "kijkNaLabel" , "Check" },
                 
                 { "dezeDraaihoekRBLabel" , "This rotation" },
