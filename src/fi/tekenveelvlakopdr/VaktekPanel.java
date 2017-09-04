@@ -321,6 +321,18 @@ class VaktekPanel extends JPanel
 		va.zetVeelvlak(vva);	
 		ra.zetVeelvlak(vra);	
 	}
+	
+	/**
+	 * Zet de nakijkknop al dan niet zichtbaar.
+	 * Voor extern controleren moet de nakijkknop
+	 * verborgen worden.
+	 * 
+	 * @param b
+	 */
+	void setVisibleKijkNaButton(boolean b)
+	{
+		kijkNaButton.setVisible(b);
+	}
 						
 	class VaktekRooster extends Component
 	{	
