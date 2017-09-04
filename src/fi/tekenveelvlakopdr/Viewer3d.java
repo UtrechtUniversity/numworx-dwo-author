@@ -134,7 +134,18 @@ public class Viewer3d extends JPanel
 		kijkNaPanel.setVisible(false);
 		
 		tvip.viewerPanel.add(kijkNaPanel);
-		
+	}
+	
+	/**
+	 * Zet de nakijkknop al dan niet zichtbaar.
+	 * Voor extern controleren moet de nakijkknop
+	 * verborgen worden.
+	 * 
+	 * @param b
+	 */
+	void setVisibleKijkNaButton(boolean b)
+	{
+		kijkNaButton.setVisible(b);
 	}
 	
 	class KijkNaAL implements ActionListener
