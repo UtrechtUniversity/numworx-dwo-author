@@ -34,6 +34,8 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     boolean kijkNaActief = false;
     boolean kijkDraaihoekNa = false;
     boolean kijkVlakkenNa = false;
+    boolean checkExternalDraaihoek = false;
+    boolean checkExternalVlakken = false;
         
     double docentDraaihoekX = 1e5d;
     double docentDraaihoekY = 1e5d;
@@ -132,8 +134,6 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     
     public Hashtable getEditState() 
     {
-System.out.println("tvip getEditState");
-
 		double viewerDraaiX = viewer.geefDraaiX();
 		double viewerDraaiY = viewer.geefDraaiY();
 
@@ -141,8 +141,8 @@ System.out.println("tvip getEditState");
 			 editMode.kijkDraaihoekNaCB.isSelected())
 		{	viewerDraaiX = editMode.tvipDraaiX;
 			viewerDraaiY = editMode.tvipDraaiY;
-		
-//let nog even op dat de muis aanstaat    		
+
+			//let nog even op dat de muis aanstaat    		
 		}
 
 		if ((editMode != null) && editMode.nakijkOptiesPanel.isVisible() && 
@@ -151,7 +151,6 @@ System.out.println("tvip getEditState");
 			viewerOnly = false;
     		profilesOnly = true;
 		}
-
 		
     	Hashtable tvState = new Hashtable();
     	
@@ -164,8 +163,6 @@ System.out.println("tvip getEditState");
         h.put("viewerOnly", new Boolean(viewerOnly));
         h.put("profilesOnly", new Boolean(profilesOnly));
         h.put("viewerPosition", new Integer(viewerPosition));
-
-//System.out.println("vp = " + viewerPosition);        
         
         h.put("basisFiguur", new Integer(basisFiguur));
         h.put("aantalHulppunten", new Integer(aantalHulppunten));
@@ -176,10 +173,12 @@ System.out.println("tvip getEditState");
         //h.put("viewerKleurenOptie", new Boolean(viewerKleurenOptie));
         
         h.put("kijkDraaihoekNa", new Boolean(kijkDraaihoekNa));
+        h.put("checkExternalDraaihoek", new Boolean(checkExternalDraaihoek));
         h.put("docentDraaihoekX", new Double(docentDraaihoekX));
         h.put("docentDraaihoekY", new Double(docentDraaihoekY));
         
         h.put("kijkVlakkenNa", new Boolean(kijkVlakkenNa));
+        h.put("checkExternalVlakken", new Boolean(checkExternalVlakken));
         
         if (docentKleuren != null)
         {	ArrayList<String> docentKleurenAL = new ArrayList<String>();
@@ -413,20 +412,69 @@ System.out.println("tvip getEditState");
 	}
 
     public void zetKijkDraaihoekNa(boolean b)
-    {  	kijkDraaihoekNa = b;
-    	kijkNaActief = kijkDraaihoekNa || kijkVlakkenNa;
+    {
+    	kijkDraaihoekNa = b;
+    	kijkNaActief = isNakijkModus();
     }
     
     public void zetKijkVlakkenNa(boolean b)
-    {  	kijkVlakkenNa = b;
-    	kijkNaActief = kijkDraaihoekNa || kijkVlakkenNa;
+    {
+    	kijkVlakkenNa = b;
+    	kijkNaActief = isNakijkModus();
+    }
+    
+    public void zetCheckExternalDraaihoek(boolean b)
+    {  	
+    	checkExternalDraaihoek = b;
+    	kijkNaActief = isNakijkModus();
+    }
+    
+    public void zetCheckExternalVlakken(boolean b)
+    {  	
+    	checkExternalVlakken = b;
+    	kijkNaActief = isNakijkModus();
+    }
+    
+    private boolean isNakijkModus()
+    {
+    	boolean b = false;
+    	
+    	b = kijkDraaihoekNa || kijkVlakkenNa || checkExternalDraaihoek || checkExternalVlakken;
+    	
+    	return b;
+    }
+    
+    private boolean isCheckExternalModus()
+    {
+    	boolean b = false;
+    	
+    	b = checkExternalDraaihoek || checkExternalVlakken;
+    	
+    	return b;
+    }
+    
+    private boolean isVlakkenNakijkModus()
+    {
+    	boolean b = false;
+    	
+    	b = kijkVlakkenNa || checkExternalVlakken;
+    	
+    	return b;
+    }
+    
+    private boolean isDraaihoekNakijkModus()
+    {
+    	boolean b = false;
+    	
+    	b = kijkDraaihoekNa || checkExternalDraaihoek;
+    	
+    	return b;
     }
     
     public void zetDocentDraaihoek(double ddhX, double ddhY)
     {
     	docentDraaihoekX = ddhX;
-    	docentDraaihoekY = ddhY;
-    	
+    	docentDraaihoekY = ddhY;	
     }
     
     public int getIpId() {
@@ -436,14 +484,16 @@ System.out.println("tvip getEditState");
 
     
 	public int getScore()
-	{	if (kijkNaActief)
+	{
+		if (isNakijkModus())
 			return score;
 		return 0;
 	}
 
     
 	public int getScoreMax()
-	{	if (kijkNaActief)
+	{
+		if (isNakijkModus())
 			return scoreMax;
 		return 0;
 	}
@@ -451,21 +501,16 @@ System.out.println("tvip getEditState");
     
     public boolean isCorrect() 
     {
-    	
-System.out.println("isCorrect " + correct);
-
     	//if (vlakkenKleurenOptie && (profielenKleurenOptie && profilesOnly || !profielenKleurenOptie && !profilesOnly))
-    	if (kijkNaActief)
+    	if (isNakijkModus())
     	   return correct;
-    	return true;//correct;
+    	return true;
     }
 
     
 	public boolean isFout()
 	{	
-System.out.println("isFout " + fout);
-
-		if (kijkNaActief)
+		if (isNakijkModus())
 			return fout;
 		else
 			return false;
@@ -473,11 +518,8 @@ System.out.println("isFout " + fout);
 
     public void answerChanged()
     {
-    	if (kijkNaActief)
-    	{	
-    		
-System.out.println("answerChanged");
-
+    	if (isNakijkModus())
+    	{
     		correct = false;
     		fout = false;
     		score = 0;
@@ -490,32 +532,28 @@ System.out.println("answerChanged");
     
     public void kijkNa() 
     {
-    	if (!kijkNaActief)
+    	if (!isNakijkModus())
     		return;
-    	
+
     	//if (vlakkenKleurenOptie && profielenKleurenOptie && profilesOnly)
-    	if (kijkVlakkenNa && profilesOnly)
+    	if (isVlakkenNakijkModus() && profilesOnly)
     	{
-    		
-System.out.println("kijkVlakkenNa profiles");    		
     		correct = vaktek.evalueer(docentKleuren);
     		fout = !correct;
     		if (correct)
     			score = scoreMax;
     		nagekeken = true;
     	}
-    	else if (kijkVlakkenNa && viewerOnly)
+    	else if (isVlakkenNakijkModus() && viewerOnly)
     	{
-System.out.println("kijkVlakkenNa viewer");    		
     		correct = viewer.evalueer(docentKleuren);
     		fout = !correct;
     		if (correct)
     			score = scoreMax;	
     		nagekeken = true;
     	}
-    	else if (kijkDraaihoekNa)
+    	else if (isDraaihoekNakijkModus())
     	{
-System.out.println("kijkDraaihoekNa");    		
     		correct = viewer.evalueer(docentDraaihoekX, docentDraaihoekY);
     		fout = !correct;
     		if (correct)
@@ -544,16 +582,12 @@ System.out.println("kijkDraaihoekNa");
     }
 
     public void fireChangeEvent()
-    {	
-    	
-System.out.println("fireChangedEvent");
-
+    {
     	ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
 		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
 		{
 			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
 		}
-    	
     }
 
     public void kijkNa(int stapNr) 
@@ -561,15 +595,13 @@ System.out.println("fireChangedEvent");
     }
 
     
-    public void opnieuw() {
-        // TODO Auto-generated method stub
-        
+    public void opnieuw()
+    {
     }
 
     
     public void setBounds(int x, int y, int b, int h) 
     {
-    	
         super.setBounds(x,y,b,h);
         tekenVeelvlak.setBounds(0,0,b,h);
         tekenVeelvlak.setButtonHeights(h/2-170);
@@ -581,7 +613,6 @@ System.out.println("fireChangedEvent");
         viewerPanel.setBounds(0,0,vs,vs);
         viewer.kijkNaPanel.setLocation((vs-120)/2, vs-25);
         viewer.setBounds(0,0,vs,vs-25);
-        
     }
 
     public void viewerMuisLos()
@@ -592,13 +623,6 @@ System.out.println("fireChangedEvent");
     
     public void setEditState(Hashtable h) 
     {
-System.out.println("tvip setEditState");
-//if (editMode == null)
-//System.out.println("editMode == null");
-//else
-//System.out.println("editMode not null");	
-
-    	
     	 tvState = new Hashtable();
          boolean viewerOnly = false;
          boolean profilesOnly = false;
@@ -613,12 +637,14 @@ System.out.println("tvip setEditState");
          
          boolean kijkDraaihoekNa = false;
          boolean kijkVlakkenNa = false;
+         boolean checkExternalDraaihoek = false;
+         boolean checkExternalVlakken = false;
          double docentDraaihoekX = 0;
          double docentDraaihoekY = 0;
          
          if (h.containsKey("tvState"))
-         {	 tvState = (Hashtable)h.get("tvState");
-//System.out.println("h contains tvState");         
+         {	
+        	 tvState = (Hashtable)h.get("tvState");
          }
          if(h.containsKey("viewerOnly"))
         	 viewerOnly = ((Boolean)h.get("viewerOnly")).booleanValue();
@@ -641,9 +667,13 @@ System.out.println("tvip setEditState");
 //        	 profielenKleurenOptie = ((Boolean)h.get("profielenKleurenOptie")).booleanValue();
          
          if (h.containsKey("kijkDraaihoekNa"))
-         	kijkDraaihoekNa = ((Boolean)h.get("kijkDraaihoekNa")).booleanValue();
-         if (h.containsKey("kijkVlakkenNa"))
-         	kijkVlakkenNa = ((Boolean)h.get("kijkVlakkenNa")).booleanValue();
+          	kijkDraaihoekNa = ((Boolean)h.get("kijkDraaihoekNa")).booleanValue();
+          if (h.containsKey("kijkVlakkenNa"))
+          	kijkVlakkenNa = ((Boolean)h.get("kijkVlakkenNa")).booleanValue();
+          if (h.containsKey("checkExternalDraaihoek"))
+           	checkExternalDraaihoek = ((Boolean)h.get("checkExternalDraaihoek")).booleanValue();
+           if (h.containsKey("checkExternalVlakken"))
+        	   checkExternalVlakken = ((Boolean)h.get("checkExternalVlakken")).booleanValue();
                  
          if (h.containsKey("docentDraaihoekX"))
          	docentDraaihoekX = ((Double) h.get("docentDraaihoekX")).doubleValue();
@@ -664,7 +694,6 @@ System.out.println("tvip setEditState");
     		docentKleuren = new String[docentKleurenAL.size()];
     		for (int dk = 0; dk < docentKleurenAL.size(); dk++)
         		docentKleuren[dk] = docentKleurenAL.get(dk);
-    		
     	}
     	if (viewerKleurenAL != null)
     	{
@@ -672,26 +701,24 @@ System.out.println("tvip setEditState");
     		for (int vk = 0; vk < viewerKleurenAL.size(); vk++)
         		viewerKleuren[vk] = viewerKleurenAL.get(vk);
     	}
-
         	
-         this.kijkDraaihoekNa = kijkDraaihoekNa;
-         this.kijkVlakkenNa = kijkVlakkenNa;
-         kijkNaActief = kijkDraaihoekNa || kijkVlakkenNa;
-         this.docentDraaihoekX = docentDraaihoekX;
-         this.docentDraaihoekY = docentDraaihoekY;
+        this.kijkDraaihoekNa = kijkDraaihoekNa;
+        this.kijkVlakkenNa = kijkVlakkenNa;
+        this.checkExternalDraaihoek = checkExternalDraaihoek;
+        this.checkExternalVlakken = checkExternalVlakken;
+        kijkNaActief = isNakijkModus();
+        this.docentDraaihoekX = docentDraaihoekX;
+        this.docentDraaihoekY = docentDraaihoekY;
          
-         if (kijkDraaihoekNa)
+         if (isDraaihoekNakijkModus())
         	 viewer.kijkNaPanel.setVisible(true);
-         if (vlakkenKleurenOptie && kijkVlakkenNa)// && !profielenKleurenOptie)
-         { 	 viewer.kijkNaPanel.setVisible(true);
+         if (vlakkenKleurenOptie && isVlakkenNakijkModus())// && !profielenKleurenOptie)
+         {
+        	 viewer.kijkNaPanel.setVisible(true);
            	 vaktek.kijkNaPanel.setVisible(true);
          }  	 
          
-         
          toonVooraanzichtPijl(toonVooraanzichtPijl);
-         
-         //zetViewerPosition(viewerPosition);
-//System.out.println("vp = " + viewerPosition);         
          
          this.viewerOnly = viewerOnly;
          this.profilesOnly = profilesOnly;
@@ -708,11 +735,8 @@ System.out.println("tvip setEditState");
   	 	 {   vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
    	 	 }
 
-    	 
          if (viewerOnly)
-         {	 
-//System.out.println("viewerOnly");
-
+         {
         	 tekenVeelvlak.setVisible(false);
         	 vaktek.setVisible(false);
         	 viewerPanel.setVisible(true);
@@ -720,7 +744,6 @@ System.out.println("tvip setEditState");
         	 
         	 if (viewerKleuren != null)
         		 viewer.zetKleuren(viewerKleuren);
-//HIER        	 
         	 zetViewerPosition(viewerPosition);
          }
          else if (profilesOnly)
@@ -734,7 +757,6 @@ System.out.println("tvip setEditState");
 
         	 if (viewerKleuren != null)
         		 vaktek.setVaktekKleuren(viewerKleuren);
-        	 
          }
          else
          {
@@ -743,8 +765,6 @@ System.out.println("tvip setEditState");
         	 tekenVeelvlak.setVisible(true);
 	         tekenVeelvlak.begin = true;
 	         tekenVeelvlak.tekenOpnieuw();
-	         
-	         
          }
          
 // niet nodig?/          
@@ -818,9 +838,6 @@ System.out.println("tvip setEditState");
 
     public Hashtable getState() 
     {
-    	
-System.out.println("tvip getState");
-
     	Hashtable h = tekenVeelvlak.getState();
     	double viewerDraaiX = viewer.geefDraaiX();
     	double viewerDraaiY = viewer.geefDraaiY();
@@ -846,21 +863,15 @@ System.out.println("tvip getState");
     		h.put("leerlingKleuren", leerlingKleurenAL);
     	}
     	
-    	
-//kijkNa();    	
-//System.out.println("get nagekeken = " + nagekeken);
     	h.put("nagekeken", new Boolean(nagekeken));
     	//h.put("correct", new Boolean(correct));
     	h.put("ingevuld", new Boolean(ingevuld));
-    			
 
     	return h;
-        
     }
 
     public void setState(Hashtable h) 
     {
-System.out.println("tvip setState");    	
     	tekenVeelvlak.setState(h);
     	double viewerDraaiX = 20;
     	double viewerDraaiY = -30;
@@ -904,43 +915,13 @@ System.out.println("tvip setState");
     		nagekeken = ((Boolean) h.get("nagekeken")).booleanValue();
     	if (h.containsKey("ingevuld"))
     		ingevuld = ((Boolean) h.get("ingevuld")).booleanValue();
-    	
-System.out.println("nagekeken " + nagekeken);    	
-System.out.println("ingevuld " + ingevuld);
-System.out.println("mode " + mode);
 
     	if (ingevuld && (nagekeken || mode == 0))
     		kijkNa();
-    	
-/*    	
-    	
-    	if (kijkNaActief && nagekeken)
-    	{
-    		if (correct)
-    		{	viewer.vinkjeLabel.setVisible(true);
-    			vaktek.vinkjeLabel.setVisible(true);
-    		}
-    		else
-    		{
-    			viewer.kruisjeLabel.setVisible(true);
-    			vaktek.kruisjeLabel.setVisible(true);
-    		}
-    	}
-    	
-*/
-    	
-        
     }
     
     public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) 
     {
-    	
-System.out.println("tvip zetOpdracht");
-//if (editMode == null)
-//System.out.println("editMode == null");
-//else
-//System.out.println("editMode not null");	
-
         Hashtable tvState = new Hashtable();
         boolean viewerOnly = false; 
         boolean profilesOnly = false;
@@ -954,6 +935,8 @@ System.out.println("tvip zetOpdracht");
         
         boolean kijkDraaihoekNa = false;
         boolean kijkVlakkenNa = false;
+        boolean checkExternalDraaihoek = false;
+        boolean checkExternalVlakken = false;
         double docentDraaihoekX = 0;
         double docentDraaihoekY = 0;
         
@@ -982,6 +965,10 @@ System.out.println("tvip zetOpdracht");
         	kijkDraaihoekNa = ((Boolean)h.get("kijkDraaihoekNa")).booleanValue();
         if (h.containsKey("kijkVlakkenNa"))
         	kijkVlakkenNa = ((Boolean)h.get("kijkVlakkenNa")).booleanValue();
+        if (h.containsKey("checkExternalDraaihoek"))
+        	checkExternalDraaihoek = ((Boolean)h.get("checkExternalDraaihoek")).booleanValue();
+        if (h.containsKey("checkExternalVlakken"))
+        	checkExternalVlakken = ((Boolean)h.get("checkExternalVlakken")).booleanValue();
                 
         if (h.containsKey("docentDraaihoekX"))
         	docentDraaihoekX = ((Double) h.get("docentDraaihoekX")).doubleValue();
@@ -993,16 +980,26 @@ System.out.println("tvip zetOpdracht");
 
         this.kijkDraaihoekNa = kijkDraaihoekNa;
         this.kijkVlakkenNa = kijkVlakkenNa;
-        kijkNaActief = kijkDraaihoekNa || kijkVlakkenNa;
+        this.checkExternalDraaihoek = checkExternalDraaihoek;
+        this.checkExternalVlakken = checkExternalVlakken;
+        kijkNaActief = isNakijkModus();
         this.docentDraaihoekX = docentDraaihoekX;
         this.docentDraaihoekY = docentDraaihoekY;
 
-        if (kijkDraaihoekNa)
+        if (isDraaihoekNakijkModus())
        	 	viewer.kijkNaPanel.setVisible(true);
-        if (vlakkenKleurenOptie && kijkVlakkenNa)
-        {  	viewer.kijkNaPanel.setVisible(true);
+        if (vlakkenKleurenOptie && isVlakkenNakijkModus())
+        {
+        	viewer.kijkNaPanel.setVisible(true);
        	 	vaktek.kijkNaPanel.setVisible(true);
-        } 	
+        }
+        
+        // kijknabutton verbergen bij extern controleren
+        if (isCheckExternalModus())
+        	viewer.setVisibleKijkNaButton(false);
+        if (checkExternalVlakken)
+        	vaktek.setVisibleKijkNaButton(false);
+        	
 
     	ArrayList<String> docentKleurenAL = null;
     	ArrayList<String> viewerKleurenAL = null;
@@ -1014,8 +1011,8 @@ System.out.println("tvip zetOpdracht");
     	{
     		docentKleuren = new String[docentKleurenAL.size()];
     		for (int dk = 0; dk < docentKleurenAL.size(); dk++)
-    		{	docentKleuren[dk] = docentKleurenAL.get(dk);
-//System.out.println("dk " + " dk " + docentKleuren[dk]);    		
+    		{
+    			docentKleuren[dk] = docentKleurenAL.get(dk);
     		}
     		
     	}
@@ -1084,11 +1081,8 @@ System.out.println("tvip zetOpdracht");
     		vaktek.setVaktekKleuren(viewerKleuren);
     		viewer.zetKlikAan(true);
     		vaktek.zetKlikAan(true);
-
     	}
     	
     	ingevuld = false;
     }
-
-
 }
