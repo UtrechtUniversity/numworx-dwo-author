@@ -27,7 +27,7 @@ public class WiskOpdrEditPanel extends JPanel
 	public WiskOpdrEditPanel(String launchDataString, WiskOpdr applet)
 	{	setLayout(null);
 		setOpaque(false);
-		super.setSize(700,300);
+		super.setSize(800,350);
 		
 		this.launchDataString = launchDataString;
 		launchData = null;
@@ -47,8 +47,8 @@ public class WiskOpdrEditPanel extends JPanel
 //        WiskOpdr.rb = ResourceBundle.getBundle("fi.wiskopdr.text.Text",language);
 		
 	    if(WiskOpdr.lookAndFeel==null) WiskOpdr.lookAndFeel = UIManager.getLookAndFeel();
-	    opdrContainer =  new fi.wiskopdr.opdrnav.MyOpdrEditContainer(700,300); 
-		onsEdit = new OpdrNavStructEdit(opdrContainer,0,0,700, 300, launchData);
+	    opdrContainer =  new fi.wiskopdr.opdrnav.MyOpdrEditContainer(800,350); 
+		onsEdit = new OpdrNavStructEdit(opdrContainer,0,0,800, 350, launchData);
 		onsEdit.removeMouseListener(onsEdit);
 		opdrContainer.setPlainEditor(this);
 		add(opdrContainer);
@@ -58,7 +58,7 @@ public class WiskOpdrEditPanel extends JPanel
 	public WiskOpdrEditPanel(Hashtable launchData, WiskOpdr applet)
 	{	setLayout(null);
 		setOpaque(false);
-		super.setSize(700,300); 
+		super.setSize(800,350); 
 		
 		this.launchData = launchData;
 		ShareAction.init((String)launchData.get(ShareAction.SHARE_MAP));
@@ -70,8 +70,8 @@ public class WiskOpdrEditPanel extends JPanel
         WiskOpdr.rb = ResourceBundle.getBundle("fi.wiskopdr.text.Text",language);
 		
 	    if(WiskOpdr.lookAndFeel==null) WiskOpdr.lookAndFeel = UIManager.getLookAndFeel();
-	    opdrContainer =  new fi.wiskopdr.opdrnav.MyOpdrEditContainer(700,300); 
-		onsEdit = new OpdrNavStructEdit(opdrContainer,0,0,700, 300, launchData);
+	    opdrContainer =  new fi.wiskopdr.opdrnav.MyOpdrEditContainer(800,350); 
+		onsEdit = new OpdrNavStructEdit(opdrContainer,0,0,800, 350, launchData);
 		onsEdit.removeMouseListener(onsEdit);
 		opdrContainer.setPlainEditor(this);
 		add(opdrContainer);

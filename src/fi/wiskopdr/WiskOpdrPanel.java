@@ -43,8 +43,8 @@ public class WiskOpdrPanel extends JPanel
 //        WiskOpdr.rb = ResourceBundle.getBundle("fi.wiskopdr.text.Text",language);
         
 	    if(WiskOpdr.lookAndFeel==null) WiskOpdr.lookAndFeel = UIManager.getLookAndFeel();
-	    opdrContainer = new  fi.wiskopdr.opdrnav.MyOpdrContainer(0,0,700, 300);  
-		ons = new OpdrNavStruct(null, opdrContainer,0,0,700, 300, null, launchData);
+	    opdrContainer = new  fi.wiskopdr.opdrnav.MyOpdrContainer(0,0,800, 350);  
+		ons = new OpdrNavStruct(null, opdrContainer,0,0,800, 350, null, launchData);
 		//opdrContainer.setNewScrollSize();
 		
 		JPanel contentPane = opdrContainer.getPlainPane();
