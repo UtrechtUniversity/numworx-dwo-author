@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="output/test-classes" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="lib" path="output/jar/geogebra_.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra_algos.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra_cas.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra_export.jar"/>
