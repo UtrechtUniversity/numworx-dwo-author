@@ -5,6 +5,7 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.TextAlign;
 import com.google.gwt.canvas.dom.client.Context2d.TextBaseline;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,6 +43,24 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 			white,
 		};
 	
+	public static native double getDeviceRatio(JavaScriptObject csctx) /*-{
+		var devicePixelRatio = 1;
+	    if (typeof $wnd !== "undefined" && $wnd.devicePixelRatio)
+	        devicePixelRatio = $wnd.devicePixelRatio;
+	    var backingStoreRatio =
+	        csctx.webkitBackingStorePixelRatio ||
+	        csctx.mozBackingStorePixelRatio ||
+	        csctx.msBackingStorePixelRatio ||
+	        csctx.oBackingStorePixelRatio ||
+	        csctx.backingStorePixelRatio ||
+	        1.0;
+	    if (devicePixelRatio !== backingStoreRatio) {
+	        var ratio = devicePixelRatio / backingStoreRatio;
+			return ratio;
+	    }
+		return 1.0;
+	}-*/;
+
 	
 	@Override
 	public boolean contains(double x, double y) {
@@ -71,10 +90,20 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		this.width = width;
 		this.height = height;
 		canvas = Canvas.createIfSupported();
-		canvas.setPixelSize(width,height);
-	    canvas.setCoordinateSpaceWidth(width);
-	    canvas.setCoordinateSpaceHeight(height);
 	    context = canvas.getContext2d();
+	    canvas.setPixelSize(width,height);	    
+		double ratio = getDeviceRatio(context); // retina screens
+		if(ratio > 1.0) {
+			canvas.setCoordinateSpaceHeight((int) (height*ratio));
+			canvas.setCoordinateSpaceWidth((int) (width*ratio));
+			context.setTransform(ratio, 0, 0, ratio, 0, 0);
+		} else {
+		//change the canvas dimensions
+			this.canvas.setCoordinateSpaceHeight(height);
+			this.canvas.setCoordinateSpaceWidth(width);
+		}
+
+	    
 		status = new Label(" ");
 		ll.setClip(0, 0, width, height);
 		rr.setClip(0, 0, width, height);

@@ -19,6 +19,7 @@ public class PanHandler extends EventHandler {
 	public void pointerDragged(Numbers x, Numbers y) {
 		viewer.offX += x.doubleValue()-lastx;
 		viewer.offY += y.doubleValue()-lasty;
+		viewer.getModel().getO().forceChanged();
 	}
 	
 	/* (non-Javadoc)

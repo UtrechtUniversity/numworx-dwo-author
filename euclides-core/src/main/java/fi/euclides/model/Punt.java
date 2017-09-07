@@ -24,7 +24,7 @@ abstract public class Punt extends Destroyable {
 	 * @see fi.euclides.model.Destroyable#trail()
 	 */
 	public Destroyable trail() {
-		return new VrijPunt(getXd(), getYd());
+		return new VrijPunt(getX(), getY());
 	}
 
 	Numbers x, y;
@@ -159,5 +159,10 @@ abstract public class Punt extends Destroyable {
 	public Punt getImage(Destroyable mirror, Destroyable orig)
 	{
 		return new SpiegelPunt(mirror, this, orig);
+	}
+	
+	public void forceChanged() {
+		setChanged();
+		notifyObservers();
 	}
 }
