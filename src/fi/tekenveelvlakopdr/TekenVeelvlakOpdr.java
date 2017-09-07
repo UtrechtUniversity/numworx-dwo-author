@@ -78,7 +78,7 @@ public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAp
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.tekenveelvlakopdr.text.Text",language);
 
-		Color bgcolor = new Color(230,240,255);
+		Color bgcolor = new Color(230,240,255); // ander lichtblauw
 		String kleurcode = getParameter("bgcolor");
 		if(kleurcode!=null)bgcolor = new Color(Integer.parseInt(kleurcode.substring(1),16));
 		setBackground(bgcolor);
