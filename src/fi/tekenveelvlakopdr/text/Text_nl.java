@@ -25,18 +25,24 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "kleurVlakKnopLabel" , "Kleur vlakken" },
                 { "wisKleurKnopLabel" , "Wis gekleurd" },
                 
+                { "antwoordModelLabel" , "Antwoordmodel:" },
+
+                { "tekenVeelvlakRBLabel" , "Teken veelvlak" },
+                { "toonViewerRBLabel" , "Toon viewer" },
+
                 { "hulpPuntenCBLabel" , "Hulppunten op ribben" },
                 
                 { "vooraanzichtPijlCBLabel" , "Pijl voor vooraanzicht" },
                 
                 { "alleenViewerCBLabel" , "Toon viewer" },
-                { "draaibaarRBLabel" , "Viewer draaibaar" },
-                { "vooraanzichtRBLabel" , "Viewer vooraanzicht" },
-                { "achteraanzichtRBLabel" , "Viewer achteraanzicht" },
-                { "bovenaanzichtRBLabel" , "Viewer bovenaanzicht" },
-                { "onderaanzichtRBLabel" , "Viewer onderaanzicht" },
-                { "linkeraanzichtRBLabel" , "Viewer linker aanzicht" },
-                { "rechteraanzichtRBLabel" , "Viewer rechter aanzicht" },
+                { "draaibaarRBLabel" , "3D draaibaar" },
+                { "vooraanzichtRBLabel" , "2D vooraanzicht" },
+                { "achteraanzichtRBLabel" , "2D achteraanzicht" },
+                { "bovenaanzichtRBLabel" , "2D bovenaanzicht" },
+                { "onderaanzichtRBLabel" , "2D onderaanzicht" },
+                { "linkeraanzichtRBLabel" , "2D linker aanzicht" },
+                { "rechteraanzichtRBLabel" , "2D rechter aanzicht" },
+                { "alleAanzichtenRBLabel" , "2D alle aanzichten" },
                 { "docentDraaihoekRBLabel" , "Docent draaihoek" },
                 //{ "docentDraaihoekRBLabel" , "Teacher set rotation" },                
                 
@@ -49,11 +55,12 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "tekenVVOptiesLabel" , "Tekenveelvlak-opties" },
                 { "nakijkOptiesLabel" , "Nakijkopties" },
                 
-                { "kijkDraaihoekNaCBLabel" , "Kijk de draaihoek na" },
-                { "kijkVlakkenNaCBLabel" , "Kijk de gekleurde" },
+                { "kijkDraaihoekNaCBLabel" , "Kijk draaihoek na" },
+                { "kijkVlakkenNaCBLabel" , "Kijk gekleurde vlakken na" },
                 { "kijkVlakkenNaCBLabel2" , "vlakken na" },
 				{ "checkExternalDraaihoek" , "Draaihoek extern controleren" },
 				{ "checkExternalVlakken" , "Vlakken extern controleren" },
+				{ "checkExternal" , "Extern controleren" },
                 { "kijkNaLabel" , "Kijk na" }, 
                 
                 { "dezeDraaihoekRBLabel" , "Deze draaihoek" },

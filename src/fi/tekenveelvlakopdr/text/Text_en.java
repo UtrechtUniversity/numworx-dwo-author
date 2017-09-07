@@ -22,18 +22,24 @@ public class Text_en extends java.util.ListResourceBundle
                 { "kleurVlakKnopLabel" , "Color faces" },
                 { "wisKleurKnopLabel" , "Clear colored" },
                 
+                { "antwoordModelLabel" , "Answer model:" },
+
+                { "tekenVeelvlakRBLabel" , "Draw polygon" },
+                { "toonViewerRBLabel" , "Show viewer" },
+                
 				{ "hulpPuntenCBLabel" , "help points on edges" },
                 
 				{ "vooraanzichtPijlCBLabel" , "Arrow indicating front" },
                 
                 { "alleenViewerCBLabel" , "Show viewer" },
-                { "draaibaarRBLabel" , "Viewer rotatable" },
-                { "vooraanzichtRBLabel" , "Viewer front view" },
-                { "achteraanzichtRBLabel" , "Viewer back view" },
-                { "bovenaanzichtRBLabel" , "Viewer top view" },
-                { "onderaanzichtRBLabel" , "Viewer bottom view" },
-                { "linkeraanzichtRBLabel" , "Viewer left view" },
-                { "rechteraanzichtRBLabel" , "Viewer right view" },
+                { "draaibaarRBLabel" , "3D rotatable" },
+                { "vooraanzichtRBLabel" , "2D front view" },
+                { "achteraanzichtRBLabel" , "2D back view" },
+                { "bovenaanzichtRBLabel" , "2D top view" },
+                { "onderaanzichtRBLabel" , "2D bottom view" },
+                { "linkeraanzichtRBLabel" , "2D left view" },
+                { "rechteraanzichtRBLabel" , "2D right view" },
+                { "alleAanzichtenRBLabel" , "2D all views" },
                 { "docentDraaihoekRBLabel" , "Teacher set rotation" },
 
                 { "alleenProfielenCBLabel" , "Show profiles" },
@@ -45,11 +51,12 @@ public class Text_en extends java.util.ListResourceBundle
                 { "tekenVVOptiesLabel" , "drawing polygon options" },
                 { "nakijkOptiesLabel" , "check options" },
 	
-                { "kijkDraaihoekNaCBLabel" , "Check the rotation" },
-                { "kijkVlakkenNaCBLabel" , "Check the coloured" },
+                { "kijkDraaihoekNaCBLabel" , "Check rotation" },
+                { "kijkVlakkenNaCBLabel" , "Check coloured faces" },
                 { "kijkVlakkenNaCBLabel2" , "faces" },
 				{ "checkExternalDraaihoek" , "External check rotation" },
 				{ "checkExternalVlakken" , "External check faces" },
+				{ "checkExternal" , "External check" },
                 { "kijkNaLabel" , "Check" },
 
                 { "dezeDraaihoekRBLabel" , "This rotation" },
