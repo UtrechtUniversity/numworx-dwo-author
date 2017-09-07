@@ -91,7 +91,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
         
 		kiesV.setBounds(15,bStarH,100,25);
 		rg.add(kiesV);
-		rg.setBackground(new Color(208,228,255));
+		rg.setBackground(new Color(208,228,255)); // lichtblauw
 		
 		l = new JLabel(TekenVeelvlakOpdr.rb.getString("zijdeLabel"));
 		l.setFont(font);
@@ -102,7 +102,7 @@ public class TekenVeelvlak extends TekenApplet3D implements  ActionListener,Item
 		zijdeSl = new Slider(100,50);
 		zijdeSl.addActionListener(this);
 		zijdeSl.setBounds(10,bStarH+60,110,20);
-		zijdeSl.setBackground(new Color(208,228,255));
+		zijdeSl.setBackground(new Color(208,228,255)); // lichtblauw
 		rg.add(zijdeSl);
 		
 		lijnKnop = new JButton(TekenVeelvlakOpdr.rb.getString("lijnKnopLabel"));
@@ -278,9 +278,9 @@ if (k > 0)
 	}
 */	
 	public void setState(Hashtable h)
-	{	
-		
-//System.out.println("tv setState");
+	{
+		if (h == null)
+			return;
 
 		double[] hoekpunten = null;
 		ArrayList<Double> hoekpuntenAL = null;
