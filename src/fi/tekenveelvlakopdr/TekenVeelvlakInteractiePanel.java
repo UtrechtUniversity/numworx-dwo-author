@@ -247,26 +247,26 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
 				}
 				
 				viewerKleuren = null;
-//System.out.println("VO false vk = null");				
 				
 				tekenVeelvlak.repaint();
 				
 	    		if (editMode != null)
-	    		{	editMode.showNakijkOpties(false);
+	    		{
+	    			editMode.showNakijkOpties(false);
 	    		
-	    			editMode.vlakkenKleurenCB.setSelected(false);
 	    			editMode.vlakkenKleurenCB.setEnabled(false);
 	    		}
-
     		}	
     	}
     	
     }
     
     public void setProfilesOnly(boolean b)
-    {	profilesOnly = b;
+    {
+    	profilesOnly = b;
     	if (profilesOnly)
-    	{	tekenVeelvlak.setVisible(false);
+    	{
+    		tekenVeelvlak.setVisible(false);
     	
     		tvState = tekenVeelvlak.getState();
     		//viewer.setVisible(false);
@@ -275,7 +275,8 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     		vaktek.setVisible(true);
     		//add(vaktek);
        	 	if (tekenVeelvlak.tv != null)
-       	 	{	vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
+       	 	{
+       	 		vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
        	 	}
        	 	
     		if (viewerKleuren != null)
@@ -285,14 +286,16 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
 
     		vaktek.repaint();
     		if (editMode != null)
-    		{	editMode.showNakijkOpties(true);
+    		{
+    			editMode.showNakijkOpties(true);
     		
     			editMode.vlakkenKleurenCB.setEnabled(true);
     		}
 
     	}	
     	else
-    	{	vaktek.setVisible(false);
+    	{
+    		vaktek.setVisible(false);
     		//remove(vaktek);
     		if (!viewerOnly)
     		{	
@@ -301,30 +304,25 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     			tekenVeelvlak.setState(tvState);
     			
     			viewerKleuren = null;
-//System.out.println("PO false vk = null");    			
     			
     			tekenVeelvlak.repaint();
         		if (editMode != null)
-        		{	editMode.showNakijkOpties(false);
-        		
-        			editMode.vlakkenKleurenCB.setSelected(false);
-        			editMode.vlakkenKleurenCB.setEnabled(false);
-        			
+        		{
+        			editMode.showNakijkOpties(false);
+        			editMode.vlakkenKleurenCB.setEnabled(false);	
         		}
-
     		}	
     	}
-    	
     }
 
     public void zetVlakkenKleurenOptie(boolean b)
-    {	vlakkenKleurenOptie = b;
+    {
+    	vlakkenKleurenOptie = b;
     	viewer.zetVlakkenKleurenOptie(b);
     	vaktek.zetVlakkenKleurenOptie(b);
     	viewer.zetKlikAan(b);
     	vaktek.zetKlikAan(b);
     	//zetProfielenKleurenOptie(profielenKleurenOptie);
-    	
     }
     
 /*    
@@ -353,7 +351,8 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
 */    
     
     public void zetViewerPosition(int vPosition)
-    {	viewerPosition = vPosition;
+    {
+    	viewerPosition = vPosition;
     	viewer.zetViewerPosition(viewerPosition);
     	viewerMuisAan = viewer.muisAan;
     	//tekenVeelvlak.zetViewerPosition(viewer.viewerPosition, viewer.muisAan);
@@ -362,33 +361,29 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     public void zetAantalHulppunten(int aantalHulppunten)
     {
     	this.aantalHulppunten = aantalHulppunten; 
-//System.out.println("tvip zetAantalHulppunten = " + aantalHulppunten);
 
     	int basisFiguur = tekenVeelvlak.geefBasisFiguur();
     	tekenVeelvlak.zetBasis(basisFiguur,aantalHulppunten);
     	Hashtable h = tekenVeelvlak.getState();
     	tekenVeelvlak.setState(h);
-    	
-    	
     }
 
     public void toonVooraanzichtPijl(boolean b)
-    {	toonVooraanzichtPijl = b;
+    {
+    	toonVooraanzichtPijl = b;
     
-//System.out.println("tvip tvpijl " + b);
-
     	if (toonVooraanzichtPijl)
-    	{	Veelvlak tvPijl = maakPijl();
+    	{
+    		Veelvlak tvPijl = maakPijl();
     		Veelvlak v3dPijl = maakPijl();
     		tekenVeelvlak.toonVoorkantPijl(tvPijl);
     		viewer.voegVooraanzichtPijlToe(v3dPijl);
     	}
     	else
-    	{	tekenVeelvlak.toonVoorkantPijl(null);
+    	{
+    		tekenVeelvlak.toonVoorkantPijl(null);
     		viewer.verwijderVooraanzichtPijl();
     	}
-    	
-    	
     }
   
     // origineel
@@ -396,7 +391,6 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
 	//		       -0.05, -0.5, -0.75,	 0.05, -0.5, -0.75};
 	public Veelvlak maakPijl()
 	{	
-		
 		double[] hp = {0, -0.6, -0.85,	0.01, -0.6, -0.85,	0.01, -0.6, -0.65, 0, -0.6, -0.65,
 					   -0.05, -0.6, -0.75,	 0.05, -0.6, -0.75};
 		int[] vl = {4,
@@ -406,7 +400,8 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
 					3,	3,5,4};
 		Veelvlak v = new Veelvlak(hp,vl);
 		for (int i = 0; i < v.aantalVlakken; i++)
-		{	v.vlakken[i].vulkleur="zwart";
+		{
+			v.vlakken[i].vulkleur="zwart";
 		}
 		return v;
 	}
@@ -562,11 +557,11 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     	}
 
     	if (correct)
-		{	viewer.vinkjeLabel.setVisible(true);
+		{
+    		viewer.vinkjeLabel.setVisible(true);
 			vaktek.vinkjeLabel.setVisible(true);
 			viewer.kruisjeLabel.setVisible(false);
 			vaktek.kruisjeLabel.setVisible(false);
-
 		}
 		else
 		{
@@ -578,7 +573,6 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     	
     	ingevuld = true;
 		fireChangeEvent();
-        
     }
 
     public void fireChangeEvent()
@@ -646,94 +640,96 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
          {	
         	 tvState = (Hashtable)h.get("tvState");
          }
-         if(h.containsKey("viewerOnly"))
+         if (h.containsKey("viewerOnly"))
         	 viewerOnly = ((Boolean)h.get("viewerOnly")).booleanValue();
-         if(h.containsKey("profilesOnly"))
+         if (h.containsKey("profilesOnly"))
         	 profilesOnly = ((Boolean)h.get("profilesOnly")).booleanValue();
          
-         if(h.containsKey("viewerPosition"))
+         if (h.containsKey("viewerPosition"))
          	 viewerPosition = ((Integer) h.get("viewerPosition")).intValue();
-         if(h.containsKey("basisFiguur"))
+         if (h.containsKey("basisFiguur"))
         	 basisFiguur = ((Integer)h.get("basisFiguur")).intValue();
-         if(h.containsKey("aantalHulppunten"))
+         if (h.containsKey("aantalHulppunten"))
         	 aantalHulppunten = ((Integer)h.get("aantalHulppunten")).intValue();
          
-         if(h.containsKey("toonVooraanzichtPijl"))
+         if (h.containsKey("toonVooraanzichtPijl"))
         	 toonVooraanzichtPijl = ((Boolean)h.get("toonVooraanzichtPijl")).booleanValue();
          
-         if(h.containsKey("vlakkenKleurenOptie"))
+         if (h.containsKey("vlakkenKleurenOptie"))
         	 vlakkenKleurenOptie = ((Boolean)h.get("vlakkenKleurenOptie")).booleanValue();
 //         if (h.containsKey("profielenKleurenOptie"))
 //        	 profielenKleurenOptie = ((Boolean)h.get("profielenKleurenOptie")).booleanValue();
          
-         if (h.containsKey("kijkDraaihoekNa"))
-          	kijkDraaihoekNa = ((Boolean)h.get("kijkDraaihoekNa")).booleanValue();
-          if (h.containsKey("kijkVlakkenNa"))
-          	kijkVlakkenNa = ((Boolean)h.get("kijkVlakkenNa")).booleanValue();
-          if (h.containsKey("checkExternalDraaihoek"))
-           	checkExternalDraaihoek = ((Boolean)h.get("checkExternalDraaihoek")).booleanValue();
-           if (h.containsKey("checkExternalVlakken"))
-        	   checkExternalVlakken = ((Boolean)h.get("checkExternalVlakken")).booleanValue();
-                 
-         if (h.containsKey("docentDraaihoekX"))
-         	docentDraaihoekX = ((Double) h.get("docentDraaihoekX")).doubleValue();
-         if (h.containsKey("docentDraaihoekY"))
-         	docentDraaihoekY = ((Double) h.get("docentDraaihoekY")).doubleValue();
-         
- 		if (h.containsKey("scoreMax"))
+		if (h.containsKey("kijkDraaihoekNa"))
+			kijkDraaihoekNa = ((Boolean) h.get("kijkDraaihoekNa")).booleanValue();
+		if (h.containsKey("kijkVlakkenNa"))
+			kijkVlakkenNa = ((Boolean) h.get("kijkVlakkenNa")).booleanValue();
+		if (h.containsKey("checkExternalDraaihoek"))
+			checkExternalDraaihoek = ((Boolean) h.get("checkExternalDraaihoek")).booleanValue();
+		if (h.containsKey("checkExternalVlakken"))
+			checkExternalVlakken = ((Boolean) h.get("checkExternalVlakken")).booleanValue();
+
+		if (h.containsKey("docentDraaihoekX"))
+			docentDraaihoekX = ((Double) h.get("docentDraaihoekX")).doubleValue();
+		if (h.containsKey("docentDraaihoekY"))
+			docentDraaihoekY = ((Double) h.get("docentDraaihoekY")).doubleValue();
+
+		if (h.containsKey("scoreMax"))
 			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 
-     	ArrayList<String> docentKleurenAL = null;
-    	ArrayList<String> viewerKleurenAL = null;
-    	if (h.containsKey("docentKleuren"))
-    		docentKleurenAL = (ArrayList<String>) h.get("docentKleuren");
-    	if (h.containsKey("viewerKleuren"))
-    		viewerKleurenAL = (ArrayList<String>) h.get("viewerKleuren");
-    	if (docentKleurenAL != null)
-    	{
-    		docentKleuren = new String[docentKleurenAL.size()];
-    		for (int dk = 0; dk < docentKleurenAL.size(); dk++)
-        		docentKleuren[dk] = docentKleurenAL.get(dk);
-    	}
-    	if (viewerKleurenAL != null)
-    	{
-    		viewerKleuren = new String[viewerKleurenAL.size()];
-    		for (int vk = 0; vk < viewerKleurenAL.size(); vk++)
-        		viewerKleuren[vk] = viewerKleurenAL.get(vk);
-    	}
-        	
-        this.kijkDraaihoekNa = kijkDraaihoekNa;
-        this.kijkVlakkenNa = kijkVlakkenNa;
-        this.checkExternalDraaihoek = checkExternalDraaihoek;
-        this.checkExternalVlakken = checkExternalVlakken;
-        kijkNaActief = isNakijkModus();
-        this.docentDraaihoekX = docentDraaihoekX;
-        this.docentDraaihoekY = docentDraaihoekY;
-         
-         if (isDraaihoekNakijkModus())
-        	 viewer.kijkNaPanel.setVisible(true);
-         if (vlakkenKleurenOptie && isVlakkenNakijkModus())// && !profielenKleurenOptie)
-         {
-        	 viewer.kijkNaPanel.setVisible(true);
-           	 vaktek.kijkNaPanel.setVisible(true);
-         }  	 
-         
-         toonVooraanzichtPijl(toonVooraanzichtPijl);
-         
-         this.viewerOnly = viewerOnly;
-         this.profilesOnly = profilesOnly;
-         
-         zetVlakkenKleurenOptie(vlakkenKleurenOptie);
-//         zetProfielenKleurenOptie(profielenKleurenOptie);
-         
-         tekenVeelvlak.zetKiesV(basisFiguur);
-    	 tekenVeelvlak.zetBasis(basisFiguur,aantalHulppunten);
-         tekenVeelvlak.setState(tvState);
-         
-    	 viewer.setState(tvState);
-    	 if (tekenVeelvlak.tv != null)
-  	 	 {   vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
-   	 	 }
+		ArrayList<String> docentKleurenAL = null;
+		ArrayList<String> viewerKleurenAL = null;
+		if (h.containsKey("docentKleuren"))
+			docentKleurenAL = (ArrayList<String>) h.get("docentKleuren");
+		if (h.containsKey("viewerKleuren"))
+			viewerKleurenAL = (ArrayList<String>) h.get("viewerKleuren");
+		if (docentKleurenAL != null)
+		{
+			docentKleuren = new String[docentKleurenAL.size()];
+			for (int dk = 0; dk < docentKleurenAL.size(); dk++)
+				docentKleuren[dk] = docentKleurenAL.get(dk);
+		}
+		if (viewerKleurenAL != null)
+		{
+			viewerKleuren = new String[viewerKleurenAL.size()];
+			for (int vk = 0; vk < viewerKleurenAL.size(); vk++)
+				viewerKleuren[vk] = viewerKleurenAL.get(vk);
+		}
+
+		this.kijkDraaihoekNa = kijkDraaihoekNa;
+		this.kijkVlakkenNa = kijkVlakkenNa;
+		this.checkExternalDraaihoek = checkExternalDraaihoek;
+		this.checkExternalVlakken = checkExternalVlakken;
+		kijkNaActief = isNakijkModus();
+		this.docentDraaihoekX = docentDraaihoekX;
+		this.docentDraaihoekY = docentDraaihoekY;
+
+		if (isDraaihoekNakijkModus())
+			viewer.kijkNaPanel.setVisible(true);
+		if (vlakkenKleurenOptie && isVlakkenNakijkModus())// &&
+															// !profielenKleurenOptie)
+		{
+			viewer.kijkNaPanel.setVisible(true);
+			vaktek.kijkNaPanel.setVisible(true);
+		}
+
+		toonVooraanzichtPijl(toonVooraanzichtPijl);
+
+		this.viewerOnly = viewerOnly;
+		this.profilesOnly = profilesOnly;
+
+		zetVlakkenKleurenOptie(vlakkenKleurenOptie);
+		// zetProfielenKleurenOptie(profielenKleurenOptie);
+
+		tekenVeelvlak.zetKiesV(basisFiguur);
+		tekenVeelvlak.zetBasis(basisFiguur, aantalHulppunten);
+		tekenVeelvlak.setState(tvState);
+
+		viewer.setState(tvState);
+		if (tekenVeelvlak.tv != null)
+		{
+			vaktek.zetVeelvlak(tekenVeelvlak.tv, tekenVeelvlak.tv, tekenVeelvlak.tv, tekenVeelvlak.tv);
+		}
 
          if (viewerOnly)
          {
@@ -848,7 +844,8 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     	String[] leerlingKleuren = null;
     	
     	if (vlakkenKleurenOptie && viewerOnly)
-    	{	leerlingKleuren = viewer.getKleuren();
+    	{
+    		leerlingKleuren = viewer.getKleuren();
     		ArrayList<String> leerlingKleurenAL = new ArrayList<String>();
     		for (int lk = 0; lk < leerlingKleuren.length; lk++)
     			leerlingKleurenAL.add(leerlingKleuren[lk]);
@@ -899,7 +896,8 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     			leerlingKleuren[lk] = leerlingKleurenAL.get(lk);
 
     		if (vlakkenKleurenOptie && viewerOnly)
-    		{	viewer.setKleuren(leerlingKleuren);
+    		{
+    			viewer.setKleuren(leerlingKleuren);
     		}
     		if (vlakkenKleurenOptie && profilesOnly)	
     		{	vaktek.setVaKleuren(leerlingKleuren);
@@ -940,26 +938,26 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
         double docentDraaihoekX = 0;
         double docentDraaihoekY = 0;
         
-        if(h.containsKey("tvState"))
-        	tvState = (Hashtable)h.get("tvState");
-        if(h.containsKey("viewerOnly"))
-        	viewerOnly = ((Boolean)h.get("viewerOnly")).booleanValue();
-        if(h.containsKey("profilesOnly"))
-        	profilesOnly = ((Boolean)h.get("profilesOnly")).booleanValue();
-        if(h.containsKey("viewerPosition"))
-        	viewerPosition = ((Integer)h.get("viewerPosition")).intValue();
-        if(h.containsKey("basisFiguur"))
-        	basisFiguur = ((Integer)h.get("basisFiguur")).intValue();
-        if(h.containsKey("aantalHulppunten"))
-        	aantalHulppunten = ((Integer)h.get("aantalHulppunten")).intValue();
+		if (h.containsKey("tvState"))
+			tvState = (Hashtable) h.get("tvState");
+		if (h.containsKey("viewerOnly"))
+			viewerOnly = ((Boolean) h.get("viewerOnly")).booleanValue();
+		if (h.containsKey("profilesOnly"))
+			profilesOnly = ((Boolean) h.get("profilesOnly")).booleanValue();
+		if (h.containsKey("viewerPosition"))
+			viewerPosition = ((Integer) h.get("viewerPosition")).intValue();
+		if (h.containsKey("basisFiguur"))
+			basisFiguur = ((Integer) h.get("basisFiguur")).intValue();
+		if (h.containsKey("aantalHulppunten"))
+			aantalHulppunten = ((Integer) h.get("aantalHulppunten")).intValue();
 
-        if(h.containsKey("toonVooraanzichtPijl"))
-       	 toonVooraanzichtPijl = ((Boolean)h.get("toonVooraanzichtPijl")).booleanValue();
+		if (h.containsKey("toonVooraanzichtPijl"))
+			toonVooraanzichtPijl = ((Boolean) h.get("toonVooraanzichtPijl")).booleanValue();
         
-        if (h.containsKey("vlakkenKleurenOptie"))
-       	 vlakkenKleurenOptie = ((Boolean)h.get("vlakkenKleurenOptie")).booleanValue();
-        if (h.containsKey("profielenKleurenOptie"))
-       	 profielenKleurenOptie = ((Boolean)h.get("profielenKleurenOptie")).booleanValue();
+		if (h.containsKey("vlakkenKleurenOptie"))
+			vlakkenKleurenOptie = ((Boolean) h.get("vlakkenKleurenOptie")).booleanValue();
+		if (h.containsKey("profielenKleurenOptie"))
+			profielenKleurenOptie = ((Boolean) h.get("profielenKleurenOptie")).booleanValue();
 
         if (h.containsKey("kijkDraaihoekNa"))
         	kijkDraaihoekNa = ((Boolean)h.get("kijkDraaihoekNa")).booleanValue();
@@ -1035,11 +1033,13 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
         tekenVeelvlak.rg.remove(tekenVeelvlak.kiesV);
        	viewer.setState(tvState);
        	if (tekenVeelvlak.tv != null)
-   	 	{	vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
+   	 	{
+       		vaktek.zetVeelvlak(tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv,tekenVeelvlak.tv);
    	 	}
         
         if (viewerOnly)
-        {	tekenVeelvlak.setVisible(false);
+        {
+        	tekenVeelvlak.setVisible(false);
    	 		vaktek.setVisible(false); 
         	viewerPanel.setVisible(true);
 	       	 
@@ -1049,7 +1049,6 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
 	       		viewer.zetKleuren(viewerKleuren);
 	       	
 	       	zetViewerPosition(viewerPosition);
-
         }
         else if (profilesOnly)
         {
@@ -1085,4 +1084,6 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     	
     	ingevuld = false;
     }
+    
+    
 }
