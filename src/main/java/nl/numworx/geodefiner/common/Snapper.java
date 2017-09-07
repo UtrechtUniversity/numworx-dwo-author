@@ -1,5 +1,7 @@
 package nl.numworx.geodefiner.common;
 
+import fi.euclides.model.algo.FreePoint;
+
 public abstract class Snapper {
 
 	protected boolean gravity;
@@ -11,4 +13,6 @@ public abstract class Snapper {
 	public boolean isGravity() {
 		return gravity;
 	}
+	
+	public void snap(FreePoint fp) {};
 }
