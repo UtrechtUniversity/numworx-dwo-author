@@ -12,6 +12,7 @@ import java.util.*;
 
 import javax.swing.*;
 
+import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.*;
@@ -58,6 +59,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox templateEditCB;
 	private JCheckBox stylesCB;
 	private JButton importStylesButton;
+	private JButton importStylesNowButton;
 	private JButton exportStylesButton;
 	
 	
@@ -120,6 +122,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private DialogFacade dialog;
 	private DialogFacade stylesExportDialog;
 	private JTextArea stylesExportTekstArea;
+	private DialogFacade stylesImportDialog;
+	private JTextArea stylesImportTekstArea;
+
 	
 	
 	private Font font = new Font("SansSerif",Font.PLAIN,12);
@@ -137,11 +142,25 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		JPanel bottomPanel = new JPanel();
 		
 		stylesExportTekstArea = new JTextArea();
-		stylesExportTekstArea.setBounds(0, 0, 300, 400);
+		stylesExportTekstArea.setBounds(0, 0, 600, 400);
 		
 		stylesExportDialog = DialogFacade.newInstance(this, "styles", true);
 		stylesExportDialog.setSize(stylesExportTekstArea.getSize());
-		stylesExportDialog.getContentPane().add(stylesExportTekstArea);
+		JScrollPane scrollpaneExport = new JScrollPane(stylesExportTekstArea);
+		stylesExportDialog.getContentPane().add(scrollpaneExport, BorderLayout.CENTER);
+		
+		stylesImportTekstArea = new JTextArea();
+		stylesImportTekstArea.setBounds(0, 0, 600, 400);
+		
+		stylesImportDialog = DialogFacade.newInstance(this, "styles", true);
+		stylesImportDialog.setSize(stylesImportTekstArea.getSize());
+		JScrollPane scrollpaneImport = new JScrollPane(stylesImportTekstArea);
+		stylesImportDialog.getContentPane().add(scrollpaneImport, BorderLayout.CENTER);
+		
+		importStylesNowButton = new JButton(WiskOpdr.rb.getString("OPT_importStyles"));
+		importStylesNowButton.addActionListener(this);
+		importStylesNowButton.setFont(font);
+		stylesImportDialog.getContentPane().add(importStylesNowButton, BorderLayout.SOUTH);
 		
 		
 		//add(mainPanel);
@@ -1102,6 +1121,46 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				}
 			stylesExportTekstArea.setText(contents);
 			stylesExportDialog.setVisible(true);
+		}
+		
+		if(e.getSource().equals(importStylesButton))
+		{	
+			stylesImportDialog.setVisible(true);
+		}
+		
+		if(e.getSource().equals(importStylesNowButton))
+		{	
+			if(TekstVakPanel.styles==null)
+				TekstVakPanel.styles = new Hashtable<String,Map<String,Object>>();
+			
+			String contents = " "+stylesImportTekstArea.getText();
+			String[] styleStrings = StringUtils.split(contents, "}");
+			String[] styleKeys = new String[styleStrings.length-1];
+			String[] styleValues = new String[styleStrings.length-1];
+			for(int i=0 ; i<styleStrings.length-1 ; i++)
+			{
+				Hashtable style = new Hashtable();
+				String[] styleKeyValue = StringUtils.split(styleStrings[i].substring(1), "{");
+				styleKeys[i] = styleKeyValue[0].substring(1).trim();
+				styleValues[i] = styleKeyValue[1].substring(0,styleKeyValue[1].length()-2);
+				System.out.println(styleKeys[i]);
+				
+				String[] styleElements = StringUtils.split(styleValues[i], ";");
+				String[] styleElementKeys = new String[styleElements.length];
+				String[] styleElementValues = new String[styleElements.length];
+				for(int j=0 ; j<styleElements.length ; j++)
+				{
+					String[] styleElementKeyValue = StringUtils.split(styleElements[j],":");
+					styleElementKeys[j] = styleElementKeyValue[0].substring(2);
+					styleElementValues[j] = styleElementKeyValue[1];
+					System.out.println(styleElementKeys[j]);
+					System.out.println(styleElementValues[j]);
+					style.put(styleElementKeys[j],styleElementValues[j]);
+				}
+				//TekstVakPanel.styles.put(styleKeys[i],style);
+				
+				//Dit is leuk, maar de hashtable style wil objecten, geen strings. Hoe parsen we dit?
+			}
 		}
 	}
 	
