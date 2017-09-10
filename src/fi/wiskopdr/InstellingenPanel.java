@@ -2,6 +2,7 @@ package fi.wiskopdr;
 
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -1134,36 +1135,92 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				TekstVakPanel.styles = new Hashtable<String,Map<String,Object>>();
 			
 			String contents = " "+stylesImportTekstArea.getText();
+			contents = StringUtils.replaceStr(contents, "\n", "");
+			contents = StringUtils.replaceStr(contents, "\t", "");
+			contents = contents.trim();
 			String[] styleStrings = StringUtils.split(contents, "}");
 			String[] styleKeys = new String[styleStrings.length-1];
 			String[] styleValues = new String[styleStrings.length-1];
 			for(int i=0 ; i<styleStrings.length-1 ; i++)
 			{
 				Hashtable style = new Hashtable();
-				String[] styleKeyValue = StringUtils.split(styleStrings[i].substring(1), "{");
+				String[] styleKeyValue = StringUtils.split(styleStrings[i], "{");
 				styleKeys[i] = styleKeyValue[0].substring(1).trim();
-				styleValues[i] = styleKeyValue[1].substring(0,styleKeyValue[1].length()-2);
-				System.out.println(styleKeys[i]);
+				styleValues[i] = styleKeyValue[1].trim();
 				
 				String[] styleElements = StringUtils.split(styleValues[i], ";");
-				String[] styleElementKeys = new String[styleElements.length];
-				String[] styleElementValues = new String[styleElements.length];
-				for(int j=0 ; j<styleElements.length ; j++)
+				String[] styleElementKeys = new String[styleElements.length-1];
+				String[] styleElementValues = new String[styleElements.length-1];
+				for(int j=0 ; j<styleElements.length-1 ; j++)
 				{
 					String[] styleElementKeyValue = StringUtils.split(styleElements[j],":");
-					styleElementKeys[j] = styleElementKeyValue[0].substring(2);
-					styleElementValues[j] = styleElementKeyValue[1];
-					System.out.println(styleElementKeys[j]);
-					System.out.println(styleElementValues[j]);
-					style.put(styleElementKeys[j],styleElementValues[j]);
+					styleElementKeys[j] = styleElementKeyValue[0].trim();
+					styleElementValues[j] = styleElementKeyValue[1].trim();
+					Object valueObject = styleElementValueStringToObject(styleElementValues[j]);
+					style.put(styleElementKeys[j],valueObject);
 				}
-				//TekstVakPanel.styles.put(styleKeys[i],style);
 				
-				//Dit is leuk, maar de hashtable style wil objecten, geen strings. Hoe parsen we dit?
+				TekstVakPanel.styles.put(styleKeys[i],style);
 			}
 		}
 	}
-	
+	//Eenvoudige parser voor styles van Strings naar Objects
+	private Object styleElementValueStringToObject(String s)
+	{
+		if(s.equals("true"))
+			return new Boolean(true);
+		else if(s.equals("false"))
+			return new Boolean(false);
+		else if(s.startsWith("java.awt.Color"))
+		{
+			s = s.substring(15,s.length()-1);
+			String[] colorKeyValues = StringUtils.split(s, ",");
+			String redString = colorKeyValues[0].substring(colorKeyValues[0].indexOf('=')+1).trim();
+			String greenString = colorKeyValues[1].substring(colorKeyValues[1].indexOf('=')+1).trim();
+			String blueString = colorKeyValues[2].substring(colorKeyValues[2].indexOf('=')+1).trim();
+			System.out.println(redString);
+			System.out.println(greenString);
+			System.out.println(blueString);
+			try{
+				int red = Integer.parseInt(redString);
+				int green = Integer.parseInt(greenString);
+				int blue = Integer.parseInt(blueString);
+				return new Color(red, green, blue);
+			} catch(Exception e){}
+		}
+		else if(s.startsWith("java.awt.Font"))
+		{
+			s = s.substring(14,s.length()-1);
+			String[] fontKeyValues = StringUtils.split(s, ",");
+			String nameString = fontKeyValues[0].substring(fontKeyValues[0].indexOf('=')+1).trim();
+			String styleString = fontKeyValues[2].substring(fontKeyValues[2].indexOf('=')+1).trim();
+			String sizeString = fontKeyValues[3].substring(fontKeyValues[3].indexOf('=')+1).trim();
+			
+			System.out.println(nameString);
+			System.out.println(styleString);
+			System.out.println(sizeString);
+			
+			int size = 14;
+			try{
+				size = Integer.parseInt(sizeString);
+			} catch(Exception e){}
+			
+			if(styleString.equals("plain"))
+				return new Font(nameString,Font.PLAIN,size);
+			if(styleString.equals("bold"))
+				return new Font(nameString,Font.BOLD,size);
+			if(styleString.equals("italic"))
+				return new Font(nameString,Font.ITALIC,size);
+			if(styleString.equals("bolditalic"))
+				return new Font(nameString,Font.BOLD+Font.ITALIC,size);
+		}
+		else try{
+			int waarde = Integer.parseInt(s);
+			return new Integer(waarde);
+		} catch(Exception e){}
+		return s;
+		
+	}
 	//ActionProducer
 	private ActionListener actionListener = null;
 	
