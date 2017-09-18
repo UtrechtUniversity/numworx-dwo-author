@@ -5,14 +5,13 @@ import java.awt.AWTEventMulticaster;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.MessageFormat;
@@ -21,7 +20,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -29,14 +27,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
-
-import org.json.simple.JSONValue;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.scorm.SCORM12APIInterface;
@@ -80,6 +77,16 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private Hashtable[][] states;
 	private int[][] scores;
 	private int[][] scoreCorrecties;
+	/**
+	 *  Een array van behaalde scores voor de zelftoets, in chronologische volgorde.
+	 *  Iedere keer dat er door de leerling op de nakijkknop is gedrukt, 
+	 *  is de totaalscore (percentage) aan de array toegevoegd.
+	 */
+	private int[] scoresZelftoetsHistorie;
+	/**
+	 * De high score van de zelftoets.
+	 */
+	//private int zelftoetsHighScore;
 	private boolean[][] isCorrect;
 	private int[][][][] scoresObjectives;
 	private int[][][][] possibleMisconceptions;
@@ -109,6 +116,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private int actKeuzePanelX, actKeuzePanelY;
 
 	private JButton opnieuwKnop, nakijkKnop, klaarKnop, itemOpnieuwKnop;
+	private JComboBox<String> scoreGeschiedenisBox;
 	private OpnieuwPanel opnieuwPanel;
 
 	private JLabel aantalNakijkLabel;
@@ -168,6 +176,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private TimerPanel timerPanel;
 	private boolean timer;
 	private int timeLimit;
+	private int timeLimitSecondsLeft;
 	private boolean hoekGraden;
 
 	private int orSize = "GR".equals(WiskOpdr.deployVariant) ? 21 : 25;
@@ -198,6 +207,17 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private boolean abcDeelOpdr = false;
 	private boolean zelftoetsGeenCorr = false;
 	private boolean eerderGeenCorr = false;
+	/**
+	 * Boolean die aangeeft of de geschiedenis van zelftoetsscores
+	 * (percentages) moet worden bijgehouden en getoond.
+	 */
+	public boolean zelftoetsGeschiedenis = false;
+	/**
+	 * Boolean die aangeeft of de high score van de zelftoets
+	 * moet worden getoond als totaalscore (percentage).
+	 * Kan alleen true zijn als zelftoetsGeschiedenis true is.
+	 */
+	public boolean isZelftoetsHighScore = false;
 	private boolean zelftoetsNagekeken = false;
 	private int condPerc = 100;
 	private boolean scoresZichtbaar = true;
@@ -350,7 +370,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		opdrContainer.addActionListener(this);
 		add(opdrContainer);
 
-		//voorwaardelijkeOpdrachten = gekoppeldeOpdrachten && mode != 2 && mode != 3;
+		//voorwaardelijkeOpdrachten = gekoppeldeOpdrachten && mode != ZELFTOETS && mode != EINDTOETS;
 
 		aantalOpdrMax = aantalOpdrachten[0];
 		for (int i = 1; i < aantalActiviteiten; i++)
@@ -496,6 +516,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		nakijkKnop.setVisible(false);
 		add(nakijkKnop, 0);
 
+		scoreGeschiedenisBox = new JComboBox<String>();
+		scoreGeschiedenisBox.addItem(WiskOpdr.rb.getString("zelftoetsGeschiedenisKnopLabel"));
+		scoreGeschiedenisBox.setFont(new Font("SansSerif", Font.PLAIN, navigatieSize));
+		scoreGeschiedenisBox.setVisible(false);
+		add(scoreGeschiedenisBox, 0);
+		
 		if (WiskOpdr.zoefi)
 			klaarKnop = new KlaarKnop(WiskOpdr.rb.getString("klaarKnopLabel"));
 		else
@@ -529,7 +555,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		opnieuwKnop.setFont(new Font("SansSerif", Font.PLAIN, navigatieSize));
 		opnieuwKnop.setMargin(new Insets(4, 0, 4, 0));
 		opnieuwKnop.addActionListener(this);
-		if (!"GR".equals(WiskOpdr.deployVariant) || mode == 2 || allesOpnieuwGR)
+		if (!"GR".equals(WiskOpdr.deployVariant) || mode == ZELFTOETS || allesOpnieuwGR)
 			opnieuwKnop.setVisible(opnieuwMogelijk);
 		else
 			opnieuwKnop.setVisible(false);
@@ -624,7 +650,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 //		lockToetsCB.setFont(font);
 //		lockToetsCB.setOpaque(false);
 //		lockToetsCB.addActionListener(this);
-//		lockToetsCB.setVisible(mode == 3 && lessonMode.equals("review"));
+//		lockToetsCB.setVisible(mode == EINDTOETS && lessonMode.equals("review"));
 //		add(lockToetsCB, 0);
 
 		volgendeKnop.setEnabled(opdrachtNr < aantalOpdrachten[activiteitNr] - 1);
@@ -649,9 +675,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		if ("GR".equals(WiskOpdr.deployVariant))
 		{
-			if(!WiskOpdr.deployDwoGrading) opdrContainer.setControlPanelHeight(orSize);
-			if(mode==2)opnieuwKnop.setText("Toets opnieuw");
-			if(mode==2)nakijkKnop.setText("Toets nakijken");
+			if (!WiskOpdr.deployDwoGrading) opdrContainer.setControlPanelHeight(orSize);
+			if (mode == ZELFTOETS)
+				opnieuwKnop.setText("Toets opnieuw");
+			if (mode == ZELFTOETS)
+				nakijkKnop.setText("Toets nakijken");
 			klaarKnop.setText(" Klaar");
 			klaarKnop.setUI(NWButtonUI.getInstance("gr_formbutton_skin_blue_full.png"));
 			klaarKnop.setForeground(Color.white);
@@ -669,6 +697,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			nakijkKnop.setFont(new Font("SansSerif", Font.BOLD, 12));
 			nakijkKnop.setForeground(new Color(70, 117, 186));
 			nakijkKnop.setMargin(new Insets(0, 0, 0, 0));
+
+			scoreGeschiedenisBox.setFont(new Font("SansSerif", Font.BOLD, 12));
+			scoreGeschiedenisBox.setForeground(new Color(70, 117, 186));
 
 			volgendeKnop.setUI(NWButtonUI.getInstance("gr_formbutton_skin_blue.png"));
 			volgendeKnop.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -785,6 +816,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			vorigeKnop.setBounds(or[activiteitNr].getX() - orSize, orPosY + 2, orSize - 5, orSize - 5);
 			opnieuwKnop.setBounds(vorigeKnop.getX() - opnieuwKnop.getWidth() - 5, orPosY + 2, 4 * orSize + 15, orSize - 5);
 			nakijkKnop.setBounds(opnieuwKnop.getX() - nakijkKnop.getWidth() - 5, orPosY + 2, 4 * orSize + 15, orSize - 5);
+			scoreGeschiedenisBox.setBounds(nakijkKnop.getX() - scoreGeschiedenisBox.getWidth() - 5, orPosY + 2, 4 * orSize + 15, orSize - 5);
 			itemOpnieuwKnop.setBounds(vorigeKnop.getX() - itemOpnieuwKnop.getWidth() - 5, orPosY + 2, 2 * orSize + 20, orSize - 5);
 			klaarKnop.setBounds(itemOpnieuwKnop.getX() - klaarKnop.getWidth() - 5, orPosY + 2, 2 * orSize + 15, orSize - 5);
 			mwScoreLab.setBounds(margeLinks + 18, orPosY - 3, 200, 20);
@@ -799,6 +831,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			else
 				klaarKnop.setBounds(getSize().width - 90 - (2 * orSize + 30), orPosY - 30, 2 * orSize + 30, orSize - 5);
 			nakijkKnop.setBounds(orPosX + aantalOpdrMax * orSize + 2 * orSize + 90, orPosY + 4, 2 * orSize + 30, orSize - 5);
+			scoreGeschiedenisBox.setBounds(orPosX + aantalOpdrMax * orSize + 2 * orSize + 90 + nakijkKnop.getWidth() + 20, 
+				orPosY + 4, (int) scoreGeschiedenisBox.getPreferredSize().getWidth(), orSize - 5);
 			itemOpnieuwKnop.setBounds(orPosX + aantalOpdrMax * orSize + 20, orPosY + 4, 2 * orSize + 30, orSize - 5);
 			if (!itemOpnieuwKnop.isVisible())
 				opnieuwKnop.setBounds(orPosX + aantalOpdrMax * orSize + 20, orPosY + 4, 2 * orSize + 50, orSize - 5);
@@ -994,6 +1028,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		boolean tweeHoofdletterVar = false;
 		boolean timer = false;
 		int timeLimit = 60;
+		int timeLimitSecondsLeft = 60;
 		boolean opnieuw = false;
 		boolean itemOpnieuw = false;
 		boolean checkPerOpdracht = false;
@@ -1024,6 +1059,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		int[] grensScores = null;
 		boolean abcDeelOpdr = false;
 		boolean zelftoetsGeenCorr = false;
+		boolean zelftoetsGeschiedenis = false;
+		boolean isZelftoetsHighScore = false;
+
 		int aftrekCorrectieZelftoets = 5;
 		boolean eerderGeenCorr = false;
 		boolean significantie = false;
@@ -1055,6 +1093,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			timer = ((Boolean) h.get("timer")).booleanValue();
 		if (h != null && h.containsKey("timeLimit"))
 			timeLimit = ((Integer) h.get("timeLimit")).intValue();
+		if (h != null && h.containsKey("timeLimitSecondsLeft"))
+			timeLimitSecondsLeft = ((Integer) h.get("timeLimitSecondsLeft")).intValue();
+		else
+			timeLimitSecondsLeft = timeLimit; // de volledige duur
 		if (h != null && h.containsKey("opnieuw"))
 			opnieuw = ((Boolean) h.get("opnieuw")).booleanValue();
 		if (h != null && h.containsKey("itemOpnieuw"))
@@ -1115,6 +1157,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			grensScores = (int[]) h.get("grensScores");
 		if (h != null && h.containsKey("zelftoetsGeenCorr"))
 			zelftoetsGeenCorr = ((Boolean) h.get("zelftoetsGeenCorr")).booleanValue();
+		if (h != null && h.containsKey("zelftoetsGeschiedenis"))
+			zelftoetsGeschiedenis = ((Boolean) h.get("zelftoetsGeschiedenis")).booleanValue();
+		if (h != null && h.containsKey("zelftoetsHighScore"))
+			isZelftoetsHighScore = ((Boolean) h.get("zelftoetsHighScore")).booleanValue();
 		if (h != null && h.containsKey("aftrekCorrectieZelftoets"))
 			aftrekCorrectieZelftoets = ((Integer) h.get("aftrekCorrectieZelftoets")).intValue();
 		if (h != null && h.containsKey("eerderGeenCorr"))
@@ -1187,6 +1233,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		//setTimer(timer, timeLimit);
 		this.timer = timer;
 		this.timeLimit = timeLimit;
+		this.timeLimitSecondsLeft = timeLimitSecondsLeft;
 		this.opnieuwMogelijk = opnieuw;
 		this.allesOpnieuwGR = opnieuw;
 		this.itemOpnieuwMogelijk = itemOpnieuw;
@@ -1209,6 +1256,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.abcDeelOpdr = abcDeelOpdr;
 		this.zelftoetsGeenCorr = zelftoetsGeenCorr;
 		this.eerderGeenCorr = eerderGeenCorr;
+		this.zelftoetsGeschiedenis = zelftoetsGeschiedenis;
+		this.isZelftoetsHighScore = isZelftoetsHighScore;
 		this.objectives = objectives;
 		this.categorieString = categorieString;
 		this.misconceptions = misconceptions;
@@ -1334,7 +1383,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			}
 			activiteitScoreLabels[i].setText(WiskOpdr.rb.getString("score") + totaal);
 			if (aantalActiviteiten == 1)
-			{	activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("totaal") + totaal);
+			{
+				activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("totaal") + voortgangPerc + "%");
 				if(voortgang)
 					activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("voortgang") + voortgangPerc + "%");
 			}
@@ -1378,6 +1428,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		boolean[][] orGoedFout = opdrachtenCorrect; // = (boolean[][]) h.get("orGoedFout");
 		int[][] orScores = null;
 		int[][] scores = null;
+		int[] scoresZelftoetsHistorie = null;
+		int zelftoetsHighScore = -1;
 		String[][] orTimes = null;
 		int[] aantalNakijken = this.aantalNakijken;
 		int[][] strafpunten = null;
@@ -1414,15 +1466,26 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			orScores = toIntArrayArray(h.get("orScores"));
 		else
 			orScores = new int[aantalActiviteiten][maxAantalOpdrachten];
-		if(h.containsKey("scores"))
+		if (h.containsKey("scores"))
 			scores = toIntArrayArray(h.get("scores"));
 		else
 			scores = new int[aantalActiviteiten][maxAantalOpdrachten];
+		
+		if (h.containsKey("scoresZelftoetsHistorie"))
+			scoresZelftoetsHistorie = toIntArrayZelftoetsHistorie(h.get("scoresZelftoetsHistorie"));
+		else
+			scoresZelftoetsHistorie = new int[0];
+		
+		if (h.containsKey("zelftoetsHighScore"))
+			zelftoetsHighScore = ((Number) h.get("zelftoetsHighScore")).intValue();
+		
 		orTimes = toStringArrayArray(h.get("orTimes"));
 		if (h.containsKey("aantalNakijken"))
 			aantalNakijken = toIntArray(h.get("aantalNakijken"));
 		if (h.containsKey("strafpunten"))
 			strafpunten = toIntArrayArray(h.get("strafpunten"));
+		if (h.containsKey("tempotoetsLocked"))
+			locked = ((Boolean) h.get("tempotoetsLocked")).booleanValue();
 		if (h.containsKey("locked"))
 			locked = ((Boolean) h.get("locked")).booleanValue();
 		if (h.containsKey("zelftoetsNagekeken"))
@@ -1482,11 +1545,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		this.bezocht = bezocht;
 		this.scores = scores;
+		this.scoresZelftoetsHistorie = scoresZelftoetsHistorie;
+		vulScoreGeschiedenis();
 		
 		if (scoresObjectives != null)
 		{
 			this.scoresObjectives = scoresObjectives;
-			if(scoresMaxObjectives != null)
+			if (scoresMaxObjectives != null)
 				this.scoresMaxObjectives = scoresMaxObjectives;
 			else
 				scoresMaxObjectives = this.scoresMaxObjectives;
@@ -1562,7 +1627,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				else
 					times[i][j] = null;
 				
-				if (mode!=2 && (mode != 3 || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review")))
+				if (mode != ZELFTOETS && (mode != EINDTOETS || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review")))
 				{
 					or[i].zetGemaakt(j + 1, getBoolean(orGoedFout, i, j));
 					allCorrect = allCorrect && getBoolean(orGoedFout, i, j);
@@ -1571,15 +1636,26 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				}
 				totaal += getInt(orScores,i,j);
 			}
-			if (mode == 2 && totaal > 0)
+			if (mode == ZELFTOETS && totaal > 0)
 				totaal = Math.max(0, totaal - (aantalNakijken[i] - 1) * nakijkStraf);
-			if (mode != 3 || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review"))
+			
+			// hoe gaat dit met afronden...? getScore() is pas verderop bekend
+			int totaalPercentage;
+			
+			// high score zetten
+			if (mode == ZELFTOETS && isZelftoetsHighScore && zelftoetsHighScore != -1)
+				totaalPercentage = zelftoetsHighScore;
+			else
+				totaalPercentage = 100 * totaal /scoreMax;
+			
+			if (mode != EINDTOETS || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review"))
 			{
 				activiteitScoreLabels[i].setText(WiskOpdr.rb.getString("score") + totaal);
 				if (aantalActiviteiten == 1)
-				{	activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("totaal") + totaal);
-				if(voortgang)
-					activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("voortgang") + bepaalVoortgangPercentage(activiteitNr, opdrachtNr) + "%");
+				{
+					activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("totaal") + totaalPercentage + "%");
+					if (voortgang)
+						activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("voortgang") + bepaalVoortgangPercentage(activiteitNr, opdrachtNr) + "%");
 				}
 			}
 		}
@@ -1590,11 +1666,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		aantalSessiesLabel.setText("Attemps: " + aantalSessies);
 
 		aantalNakijkLabel.setText(keerNagekeken(aantalNakijken[activiteitNr]));
-		if (mode == 2 && aantalNakijken[activiteitNr] > 0 && !zelftoetsGeenCorr)
+		if (mode == ZELFTOETS && aantalNakijken[activiteitNr] > 0 && !zelftoetsGeenCorr)
 			aantalNakijkLabel.setVisible(true);
 		
-		if (mode == 3 || mode==2)
-		{	if (mode == 3){
+		if (mode == EINDTOETS || mode == ZELFTOETS)
+		{
+			if (mode == EINDTOETS){
 				scoresObjectivesKnop.setVisible(false);
 				viewMisconceptionsKnop.setVisible(false);
 			}
@@ -1611,7 +1688,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		
 		
-		if (mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked) || mode == ZELFTOETS && zelftoetsNagekeken)
+		if (mode == EINDTOETS && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked) || mode == ZELFTOETS && zelftoetsNagekeken)
 		{	scoresObjectivesKnop.setVisible(objectivesAanwezig);
 			viewMisconceptionsKnop.setVisible(possibleMisconceptions!=null);
 		
@@ -1626,6 +1703,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				}
 			}
 		}
+		
+		// ter info: hier is getScore() pas bekend, de percentagescore van de activiteit
 
 		if (states[activiteitNr][opdrachtNr] != null)
 		{
@@ -1669,10 +1748,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.zelftoetsNagekeken = zelftoetsNagekeken;
 		
 		nakijkKnop.setEnabled(lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr));
-		scoresObjectivesKnop.setEnabled((mode != 2 && mode !=3) || lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr) 
-				|| (mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked)));
-		viewMisconceptionsKnop.setEnabled((mode != 2 && mode !=3) || lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr) 
-				|| (mode == 3 && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked)));
+		scoresObjectivesKnop.setEnabled((mode != ZELFTOETS && mode != EINDTOETS) || lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr) 
+				|| (mode == EINDTOETS && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked)));
+		viewMisconceptionsKnop.setEnabled((mode != ZELFTOETS && mode != EINDTOETS) || lessonMode.equals("review") || !zelftoetsNagekeken && suspendDataCompleted(activiteitNr, opdrachtNr) 
+				|| (mode == EINDTOETS && api != null && (api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review") || toetsLocked)));
 		
 		vorigeKnop.setVisible(vorigeKnopZichtbaar || !bolletjesZichtbaar && (zelftoetsNagekeken||toetsLocked));
 	
@@ -1688,11 +1767,34 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		for (int i = 0; i < aantalActiviteiten; i++)
 			for (int j = 0; j < aantalOpdrachten[i]; j++)
-				if (mode != 3 || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review"))
+				if (mode != EINDTOETS || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review"))
 					stelNavigatieIn(i, j);
 		
 		stelNavigatieIn(activiteitNr, opdrachtNr);
 
+	}
+
+	/**
+	 * Get the array of Longs and set scoresZelftoetsHistorie.
+	 * 
+	 * @param object
+	 * @return
+	 */
+	private int[] toIntArrayZelftoetsHistorie(Object object)
+	{
+		if (object == null || object instanceof Long[])
+			return null;
+		if (object instanceof List)
+		{
+			List list = (List) object;
+			int[] result = new int[list.size()];
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = ((Long) list.get(i)).intValue(); // the values in the list are percentages (0-100)
+			}
+			return result;
+		}
+		return null;
 	}
 
 	private int[][][][] toIntArrayArrayArrayArray(Object object) {
@@ -1954,7 +2056,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			opdrContainer.closePopups();
 		opdrContainer.sessionStop();
 		// toegevoegd 20100820 voor de zekerheid alleen voor MW
-		if (mode == 3 && ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant)))
+		if (mode == EINDTOETS && ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant)))
 			opdrContainer.kijkNa();
 
 		states[activiteitNr][opdrachtNr] = opdrContainer.getState();
@@ -1986,7 +2088,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				opdrContStates[i][j] = states[i][j];
 				orGoedFout[i][j] = or[i].geefGoedFout(j + 1);
 				orScores[i][j] = or[i].geefScore(j + 1);
-				if (mode == 3 || mode==2) 
+				if (mode == EINDTOETS || mode == ZELFTOETS) 
 				{
 					orScores[i][j] = scores[i][j];
 					orGoedFout[i][j] = isCorrect[i][j];
@@ -2078,7 +2180,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		int hoogstActiviteit = 0;
 		for (int i = 0; i < aantalActiviteiten; i++)
 		{
-			if (mode == 3)
+			if (mode == EINDTOETS)
 			{
 				for (int j = 0; j < aantalOpdrachten[i]; j++)
 				{
@@ -2087,7 +2189,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			}
 			else
 			{
-				totaalScore += or[i].geefScore() - ((mode == 2) ? (nakijkStraf * (Math.max(0, aantalNakijken[i] - 1))) : 0);
+				totaalScore += or[i].geefScore() - ((mode == ZELFTOETS) ? (nakijkStraf * (Math.max(0, aantalNakijken[i] - 1))) : 0);
 			}
 			if(condNav && condNavVoorwaarden)
 			{	int opdrNr = 0;
@@ -2335,7 +2437,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	public void zetGekoppeldeOpdrachten(boolean b)
 	{
 		gekoppeldeOpdrachten = b;
-		voorwaardelijkeOpdrachten = gekoppeldeOpdrachten && mode != 2 && mode != 3;
+		voorwaardelijkeOpdrachten = gekoppeldeOpdrachten && mode != ZELFTOETS && mode != EINDTOETS;
 		if (pagina)
 			opdrachtLabel.setText(WiskOpdr.rb.getString("paginaLabel"));
 		else if (b || abcDeelOpdr)
@@ -2384,6 +2486,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (mode == ZELFTOETS)
 		{
 			nakijkKnop.setVisible(true);
+			
+			if (zelftoetsGeschiedenis)
+			{
+				scoreGeschiedenisBox.setVisible(true);
+			}
+			
 			scoresObjectivesKnop.setVisible(objectivesAanwezig);
 			viewMisconceptionsKnop.setVisible(possibleMisconceptions!=null);
 			if (aantalOpdrachten[activiteitNr] == 1)
@@ -2401,7 +2509,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 
 			Point locationNakijkKnop = nakijkKnop.getLocation();
 			Point locationOpnieuwKnop = opnieuwKnop.getLocation();
-			nakijkKnop.setLocation(locationOpnieuwKnop);
+			nakijkKnop.setLocation(locationOpnieuwKnop); // location van beide is (0,0)?
 			opnieuwKnop.setLocation(locationNakijkKnop);
 		}
 		if (mode == EINDTOETS)
@@ -2464,6 +2572,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		if (timer)
 		{
+			// TODO timer instellen op timeLimitSecondsLeft ipv telkens vanaf begin
 			timerPanel.zetTijdMax(timeLimit);
 			timerPanel.zetInstelbaar(false);
 			timerPanel.start();
@@ -2504,7 +2613,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		opdrContainer.closePopups();
-		if (mode == 0 || mode == OEFENEN_STRAFPUNTEN)
+		if (mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN)
 			opdrContainer.stop();
 		else
 			opdrContainer.sessionStop();
@@ -2846,9 +2955,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			}
 			
 			//opdrContainer.zetOpdrachtPlusState(opdrachten[activiteitNr][opdrachtNr], !(gekoppeldeOpdrachten || globalParam), states[activiteitNr][opdrachtNr]);
-			if (mode == 2 || mode == 3)
+			if (mode == ZELFTOETS || mode == EINDTOETS)
 			{
-				if (mode == 2 && zelftoetsGeenCorr)
+				if (mode == ZELFTOETS && zelftoetsGeenCorr)
 				{
 					// laatste kans op update sessiontime
 					if (!zelftoetsNagekeken)
@@ -2875,7 +2984,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("voortgang") + bepaalVoortgangPercentage(activiteitNr, opdrachtNr) + "%");
 			}
 
-			if (mode == 0 || mode == OEFENEN_STRAFPUNTEN)
+			if (mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN)
 			{
 				WiskOpdr.setLMSScore();
 				WiskOpdr.setLMSState();
@@ -2964,7 +3073,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			opdrachtNr = 0;
 			opdrContainer.zetOpdracht(opdrachten[activiteitNr][opdrachtNr]);
 			or[activiteitNr].setSelected(1);
-			if (mode == 2 || mode == 3)
+			if (mode == ZELFTOETS || mode == EINDTOETS)
 			{
 				aantalNakijkLabel.setText(WiskOpdr.rb.getString("nakijkLabel1") + aantalNakijken[activiteitNr] + WiskOpdr.rb.getString("nakijkLabel2"));
 				aantalNakijkLabel.setVisible(false);
@@ -3114,13 +3223,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			//score = Math.max(0, score - getInt(strafpunten,activiteitNr,opdrachtNr));
 			
 //!! Dubbel met wat hieronder staat... Alleen niet voor zelftoets, maar daarvoor wil je op dit moment geen score zetten.
-//			if (mode != 3)
+//			if (mode != EINDTOETS)
 //			{
 //				or[activiteitNr].zetGemaakt(opdrachtNr + 1, correct);
 //				opdrachtenCorrect[activiteitNr][opdrachtNr] = correct;
 //				or[activiteitNr].zetScore(opdrachtNr + 1, score);
 //			}
-			if (mode == 0 || mode == OEFENEN_STRAFPUNTEN)
+			if (mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN)
 			{
 				or[activiteitNr].zetGemaakt(opdrachtNr + 1, correct);
 				opdrachtenCorrect[activiteitNr][opdrachtNr] = correct;
@@ -3141,11 +3250,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				totaal += or[activiteitNr].geefScore(i + 1);
 				allCorrect = allCorrect && or[activiteitNr].geefGoedFout(i + 1);
 			}
-			if (mode == 2)
+			if (mode == ZELFTOETS)
 			{
 				totaal = Math.max(0, totaal - (Math.max(0, aantalNakijken[activiteitNr] - 1)) * nakijkStraf);
 			}
-			if (mode == 0 || mode == OEFENEN_STRAFPUNTEN)
+			if (mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN)
 			{
 				activiteitScoreLabels[activiteitNr].setText(WiskOpdr.rb.getString("score") + totaal);
 				if (aantalActiviteiten == 1)
@@ -3171,6 +3280,39 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			return;
 		}
 		
+	}
+
+	/**
+	 * Vul de scoregeschiedenis-uitklapbox met de scoregeschiedenis in percentages.
+	 * 
+	 * @param scoreDialog
+	 */
+	private void vulScoreGeschiedenis()
+	{
+		scoreGeschiedenisBox.removeAllItems();
+		scoreGeschiedenisBox.addItem(WiskOpdr.rb.getString("zelftoetsGeschiedenisKnopLabel"));
+		
+		for (int i = 0; i < scoresZelftoetsHistorie.length; i++)
+		{
+			scoreGeschiedenisBox.addItem(scoresZelftoetsHistorie[i] + "%");
+		}
+		
+		setWidthScoreGeschiedenis();
+	}
+
+	/**
+	 * Zet de breedte van scoreGeschiedenisBox.
+	 */
+	private void setWidthScoreGeschiedenis()
+	{
+		Object comp = scoreGeschiedenisBox.getUI().getAccessibleChild(scoreGeschiedenisBox, 0);
+	    if (!(comp instanceof JPopupMenu)) 
+	    	return;
+	    JComponent scrollPane = (JComponent) ((JPopupMenu) comp).getComponent(0);
+		Dimension size = new Dimension();
+	    size.width = scoreGeschiedenisBox.getPreferredSize().width;
+	    size.height = scrollPane.getPreferredSize().height;
+	    scrollPane.setPreferredSize(size);
 	}
 
 	/**
