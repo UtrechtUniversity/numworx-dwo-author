@@ -34,6 +34,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				{ "nakijkLabel2" , " ضرب " },
 				{ "opnieuwKnopLabel" , "دوباره" },
 				{ "allesOpnieuwKnopLabel" , "دوباره براي همه" },
+				{ "zelftoetsGeschiedenisKnopLabel", "score history"},
 				{ "opdrachtLabel" , ":مساله" },
 				{ "paginaLabel" , ":صفحه" },
 				{ "onderdeelLabel" , ":قسمت" },

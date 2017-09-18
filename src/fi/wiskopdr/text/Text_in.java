@@ -34,6 +34,7 @@ public class Text_in extends java.util.ListResourceBundle
 				{ "nakijkLabel2" , " kali " },
 				{ "opnieuwKnopLabel" , "Lagi" },
 				{ "allesOpnieuwKnopLabel" , "Lagi semua" },
+				{ "zelftoetsGeschiedenisKnopLabel", "score history"},
 				{ "opdrachtLabel" , "Soal:" },
 				{ "paginaLabel" , "Halaman:" },
 				{ "onderdeelLabel" , "Bagian:" },

@@ -35,6 +35,7 @@ public class Text_gr extends java.util.ListResourceBundle
 				{ "nakijkLabel2" , " φορές " },
 				{ "opnieuwKnopLabel" , "Ξανά" },
 				{ "allesOpnieuwKnopLabel" , "Όλα ξανά" },
+				{ "zelftoetsGeschiedenisKnopLabel", "score history"},
 				{ "opdrachtLabel" , "Πρόβλημα:" },
 				{ "paginaLabel" , "Σελίδα:" },
 				{ "onderdeelLabel" , "Μέρος:" },

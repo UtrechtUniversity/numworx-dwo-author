@@ -40,6 +40,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "nakijkLabel2" , " keer " },
 				{ "opnieuwKnopLabel" , "opnieuw" },
 				{ "allesOpnieuwKnopLabel" , "alles opnieuw" },
+				{ "zelftoetsGeschiedenisKnopLabel", "scoregeschiedenis"},
 				{ "opdrachtLabel" , "Opdracht:" },
 				{ "paginaLabel" , "Pagina:" },
 				{ "onderdeelLabel" , "Onderdeel:" },

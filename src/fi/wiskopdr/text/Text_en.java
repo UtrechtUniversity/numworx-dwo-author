@@ -37,6 +37,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "nakijkLabel2" , " times " },
 				{ "opnieuwKnopLabel" , "Again" },
 				{ "allesOpnieuwKnopLabel" , "All again" },
+				{ "zelftoetsGeschiedenisKnopLabel", "score history"},
 				{ "opdrachtLabel" , "Problem:" },
 				{ "paginaLabel" , "Page:" },
 				{ "onderdeelLabel" , "Part:" },

@@ -35,6 +35,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				{ "nakijkLabel2" , " 時間" },
 				{ "opnieuwKnopLabel" , "もう一度" },
 				{ "allesOpnieuwKnopLabel" , "やり直してください。" },
+				{ "zelftoetsGeschiedenisKnopLabel", "score history"},
 				{ "opdrachtLabel" , "問題:" },
 				{ "paginaLabel" , "ページ:" },
 				{ "onderdeelLabel" , "パート:" },
