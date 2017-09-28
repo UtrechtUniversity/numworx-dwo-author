@@ -1044,6 +1044,7 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel
 
 		if (kijkDraaihoekNaCB.isSelected())
 		{
+			zetDraaihoekOptiesEnabled(true);
 			tvip.setViewerOnly(true);
 			tvip.viewer.zetBeginHoeken(tvip.docentDraaihoekX, tvip.docentDraaihoekY);
 			if (!dezeDraaihoekRB.isSelected())
