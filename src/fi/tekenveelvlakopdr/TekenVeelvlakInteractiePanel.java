@@ -138,10 +138,11 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
 		double viewerDraaiY = viewer.geefDraaiY();
 
 		if ((editMode != null) && editMode.nakijkOptiesPanel.isVisible() && 
-			 editMode.kijkDraaihoekNaCB.isSelected())
-		{	viewerDraaiX = editMode.tvipDraaiX;
+			 editMode.kijkDraaihoekNaCB.isSelected() && !editMode.dezeDraaihoekRB.isSelected())
+		{
+			viewerDraaiX = editMode.tvipDraaiX;
 			viewerDraaiY = editMode.tvipDraaiY;
-
+			
 			//let nog even op dat de muis aanstaat    		
 		}
 
@@ -174,8 +175,8 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
         
         h.put("kijkDraaihoekNa", new Boolean(kijkDraaihoekNa));
         h.put("checkExternalDraaihoek", new Boolean(checkExternalDraaihoek));
-        h.put("docentDraaihoekX", new Double(docentDraaihoekX));
-        h.put("docentDraaihoekY", new Double(docentDraaihoekY));
+        h.put("docentDraaihoekX", new Double(viewerDraaiX));
+        h.put("docentDraaihoekY", new Double(viewerDraaiY));
         
         h.put("kijkVlakkenNa", new Boolean(kijkVlakkenNa));
         h.put("checkExternalVlakken", new Boolean(checkExternalVlakken));
