@@ -19,7 +19,7 @@ public class Volgpunt extends Punt implements FreePoint, Observer {
 	public void update(Observable observable, Object arg) {
 		if(arg == DESTROY) {
 			destroy();
-			
+			return;
 		}
 		if(observable == p[0] && observable != null) {
 			setXY(Numbers.add(p[0].getX(), dx), Numbers.add(p[0].getY(), dy));
