@@ -43,10 +43,12 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		if (visibility.getString() != null && tracker != null) {
 			try {
 				String formula = visibility.getString();
+				final String orig = formula; 
 				Randomizer r = tracker.adapt(Randomizer.class);
 				if(r != null) formula = r.randomize(formula);
 				formula = formula.substring(2);
-				visibility.destroy();
+				visibility.destroy(); visibility = new Label();
+				visibility.setString(orig);
 				OMObject o = new FormuleParser(formula).logic();
 				OMApplication oma = new OMApplication();
 				oma.addElement(EUCLIDES_VISIBLE);
