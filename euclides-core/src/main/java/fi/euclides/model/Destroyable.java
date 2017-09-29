@@ -16,11 +16,17 @@ public abstract class Destroyable extends Observable implements Observer {
 
 	private int index;
 	boolean visible = true;
+	private byte dstate;
 	
 	private Adapter adapter = Adapter.NULL;
 	
 	public void destroy()
 	{
+		if (dstate != 0) {
+			//dstate = dstate;
+			return;
+		}
+		dstate = 1;
 		Destroyable[] dd = getDepend();
 		for (int i = 0; i < dd.length; i++) {
 			Destroyable d = dd[i];
@@ -31,9 +37,11 @@ public abstract class Destroyable extends Observable implements Observer {
 				if(d.getIndex() == 0) d.destroy(); // destroy anonymous dependencies
 			}
 		}
+		dstate=2;
 		setChanged();
 		notifyObservers(DESTROY);
 		setIndex(0);
+		dstate = 3;
 	}
 	
 	abstract public void visit(Visitor v);
