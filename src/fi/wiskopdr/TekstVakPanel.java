@@ -43,6 +43,7 @@ import javax.swing.border.Border;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
+import org.json.simple.JSONArray;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.iconan.Iconan;
@@ -2151,8 +2152,15 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			ingeklapt = ((Boolean) h.get("ingeklapt")).booleanValue();
 		if (h.containsKey("visible"))
 			visible = ((Boolean) h.get("visible")).booleanValue();
-		if (h.containsKey("stappen"))
-			stappen = (String[])h.get("stappen");
+		if (h.containsKey("stappen")) {
+			Object object = h.get("stappen");
+			if(object instanceof JSONArray) {
+				Hashtable[] jsonstappen = OpdrNavStruct.toHashtableArray(object);
+				// stappen = converteer naar string ( jsonstappen  ) FIXME see ticket DWO-WISK 81
+			} else {
+				stappen = OpdrNavStruct.toStringArray(object);
+			}
+		}
 		if (h.containsKey("stapNr"))
 			stapNr = ((Number) h.get("stapNr")).intValue();
 		
