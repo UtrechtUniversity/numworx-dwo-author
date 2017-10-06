@@ -2,6 +2,7 @@ package fi.wiskopdr.opdrnav;
 
 import java.awt.*;
 import java.applet.Applet;
+import java.text.MessageFormat;
 import java.util.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -34,8 +35,19 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		return instance;
 	}
 	
+	public void setSizeLabel(int size) {
+		String t;
+		if(size < 3000)
+			t=MessageFormat.format("{0}b", (size));
+		else 
+			t=MessageFormat.format("{0}Kb", (size+512)/1024);
+		sizeLabel.setText(t);
+		sizeLabel.setForeground(size < 3000000 ? Color.black : Color.red);
+	}
 	
-	
+	public void setSizeLabel(Map o) {
+		setSizeLabel(WiskOpdr.getObjectSize(o));
+	}
 	private MyOpdrEditContainer opdrEditContainer;
 
 	private String[][] opdrachten;
@@ -87,6 +99,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	private Clipboard systemClipboard;
 
 	public boolean useLocation;
+	
+	private JLabel sizeLabel;
 	
 	/**
 	 * Maakt nieuwe Opdrachtnavigatie-editor op basis van de aangeleverde launchData
@@ -223,7 +237,13 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			instellingen.put("globalParam", new Boolean(true));
 		}
 		//
-
+		
+		sizeLabel = new JLabel("123,456Mb");
+// styling
+		sizeLabel.setFont(font);//sizeLabel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+		sizeLabel.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 42, 100, 22);
+		add(sizeLabel,0);
+		
 		instellingenKnop = new JButton(WiskOpdr.rb.getString("optiesButtonLabel"));
 		instellingenKnop.setFont(font);
 		instellingenKnop.setMargin(new Insets(3, 5, 3, 5));
@@ -465,6 +485,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		gekoppeldeOpdrCB.setBounds(10, orPosY + 30, 50, 15);
 		gekoppeldeOpdrCB.addItemListener(this);
 		instellingenKnop.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 20, 60, 20);
+		sizeLabel.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 42, 60, 22);
 	}
 	
 	/**

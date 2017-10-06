@@ -60,6 +60,7 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
 	       
 		onsEdit = new OpdrNavStructEdit(new fi.wiskopdr.opdrnav.MyOpdrEditContainer(),0,0,790, 520, launchData);
 		onsEdit.setBackground(getBackground());
+		onsEdit.setSizeLabel(launchData);
 		add(onsEdit);
 		setApplet(applet);
 	}
@@ -107,6 +108,7 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
 		if(imageMapString!=null)h.put(TekstImageVak.IMAGE_MAP, imageMapString);
 		String shareMapString = ShareAction.getSharedLaunchData();
 		if(shareMapString != null) h.put(ShareAction.SHARE_MAP, shareMapString);
+		onsEdit.setSizeLabel(h);
     	return h;
 	}
 	

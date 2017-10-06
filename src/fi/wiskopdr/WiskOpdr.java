@@ -392,6 +392,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return wop;
 	}
 	
+	public static int getObjectSize(Object o) {
+		return StringCodeObject.encodeObjectToString(o).length();
+	}
 	/**
 	 * Hiermee kan de default codebase worden opgevraagd. 
 	 */
