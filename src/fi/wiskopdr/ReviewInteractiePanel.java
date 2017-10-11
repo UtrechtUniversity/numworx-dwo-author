@@ -22,6 +22,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
@@ -48,6 +49,7 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 	
 	private JLabel scoreStringLabel;
 	private JTextField scoreCorrectieTF;
+	private JTextArea commentsTA;
 	
 	TekstInteractiePanelVak tipv;
 	private Polygon p;
@@ -75,11 +77,13 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 		scoreMaxStringLabel = new JLabel(""+scoreMax);
 		scoreLabel = new JLabel("score:");
 		scoreStringLabel = new JLabel(""+score);
-		scoreCorrectieLabel = new JLabel("correctie score:");
+		scoreCorrectieLabel = new JLabel("toevoeging:");
 		
 		scoreCorrectieTF = new JTextField(""+scoreCorrectie);
 		scoreCorrectieTF.addKeyListener(this);
 	    
+	    commentsTA = new JTextArea();
+	    commentsTA.setPreferredSize(new Dimension(150,60));
 	    
 	}
 	
@@ -113,6 +117,10 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 	    boxh.add(Box.createHorizontalGlue());
 	    boxh.add(scoreCorrectieTF);  
 	    boxv.add(boxh);
+	    
+//	    boxh = Box.createHorizontalBox();
+//	    boxh.add(commentsTA);
+//	    boxv.add(boxh);
 	    
 	    reviewPanel.add(boxv);
 	}
