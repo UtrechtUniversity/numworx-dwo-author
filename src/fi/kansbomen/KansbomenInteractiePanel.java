@@ -1168,13 +1168,40 @@ private int mode;
     	updateLeerlingAntwoorden();
     	if(Arrays.equals(leerlingAntwoorden,beginStatus))
     	{
-    		ingevuld = false;
-    		return;
+    		//A step has already been made
+    		if(groenVinkjeLabel.isVisible() || geelVinkjeLabel.isVisible() || kruisjeLabel.isVisible())
+    		{
+    			score = 0;
+    			kruisjeLabel.setVisible(true);
+        		geelVinkjeLabel.setVisible(false);
+        		groenVinkjeLabel.setVisible(false);
+        		ingevuld = true;
+        		//fire actionEvent
+         		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
+         		for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
+         		{
+         			((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
+         		}
+         		return;
+    		}
+    		else //No step has been made yet
+    		{
+    			ingevuld = false;
+        		return;
+    		}
     	}		                                   
     	
     	leerlingAntwoorden[0] = nakijkModel[0];
-    	for(int i = nakijkModel[9]; i < 6; i++)
-    		leerlingAntwoorden[i + 1] = nakijkModel[i + 1];
+    	if(!ballenZichtbaar)
+    	{
+    		for(int i = 0; i < 6; i++)
+        		leerlingAntwoorden[i + 1] = nakijkModel[i + 1];
+    	}
+    	else
+    	{
+    		for(int i = nakijkModel[9]; i < 6; i++)
+        		leerlingAntwoorden[i + 1] = nakijkModel[i + 1];
+    	}
     	if(Arrays.equals(leerlingAntwoorden,nakijkModel))
     	{	score = scoreMax;
     		kruisjeLabel.setVisible(false);
