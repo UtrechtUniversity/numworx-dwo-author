@@ -947,6 +947,8 @@ public class AntwoordTekstVak extends JLayeredPane implements InteractiePanel, A
 			{
 				((TabletOwner) parent).addTablet(this, x + 20, y + h + 20);
 				Tablet tablet = ((TabletOwner) parent).getTablet();
+				if(tablet==null)
+					break;
 				int tx = Math.min(parent.getSize().width - tablet.getSize().width, x + 20);
 				int ty = y + h + 20 + tablet.getSize().height > parent.getSize().height ? y - tablet.getSize().height - 10 : y + h + 20;
 				tablet.setLocation(tx, ty);
