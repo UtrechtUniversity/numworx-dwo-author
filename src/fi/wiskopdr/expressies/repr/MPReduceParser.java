@@ -19,18 +19,18 @@ public class MPReduceParser implements MPReduceParserConstants {
   private static final String LEQ = "\u2264";
   private static final String GEQ = "\u2265";
   private static final String APPROX = "\u2248";
-  public static void main(String args []) throws Exception
-  {
-
-        String input = "{y = ( - (sqrt(x) + acos(1) ))/log(x**4), y<infinity}$";
-        //input = "-x/4 + 1 * pi$";
-        input = "{x=(6 .. 7),x >=3,x<=6, x = 123}$";
-        input = "limit(a,b,c)$";
-        Reader in = new StringReader(input);
-    MPReduceParser parser = new MPReduceParser(in);
-    Object result = (parser.start());
-        System.out.println(result);
-  }
+//  public static void main(String args []) throws Exception
+//  {
+//
+//        String input = "{y = ( - (sqrt(x) + acos(1) ))/log(x**4), y<infinity}$";
+//        //input = "-x/4 + 1 * pi$";
+//        input = "{x=(6 .. 7),x >=3,x<=6, x = 123}$";
+//        input = "limit(a,b,c)$";
+//        Reader in = new StringReader(input);
+//    MPReduceParser parser = new MPReduceParser(in);
+//    Object result = (parser.start());
+//        System.out.println(result);
+//  }
 
   public Interval interval(Object a, Object b)
   {

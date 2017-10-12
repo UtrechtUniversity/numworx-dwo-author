@@ -6,6 +6,8 @@ public class MPReduceConverter extends AbstractConverter {
 
 	private static AbstractConverter _instance = new MPReduceConverter();
 
+	
+	
 	@Override
 	public Object abs(Object visit) {
 		return "abs(" + visit + ")";
@@ -61,7 +63,7 @@ public class MPReduceConverter extends AbstractConverter {
 			return "infinity";
 		if("\u03c0".equals(basisString))
 			return "pi";
-		return super.basis(basisString);
+		return super.basis(basisString.replace(',', '.')); // decimal comma to decimal point
 	}
 
 	@Override

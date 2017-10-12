@@ -69,7 +69,7 @@ public class MathematicaConverter extends AbstractConverter {
 			return "-Infinity";
 		if("\u03c0".equals(basisString))
 			return "Pi";
-		return super.basis(basisString);
+		return super.basis(basisString.replace(',', '.'));
 	}
 
 	@Override

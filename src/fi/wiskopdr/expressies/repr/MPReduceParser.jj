@@ -16,6 +16,7 @@ public class MPReduceParser{
   private static final String LEQ = "\u2264";
   private static final String GEQ = "\u2265";
   private static final String APPROX = "\u2248";
+/* move to junit test
   public static void main(String args []) throws Exception  {
 
 	String input = "{y = ( - (sqrt(x) + acos(1) ))/log(x**4), y<infinity}$";
@@ -24,7 +25,7 @@ public class MPReduceParser{
 	input = "limit(a,b,c)$";
 	Reader in = new StringReader(input);    MPReduceParser parser = new MPReduceParser(in);    Object result = (parser.start());	System.out.println(result);
   }
-
+*/
   public Interval interval(Object a, Object b)  {		return new Interval(a, b);
 		 
   }
