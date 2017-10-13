@@ -11,6 +11,7 @@ import java.util.Vector;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.tue.win.riaca.openmath.lang.OMString;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
 import fi.euclides.event.NameMapper;
 import fi.euclides.event.Tracker;
@@ -28,6 +29,10 @@ import fi.euclides.model.math.Complex;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.expr.Coord;
+import fi.euclides.expr.DestroyDependency;
+import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.formuleobjects.ParseException;
+import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -94,6 +99,22 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 			}
 			return varsOf(binding.getBody(), mapper, bindvars, output);		
 		}
+		if(obj instanceof OMString) { // FIXME this is GeoDefiner only! {} interpolatie
+			OMString t = (OMString) obj;
+			String plain = t.getString();
+			if(plain.contains("{") && plain.contains("}"))
+			{
+				plain = plain.replace("{", "\",").replace("}",",\"");
+				FormuleParser parser = new FormuleParser("[\""+plain+"\"]");
+				try {
+					OMObject o = parser.bracket();
+					return varsOf(o, mapper, bindvars, output);
+				} catch (ParseException e) {
+					// log.fine(e.toString())
+					;
+				} catch (TokenMgrError tme) {							
+				}
+			}		}
 // Float/Integer/attributtion		
 		return output;
 	}
