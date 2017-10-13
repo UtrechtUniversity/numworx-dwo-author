@@ -646,7 +646,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			fv.setEditable(false);
 			fv.zetMaat();
 			Dimension s = fv.getSize();
-			int as = fv.ashoogte;
+			int as = fv.ashoogte + g.getFontMetrics().getAscent()/2;
 			int x = (int) label.getXd();
 			int y = (int) label.getYd();
 			switch(align) {
@@ -672,7 +672,36 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 		
 		private void visitCheckbox(Label label) {
+			int x = (int) label.getXd();
+			int y = (int) label.getYd();
+			boolean on = label.getState() != Label.FALSE;
+			boolean withText = Align.NONE != label.adapt(Align.class);
+			Graphics g3 = g.create();
+			if(on) {
+				g3.setColor(Color.gray);
+				g3.fillRect(x, y, 10, 10);
+			}
+			g.setStroke(DEFAULT_STROKE);
+			g.drawRect(x, y, 10, 10);
+			Shape s;
+			if(withText) {
+				String text = getMapper().toString(label);
+				g.setFont(fi.wiskopdr.WiskOpdr.tekstFont);
+				g.drawString(text, x+12, y+10);
+				s = new Rectangle(x, y, 12 + g.getFontMetrics().stringWidth(text), 10);
+			} else
+				s = new Rectangle(x, y, 12, 10);
+			DefaultAdapter.getDefault(label).put(Shape.class, s);
+
+			g3.dispose();
+			
+			
+		}
+		
+		
+		private void visitCheckboxJ(Label label) {
 			JCheckBox checkbox = new JCheckBox(getMapper().toString(label));
+			checkbox.setContentAreaFilled(false);
 			if(Align.NONE == label.adapt(Align.class))
 				checkbox.setText("");
 // TODO wat is het opschrift van de checkbox.

@@ -208,6 +208,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		
 		
 		actions.set(FORMULA, new XXXAction("Definitie", "/formuleknop.gif", formule, viewer));
+		actions.set(TEXT, new XXXAction("Text", "/text.png", text, viewer));
 
 		actions.set(TRAIL, new TrailAction(Messages.getString("Euclides.44"), viewer)); //$NON-NLS-1$
 
@@ -255,6 +256,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	SelectHandler selector = new SelectHandler();
 	ResetHandler  resetter = new ResetHandler("Reset");
 	FormuleHandler formule = new FormuleHandler("Definitie");
+	TextHandler text = new TextHandler("Text");
 	
 	private Box vbox;
 	public void itemStateChanged(ItemEvent e) {
