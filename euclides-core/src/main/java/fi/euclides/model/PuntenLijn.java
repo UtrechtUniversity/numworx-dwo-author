@@ -125,7 +125,7 @@ public class PuntenLijn extends Lijn {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object obj) {
+	public boolean same(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)

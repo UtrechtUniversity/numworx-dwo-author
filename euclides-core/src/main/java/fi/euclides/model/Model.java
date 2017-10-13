@@ -619,8 +619,11 @@ public class Model extends Observable implements Observer, NameMapper {
 	 * @return
 	 */
 	private boolean contains(Destroyable d, Vector vector) {
-		if(addAlways) // in geodefiner wil je altijd nieuwe, normaal is okai
-			return false;
+		if(addAlways) {
+			boolean contains = vector.contains(d); // no add under equals, destroyall breaks!
+			if(contains) System.err.println("problem with " + d);
+			return contains;
+		} 
 		Enumeration e = vector.elements();
 		tester.find(d);
 		while (e.hasMoreElements()) {

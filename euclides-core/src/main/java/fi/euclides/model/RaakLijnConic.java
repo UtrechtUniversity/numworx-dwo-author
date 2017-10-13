@@ -39,7 +39,7 @@ public class RaakLijnConic extends LijnPuntCombi<Kegelsnede2> {
 		return super.isDefined() && sp.isDefined();
 	}
 
-	public boolean equals(Object obj) {
+	public boolean same(Object obj) {
 		return super.equals(obj) &&  sp.getFuse() ==  ((RaakLijnConic)obj).sp.getFuse();
 	}
 

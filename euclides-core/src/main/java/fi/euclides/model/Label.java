@@ -327,7 +327,7 @@ public class Label extends Destroyable implements Observer {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object obj) {
+	public boolean same(Object obj) {
 		if(obj == this)
 			return true;
 		if(obj instanceof Label)

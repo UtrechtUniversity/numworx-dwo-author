@@ -529,7 +529,7 @@ public class Locus extends MP {
 	/* FIXME
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object obj) {
+	public boolean same(Object obj) {
 		if(fixme) return this == obj;
 		if (this == obj)
 			return true;

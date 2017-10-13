@@ -65,7 +65,7 @@ public class Triangle extends MP {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object obj) {
+	public boolean same(Object obj) {
 		if (this == obj) {
 			return true;
 		}

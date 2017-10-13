@@ -47,7 +47,7 @@ public class RaakLijnCirkel extends LijnPuntCombi<Cirkel> {
 		return super.isDefined()&& sp.isDefined();
 	}
 
-	public boolean equals(Object obj) {
+	public boolean same(Object obj) {
 		return super.equals(obj) && sp.getFuse() == ((RaakLijnCirkel)obj).sp.getFuse();
 	}
 
