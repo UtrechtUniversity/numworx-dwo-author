@@ -33,15 +33,16 @@ public interface Tools {
 	int VECTOR = 21;
 	
 	int TRAIL = 22;
-	int FORMULA = 23;
+	int TEXT  = 23;
+	int FORMULA = 24;
 
-	int PAN = 24;
-	int DESTROY = 25;
-	int RESET = 26;
+	int PAN = 25;
+	int DESTROY = 26;
+	int RESET = 27;
 // NOT YET
-	int UNDO = 27;
-	int REDO = 28;
+	int UNDO = 28;
+	int REDO = 29;
 	
 	
-	int TOOL_SIZE = 27;
+	int TOOL_SIZE = 28;
 }

@@ -1,12 +1,19 @@
 package nl.numworx.geodefiner.common.math;
 
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Vector;
+
 import nl.numworx.geodefiner.common.Definitions;
 import nl.numworx.geodefiner.common.GroupOf;
 import nl.numworx.geodefiner.common.Polygon;
 import nl.numworx.geodefiner.common.State;
+import nl.numworx.geodefiner.common.Volgpunt;
 import nl.numworx.geodefiner.common.index.ListSelector;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
+import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.tue.win.riaca.openmath.lang.OMVariable;
 import fi.euclides.event.NameMapper;
 import fi.euclides.event.Tracker;
 import fi.euclides.expr.DestroyDependency;
@@ -36,6 +43,53 @@ import fi.euclides.util.DComparator;
 import fi.euclides.util.DefaultAdapter;
 
 public class Expression extends fi.euclides.openmath.Expression {
+
+	static class FunctionalMapper implements NameMapper {
+		final NameMapper mapper;
+		final Map<String, Destroyable> function;
+		
+		public FunctionalMapper(NameMapper mapper, Vector<OMVariable> variables,
+				Destroyable[] arguments) {
+			this.mapper = mapper;
+			function = new TreeMap<String, Destroyable>();
+			int size = Math.min(arguments.length, variables.size());
+			for(int i = 0; i < size; i++) {
+				function.put(variables.get(i).getName(), arguments[i]);
+			}
+		}
+
+		@Override
+		public Destroyable fromString(String name) {
+			if(function.containsKey(name))
+				return function.get(name);
+			return mapper.fromString(name);
+		}
+
+		@Override
+		public Punt getO() {
+			return mapper.getO();
+		}
+
+		@Override
+		public Punt getU() {
+			return mapper.getU();
+		}
+
+		@Override
+		public String toString(Destroyable destroyable) {
+			for(Map.Entry<String, Destroyable> entry: function.entrySet()) {
+				if(entry.getValue() == destroyable) return entry.getKey();
+			}
+			return mapper.toString(destroyable);
+		}
+
+		@Override
+		public void rename(Destroyable p, String name) {
+		}
+
+	}
+
+
 
 	public Expression(Tracker tracker) {
 		super(tracker);
@@ -218,7 +272,7 @@ public class Expression extends fi.euclides.openmath.Expression {
 			copy(oma, mapper, depend);
 			if(depend[1] instanceof Punt && depend[0] instanceof Label) {
 				Label t = (Label) depend[0];
-				t.setP((Punt) depend[1]);
+				t.setP(new Volgpunt((Punt) depend[1]));
 				depend[1].addObserver(new DestroyDependency(t));
 				if( "".equals(t.getSubKey())) {
 					String plain = t.getString();
@@ -252,6 +306,28 @@ public class Expression extends fi.euclides.openmath.Expression {
 			// f_i == f(i)
 			
 		}
+		if ( func instanceof OMVariable) {
+			OMVariable var = (OMVariable) func;
+			Label f = (Label) mapper.fromString(var.getName());
+			if(f == null) throw new InterpretException("Unknown: " + var.getName());
+			OMObject om = f.getAdapter().adapt(OMObject.class);
+			if(om instanceof OMBinding) {
+				OMBinding binding = (OMBinding) om;
+				o = binding.getBody();
+				Destroyable depend[] = new Destroyable[oma.getLength()-1];
+				copy(oma, mapper, depend);
+				mapper = new FunctionalMapper(mapper, binding.getVariables(), depend);				
+			} else {
+				oma = (OMApplication) oma.copy();
+				oma.setElementAt(om, 0);
+				o = oma;
+			}	
+			final Destroyable interpret = interpret(o, l, mapper);
+			f.addObserver(new DestroyDependency(interpret));
+			return interpret;
+			
+		}
+		
 		
 		return super.copyOMA(l, o, mapper);
 	}

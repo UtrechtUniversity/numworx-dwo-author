@@ -247,6 +247,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 							try {
 								OMObject o = parser.bracket();
 								depend[0] = expression.interpret(o, t, viewer.getMapper());
+								depend[0].addObserver(new DestroyDependency(t));
 							} catch (ParseException e) {
 								// log.fine(e.toString())
 								;

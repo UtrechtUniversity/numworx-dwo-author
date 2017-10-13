@@ -15,10 +15,16 @@ public class Volgpunt extends Punt implements FreePoint, Observer {
 		super.destroy();
 	}
 
+	protected void destroy(Observable observable) {
+		if(observable != null) 
+			observable.deleteObserver(this);
+		destroy();	
+	}
+	
 	@Override
 	public void update(Observable observable, Object arg) {
 		if(arg == DESTROY) {
-			destroy();
+			destroy(observable);
 			return;
 		}
 		if(observable == p[0] && observable != null) {
