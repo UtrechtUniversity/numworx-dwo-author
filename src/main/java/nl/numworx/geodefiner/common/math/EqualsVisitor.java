@@ -93,7 +93,7 @@ public class EqualsVisitor implements Visitor {
 
 	@Override
 	public void visitCirkel(Cirkel a) {
-		test = a .equals(b) ? Numbers.ZERO : Numbers.ONE;
+		test = a .same(b) ? Numbers.ZERO : Numbers.ONE;
 		if (test == Numbers.ONE && b instanceof Cirkel) {
 			Cirkel cb = (Cirkel) b;
 			test = puntenTest(cb.getCenter(), a.getCenter());
@@ -122,13 +122,17 @@ public class EqualsVisitor implements Visitor {
 	public void visitLabel(Label label) {
 		if(b instanceof Label) {
 			Label lb = (Label)b;
-			test = Numbers.abs(Numbers.sub(label.value, lb.value));
+// text("A",a) 
+			if(lb.same(label))
+				test = Numbers.ZERO;
+			else
+				test = Numbers.abs(Numbers.sub(label.value, lb.value));
 		}
 	}
 
 	@Override
 	public void visitTriangle(Triangle a) {
-		test = a .equals(b) ? Numbers.ZERO : Numbers.ONE;			
+		test = a .same(b) ? Numbers.ZERO : Numbers.ONE;			
 	}
 
 	@Override
@@ -138,7 +142,7 @@ public class EqualsVisitor implements Visitor {
 
 	@Override
 	public void visitLocus(Locus a) {
-		test = a .equals(b) ? Numbers.ZERO : Numbers.ONE;			
+		test = a .same(b) ? Numbers.ZERO : Numbers.ONE;			
 	}
 
 	@Override
