@@ -552,13 +552,12 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		@Override
 		public void selectColor(Destroyable object) {
-			if(tracking || trail)
-				return;
 			Adapter a = object.getAdapter();
 			Stroke stroke = a.adapt(Stroke.class);
 			if(stroke == null) stroke = DEFAULT_STROKE;
 			g.setStroke(stroke);
-
+			if(tracking || trail)
+				return;
 			Color c = a.adapt(Color.class);
 			if (c != null) {
 				if (getModel().getSelect().contains(object))
