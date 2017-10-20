@@ -137,8 +137,8 @@ public class Model extends Observable implements Observer, NameMapper {
 	public Destroyable buildSpiegel() { 
 		if(select.size()==2)
 		{
-			Destroyable source = (Destroyable) select.firstElement();
-			Destroyable mirror = (Destroyable) select.lastElement();
+			Destroyable source = select.firstElement();
+			Destroyable mirror = select.lastElement();
 			Destroyable[] image = source.getImage(mirror);
 			Destroyable d = null;
 			if(image != null)
@@ -148,7 +148,7 @@ public class Model extends Observable implements Observer, NameMapper {
 					d = image[i];
 					if(d instanceof Punt)
 					{
-						d = addAlways(d, punten);
+						d = addAlways((Punt) d, punten);
 					} else
 						d = addAlways(d, lijnen);
 				}
@@ -465,7 +465,7 @@ public class Model extends Observable implements Observer, NameMapper {
 		return addAlways(d, vector);
 	}
 
-	private Destroyable addAlways(Destroyable d, Vector vector) {
+	private <T extends Destroyable> T addAlways(T d, Vector<? super T> vector) {
 		vector.addElement(d);
 		d.addObserver(this);
 		d.setIndex(nextIndex());
@@ -794,10 +794,10 @@ public class Model extends Observable implements Observer, NameMapper {
 		}
 	}
 	
-	private void visitVector(Visitor v, Vector punten)
+	private void visitVector(Visitor v, Vector<? extends Destroyable> punten)
 	{
-		for (Enumeration iter = punten.elements(); iter.hasMoreElements();) {
-			Destroyable punt = (Destroyable) iter.nextElement();
+		for (Enumeration<? extends Destroyable> iter = punten.elements(); iter.hasMoreElements();) {
+			Destroyable punt = iter.nextElement();
 			if(punt.isDefined() && punt.isVisible())
 				punt.visit(v);
 		}
