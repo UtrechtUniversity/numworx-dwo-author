@@ -43,25 +43,6 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 			white,
 		};
 	
-	public static native double getDeviceRatio(JavaScriptObject csctx) /*-{
-		var devicePixelRatio = 1;
-	    if (typeof $wnd !== "undefined" && $wnd.devicePixelRatio)
-	        devicePixelRatio = $wnd.devicePixelRatio;
-	    var backingStoreRatio =
-	        csctx.webkitBackingStorePixelRatio ||
-	        csctx.mozBackingStorePixelRatio ||
-	        csctx.msBackingStorePixelRatio ||
-	        csctx.oBackingStorePixelRatio ||
-	        csctx.backingStorePixelRatio ||
-	        1.0;
-	    if (devicePixelRatio !== backingStoreRatio) {
-	        var ratio = devicePixelRatio / backingStoreRatio;
-			return ratio;
-	    }
-		return 1.0;
-	}-*/;
-
-	
 	@Override
 	public boolean contains(double x, double y) {
 		return 0 <= x && x <= width && 0 <= y && y <= height;
@@ -92,7 +73,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		canvas = Canvas.createIfSupported();
 	    context = canvas.getContext2d();
 	    canvas.setPixelSize(width,height);	    
-		double ratio = getDeviceRatio(context); // retina screens
+		double ratio = nl.uu.fi.dwo.interaction.client.TekstComponent.getDeviceRatio(context); // retina screens
 		if(ratio > 1.0) {
 			canvas.setCoordinateSpaceHeight((int) (height*ratio));
 			canvas.setCoordinateSpaceWidth((int) (width*ratio));
