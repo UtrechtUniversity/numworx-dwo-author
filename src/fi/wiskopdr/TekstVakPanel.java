@@ -749,6 +749,21 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(style.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)style.get("cellSpaceColumn")).intValue();
 			if(style.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)style.get("cellSpaceRow")).intValue();
 			if(style.containsKey("randDikte")) randDikte = ((Integer)style.get("randDikte")).intValue();
+			
+			// let op "selectable", "selected", "colorSelection", "selectieColor zijn later als stijl toegevoegd
+			// daarom onderstaande constructie: indien niet beschikbaar in oude style-versie, dan gezet op instelling buiten de style
+			if (style.containsKey("selectable")) selectable = ((Boolean) style.get("selectable")).booleanValue();
+			else if (h.containsKey("selectable")) selectable = ((Boolean) h.get("selectable")).booleanValue();
+				
+			if (style.containsKey("selected")) selected = ((Boolean) style.get("selected")).booleanValue();
+			else if (h.containsKey("selected")) selected = ((Boolean) h.get("selected")).booleanValue();
+				
+			if (style.containsKey("colorSelection")) colorSelection = ((Boolean) style.get("colorSelection")).booleanValue();
+			else if (h.containsKey("colorSelection")) colorSelection = ((Boolean) h.get("colorSelection")).booleanValue();
+				
+			if (style.containsKey("selectieColor")) selectieColor = (Color)style.get("selectieColor");
+			else if (h.containsKey("selectieColor")) selectieColor = (Color)h.get("selectieColor");
+				
 		}
 		else
 		{
@@ -776,6 +791,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(h.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)h.get("cellSpaceColumn")).intValue();
 			if(h.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)h.get("cellSpaceRow")).intValue();
 			if(h.containsKey("randDikte")) randDikte = ((Integer)h.get("randDikte")).intValue();
+			
+			if (h.containsKey("selectable")) selectable = ((Boolean) h.get("selectable")).booleanValue();
+			if (h.containsKey("selected")) selected = ((Boolean) h.get("selected")).booleanValue();
+			if (h.containsKey("colorSelection")) colorSelection = ((Boolean) h.get("colorSelection")).booleanValue();
+			if (h.containsKey("selectieColor")) selectieColor = (Color)h.get("selectieColor");
 		}
 		
 		
@@ -795,14 +815,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			locationY = ((Integer) h.get("locationY")).intValue();
 		if (h.containsKey("interactiePanelLaunchData"))
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
-		if (h.containsKey("selectable"))
-			selectable = ((Boolean) h.get("selectable")).booleanValue();
-		if (h.containsKey("selected"))
-			selected = ((Boolean) h.get("selected")).booleanValue();
-		if (h.containsKey("colorSelection"))
-			colorSelection = ((Boolean) h.get("colorSelection")).booleanValue();
-		if (h.containsKey("selectieColor"))
-			selectieColor = (Color)h.get("selectieColor");
 		if (h.containsKey("sleepbaar"))
 			sleepbaar = ((Boolean) h.get("sleepbaar")).booleanValue();
 		if (h.containsKey("sleepdoel"))
@@ -1881,6 +1893,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			h.put("cellSpaceColumn",new Integer(cellSpaceColumn));
 			h.put("cellSpaceRow",new Integer(cellSpaceRow));
 			h.put("randDikte",new Integer(randDikte));
+			
+			h.put("selectable", new Boolean(selectable));
+			h.put("selected", new Boolean(selected));
+			h.put("colorSelection", new Boolean(colorSelection));
+			h.put("selectieColor", selectieColor);
 		}
 		
 		h.put("teksten", teksten);
@@ -1893,10 +1910,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("scoreMax", new Integer(scoreMax));
 		if (scoreMaxObjectives != null)
 			h.put("scoreMaxObjectives", scoreMaxObjectives);
-		h.put("selectable", new Boolean(selectable));
-		h.put("selected", new Boolean(selected));
-		h.put("colorSelection", new Boolean(colorSelection));
-		h.put("selectieColor", selectieColor);
 		h.put("sleepbaar", new Boolean(sleepbaar));
 		h.put("sleepdoel", new Boolean(sleepdoel));
 		h.put("sleepHandle", new Boolean(sleepHandle));
@@ -2573,6 +2586,20 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(style.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)style.get("cellSpaceColumn")).intValue();
 			if(style.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)style.get("cellSpaceRow")).intValue();
 			if(style.containsKey("randDikte")) randDikte = ((Integer)style.get("randDikte")).intValue();
+			
+			// let op "selectable", "selected", "colorSelection", "selectieColor zijn later als stijl toegevoegd
+			// daarom onderstaande constructie: indien niet beschikbaar in oude style-versie, dan gezet op instelling buiten de style
+			if (style.containsKey("selectable")) selectable = ((Boolean) style.get("selectable")).booleanValue();
+			else if (h.containsKey("selectable")) selectable = ((Boolean) h.get("selectable")).booleanValue();
+				
+			if (style.containsKey("selected")) selected = ((Boolean) style.get("selected")).booleanValue();
+			else if (h.containsKey("selected")) selected = ((Boolean) h.get("selected")).booleanValue();
+				
+			if (style.containsKey("colorSelection")) colorSelection = ((Boolean) style.get("colorSelection")).booleanValue();
+			else if (h.containsKey("colorSelection")) colorSelection = ((Boolean) h.get("colorSelection")).booleanValue();
+				
+			if (style.containsKey("selectieColor")) selectieColor = (Color)style.get("selectieColor");
+			else if (h.containsKey("selectieColor")) selectieColor = (Color)h.get("selectieColor");
 		}
 		else
 		{
@@ -2599,6 +2626,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(h.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)h.get("cellSpaceColumn")).intValue();
 			if(h.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)h.get("cellSpaceRow")).intValue();
 			if(h.containsKey("randDikte")) randDikte = ((Integer)h.get("randDikte")).intValue();
+			
+			if (h.containsKey("selectable")) selectable = ((Boolean) h.get("selectable")).booleanValue();
+			if (h.containsKey("selected")) selected = ((Boolean) h.get("selected")).booleanValue();
+			if (h.containsKey("colorSelection")) colorSelection = ((Boolean) h.get("colorSelection")).booleanValue();
+			if (h.containsKey("selectieColor")) selectieColor = (Color)h.get("selectieColor");
 		}
 		
 		if (h.containsKey("tekst"))
@@ -2617,14 +2649,6 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			locationY = ((Integer) h.get("locationY")).intValue();
 		if (h.containsKey("interactiePanelLaunchData"))
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
-		if (h.containsKey("selectable"))
-			selectable = ((Boolean) h.get("selectable")).booleanValue();
-		if (h.containsKey("selected"))
-			selected = ((Boolean) h.get("selected")).booleanValue();
-		if (h.containsKey("colorSelection"))
-			colorSelection = ((Boolean) h.get("colorSelection")).booleanValue();
-		if (h.containsKey("selectieColor"))
-			selectieColor = (Color)h.get("selectieColor");
 		if (h.containsKey("sleepbaar"))
 			sleepbaar = ((Boolean) h.get("sleepbaar")).booleanValue();
 		if (h.containsKey("sleepdoel"))

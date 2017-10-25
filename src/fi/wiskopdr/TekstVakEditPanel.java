@@ -962,16 +962,18 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			h.put("cellSpaceColumn",new Integer(cellSpaceColumn));
 			h.put("cellSpaceRow",new Integer(cellSpaceRow));
 			h.put("randDikte",new Integer(randDikte));
+			
+			h.put("selectable", new Boolean(selectable));
+			h.put("selected", new Boolean(selected));
+			h.put("colorSelection", new Boolean(colorSelection));
+			h.put("selectieColor", selectieColor);
 		}
 		
 		h.put("zwevend", new Boolean(zwevend));
 		h.put("buttonOptie", new Boolean(buttonOptie));
 		if(breedtes!=null)h.put("breedtes", breedtes);
 		if(hoogtes!=null)h.put("hoogtes", hoogtes);
-		h.put("selectable", new Boolean(selectable));
-		h.put("selected", new Boolean(selected));
-		h.put("colorSelection", new Boolean(colorSelection));
-		h.put("selectieColor", selectieColor);
+		
 		h.put("sleepbaar", new Boolean(sleepbaar));
 		h.put("sleepdoel", new Boolean(sleepdoel));
 		h.put("sleepHandle", new Boolean(sleepHandle));
@@ -1051,6 +1053,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			if(style.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)style.get("cellSpaceRow")).intValue();
 			if(style.containsKey("randDikte")) randDikte = ((Integer)style.get("randDikte")).intValue();
 			
+			if(style.containsKey("selectable")) selectable = ((Boolean)style.get("selectable")).booleanValue();
+			if(style.containsKey("selected")) selected = ((Boolean)style.get("selected")).booleanValue();
+			if(style.containsKey("colorSelection")) colorSelection = ((Boolean)style.get("colorSelection")).booleanValue();
+			if(style.containsKey("selectieColor")) selectieColor = (Color)style.get("selectieColor");
+			
 			randZichtbaarCB.setSelected(randZichtbaar);
 			randDikteTF.setVisible(randZichtbaar);
 			randColorButton.setVisible(randZichtbaar);
@@ -1073,6 +1080,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			interlinieTF.setText(Integer.toString(interlinie));
 			cellSpaceColumnTF.setText(Integer.toString(cellSpaceColumn));
 			cellSpaceRowTF.setText(Integer.toString(cellSpaceRow));
+			
+			selectableCB.setSelected(selectable);
+			selectedCB.setVisible(selectable);
+			selectedCB.setSelected(selected);
+			colorSelectionCB.setVisible(selectable);
+			colorSelectionCB.setSelected(colorSelection);
+			selectieColorButton.setVisible(selectable);
 		}
 	}
 	public void setEditState(Hashtable h)
@@ -1176,6 +1190,21 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			if(style.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)style.get("cellSpaceColumn")).intValue();
 			if(style.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)style.get("cellSpaceRow")).intValue();
 			if(style.containsKey("randDikte")) randDikte = ((Integer)style.get("randDikte")).intValue();
+			
+			// let op "selectable", "selected", "colorSelection", "selectieColor zijn later als stijl toegevoegd
+			// daarom onderstaande constructie: indien niet beschikbaar in oude style-versie, dan gezet op instelling buiten de style
+			if (style.containsKey("selectable")) selectable = ((Boolean) style.get("selectable")).booleanValue();
+			else if (h.containsKey("selectable")) selectable = ((Boolean) h.get("selectable")).booleanValue();
+				
+			if (style.containsKey("selected")) selected = ((Boolean) style.get("selected")).booleanValue();
+			else if (h.containsKey("selected")) selected = ((Boolean) h.get("selected")).booleanValue();
+				
+			if (style.containsKey("colorSelection")) colorSelection = ((Boolean) style.get("colorSelection")).booleanValue();
+			else if (h.containsKey("colorSelection")) colorSelection = ((Boolean) h.get("colorSelection")).booleanValue();
+				
+			if (style.containsKey("selectieColor")) selectieColor = (Color)style.get("selectieColor");
+			else if (h.containsKey("selectieColor")) selectieColor = (Color)h.get("selectieColor");
+			
 		}
 		else
 		{
@@ -1200,16 +1229,17 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			if(h.containsKey("cellSpaceColumn")) cellSpaceColumn = ((Integer)h.get("cellSpaceColumn")).intValue();
 			if(h.containsKey("cellSpaceRow")) cellSpaceRow = ((Integer)h.get("cellSpaceRow")).intValue();
 			if(h.containsKey("randDikte")) randDikte = ((Integer)h.get("randDikte")).intValue();
+			
+			if(h.containsKey("selectable")) selectable = ((Boolean)h.get("selectable")).booleanValue();
+			if(h.containsKey("selected")) selected = ((Boolean)h.get("selected")).booleanValue();
+			if(h.containsKey("colorSelection")) colorSelection = ((Boolean)h.get("colorSelection")).booleanValue();
+			if(h.containsKey("selectieColor")) selectieColor = (Color)h.get("selectieColor");
 		}
 		
 		if(h.containsKey("teksten")) teksten = (String[][])h.get("teksten");
 		if(h.containsKey("zwevend")) zwevend = ((Boolean)h.get("zwevend")).booleanValue();
 		if(h.containsKey("anderFont")) anderFont = ((Boolean)h.get("anderFont")).booleanValue();
 		if(h.containsKey("buttonOptie")) buttonOptie = ((Boolean)h.get("buttonOptie")).booleanValue();
-		if(h.containsKey("selectable")) selectable = ((Boolean)h.get("selectable")).booleanValue();
-		if(h.containsKey("selected")) selected = ((Boolean)h.get("selected")).booleanValue();
-		if(h.containsKey("colorSelection")) colorSelection = ((Boolean)h.get("colorSelection")).booleanValue();
-		if(h.containsKey("selectieColor")) selectieColor = (Color)h.get("selectieColor");
 		if(h.containsKey("sleepbaar")) sleepbaar = ((Boolean)h.get("sleepbaar")).booleanValue();
 		if(h.containsKey("sleepdoel")) sleepdoel = ((Boolean)h.get("sleepdoel")).booleanValue();
 		if(h.containsKey("sleepHandle")) sleepHandle = ((Boolean)h.get("sleepHandle")).booleanValue();
@@ -2221,6 +2251,16 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			pasAanH = ((Boolean) h.get("pasAanH")).booleanValue();
 		if (h.containsKey("pasAanB"))
 			pasAanB = ((Boolean) h.get("pasAanB")).booleanValue();
+		
+		
+		if(h.containsKey("selectable")) 
+			selectable = ((Boolean)h.get("selectable")).booleanValue();
+		if(h.containsKey("selected")) 
+			selected = ((Boolean)h.get("selected")).booleanValue();
+		if(h.containsKey("colorSelection")) 
+			colorSelection = ((Boolean)h.get("colorSelection")).booleanValue();
+		if(h.containsKey("selectieColor")) 
+			selectieColor = (Color)h.get("selectieColor");
 	}
 	
 	Hashtable getStyleSettings()
@@ -2246,6 +2286,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		h.put("cellSpaceColumn",new Integer(cellSpaceColumn));
 		h.put("cellSpaceRow",new Integer(cellSpaceRow));
 		h.put("randDikte",new Integer(randDikte));
+		
+		h.put("selectable", new Boolean(selectable));
+		h.put("selected", new Boolean(selected));
+		h.put("colorSelection", new Boolean(colorSelection));
+		h.put("selectieColor", selectieColor);
 		
 		Font f = tekstVakPanel.getFont();
 		Font font = WiskOpdr.tekstFont;
@@ -2276,8 +2321,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		callOutCB.setVisible(!b);
 		inklapbaarCB.setVisible(!b);
 		visibleCB.setVisible(!b);
-		templateModeEditCB.setVisible(!b);
-		templateModeFillCB.setVisible(!b);
+		templateModeEditCB.setVisible(!b && WiskOpdr.isExperimental());
+		templateModeFillCB.setVisible(!b && WiskOpdr.isExperimental());
 		//stylesCB.setVisible(!b);
 		
 		knopImageButton1.setVisible(!b && inklapbaarCB.isSelected());
@@ -2287,6 +2332,29 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		posNaTekstRB.setVisible(!b && inklapbaarCB.isSelected());
 		knopIsRegel1RB.setVisible(!b && inklapbaarCB.isSelected());
 		checkUitklapVakCB.setVisible(!b && inklapbaarCB.isSelected());
+		
+		if(b)
+		{
+			selectableCB.setLocation(selectableCB.getLocation().x, selectableCB.getLocation().y+5 );
+			selectedCB.setLocation(selectedCB.getLocation().x, selectedCB.getLocation().y+5 );
+			colorSelectionCB.setLocation(colorSelectionCB.getLocation().x, colorSelectionCB.getLocation().y+5 );
+			selectieColorButton.setLocation(selectieColorButton.getLocation().x, selectieColorButton.getLocation().y+5 );
+			layoutOptionsPanel.add(selectableCB);
+			layoutOptionsPanel.add(selectedCB);
+			layoutOptionsPanel.add(colorSelectionCB);
+			layoutOptionsPanel.add(selectieColorButton);
+		}
+		else
+		{
+			selectableCB.setLocation(selectableCB.getLocation().x, selectableCB.getLocation().y-5 );
+			selectedCB.setLocation(selectedCB.getLocation().x, selectedCB.getLocation().y-5 );
+			colorSelectionCB.setLocation(colorSelectionCB.getLocation().x, colorSelectionCB.getLocation().y-5 );
+			selectieColorButton.setLocation(selectieColorButton.getLocation().x, selectieColorButton.getLocation().y-5 );
+			interactionOptionsPanel.add(selectableCB);
+			interactionOptionsPanel.add(selectedCB);
+			interactionOptionsPanel.add(colorSelectionCB);
+			interactionOptionsPanel.add(selectieColorButton);
+		}
 	}
 	void enableStyleSettings(boolean b)
 	{
@@ -2329,6 +2397,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		cellSpaceColumnTF.setEnabled(b);
 		cellSpaceRowTF.setEnabled(b);
 		randDikteTF.setEnabled(b);
+		
+		selectableCB.setEnabled(b);
+		selectedCB.setEnabled(b);
+		colorSelectionCB.setEnabled(b);
+		selectieColorButton.setEnabled(b);
 	}
 	
 	public void editImage1() {
