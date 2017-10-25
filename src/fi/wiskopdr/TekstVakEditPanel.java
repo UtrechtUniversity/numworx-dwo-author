@@ -2276,6 +2276,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		callOutCB.setVisible(!b);
 		inklapbaarCB.setVisible(!b);
 		visibleCB.setVisible(!b);
+		templateModeEditCB.setVisible(!b);
+		templateModeFillCB.setVisible(!b);
 		//stylesCB.setVisible(!b);
 		
 		knopImageButton1.setVisible(!b && inklapbaarCB.isSelected());
