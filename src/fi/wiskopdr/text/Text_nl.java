@@ -440,7 +440,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"TVEP_rondingHoeken" , "Ronding hoeken"},
 				{"TVEP_rotatieHoek" , "Rotatiehoek"},
 				{"TVEP_centreerHor" , "Centreer horizontaal"},
-				{"TVEP_centreerVert" , "Centreer vertikaal"},
+				{"TVEP_centreerVert" , "Centreer verticaal"},
 				{"TVEP_pasAanH" , "Past hoogte aan"},
 				{"TVEP_pasAanB" , "Past breedte aan"},
 				{"TVEP_aantalRijen" , "Aantal rijen"},
