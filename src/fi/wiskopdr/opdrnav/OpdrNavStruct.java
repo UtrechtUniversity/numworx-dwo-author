@@ -717,7 +717,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			activiteitScoreLabels[0].setVisible(false);
 		}
 
-		aantalSessiesLabel = new JLabel("Attemps: 0");
+		aantalSessiesLabel = new JLabel("Attempts: 0");
 		aantalSessiesLabel.setVisible(false);
 		add(aantalSessiesLabel);
 
@@ -1663,7 +1663,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		this.opdrachtNr = opdrachtNr;
 		this.aantalSessies = aantalSessies;
 
-		aantalSessiesLabel.setText("Attemps: " + aantalSessies);
+		aantalSessiesLabel.setText("Attempts: " + aantalSessies);
 
 		aantalNakijkLabel.setText(keerNagekeken(aantalNakijken[activiteitNr]));
 		if (mode == ZELFTOETS && aantalNakijken[activiteitNr] > 0 && !zelftoetsGeenCorr)
