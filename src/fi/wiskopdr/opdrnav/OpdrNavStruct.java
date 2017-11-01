@@ -1652,7 +1652,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			if (mode == ZELFTOETS && isZelftoetsHighScore && zelftoetsHighScore != -1)
 				totaalPercentage = zelftoetsHighScore;
 			else
-				totaalPercentage = 100 * totaal /scoreMax;
+			{
+				totaalPercentage = (int) Math.round(100.0 * totaal /scoreMax);
+			}
 			
 			if (mode != EINDTOETS || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review"))
 			{
