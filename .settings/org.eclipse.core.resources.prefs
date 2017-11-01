@@ -1,3 +1,5 @@
 eclipse.preferences.version=1
 encoding//src/fi/wiskopdr/text/Text_fa.java=UTF-8
-encoding/<project>=UTF-8
+encoding/<project>=ISO8859-1
+encoding/src=ISO8859-1
+encoding/test=ISO8859-1

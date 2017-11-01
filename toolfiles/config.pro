@@ -1,8 +1,8 @@
 -injars ../output/classes
 -outjars ../output/jar/wiskopdr.jar
--injars ../../GraphTool/output/classes
+-injars ../../GraphTool/target/classes
 -outjars ../output/jar/graphtool.jar
--injars ../../BalansFruitApplet/output/classes
+-injars ../../BalansFruitApplet/target/classes
 -outjars ../output/jar/balansfruitapplet.jar
 #-injars  ../../geodefiner/target/geodefiner.jar
 -injars ../lib/geodefiner.jar
