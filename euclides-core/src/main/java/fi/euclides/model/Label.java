@@ -133,7 +133,7 @@ public class Label extends Destroyable implements Observer {
 		// state/value
 		Numbers n;
 		n = codec.readNumber();
-		state = (int)JMath.round(n.doubleValue());
+		state = (int)n.longValue();
 		setValue( codec.readNumber() );
 	}
 
