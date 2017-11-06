@@ -102,17 +102,6 @@ public abstract class LijnPuntCombi<T extends Destroyable> extends Lijn {
 	}
 
 	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((lijn == null) ? 0 : lijn.hashCode());
-		result = prime * result + ((punt == null) ? 0 : punt.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean same(Object obj) {

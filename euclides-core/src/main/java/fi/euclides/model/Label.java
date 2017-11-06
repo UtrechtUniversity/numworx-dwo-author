@@ -335,13 +335,6 @@ public class Label extends Destroyable implements Observer {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-		return getRegistered().hashCode(this);
-	}
-
 	public void setValue(Numbers value) {
 		if(value == null )
 		{

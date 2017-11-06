@@ -55,12 +55,6 @@ public class Triangle extends MP {
 	public Triangle(int n) {
 		depend = new Punt[n];
 	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-			return Arrays.hashCode(depend);
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

@@ -512,25 +512,10 @@ public class Locus extends MP {
 //	private void setDest(Punt dest) {
 //		this.destorg = dest;
 //	}
-	boolean fixme = true;
-	/* FIXME
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-		if(fixme) return System.identityHashCode(this);
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((destorg == null) ? 0 : destorg.hashCode());
-		result = prime * result
-				+ ((sourceorg == null) ? 0 : sourceorg.hashCode());
-		return result;
-	}
-
 	/* FIXME
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean same(Object obj) {
-		if(fixme) return this == obj;
 		if (this == obj)
 			return true;
 		if (obj == null)

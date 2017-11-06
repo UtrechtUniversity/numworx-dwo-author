@@ -244,18 +244,6 @@ public class Cirkel extends Rondje implements Observer, OpObject<Cirkel> {
 	}
 
 	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((center == null) ? 0 : center.hashCode());
-		result = prime * result + ((radius == null) ? 0 : radius.hashCode());
-		result = prime * result + ((radius2 == null) ? 0 : radius2.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean same(Object obj) {

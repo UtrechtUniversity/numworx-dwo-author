@@ -208,17 +208,6 @@ public class SpiegelPunt extends Punt implements Visitor, Observer {
 	}
 
 	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((mirror == null) ? 0 : mirror.hashCode());
-		result = prime * result + ((punt == null) ? 0 : punt.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean same(Object obj) {
