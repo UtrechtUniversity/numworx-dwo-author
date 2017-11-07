@@ -17,6 +17,7 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.math.Numbers;
+import nl.numworx.geodefiner.common.Volgpunt;
 
 public class EqualsVisitor implements Visitor {
 
@@ -122,9 +123,17 @@ public class EqualsVisitor implements Visitor {
 	public void visitLabel(Label label) {
 		if(b instanceof Label) {
 			Label lb = (Label)b;
-// text("A",a) 
+// text("A",a) equals text("b",b) if "a" == "b" and a near b
 			if(lb.same(label))
-				test = Numbers.ZERO;
+			{
+				Punt pa = label.getP();
+				Punt pb = lb.getP();
+				if(pa instanceof Volgpunt)
+					pa = ((Volgpunt) pa).getP();
+				if(pb instanceof Volgpunt)
+					pb = ((Volgpunt) pb).getP();
+				test = puntenTest(pa,pb);	
+			}
 			else
 				test = Numbers.abs(Numbers.sub(label.value, lb.value));
 		}

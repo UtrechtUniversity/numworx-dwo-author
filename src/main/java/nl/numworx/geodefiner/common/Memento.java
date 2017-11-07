@@ -2,7 +2,6 @@ package nl.numworx.geodefiner.common;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -20,6 +19,10 @@ import fi.euclides.persist.DataOutput;
 import fi.euclides.proof.LabelDelegate;
 
 public class Memento extends fi.euclides.persist.Memento implements DataInput, DataOutput {
+	
+	static {
+		Volgpunt.addCreator();
+	}
 	
 	private List<Object> list;
 	private ObjectList olist; int cursor;
