@@ -26,11 +26,19 @@ public class Label extends Destroyable implements Observer {
 		public void update(Observable observable, Object arg) {
 		}
 
-		/* (non-Javadoc)
+		/** labels are same if
+		 *  string equal and registration identical.
 		 * @see fi.euclides.proof.LabelDelegate#equals(fi.euclides.model.Label, fi.euclides.model.Label)
 		 */
 		public boolean equals(Label label, Label other) {
-			return label == other;
+			if (label == other)
+				return true;
+			if (other.registered != this)
+				return false;
+			return  label.getString() == other.getString() ||
+					label.getString() != null && 
+					label.getString().equals(other.getString());
+				
 		}
 
 		/* (non-Javadoc)
