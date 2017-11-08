@@ -5,6 +5,7 @@
 	<artifactId>wiskopdr</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
 		<resources>
@@ -25,26 +26,40 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<phase>process-classes</phase>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<includeScope>compile</includeScope>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<archive>
-						<manifestFile>src/META-INF/MANIFEST.MF</manifestFile>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>fi.wiskopdr.WiskOpdr</mainClass>
+ 						</manifest>
+						<index>true</index>
 					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 	<properties>
-		<project.build.sourceEncoding>ISO8859-1</project.build.sourceEncoding>
+		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<maven.test.skip>true</maven.test.skip>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>netscape.javascript</groupId>
-			<artifactId>mayscript</artifactId>
-			<version>1.0.0</version>
-			<scope>provided</scope>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
