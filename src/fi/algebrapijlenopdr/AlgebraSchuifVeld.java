@@ -490,7 +490,6 @@ public class AlgebraSchuifVeld extends SchuifVeld implements // ItemListener,
 				((UitvoerSchuifComponent) schuifcomponenten[i]).zetScroll(scrollOptie);
 			}
 		}
-
 	}
 
 	public void zetZoomOptie(boolean b)
@@ -506,12 +505,11 @@ public class AlgebraSchuifVeld extends SchuifVeld implements // ItemListener,
 		}
 
 		tekenOpnieuw();
-
 	}
 
 	public void zetKijkNaActief(boolean b)
 	{
-		kijkNaKnop.setVisible(b);
+		kijkNaKnop.setVisible(b && !apip.checkExternal);
 	}
 	
 	/**
@@ -522,7 +520,8 @@ public class AlgebraSchuifVeld extends SchuifVeld implements // ItemListener,
 	 */
 	public void zetCheckExternal(boolean checkExternal)
 	{
-		kijkNaKnop.setVisible(!checkExternal);
+		if (checkExternal)
+			kijkNaKnop.setVisible(false);
 	}
 
 	public Hashtable<String, Object> getState()
