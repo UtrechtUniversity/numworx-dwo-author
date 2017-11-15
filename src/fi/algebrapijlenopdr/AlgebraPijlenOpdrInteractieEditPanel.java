@@ -392,6 +392,14 @@ public class AlgebraPijlenOpdrInteractieEditPanel extends JPanel implements Inte
 		if (b.containsKey("checkExternal"))
 			checkExternal = ((Boolean) b.get("checkExternal")).booleanValue();
 		checkExternalBox.setSelected(checkExternal);
+		if (!kijkNaActief) // dan ook niet extern controleren enabled en geen nakijkknop zichtbaar
+		{
+			setVisibleNakijkModusFields(false);
+			// als kijk na niet actief kun je ook niet extern controleren
+			checkExternalBox.setEnabled(false);
+			
+			apoip.zetKijkNaActief(false);
+		}
 
 		// altijd expressieStrings ophalen
 		String[] expressieStrings = new String[docentExpressiePanel.numInputs];
