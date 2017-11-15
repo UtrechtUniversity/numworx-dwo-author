@@ -50,6 +50,9 @@ import java.util.Vector;
 
 import javax.swing.*;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.rm.ResourceContainer;
 import org.cbook.cbookif.rm.ResourceException;
 import org.cbook.cbookif.rm.ResourceManager;
@@ -65,6 +68,7 @@ import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.beans.base64code.Base64StringEncoder;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.stringutils.StringUtils;
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.ResourceManagerClient;
@@ -73,7 +77,7 @@ import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import v3.geogebra.GeoGebraApplet;
 import v3.geogebra.GeoGebra;
 
-public class Geogebra3Panel extends JLayeredPane implements  ActionListener, InteractiePanel, InteractieEditPanel, AppletStub, AppletContext, ResourceManagerClient
+public class Geogebra3Panel extends JLayeredPane implements  ActionListener, InteractiePanel, InteractieEditPanel, AppletStub, AppletContext, ResourceManagerClient, CBookAware
 {	
 	private String[] randomVars;
 	private Hashtable randomValues;
@@ -136,6 +140,9 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 	
 	private boolean check;
 	private boolean teltMee;
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
+	
 			
 	/*public static void zetPlaatjes(Image gk, Image fk, Image hk)
 	{	GOEDKRUL = gk;
@@ -945,8 +952,15 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
     
     public void opnieuw(){}
     
-    public void kijkNa(){
+    public void kijkNa()
+    {
     	kijkNa(true);
+    	if(correct && cbookEventHandler.hasListeners("action.correct"))
+    		cbookEventHandler.fire("action.correct");
+    	if(fout && cbookEventHandler.hasListeners("action.false"))
+    		cbookEventHandler.fire("action.false");
+    	if(fout && errorCount>0 && cbookEventHandler.hasListeners("action.false_2"))
+    		cbookEventHandler.fire("action.false_2");
     }
     
     public void kijkNa(int stapNr){
@@ -1113,6 +1127,46 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 
 	public static InteractieEditPanel newEditPanel(String id) {
 		return new Geogebra3EditPanel(id);
+	}
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener,String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+		
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"action.correct",
+				"action.false",
+				"action.false_2"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		return null;
+		//return new String[] { "action.setNotEditable" };
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
 	}
 
 }
