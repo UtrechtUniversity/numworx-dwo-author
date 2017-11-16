@@ -37,11 +37,8 @@ public class Text_ca extends java.util.ListResourceBundle
 				
 				{ "kijkNaTekst" , "Check" },
 				{ "kijkNaActief" , "Checking active" },
+				{ "checkExternal" , "External check" },
 				{ "maxScoreTekst" , "Maximum score" },
 				{ "toonDocExpTekst" , "Target expressions" },
-				
-				
-				
         };
 }
-

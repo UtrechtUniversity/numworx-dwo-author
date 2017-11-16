@@ -37,12 +37,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "kijkNaTekst" , "Kijk na" },
 				{ "kijkNaActief" , "Kijk na actief" },
+				{ "checkExternal" , "Extern controleren" },
 				{ "maxScoreTekst" , "Maximale score" },
 				{ "toonDocExpTekst" , "Doel expressies" },
-				
-				
         };
 }
-
-
-
