@@ -53,7 +53,53 @@
 					</archive>
 				</configuration>
 			</plugin>
-		</plugins>
+                   <plugin>
+                        <groupId>com.github.wvengen</groupId>
+                        <artifactId>proguard-maven-plugin</artifactId>
+                        <version>2.0.8</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>proguard</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <proguardVersion>5.2</proguardVersion>
+                            <options>
+                                <option>-verbose</option>
+                                <option>-dontwarn</option> 
+                                <option>-printconfiguration mapping.txt</option>
+                            </options>
+                            <obfuscate>true</obfuscate>                    
+                            <inputDirectory>${project.build.directory}</inputDirectory>
+<!--                             <injar>${project.build.finalName}.jar</injar> -->
+                            <!-- uncomment to change the output file 
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outjar>${project.build.finalName}.jar</outjar>
+                            -->
+                            <exclusions>
+                            		<exclusion><groupId>fi.graphtool</groupId><artifactId>graphtool</artifactId></exclusion>
+                            		<exclusion><groupId>fi.balansfruitapplet</groupId><artifactId>balansfruitapplet</artifactId></exclusion>
+                            </exclusions>
+                            <proguardInclude>toolfiles/config.pro</proguardInclude>
+                            <libs>
+                                <lib>${java.home}/lib/rt.jar</lib>
+                                <lib>${java.home}/lib/jsse.jar</lib>
+                            </libs>
+                            <addMavenDescriptor>false</addMavenDescriptor>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sf.proguard</groupId>
+                                <artifactId>proguard-base</artifactId>
+                                <version>5.2</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+ 		</plugins>
 	</build>
 	<properties>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
