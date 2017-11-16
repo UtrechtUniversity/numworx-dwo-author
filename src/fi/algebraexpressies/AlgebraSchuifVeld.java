@@ -382,13 +382,11 @@ public class AlgebraSchuifVeld extends SchuifVeld
 		}
 		
 		tekenOpnieuw();
-		
 	}
 	
 	public void zetKijkNaActief(boolean b)
 	{
-		kijkNaKnop.setVisible(b);
-		
+		kijkNaKnop.setVisible(b && !aeip.checkExternal);
 	}
 	
 	public Hashtable getState()
@@ -1366,17 +1364,36 @@ System.out.println("aantalStapels = " + aantalStapels);
 				popup.show(this, e.getX(), e.getY());
 			
 		}
-	}	
+	}
+	
 	public void mouseDragged(MouseEvent e)
 	{}
+	
 	public void mouseReleased(MouseEvent e)
 	{}
+	
 	public void mouseMoved(MouseEvent e)
 	{}
+	
 	public void mouseExited(MouseEvent e)
 	{}
+	
 	public void mouseClicked(MouseEvent e)
 	{}
+	
 	public void mouseEntered(MouseEvent e)
 	{}
+
+	/**
+	 * Als extern controleren, dan moet de nakijkknop
+	 * verborgen worden.
+	 * 
+	 * @param checkExternal
+	 */
+	public void zetCheckExternal(boolean checkExternal)
+	{
+		if (checkExternal)
+			kijkNaKnop.setVisible(false);
+	}
+
 }
