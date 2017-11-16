@@ -22,6 +22,11 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 public class AlgebraExprInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel,
 																  ActionListener				
 {	
+	public static int OEFENEN = 0;
+	public static int OEFENEN_STRAFPUNTEN = 1;
+	public static int ZELFTOETS = 2;
+	public static int EINDTOETS = 3;
+
 	AlgebraExpressies applet;
 	ImageIcon goedkrulIcon, foutkruisIcon, halfkrulIcon;
 	Image goedkrul, foutkruis, halfkrul;
@@ -30,6 +35,7 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	private AlgebraSchuifVeld algebraSchuifVeld;
 
 	boolean kijkNaActief = false;
+	boolean checkExternal = false;
 
 	int score = 0;
     int scoreMax = 10;
@@ -89,8 +95,6 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	
 	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
 	{	
-		
-		
 		if (h.containsKey("docentExpressieStrings"))
 			docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
 		
@@ -99,6 +103,10 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 			kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 		zetKijkNaActief(kijkNaActief);
 
+		if (h.containsKey("checkExternal"))
+			checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
+		zetCheckExternal(checkExternal);
+
 		if (h.containsKey("scoreMax"))
 			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		
@@ -106,7 +114,25 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	
 		algebraSchuifVeld.changed = false;		
 		ingevuld = false;
+	}
+	
+	public void zetCheckExternal(boolean b)
+	{
+		checkExternal = b;
 
+		if (algebraSchuifVeld != null)
+			algebraSchuifVeld.zetCheckExternal(checkExternal);
+	}
+
+	/**
+	 * Retourneert true als in nakijk-modus en
+	 * er nagekeken moet worden. 
+	 * 
+	 * @return
+	 */
+	boolean isNakijkModus()
+	{
+		return kijkNaActief || checkExternal;
 	}
 	
 	public void setState(Hashtable h)
@@ -142,7 +168,8 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	}
 	
 	public void setEditState(Hashtable h)
-	{	if (algebraSchuifVeld != null)
+	{
+		if (algebraSchuifVeld != null)
 		{
 			if (h.containsKey("docentExpressiesString"))
 				docentExpressieStrings = (Vector) h.get("docentExpressieStrings");
@@ -151,6 +178,10 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 			if (h.containsKey("kijkNaActief"))
 				kijkNaActief = ((Boolean) h.get("kijkNaActief")).booleanValue();
 			//zetKijkNaActief(kijkNaActief);
+
+			if (h.containsKey("checkExternal"))
+				checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
+			zetCheckExternal(checkExternal);
 
 			//if (h.containsKey("scoreMax"))
 			//	scoreMax = ((Integer) h.get("scoreMax")).intValue();
@@ -178,8 +209,10 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	}
 	
 	public Hashtable getEditState()
-	{	Hashtable h = algebraSchuifVeld.getState();
+	{
+		Hashtable h = algebraSchuifVeld.getState();
 		h.put("kijkNaActief", new Boolean(kijkNaActief));
+		h.put("checkExternal", new Boolean(checkExternal));
 		h.put("scoreMax", new Integer(scoreMax));
 
 		return h;
@@ -330,7 +363,9 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 	public void zetMode(int mode)
     {   this.mode = mode;
     	if (kijkNaActief)    
-    		zetKijkNaActief(mode == 0 || mode == 1);     
+    		zetKijkNaActief(mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN);
+		if (checkExternal) // zet het uit als mode niet oefenen of oefenen met strafpunten is
+			zetCheckExternal(mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN);
     }
 	
 	public void zetNagekeken(boolean b)
