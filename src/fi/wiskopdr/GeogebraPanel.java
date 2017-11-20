@@ -481,7 +481,7 @@ System.out.println("end refresh geogebra");System.out.flush();
 				for(int i=0 ; i<randomVars.length ; i++){	
 					String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
 					varClean = StringUtils.replaceStr(varClean,")","");
-					geogebraApplet.getGeoGebraAPI().setValue("dwo_"+varClean,((Integer)randomValues.get(randomVars[i])).intValue());
+					geogebraApplet.getGeoGebraAPI().setValue("dwo_"+varClean,((Number)randomValues.get(randomVars[i])).intValue());
 				}
 		} catch (Exception e) {
 			e.printStackTrace();

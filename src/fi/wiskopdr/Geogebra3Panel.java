@@ -218,7 +218,8 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 	
 	public void refreshGeogebra(){
 		if(geogebraApplet==null)
-		{	geogebraApplet = new GeoGebraApplet();
+		{	final GeoGebraApplet deze = 
+			geogebraApplet = new GeoGebraApplet();
 			p.removeAll();
 			geogebraApplet.setStub( this );
 			//if(alsTool)makeDefaultParamValues(1);
@@ -227,8 +228,8 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 			//else makeDefaultParamValues(0);
 			Thread thread = new Thread(){
 				public void run(){	
-					geogebraApplet.init();	
-					geogebraApplet.start();
+					deze.init();	
+					deze.start();
 				}
 			};
 			if(editapplet) p.add(geogebraApplet);
@@ -451,7 +452,7 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 				for(int i=0 ; i<randomVars.length ; i++){	
 					String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
 					varClean = StringUtils.replaceStr(varClean,")","");
-					geogebraApplet.setValue("dwo_"+varClean,((Integer)randomValues.get(randomVars[i])).intValue());
+					geogebraApplet.setValue("dwo_"+varClean,((Number)randomValues.get(randomVars[i])).intValue());
 				}
 			}
 		} catch (Exception e) {
