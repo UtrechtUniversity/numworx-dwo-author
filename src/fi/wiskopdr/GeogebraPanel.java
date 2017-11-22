@@ -77,6 +77,12 @@ import geogebra.GeoGebra;
 public class GeogebraPanel extends JRootPane implements  ActionListener, InteractiePanel, InteractieEditPanel, ResourceManagerClient
 {	
 	private static final int MENUBAR_HEIGHT = 25; // afpassen!
+	
+	public static int OEFENEN = 0;
+	public static int OEFENEN_STRAFPUNTEN = 1;
+	public static int ZELFTOETS = 2;
+	public static int EINDTOETS = 3;
+
 	private String[] randomVars;
 	private Hashtable randomValues;
 
@@ -90,6 +96,7 @@ public class GeogebraPanel extends JRootPane implements  ActionListener, Interac
 	private boolean bewaarOptie;
 	private boolean border;
 	private boolean nakijken;
+	private boolean checkExternal;
 	private boolean nakijkenGemaakteObjecten;
 	private String[] geogebraCheckObjects;
 	private Hashtable existingObjects;
@@ -401,9 +408,11 @@ System.out.println("end refresh geogebra");System.out.flush();
 	/* (non-Javadoc)
 	 * @see fi.beans.wiskopdrbeans.InteractiePanel#zetOpdracht(java.util.Hashtable, java.lang.String[], java.util.Hashtable)
 	 */
-	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues){
-		if(h==null)return;
-		
+	public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
+	{
+		if (h==null)
+			return;
+
 		String state = null;
 		byte[] ggbFile = null;
 		boolean bewaarOptie = false;
@@ -413,6 +422,7 @@ System.out.println("end refresh geogebra");System.out.flush();
 		String fileUrl = null;
 		Hashtable geogebraParams = new Hashtable();
 		boolean nakijken = false;
+		boolean checkExternal = false;
 		int scoreMax = 10;
 		boolean logOption = false;
 		String logID = "";
@@ -422,29 +432,48 @@ System.out.println("end refresh geogebra");System.out.flush();
 	    String[] geogebraCheckObjects = null;
 	    int[] geogebraCheckScores = null;
 	        
-		
-		if(h.containsKey("state")) state = (String)h.get("state");
-		if(h.containsKey("ggbFile")) ggbFile = (byte[])h.get("ggbFile");
-		if(h.containsKey("bewaarOptie")) bewaarOptie = ((Boolean)h.get("bewaarOptie")).booleanValue();
-		if(h.containsKey("border")) border = ((Boolean)h.get("border")).booleanValue();
-		if(h.containsKey("showResetIcon")) showResetIcon = ((Boolean)h.get("showResetIcon")).booleanValue();
-		if(h.containsKey("file")) file = ((Boolean)h.get("file")).booleanValue();
-		if(h.containsKey("fileUrl")) fileUrl = (String)h.get("fileUrl");
-		if(h.containsKey("geogebraParams")) geogebraParams = (Hashtable)h.get("geogebraParams");
-		if (h.containsKey("nakijken")) nakijken = ((Boolean) h.get("nakijken")).booleanValue();
-		if(h.containsKey("scoreMax")) scoreMax = ((Integer)h.get("scoreMax")).intValue();
-	    if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
-		if(h.containsKey("logID")) logID = (String)h.get("logID");
-		if(h.containsKey("check")) check = ((Boolean)h.get("check")).booleanValue();
-		if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
-		if (h.containsKey("nakijkenGemaakteObjecten")) nakijkenGemaakteObjecten = ((Boolean) h.get("nakijkenGemaakteObjecten")).booleanValue();
-        if (h.containsKey("geogebraCheckObjects")) geogebraCheckObjects = (String[]) h.get("geogebraCheckObjects");
-        if (h.containsKey("geogebraCheckScores")) geogebraCheckScores = (int[]) h.get("geogebraCheckScores");
+		if (h.containsKey("state"))
+			state = (String)h.get("state");
+		if (h.containsKey("ggbFile"))
+			ggbFile = (byte[])h.get("ggbFile");
+		if (h.containsKey("bewaarOptie"))
+			bewaarOptie = ((Boolean)h.get("bewaarOptie")).booleanValue();
+		if (h.containsKey("border"))
+			border = ((Boolean)h.get("border")).booleanValue();
+		if (h.containsKey("showResetIcon"))
+			showResetIcon = ((Boolean)h.get("showResetIcon")).booleanValue();
+		if (h.containsKey("file"))
+			file = ((Boolean)h.get("file")).booleanValue();
+		if (h.containsKey("fileUrl"))
+			fileUrl = (String)h.get("fileUrl");
+		if (h.containsKey("geogebraParams"))
+			geogebraParams = (Hashtable)h.get("geogebraParams");
+		if (h.containsKey("nakijken"))
+			nakijken = ((Boolean) h.get("nakijken")).booleanValue();
+		if (h.containsKey("checkExternal"))
+			checkExternal = ((Boolean) h.get("checkExternal")).booleanValue();
+		if (h.containsKey("scoreMax"))
+			scoreMax = ((Integer)h.get("scoreMax")).intValue();
+	    if (h.containsKey("logOption"))
+	    	logOption = ((Boolean)h.get("logOption")).booleanValue();
+		if (h.containsKey("logID"))
+			logID = (String)h.get("logID");
+		if (h.containsKey("check"))
+			check = ((Boolean)h.get("check")).booleanValue();
+		if (h.containsKey("teltMee"))
+			teltMee = ((Boolean)h.get("teltMee")).booleanValue();
+		if (h.containsKey("nakijkenGemaakteObjecten"))
+			nakijkenGemaakteObjecten = ((Boolean) h.get("nakijkenGemaakteObjecten")).booleanValue();
+        if (h.containsKey("geogebraCheckObjects"))
+        	geogebraCheckObjects = (String[]) h.get("geogebraCheckObjects");
+        if (h.containsKey("geogebraCheckScores"))
+        	geogebraCheckScores = (int[]) h.get("geogebraCheckScores");
        
  		this.bewaarOptie = bewaarOptie;
 		this.border = border;
 		this.parameters = geogebraParams;
 		this.nakijken = nakijken;
+		this.checkExternal = checkExternal;
 		this.scoreMax = scoreMax;
 	    this.logOption = logOption;
 	    this.logID = logID;
@@ -454,9 +483,7 @@ System.out.println("end refresh geogebra");System.out.flush();
 	    this.geogebraCheckObjects = geogebraCheckObjects;
 	    this.geogebraCheckScores = geogebraCheckScores;
 	    
-	    
-	       
-		checkButton.setVisible(nakijken && (mode==0 || mode==1));
+		checkButton.setVisible(nakijken && (mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN) && !checkExternal);
         
 		p.setBorder(border ? borderPanel: null);
 		
@@ -465,37 +492,45 @@ System.out.println("end refresh geogebra");System.out.flush();
 		
 		refreshGeogebra();
 		
-		try {	
-			if(Boolean.TRUE.equals(file) && fileUrl != null)
+		try
+		{	
+			if (Boolean.TRUE.equals(file) && fileUrl != null)
 			{
 				ResourceContainer unit = rm().getInstanceContainer();
 				URL u = new URL( unit.getURL(), fileUrl );
 				geogebraApplet.openFile(u);
-			} else
-				if(ggbFile != null)
-					setGGBfile(ggbFile);
-				else
-				{
-					geogebraApplet.getGeoGebraAPI().setBase64(state);
-				}
-				for(int i=0 ; i<randomVars.length ; i++){	
-					String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
-					varClean = StringUtils.replaceStr(varClean,")","");
-					geogebraApplet.getGeoGebraAPI().setValue("dwo_"+varClean,((Number)randomValues.get(randomVars[i])).intValue());
-				}
-		} catch (Exception e) {
+			}
+			else if (ggbFile != null)
+				setGGBfile(ggbFile);
+			else
+			{
+				geogebraApplet.getGeoGebraAPI().setBase64(state);
+			}
+			
+			for (int i=0 ; i<randomVars.length ; i++)
+			{	
+				String varClean = StringUtils.replaceStr(randomVars[i],"?(","");
+				varClean = StringUtils.replaceStr(varClean,")","");
+				geogebraApplet.getGeoGebraAPI().setValue("dwo_"+varClean,((Number)randomValues.get(randomVars[i])).intValue());
+			}
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
+		
 		setGeogebraParameters();
 		buildGUI();
 		
-		
 		launchState = getGGBfile(); // voor reset
 		
-		try {
+		try
+		{
 			String[] existingObjectNames = geogebraApplet.getGeoGebraAPI().getAllObjectNames();
 			aantalExistingObjects = existingObjectNames.length;
-		} catch (Exception e) {
+		}
+		catch (Exception e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -507,8 +542,10 @@ System.out.println("end refresh geogebra");System.out.flush();
 	}
 	
 	// set suspend state (recover the state in which a student left it when finishing the activity)
-	public void setState(Hashtable h){	
-		if(h==null)return;
+	public void setState(Hashtable h)
+	{	
+		if (h==null)
+			return;
 		
 		String state = null;
 		//byte[] ggbFile = null;
@@ -518,37 +555,47 @@ System.out.println("end refresh geogebra");System.out.flush();
 		int attemptsCount = 0;
 		int errorCount = 0;
 	        
-		if(h.containsKey("state")) state = (String)h.get("state");
+		if (h.containsKey("state"))
+			state = (String)h.get("state");
 		//if(h.containsKey("ggbFile")) ggbFile = (byte[])h.get("ggbFile");
-		if(h.containsKey("ingevuld")) ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
-	    if(h.containsKey("nagekeken")) nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
-	    if(h.containsKey("attempts"))attempts = OpdrNavStruct.toVector(h.get("attempts"));
-	    if(h.containsKey("attemptsCount")) attemptsCount = ((Number)h.get("attemptsCount")).intValue();
-	    if(h.containsKey("errorCount")) errorCount = ((Number)h.get("errorCount")).intValue();
+		if (h.containsKey("ingevuld"))
+			ingevuld = ((Boolean)h.get("ingevuld")).booleanValue();
+	    if (h.containsKey("nagekeken"))
+	    	nagekeken = ((Boolean)h.get("nagekeken")).booleanValue();
+	    if (h.containsKey("attempts"))
+	    	attempts = OpdrNavStruct.toVector(h.get("attempts"));
+	    if (h.containsKey("attemptsCount"))
+	    	attemptsCount = ((Number)h.get("attemptsCount")).intValue();
+	    if (h.containsKey("errorCount"))
+	    	errorCount = ((Number)h.get("errorCount")).intValue();
         
-		if(bewaarOptie){	
-				try {
-					geogebraApplet.getGeoGebraAPI().setXML(state);
-					buildGUI();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		if (bewaarOptie)
+		{	
+			try
+			{
+				geogebraApplet.getGeoGebraAPI().setXML(state);
+				buildGUI();
+			}
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
 		repaint();
-		if(ingevuld && (mode==0 || nagekeken)) kijkNa();
+		if (ingevuld && (mode==0 || nagekeken))
+			kijkNa();
 	}
 	
 	// get the suspend state (the state in which a student left it when finishing the activity)
-	public Hashtable getState()	{
-		
+	public Hashtable getState()
+	{	
 		String state = null;
 		boolean ingevuld = false;
 	    boolean nagekeken = false;
 	    Vector attempts = new Vector();
 	    int attemptsCount = 0;
 		int errorCount = 0;
-		
 	    
 	    ingevuld = this.ingevuld;
 	    nagekeken = this.nagekeken;
@@ -557,7 +604,7 @@ System.out.println("end refresh geogebra");System.out.flush();
 	    errorCount = this.errorCount;
 
 		kijkNa(false);
-		if(logOption)
+		if (logOption)
 		{	
 	    	Hashtable logMap = new Hashtable();
 			
@@ -578,13 +625,16 @@ System.out.println("end refresh geogebra");System.out.flush();
         h.put("attempts", attempts);
         h.put("attemptsCount", new Integer(attemptsCount));
         h.put("errorCount", new Integer(errorCount));
-        
-	    
-        if(bewaarOptie)	{	
-			try {
+
+        if(bewaarOptie)
+        {	
+			try
+			{
 				state = geogebraApplet.getGeoGebraAPI().getXML();
 				h.put("state", state);
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -593,8 +643,10 @@ System.out.println("end refresh geogebra");System.out.flush();
 	}
 	
 	// set launch state in the editor
-	public void setEditState(Hashtable h){
-		if(h==null)return;
+	public void setEditState(Hashtable h)
+	{
+		if (h==null)
+			return;
 		
 		String state = null;
 		byte[] ggbFile = null;
@@ -605,14 +657,22 @@ System.out.println("end refresh geogebra");System.out.flush();
 		String fileUrl = null;
 		Hashtable geogebraParams = new Hashtable();
 		
-		if(h.containsKey("state")) state = (String)h.get("state");
-		if(h.containsKey("ggbFile")) ggbFile = (byte[]) h.get("ggbFile");
-		if(h.containsKey("bewaarOptie")) bewaarOptie = ((Boolean)h.get("bewaarOptie")).booleanValue();
-		if(h.containsKey("border")) border = ((Boolean)h.get("border")).booleanValue();
-		if(h.containsKey("showResetIcon")) showResetIcon = ((Boolean)h.get("showResetIcon")).booleanValue();
-		if(h.containsKey("file")) file = ((Boolean)h.get("file")).booleanValue();
-		if(h.containsKey("fileUrl")) fileUrl = (String)h.get("fileUrl");
-		if(h.containsKey("geogebraParams")) geogebraParams = (Hashtable)h.get("geogebraParams");
+		if (h.containsKey("state"))
+			state = (String)h.get("state");
+		if (h.containsKey("ggbFile"))
+			ggbFile = (byte[]) h.get("ggbFile");
+		if (h.containsKey("bewaarOptie"))
+			bewaarOptie = ((Boolean)h.get("bewaarOptie")).booleanValue();
+		if (h.containsKey("border"))
+			border = ((Boolean)h.get("border")).booleanValue();
+		if (h.containsKey("showResetIcon"))
+			showResetIcon = ((Boolean)h.get("showResetIcon")).booleanValue();
+		if (h.containsKey("file"))
+			file = ((Boolean)h.get("file")).booleanValue();
+		if (h.containsKey("fileUrl"))
+			fileUrl = (String)h.get("fileUrl");
+		if (h.containsKey("geogebraParams"))
+			geogebraParams = (Hashtable)h.get("geogebraParams");
         
 		this.bewaarOptie = bewaarOptie;
 		this.border = border;
@@ -620,28 +680,33 @@ System.out.println("end refresh geogebra");System.out.flush();
 		
 		refreshGeogebra();
 		
-		if(!editapplet){
-				p.setBorder(border ? borderPanel: null);
-				resetButton.setVisible(showResetIcon);
+		if (!editapplet)
+		{
+			p.setBorder(border ? borderPanel: null);
+			resetButton.setVisible(showResetIcon);
 		}
 		
-		try {
-			if(Boolean.TRUE.equals(file) && fileUrl != null)
+		try
+		{
+			if (Boolean.TRUE.equals(file) && fileUrl != null)
 			{
 				ResourceContainer unit = rm().getInstanceContainer();
 				URL u = unit.open(fileUrl).getURL();
 				geogebraApplet.openFile(u);
-			} else
-			if(ggbFile != null)
+			}
+			else if(ggbFile != null)
 			{
 				setGGBfile(ggbFile);
-			} else
+			} 
+			else
 			{
 				geogebraApplet.getGeoGebraAPI().setBase64(state);
 			}
-			if(!editapplet)
+			if (!editapplet)
 				setGeogebraParameters();
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -652,136 +717,163 @@ System.out.println("end refresh geogebra");System.out.flush();
 	}
 	
 	 public void kijkNa(boolean show)
-	    {
-		 	if(!nakijken)return;
-	        if(huidigIC!=null) huidigIC.setVisible(false);
-	        
-	        //ingevuld = false;
-	        
-	        correct = false;
-	        fout = true;
-	        score = 0;
-	        
-	        try {
-				String[] allObjectNames = geogebraApplet.getGeoGebraAPI().getAllObjectNames();
-				if(nakijkenGemaakteObjecten && allObjectNames.length<aantalExistingObjects){
-					huidigIC = foutIC;
-				    correct = false;
-				    fout = true;
-				    score = 0;
-				    if(show && check)huidigIC.setVisible(true);
-				}
-				
-      else if(nakijkenGemaakteObjecten){
-					
-					String[] objectNames = new String[allObjectNames.length-aantalExistingObjects];
-					for (int i = 0; i < objectNames.length; i++)
-				    {   
-					    
-					    objectNames[i] = allObjectNames[i+aantalExistingObjects];
-					}
-					String[] objectTypes = new String[objectNames.length];
-					String[] valueStrings = new String[objectNames.length];
-					String[] objectStrings = new String[objectNames.length];
-					
-					String[] checkObjects = new String[geogebraCheckObjects.length];
-				    for (int j = 0; j < checkObjects.length; j++){
-				        checkObjects[j] = geogebraCheckObjects[j];
-				    }
-				    
-					int matches = 0;
-					for (int i = 0; i < objectNames.length; i++) {
-						objectTypes[i] = geogebraApplet.getGeoGebraAPI().getObjectType(objectNames[i]);
-						valueStrings[i] = geogebraApplet.getGeoGebraAPI().getValueString(objectNames[i]);
-				    	
-				    	objectStrings[i] = StringUtils.replaceStr(valueStrings[i],objectNames[i]+"(x)","");
-				    	objectStrings[i] = StringUtils.replaceStr(objectStrings[i],objectNames[i],"");
-				    	objectStrings[i] = StringUtils.replaceStr(objectStrings[i]," ","");
-				    	objectStrings[i] = objectStrings[i].substring(1);
-				    	boolean match = false;
-				    	
-				    	int matchNr = -1;
-				    	for (int j = 0; j < checkObjects.length; j++){
-				    	    match = checkObjects[j].equals(objectStrings[i]);
-				    	    if(!match){
-				    	        String command = "checkDWO=" + checkObjects[j] + "==" + objectNames[i];
-				    	        boolean check = false;
-				    	        if(!objectTypes[i].equals("boolean")){
-				    	            check = geogebraApplet.getGeoGebraAPI().evalCommand(command);
-				    	            match = geogebraApplet.getGeoGebraAPI().getValue("checkDWO")==1.0;
-				    	            
-				    	        }
-				    	    }
-				    	    if(match){
-				    	        if(show)geogebraApplet.getGeoGebraAPI().setColor(objectNames[i], 0, 180, 0);
-				    	        score += geogebraCheckScores[j];
-				    	        matches++;
-				    	        matchNr = j;
-				    	        break;
-				    	    }
-				        }
-				    	if(match && checkObjects.length>0){
-				    	    String[] checkObjectsRes = new String[checkObjects.length-1];
-				    	    int teller = 0;
-				    	    for (int k = 0; k < checkObjects.length; k++){
-				    	        if(k!=matchNr){
-				    	            checkObjectsRes[teller] = checkObjects[k];
-				    	            teller++;
-				    	        }
-				    	    }   
-				    	    checkObjects = checkObjectsRes;
-				    	}
-				    }
-					
-					if(matches==geogebraCheckObjects.length)
-				    {   huidigIC = goedIC;
-				        correct = true;
-				        fout = false;
-				        score = scoreMax;
-				    }
-					else if(matches>0)
-				    {   huidigIC = halfIC;
-				        correct = false;
-				        fout = false;
-				        
-				    }
-				    else 
-				    {   huidigIC = foutIC;
-				        correct = false;
-				        fout = true;
-				        score = 0;
-				    }
-				    if(show && check)huidigIC.setVisible(true);
-				}
-				else{
-				    boolean juist = true;
-				    
-					double geogebraCorrect = geogebraApplet.getGeoGebraAPI().getValue("checkDWO");
-				    String type = geogebraApplet.getGeoGebraAPI().getValueString("A");
-				    System.out.println(type+" "+geogebraCorrect);
-				    if(geogebraCorrect!=1.0)juist = false;
-				    
-				    if(juist)
-				    {   huidigIC = goedIC;
-				        correct = true;
-				        fout = false;
-				        score = scoreMax;
-				    }
-				    else 
-				    {   huidigIC = foutIC;
-				        correct = false;
-				        fout = true;
-				        score = 0;
-				    }
-				    if(show && check)huidigIC.setVisible(true);
-				}
-				if(ingevuld && show)produceAction("changed");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	 {
+		if (!nakijken)
+			return;
+		if (huidigIC != null)
+			huidigIC.setVisible(false);
+
+		// ingevuld = false;
+
+		correct = false;
+		fout = true;
+		score = 0;
+
+		try
+		{
+			String[] allObjectNames = geogebraApplet.getGeoGebraAPI().getAllObjectNames();
+			if (nakijkenGemaakteObjecten && allObjectNames.length < aantalExistingObjects)
+			{
+				huidigIC = foutIC;
+				correct = false;
+				fout = true;
+				score = 0;
+				if (show && check)
+					huidigIC.setVisible(true);
 			}
-	    }
-	    
+
+			else if (nakijkenGemaakteObjecten)
+			{
+
+				String[] objectNames = new String[allObjectNames.length - aantalExistingObjects];
+				for (int i = 0; i < objectNames.length; i++)
+				{
+
+					objectNames[i] = allObjectNames[i + aantalExistingObjects];
+				}
+				String[] objectTypes = new String[objectNames.length];
+				String[] valueStrings = new String[objectNames.length];
+				String[] objectStrings = new String[objectNames.length];
+
+				String[] checkObjects = new String[geogebraCheckObjects.length];
+				for (int j = 0; j < checkObjects.length; j++)
+				{
+					checkObjects[j] = geogebraCheckObjects[j];
+				}
+
+				int matches = 0;
+				for (int i = 0; i < objectNames.length; i++)
+				{
+					objectTypes[i] = geogebraApplet.getGeoGebraAPI().getObjectType(objectNames[i]);
+					valueStrings[i] = geogebraApplet.getGeoGebraAPI().getValueString(objectNames[i]);
+
+					objectStrings[i] = StringUtils.replaceStr(valueStrings[i], objectNames[i] + "(x)", "");
+					objectStrings[i] = StringUtils.replaceStr(objectStrings[i], objectNames[i], "");
+					objectStrings[i] = StringUtils.replaceStr(objectStrings[i], " ", "");
+					objectStrings[i] = objectStrings[i].substring(1);
+					boolean match = false;
+
+					int matchNr = -1;
+					for (int j = 0; j < checkObjects.length; j++)
+					{
+						match = checkObjects[j].equals(objectStrings[i]);
+						if (!match)
+						{
+							String command = "checkDWO=" + checkObjects[j] + "==" + objectNames[i];
+							boolean check = false;
+							if (!objectTypes[i].equals("boolean"))
+							{
+								check = geogebraApplet.getGeoGebraAPI().evalCommand(command);
+								match = geogebraApplet.getGeoGebraAPI().getValue("checkDWO") == 1.0;
+
+							}
+						}
+						if (match)
+						{
+							if (show)
+								geogebraApplet.getGeoGebraAPI().setColor(objectNames[i], 0, 180, 0);
+							score += geogebraCheckScores[j];
+							matches++;
+							matchNr = j;
+							break;
+						}
+					}
+					if (match && checkObjects.length > 0)
+					{
+						String[] checkObjectsRes = new String[checkObjects.length - 1];
+						int teller = 0;
+						for (int k = 0; k < checkObjects.length; k++)
+						{
+							if (k != matchNr)
+							{
+								checkObjectsRes[teller] = checkObjects[k];
+								teller++;
+							}
+						}
+						checkObjects = checkObjectsRes;
+					}
+				}
+
+				if (matches == geogebraCheckObjects.length)
+				{
+					huidigIC = goedIC;
+					correct = true;
+					fout = false;
+					score = scoreMax;
+				}
+				else if (matches > 0)
+				{
+					huidigIC = halfIC;
+					correct = false;
+					fout = false;
+
+				}
+				else
+				{
+					huidigIC = foutIC;
+					correct = false;
+					fout = true;
+					score = 0;
+				}
+				if (show && check)
+					huidigIC.setVisible(true);
+			}
+			else
+			{
+				boolean juist = true;
+
+				double geogebraCorrect = geogebraApplet.getGeoGebraAPI().getValue("checkDWO");
+				String type = geogebraApplet.getGeoGebraAPI().getValueString("A");
+				System.out.println(type + " " + geogebraCorrect);
+				if (geogebraCorrect != 1.0)
+					juist = false;
+
+				if (juist)
+				{
+					huidigIC = goedIC;
+					correct = true;
+					fout = false;
+					score = scoreMax;
+				}
+				else
+				{
+					huidigIC = foutIC;
+					correct = false;
+					fout = true;
+					score = 0;
+				}
+				if (show && check)
+					huidigIC.setVisible(true);
+			}
+			if (ingevuld && show)
+				produceAction("changed");
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}	    
 	    
 //  @Deprecated	
 //	public MyOpdrEditContainer getMyOpdrEditContainer(){	
@@ -882,26 +974,35 @@ System.out.println("end refresh geogebra");System.out.flush();
 		else return 0;
 	}
 	
-	public boolean isCorrect(){
-		if(nakijken)return correct;
-		else return true;
+	public boolean isCorrect()
+	{
+		if (nakijken)
+			return correct;
+		else
+			return true;
 	}
 	
-	public boolean isFout(){
-		if(nakijken)return fout;
-		else return false;
+	public boolean isFout()
+	{
+		if (nakijken)
+			return fout;
+		else
+			return false;
 	}
 	
-	public void zetMode(int mode){
+	public void zetMode(int mode)
+	{
 		this.mode = mode;
-		checkButton.setVisible(nakijken && (mode==0 || mode==1));
+		checkButton.setVisible(nakijken && (mode == OEFENEN || mode == OEFENEN_STRAFPUNTEN) && !checkExternal);
 	}
 	
 	public void zetNagekeken(boolean b)
-	{	if(ingevuld) nagekeken = b;
+	{
+		if(ingevuld) nagekeken = b;
 	}
 	
-    public void stop(){
+    public void stop()
+    {
     	//if(frame!=null) frame.setVisible(false);
     	kijkNa();
     	try {
