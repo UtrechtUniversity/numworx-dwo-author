@@ -32,6 +32,7 @@ public class Text_en extends java.util.ListResourceBundle
 				
                 { "klaarKnopLabel" , "Check" },
 				{ "nakijkKnopLabel" , "Check" },
+				{ "checkExternal" , "External check" },
 				{ "eindeKnopLabel", "End" },
 				{ "nakijkLabel1" , "Checked: " },
 				{ "nakijkLabel2" , " times " },

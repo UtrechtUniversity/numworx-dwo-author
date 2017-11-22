@@ -30,6 +30,7 @@ public class Text_gr extends java.util.ListResourceBundle
 				
                 { "klaarKnopLabel" , "Επιβεβαίωση" },
 				{ "nakijkKnopLabel" , "Επιβεβαίωση" },
+				{ "checkExternal" , "external check" },
 				{ "eindeKnopLabel", "Τέλος" },
 				{ "nakijkLabel1" , "Επιβεβαιωμένο: " },
 				{ "nakijkLabel2" , " φορές " },

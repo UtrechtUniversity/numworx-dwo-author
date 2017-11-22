@@ -30,6 +30,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				
                 { "klaarKnopLabel" , "チェックCheck" },
 				{ "nakijkKnopLabel" , "チェック" },
+				{ "checkExternal" , "external check" },
 				{ "eindeKnopLabel", "終了" },
 				{ "nakijkLabel1" , "チェック済み: " },
 				{ "nakijkLabel2" , " 時間" },
