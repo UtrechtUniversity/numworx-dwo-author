@@ -1746,12 +1746,16 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			requestFocus();
 		if (timerPanel != null && locked)
 			timerPanel.stop();
-		if (zelftoetsGeenCorr)
-			zetAfdekPanelLeeg(locked);
-		else if (allCorrect)
-			zetAfdekPanel(locked, 1);
-		else
-			zetAfdekPanel(locked, 0);
+		
+		if  (!isDocentReviewMode()) // voor docent-review-mode geen afdekpanel
+		{
+			if (zelftoetsGeenCorr)
+				zetAfdekPanelLeeg(locked);
+			else if (allCorrect)
+				zetAfdekPanel(locked, 1);
+			else
+				zetAfdekPanel(locked, 0);
+		}
 
 		this.zelftoetsNagekeken = zelftoetsNagekeken;
 		
@@ -1763,14 +1767,15 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		vorigeKnop.setVisible(vorigeKnopZichtbaar || !bolletjesZichtbaar && (zelftoetsNagekeken||toetsLocked));
 	
-		if(eerderGeenCorr)
-		{	boolean alBezocht = false;
-			for(int i = opdrachtNr + 1; i < aantalOpdrachten[activiteitNr]; i++)
-				if(getBoolean(bezocht, activiteitNr, i))
+		if (eerderGeenCorr && !isDocentReviewMode())
+		{
+			boolean alBezocht = false;
+			for (int i = opdrachtNr + 1; i < aantalOpdrachten[activiteitNr]; i++)
+				if (getBoolean(bezocht, activiteitNr, i))
 					alBezocht = true;
 			zetAfdekPanelLeeg(alBezocht);
 		}
-		if(zelftoetsNagekeken && zelftoetsGeenCorr)
+		if (zelftoetsNagekeken && zelftoetsGeenCorr && !isDocentReviewMode())
 			zetAfdekPanelLeeg(true);
 		
 		for (int i = 0; i < aantalActiviteiten; i++)
@@ -1780,6 +1785,16 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		stelNavigatieIn(activiteitNr, opdrachtNr);
 
+	}
+
+	/**
+	 * True als in docent review mode anders false.
+	 * @return
+	 */
+	private boolean isDocentReviewMode()
+	{
+		boolean mode = lessonMode.equals("review");
+		return mode;
 	}
 
 	/**
