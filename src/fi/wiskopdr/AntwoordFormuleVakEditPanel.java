@@ -252,7 +252,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
         logIDField = makeTextField(520,5,60,20,"0",false);
         logIDLabelField = makeTextField(520,25,60,20,"",false);
-        uitwCB = makeCheckBox(530,75,80,20,WiskOpdr.rb.getString("uitwCBLabel"),false,false);
+        uitwCB = makeCheckBox(530,75,270,20,WiskOpdr.rb.getString("uitwCBLabel"),false,false);
         boxMetRandCB = makeCheckBox(500,105,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
