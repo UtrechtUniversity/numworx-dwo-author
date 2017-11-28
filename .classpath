@@ -11,25 +11,17 @@
 	<classpathentry kind="lib" path="output/jar/geogebra_main.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra_properties.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra.jar"/>
-	<classpathentry kind="lib" path="/Kansbomen/output/classes"/>
-	<classpathentry kind="lib" path="/CalculatorDwo/output/classes"/>
 	<classpathentry kind="lib" path="output/jar/geogebra3_cas.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra3_export.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra3_gui.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra3_main.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra3_properties.jar"/>
 	<classpathentry kind="lib" path="output/jar/geogebra3.jar"/>
-	<classpathentry kind="lib" path="/GraphTool/output/classes"/>
 	<classpathentry kind="lib" path="lib/mayscript.jar"/>
 	<classpathentry kind="lib" path="lib/classes"/>
 	<classpathentry kind="lib" path="output/jar/sardine.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="/BalansFruitApplet"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Kladje"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/TekenVeelvlakOpdr"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/BlokkenProgramma"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SliderWidget"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/AlgebraPijlenOpdr"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DataPlot"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GraphTool"/>
 	<classpathentry kind="output" path="output/classes"/>
 </classpath>
