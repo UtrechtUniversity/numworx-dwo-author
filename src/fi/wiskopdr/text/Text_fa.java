@@ -664,7 +664,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"CBA_zetOplossing", "set solution" },
 				{"CBA_maakStap", "make step" },
 				{"CBA_vergelijking", "equation" },
-				{"CBA_double", "nummerical value"},
+				{"CBA_double", "numerical value"},
 				{"CBA_expression", "expression"},
 				{"CBA_equation", "equation"},
 				{"CBA_text", "text"},

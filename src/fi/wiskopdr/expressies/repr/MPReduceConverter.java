@@ -1,5 +1,7 @@
 package fi.wiskopdr.expressies.repr;
 
+import java.math.BigInteger;
+
 import fi.wiskopdr.expressies.Expressie;
 
 public class MPReduceConverter extends AbstractConverter {
@@ -157,6 +159,25 @@ public class MPReduceConverter extends AbstractConverter {
 
 	@Override
 	public Object decround(Object kind1, Object kind2) {
+		if(kind2 instanceof Veelterm) {
+			try { 
+				kind2 = new BigInteger(kind2.toString());
+			} catch(Exception e) {}
+		}
+		
+		if(kind2 instanceof BigInteger) {
+			switch(((BigInteger) kind2).signum()) {
+				case 0: return "round(" + kind1 + ")";
+				case +1: 
+						String ten = "(10^(" + kind2 + "))";
+						return "(round(" + ten +"*" + kind1 + ")/" + ten + ")";
+				case -1:
+						ten = "(10^(" + ((BigInteger) kind2).abs() + "))";
+						return "(" + ten + "*round(" + kind1 + "/" + ten + "))";
+			}
+			
+		}
+		
 		return kind1; // FIXME niet goed....
 	}
 
