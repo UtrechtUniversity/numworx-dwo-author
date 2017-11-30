@@ -1,14 +1,14 @@
--injars ../target/classes/
--outjars ../output/jar/wiskopdr.jar
+#-injars ../target/classes/
+#-outjars ../target/wiskopdr.jar
 -injars ../../GraphTool/target/classes
--outjars ../output/jar/graphtool.jar
+-outjars ../target/graphtool.jar
 -injars ../../BalansFruitApplet/target/classes
--outjars ../output/jar/balansfruitapplet.jar
+-outjars ../target/balansfruitapplet.jar
 -injars ../lib/geodefiner.jar
--outjars ../output/jar/geodefiner.jar
+-outjars ../target/geodefiner.jar
 
 -target 1.8
--printmapping mapping.txt
+-printmapping target/mapping.txt
 -optimizations !class/merging/*
 -forceprocessing
 -dontwarn

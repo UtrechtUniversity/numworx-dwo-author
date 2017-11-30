@@ -36,6 +36,8 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<includeScope>compile</includeScope>
+							<excludeArtifactIds>balansfruitapplet,graphtool</excludeArtifactIds>
+							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
 				</executions>
@@ -47,71 +49,179 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
+							<classpathLayoutType>custom</classpathLayoutType>
+							<customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
 							<mainClass>fi.wiskopdr.WiskOpdr</mainClass>
- 						</manifest>
-						<index>true</index>
+						</manifest>
+						<manifestEntries>
+							<Class-Path>
+								geogebra3.jar
+								geogebra3_main.jar
+								geogebra3_gui.jar
+								geogebra3_cas.jar
+								geogebra3_properties.jar
+								geogebra3_export.jar
+								
+								verknippen.jar mozarch.jar tegels.jar geomalgebra.jar stroomdiagrammen.jar
+								statistiek.jar doorziendwo.jar flowdiagrams.jar</Class-Path>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
-                   <plugin>
-                        <groupId>com.github.wvengen</groupId>
-                        <artifactId>proguard-maven-plugin</artifactId>
-                        <version>2.0.8</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>proguard</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <proguardVersion>5.2</proguardVersion>
-                            <options>
-                                <option>-verbose</option>
-                                <option>-dontwarn</option> 
-                                <option>-printconfiguration mapping.txt</option>
-                            </options>
-                            <obfuscate>true</obfuscate>                    
-                            <inputDirectory>${project.build.directory}</inputDirectory>
-<!--                             <injar>${project.build.finalName}.jar</injar> -->
-                            <!-- uncomment to change the output file 
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <outjar>${project.build.finalName}.jar</outjar>
-                            -->
-                            <exclusions>
-                            		<exclusion><groupId>fi.graphtool</groupId><artifactId>graphtool</artifactId></exclusion>
-                            		<exclusion><groupId>fi.balansfruitapplet</groupId><artifactId>balansfruitapplet</artifactId></exclusion>
-                            </exclusions>
-                            <proguardInclude>toolfiles/config.pro</proguardInclude>
-                            <libs>
-                                <lib>${java.home}/lib/rt.jar</lib>
-                                <lib>${java.home}/lib/jsse.jar</lib>
-                            </libs>
-                            <addMavenDescriptor>false</addMavenDescriptor>
-                        </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sf.proguard</groupId>
-                                <artifactId>proguard-base</artifactId>
-                                <version>5.2</version>
-                                <scope>runtime</scope>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
- 		</plugins>
+			<plugin>
+				<groupId>com.github.wvengen</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.8</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<proguardVersion>5.2</proguardVersion>
+					<options>
+						<option>-verbose</option>
+						<option>-dontwarn</option>
+						<option>-printconfiguration target/mapping.txt</option>
+					</options>
+					<obfuscate>true</obfuscate>
+					<inputDirectory>${project.build.directory}</inputDirectory>
+					<!-- <injar>${project.build.finalName}.jar</injar> -->
+					<!-- uncomment to change the output file <outputDirectory>${project.build.directory}</outputDirectory> 
+						<outjar>${project.build.finalName}.jar</outjar> -->
+					<exclusions>
+						<exclusion>
+							<groupId>fi.graphtool</groupId>
+							<artifactId>graphtool</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>fi.balansfruitapplet</groupId>
+							<artifactId>balansfruitapplet</artifactId>
+						</exclusion>
+					</exclusions>
+					<proguardInclude>toolfiles/config.pro</proguardInclude>
+					<libs>
+						<lib>${java.home}/lib/rt.jar</lib>
+						<lib>${java.home}/lib/jsse.jar</lib>
+					</libs>
+					<addMavenDescriptor>false</addMavenDescriptor>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.sf.proguard</groupId>
+						<artifactId>proguard-base</artifactId>
+						<version>5.2</version>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<jar destfile="${project.build.directory}/${project.build.finalName}.jar"
+									update="true" index="true">
+									<indexjars>
+										<fileset dir="${project.build.directory}" includes="*.jar"
+											excludes="*proguard*" />
+									</indexjars>
+								</jar>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 	<properties>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<maven.test.skip>true</maven.test.skip>
 	</properties>
 	<dependencies>
+		<!-- #fi.verknippen #fi.mozarch #fi.tegels #fi.geomalgebra #fi.stroomdiagrammen 
+			#fi.statistiek #fi.doorziendwo.DoorzienDWO: doorziendwo.jar #fi.flowdiagrams.FlowDiagrams: 
+			flowdiagrams.jar #fi.dataplot.DataPlot: -->
+		<dependency>
+			<groupId>fi.verknippen</groupId>
+			<artifactId>verknippen</artifactId>
+			<version>0.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/verknippen.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>fi.mozarch</groupId>
+			<artifactId>mozarch</artifactId>
+			<version>0.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/mozarch.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>fi.tegels</groupId>
+			<artifactId>tegels</artifactId>
+			<version>0.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/tegels.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>fi.geomalgebra</groupId>
+			<artifactId>geomalgebra</artifactId>
+			<version>0.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/geomalgebra.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>fi.stroomdiagrammen</groupId>
+			<artifactId>stroomdiagrammen</artifactId>
+			<version>0.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/stroomdiagrammen.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>fi.statistiek</groupId>
+			<artifactId>statistiek</artifactId>
+			<version>0.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/statistiek.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>fi.doorziendwo</groupId>
+			<artifactId>doorziendwo</artifactId>
+			<version>0.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/doorziendwo.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>fi.flowdiagrams</groupId>
+			<artifactId>flowdiagrams</artifactId>
+			<version>0.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/flowdiagrams.jar</systemPath>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>fi.dataplot</groupId> -->
+		<!-- <artifactId>dataplot</artifactId> -->
+		<!-- <version>0.0.0</version> -->
+		<!-- <scope>system</scope> -->
+		<!-- <systemPath>${project.basedir}/output/jar/dataplot.jar</systemPath> -->
+		<!-- </dependency> -->
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra3</artifactId>
@@ -121,9 +231,50 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geogebra</groupId>
+			<artifactId>geogebra3_main</artifactId>
+			<version>3.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/geogebra3_main.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.geogebra</groupId>
+			<artifactId>geogebra3_gui</artifactId>
+			<version>3.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/geogebra3_gui.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.geogebra</groupId>
+			<artifactId>geogebra3_cas</artifactId>
+			<version>3.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/geogebra3_cas.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.geogebra</groupId>
+			<artifactId>geogebra3_properties</artifactId>
+			<version>3.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/geogebra3_properties.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.geogebra</groupId>
+			<artifactId>geogebra3_export</artifactId>
+			<version>3.2</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/output/jar/geogebra3_export.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra</artifactId>
 			<version>4.0.29</version>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.geogebra</groupId> -->
+<!-- 			<artifactId>geogebra_gui</artifactId> -->
+<!-- 			<version>4.0.29</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra_cas</artifactId>
@@ -134,6 +285,18 @@
 			<artifactId>geogebra_main</artifactId>
 			<version>4.0.29</version>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.geogebra</groupId> -->
+<!-- 			<artifactId>geogebra_properties</artifactId> -->
+<!-- 			<version>4.0.29</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.geogebra</groupId> -->
+<!-- 			<artifactId>geogebra_export</artifactId> -->
+<!-- 			<version>4.0.29</version> -->
+<!-- 		</dependency> -->
+
+
 		<dependency>
 			<groupId>fi.balansfruitapplet</groupId>
 			<artifactId>balansfruitapplet</artifactId>
