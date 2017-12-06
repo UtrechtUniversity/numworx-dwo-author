@@ -670,6 +670,14 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		// update the selected view in tabPane
 //		System.out.println("StatInteractiePanelView.update(): selectedView = " + this.selectedView
 //			+ ", selectedViewInPane = " + this.selectedViewInTabPane);
+		
+		// update selected view if out of bounds
+		if (selectedView >= views.size() && views.size() > 0)
+		{
+			setSelectedView(views.size() - 1);
+			setSelectedViewInTabPane(views.size() - 1);
+		}
+		
 		if (this.isInOwnWindow(selectedView))
 		{
 			this.setTabPane(previousSelectedView);
