@@ -12,8 +12,6 @@
 -libraryjars <java.home>/lib/rt.jar
 -libraryjars <java.home>/lib/ext/jfxrt.jar
 -libraryjars <java.home>/lib/jce.jar
-#-libraryjars ../output/jar/calendar.jar
-#-libraryjars ../lib/jcommon-1.0.17.jar
 -libraryjars ../lib/junit.jar
 -libraryjars ../lib/mayscript.jar
 -libraryjars ../lib/AppleJavaExtensions-1.4.jar
@@ -36,7 +34,6 @@
 -libraryjars ../output/jar/jlm_cyrillic.jar
 -libraryjars ../output/jar/jlm_greek.jar
 -libraryjars ../output/jar/sardine.jar
-#-libraryjars ..\output\jar\vecmath.jar
 
 -target 1.8
 -printmapping mapping.txt
