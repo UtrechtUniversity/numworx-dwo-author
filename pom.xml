@@ -54,16 +54,7 @@
 							<mainClass>fi.wiskopdr.WiskOpdr</mainClass>
 						</manifest>
 						<manifestEntries>
-							<Class-Path>
-								geogebra3.jar
-								geogebra3_main.jar
-								geogebra3_gui.jar
-								geogebra3_cas.jar
-								geogebra3_properties.jar
-								geogebra3_export.jar
-								
-								verknippen.jar mozarch.jar tegels.jar geomalgebra.jar stroomdiagrammen.jar
-								statistiek.jar doorziendwo.jar flowdiagrams.jar</Class-Path>
+							<Class-Path>geogebra3.jar geogebra3_main.jar geogebra3_gui.jar geogebra3_cas.jar geogebra3_properties.jar geogebra3_export.jar	verknippen.jar mozarch.jar tegels.jar geomalgebra.jar stroomdiagrammen.jar statistiek.jar doorziendwo.jar flowdiagrams.jar</Class-Path>
 						</manifestEntries>
 					</archive>
 				</configuration>
