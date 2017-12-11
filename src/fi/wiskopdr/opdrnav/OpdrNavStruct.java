@@ -2923,7 +2923,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 //		}
 		if (e.getSource() == timerPanel)
 		{
-			if (e.getActionCommand().equals("telaat"))
+			if (e.getActionCommand().equals("telaat") && !isDocentReviewMode())
 				zetAfdekPanel(true, 0);
 			else
 				zetAfdekPanel(false, 0);
