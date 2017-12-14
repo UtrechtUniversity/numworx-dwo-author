@@ -51,7 +51,7 @@ public abstract class Instance /*implements Observer*/ {
 	
 	//protected int width, height;
 	
-	protected final SelectHandler selector = new SelectHandler() {
+	public final SelectHandler selector = new SelectHandler() {
 
 		@Override
 		public void visitLabel(Label l) {

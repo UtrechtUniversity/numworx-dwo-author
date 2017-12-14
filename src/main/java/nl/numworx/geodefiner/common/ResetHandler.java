@@ -4,10 +4,11 @@ import fi.euclides.event.EventHandler;
 
 public class ResetHandler extends EventHandler {
 
-	public Instance instance;
+	public final Instance instance;
 	
-	public ResetHandler(String string) {
+	public ResetHandler(String string, Instance instance) {
 		super(string);
+		this.instance = instance;
 	}
 
 	@Override
