@@ -1,9 +1,13 @@
 package fi.euclides.event;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Vector;
 
 import fi.euclides.util.Messages;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Model;
+import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
 
 public class DestroyHandler extends EventHandler {
@@ -21,39 +25,43 @@ public class DestroyHandler extends EventHandler {
 	public void pointerDragged(Numbers x, Numbers y) {
 	}
 
+	protected boolean filterSelection(Collection<? extends Destroyable> set) {
+		return !set.isEmpty();
+	}
+	
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#command()
 	 */
 	public void command() {
-		super.command();
+		//super.command();
 		
-		if(getModel().getSelect().isEmpty())
-		{	Destroyable d = null;
-			Vector lijnen = getModel().getLijnen();
-			Vector punten = getModel().getPunten();
+		final Model model = getModel();
+		if(model.getSelect().isEmpty())
+		{	Collection<Destroyable> d = new ArrayList<>(2);
+			Vector<Destroyable> lijnen = model.getLijnen();
+			Vector<Punt> punten = model.getPunten();
 			if(!lijnen.isEmpty())
 			{
-				d = (Destroyable) lijnen.lastElement();
+				d.add(lijnen.lastElement());
 			}
 			if( !punten.isEmpty())
 			{
-				Destroyable d1 = (Destroyable) punten.lastElement();
-				if(d == null || d.getIndex()< d1.getIndex())
-					d = d1;
+				d.add(punten.lastElement());
 			}
-			if(d == null)
-				return;
-//			getModel().toggle(d);
-			getTracker().setPointerHandler(this);
-//			setStatus(s(d) + Messages.getString("DestroyHandler.1")); //$NON-NLS-1$
+			if(filterSelection(d))
+				getTracker().setPointerHandler(this);
 		} else {
-			setStatus(string);
-			getModel().destroy();
+			if(filterSelection(model.getSelect()))
+			{
+				setStatus(string);
+				model.destroy();
+			}
 		}
 	}
 
 	public void pointerClicked(Numbers x, Numbers y) {
 		testHits(x.doubleValue(), y.doubleValue());
-		if(!getModel().getSelect().isEmpty())getModel().destroy();
+		if(filterSelection(getModel().getSelect()))
+			getModel().destroy();
 	}	
 }

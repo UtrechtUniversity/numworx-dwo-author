@@ -8,6 +8,8 @@ import fi.euclides.model.CirkelTrack;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.LijnTrack;
+import fi.euclides.model.Model;
+import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
@@ -42,23 +44,32 @@ public class AddCirkelHandler extends EventHandler {
 	public void pointerReleased(Numbers x, Numbers y) {
 		pointerDragged(x,y);
 		tracker.setTrack(null);
-		Vector select = getModel().getSelect();
+		final Model model = getModel();
+		Vector<Destroyable> select = model.getSelect();
 		if(state == 1)
 		{	Destroyable p1;
 			if(select.size()==1 && select.firstElement() instanceof Punt)
-			{	p1 = (Destroyable) select.firstElement();
-				getModel().toggle(p1);
+			{	p1 = select.firstElement();
+				model.toggle(p1);
 			} else {
-				if(select.isEmpty() && p instanceof Punt) 
-					getModel().toggle(p);
-				p1 = getModel().buildDPunt(x, y);
+//				if(select.isEmpty() && p instanceof Punt) 
+//					model.toggle(p);
+				p1 = model.buildPunt(x, y);
 			}
-			getModel().toggle(p);
-			getModel().toggle(p1);
-			getModel().buildCirkel();
+			model.toggle(p);
+			model.toggle(p1);
+			model.buildCirkel();
 			command();
 		} else if(state == 0)
 		{
+			if (select.isEmpty() 
+					|| (select.firstElement() instanceof OpObject && 
+							!(select.size() == 1 && select.firstElement() instanceof Segment))
+				) {
+					Destroyable p = model.buildPunt(x, y);
+					model.toggle(p);
+				} 
+
 			command();
 		}
 	}
@@ -70,7 +81,7 @@ public class AddCirkelHandler extends EventHandler {
 	}
 
 	public void command() {
-		Vector select = getModel().getSelect();
+		Vector<Destroyable> select = getModel().getSelect();
 		state = select.size();
 		if(state == 1 && select.firstElement() instanceof Punt)
 		{   Punt p0;

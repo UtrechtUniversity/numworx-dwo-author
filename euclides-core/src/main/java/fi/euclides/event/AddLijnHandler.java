@@ -6,11 +6,14 @@ import fi.euclides.util.Messages;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.LijnTrack;
 import fi.euclides.model.Model;
+import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
+import fi.euclides.model.PuntOp;
 import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
+import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.math.Numbers;
 
 public class AddLijnHandler extends EventHandler {
@@ -62,15 +65,15 @@ public class AddLijnHandler extends EventHandler {
 		pointerDragged(x,y);
 		tracker.setTrack(null);
 		Model model = getModel();
-		Vector select = model.getSelect();
-		if(state == 1)
+		Vector<Destroyable> select = model.getSelect();
+		if (state == 1)
 		{	Destroyable p1;
 			if(select.size()==1 && select.firstElement() instanceof Punt)
-				p1 = (Destroyable) select.elementAt(0);
+				p1 = select.elementAt(0);
 			else {
-				if(s == SEGMENT && select.isEmpty())
-					model.toggle(p);
-				p1 = model.buildDPunt(x, y);
+//				if(s == SEGMENT && select.isEmpty())
+//					model.toggle(p);
+				p1 = model.buildPunt(x, y);
 				model.toggle(p1);
 			}
 			model.clearSelection();
@@ -79,8 +82,15 @@ public class AddLijnHandler extends EventHandler {
 			
 			build();
 			command();
-		} else if(state == 0)
-		{
+		} else if (state == 0)
+		{			
+			if (select.isEmpty() 
+				|| select.firstElement() instanceof OpObject
+			) {
+				Destroyable p = model.buildPunt(x, y);
+				model.toggle(p);
+			} 
+				
 			command();
 		}
 	}
@@ -96,13 +106,13 @@ public class AddLijnHandler extends EventHandler {
 		default:
 			getModel().buildLijn();
 		}
-		testLijn = false;
+		testLijn = true;
 	}
 
 	public AddLijnHandler() {
 		super(Messages.getString("AddLijnHandler.0")); //$NON-NLS-1$
 		this.testPunt = true;
-		this.testLijn = false;
+		this.testLijn = true;
 	}
 
 
