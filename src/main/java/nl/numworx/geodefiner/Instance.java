@@ -525,6 +525,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 
 		private WeakHashMap<String, Destroyable> cache = new WeakHashMap<String,Destroyable>();
+
+		private HighLighter hilighter;
 		
 		@Override
 		public NameMapper getMapper() {
@@ -536,18 +538,52 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			getModel().addObserver(this);
 			hitTester = (new HitTester3(content.getFontMetrics(content.getFont())));
 			nameMapper = new NamingModel(this, cache);
+			hilighter = new HighLighter(hitTester.copy(), this);
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			snapper.translate(e);
 			super.mouseReleased(e);
+			hilighter.mouseReleased(e);
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			snapper.translate(e);
 			super.mouseDragged(e);
+			hilighter.mouseDragged(e);
+		}
+
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			super.mouseClicked(e);
+			hilighter.mouseClicked(e);
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			//super.mouseEntered(e);
+			hilighter.mouseEntered(e);
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			//super.mouseExited(e);
+			hilighter.mouseExited(e);
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			super.mousePressed(e);
+			hilighter.mousePressed(e);
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			//super.mouseMoved(e);
+			hilighter.mouseMoved(e);
 		}
 
 		@Override
@@ -556,6 +592,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			Stroke stroke = a.adapt(Stroke.class);
 			if(stroke == null) stroke = DEFAULT_STROKE;
 			g.setStroke(stroke);
+			hilighter.hilight(object, g);
 			if(tracking || trail)
 				return;
 			Color c = a.adapt(Color.class);
@@ -910,6 +947,14 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			g.fill(shape);
 			DefaultAdapter.getDefault(l).put(Shape.class, shape);
 		}
+
+		float getPointSize() {
+			return pointSize;
+		}
+
+		void setPointSize(float f) {
+			pointSize = f;
+		}
 	}
 
 	private CBookEventHandler handler = new CBookEventHandler(this);
@@ -1162,9 +1207,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		ToolboxPanel p = new ToolboxPanel();
 		p.viewer = getViewer();
 		p.selector = selector;
-		p.resetter.instance = this;
 		p.formule.definitions = getDefinitions();
-		p.setToolbox(toolbox);
+		p.setToolbox(toolbox, this);
 		p.fromList(launchData.getObjectList("toolbox"));
 	}	
 

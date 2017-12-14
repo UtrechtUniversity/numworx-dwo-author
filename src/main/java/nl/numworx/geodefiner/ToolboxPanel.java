@@ -31,6 +31,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
 
+import nl.numworx.geodefiner.common.FilteredDestroyHandler;
 import nl.numworx.geodefiner.common.ResetHandler;
 import nl.numworx.geodefiner.common.Tools;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
@@ -157,9 +158,9 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	Vector<Action> actions = new Vector<Action>();
 	List<JCheckBox> boxes = new ArrayList<JCheckBox>();
 	
-	void createActions() {
+	void createActions(Instance instance) {
 		actions.clear();
-
+		resetter = new ResetHandler("Reset", instance);
 		actions.setSize(TOOL_SIZE);
 		actions.set(SELECTOR, new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer));
 		actions.set(POINT, new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddPuntHandler(),viewer));
@@ -179,7 +180,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		actions.set(TRIANGLE, new XXXAction("Driehoek", "/triangle.png", new AddTriangleHandler2(), viewer));
 		actions.set(CIRCLE, new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer));
 
-		actions.set(DESTROY,new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new DestroyHandler(),viewer));
+		actions.set(DESTROY,new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new FilteredDestroyHandler(instance),viewer));
 
 		actions.set(ARC, new XXXAction("Boog", "/angle.png", new AddBoogHandler("Boog"),viewer));
 		actions.set(MIDPOINT, new XXXAction(Messages.getString("Euclides.54"), "/midpoint.png", new AddMiddelPuntHandler(),viewer));
@@ -227,8 +228,8 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		public TrailAction(String name, AWTViewer viewer) {
 			super(name, "/thickness2.png", new TrailHandler(name), viewer);
 		}
-
 	}
+	
 
 	ToolboxPanel() {
 		super(new BorderLayout());
@@ -247,14 +248,14 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		return toolbox;
 	}
 
-	public void setToolbox(JToolBar toolbox) {
+	public void setToolbox(JToolBar toolbox, Instance instance) {
 		this.toolbox = toolbox;
-		createActions();
+		createActions(instance);
 	}
 
 	boolean hold = false;
 	SelectHandler selector = new SelectHandler();
-	ResetHandler  resetter = new ResetHandler("Reset");
+	ResetHandler  resetter;
 	FormuleHandler formule = new FormuleHandler("Definitie");
 	TextHandler text = new TextHandler("Text");
 	

@@ -131,7 +131,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		instance.randomizer = command;
 		checkObjects.randomizer = command;
 		toolbox.viewer = instance.getViewer();
-		toolbox.setToolbox(instance.toolbox);
+		toolbox.setToolbox(instance.toolbox, instance);
 		checkDWO.checkBtn = instance.checkBtn;
 		checkDWO.validator = component;
 		checkDWO.setTracker(instance.getViewer());
