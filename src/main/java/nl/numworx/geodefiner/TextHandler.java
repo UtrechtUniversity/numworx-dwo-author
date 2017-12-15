@@ -1,35 +1,22 @@
 package nl.numworx.geodefiner;
 
 import java.awt.Component;
-import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import nl.numworx.geodefiner.common.Volgpunt;
-import fi.euclides.event.EventHandler;
-import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
+import fi.euclides.model.math.Numbers;
+import nl.numworx.geodefiner.common.AbstractTextHandler;
+import nl.numworx.geodefiner.common.Volgpunt;
 
-public class TextHandler extends EventHandler {
+public class TextHandler extends AbstractTextHandler {
 
 	TextHandler(String string) {
 		super(string);
 	}
 
-	@Override
-	public void command() {
-		Vector<Destroyable> selection = getModel().getSelect();
-		if(selection.size() == 1) {
-			Destroyable first = selection.firstElement();
-			if(first instanceof Punt) {
-				Punt p = (Punt) first;
-				attachLabel(p);
-			}
-		}	
-	}
-
-	private void attachLabel(Punt p) {
+	protected void attachLabel(Punt p) {
 		CommandPanel message = new CommandPanel();
 		message.random = null; // no randomizer
 		message.instance = null; // no NPE!
@@ -40,7 +27,10 @@ public class TextHandler extends EventHandler {
 			formule = formule.substring(2, formule.length()-1);
 			Label l = new Label();
 			l.setString(formule);
-			p = new Volgpunt(p);
+			Volgpunt vp;
+			p = vp = new Volgpunt(p);
+			vp.setDxy(Numbers.createInteger(4), Numbers.ZERO);
+			vp.setFree(false);
 			l.setP(p);
 			getModel().add(l);
 		}
