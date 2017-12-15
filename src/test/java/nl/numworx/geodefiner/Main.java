@@ -12,6 +12,7 @@ import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEvent;
@@ -39,7 +40,7 @@ public class Main {
 		WiskOpdr.dwo_env = "test";
 
 		appcontext = new AppContext();
-		CBookService service = new ServiceImpl();
+		final CBookService service = new ServiceImpl();
 
 // register here your widgets
 // by code		
@@ -47,12 +48,16 @@ public class Main {
 		//service.registerWidget(widget);
 		widget = new nl.numworx.geodefiner.GeoDefiner();
 		service.registerWidget(widget);
-
-		JFrame player;
-		appcontext.load();
-		player = createEditor(service, appcontext);		
-		player.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		player.show();
+		SwingUtilities.invokeLater(
+		new Runnable() {
+			public void run() {
+				JFrame player;
+				appcontext.load();
+				player = createEditor(service, appcontext);
+				player.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				player.show();
+			}
+		});
 	}
 	
 	private static JFrame createEditor(CBookService service, CBookContext context) {

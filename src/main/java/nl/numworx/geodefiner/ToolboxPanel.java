@@ -32,6 +32,7 @@ import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
 
 import nl.numworx.geodefiner.common.FilteredDestroyHandler;
+import nl.numworx.geodefiner.common.AddPolygonHandler;
 import nl.numworx.geodefiner.common.ResetHandler;
 import nl.numworx.geodefiner.common.Tools;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
@@ -177,7 +178,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		xaction.cursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
 		actions.set(PAN, xaction);
 		
-		actions.set(TRIANGLE, new XXXAction("Driehoek", "/triangle.png", new AddTriangleHandler2(), viewer));
+		actions.set(TRIANGLE, new XXXAction("Veelhoek", "/triangle.png", new AddPolygonHandler("Veelhoek"), viewer));
 		actions.set(CIRCLE, new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer));
 
 		actions.set(DESTROY,new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new FilteredDestroyHandler(instance),viewer));
