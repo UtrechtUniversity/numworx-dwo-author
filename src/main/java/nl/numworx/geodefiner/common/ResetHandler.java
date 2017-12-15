@@ -4,7 +4,7 @@ import fi.euclides.event.EventHandler;
 
 public class ResetHandler extends EventHandler {
 
-	public final Instance instance;
+	private final Instance instance;
 	
 	public ResetHandler(String string, Instance instance) {
 		super(string);
