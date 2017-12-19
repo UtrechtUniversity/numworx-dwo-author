@@ -3,20 +3,44 @@ package fi.wiskopdr;
 import java.awt.Color;
 import java.util.Map;
 
+import fi.beans.base64code.StringCodeObject;
+
 public class StateToCss {
 
-	public static String createCssFromAllStyles()
+//	/**
+//	 * @deprecated Use {@link #createCssFromAllStyles(Map)} instead
+//	 */
+//	public static String createCssFromAllStyles()
+//	{
+//		return createCssFromAllStyles(TekstVakPanel.styles);
+//	}
+
+/**
+ * Launchdata, zoals in de WiskOpdr/DWOJClient als ook als JSONOBject in DWOplayer/DWOServer.
+ * @param launchData Hashtable of JSONObject
+ * @return
+ */
+	public static String createCssFromInstellingen(Map<String,Object> launchData) {
+		Object instellingen = launchData.get("instellingen");
+		Map<String,Object> map;
+		if(instellingen instanceof String) map = (Map) StringCodeObject.decodeStringToObject((String) instellingen);
+		else if (instellingen instanceof Map) map = (Map) instellingen;
+		else return "";
+		Object styles = map.get("TekstVakPanelStyles");
+		if(styles instanceof Map)
+			return createCssFromAllStyles( (Map<String,Map<String,Object>>) styles);
+		return "";
+	}
+	
+	
+	public static String createCssFromAllStyles(Map<String, Map<String, Object>> styles)
 	{
-		if(TekstVakPanel.styles == null)
+		if(styles == null)
 			return "";
 		
 		String cssString = "svg|text {\n\tstroke: none;\n}\n\nsvg|rect {\n\tstroke:none;\n }\n\n";
-		for (String key : TekstVakPanel.styles.keySet())
-			cssString += createCssFromStyle(key, TekstVakPanel.styles.get(key));
-			
-		
-		System.out.println(cssString);
-		
+		for (String key : styles.keySet())
+			cssString += createCssFromStyle(key, styles.get(key));		
 		return cssString;
 	}
 
@@ -26,9 +50,9 @@ public class StateToCss {
 		
 		String cssMain = "." + styleString + "-main {\n";
 		int a = 0; int b = 0; int c = 0;
-		if(style.containsKey("cellSpaceColumn")) a = ((Integer) style.get("cellSpaceColumn")).intValue();
-		if(style.containsKey("cellSpaceRow")) b = ((Integer) style.get("cellSpaceRow")).intValue();
-		if(style.containsKey("randDikte")) c = ((Integer) style.get("randDikte")).intValue();
+		if(style.containsKey("cellSpaceColumn")) a = ((Number) style.get("cellSpaceColumn")).intValue();
+		if(style.containsKey("cellSpaceRow")) b = ((Number) style.get("cellSpaceRow")).intValue();
+		if(style.containsKey("randDikte")) c = ((Number) style.get("randDikte")).intValue();
 		cssMain += "\tborder-spacing:" + a + "px " + b + "px;\n";
 		cssMain += "\tmargin:" + (-(b+c)) + "px " + (-(a+c)) + "px;\n";
 		cssMain += "}\n\n";
@@ -43,23 +67,24 @@ public class StateToCss {
 		int r = 255; int g = 255; b = 255;
 		if (style.containsKey("bgColor_red") ) 
 		{
-			r = ((Integer) style.get("bgColor_red")).intValue();
-			if (style.containsKey("bgColor_green"))	g = ((Integer) style.get("bgColor_green")).intValue();
-			if (style.containsKey("bgColor_blue")) b = ((Integer) style.get("bgColor_blue")).intValue();
+			r = ((Number) style.get("bgColor_red")).intValue();
+			if (style.containsKey("bgColor_green"))	g = ((Number) style.get("bgColor_green")).intValue();
+			if (style.containsKey("bgColor_blue")) b = ((Number) style.get("bgColor_blue")).intValue();
 		}
 		else if(style.containsKey("bgColor"))
 		{
-			Color bgColor = (Color) style.get("bgColor");
+			Object object = style.get("bgColor");
+			if (object instanceof Color) {
+			Color bgColor = (Color) object;
 			r = bgColor.getRed();
 			g = bgColor.getGreen();
 			b = bgColor.getBlue();
-			
-//			Hashtable colorMap = style.getObjectMap("bgColor");
-//			if(colorMap != null) {
-//				r = colorMap.getInt("red");
-//				g = colorMap.getInt("green");
-//				b = colorMap.getInt("blue");
-//			}
+			} else if (object instanceof Map) {
+				Map bgColor = (Map) object;
+				r = ((Number) bgColor.get("red")).intValue();
+				g = ((Number) bgColor.get("green")).intValue();
+				b = ((Number) bgColor.get("blue")).intValue();		
+			}
 		}
 		cssMain2 += "\tbackground-color: rgba(" + r + "," + g +"," + b + "," + a + ");\n";
 		
@@ -67,41 +92,42 @@ public class StateToCss {
 		if(style.containsKey("randZichtbaar") && ((Boolean) style.get("randZichtbaar")).booleanValue())
 			a = 1;
 		if (style.containsKey("randColor_red")) 
-		{	r = ((Integer) style.get("randColor_red")).intValue();
-			if (style.containsKey("randColor_green")) g = ((Integer) style.get("randColor_green")).intValue();
-			if (style.containsKey("randColor_blue")) b = ((Integer) style.get("randColor_blue")).intValue();
+		{	r = ((Number) style.get("randColor_red")).intValue();
+			if (style.containsKey("randColor_green")) g = ((Number) style.get("randColor_green")).intValue();
+			if (style.containsKey("randColor_blue")) b = ((Number) style.get("randColor_blue")).intValue();
 		}
 		else if(style.containsKey("randColor"))
 		{
-			Color randColor = (Color) style.get("randColor");
+			Object object = style.get("randColor");
+			if(object instanceof Color) {
+			Color randColor = (Color) object;
 			r = randColor.getRed();
 			g = randColor.getGreen();
 			b = randColor.getBlue();
-			
-//			ObjectMap colorMap = style.getObjectMap("randColor");
-//			if(colorMap != null) {
-//				r = colorMap.getInt("red");
-//				g = colorMap.getInt("green");
-//				b = colorMap.getInt("blue");
-//			}
+			} else if  (object instanceof Map) {
+				Map randColor = (Map) object;
+				r = ((Number) randColor.get("red")).intValue();
+				g = ((Number) randColor.get("green")).intValue();
+				b = ((Number) randColor.get("blue")).intValue();
+			}
 		}
 		String randColor = "rgba(" + r + "," + g +"," + b + ",";
 		cssMain2 += "\tborder-color:" + randColor + a + ");\n";
 		
 		if(style.containsKey("randDikte")) 
-		{	a = ((Integer) style.get("randDikte")).intValue();
+		{	a = ((Number) style.get("randDikte")).intValue();
 			cssMain2 += "\tborder-width: " + a + "px;\n";
 		}
 		cssMain2 += "\tborder-style:solid;\n";
 		
 		if(style.containsKey("ronding")) 
-		{	a = ((Integer) style.get("ronding")).intValue();
+		{	a = ((Number) style.get("ronding")).intValue();
 			double d = a/2;
 			cssMain2 += "\tborder-radius:" + d + "px;\n";
 		}
 		
 		if(style.containsKey("hoek")) 
-		{	a = ((Integer) style.get("hoek")).intValue();
+		{	a = ((Number) style.get("hoek")).intValue();
 			cssMain2 += "\ttransform:rotate(" + a + "deg);\n";
 			cssMain2 += "\t-webkit-transform:rotate(" + a + "deg);\n";
 		}
@@ -146,22 +172,24 @@ public class StateToCss {
 		String cssTekstRegel = "." + styleString + "-tekstregel svg {\n";
 		r = 0; g = 0; b = 0;
 		if (style.containsKey("fgColor_red")) 
-		{	r = ((Integer) style.get("fgColor_red")).intValue();
-			if (style.containsKey("fgColor_green")) g = ((Integer) style.get("fgColor_green")).intValue();
-			if (style.containsKey("fgColor_blue")) b = ((Integer) style.get("fgColor_blue")).intValue();
+		{	r = ((Number) style.get("fgColor_red")).intValue();
+			if (style.containsKey("fgColor_green")) g = ((Number) style.get("fgColor_green")).intValue();
+			if (style.containsKey("fgColor_blue")) b = ((Number) style.get("fgColor_blue")).intValue();
 		}
 		if(style.containsKey("anderFont") && ((Boolean) style.get("anderFont")).booleanValue() && style.containsKey("fgColor"))
 		{
-			Color fgColor = (Color) style.get("fgColor");
-			r = fgColor.getRed();
-			g = fgColor.getGreen();
-			b = fgColor.getBlue();
-//			ObjectMap colorMap = style.getObjectMap("fgColor");
-//			if(colorMap != null) {
-//				r = colorMap.getInt("red");
-//				g = colorMap.getInt("green");
-//				b = colorMap.getInt("blue");
-//			}
+			Object object = style.get("fgColor");
+			if (object instanceof Color) {
+				Color fgColor = (Color) object;
+				r = fgColor.getRed();
+				g = fgColor.getGreen();
+				b = fgColor.getBlue();
+			} else if  (object instanceof Map) {
+				Map fgColor = (Map) object;
+				r = ((Number) fgColor.get("red")).intValue();
+				g = ((Number) fgColor.get("green")).intValue();
+				b = ((Number) fgColor.get("blue")).intValue();
+			}
 		}
 		cssTekstRegel += "\tfill: rgb(" + r + "," + g +"," + b + ");\n";
 		cssTekstRegel += "\tstroke: rgb(" + r + "," + g +"," + b + ");\n";		
