@@ -21,6 +21,14 @@ public class AddBissectriceHandler extends EventHandler {
 		testPunt = true;
 	}
 	
+	
+	AddBissectriceHandler(String string) {
+		super(string);
+		testLijn = false;
+		testPunt = true;
+	}
+
+
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#command()
 	 */

@@ -83,6 +83,13 @@ public class LijnTrack extends Track {
 		p2 = p;
 	}
 
+	public LijnTrack(Punt p, Boog bs) {
+		super(p);
+		this.l = bs;
+		p2 = p;
+	}
+
+
 	/* (non-Javadoc)
 	 * @see Track#visit(euclides.Visitor)
 	 */

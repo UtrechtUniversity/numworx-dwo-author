@@ -56,23 +56,6 @@ public class Triangle extends MP {
 		depend = new Punt[n];
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	public boolean same(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof Triangle)) {
-			return false;
-		}
-		Triangle other = (Triangle) obj;
-		return Arrays.equals(depend, other.depend);
-	}
-
 	public String key() {
 		return TYPE;
 	}
