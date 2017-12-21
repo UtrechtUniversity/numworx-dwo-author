@@ -43,37 +43,40 @@ class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		hilight = false;
-		viewer.paint();
-		System.out.println("pressed");
+		//hilight = false;
+		//viewer.paint();
+		mouseMoved(e);
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		hilight = true;
-		viewer.paint();
-		System.out.println("released");
+		//hilight = true;
+		//viewer.paint();
+		mouseMoved(e);
 
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		out = false;
+		mouseMoved(e);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		out = true;
+		viewer.paint();
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		mouseMoved(e);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		x = e.getX();
-		y = e.getY();
+		x = e.getX()-viewer.offX;
+		y = e.getY()-viewer.offY;
 		hits.setXY(x, y);
 		viewer.paint();
 	}
@@ -106,7 +109,7 @@ class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 	}
 
 	@Override
-	public void visitCirkel(Cirkel c) {
+	public void visitCirkel(Cirkel c) { // pas op: breedte 0 of color transparant
 		thickerStroke();
 	}
 

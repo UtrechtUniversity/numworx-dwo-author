@@ -56,6 +56,8 @@ import nl.numworx.geodefiner.common.Tips;
 import nl.numworx.geodefiner.ui.AxesModel;
 import nl.numworx.geodefiner.ui.TextModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
+import nl.numworx.geodefiner.ui.UserConfig;
+import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 
 import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookEvent;
@@ -592,28 +594,31 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			Stroke stroke = a.adapt(Stroke.class);
 			if(stroke == null) stroke = DEFAULT_STROKE;
 			g.setStroke(stroke);
-			hilighter.hilight(object, g);
 			if(tracking || trail)
+			{
+				hilighter.hilight(object, g);
 				return;
+			}
 			Color c = a.adapt(Color.class);
-			if (c != null) {
+			CheckObject co = a.adapt(CheckObject.class);
+			if (c != null && co == null) {
 				if (getModel().getSelect().contains(object))
-					g.setColor(c.brighter());	// grijs wordt wit...		
-					//g.setColor(Color.red);
-				else
+				{	g.setColor(c.brighter());	// grijs wordt wit...		
+					setColor(RED);				// is te verwarrend, altijd SELECTCOLOR
+				} else
 				{
 					g.setColor(c);
 				}
+				hilighter.hilight(object, g);
 				return;
 			}
 // feedback color.
-			CheckObject co = a.adapt(CheckObject.class);
 			if(co != null)
 			{   // extra verificatie?
 				g.setColor(Color.green);
 			} else
-
-			super.selectColor(object);
+				super.selectColor(object);
+			hilighter.hilight(object, g);
 		}
 		
 		
@@ -828,6 +833,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			}
 			path.closePath();
 			Paint c = t.adapt(Paint.class);
+			CheckObject co = t.adapt(CheckObject.class);
+			if (co != null) {
+				g.setColor(new Color(0x80008000, true)); // CONSTANT
+				g.fill(path);
+			} else
 			if(c != null) {
 				g.setPaint(c);
 				g.fill(path);
@@ -1201,6 +1211,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		getDefinitions().readonly = viewer.getModel().getIndex();
 		if(checkObjects != null)
 			checkObjects.start();
+		getViewer().getModel().addObserver(UserConfig.INSTANCE);
 	}
 
 	void startToolbox() {

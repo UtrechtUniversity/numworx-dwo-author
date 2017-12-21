@@ -39,6 +39,7 @@ import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.AddBissectriceHandler;
 import fi.euclides.event.AddBoogHandler;
+import fi.euclides.event.AddBoogHandler2;
 import fi.euclides.event.AddCirkelHandler;
 import fi.euclides.event.AddFocusHandler;
 import fi.euclides.event.AddKegelsnedeHandler;
