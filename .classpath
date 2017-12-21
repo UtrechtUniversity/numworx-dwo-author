@@ -20,7 +20,9 @@
 	<classpathentry kind="lib" path="lib/mayscript.jar"/>
 	<classpathentry kind="lib" path="lib/classes"/>
 	<classpathentry kind="lib" path="output/jar/sardine.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/geodefiner.jar"/>
+	<classpathentry kind="lib" path="lib/DWOJClient-2.1.12-SNAPSHOT-jar-with-dependencies.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="/BalansFruitApplet"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GraphTool"/>
 	<classpathentry kind="output" path="output/classes"/>
