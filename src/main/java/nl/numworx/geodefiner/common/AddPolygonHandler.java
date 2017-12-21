@@ -6,6 +6,7 @@ import fi.euclides.event.EventHandler;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.LijnTrack;
 import fi.euclides.model.Model;
+import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
@@ -54,57 +55,76 @@ public class AddPolygonHandler extends EventHandler {
 	@Override
 	public void pointerReleased(Numbers x, Numbers y) {
 		pointerDragged(x,y);
-		final Model model = getModel();
+		Model model = getModel();
 		Vector<Destroyable> select = model.getSelect();
+		Punt p;
 		switch(state) {
 		case 0:
-			if(select.isEmpty()) {
-				Punt p = model.buildPunt(x, y);
-				points.addElement(p);
-				state = 1;
-				setTrack(new LijnTrack(p.getX(), p.getY(), new Segment()));
-			}
+			p = selectedPoint(x, y, model, select);
+			if (p == null) break;
+			points.addElement(p);
+			state = 1;
+			setTrack(new LijnTrack(p.getX(), p.getY(), new Segment()));
 			break;
-		case 1: 
-			if(select.isEmpty()) {
-				Punt p = model.buildPunt(x, y);
-				points.addElement(p);
-				state = 2;
-				Triangle t = new Triangle(3);
-				t.setA(points.firstElement());
-				t.setB(p);
-				setTrack(new LijnTrack(p.getX(), p.getY(),t));
+		case 1:
+			p = selectedPoint(x, y, model, select);
+			if (p == null) break;
+			if( points.contains(p)) {
+				break;
 			}
+			points.addElement(p);
+			state = 2;
+			Triangle t = new Triangle(3);
+			t.setA(points.firstElement());
+			t.setB(p);
+			setTrack(new LijnTrack(p.getX(), p.getY(),t));
 			break;
 		case 2:
-			if(select.isEmpty()) {
-				Punt p = model.buildPunt(x, y);
-				points.addElement(p);
-				state = 3;
-				setTrack(new PolygonTrack(x,y, points));			
+			p = selectedPoint(x, y, model, select);
+			if (p == null) break;
+			if (points.contains(p)) {
+				break;
 			}
+			points.addElement(p);
+			state = 3;
+			setTrack(new PolygonTrack(x,y, points));			
 			break;
 		case 3:
-			if(select.isEmpty()) {
-				Punt p = model.buildPunt(x, y);
-				points.addElement(p);
-				setTrack(new PolygonTrack(x,y, points));			
-			} else if (select.firstElement() == points.firstElement()) {
+			p = selectedPoint(x,y, model, select);
+			if (p==null) break;
+			if (points.contains(p)) {
+				if (p == points.firstElement()) {
 					Punt[] array = points.toArray(new Punt[points.size()]);
-					Triangle p;
 					if(array.length > 3)
-						p = new Polygon(array);
+						t = new Polygon(array);
 					else
-						p = new Triangle(array);
-					model.add(p);
+						t = new Triangle(array);
+					model.add(t);
 					points.clear();
 					setTrack(new Track(x,y));
 					state = 0;
+				}
+				break;
 			}
+			points.addElement(p);
+			setTrack(new PolygonTrack(x,y, points));
 			break;
 		}
 		getTracker().setTrack(null);
 		getTracker().paint();
+	}
+
+	private Punt selectedPoint(Numbers x, Numbers y, Model model, Vector<Destroyable> select) {
+		Punt p = null;
+		if(select.isEmpty()) {
+			p = model.buildPunt(x, y);
+		} else if(select.size() == 1 && select.firstElement() instanceof Punt) {
+			p = (Punt) select.firstElement();
+		} else if (select.firstElement() instanceof OpObject) {
+			p = model.buildPunt(x,y);
+		}
+		model.clearSelection();
+		return p;
 	}
 
 	@Override

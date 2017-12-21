@@ -141,7 +141,35 @@ public class EqualsVisitor implements Visitor {
 
 	@Override
 	public void visitTriangle(Triangle a) {
-		test = a .same(b) ? Numbers.ZERO : Numbers.ONE;			
+		if (b instanceof Triangle) {
+			Triangle o = (Triangle) b;
+			Punt[] depend = a.getElements();
+			Punt[] other  = o.getElements();
+			if(other.length == depend.length) {
+				test = Numbers.createInteger(depend.length);
+				for(int j = 0; j < depend.length; j++) {
+					Numbers testn = Numbers.ZERO;
+					for(int i = 0;i < depend.length; i++) {
+						int off = (i+j)%depend.length;
+						testn = Numbers.add(testn, puntenTest(depend[i], other[off]));
+						if(Numbers.signum(Numbers.sub(test, testn))<=0) break;
+					}
+					if (Numbers.signum(Numbers.sub(test, testn))>0)
+						test = testn;
+					testn = Numbers.ZERO;
+					for(int i = 0;i < depend.length; i++) {
+						int off = (j-i)%depend.length; if(off<0) off += depend.length;
+						testn = Numbers.add(testn, puntenTest(depend[i], other[off]));
+						if(Numbers.signum(Numbers.sub(test, testn))<=0) break;
+					}
+					if (Numbers.signum(Numbers.sub(test, testn))>0)
+						test = testn;
+				}
+				test = Numbers.div(test, Numbers.createInteger(depend.length));
+				return;
+			}
+		}
+		test = Numbers.ONE; // False!
 	}
 
 	@Override
