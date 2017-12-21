@@ -1,10 +1,8 @@
-#-injars ../target/classes/
-#-outjars ../target/wiskopdr.jar
--injars ../../GraphTool/target/classes
+-injars ../target/dependency/graphtool.jar
 -outjars ../target/graphtool.jar
--injars ../../BalansFruitApplet/target/classes
+-injars ../target/dependency/balansfruitapplet.jar
 -outjars ../target/balansfruitapplet.jar
--injars ../lib/geodefiner.jar
+-injars ../target/dependency/geodefiner.jar
 -outjars ../target/geodefiner.jar
 
 -target 1.8

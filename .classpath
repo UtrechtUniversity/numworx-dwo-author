@@ -24,7 +24,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/DWOJClient-2.1.12-SNAPSHOT-jar-with-dependencies.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/geodefiner"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

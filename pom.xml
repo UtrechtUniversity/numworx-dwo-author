@@ -29,6 +29,7 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>stap1</id>
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
@@ -36,7 +37,19 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<includeScope>compile</includeScope>
-							<excludeArtifactIds>balansfruitapplet,graphtool</excludeArtifactIds>
+							<excludeArtifactIds>balansfruitapplet,graphtool,geodefiner</excludeArtifactIds>
+							<stripVersion>true</stripVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<id>stap2</id>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<phase>process-classes</phase>
+						<configuration>
+							<includeScope>compile</includeScope>
+							<includeArtifactIds>balansfruitapplet,graphtool,geodefiner</includeArtifactIds>
 							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
