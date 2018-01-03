@@ -237,8 +237,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	EventHandler handler;
 	private boolean moved;
 	private AbstractViewer extra;
-	int offX;
-	int offY;
+	protected int offX;
+	protected int offY;
 	
 	public void processMouseDown(int x, int y) {
 		handler.pointerPressed(x-offX, y-offY);
