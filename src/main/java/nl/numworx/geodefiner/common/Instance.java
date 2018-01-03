@@ -486,6 +486,9 @@ public abstract class Instance /*implements Observer*/ {
 			score += checkObjects.getScore();
 			if(Boolean.TRUE == status) {
 				status = checkObjects.isStatus();
+			} else if (Boolean.FALSE == status) {
+				status = checkObjects.isStatus();
+				if( Boolean.TRUE == status) status = null;
 			}
 		}
 	}
