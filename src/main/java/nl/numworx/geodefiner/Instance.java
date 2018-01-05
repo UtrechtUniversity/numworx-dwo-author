@@ -596,7 +596,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			g.setStroke(stroke);
 			if(tracking || trail)
 			{
-				hilighter.hilight(object, g);
+				//hilighter.hilight(object, g);
 				return;
 			}
 			Color c = a.adapt(Color.class);

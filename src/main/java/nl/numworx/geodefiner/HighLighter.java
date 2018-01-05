@@ -20,6 +20,7 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 import nl.numworx.geodefiner.Instance.InstanceViewer;
+import nl.numworx.geodefiner.common.Grid;
 
 class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 
@@ -81,7 +82,7 @@ class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 	}
 
 	public void hilight(Destroyable d, Graphics2D g) {
-		if(hilight && !out) {
+		if(hilight && !out && d.isDefined()) {
 			this.g.set(g);
 			d.visit(hits);
 			hits.done();
@@ -134,7 +135,7 @@ class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 
 	@Override
 	public void visitLocus(Locus l) {
-		thickerStroke();
+			thickerStroke();
 	}
 
 	@Override
