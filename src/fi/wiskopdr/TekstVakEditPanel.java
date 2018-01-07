@@ -319,7 +319,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		hintButtonCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_hintButton"), 10, 605, 150, 20, hintButton, interactionOptionsPanel);
 		
 		logIDField = new JTextField("0");
-		logIDField.setBounds(100,250,70,20);
+		logIDField.setBounds(100,250,120,20);
 		logIDField.setFont(ifFont);
 		logIDField.setVisible(false);
 		logIDField.addActionListener(this);
@@ -327,7 +327,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(logIDField);
 		
 		logIDLabelField = new JTextField("");
-		logIDLabelField.setBounds(100,275,70,20);
+		logIDLabelField.setBounds(100,275,120,20);
 		logIDLabelField.setFont(ifFont);
 		logIDLabelField.setVisible(false);
 		logIDLabelField.addActionListener(this);

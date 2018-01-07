@@ -28,6 +28,7 @@ import fi.beans.base64code.*;
 import fi.wiskopdr.AntwoordEditPanel;
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.InteractiePanelContainerIF;
+import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrEditPanel;
@@ -126,6 +127,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		tekstEditor.addActionListener(this);
 		tekstEditor.setFont(WiskOpdr.tekstFont);
 		tekstEditor.setCrossWidgetOption(true);
+		tekstEditor.setTemplateOption(true);
+		tekstEditor.setStandardComponentOption(true);
 		add(tekstEditor);
 		tekstEditor.setResizable(true);
 
@@ -767,6 +770,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 			scoreMax = 0;
 		
 		Vector v = geefInteractiePanels();
+		//System.out.println("Vectir met ip Panels: "+v.toString());
 		int aantalInteractiePanel = 5 + v.size();
 		interactiePanelLaunchData = new Hashtable[aantalInteractiePanel];
 		if (interactiePanelLaunchDataOudeVersie != null)
@@ -781,7 +785,29 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
             InteractiePanelContainerIF ip = (InteractiePanelContainerIF) v.elementAt(i);
             interactiePanelLaunchData[i + 5] = ip.getEditState();
             scoreMax += ip.getScoreMax();
-
+            
+            //System.out.println("LaunchData ip Panels: "+ interactiePanelLaunchData[i + 5].toString());
+            
+            if(((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).containsKey("logID")) {
+            	String logID = (String)((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).get("logID");
+            	if(logID.startsWith("DWOTEMP_") && ip instanceof TekstInteractiePanelVak) {
+            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logID", "");
+            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logOption", false);
+            		TekstInteractiePanelVak ipp = new TekstInteractiePanelVak(((TekstInteractiePanelVak)ip).getTekstVak(),interactiePanelLaunchData[i + 5]);
+            		TekstVakPanel.addTemplatePage(logID,ipp.toCompleteString());
+            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logID", logID);
+            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logOption", true);
+            	}
+            	if(logID.startsWith("DWOCOMP_") && ip instanceof TekstInteractiePanelVak) {
+            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logID", "");
+            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logOption", false);
+            		TekstInteractiePanelVak ipp = new TekstInteractiePanelVak(((TekstInteractiePanelVak)ip).getTekstVak(),interactiePanelLaunchData[i + 5]);
+            		TekstVakPanel.addTemplateComponent(logID,ipp.toCompleteString());
+            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logID", logID);
+            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logOption", true);
+            	}
+            }
+            
             int[][] ob = ((InteractiePanelContainerIF) v.elementAt(i)).getScoreMaxObjectives();
             for (int j = 0; scoreMaxObjectives != null && ob != null && j < scoreMaxObjectives.length; j++) 
                 for(int k = 0; scoreMaxObjectives[j] != null && k < scoreMaxObjectives[j].length; k++){
@@ -805,6 +831,9 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		h.put("scoreMax", new Integer(scoreMax));
 		if (scoreMaxObjectives != null)
 			h.put("scoreMaxObjectives", scoreMaxObjectives);
+		
+		//System.out.println("tekst: "+tekst);
+		//System.out.println("interactiePanelLaunchData: "+interactiePanelLaunchData[5].toString());
 
 		String s = StringCodeObject.encodeObjectToString(h);
 		return s;

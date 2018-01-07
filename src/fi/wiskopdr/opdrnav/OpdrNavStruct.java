@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -1073,6 +1074,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		String[] mccCategorieString = null;
 		boolean scoresZichtbaar = true;
 		Hashtable styles = null;
+		Hashtable templatePages = null;
+		Hashtable templateComponents = null;
+		ArrayList<String> templatePagesKeys = null;
+		ArrayList<String> templateComponentsKeys = null;
+		
 		boolean templateEdit = false;
 		
 		if (h != null && h.containsKey("fontSize"))
@@ -1192,6 +1198,14 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			scoresZichtbaar = ((Boolean) h.get("scoresZichtbaar")).booleanValue();
 		if (h != null && h.containsKey("TekstVakPanelStyles"))
 			styles = (Hashtable) h.get("TekstVakPanelStyles");
+		if (h != null && h.containsKey("TekstVakPanelTemplatePages"))
+			templatePages = (Hashtable) h.get("TekstVakPanelTemplatePages");
+		if (h != null && h.containsKey("TekstVakPanelTemplateComponents"))
+			templateComponents = (Hashtable) h.get("TekstVakPanelTemplateComponents");
+		if (h != null && h.containsKey("TekstVakPanelTemplatePagesKeys"))
+			templatePagesKeys = (ArrayList<String>) h.get("TekstVakPanelTemplatePagesKeys");
+		if (h != null && h.containsKey("TekstVakPanelTemplateComponentsKeys"))
+			templateComponentsKeys = (ArrayList<String>) h.get("TekstVakPanelTemplateComponentsKeys");
 		if (h != null && h.containsKey("templateEdit"))
 			templateEdit = ((Boolean) h.get("templateEdit")).booleanValue();
 
@@ -1200,6 +1214,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		TekstVakPanel.zetFontOvererving(fontOvererving);
 		TekstVakPanel.styles = styles;
+		TekstVakPanel.templatePages = templatePages;
+		TekstVakPanel.templateComponents = templateComponents;
+		TekstVakPanel.templatePagesKeys = templatePagesKeys;
+		TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
 		
 		AntwoordFormuleVak.zetFontOverervingForm(fontOverervingForm);
 		SimpelAntwoordFormuleVak.zetFontOverervingForm(fontOverervingForm);
