@@ -22,6 +22,7 @@ public class Memento extends fi.euclides.persist.Memento implements DataInput, D
 	
 	static {
 		Volgpunt.addCreator();
+		Polygon.addCreator();
 	}
 	
 	private List<Object> list;

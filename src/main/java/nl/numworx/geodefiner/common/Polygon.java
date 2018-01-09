@@ -9,9 +9,11 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.persist.CreateUtil;
 
 public class Polygon extends Triangle {
 
+	public static final String TYPE = "VH";
 	public Polygon(Punt[] p) {
 		super(p);
 	}
@@ -35,13 +37,13 @@ public class Polygon extends Triangle {
 
 	@Override
 	public String key() {
-		return "VH";
+		return TYPE;
 	}
 
 	@Override
 	protected void createDepend(Codec codec) throws IOException {
 		Numbers n = codec.readNumber();
-		depend = new Punt[(int) n.doubleValue()];
+		depend = new Punt[(int) n.longValue()];
 	}
 
 	@Override
@@ -60,5 +62,18 @@ public class Polygon extends Triangle {
 	protected Triangle newInstance(Punt[] images) {
 		return new Polygon(images);
 	}
+
+	public static void addCreator() {
+		CreateUtil.buildmap.put(TYPE, new Creator());
+	}
+
+	static class Creator implements CreateUtil.Creator {
+
+		@Override
+		public Destroyable create() {
+			return new Polygon();
+		}
+	}
+
 
 }

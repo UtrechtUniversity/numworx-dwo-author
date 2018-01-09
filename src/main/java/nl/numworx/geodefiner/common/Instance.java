@@ -2,16 +2,16 @@ package nl.numworx.geodefiner.common;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.google.gwt.uibinder.client.UiFactory;
 
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
@@ -31,14 +31,14 @@ import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
 import fi.euclides.model.Segment;
+import fi.euclides.model.Visitor;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
-import fi.euclides.proof.LabelDelegate;
-import fi.euclides.proof.LabelTester;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
+import fi.euclides.util.Observer;
 
 public abstract class Instance /*implements Observer*/ {
 
@@ -387,7 +387,7 @@ public abstract class Instance /*implements Observer*/ {
 		return m.toList();
 	}
 	
-	void setModelState(ObjectList list, ObjectList toolbox) {
+	private void setModelState(ObjectList list, ObjectList toolbox) {
 		if(list == null && (toolbox == null || toolbox.size() == 0) ) 
 			return;
 		Memento m = new Memento(viewer);
@@ -527,6 +527,17 @@ public abstract class Instance /*implements Observer*/ {
 	}
 	
 	protected void reset() {
+	}
+
+	protected void observeNewItems(Visitor observer) {
+		Model model = viewer.getModel();
+		Collection<Destroyable> newItems = new HashSet<Destroyable>();
+		newItems.addAll(model.getLijnen());
+		newItems.addAll(model.getPunten());
+		newItems.removeAll(resetItems);
+		for(Destroyable item: newItems) {
+			item.visit(observer);
+		}
 	}
 	
 }
