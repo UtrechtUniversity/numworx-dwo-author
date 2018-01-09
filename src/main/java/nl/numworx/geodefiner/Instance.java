@@ -1116,6 +1116,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	@Override
 	public void setState(Map<String, ?> state) {
 		super.setState(state);
+		observeNewItems(UserConfig.INSTANCE);
 		if(nagekeken && action != null)
 			action.feedback();
 	}
