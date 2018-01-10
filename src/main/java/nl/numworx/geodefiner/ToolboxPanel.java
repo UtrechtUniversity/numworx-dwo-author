@@ -32,6 +32,7 @@ import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
 
 import nl.numworx.geodefiner.common.FilteredDestroyHandler;
+import nl.numworx.geodefiner.common.AddCirkelHandler;
 import nl.numworx.geodefiner.common.AddPolygonHandler;
 import nl.numworx.geodefiner.common.ResetHandler;
 import nl.numworx.geodefiner.common.Tools;
@@ -40,7 +41,6 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.AddBissectriceHandler;
 import fi.euclides.event.AddBoogHandler;
 import fi.euclides.event.AddBoogHandler2;
-import fi.euclides.event.AddCirkelHandler;
 import fi.euclides.event.AddFocusHandler;
 import fi.euclides.event.AddKegelsnedeHandler;
 import fi.euclides.event.AddLijnHandler;
