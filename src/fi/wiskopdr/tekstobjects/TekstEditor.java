@@ -540,7 +540,6 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(!formMode && templateItems!=null && templateItems.length>0){
 			templateChoiceKnop.setVisible(b);
 			componentChoiceKnop.setVisible(b);
-			standardComponentChoiceKnop.setVisible(b);
 		}
 	}
 	
@@ -758,8 +757,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			geogebraKnop.setVisible(true);
 			if(crossWidgetOption)crosswidgetKnop.setVisible(true);
 			if(templateOption){
-				templateChoiceKnop.setVisible(templateItems.length>0);
-				componentChoiceKnop.setVisible(componentItems.length>0);
+				templateChoiceKnop.setVisible(templateItems!=null && templateItems.length>0);
+				componentChoiceKnop.setVisible(componentItems!=null && componentItems.length>0);
 			}
 			if(standardComponentOption){
 				standardComponentChoiceKnop.setVisible(true);
