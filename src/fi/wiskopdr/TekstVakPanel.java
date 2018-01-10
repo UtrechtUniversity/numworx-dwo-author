@@ -3022,6 +3022,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			layoutTekst();
 		}
 		
+		if(zwevend && getParent() instanceof TekstInteractiePanelVak)
+		{
+			((TekstInteractiePanelVak)getParent()).setLocation(locationX, locationY);
+		}
+		
 	}
 
 	//public boolean contains(int x, int y)

@@ -42,6 +42,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JLabel interlinieLabel;
 	private JLabel cellSpaceColumnLabel;
 	private JLabel cellSpaceRowLabel;
+	private JLabel zwevendLocationLabel;
 	
 	private JTextField aantalRijenTF;
 	private JTextField aantalKolommenTF;
@@ -56,6 +57,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JTextField cellSpaceColumnTF;
 	private JTextField cellSpaceRowTF;
 	private JTextField randDikteTF;
+	private JTextField locationXTF;
+	private JTextField locationYTF;
 	
 	//private JTextField JSONTextField;
 	
@@ -83,7 +86,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean pasAanB;
 	private int interlinie;
 	private int randDikte=1;
-		
+			
 	private JButton fontButton, randColorButton,  bgColorButton, fgColorButton, selectieColorButton, linkButton;
 	private Color randColor = Color.gray;
 	private Color selectieColor = Color.white;
@@ -517,6 +520,22 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		randDikteTF.setVisible(false);
 		layoutOptionsPanel.add(randDikteTF);
 		
+		locationXTF = new JTextField("0");
+		locationXTF.setBounds(200,76,30,20);
+		locationXTF.setFont(ifFont);
+		locationXTF.addActionListener(this);
+		locationXTF.addFocusListener(this);
+		locationXTF.setVisible(false);
+		layoutOptionsPanel.add(locationXTF);
+		
+		locationYTF = new JTextField("0");
+		locationYTF.setBounds(235,76,30,20);
+		locationYTF.setFont(ifFont);
+		locationYTF.addActionListener(this);
+		locationYTF.addFocusListener(this);
+		locationYTF.setVisible(false);
+		layoutOptionsPanel.add(locationYTF);
+		
 		fontButton = new JButton(WiskOpdr.rb.getString("TVEP_fontType"));
 		fontButton.addActionListener(this);
 		fontButton.setFont(ifFont);
@@ -855,7 +874,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean hintButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
-				
+		
+		int locationX = Integer.parseInt(locationXTF.getText());
+		int locationY = Integer.parseInt(locationYTF.getText());
 		
 		this.ronding = Integer.parseInt(rondingTF.getText());
 		this.hoek = Integer.parseInt(hoekTF.getText());
@@ -970,6 +991,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		
 		h.put("zwevend", new Boolean(zwevend));
+		h.put("locationX",new Integer(locationX));
+		h.put("locationY",new Integer(locationY));
 		h.put("buttonOptie", new Boolean(buttonOptie));
 		if(breedtes!=null)h.put("breedtes", breedtes);
 		if(hoogtes!=null)h.put("hoogtes", hoogtes);
@@ -1155,6 +1178,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean hintButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
+		int locationX = 0;
+		int locationY = 0;
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -1277,6 +1302,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("hintButton")) hintButton = ((Boolean) h.get("hintButton")).booleanValue();
         if(h.containsKey("templateModeEdit")) templateModeEdit = ((Boolean) h.get("templateModeEdit")).booleanValue();
         if(h.containsKey("templateModeFill")) templateModeFill = ((Boolean) h.get("templateModeFill")).booleanValue();
+        if(h.containsKey("locationX")) locationX = ((Integer)h.get("locationX")).intValue();
+        if(h.containsKey("locationY")) locationY = ((Integer)h.get("locationY")).intValue();
 		
         System.out.println("logOption: "+logOption);
 
@@ -1346,6 +1373,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		randColorButton.setVisible(randZichtbaar);
 		bgColorZichtbaarCB.setSelected(bgColorZichtbaar);
 		zwevendCB.setSelected(zwevend);
+		locationXTF.setVisible(zwevend);
+		locationYTF.setVisible(zwevend);
+		locationXTF.setText(""+locationX);
+		locationYTF.setText(""+locationY);
 		anderFontCB.setSelected(anderFont);
 		//buttonCB.setSelected(buttonOptie);
 		tableBordersCB.setSelected(tableBorders);
@@ -1744,6 +1775,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		if(e.getSource().equals(zwevendCB))
 		{	zwevend = zwevendCB.isSelected();
+			locationXTF.setVisible(zwevend);
+			locationYTF.setVisible(zwevend);
 			sleepbaarCB.setEnabled(zwevend);
 			sleepdoelCB.setEnabled(zwevend);
 			if(!zwevend) 
@@ -2313,6 +2346,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		enableStyleSettings(b || kiesStyleChoice.getSelectedIndex()==0);
 		
 		zwevendCB.setVisible(!b);
+		locationXTF.setVisible(zwevend);
+		locationYTF.setVisible(zwevend);
 		aantalRijenTF.setVisible(!b);
 		aantalKolommenTF.setVisible(!b);
 		rijenPlusMin.setVisible(!b);
