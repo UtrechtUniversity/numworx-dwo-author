@@ -2346,8 +2346,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		enableStyleSettings(b || kiesStyleChoice.getSelectedIndex()==0);
 		
 		zwevendCB.setVisible(!b);
-		locationXTF.setVisible(zwevend);
-		locationYTF.setVisible(zwevend);
+		locationXTF.setVisible(!b && zwevend);
+		locationYTF.setVisible(!b && zwevend);
 		aantalRijenTF.setVisible(!b);
 		aantalKolommenTF.setVisible(!b);
 		rijenPlusMin.setVisible(!b);
