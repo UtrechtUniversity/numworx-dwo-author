@@ -325,7 +325,7 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		if(!decompose) ipLaunchState.put("templateModeEdit", new Boolean(true));
 		ipLaunchState.put("zwevend", new Boolean(true));
 		ipLaunchState.put("sleepbaar", new Boolean(true));
-		ipLaunchState.put("locationX", new Integer(20));
+		ipLaunchState.put("locationX", new Integer(xPositie));
 		ipLaunchState.put("locationY", new Integer(rowSpace + i*(itemHeight+rowSpace)));
 		ipLaunchState.put("ipId", new Integer(i+1));
 		
