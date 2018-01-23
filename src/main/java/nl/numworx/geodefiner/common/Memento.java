@@ -2,7 +2,9 @@ package nl.numworx.geodefiner.common;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
@@ -120,6 +122,10 @@ public class Memento extends fi.euclides.persist.Memento implements DataInput, D
 	@Override
 	public Model readModel(Tracker tracker) throws IOException {
 		final Model m = tracker.getModel();
+		Set<Destroyable> set = new HashSet<Destroyable>(m.getPunten());
+		set.addAll(m.getLijnen());
+		set.removeAll(readObjects); // keep readObjects
+		for(Destroyable d : set) d.destroy(); // side effects.
 		m.getPunten().clear();
 		m.getLijnen().clear();
 		super.readModel(tracker);

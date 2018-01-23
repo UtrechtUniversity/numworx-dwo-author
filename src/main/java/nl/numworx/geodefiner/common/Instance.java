@@ -182,6 +182,8 @@ public abstract class Instance /*implements Observer*/ {
 			checkObjects.fromList(list);
 			if(checkObjects.getMaxScore() == 0) 
 				checkObjects = null;
+		} else {
+			checkObjects = null;
 		}
 		fetchScore();
 	}
