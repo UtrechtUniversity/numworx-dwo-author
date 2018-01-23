@@ -305,7 +305,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		sleepHandleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepHandle"), 150,95,160,20, sleepHandle, interactionOptionsPanel);
 		zichtbaarNaNakijkenCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_zichtbaarNaNakijken"), 10,195,240,20, zichtbaarNaNakijken, interactionOptionsPanel);
 		balansVergComCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_balansVergCom"), 10,673,240,20, balansVergCom, interactionOptionsPanel);
-		aftrekPopupCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_aftrekPopup"), 10,220,225,20, aftrekPopup, interactionOptionsPanel);
+		aftrekPopupCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_aftrekPopup"), 10,220,300,20, aftrekPopup, interactionOptionsPanel);
 		//stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, manageStyles, layoutOptionsPanel);
 		templateModeEditCB= maakCheckBox("Template mode (edit)", 10,590,150,20, templateModeEdit, layoutOptionsPanel);
 		templateModeFillCB= maakCheckBox("Template mode (fill)", 10,615,150,20, templateModeFill, layoutOptionsPanel);
@@ -315,14 +315,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		inklapbaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_inklapbaar"), 10,415,120,20, inklapbaar, layoutOptionsPanel);
 		checkUitklapVakCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_checkUitklapVak"), 210,415,120,20, checkUitklapVak, layoutOptionsPanel);
 		randomCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_random"), 240,20,70,24, random, this);
-		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,250,70,20,false,interactionOptionsPanel);
+		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,280,70,20,false,interactionOptionsPanel);
 		visibleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_visible"), 10,530,225,20, visible, layoutOptionsPanel);
 		ideasCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_ideasStatistiek"), 10, 555, 150, 20, ideasStatistiek, interactionOptionsPanel);
 		backButtonCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_backButton"), 10, 580, 150, 20, backButton, interactionOptionsPanel);
 		hintButtonCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_hintButton"), 10, 605, 150, 20, hintButton, interactionOptionsPanel);
 		
 		logIDField = new JTextField("0");
-		logIDField.setBounds(100,250,120,20);
+		logIDField.setBounds(100,280,120,20);
 		logIDField.setFont(ifFont);
 		logIDField.setVisible(false);
 		logIDField.addActionListener(this);
@@ -330,7 +330,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(logIDField);
 		
 		logIDLabelField = new JTextField("");
-		logIDLabelField.setBounds(100,275,120,20);
+		logIDLabelField.setBounds(100,305,120,20);
 		logIDLabelField.setFont(ifFont);
 		logIDLabelField.setVisible(false);
 		logIDLabelField.addActionListener(this);
@@ -338,7 +338,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(logIDLabelField);
 		
 		logIDLabelLabel = new JLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"));//"Gebruikersinteractie");
-		logIDLabelLabel.setBounds(30,275,70,20);
+		logIDLabelLabel.setBounds(30,305,70,20);
 		logIDLabelLabel.setFont(ifFont);
 		logIDLabelLabel.setVisible(false);
 		interactionOptionsPanel.add(logIDLabelLabel);
@@ -596,7 +596,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(interactiePanelIdTF);
 		
 		aftrekPopupTF = new JTextField(""+puntenAftrekPopup);
-		aftrekPopupTF.setBounds(240,220,30,20);
+		aftrekPopupTF.setBounds(170,245,30,20);
 		aftrekPopupTF.setFont(ifFont);
 		aftrekPopupTF.addActionListener(this);
 		aftrekPopupTF.addFocusListener(this);
@@ -604,7 +604,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(aftrekPopupTF);
 		
 		aftrekPopupLabel = new JLabel(WiskOpdr.rb.getString("TVEP_puntenaftrek"));
-		aftrekPopupLabel.setBounds(165,220,70,20);
+		aftrekPopupLabel.setBounds(65,245,100,20);
 		aftrekPopupLabel.setFont(ifFont);
 		aftrekPopupLabel.setVisible(false);
 		interactionOptionsPanel.add(aftrekPopupLabel);
