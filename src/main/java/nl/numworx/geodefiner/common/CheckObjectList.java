@@ -10,15 +10,89 @@ import java.util.Vector;
 
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.Tracker;
+import fi.euclides.model.Boog;
+import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Groep;
+import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
+import fi.euclides.model.Lijn;
+import fi.euclides.model.Locus;
+import fi.euclides.model.Model;
+import fi.euclides.model.Punt;
+import fi.euclides.model.Segment;
+import fi.euclides.model.Triangle;
+import fi.euclides.model.Visitor;
 import fi.euclides.openmath.Expression;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
 public class CheckObjectList extends Groep implements Observer {
+	
+	public static class CheckVisitor implements Visitor {
+		CheckObjectList l;
+		Model m;
+
+		public CheckVisitor(CheckObjectList l, Model m) {
+			this.l = l;
+			this.m = m;
+		}
+
+		@Override
+		public void visitBoog(Boog arg0) {
+			update(arg0);
+			
+		}
+
+		private void update(Destroyable arg0) {
+			if(l != null) {
+				l.update(m, arg0);
+			}
+		}
+
+		@Override
+		public void visitCirkel(Cirkel arg0) {
+			update(arg0);
+		}
+
+		@Override
+		public void visitKegelsnede(Kegelsnede2 arg0) {
+			update(arg0);
+		}
+
+		@Override
+		public void visitLabel(Label arg0) {
+			update(arg0);
+		}
+
+		@Override
+		public void visitLijn(Lijn arg0) {
+			update(arg0);
+		}
+
+		@Override
+		public void visitLocus(Locus arg0) {
+			update(arg0);
+		}
+
+		@Override
+		public void visitPunt(Punt arg0) {
+			update(arg0);			
+		}
+
+		@Override
+		public void visitSegment(Segment arg0) {
+			update(arg0);
+		}
+
+		@Override
+		public void visitTriangle(Triangle arg0) {
+			update(arg0);
+		}
+		
+	}
+	
 	protected final Vector<CheckObject> list = new Vector<CheckObject>();
 	protected Set<CheckObject> running = new HashSet<CheckObject>();
 	protected Map<Destroyable,CheckObject> userItems = new HashMap<Destroyable,CheckObject>();

@@ -531,14 +531,15 @@ public abstract class Instance /*implements Observer*/ {
 	protected void reset() {
 	}
 
-	protected void observeNewItems(Visitor observer) {
+	protected void observeNewItems(Visitor... observers) {
 		Model model = viewer.getModel();
 		Collection<Destroyable> newItems = new HashSet<Destroyable>();
 		newItems.addAll(model.getLijnen());
 		newItems.addAll(model.getPunten());
 		newItems.removeAll(resetItems);
 		for(Destroyable item: newItems) {
-			item.visit(observer);
+			for(Visitor observer: observers)
+				item.visit(observer);
 		}
 	}
 	
