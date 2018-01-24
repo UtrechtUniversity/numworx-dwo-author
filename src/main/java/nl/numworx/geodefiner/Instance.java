@@ -46,6 +46,7 @@ import javax.swing.ToolTipManager;
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.common.CheckObject;
+import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Check_DWO;
 import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
@@ -1116,9 +1117,12 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	@Override
 	public void setState(Map<String, ?> state) {
 		super.setState(state);
-		observeNewItems(UserConfig.INSTANCE);
+		observeNewItems(UserConfig.INSTANCE, new CheckObjectList.CheckVisitor(checkObjects, viewer.getModel()));
 		if(nagekeken && action != null)
+		{
+			fetchScore();
 			action.feedback();
+		}
 	}
 
 	public void acceptCBookEvent(CBookEvent ev) {
