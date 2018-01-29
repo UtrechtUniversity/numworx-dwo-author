@@ -159,6 +159,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			return value;
 		}
 
+		public void setKey(String key) {
+			this.key = key;
+		}
+		
 		@Override
 		public int compareTo(Connector other) {
 			return toString().compareTo(other.toString());
