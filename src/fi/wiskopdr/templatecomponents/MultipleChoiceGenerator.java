@@ -43,9 +43,6 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 			{"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"}
 	};
 	
-	private int columnCount = 2;
-	private int oldColumnCount = 2;
-	
 	
 	public MultipleChoiceGenerator() {
 		int itemCount = initialItemCount;
@@ -61,7 +58,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		initPreferences.put("rowSpace", new Integer(rowSpace));
 		initPreferences.put("hasPrefix", new Boolean(hasPrefix));
 		
-		columnCount = hasPrefix ? 2 : 1	;
+		
 		
 		editChoice = new JPopupMenu();
 		editChoiceItems = new JMenuItem[editChoiceStrings.length];
@@ -95,8 +92,9 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 	
 	public void editComponent(TekstInteractiePanelVak oldComponent, Hashtable<String,Object> preferences) {
 		boolean hasPrefix = ((Boolean)preferences.get("hasPrefix")).booleanValue();
-		oldColumnCount = columnCount;
-		columnCount = hasPrefix ? 2 : 1	;
+		boolean hasPrefixOld = ((Boolean)((Hashtable)oldComponent.getEditState().get("TComponentPreferences")).get("hasPrefix")).booleanValue();
+		int oldColumnCount = hasPrefixOld ? 2 : 1;
+		int columnCount = hasPrefix ? 2 : 1	;
 		
 		TekstVak tekstVak = oldComponent.getTekstVak();
 		
@@ -166,7 +164,8 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		int tabWidth = ((Integer)preferences.get("tabWidth")).intValue();
 		int rowSpace = ((Integer)preferences.get("rowSpace")).intValue();
-		
+		boolean hasPrefix = ((Boolean)preferences.get("hasPrefix")).booleanValue();
+		int columnCount = hasPrefix ? 2 : 1	;
 		
 		double[] breedtes = new double[columnCount];
 		for(int i=0 ; i<columnCount ; i++) {
