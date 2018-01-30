@@ -138,6 +138,7 @@ public class ListGenerator implements TComponentGenerator, ActionListener {
 		ipLaunchState.put("teksten", teksten);
 		ipLaunchState.put("pasAanH", new Boolean(true));
 		ipLaunchState.put("cellSpaceRow", new Integer(rowSpace));
+		ipLaunchState.put("styleString", "list");
 		if(!decompose) ipLaunchState.put("templateModeEdit", new Boolean(true));
 				
 		Hashtable<String,Object> launchData = new Hashtable<String,Object>();
