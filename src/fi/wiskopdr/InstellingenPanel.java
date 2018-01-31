@@ -242,7 +242,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		boxh.add(Box.createHorizontalStrut(20));
 		
-		condNavPercentageRB = new JRadioButton(WiskOpdr.rb.getString("OPT_conditionalPercLabel"));//"Tijdslimiet(sec)"
+		condNavPercentageRB = new JRadioButton(WiskOpdr.rb.getString("OPT_conditionalPercLabel"));
 		condNavPercentageRB.addActionListener(this);
 		condNavPercentageRB.setFont(font);
 		condNavPercentageRB.setOpaque(false);
@@ -361,7 +361,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		boxh = Box.createHorizontalBox();
 		
-		fontLabel = new JLabel(WiskOpdr.rb.getString("OPT_fontNaam"));//"Tijdslimiet(sec)"
+		fontLabel = new JLabel(WiskOpdr.rb.getString("OPT_fontNaam"));
 		fontLabel.setFont(font);
 		boxh.add(fontLabel);
 		boxh.add(Box.createHorizontalStrut(10));
@@ -377,7 +377,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxv3.add(boxh);
 		boxh.add(Box.createHorizontalStrut(10));
 		
-		fontSizeLabel = new JLabel(WiskOpdr.rb.getString("OPT_fontFormaat"));//"Tijdslimiet(sec)"
+		fontSizeLabel = new JLabel(WiskOpdr.rb.getString("OPT_fontFormaat"));
 		fontSizeLabel.setFont(font);
 		boxh.add(fontSizeLabel);
 		boxh.add(Box.createHorizontalStrut(10));
@@ -392,7 +392,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		boxh = Box.createHorizontalBox();
 		
-		navigatieSizeLabel = new JLabel(WiskOpdr.rb.getString("OPT_navigatieFormaat"));//"Tijdslimiet(sec)"
+		navigatieSizeLabel = new JLabel(WiskOpdr.rb.getString("OPT_navigatieFormaat"));
 		navigatieSizeLabel.setFont(font);
 		boxh.add(navigatieSizeLabel);
 		boxh.add(Box.createHorizontalStrut(10));
@@ -478,7 +478,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(timerLabel);
 		boxh.add(Box.createHorizontalStrut(10));
 		
-		timerTF = new JTextField(""+timeLimit);
+		timerTF = new JTextField("" + timeLimit);
 		timerTF.setFont(font);
 		timerTF.setPreferredSize(new Dimension(50,24));
 		timerTF.setVisible(false);
@@ -896,6 +896,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		tweeHLVarCB.setSelected(tweeHoofdletterVar);
 		timerCB.setSelected(timer);
 		timerTF.setText(""+timeLimit);
+		timerLabel.setVisible(timerCB.isSelected());
+		timerTF.setVisible(timerCB.isSelected());
 		opnieuwCB.setSelected(opnieuw);
 		itemOpnieuwCB.setSelected(itemOpnieuw);
 		checkPerOpdrachtCB.setSelected(checkPerOpdracht);

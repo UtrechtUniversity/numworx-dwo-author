@@ -3,6 +3,7 @@ package fi.wiskopdr.tekstobjects;
 import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -18,10 +19,12 @@ import org.cbook.cbookif.CBookEventListener;
 
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.TekstEditorEditPanel;
+import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -35,7 +38,16 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private FormuleButton formuleKnop,  antwoordVakKnop, tekstVakKnop, grafiekKnop, appletKnop, linkKnop, plaatjeKnop, grafiekToolKnop, geogebraKnop;
 	private FormuleButton tabletButton, wortelKnop, machtKnop, breukKnop, kwadraatKnop, ndewortelKnop, ndelogKnop,integraalKnop, prvKnop, haakjesKnop, absKnop, rmKnop;
 	private FormuleButton cbookKnop, cindyKnop, eslateKnop, epsilonKnop;
-	public FormuleButton crosswidgetKnop;
+	public FormuleButton crosswidgetKnop; 
+	
+	public FormuleButton templateChoiceKnop, componentChoiceKnop, standardComponentChoiceKnop;
+	public JPopupMenu templateChoice, componentChoice, standardComponentChoice;
+	JMenuItem[] templateItems;
+	JMenuItem[] componentItems;
+	String[] componentKeys;
+	String[] templateKeys;
+	JMenuItem[] standardComponentItems;
+	
 	protected TekstVak tekstVak, tekstVakActief;
 	protected FormuleVak formuleVak;
 	private boolean actief;
@@ -65,6 +77,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
     private boolean headerAan = true;
     private boolean scrollHorizontal;
     private boolean crossWidgetOption = false;
+    private boolean templateOption = false;
+    private boolean standardComponentOption = false;
     
     private Tablet tablet;
     private FormuleVakHouder tabletUser;
@@ -253,6 +267,166 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		crosswidgetKnop.setVisible(false);
 		if(form)headerPanel.add(crosswidgetKnop);
 		
+		
+		standardComponentChoiceKnop = new FormuleButton("S");
+		standardComponentChoiceKnop.setBounds(64+26+26+26+26+26+26+26,2,20,20);
+		standardComponentChoiceKnop.addActionListener(this);
+		standardComponentChoiceKnop.setVisible(false);
+		if(form)headerPanel.add(standardComponentChoiceKnop);
+		
+		templateChoiceKnop = new FormuleButton("T");
+		templateChoiceKnop.setBounds(64+26+26+26+26+26+26+26+26,2,20,20);
+		templateChoiceKnop.addActionListener(this);
+		templateChoiceKnop.setVisible(false);
+		if(form)headerPanel.add(templateChoiceKnop);
+		
+		componentChoiceKnop = new FormuleButton("C");
+		componentChoiceKnop.setBounds(64+26+26+26+26+26+26+26+26+26,2,20,20);
+		componentChoiceKnop.addActionListener(this);
+		componentChoiceKnop.setVisible(false);
+		if(form)headerPanel.add(componentChoiceKnop);
+		
+		templateChoice = new JPopupMenu();
+		componentChoice = new JPopupMenu();
+		standardComponentChoice = new JPopupMenu();
+		
+		if(TekstVakPanel.templatePages != null) {
+			templateItems = new JMenuItem[TekstVakPanel.templatePages.keySet().size()];
+			templateKeys = new String[TekstVakPanel.templatePages.keySet().size()];
+			//System.out.println("templatePages:"+TekstVakPanel.templatePages.keySet().size());
+			int teller = 0;
+			//for (String key : TekstVakPanel.templatePages.keySet()) 
+			for (int i=0 ; i<TekstVakPanel.templatePagesKeys.size() ; i++) 
+			{	String key = TekstVakPanel.templatePagesKeys.get(i);
+				templateItems[teller] = new JMenuItem(key.substring(8));
+				templateItems[teller].addActionListener(this);
+				templateKeys[teller] = "DWOTEMP_"+templateItems[teller].getText();
+				templateChoice.add(templateItems[teller]);
+				teller++;
+			}
+		}
+		/*
+		ArrayList<ArrayList<String>> componentList = new ArrayList<ArrayList<String>>();
+		ArrayList<String> subMenuList = new ArrayList<String>();
+		ArrayList<String> componentItemList = new ArrayList<String>();
+		if(TekstVakPanel.templateComponents != null) {
+			componentItems = new JMenuItem[TekstVakPanel.templateComponents.keySet().size()];
+			componentKeys = new String[TekstVakPanel.templateComponents.keySet().size()];
+			for (int i=0 ; i<TekstVakPanel.templateComponentsKeys.size() ; i++) 
+			{	
+				String key = TekstVakPanel.templateComponentsKeys.get(i);
+				String[] parts = key.split("_");
+		
+				if(parts.length==2) {
+					componentItemList.add(parts[1]);
+				}
+				else if(parts.length==3) {
+					if(subMenuList.contains(parts[1])) {
+						componentList.get(subMenuList.indexOf(parts[1])).add(parts[2]);
+					}
+					else {
+						subMenuList.add(parts[1]);
+						ArrayList<String> subMenu = new ArrayList<String>();
+						subMenu.add(parts[2]);
+						componentList.add(subMenu);
+					}
+				}
+			}
+			int teller = 0;
+			for (int i=0 ; i<componentItemList.size() ; i++) {
+				componentItems[teller] = new JMenuItem(componentItemList.get(i));
+				componentItems[teller].addActionListener(this);
+				componentKeys[teller] = "DWOCOMP_"+componentItems[teller].getText();
+				componentChoice.add(componentItems[teller]);
+				teller++;
+			}
+			componentChoice.addSeparator();
+			for (int i=0 ; i<componentList.size() ; i++) {
+				JMenu subMenu = new JMenu(subMenuList.get(i));
+				for (int j=0 ; j<componentList.get(i).size() ; j++) {
+					JMenuItem subMenutem = new JMenuItem(componentList.get(i).get(j));
+					subMenu.add(subMenutem);
+					componentItems[teller] = subMenutem;
+					componentItems[teller].addActionListener(this);
+					componentKeys[teller] = "DWOCOMP_"+ subMenuList.get(i)+"_"+componentList.get(i).get(j);
+					System.out.println("Key: "+componentKeys[teller]);
+					teller++;
+				}
+				componentChoice.add(subMenu);
+				
+			}
+		}
+		*/
+		
+		
+		ArrayList<ArrayList<String>> componentList = new ArrayList<ArrayList<String>>();
+		ArrayList<String> componentItemList = new ArrayList<String>();
+		if(TekstVakPanel.templateComponents != null) {
+			componentItems = new JMenuItem[TekstVakPanel.templateComponents.keySet().size()];
+			componentKeys = new String[TekstVakPanel.templateComponents.keySet().size()];
+			for (int i=0 ; i<TekstVakPanel.templateComponentsKeys.size() ; i++) 
+			{	
+				String key = TekstVakPanel.templateComponentsKeys.get(i);
+				String[] parts = key.split("_");
+		
+				if(parts.length==2) {
+					componentItemList.add(parts[1]);
+					componentList.add(new ArrayList<String>());
+				}
+				else if(parts.length==3) {
+					if(componentItemList.contains(parts[1])) {
+						componentList.get(componentItemList.indexOf(parts[1])).add(parts[2]);
+					}
+					else {
+						componentItemList.add(parts[1]);
+						ArrayList<String> subMenu = new ArrayList<String>();
+						subMenu.add(parts[2]);
+						componentList.add(subMenu);
+					}
+				}
+			}
+			int teller = 0;
+			
+			for (int i=0 ; i<componentList.size() ; i++) {
+				
+				if(!componentList.get(i).isEmpty()) {
+					JMenu subMenu = new JMenu(componentItemList.get(i));
+					for (int j=0 ; j<componentList.get(i).size() ; j++) {
+						JMenuItem subMenutem = new JMenuItem(componentList.get(i).get(j));
+						subMenu.add(subMenutem);
+						componentItems[teller] = subMenutem;
+						componentItems[teller].addActionListener(this);
+						componentKeys[teller] = "DWOCOMP_"+ componentItemList.get(i)+"_"+componentList.get(i).get(j);
+						teller++;
+					}
+					componentChoice.add(subMenu);
+				}
+				else {
+					if(componentItemList.get(i).startsWith("separator")) {
+						componentChoice.addSeparator();
+					}
+					else {
+						componentItems[teller] = new JMenuItem(componentItemList.get(i));
+						componentItems[teller].addActionListener(this);
+						componentKeys[teller] = "DWOCOMP_"+componentItems[teller].getText();
+						componentChoice.add(componentItems[teller]);
+						teller++;
+					}
+				}
+				
+			}
+		} 
+		
+		String[] cTypes = TComponentGeneratorFactory.getComponentTypeList();
+		standardComponentItems = new JMenuItem[cTypes.length];
+		for(int i=0 ; i<cTypes.length ; i++) {
+			standardComponentItems[i] = new JMenuItem(cTypes[i]);
+			standardComponentItems[i].addActionListener(this);
+			standardComponentChoice.add(standardComponentItems[i]);
+		}
+		
+			
+		
 		cbookKnop = new FormuleButton("cbook");
 		cbookKnop.setBounds(64+26+26+26+26+26+26+26,2,20,20);
 		cbookKnop.addActionListener(this);
@@ -352,10 +526,27 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 	}
 	
+	
+	
 	public void setCrossWidgetOption(boolean b)
 	{
 		crossWidgetOption = b;
 		if(!formMode)crosswidgetKnop.setVisible(b);
+	}
+	
+	public void setTemplateOption(boolean b)
+	{
+		templateOption = b;
+		if(!formMode && templateItems!=null && templateItems.length>0){
+			templateChoiceKnop.setVisible(b);
+			componentChoiceKnop.setVisible(b);
+		}
+	}
+	
+	public void setStandardComponentOption(boolean b)
+	{
+		standardComponentOption = b;
+		standardComponentChoiceKnop.setVisible(b);
 	}
     
     public void setHeader(boolean b)
@@ -534,6 +725,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			tekstVakKnop.setVisible(false);
 			geogebraKnop.setVisible(false);
 			crosswidgetKnop.setVisible(false);
+			templateChoiceKnop.setVisible(false);
+			componentChoiceKnop.setVisible(false);
+			standardComponentChoiceKnop.setVisible(false);
 			cbookKnop.setVisible(false);
 			cindyKnop.setVisible(false);
 			eslateKnop.setVisible(false);
@@ -562,6 +756,13 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			tekstVakKnop.setVisible(true);
 			geogebraKnop.setVisible(true);
 			if(crossWidgetOption)crosswidgetKnop.setVisible(true);
+			if(templateOption){
+				templateChoiceKnop.setVisible(templateItems!=null && templateItems.length>0);
+				componentChoiceKnop.setVisible(componentItems!=null && componentItems.length>0);
+			}
+			if(standardComponentOption){
+				standardComponentChoiceKnop.setVisible(true);
+			}
 			cbookKnop.setVisible(true);
 			cindyKnop.setVisible(true);
 			eslateKnop.setVisible(true);
@@ -659,6 +860,16 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		else if(e.getSource()==crosswidgetKnop)
 		{	tekstVak.setCrossWidgetViewActief(crosswidgetKnop.isToggleAan());
 		}
+		else if(e.getSource()==standardComponentChoiceKnop)
+		{	standardComponentChoice.show(this,standardComponentChoiceKnop.getLocation().x, standardComponentChoiceKnop.getLocation().y+standardComponentChoiceKnop.getHeight());
+		}
+		else if(e.getSource()==templateChoiceKnop)
+		{	templateChoice.show(this,templateChoiceKnop.getLocation().x, templateChoiceKnop.getLocation().y+templateChoiceKnop.getHeight());
+		}
+		else if(e.getSource()==componentChoiceKnop)
+		{	componentChoice.show(this,componentChoiceKnop.getLocation().x, componentChoiceKnop.getLocation().y+componentChoiceKnop.getHeight());
+		}
+		
 		else if(e.getSource()==wortelKnop)
 		{	if(formuleVak!=null)
 			{	formuleVak.zetWortelVak();
@@ -767,6 +978,31 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("content", text);
 			cbookEventHandler.fire("text",map);
+		}
+		
+		else if(templateItems!=null || componentItems!=null || standardComponentItems!=null)
+		{
+			for(int i=0 ;standardComponentItems!=null && i<standardComponentItems.length ; i++)
+			{
+				if(e.getSource()==standardComponentItems[i])
+					TComponentGeneratorFactory.getComponentGenerator(standardComponentItems[i].getText()).generateComponent( tekstVakActief);
+				
+			}
+			for(int i=0 ; templateItems!=null && i<templateItems.length ; i++)
+			{
+				if(e.getSource()==templateItems[i])
+					tekstVakActief.insert(TekstVakPanel.templatePages.get(templateKeys[i]));
+				//System.out.println("Key-template: "+templateItems[i].getText());
+			}
+			for(int i=0 ;componentItems!=null && i<componentItems.length ; i++)
+			{
+				if(e.getSource()==componentItems[i]) {
+					tekstVakActief.insert(TekstVakPanel.templateComponents.get(componentKeys[i]));
+					//System.out.println("Key-component: "+componentItems[i].getText());
+					//System.out.println("Key-component: "+componentKeys[i]);
+				}
+			}
+					
 		}
 	}
 	

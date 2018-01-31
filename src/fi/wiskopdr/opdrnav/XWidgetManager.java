@@ -2,12 +2,15 @@ package fi.wiskopdr.opdrnav;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.tekstobjects.BasisTekstVak;
 import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
 /**
@@ -125,8 +128,37 @@ public class XWidgetManager {
 			keySet.add(newKey);
 			oldnew.put(oldKey, newKey);
 			entry.getValue().setCrossWidgetId(newKey);
-			entry.getValue().getConnections().clear(); // TODO !!
+			entry.getValue().getConnections().clear(); // TODO !!	
+		}
+
+		List<?> vector = basisVak.geefInteractiePanels();
+		renameSenders(oldnew, vector);
+	}
+
+	private void renameSenders(Map<String, String> oldnew, List<?> vector) {
+		for(Object e: vector)
+		{
+			if(e instanceof InteractiePanelContainerIF) {
+				List<?> recurse = ((InteractiePanelContainerIF) e).geefInteractiePanels();
+				if(recurse != null && ! recurse.isEmpty())
+					renameSenders(oldnew, recurse);
+			}
+			if (e instanceof TekstInteractiePanelVak) {
+				TekstInteractiePanelVak vak = (TekstInteractiePanelVak)e;
 			
+			Map<String, Set<Connector>> map = vak.getSubscriptions();
+			if(map != null)
+				for(Set<Connector> set : map.values()) {
+				for(Connector c: set) {
+					String key = c.getKey();
+					String renameKey = oldnew.get(key);
+					if (renameKey == null)
+						continue;
+					String value = c.getValue();
+					System.out.println("key = " + key + ", value = " + value + " , newkey = " + renameKey);
+					c.setKey(renameKey);
+				}
+			}}
 		}
 	}
 

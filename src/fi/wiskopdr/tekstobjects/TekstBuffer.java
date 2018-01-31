@@ -292,7 +292,7 @@ public class TekstBuffer
 	{	for( int i=0 ; i< tekstDeelVakken.size() ; i++)
 		{	if(tekstDeelVakken.elementAt(i) instanceof InteractiePanelContainerIF)
 			{	InteractiePanelContainerIF ipc = (InteractiePanelContainerIF)tekstDeelVakken.elementAt(i);
-				v.addElement(tekstDeelVakken.elementAt(i));
+				v.addElement(ipc);
 			}
 		}
 		return v;

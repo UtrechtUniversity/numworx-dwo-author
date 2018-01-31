@@ -117,6 +117,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		Object ob = StringCodeObject.decodeStringToObject(instellingenString);
 		instellingen = (Hashtable) ob;
 		zetInstellingen(instellingen);
+		System.out.println("templatepages"+ TekstVakPanel.templatePages);
 		
 		opdrEditContainer.refreshFonts();
 
@@ -343,6 +344,10 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
 		Hashtable styles = null;
+		Hashtable templatePages = null;
+		Hashtable templateComponents = null;
+		ArrayList<String> templatePagesKeys = null;
+		ArrayList<String> templateComponentsKeys = null;
 		boolean templateEdit = false;
 
 		if (h != null && h.containsKey("fontSize"))
@@ -393,6 +398,14 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			mccCategorieString = (String[]) h.get("mccCategorieString");
 		if (h != null && h.containsKey("TekstVakPanelStyles"))
 			styles = (Hashtable) h.get("TekstVakPanelStyles");
+		if (h != null && h.containsKey("TekstVakPanelTemplatePages"))
+			templatePages = (Hashtable) h.get("TekstVakPanelTemplatePages");
+		if (h != null && h.containsKey("TekstVakPanelTemplateComponents"))
+			templateComponents = (Hashtable) h.get("TekstVakPanelTemplateComponents");
+		if (h != null && h.containsKey("TekstVakPanelTemplatePagesKeys"))
+			templatePagesKeys = (ArrayList<String>) h.get("TekstVakPanelTemplatePagesKeys");
+		if (h != null && h.containsKey("TekstVakPanelTemplateComponentsKeys"))
+			templateComponentsKeys = (ArrayList<String>) h.get("TekstVakPanelTemplateComponentsKeys");
 		if (h != null && h.containsKey("templateEdit"))
 			templateEdit = ((Boolean) h.get("templateEdit")).booleanValue();
 		
@@ -408,6 +421,18 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		
 		if(styles != null)
 			TekstVakPanel.styles = styles;
+		
+		if(templatePages != null)
+			TekstVakPanel.templatePages = templatePages;
+		
+		if(templatePagesKeys != null)
+			TekstVakPanel.templatePagesKeys = templatePagesKeys;
+		
+		if(templateComponents != null)
+			TekstVakPanel.templateComponents = templateComponents;
+		
+		if(templateComponentsKeys != null)
+			TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
 		
 		
 		FormuleTeken.zetMaalTeken(maalTeken);
@@ -503,8 +528,21 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		opnieuwMogelijk = this.opnieuwMogelijk;
 		gekoppeldeOpdrachten = this.gekoppeldeOpdrachten;
 		instellingen = instellingenPanel.geefInstellingen();
+		
 		if(TekstVakPanel.styles != null)
 			instellingen.put("TekstVakPanelStyles", TekstVakPanel.styles);
+		
+		if(TekstVakPanel.templatePages != null)
+			instellingen.put("TekstVakPanelTemplatePages", TekstVakPanel.templatePages);
+		
+		if(TekstVakPanel.templatePagesKeys != null)
+			instellingen.put("TekstVakPanelTemplatePagesKeys", TekstVakPanel.templatePagesKeys);
+		
+		if(TekstVakPanel.templateComponents != null)
+			instellingen.put("TekstVakPanelTemplateComponents", TekstVakPanel.templateComponents);
+		
+		if(TekstVakPanel.templateComponentsKeys != null)
+			instellingen.put("TekstVakPanelTemplateComponentsKeys", TekstVakPanel.templateComponentsKeys);
 
 		Hashtable h = new Hashtable();
 		h.put("aantalActiviteiten", new String("" + aantalActiviteiten));

@@ -32,6 +32,7 @@ public class Text_en extends java.util.ListResourceBundle
 				
                 { "klaarKnopLabel" , "Check" },
 				{ "nakijkKnopLabel" , "Check" },
+				{ "checkExternal" , "External check" },
 				{ "eindeKnopLabel", "End" },
 				{ "nakijkLabel1" , "Checked: " },
 				{ "nakijkLabel2" , " times " },
@@ -155,8 +156,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "xVarMessage2" , "The independent variable can only be \n" 
 									+ "represented by one letter.\n" 
 									+ "Only when the option \"word variables\" \n" 
-									+ "is selected, the independent can be\n" 
-									+ "represented bij more letters." },
+									+ "is selected, the independent variable \n" 
+									+ "can be represented by more letters." },
 				{ "xVarMessage3" , "The letter e is used for  \n" 
 									+ "the exponential function.\n" 
 									+ "This letter can not be used for the name\n" 

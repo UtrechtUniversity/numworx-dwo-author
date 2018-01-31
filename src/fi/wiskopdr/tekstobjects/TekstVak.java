@@ -544,6 +544,17 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		tfvNieuw.showDialog(true); // BLOK		
 	}
 	
+	public void insertTekstInteractiePanelVak(TekstInteractiePanelVak tfvNieuw)
+	{
+		tekst.insert(caretPos,'@');
+		tfvNieuw.addActionListener(this); 
+		tfvNieuw.setBackground(getBackground());
+		tekst.insertTekstInteractiePanelVak(caretPos,tfvNieuw);
+		vulVak(tekst.toString());
+		repaint();
+		produceAction("resize");
+	}
+	
 	// alleen nog te gebruiken voor een grafiekencomponent
 	public void insertStudentTekstInteractiePanelVak(int soortInteractiePanel)
 	{	tekst.insert(caretPos,'@');

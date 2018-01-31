@@ -103,6 +103,7 @@ import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
 import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
 import fi.wiskopdr.symbolen.SymboolPanel;
+import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 
 public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListener, InteractiePanelContainerIF, MouseListener, MouseMotionListener, KeyListener
 {
@@ -158,6 +159,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			return value;
 		}
 
+		public void setKey(String key) {
+			this.key = key;
+		}
+		
 		@Override
 		public int compareTo(Connector other) {
 			return toString().compareTo(other.toString());
@@ -246,6 +251,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private JPanel callOutPosPanel;
 	private boolean popup;
 	private int soortInteractiePanel;
+	private String tComponent;
 	
 	private boolean reviewMode = false;
 	private ReviewInteractiePanel reviewInteractiePanel;
@@ -816,7 +822,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(!(interactiePanel instanceof TekstVakPanel) && reviewMode && !popup)
         {	if(reviewInteractiePanel!=null)reviewInteractiePanel.setSize(b,h);
         }
-		if(resizePanel!=null)resizePanel.setBounds(b-6,h-6,6,6);
+		if(resizePanel!=null) {
+			resizePanel.setBounds(b-6,h-6,6,6);
+			if(tComponent!=null) {
+				resizePanel.setBounds(getSize().width-11,getSize().height-12,12,12);
+				resizePanel.setBackground(new Color(150,150,150,150));
+			}
+		}
 		if(interactiePanel!=null && !popup)((Component)interactiePanel).setSize(b,h);
 	}
 	
@@ -972,6 +984,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         this.soortInteractiePanel = soortInteractiePanel;
         this.studentEditor = studentEditor;
         this.popupImageString = popupImageString;
+        
+        if(h.containsKey("TComponent")) {
+        	tComponent = (String)h.get("TComponent");
+        }
+    	
+        
 
         if(crossWidgetId != null)
         {
@@ -1382,17 +1400,25 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     		{	afdekPanel.setBounds(0,0,6,6);
     			afdekPanel.setOpaque(true);
     			afdekPanel.setBackground(Color.black);
+    			if(tComponent!=null) {
+    				afdekPanel.setBounds(0,0,12,12);
+    				afdekPanel.setBackground(new Color(150,150,150,150));
+    			}
     			    			
     			resizePanel.setBounds(getSize().width-6,getSize().height-6,6,6);
     			resizePanel.setOpaque(true);
     			resizePanel.setBackground(Color.black);
+    			if(tComponent!=null) {
+    				resizePanel.setBounds(getSize().width-12,getSize().height-12,12,12);
+    				resizePanel.setBackground(new Color(150,150,150,150));
+    			}
     			
     			add(resizePanel,0);
     			
     			boolean templateEdit = ((TekstVakPanel)interactiePanel).templateModeEdit && !TekstVakPanel.TEMPLATE_EDITOR;
-    			afdekPanel.setVisible(!templateEdit);
-    			resizePanel.setVisible(!templateEdit);
-    			if(TekstVakPanel.TEMPLATE_EDITOR && ((TekstVakPanel)interactiePanel).templateModeEdit)
+    			afdekPanel.setVisible(!templateEdit || tComponent!=null);
+    			resizePanel.setVisible(!templateEdit || tComponent!=null);
+    			if(TekstVakPanel.TEMPLATE_EDITOR && ((TekstVakPanel)interactiePanel).templateModeEdit && tComponent==null)
     			{	afdekPanel.setBackground(Color.red);
     				resizePanel.setBackground(Color.red);
     			}
@@ -2048,7 +2074,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	{	
 		super.paint(g);
 		if(selected && editMode) 
-		{	g.setColor(new Color(0,0,0,128));
+		{	g.setColor(new Color(0,0,0,50));
 			g.fillRect(0,0,getWidth(), getHeight());
 		
 		}
@@ -2403,6 +2429,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public void mouseMoved(MouseEvent e)
 	{
+		
 	}
 	
 	public void mouseDragged(MouseEvent e)
@@ -2509,6 +2536,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(interactiePanel instanceof TekstVakPanel)
 		{	if(editInteractiePanelDialog==null && (e.getSource()==afdekPanel || e.getSource()==resizePanel) && (e.getModifiers()== InputEvent.BUTTON3_MASK || e.isControlDown()))
 			{
+				if(tComponent!=null) {
+					TComponentGeneratorFactory.getComponentGenerator(tComponent).edit(this);
+					return;
+				}
 				launchData = getEditState();
 // TODO omzetten naar DialogFacade				
 				Component window = WiskOpdr.getWindowForComponent(this);
@@ -2719,6 +2750,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 		}
 		
+		if(interactiePanel instanceof TekstVakPanel)
+		{	if((e.getSource()==resizePanel))
+			{
+				if(tComponent!=null) {
+					TComponentGeneratorFactory.getComponentGenerator(tComponent).editMenu(this);
+					setSelected(true);
+				}
+			}
+		}
+		
 	}
 
 	private void doConnect() {
@@ -2770,6 +2811,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				potentialSource.connected = false;
 				//System.out.println("connect exit");
 				return;
+			}
+		}
+		
+		if(interactiePanel instanceof TekstVakPanel)
+		{	if((e.getSource()==afdekPanel || e.getSource()==resizePanel))
+			{
+				if(tComponent!=null) {
+					TComponentGeneratorFactory.getComponentGenerator(tComponent).closeEditMenu();
+					setSelected(false);
+				}
 			}
 		}
 	}

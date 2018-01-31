@@ -35,6 +35,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				
                 { "klaarKnopLabel" , "klaar" },
 				{ "nakijkKnopLabel" , "kijk na" },
+				{ "checkExternal" , "extern controleren" },
 				{ "eindeKnopLabel", "Einde"},
 				{ "nakijkLabel1" , "Nagekeken: " },
 				{ "nakijkLabel2" , " keer " },
@@ -465,7 +466,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_fgKleurKnopLabel" , "kleur"},
                 {"TVEP_zichtbaarNaNakijken" , "zichtbaar na nakijken toets"},
                 {"TVEP_balansVergCom" , "Balans-Vergelijkingvak communicatie"},
-                {"TVEP_aftrekPopup" , "Detectie popup-gebruik"},
+                {"TVEP_aftrekPopup" , "Detectie popup-uitklapvak gebruik"},
                 {"TVEP_callOut" , "Commentaar ballon"},
                 {"TVEP_vulHoogte" , "Hoogte opvullen"},
                 {"TVEP_inklapbaar" , "In-/uitklapbaar"},

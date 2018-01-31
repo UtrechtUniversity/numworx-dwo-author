@@ -42,6 +42,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JLabel interlinieLabel;
 	private JLabel cellSpaceColumnLabel;
 	private JLabel cellSpaceRowLabel;
+	private JLabel zwevendLocationLabel;
 	
 	private JTextField aantalRijenTF;
 	private JTextField aantalKolommenTF;
@@ -56,6 +57,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JTextField cellSpaceColumnTF;
 	private JTextField cellSpaceRowTF;
 	private JTextField randDikteTF;
+	private JTextField locationXTF;
+	private JTextField locationYTF;
 	
 	//private JTextField JSONTextField;
 	
@@ -83,7 +86,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean pasAanB;
 	private int interlinie;
 	private int randDikte=1;
-		
+			
 	private JButton fontButton, randColorButton,  bgColorButton, fgColorButton, selectieColorButton, linkButton;
 	private Color randColor = Color.gray;
 	private Color selectieColor = Color.white;
@@ -302,7 +305,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		sleepHandleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepHandle"), 150,95,160,20, sleepHandle, interactionOptionsPanel);
 		zichtbaarNaNakijkenCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_zichtbaarNaNakijken"), 10,195,240,20, zichtbaarNaNakijken, interactionOptionsPanel);
 		balansVergComCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_balansVergCom"), 10,673,240,20, balansVergCom, interactionOptionsPanel);
-		aftrekPopupCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_aftrekPopup"), 10,220,225,20, aftrekPopup, interactionOptionsPanel);
+		aftrekPopupCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_aftrekPopup"), 10,220,300,20, aftrekPopup, interactionOptionsPanel);
 		//stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, manageStyles, layoutOptionsPanel);
 		templateModeEditCB= maakCheckBox("Template mode (edit)", 10,590,150,20, templateModeEdit, layoutOptionsPanel);
 		templateModeFillCB= maakCheckBox("Template mode (fill)", 10,615,150,20, templateModeFill, layoutOptionsPanel);
@@ -312,14 +315,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		inklapbaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_inklapbaar"), 10,415,120,20, inklapbaar, layoutOptionsPanel);
 		checkUitklapVakCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_checkUitklapVak"), 210,415,120,20, checkUitklapVak, layoutOptionsPanel);
 		randomCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_random"), 240,20,70,24, random, this);
-		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,250,70,20,false,interactionOptionsPanel);
+		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,280,70,20,false,interactionOptionsPanel);
 		visibleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_visible"), 10,530,225,20, visible, layoutOptionsPanel);
 		ideasCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_ideasStatistiek"), 10, 555, 150, 20, ideasStatistiek, interactionOptionsPanel);
 		backButtonCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_backButton"), 10, 580, 150, 20, backButton, interactionOptionsPanel);
 		hintButtonCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_hintButton"), 10, 605, 150, 20, hintButton, interactionOptionsPanel);
 		
 		logIDField = new JTextField("0");
-		logIDField.setBounds(100,250,70,20);
+		logIDField.setBounds(100,280,120,20);
 		logIDField.setFont(ifFont);
 		logIDField.setVisible(false);
 		logIDField.addActionListener(this);
@@ -327,7 +330,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(logIDField);
 		
 		logIDLabelField = new JTextField("");
-		logIDLabelField.setBounds(100,275,70,20);
+		logIDLabelField.setBounds(100,305,120,20);
 		logIDLabelField.setFont(ifFont);
 		logIDLabelField.setVisible(false);
 		logIDLabelField.addActionListener(this);
@@ -335,7 +338,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(logIDLabelField);
 		
 		logIDLabelLabel = new JLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"));//"Gebruikersinteractie");
-		logIDLabelLabel.setBounds(30,275,70,20);
+		logIDLabelLabel.setBounds(30,305,70,20);
 		logIDLabelLabel.setFont(ifFont);
 		logIDLabelLabel.setVisible(false);
 		interactionOptionsPanel.add(logIDLabelLabel);
@@ -517,6 +520,22 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		randDikteTF.setVisible(false);
 		layoutOptionsPanel.add(randDikteTF);
 		
+		locationXTF = new JTextField("0");
+		locationXTF.setBounds(200,76,30,20);
+		locationXTF.setFont(ifFont);
+		locationXTF.addActionListener(this);
+		locationXTF.addFocusListener(this);
+		locationXTF.setVisible(false);
+		layoutOptionsPanel.add(locationXTF);
+		
+		locationYTF = new JTextField("0");
+		locationYTF.setBounds(235,76,30,20);
+		locationYTF.setFont(ifFont);
+		locationYTF.addActionListener(this);
+		locationYTF.addFocusListener(this);
+		locationYTF.setVisible(false);
+		layoutOptionsPanel.add(locationYTF);
+		
 		fontButton = new JButton(WiskOpdr.rb.getString("TVEP_fontType"));
 		fontButton.addActionListener(this);
 		fontButton.setFont(ifFont);
@@ -577,7 +596,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(interactiePanelIdTF);
 		
 		aftrekPopupTF = new JTextField(""+puntenAftrekPopup);
-		aftrekPopupTF.setBounds(240,220,30,20);
+		aftrekPopupTF.setBounds(170,245,30,20);
 		aftrekPopupTF.setFont(ifFont);
 		aftrekPopupTF.addActionListener(this);
 		aftrekPopupTF.addFocusListener(this);
@@ -585,7 +604,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(aftrekPopupTF);
 		
 		aftrekPopupLabel = new JLabel(WiskOpdr.rb.getString("TVEP_puntenaftrek"));
-		aftrekPopupLabel.setBounds(165,220,70,20);
+		aftrekPopupLabel.setBounds(65,245,100,20);
 		aftrekPopupLabel.setFont(ifFont);
 		aftrekPopupLabel.setVisible(false);
 		interactionOptionsPanel.add(aftrekPopupLabel);
@@ -855,7 +874,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean hintButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
-				
+		
+		int locationX = Integer.parseInt(locationXTF.getText());
+		int locationY = Integer.parseInt(locationYTF.getText());
 		
 		this.ronding = Integer.parseInt(rondingTF.getText());
 		this.hoek = Integer.parseInt(hoekTF.getText());
@@ -970,6 +991,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		
 		h.put("zwevend", new Boolean(zwevend));
+		h.put("locationX",new Integer(locationX));
+		h.put("locationY",new Integer(locationY));
 		h.put("buttonOptie", new Boolean(buttonOptie));
 		if(breedtes!=null)h.put("breedtes", breedtes);
 		if(hoogtes!=null)h.put("hoogtes", hoogtes);
@@ -1155,6 +1178,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean hintButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
+		int locationX = 0;
+		int locationY = 0;
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -1277,6 +1302,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("hintButton")) hintButton = ((Boolean) h.get("hintButton")).booleanValue();
         if(h.containsKey("templateModeEdit")) templateModeEdit = ((Boolean) h.get("templateModeEdit")).booleanValue();
         if(h.containsKey("templateModeFill")) templateModeFill = ((Boolean) h.get("templateModeFill")).booleanValue();
+        if(h.containsKey("locationX")) locationX = ((Integer)h.get("locationX")).intValue();
+        if(h.containsKey("locationY")) locationY = ((Integer)h.get("locationY")).intValue();
 		
         System.out.println("logOption: "+logOption);
 
@@ -1346,6 +1373,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		randColorButton.setVisible(randZichtbaar);
 		bgColorZichtbaarCB.setSelected(bgColorZichtbaar);
 		zwevendCB.setSelected(zwevend);
+		locationXTF.setVisible(zwevend);
+		locationYTF.setVisible(zwevend);
+		locationXTF.setText(""+locationX);
+		locationYTF.setText(""+locationY);
 		anderFontCB.setSelected(anderFont);
 		//buttonCB.setSelected(buttonOptie);
 		tableBordersCB.setSelected(tableBorders);
@@ -1744,6 +1775,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		if(e.getSource().equals(zwevendCB))
 		{	zwevend = zwevendCB.isSelected();
+			locationXTF.setVisible(zwevend);
+			locationYTF.setVisible(zwevend);
 			sleepbaarCB.setEnabled(zwevend);
 			sleepdoelCB.setEnabled(zwevend);
 			if(!zwevend) 
@@ -2313,6 +2346,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		enableStyleSettings(b || kiesStyleChoice.getSelectedIndex()==0);
 		
 		zwevendCB.setVisible(!b);
+		locationXTF.setVisible(!b && zwevend);
+		locationYTF.setVisible(!b && zwevend);
 		aantalRijenTF.setVisible(!b);
 		aantalKolommenTF.setVisible(!b);
 		rijenPlusMin.setVisible(!b);

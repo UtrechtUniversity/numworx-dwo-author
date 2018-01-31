@@ -30,6 +30,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				
                 { "klaarKnopLabel" , "Check" },
 				{ "nakijkKnopLabel" , "چک کنيد" },
+				{ "checkExternal" , "external check" },
 				{ "nakijkLabel1" , ":چک شده " },
 				{ "nakijkLabel2" , " ضرب " },
 				{ "opnieuwKnopLabel" , "دوباره" },

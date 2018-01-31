@@ -30,6 +30,7 @@ public class Text_in extends java.util.ListResourceBundle
 				
                 { "klaarKnopLabel" , "Cek" },
 				{ "nakijkKnopLabel" , "Cek" },
+				{ "checkExternal" , "external check" },
 				{ "nakijkLabel1" , "Terperiksa: " },
 				{ "nakijkLabel2" , " kali " },
 				{ "opnieuwKnopLabel" , "Lagi" },

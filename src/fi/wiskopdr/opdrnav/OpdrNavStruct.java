@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -1073,6 +1074,11 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		String[] mccCategorieString = null;
 		boolean scoresZichtbaar = true;
 		Hashtable styles = null;
+		Hashtable templatePages = null;
+		Hashtable templateComponents = null;
+		ArrayList<String> templatePagesKeys = null;
+		ArrayList<String> templateComponentsKeys = null;
+		
 		boolean templateEdit = false;
 		
 		if (h != null && h.containsKey("fontSize"))
@@ -1192,6 +1198,14 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			scoresZichtbaar = ((Boolean) h.get("scoresZichtbaar")).booleanValue();
 		if (h != null && h.containsKey("TekstVakPanelStyles"))
 			styles = (Hashtable) h.get("TekstVakPanelStyles");
+		if (h != null && h.containsKey("TekstVakPanelTemplatePages"))
+			templatePages = (Hashtable) h.get("TekstVakPanelTemplatePages");
+		if (h != null && h.containsKey("TekstVakPanelTemplateComponents"))
+			templateComponents = (Hashtable) h.get("TekstVakPanelTemplateComponents");
+		if (h != null && h.containsKey("TekstVakPanelTemplatePagesKeys"))
+			templatePagesKeys = (ArrayList<String>) h.get("TekstVakPanelTemplatePagesKeys");
+		if (h != null && h.containsKey("TekstVakPanelTemplateComponentsKeys"))
+			templateComponentsKeys = (ArrayList<String>) h.get("TekstVakPanelTemplateComponentsKeys");
 		if (h != null && h.containsKey("templateEdit"))
 			templateEdit = ((Boolean) h.get("templateEdit")).booleanValue();
 
@@ -1200,6 +1214,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		TekstVakPanel.zetFontOvererving(fontOvererving);
 		TekstVakPanel.styles = styles;
+		TekstVakPanel.templatePages = templatePages;
+		TekstVakPanel.templateComponents = templateComponents;
+		TekstVakPanel.templatePagesKeys = templatePagesKeys;
+		TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
 		
 		AntwoordFormuleVak.zetFontOverervingForm(fontOverervingForm);
 		SimpelAntwoordFormuleVak.zetFontOverervingForm(fontOverervingForm);
@@ -1382,18 +1400,24 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				or[i].zetCorrectieView(j+1, false);
 			}
 			activiteitScoreLabels[i].setText(WiskOpdr.rb.getString("score") + totaal);
+			
 			if (aantalActiviteiten == 1)
 			{
 				activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("totaal") + voortgangPerc + "%");
-				if(voortgang)
+				if (voortgang)
 					activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("voortgang") + voortgangPerc + "%");
 			}
 		}
+		
+		aantalNakijkLabel.setText(keerNagekeken(0));
+		
 		if (activiteitNr == 0 && reviewLocation != -1)
 			opdrachtNr = reviewLocation;
 		opdrContainer.zetOpdracht(opdrachten[activiteitNr][opdrachtNr]);
 		stelNavigatieIn(activiteitNr, opdrachtNr);
 		or[activiteitNr].setSelected(opdrachtNr+1);
+		
+		resetScoreGeschiedenis();
 	}
 	
 	
@@ -1646,7 +1670,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			if (mode == ZELFTOETS && isZelftoetsHighScore && zelftoetsHighScore != -1)
 				totaalPercentage = zelftoetsHighScore;
 			else
-				totaalPercentage = 100 * totaal /scoreMax;
+			{
+				totaalPercentage = (int) Math.round(100.0 * totaal /scoreMax);
+			}
 			
 			if (mode != EINDTOETS || api != null && api.LMSGetValue("USER_GROUP").equals("UG_TEACHER") || lessonMode.equals("review"))
 			{
@@ -1738,12 +1764,16 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			requestFocus();
 		if (timerPanel != null && locked)
 			timerPanel.stop();
-		if (zelftoetsGeenCorr)
-			zetAfdekPanelLeeg(locked);
-		else if (allCorrect)
-			zetAfdekPanel(locked, 1);
-		else
-			zetAfdekPanel(locked, 0);
+		
+		if  (!isDocentReviewMode()) // voor docent-review-mode geen afdekpanel
+		{
+			if (zelftoetsGeenCorr)
+				zetAfdekPanelLeeg(locked);
+			else if (allCorrect)
+				zetAfdekPanel(locked, 1);
+			else
+				zetAfdekPanel(locked, 0);
+		}
 
 		this.zelftoetsNagekeken = zelftoetsNagekeken;
 		
@@ -1755,14 +1785,15 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		vorigeKnop.setVisible(vorigeKnopZichtbaar || !bolletjesZichtbaar && (zelftoetsNagekeken||toetsLocked));
 	
-		if(eerderGeenCorr)
-		{	boolean alBezocht = false;
-			for(int i = opdrachtNr + 1; i < aantalOpdrachten[activiteitNr]; i++)
-				if(getBoolean(bezocht, activiteitNr, i))
+		if (eerderGeenCorr && !isDocentReviewMode())
+		{
+			boolean alBezocht = false;
+			for (int i = opdrachtNr + 1; i < aantalOpdrachten[activiteitNr]; i++)
+				if (getBoolean(bezocht, activiteitNr, i))
 					alBezocht = true;
 			zetAfdekPanelLeeg(alBezocht);
 		}
-		if(zelftoetsNagekeken && zelftoetsGeenCorr)
+		if (zelftoetsNagekeken && zelftoetsGeenCorr && !isDocentReviewMode())
 			zetAfdekPanelLeeg(true);
 		
 		for (int i = 0; i < aantalActiviteiten; i++)
@@ -1772,6 +1803,16 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		stelNavigatieIn(activiteitNr, opdrachtNr);
 
+	}
+
+	/**
+	 * True als in docent review mode anders false.
+	 * @return
+	 */
+	private boolean isDocentReviewMode()
+	{
+		boolean mode = lessonMode.equals("review");
+		return mode;
 	}
 
 	/**
@@ -2780,18 +2821,20 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	}
 		
 	public void stelNavigatieIn(int actNr, int opdrNr)
-	{	//bolletje zelf moet altijd enabled zijn, als het al een keer is bezocht.
-		try{	
-			if(bezocht[actNr][opdrNr])
+	{
+		//bolletje zelf moet altijd enabled zijn, als het al een keer is bezocht.
+		try
+		{	
+			if (bezocht[actNr][opdrNr])
 				or[actNr].setEnabled(true, opdrNr + 1);
 		}
 		catch(Exception e){}
 			
 		//Als op laatste pagina: geen bolletjes in te stellen, einde-knop neerzetten
-		if(opdrNr == aantalOpdrachten[actNr] - 1)
+		if (opdrNr == aantalOpdrachten[actNr] - 1)
 		{
 			volgendeKnop.setEnabled(false);
-			if(!"GR".equals(WiskOpdr.deployVariant) && !"MW".equals(WiskOpdr.deployVariant))
+			if (!"GR".equals(WiskOpdr.deployVariant) && !"MW".equals(WiskOpdr.deployVariant))
 			{	volgendeKnop.setVisible(false);
 				//eindeKnop.setVisible(volgendeKnopZichtbaar);
 				eindeKnop.setEnabled(true);
@@ -2799,37 +2842,41 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		//Als conditionele navigatie met voorwaarden, en van huidige pagina word je naar
 		//menu gestuurd: einde-knop neerzetten, alle volgende bolletjes disabled.
-		else if(condNav && condNavVoorwaarden && bepaalVolgendeOpdracht(actNr, opdrNr) == -1)
+		else if (condNav && condNavVoorwaarden && bepaalVolgendeOpdracht(actNr, opdrNr) == -1)
 		{
-			if("GR".equals(WiskOpdr.deployVariant) || "MW".equals(WiskOpdr.deployVariant))
+			if ("GR".equals(WiskOpdr.deployVariant) || "MW".equals(WiskOpdr.deployVariant))
 				volgendeKnop.setEnabled(false);
 			else
-			{	volgendeKnop.setVisible(false);
+			{
+				volgendeKnop.setVisible(false);
 				//eindeKnop.setVisible(volgendeKnopZichtbaar);
 			}
-			for(int i = opdrNr + 1; i < aantalOpdrachten[actNr]; i++)
+			for (int i = opdrNr + 1; i < aantalOpdrachten[actNr]; i++)
 				or[actNr].setEnabled(false, i + 1);
-			if(allesCorrectNodig && !opdrachtenCorrect[actNr][opdrNr] && !or[actNr].geefNoScore(opdrNr + 1))
+			if (allesCorrectNodig && !opdrachtenCorrect[actNr][opdrNr] && !or[actNr].geefNoScore(opdrNr + 1))
 				eindeKnop.setEnabled(false);
 			else
 				eindeKnop.setEnabled(true);
 		}
 		else
-		{	eindeKnop.setVisible(false);
+		{
+			eindeKnop.setVisible(false);
 			eindeKnop.setEnabled(false);
 			volgendeKnop.setVisible(volgendeKnopZichtbaar);
 		
 			//Als leerling pas door mag als alles op pagina correct: volgende bolletjes en volgende/einde-knop disablen.
-			if(allesCorrectNodig && !opdrachtenCorrect[actNr][opdrNr] && !or[actNr].geefNoScore(opdrNr + 1))
-			{	for(int i = opdrNr + 1; i < aantalOpdrachten[actNr]; i++)
+			if (allesCorrectNodig && !opdrachtenCorrect[actNr][opdrNr] && !or[actNr].geefNoScore(opdrNr + 1))
+			{
+				for (int i = opdrNr + 1; i < aantalOpdrachten[actNr]; i++)
 					or[actNr].setEnabled(false, i + 1);
 				volgendeKnop.setEnabled(false);
 				eindeKnop.setEnabled(false);
 				return;
 			}
 			
-			if(condNav && condNavPerc)
-			{	boolean conditie = or[actNr].geefNoScore(opdrNr + 1) || 
+			if (condNav && condNavPerc)
+			{
+				boolean conditie = or[actNr].geefNoScore(opdrNr + 1) || 
 						100.0 * (Math.max(0, scores[actNr][opdrNr] /*- strafpunten[actNr][opdrNr]*/)) / scoresMax[actNr][opdrNr] >= condPerc;
 				//boolean conditie = or[actNr].geefNoScore(opdrNr + 1) ||
 					//	100.0 * or[actNr].geefScore(opdrNr + 1) / scoresMax[actNr][opdrNr] >= condPerc;
@@ -2841,31 +2888,31 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			}
 			else
 				volgendeKnop.setEnabled(true);
-			if(condNav && condNavVoorwaarden)
-			{	for(int i = opdrNr + 1; i < aantalOpdrachten[actNr]; i++)
+			if (condNav && condNavVoorwaarden)
+			{
+				for (int i = opdrNr + 1; i < aantalOpdrachten[actNr]; i++)
 					or[actNr].setEnabled(bezocht[actNr][i], i + 1);
-				if(bepaalVolgendeOpdracht(actNr, opdrNr) > -1)
-				{	or[actNr].setEnabled(!allesCorrectNodig || or[actNr].geefNoScore(opdrNr+1) || opdrachtenCorrect[actNr][opdrNr], bepaalVolgendeOpdracht(actNr, opdrNr) + 1);
-					if(!allesCorrectNodig)
-					{	int volgende = bepaalVolgendeOpdracht(actNr, opdrNr);
-						while(bepaalVolgendeOpdracht(actNr, volgende) > -1)
-						{	if(bepaalVolgendeOpdracht(actNr, volgende) > volgende + 1)
-								for(int i = volgende + 1; i < bepaalVolgendeOpdracht(actNr, volgende); i++)
+				if (bepaalVolgendeOpdracht(actNr, opdrNr) > -1)
+				{
+					or[actNr].setEnabled(!allesCorrectNodig || or[actNr].geefNoScore(opdrNr+1) || opdrachtenCorrect[actNr][opdrNr], bepaalVolgendeOpdracht(actNr, opdrNr) + 1);
+					if (!allesCorrectNodig)
+					{
+						int volgende = bepaalVolgendeOpdracht(actNr, opdrNr);
+						while (bepaalVolgendeOpdracht(actNr, volgende) > -1)
+						{
+							if (bepaalVolgendeOpdracht(actNr, volgende) > volgende + 1)
+								for (int i = volgende + 1; i < bepaalVolgendeOpdracht(actNr, volgende); i++)
 									or[actNr].setEnabled(false, i + 1);
 							or[actNr].setEnabled(true, bepaalVolgendeOpdracht(actNr, volgende) + 1);
 							volgende = bepaalVolgendeOpdracht(actNr, volgende);
 						}
-						if(volgende + 1 < aantalOpdrachten[actNr])
-							for(int i = volgende + 1; i < aantalOpdrachten[actNr]; i++)
-								or[actNr].setEnabled(false, i + 1);
-								
-					}
-				
+						if (volgende + 1 < aantalOpdrachten[actNr])
+							for (int i = volgende + 1; i < aantalOpdrachten[actNr]; i++)
+								or[actNr].setEnabled(false, i + 1);			
+					}	
 				}
 			}
-		
 		}
-		
 	}
 	
 	public int bepaalVoortgangPercentage(int actNr, int opdrNr)
@@ -2894,7 +2941,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 //		}
 		if (e.getSource() == timerPanel)
 		{
-			if (e.getActionCommand().equals("telaat"))
+			if (e.getActionCommand().equals("telaat") && !isDocentReviewMode())
 				zetAfdekPanel(true, 0);
 			else
 				zetAfdekPanel(false, 0);
@@ -3281,11 +3328,21 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		}
 		
 	}
+	
+	/**
+	 * Maak de scoregeschiedenis leeg.
+	 */
+	private void resetScoreGeschiedenis()
+	{
+		scoreGeschiedenisBox.removeAllItems();
+		scoreGeschiedenisBox.addItem(WiskOpdr.rb.getString("zelftoetsGeschiedenisKnopLabel"));
+		
+		setWidthScoreGeschiedenis();
+	}
 
 	/**
 	 * Vul de scoregeschiedenis-uitklapbox met de scoregeschiedenis in percentages.
 	 * 
-	 * @param scoreDialog
 	 */
 	private void vulScoreGeschiedenis()
 	{
@@ -3319,12 +3376,19 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	 * @param aantal
 	 * @return localized string: n keer nagekeken.
 	 */
-	private String keerNagekeken(final int aantal) {
-		if(aantal == 1)
-			return WiskOpdr.rb.getString("ONS_1timeChecked");
-		String format = WiskOpdr.rb.getString("ONS_timesChecked");
-		return MessageFormat.format(format, Integer.valueOf(aantal));
-		//return "" + aantal + " keer nagekeken";
+	private String keerNagekeken(final int aantal)
+	{
+		String s = "";
+		
+		if (aantal == 1)
+			s = WiskOpdr.rb.getString("ONS_1timeChecked");
+		else
+		{
+			String format = WiskOpdr.rb.getString("ONS_timesChecked");
+			s = MessageFormat.format(format, Integer.valueOf(aantal));
+		}
+		
+		return s;
 	}
 
 	/**
