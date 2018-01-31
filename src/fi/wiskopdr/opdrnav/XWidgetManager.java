@@ -151,9 +151,12 @@ public class XWidgetManager {
 				for(Set<Connector> set : map.values()) {
 				for(Connector c: set) {
 					String key = c.getKey();
+					String renameKey = oldnew.get(key);
+					if (renameKey == null)
+						continue;
 					String value = c.getValue();
-					System.out.println("key = " + key + ", value = " + value + " , newkey = " + oldnew.get(key));
-					c.setKey(oldnew.get(key));
+					System.out.println("key = " + key + ", value = " + value + " , newkey = " + renameKey);
+					c.setKey(renameKey);
 				}
 			}}
 		}
