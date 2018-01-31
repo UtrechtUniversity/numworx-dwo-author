@@ -105,6 +105,10 @@
 							<groupId>fi.balansfruitapplet</groupId>
 							<artifactId>balansfruitapplet</artifactId>
 						</exclusion>
+						<exclusion>
+							<groupId>nl.numworx.geodefiner</groupId>
+							<artifactId>geodefiner</artifactId>
+						</exclusion>
 					</exclusions>
 					<proguardInclude>toolfiles/config.pro</proguardInclude>
 					<libs>
@@ -145,6 +149,81 @@
 					</execution>
 				</executions>
 			</plugin>
+<plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/graphtool.jar</file>
+                  <type>jar</type>
+                  <classifier>graphtool</classifier>
+                </artifact>
+               <artifact>
+                  <file>${project.build.directory}/balansfruitapplet.jar</file>
+                  <type>jar</type>
+                  <classifier>balansfruitapplet</classifier>
+                </artifact>
+                <artifact>
+                  <file>${project.build.directory}/geodefiner.jar</file>
+                  <type>jar</type>
+                  <classifier>geodefiner</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>                    <plugin>
+                        <groupId>com.github.batkinson.plugins</groupId>
+                        <artifactId>maven-pack200-plugin</artifactId>
+                        <version>1.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>normalize-jars</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>pack</goal>
+                                </goals>
+                                <configuration>
+                                    <normalizeOnly>true</normalizeOnly>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>pack-jars</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>pack</goal>
+                                </goals>
+                                <configuration>
+                                    <normalizeOnly>false</normalizeOnly>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <processMainArtifact>true</processMainArtifact>
+                            <includeClassifiers>
+                                <includeClassifier>graphtool</includeClassifier>
+                                <includeClassifier>geodefiner</includeClassifier>
+                                <includeClassifier>balansfruitapplet</includeClassifier>
+                            </includeClassifiers>
+                        </configuration>                
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.github.batkinson.plugins</groupId>
+                                <artifactId>maven-pack200-plugin</artifactId>
+                                <version>1.0.1</version>
+                                <type>maven-plugin</type>
+                            </dependency>
+                        </dependencies>                
+                    </plugin>        
 		</plugins>
 	</build>
 	<properties>
@@ -320,7 +399,38 @@
 			<groupId>nl.numworx.geodefiner</groupId>
 			<artifactId>geodefiner</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>nl.numworx.geodefiner</groupId>
+					<artifactId>geodefiner-common</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>fi.euclides</groupId>
+					<artifactId>euclides-util</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>fi.euclides</groupId>
+					<artifactId>euclides-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>fi.euclides</groupId>
+					<artifactId>euclides-expr</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>nl.tue.win.riaca.openmath</groupId>
+					<artifactId>om-lib</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>fi.euclides</groupId>
+				<artifactId>euclides-core</artifactId>
+				<version>0.0.3-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
