@@ -991,13 +991,13 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			for(int i=0 ; templateItems!=null && i<templateItems.length ; i++)
 			{
 				if(e.getSource()==templateItems[i])
-					tekstVakActief.insert(TekstVakPanel.templatePages.get(templateKeys[i]));
+					tekstVakActief.insertDups(TekstVakPanel.templatePages.get(templateKeys[i]));
 				//System.out.println("Key-template: "+templateItems[i].getText());
 			}
 			for(int i=0 ;componentItems!=null && i<componentItems.length ; i++)
 			{
 				if(e.getSource()==componentItems[i]) {
-					tekstVakActief.insert(TekstVakPanel.templateComponents.get(componentKeys[i]));
+					tekstVakActief.insertDups(TekstVakPanel.templateComponents.get(componentKeys[i]));
 					//System.out.println("Key-component: "+componentItems[i].getText());
 					//System.out.println("Key-component: "+componentKeys[i]);
 				}
