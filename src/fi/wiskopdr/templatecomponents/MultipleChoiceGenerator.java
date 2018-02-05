@@ -87,7 +87,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		TekstInteractiePanelVak checkUnit = new TekstInteractiePanelVak(tComponentTV, makeCheckUnitLD(initPreferences));
 		tComponentTV.insert(list.toCompleteString());
 		tComponentTV.insert("\n\n"+checkUnit.toCompleteString());
-		tekstVak.insert(tComponent.toCompleteString());
+		tekstVak.insertDups(tComponent.toCompleteString());
 	}
 	
 	public void editComponent(TekstInteractiePanelVak oldComponent, Hashtable<String,Object> preferences) {
@@ -134,7 +134,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		tComponentTV.insert("\n\n"+checkUnit.toCompleteString());
 		oldComponent.setSelected(true);
 		tekstVak.deleteSelection();
-		tekstVak.insert(tComponent.toCompleteString());
+		tekstVak.insertDups(tComponent.toCompleteString());
 	}
 	
 	public void decompose(TekstInteractiePanelVak oldComponent) {
