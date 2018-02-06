@@ -3,12 +3,16 @@ package nl.numworx.geodefiner.common;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+
+import java.util.List;
+
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.openmath.Expression;
+import fi.euclides.openmath.LocusModelF;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -18,6 +22,7 @@ public class Check_DWO extends Observable implements Observer {
 	private int maxScore, score;
 	private boolean status;
 	private boolean check, extern;
+	private Destroyable target;
 	
 	
 	public boolean isCheck() {
@@ -55,10 +60,15 @@ public class Check_DWO extends Observable implements Observer {
 		} catch (ParseException e) {
 			logic = new OMSymbol("logic1", "true");
 		}
+		
+		List<Destroyable> vars = LocusModelF.varsOf(logic, tracker.getMapper());
+		for(Observable v: vars) {
+			v.addObserver(this);
+		}
+		
 		Label input = new Label();
 		input.setVisible(false);
 		input.setString(formule.substring(2));
-		Destroyable target;
 		try {
 			target = expr.interpret(logic, input, tracker.getMapper());
 		} catch (Exception e) {
@@ -75,12 +85,18 @@ public class Check_DWO extends Observable implements Observer {
 	public void update(Observable observable, Object arg) {
 		if(arg == Destroyable.DESTROY)
 			observable.deleteObserver(this);
-		else if(arg == null||Label.STATE.equals(arg)) {
+		else if (observable != target && check)
+		{	
+			setChanged();
+			notifyObservers("inbetween");
+		} else 	
+			if(arg == null||Label.STATE.equals(arg)) {
 			Label label = (Label)observable;
 			boolean oldStatus = status;
 			status = !check || label.isDefined() && label.getState() != Label.FALSE;
 			score = status ? maxScore : 0;
-			if(status != oldStatus) {
+			if(status != oldStatus)
+			{
 				setChanged();
 				notifyObservers("changed");
 			}

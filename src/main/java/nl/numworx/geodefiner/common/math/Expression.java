@@ -44,6 +44,20 @@ import fi.euclides.util.DefaultAdapter;
 
 public class Expression extends fi.euclides.openmath.Expression {
 
+	public final Checked CHECKED;
+	@Override
+	public Destroyable interpret(OMObject o, Label l, NameMapper mapper) {
+		
+		if(GEODEFINER_CHECKED.isSame(o)) {
+			CHECKED.define(l);
+			return l;
+		}
+		
+		return super.interpret(o, l, mapper);
+	}
+
+
+
 	static class FunctionalMapper implements NameMapper {
 		final NameMapper mapper;
 		final Map<String, Destroyable> function;
@@ -133,12 +147,13 @@ public class Expression extends fi.euclides.openmath.Expression {
 		install(new PoissonCDF(), tracker);
 		install(new PoissonPDF(), tracker);
 		install(new AantalSign(), tracker);
+		install(CHECKED = new Checked(), tracker);
 		GCD gcd = new GCD(); gcd.setTracker(tracker);
 		symbolmap.put("arith1.gcd", gcd);
 		
 	}
 
-	private void install(LabelValue value, Tracker tracker) {
+	private void install(LabelDelegate value, Tracker tracker) {
 		value.setTracker(tracker);
 		symbolmap.put("geodefiner."+value.getSubKey(), value);		
 	}

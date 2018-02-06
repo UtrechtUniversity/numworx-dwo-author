@@ -13,6 +13,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import nl.numworx.geodefiner.common.math.Expression;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
@@ -46,7 +47,7 @@ public abstract class Instance /*implements Observer*/ {
 	protected UIModelFactory uiModelFactory;
 	protected Definitions definitions;
 	protected Tracker viewer;
-	protected boolean nagekeken;
+	private Boolean nagekeken;
 	protected CheckObjectList checkObjects;
 	
 	//protected int width, height;
@@ -372,7 +373,8 @@ public abstract class Instance /*implements Observer*/ {
 			if(modelState != null) map.put("model", modelState);
 		}
 		}
-		if(nagekeken) map.put("nagekeken", Boolean.TRUE);
+		if (nagekeken != null) 
+			map.put("nagekeken", nagekeken);
 		return map;
 	}
 
@@ -446,8 +448,9 @@ public abstract class Instance /*implements Observer*/ {
 		setValues(this.state.getObjectMap("values"));
 		setPositions(this.state.getObjectMap("positions"));
 		setModelState(this.state.getObjectList("model"), this.state.getObjectList("toolbox"));
-		nagekeken = this.state.getBoolean("nagekeken", false);
-		if(nagekeken) {
+		if(this.state.containsKey("nagekeken"))
+			setNagekeken(this.state.getBoolean("nagekeken"));
+		if(isNagekeken()) {
 			viewer.getModel().executeDelay(); // essentieel.
 			fetchScore();
 		}
@@ -541,6 +544,16 @@ public abstract class Instance /*implements Observer*/ {
 			for(Visitor observer: observers)
 				item.visit(observer);
 		}
+	}
+
+	protected boolean isNagekeken() {
+		return nagekeken != null && nagekeken.booleanValue();
+	}
+
+	protected void setNagekeken(boolean nagekeken) {
+		if(!nagekeken && this.nagekeken == null) return; 
+		this.nagekeken = nagekeken;
+		viewer.adapt(Expression.class).CHECKED.setValue(isNagekeken());
 	}
 	
 }
