@@ -77,5 +77,7 @@ public interface OMConstants {
 	  OMSymbol LIST1_SUCHTHAT = new OMSymbol("list1", "suchthat");
 	  OMSymbol LIST2_LIST_SELECTOR = new OMSymbol("list2", "list_selector");
 	  OMSymbol LIST2_SIZE = new OMSymbol("list2", "size");
+	    
+	  OMSymbol GEODEFINER_CHECKED = new OMSymbol("geodefiner", "checked");
 
 }

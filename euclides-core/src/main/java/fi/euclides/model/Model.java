@@ -680,7 +680,7 @@ public class Model extends Observable implements Observer, NameMapper {
 	public Lijn buildLoodlijn() {
 		if(select.size() == 2)
 		{
-			Enumeration i = select.elements();
+			Enumeration<Destroyable> i = select.elements();
 			Object o1 = i.nextElement();
 			Object o2 = i.nextElement();
 			if(o1 instanceof Lijn && o2 instanceof Punt) 

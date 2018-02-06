@@ -216,6 +216,7 @@ TOKEN:
 | <  X : "x" >
 | <  E : "e" >
 | <  Y : "y" >
+| < CHECKED : "checked" >
 | < PI : ( "\u03C0"| "pi" ) >
 | < IF : "if" >
 | < INFINITY : "\u221e" >
@@ -509,6 +510,8 @@ OMApplication bracket() :
 	  	s = unescape(s);
 		return new OMString(s);
 	}
+	
+| < CHECKED > { return GEODEFINER_CHECKED; } 
 | < IF > "(" expr = relation() < KOMMA > expr2 = sum() < KOMMA > expr3 = sum() ")" {
   oma = binop(PROG1_IF, expr, expr2); oma.addElement(expr3); return oma; }
 | LOOKAHEAD( < TRANSC > noterm() )

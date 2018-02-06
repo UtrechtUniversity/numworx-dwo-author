@@ -10,7 +10,7 @@ public class AddParallelHandler extends AddLoodLijnHandler {
 		return getModel().buildParallelLijn();
 	}
 
-	LijnPuntCombi newLijnCombi() {
+	LijnPuntCombi<Lijn> newLijnCombi() {
 		return new ParallelLijn();
 	}
 }

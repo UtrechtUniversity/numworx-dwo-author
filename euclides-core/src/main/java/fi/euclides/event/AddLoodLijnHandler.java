@@ -9,6 +9,7 @@ import fi.euclides.model.LijnPuntCombi;
 import fi.euclides.model.LijnTrack;
 import fi.euclides.model.LoodLijn;
 import fi.euclides.model.Punt;
+import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 
 public class AddLoodLijnHandler extends EventHandler {
@@ -42,7 +43,7 @@ public class AddLoodLijnHandler extends EventHandler {
 	 * @see fi.euclides.model.event.EventHandler#command()
 	 */
 	public void command() {
-		Vector select = getModel().getSelect();
+		Vector<Destroyable> select = getModel().getSelect();
 		state = select.size();
 		if(state == 0)
 		{
@@ -53,14 +54,22 @@ public class AddLoodLijnHandler extends EventHandler {
 		}
 		if(state == 1 && select.firstElement() instanceof Lijn)
 		{
-			testLijn = false;
+			testLijn = true; // want point on line
 			testPunt = true;
-			LijnPuntCombi ll = newLijnCombi();
-			ll.setDestroyable((Lijn) (o1 = (Destroyable) select.firstElement()));
+			LijnPuntCombi<Lijn> ll = newLijnCombi();
+			ll.setDestroyable((Lijn) (o1 = select.firstElement()));
 			track = new LijnTrack(Numbers.ZERO,Numbers.ZERO, ll);
 			getTracker().setPointerHandler(this);
 			setStatus(Messages.getString("AddLoodLijnHandler.1")); //$NON-NLS-1$
 			return;
+		} else if (state == 1 && select.firstElement() instanceof Punt) 
+		{
+			testLijn = true;
+			testPunt = false;
+			o1 = select.firstElement();
+			track = new Track(Numbers.ZERO, Numbers.ZERO);
+			getTracker().setPointerHandler(this);
+			setStatus(Messages.getString("AddLoodLijnHandler.0")); //$NON-NLS-1$
 		} else if (state == 1)
 		{
 			clear();
@@ -74,7 +83,7 @@ public class AddLoodLijnHandler extends EventHandler {
 		return getModel().buildLoodlijn();
 	}
 
-	LijnPuntCombi newLijnCombi() {
+	LijnPuntCombi<Lijn> newLijnCombi() {
 		return new LoodLijn();
 	}
 
@@ -99,9 +108,14 @@ public class AddLoodLijnHandler extends EventHandler {
 	public void pointerReleased(Numbers x, Numbers y) {
 		pointerDragged(x,y);
 		tracker.setTrack(null);
-		Vector select = getModel().getSelect();
+		Vector<Destroyable> select = getModel().getSelect();
 		if(state == 1)
 		{	Destroyable p1;
+			if(select.size()== 1 && select.firstElement() instanceof Lijn && o1 instanceof Punt) {
+				
+			} else
+		
+		
 			if(select.size()==1 && select.firstElement() instanceof Punt)
 				p1 = (Destroyable) select.elementAt(0);
 			else {

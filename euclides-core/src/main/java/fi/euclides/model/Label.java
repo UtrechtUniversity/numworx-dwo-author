@@ -189,13 +189,20 @@ public class Label extends Destroyable implements Observer {
 	
 	public void update(Observable observable, Object arg) {
 		if(arg==DESTROY)
-		{	destroy();
+		{
+			destroy();
 		} else if(arg != VISIBLE){
 			setDefined(defined());
 			registered.update(this, arg);
 			//setChanged();
 			notifyObservers(arg);
 		}
+	}
+
+	@Override
+	public void destroy() {
+		registered.update(this, DESTROY);
+		super.destroy();
 	}
 
 	public  LabelDelegate registered = DEFAULT;

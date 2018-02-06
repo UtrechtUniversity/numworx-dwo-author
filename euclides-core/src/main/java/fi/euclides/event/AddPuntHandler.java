@@ -128,10 +128,11 @@ public class AddPuntHandler extends EventHandler {
 	 * @see euclides.event.EventHandler#command()
 	 */
 	public void command() {
-		state = getModel().getSelect().size();
+		Vector<Destroyable> select = getModel().getSelect();
+		state = select.size();
 		switch(state) {
 		case 1: 
-			Object d = getModel().getSelect().firstElement();
+			Object d = select.firstElement();
 			if(d instanceof Lijn)
 			{ 
 				string = Messages.getString("AddPuntHandler.1"); break; //$NON-NLS-1$
@@ -144,7 +145,13 @@ public class AddPuntHandler extends EventHandler {
 			} else
 				getModel().toggle((Destroyable) d);
 		case 0: string = NIEUW_PUNT; break;
-		default: string = Messages.getString("AddPuntHandler.3"); break; //$NON-NLS-1$
+		case 2:
+			if (select.firstElement() instanceof Lijn && select.lastElement() instanceof Lijn) {
+				getModel().buildPunt(Numbers.NaN, Numbers.NaN);
+				return;
+			}
+		default: 
+			string = Messages.getString("AddPuntHandler.3"); break; //$NON-NLS-1$
 		}
 		super.command();
 	}
