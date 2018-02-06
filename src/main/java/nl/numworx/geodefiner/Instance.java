@@ -121,7 +121,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			fetchScore();
-			nagekeken = true;
+			setNagekeken(true);
 			feedback();
 			handler.fire(Constants.CHECKED); // Score changed
 		}
@@ -157,6 +157,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		public void update(Observable observable, Object arg) {
 			current = null;
 			putValue(LARGE_ICON_KEY, this);
+			setNagekeken(false); // remove "feedback" is nagekeken.
 		}
 
 	}
@@ -365,7 +366,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		public <T> T adapt(Class<T> cls) {
 			if(cls == nl.numworx.geodefiner.common.Snapper.class) return (T) snapper;
 			if(cls == Snapper.class) return (T) snapper;
-			if(cls == Expression.class) return (T) expression;
+			if(cls == Expression.class || cls == nl.numworx.geodefiner.common.math.Expression.class) return (T) expression;
 			if(cls == Randomizer.class) return (T) randomizer;
 			if(cls == AbstractViewer.class) return (T) this;
 			if(cls == Component.class) return (T) content;
@@ -1118,7 +1119,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public void setState(Map<String, ?> state) {
 		super.setState(state);
 		observeNewItems(UserConfig.INSTANCE, new CheckObjectList.CheckVisitor(checkObjects, viewer.getModel()));
-		if(nagekeken && action != null)
+		if(isNagekeken() && action != null)
 		{
 			fetchScore();
 			action.feedback();

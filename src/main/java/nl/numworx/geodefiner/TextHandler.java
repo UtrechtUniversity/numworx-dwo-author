@@ -29,7 +29,7 @@ public class TextHandler extends AbstractTextHandler {
 			l.setString(formule);
 			Volgpunt vp;
 			p = vp = new Volgpunt(p);
-			vp.setDxy(Numbers.createInteger(4), Numbers.ZERO);
+			vp.setDxy(Numbers.createInteger(6), Numbers.createInteger(-5));
 			vp.setFree(false);
 			l.setP(p);
 			getModel().add(l);
