@@ -1999,10 +1999,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("templateModeEdit", new Boolean(templateModeEdit));
 		h.put("templateModeFill", new Boolean(templateModeFill));
 		
-		for (int i = 0; i < aantalRijen && inklapbaar; i++)
-		{	if(uitklapHoogtes.length>i)System.out.println("uitklapH: rij "+i +"="+uitklapHoogtes[i]);
-			//System.out.println("Hoogtes: rij "+i +"="+(int)hoogtes[i]);
-		}
+//		for (int i = 0; i < aantalRijen && inklapbaar; i++)
+//		{	if(uitklapHoogtes.length>i)System.out.println("uitklapH: rij "+i +"="+uitklapHoogtes[i]);
+//			//System.out.println("Hoogtes: rij "+i +"="+(int)hoogtes[i]);
+//		}
 		
 		return h;
 	}
@@ -3688,7 +3688,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	}
 
 	public void klapUitAction()
-	{ System.out.println("uitklapaction");
+	{ 	//System.out.println("uitklapaction");
 		if(!(getParent() instanceof TekstInteractiePanelVak))
 		{
 			if(ingeklapt)
