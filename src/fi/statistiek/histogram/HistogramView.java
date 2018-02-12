@@ -3345,8 +3345,8 @@ public class HistogramView extends JPanel implements Observer
 			// clear panel
 			g2D.clearRect(0, 0, this.getWidth(), this.getHeight());
 			
-//			System.out.println("mainPanel.paintComponent(): this.w=" +
-//				this.getWidth() + ", h=" + this.getHeight());
+//			System.out.println("HistogramBarPanel.paintComponent(): this.w = " +
+//				this.getWidth() + ", h = " + this.getHeight());
 
 			HistogramView.this.lastPolygonPoint = null;
 
