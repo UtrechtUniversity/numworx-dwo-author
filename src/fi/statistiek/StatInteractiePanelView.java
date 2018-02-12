@@ -39,6 +39,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.MouseInputListener;
 
 import fi.statistiek.Statistiek;
+import fi.statistiek.types.AllowedTypes;
+import fi.statistiek.types.ColumnType;
 
 /**
  * Statistiek InteractiePanel MVC View
@@ -48,13 +50,22 @@ import fi.statistiek.Statistiek;
  */
 public class StatInteractiePanelView extends JPanel implements Observer
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final String RESET_ICON_PATH = "resources/reseticon.gif";
 	protected StatModel model;
 	private StatInteractiePanel controller;
 	private static JLabel NO_VIEWS_LABEL = new JLabel("No views added.");
 	private JTabbedPane tabPane;
 	private JPanel addViewTab;
-	private JComboBox viewsBox, startVarBox, startVar2Box;
+	private JComboBox viewsBox;
+	/**
+	 * Voor cirkeldiagram kun je alleen opsomming-variabelen kiezen. 
+	 */
+	private DisabledItemsComboBox startVarBox;
+	private JComboBox startVar2Box;
 	private JLabel addViewLabel;
 	private JLabel chooseStartVarLabel, chooseStartVar2Label;
 
@@ -116,7 +127,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 		this.viewsBox.addActionListener(controller);
 		this.viewsBox.setMaximumRowCount(9); // default is 8; liever niet scrollen voor 1 extra optie
 
-		this.startVarBox = new JComboBox();
+		this.startVarBox = new DisabledItemsComboBox();
 		this.startVarBox.setPreferredSize(new Dimension(150, 24));
 		this.startVarBox.setActionCommand("startVarBox");
 		this.startVarBox.addActionListener(this.controller);
@@ -698,62 +709,57 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	/*
 	 * Update the startVarBox with the variable names.
 	 */
-	private synchronized void updateStartVarBox()
+	synchronized void updateStartVarBox()
 	{
-//		System.out.println("StatInteractiePanelView.updateStartVarBox()");
-
-		// test syl: moet deze methode niet zonder actionListener op startVarBox?
-		
 		// Alleen updaten als er kolomnamen zijn 
 		if (this.model.getStatTableModel().getColumnNames().size() > 0)
 		{
-    		// Check the first item
+			this.startVarBox.removeActionListener(controller);
+			
+			// opslaan voordat ik de startVarBox leeg gooi
+			boolean isEnumOnlyView = isEnumerationOnlyView();
+
+			this.startVarBox.removeAllItems();
+			
 			String firstItem = Statistiek.rb.getString("chooseAVariableOption");
-			if (!firstItem.equals(this.startVarBox.getItemAt(0)))
+			this.startVarBox.addItem(firstItem, false);
+			ArrayList<String> names = model.getStatTableModel().getColumnNames();
+			ArrayList<ColumnType> types = model.getStatTableModel().getColumnTypes();
+
+			for (int i = 0; i < names.size(); i++)
 			{
-				this.startVarBox.addItem(firstItem);
-			}
-    
-			boolean exists;
-			String columnName;
-    		// Check the variable names in model.getData()
-//			for (String varName : this.model.getData().getColumnNames())
-			for (int j = 0; j < this.model.getStatTableModel().getColumnNames().size(); j++)
-			{
-				columnName = this.model.getStatTableModel().getColumnNames().get(j);
-				exists = false;
-				for (int i = 0; i < this.startVarBox.getItemCount() && !exists; i++)
+				if (!isEnumOnlyView ||
+					(isEnumOnlyView && AllowedTypes.ENUM.toString().equals(types.get(i).getType().toString())))
 				{
-					if (columnName.equals(this.startVarBox.getItemAt(i)))
-					{
-						exists = true;
-					}
+					// toon enabled
+					this.startVarBox.addItem(names.get(i), false);
 				}
-				if (!exists)
+				else
 				{
-					// startVarBox heeft een eerste item 'Kies een variabele', dus j + 1
-					this.startVarBox.insertItemAt(columnName, j + 1);
+					// enumOnlyview en type is niet enum
+					// toon disabled
+					this.startVarBox.addItem(names.get(i), true);
 				}
 			}
 			
-			// Check if items from startVarBox need to be removed
-			for (int i = 1; i < this.startVarBox.getItemCount(); i++)
-			{
-				exists = false;
-				for (String varName : this.model.getStatTableModel().getColumnNames())
-				{
-					if (varName.equals(this.startVarBox.getItemAt(i)))
-					{
-						exists = true;
-						break;
-					}
-				}
-				if (!exists)
-				{
-					this.startVarBox.removeItemAt(i);
-				}					
-			}
+			this.startVarBox.addActionListener(controller);
 		}
+	}
+
+	/**
+	 * True if the selected view is only suitable for enumeration columns.
+	 * False is the selected view is suitable for all views or
+	 * if no view is selected.
+	 * @return
+	 */
+	boolean isEnumerationOnlyView()
+	{
+		boolean isEnumOnly = false;
+		
+		if (Statistiek.rb.getString("piechartOption").equals(getViewsBoxString())) // cirkeldiagram is alleen zinvol voor kolommen van type opsomming
+			isEnumOnly = true;
+		
+		return isEnumOnly;
 	}
 
 	/*
@@ -1025,6 +1031,10 @@ public class StatInteractiePanelView extends JPanel implements Observer
 	 */
 	public class SeparateViewDialog extends JDialog implements WindowListener
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private StatistiekView sv;
 
 		/**
