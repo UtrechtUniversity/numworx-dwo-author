@@ -7,5 +7,7 @@
 	<classpathentry kind="lib" path="lib/cbookif-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/xchart-3.5.0.jar" sourcepath="C:/software/xchart-3.5.0/xchart-3.5.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/xchart-demo-3.5.0.jar"/>
 	<classpathentry kind="output" path="output/classes"/>
 </classpath>
