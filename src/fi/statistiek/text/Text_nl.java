@@ -139,6 +139,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "crosstabOption", "Kruistabel" },
 				{ "scatterplotOption", "Spreidingsdiagram" },
 				{ "descriptivesOption", "Kengetallen" },
+				{ "piechartOption", "Cirkeldiagram" },
 				{ "settingsButton", "Instellingen" },
 				{ "nexttoeachotherCheckbox", "Naast elkaar" },
 				{ "chooseStartVarLabel", "Kies variabele: " },
