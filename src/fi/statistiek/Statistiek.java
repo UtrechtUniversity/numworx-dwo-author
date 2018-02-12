@@ -27,6 +27,7 @@ import fi.statistiek.descriptives.DescriptivesController;
 import fi.statistiek.dotplot.DotplotController;
 import fi.statistiek.frequencytable.FrequencyTableController;
 import fi.statistiek.histogram.HistogramController;
+import fi.statistiek.piechart.PieChartController;
 
 /**
  * Statistische representaties
@@ -46,16 +47,23 @@ public class Statistiek implements WiskOpdrApplet
 	public static int scrollSpeedUnit = 16;
 	public static Color backgroundColor = Color.WHITE;
 	public static double BIN_WIDTH_DEFAULT = 1;
+	private static int widthOffset;
+	private static int heightOffset;
+	public static int DEFAULT_WIDTH = 1024;
+	public static int DEFAULT_HEIGHT = 768;
+	int breedte = Statistiek.DEFAULT_WIDTH;
+	int hoogte = Statistiek.DEFAULT_HEIGHT;
+
 
 	// Name all StatistiekViews here, and add them to the createView method
 	public static String[] VIEWS;// = {"Table", "Histogram", "Dotplot",
 								 // "Frequentietabel", "Frequentiepolygoon",
 								 // "Boxplot", "Kruistabel", "Spreidingsdiagram",
-								 // "Kengetallen"};
+								 // "Kengetallen", "Cirkeldiagram"};
 	public static String[] VIEWS_translated;// = {"Table", "Histogram",
 											// "Dotplot", "Frequentietabel",
 											// "Frequentiepolygoon", "Boxplot", "Crosstab",
-											// "Scatterplot", "Descriptive statistics"};
+											// "Scatterplot", "Descriptive statistics", "Pie Chart"};
 	private static Locale language;
 
 	public Statistiek()
@@ -72,6 +80,7 @@ public class Statistiek implements WiskOpdrApplet
 
 	static void initViews()
 	{
+//		VIEWS_translated = new String[10];
 		VIEWS_translated = new String[9];
 		VIEWS_translated[0] = Statistiek.rb.getString("tableOption");
 		VIEWS_translated[1] = Statistiek.rb.getString("histogramOption");
@@ -82,7 +91,9 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS_translated[6] = Statistiek.rb.getString("crosstabOption");
 		VIEWS_translated[7] = Statistiek.rb.getString("scatterplotOption");
 		VIEWS_translated[8] = Statistiek.rb.getString("descriptivesOption");
+//		VIEWS_translated[9] = Statistiek.rb.getString("piechartOption");
 
+//		VIEWS = new String[10];
 		VIEWS = new String[9];
 		VIEWS[0] = "Table";
 		VIEWS[1] = "Histogram";
@@ -93,6 +104,7 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS[6] = "Kruistabel";
 		VIEWS[7] = "Spreidingsdiagram";
 		VIEWS[8] = "Kengetallen";
+//		VIEWS[9] = "Cirkeldiagram";
 	}
 
 	public Statistiek(Locale language)
@@ -127,6 +139,9 @@ public class Statistiek implements WiskOpdrApplet
 		// interactie panel
 		StatInteractiePanel statInteractiePanel = new StatInteractiePanel();
 		Statistiek s = new Statistiek();
+		
+		Statistiek.widthOffset = 50;
+		Statistiek.heightOffset = 70;
 
 		// try to set a specific state in edit panel
 //		try
@@ -148,9 +163,8 @@ public class Statistiek implements WiskOpdrApplet
 		frame.setContentPane(statInteractiePanel);
 
 		frame.setVisible(true);
-		frame.setSize(new Dimension(1024, 768));
+		frame.setSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 	}
 
 	/**
@@ -176,6 +190,13 @@ public class Statistiek implements WiskOpdrApplet
 	{
 //		System.out.println("Statistiek.createView(viewType=" + viewType + ", viewName=" + viewName 
 //			+ ", identityHashCode(statTableModel)=" + identityHashCode(model) + ")");
+
+		int w = statInteractiePanel != null ? statInteractiePanel.getWidth() - Statistiek.widthOffset : 0;
+		int h = statInteractiePanel != null ? Math.max(0, statInteractiePanel.getHeight() - Statistiek.heightOffset) : 0;
+		if (w == 0)
+			w = DEFAULT_WIDTH - Statistiek.widthOffset;
+		if (h == 0)
+			h = DEFAULT_HEIGHT - Statistiek.heightOffset;
 
 		if (viewType.equals("Table"))
 		{
@@ -203,7 +224,6 @@ public class Statistiek implements WiskOpdrApplet
 		}
 		else if (viewType.equals("Kruistabel"))
 		{
-//			System.out.println("Statistiek.createView(): viewName = " + viewName);
 			CrossTabulationTableController controller = new CrossTabulationTableController(model, viewName, startVar, startVar2);
 			// set the split variable (i.e., the column variable)
 			controller.setSplit(startVar2);
@@ -211,13 +231,15 @@ public class Statistiek implements WiskOpdrApplet
 		}
 		else if (viewType.equals("Spreidingsdiagram"))
 		{
-			//System.out.println("Statistiek.createView(): viewName = " + viewName);
 			return new DotplotController(model, viewName, startVar, startVar2);
 		}
 		else if (viewType.equals("Kengetallen"))
 		{
-			//System.out.println("Statistiek.createView(): viewName = " + viewName);
 			return new DescriptivesController(model, viewName, startVar);
+		}
+		else if (viewType.equals("Cirkeldiagram"))
+		{
+			return new PieChartController(model, viewName, startVar, w, h);
 		}
 		else
 		{
