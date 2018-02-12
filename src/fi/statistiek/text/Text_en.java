@@ -139,6 +139,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "crosstabOption", "Cross tab" },
 				{ "scatterplotOption", "Scatterplot" },
 				{ "descriptivesOption", "Descriptive statistics" },
+				{ "piechartOption", "Pie chart" },
 				{ "settingsButton", "Settings" },
 				{ "nexttoeachotherCheckbox", "Next to each other" },
 				{ "chooseStartVarLabel", "Choose variable: " },
