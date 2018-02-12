@@ -515,6 +515,10 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 				{
 					t = Statistiek.VIEWS[8];
 				}
+				else if (s == Statistiek.rb.getString("piechartOption"))
+				{
+					t = Statistiek.VIEWS[9];
+				}
 				
 				// Als Tabel gekozen, dan is de actionPerformed van startVarBox niet relevant
 				if (!t.equals(Statistiek.VIEWS[0]))
@@ -590,6 +594,9 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 			}
 			else
 			{
+				// update startVar-box: toon alleen kolommen die van toepassing zijn, bijv. alleen van type opsomming bij cirkeldiagram
+				this.view.updateStartVarBox();
+
 				// bied variabelekeuze aan
 				this.view.setStartVarLabel(Statistiek.rb.getString("chooseStartVarLabel"));
 				this.view.setStartVarBox(true);
