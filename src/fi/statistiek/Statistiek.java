@@ -80,8 +80,7 @@ public class Statistiek implements WiskOpdrApplet
 
 	static void initViews()
 	{
-//		VIEWS_translated = new String[10];
-		VIEWS_translated = new String[9];
+		VIEWS_translated = new String[10];
 		VIEWS_translated[0] = Statistiek.rb.getString("tableOption");
 		VIEWS_translated[1] = Statistiek.rb.getString("histogramOption");
 		VIEWS_translated[2] = Statistiek.rb.getString("dotplotOption");
@@ -91,10 +90,9 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS_translated[6] = Statistiek.rb.getString("crosstabOption");
 		VIEWS_translated[7] = Statistiek.rb.getString("scatterplotOption");
 		VIEWS_translated[8] = Statistiek.rb.getString("descriptivesOption");
-//		VIEWS_translated[9] = Statistiek.rb.getString("piechartOption");
+		VIEWS_translated[9] = Statistiek.rb.getString("piechartOption");
 
-//		VIEWS = new String[10];
-		VIEWS = new String[9];
+		VIEWS = new String[10];
 		VIEWS[0] = "Table";
 		VIEWS[1] = "Histogram";
 		VIEWS[2] = "Dotplot";
@@ -104,7 +102,7 @@ public class Statistiek implements WiskOpdrApplet
 		VIEWS[6] = "Kruistabel";
 		VIEWS[7] = "Spreidingsdiagram";
 		VIEWS[8] = "Kengetallen";
-//		VIEWS[9] = "Cirkeldiagram";
+		VIEWS[9] = "Cirkeldiagram";
 	}
 
 	public Statistiek(Locale language)
