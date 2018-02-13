@@ -103,13 +103,6 @@ public class PieChartView extends JPanel implements Observer
 
 		this.dialogButton.setVisible(this.model.getStatTableModel()
 			.isViewsEditable());
-
-		this.setMainPanelSize();
-		this.scrollPane.setViewportView(mainPanel);
-
-		this.mainPanel.revalidate();
-
-		this.repaint();
 	}
 
 	/**
@@ -164,30 +157,17 @@ public class PieChartView extends JPanel implements Observer
 		panelChart.setBackground(Color.green);
 		mainPanel.removeAll();
 		mainPanel.add(panelChart);
-		mainPanel.setVisible(true);
-		scrollPane.setVisible(true);
-		
-		System.out.println("PieChartView.makePieChart(): pieChart.getWidth() = " + pieChart.getWidth() +
-			", pieChart.getHeight() = " + pieChart.getHeight());
+		scrollPane.updateUI(); // anders wordt view leeg bij klik elders... (?)
 	}
 
 	public void paintComponent(Graphics g)
 	{
+		System.out.println("PieChartView.paintComponent()");
+		
 		super.paintComponent(g);
 
-		// clear panel
-		g.clearRect(0, 0, this.getWidth(), this.getHeight());
-
-		panelChart.repaint();
-		Graphics2D g2D = (Graphics2D) g;
-		pieChart.paint(g2D, this.getWidth(), this.getHeight());
-		
-		System.out.println("PieChartView.paintComponent(): this.getWidth() = " + this.getWidth() +
-			", this.getHeight() = " + this.getHeight() + ", pieChart.getWidth() = " + pieChart.getWidth() +
-			", pieChart.getHeight() = " + pieChart.getHeight());
-
 		// teken pie chart met de goede maat
-//		makePieChart();
+		makePieChart();
 	}
 	
 	@Override
@@ -202,15 +182,8 @@ public class PieChartView extends JPanel implements Observer
 
 	private void setMainPanelSize()
 	{
-//		int w = this.scrollPane.getWidth();
-//		int h = this.scrollPane.getHeight() - 5;
-//		int w = this.scrollPane.getWidth() - 30; // - width scrollbar
-//		int h = this.scrollPane.getHeight() - dialogButton.getHeight(); // - width scrollbar
-		
 		int w = this.scrollPane.getViewport().getWidth();
 		int h = this.scrollPane.getViewport().getHeight();
-
-		System.out.println("PieChartView.setMainPanelSize(): w = " + w + ", h = " + h);
 		
 		if (w == 0)
 		{
@@ -221,11 +194,6 @@ public class PieChartView extends JPanel implements Observer
 		Dimension d = new Dimension(w, h);
 		
 		this.mainPanel.setPreferredSize(d);
-		
-//		panelChart.setPreferredSize(d);
-//		panelChart.setSize(w, h);
-		
-		// resize piechart... hoe?
 	}
 
 	public void setModel(PieChartModel model)
