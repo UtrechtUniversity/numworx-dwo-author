@@ -86,9 +86,14 @@ public class EqualsVisitor implements Visitor {
 		if (test == Numbers.ONE && b instanceof Lijn && !(b instanceof Segment))
 		{
 			Lijn lb = (Lijn) b;
+			Numbers scale = Numbers.hypot(lb.getDXn(), lb.getDYn());
 			test = Numbers.add( bracket(a.getX1n(),a.getY1n(), lb), 
 							    bracket(a.getX2n(),a.getY2n(), lb)
 					);
+			test = Numbers.div(test, scale);
+			if(a instanceof Ray && lb instanceof Ray) {
+				test = Numbers.div (Numbers.add(test, puntenTest(((Ray) a).getP1(),((Ray) lb).getP1())),Numbers.TWO);
+			}
 		}
 	}
 

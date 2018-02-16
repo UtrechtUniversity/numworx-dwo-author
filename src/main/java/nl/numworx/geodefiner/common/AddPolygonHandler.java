@@ -50,6 +50,8 @@ public class AddPolygonHandler extends EventHandler {
 		points = new Vector<>();
 		super.command();
 		setTrack(new Track(Numbers.NaN, Numbers.NaN));
+		getModel().clearSelection();
+		state = 0;
 	}
 
 	@Override
@@ -72,7 +74,7 @@ public class AddPolygonHandler extends EventHandler {
 			if( points.contains(p)) {
 				break;
 			}
-			points.addElement(p);
+			addSegment(model, p);
 			state = 2;
 			Triangle t = new Triangle(3);
 			t.setA(points.firstElement());
@@ -85,7 +87,7 @@ public class AddPolygonHandler extends EventHandler {
 			if (points.contains(p)) {
 				break;
 			}
-			points.addElement(p);
+			addSegment(model,p);
 			state = 3;
 			setTrack(new PolygonTrack(x,y, points));			
 			break;
@@ -99,6 +101,7 @@ public class AddPolygonHandler extends EventHandler {
 						t = new Polygon(array);
 					else
 						t = new Triangle(array);
+					addSegment(model,p);
 					model.add(t);
 					points.clear();
 					setTrack(new Track(x,y));
@@ -106,12 +109,26 @@ public class AddPolygonHandler extends EventHandler {
 				}
 				break;
 			}
-			points.addElement(p);
+			addSegment(model,p);
 			setTrack(new PolygonTrack(x,y, points));
 			break;
 		}
 		getTracker().setTrack(null);
 		getTracker().paint();
+	}
+
+	private void addSegment(Model model,  Punt p) {
+		Punt last = points.lastElement();
+		points.addElement(p);
+// Optional add segment if not there already.
+		for(Destroyable d : model.getLijnen()) {
+			if (d instanceof Segment) {
+				Segment s = (Segment) d;
+				if(last == s.getP1() && p == s.getP2()) return;
+				if(last == s.getP2() && p == s.getP1()) return;
+			}
+		}
+		model.buildSegment(last, p);
 	}
 
 	private Punt selectedPoint(Numbers x, Numbers y, Model model, Vector<Destroyable> select) {

@@ -100,6 +100,7 @@ public class CheckObjectList extends Groep implements Observer {
 	
 	final private Tracker tracker;
 	private Expression expression;
+	private Instance instance;
 	
 	public CheckObjectList(Tracker tracker) {
 		this.tracker = tracker;
@@ -137,7 +138,12 @@ public class CheckObjectList extends Groep implements Observer {
 
 	@Override
 	public void update(Observable observable, Object arg) {
-		if (observable == tracker.getModel()) { // something added
+		if (observable == tracker.getModel()) {
+			if (arg == null) {
+				setNagekeken(false);
+			} else
+			
+			// something added
 			if(arg instanceof Destroyable) {
 				Destroyable d = (Destroyable)arg;
 				userItems.put(d,null);
@@ -162,6 +168,7 @@ public class CheckObjectList extends Groep implements Observer {
 			{	co.deleteObserver(this);
 				co.destroy();
 				running.add(co);
+				setNagekeken(false);
 			}
 			userItems.remove(observable);
 		} else if(arg == null) {
@@ -169,6 +176,7 @@ public class CheckObjectList extends Groep implements Observer {
 			if (co != null && !co.verify() ) {
 				co.deleteObserver(this);
 				running.add(co);
+				setNagekeken(false);
 			}
 		}
 	}
@@ -285,5 +293,13 @@ public class CheckObjectList extends Groep implements Observer {
 				}
 			}
 		}
+	}
+	
+	public void setNagekeken(boolean b) {
+		if(instance != null)
+			instance.setNagekeken(b);
+	}
+	public void setInstance(Instance instance) {
+		this.instance = instance;
 	}
 }
