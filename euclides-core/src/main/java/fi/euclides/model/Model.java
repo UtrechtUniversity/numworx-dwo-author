@@ -1021,4 +1021,14 @@ public class Model extends Observable implements Observer, NameMapper {
 		return null;
 		
 	}
+
+	/**
+	 * Helper voor AddPolygonHandler. sort points
+	 * @param p
+	 * @param q
+	 * @return
+	 */
+	public Segment buildSegment(Punt p, Punt q) {
+		return twoPuntBuilder(new Segment(), true, new Punt[] { p, q  });
+	}
 }
