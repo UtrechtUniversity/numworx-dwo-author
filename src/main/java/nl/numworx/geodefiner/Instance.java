@@ -155,9 +155,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 		@Override
 		public void update(Observable observable, Object arg) {
+			nofeedback();
+			setNagekeken(false); // remove "feedback" is nagekeken.
+		}
+
+		void nofeedback() {
 			current = null;
 			putValue(LARGE_ICON_KEY, this);
-			setNagekeken(false); // remove "feedback" is nagekeken.
 		}
 
 	}
@@ -1236,6 +1240,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	@Override
 	public String randomize(String input) {
 		return randomize(random, input);
+	}
+
+	@Override
+	protected void setNagekeken(boolean nagekeken) {
+		if(!nagekeken&&action !=null)
+			action.nofeedback();
+		super.setNagekeken(nagekeken);
 	}
 
 	
