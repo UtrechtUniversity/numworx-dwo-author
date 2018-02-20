@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -1205,6 +1206,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 					JComponent component = new JPanel(new BorderLayout());
 					Component c = (Component)panel;
 					Dimension size = c.getSize();
+					c.invalidate();
 					c.setPreferredSize(size);
 					component.add(c, BorderLayout.CENTER);
 					component.setBorder(BorderFactory.createTitledBorder("Popup"));

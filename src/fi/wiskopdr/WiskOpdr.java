@@ -1713,6 +1713,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 				box.doLayout();
 				component = box;
 			}
+			component.setPreferredSize(component.getSize());
+			Frame f = new Frame();f.add(component);f.pack();
 		    double width = component.getWidth();
 		    double pageWidth = pageFormat.getImageableWidth();
 		    double sx = pageWidth/width; sx = Math.min(1, sx);
@@ -1721,6 +1723,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		    //sx = Math.min(sx, pageHeight/height);
 			g2d.scale(sx, sx);
 			component.print(graphics);
+			f.remove(component);
 			return PAGE_EXISTS;
 		}
 		return NO_SUCH_PAGE;
