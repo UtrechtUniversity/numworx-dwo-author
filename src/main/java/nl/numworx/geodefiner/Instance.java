@@ -261,7 +261,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	JLabel  checkLabel = new JLabel();
 
 	public final class Snapper extends nl.numworx.geodefiner.common.Snapper {
-		private final int SNAP = 3;
 		
 		public void translate(MouseEvent ev) {
 			if (gravity) {

@@ -34,6 +34,7 @@ import javax.swing.TransferHandler;
 import nl.numworx.geodefiner.common.FilteredDestroyHandler;
 import nl.numworx.geodefiner.common.AddCirkelHandler;
 import nl.numworx.geodefiner.common.AddPolygonHandler;
+import nl.numworx.geodefiner.common.AddSnapPuntHandler;
 import nl.numworx.geodefiner.common.ResetHandler;
 import nl.numworx.geodefiner.common.Tools;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
@@ -165,7 +166,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		resetter = new ResetHandler("Reset", instance);
 		actions.setSize(TOOL_SIZE);
 		actions.set(SELECTOR, new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer));
-		actions.set(POINT, new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddPuntHandler(),viewer));
+		actions.set(POINT, new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddSnapPuntHandler(),viewer));
 
 		actions.set(LINE, new XXXAction(Messages.getString("Euclides.50"), "/line.png", new AddLijnHandler(AddLijnHandler.LINE),viewer));
 		actions.set(HALFLINE, new XXXAction(Messages.getString("Euclides.49"), "/ray.png", new AddLijnHandler(AddLijnHandler.RAY),viewer));
@@ -210,7 +211,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		actions.set(VECTOR,new XXXAction("Vector", "/ray.png", new VectorHandler("Vector"), viewer));
 		
 		
-		actions.set(FORMULA, new XXXAction("Definitie", "/formuleknop.gif", formule, viewer));
+		actions.set(FORMULA, new XXXAction("Definitie", "/function.png", formule, viewer));
 		actions.set(TEXT, new XXXAction("Text", "/text.png", text, viewer));
 
 		actions.set(TRAIL, new TrailAction(Messages.getString("Euclides.44"), viewer)); //$NON-NLS-1$
