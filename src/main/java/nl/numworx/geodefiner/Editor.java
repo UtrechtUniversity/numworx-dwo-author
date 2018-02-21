@@ -222,7 +222,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	}
 
 	public int getMaxScore() {
-		return checkDWO.getMaxScore();
+		return checkDWO.getMaxScore() + checkObjects.getMaxScore();
 	}
 
 	public String[] getSendCmds() {

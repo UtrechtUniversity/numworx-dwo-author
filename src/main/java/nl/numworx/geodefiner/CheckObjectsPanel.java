@@ -299,4 +299,8 @@ public class CheckObjectsPanel extends JPanel implements ActionListener, Randomi
 	public List toList() {
 		return checkObjects.toList();
 	}
+
+	public int getMaxScore() {
+		return checkObjects.getMaxScore();
+	}
 }
