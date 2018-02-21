@@ -64,9 +64,9 @@ public class AddPuntHandler extends EventHandler {
 		hitTester.setVisitor(this);
 		hitTester.setXY(x.doubleValue(), y.doubleValue());
 		done = false;
-		Enumeration e = getModel().getPunten().elements();
+		Enumeration<Punt> e = getModel().getPunten().elements();
 		while (!done && e.hasMoreElements()) {
-			Punt p = (Punt) e.nextElement();
+			Punt p = e.nextElement();
 			if(p.isDefined())
 				hitTester.visitPunt(p);
 		}
@@ -77,7 +77,7 @@ public class AddPuntHandler extends EventHandler {
 			getModel().clearSelection();
 		} else
 		{
-			Punt p = getModel().buildPunt(x, y);
+			Punt p = buildPunt(x, y);
 			if(p instanceof PuntOp2)
 			{
 				PuntOp2 p2 = (PuntOp2) p;
@@ -91,14 +91,18 @@ public class AddPuntHandler extends EventHandler {
 		command();
 	}
 
+	protected Punt buildPunt(Numbers x, Numbers y) {
+		return getModel().buildPunt(x, y);
+	}
+
 	private void findOther(PuntOp2 p2) {
 		if(p2 instanceof CirkelLijnSnijpunt)
 		{
 			Cirkel c = (Cirkel) p2.getOp2();
 			Lijn l = (Lijn) p2.getOp1();
-			Enumeration e = getModel().getPunten().elements();
+			Enumeration<Punt> e = getModel().getPunten().elements();
 			while (e.hasMoreElements()) {
-				Punt p = (Punt) e.nextElement();
+				Punt p = e.nextElement();
 				if(p == p2) break;
 				if(PuntOp2.incident(p, c) && IncidentHandler.incident(p, l))
 				{
@@ -147,7 +151,7 @@ public class AddPuntHandler extends EventHandler {
 		case 0: string = NIEUW_PUNT; break;
 		case 2:
 			if (select.firstElement() instanceof Lijn && select.lastElement() instanceof Lijn) {
-				getModel().buildPunt(Numbers.NaN, Numbers.NaN);
+				buildPunt(Numbers.NaN, Numbers.NaN);
 				return;
 			}
 		default: 
