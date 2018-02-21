@@ -47,4 +47,9 @@ public class ShortSegment extends Segment {
 		this.dy = dy;
 		this.tip = tip;
 	}
+	
+	@Override
+	public boolean isDefined() {
+		return true;
+	}
 }
