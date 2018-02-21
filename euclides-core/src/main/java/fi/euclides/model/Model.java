@@ -455,7 +455,6 @@ public class Model extends Observable implements Observer, NameMapper {
 		return twoPuntBuilder(new Segment(), false);
 	}
 
-	@Deprecated
 	private Destroyable add(Destroyable d, Vector vector) {
 		clearSelection();
 		if(contains(d, vector))

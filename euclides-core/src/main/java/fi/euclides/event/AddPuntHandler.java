@@ -67,13 +67,12 @@ public class AddPuntHandler extends EventHandler {
 		Enumeration<Punt> e = getModel().getPunten().elements();
 		while (!done && e.hasMoreElements()) {
 			Punt p = e.nextElement();
-			if(p.isDefined())
+			if(p.isDefined() && p.isVisible())
 				hitTester.visitPunt(p);
 		}
 		hitTester.done();
 		if(punt != null)
 		{
-			punt.setVisible(true);
 			getModel().clearSelection();
 		} else
 		{
