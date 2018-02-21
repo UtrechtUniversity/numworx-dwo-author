@@ -3,6 +3,7 @@ package fi.euclides.model;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import fi.euclides.util.Hashtable;
 
@@ -454,6 +455,7 @@ public class Model extends Observable implements Observer, NameMapper {
 		return twoPuntBuilder(new Segment(), false);
 	}
 
+	@Deprecated
 	private Destroyable add(Destroyable d, Vector vector) {
 		clearSelection();
 		if(contains(d, vector))
@@ -461,6 +463,17 @@ public class Model extends Observable implements Observer, NameMapper {
 			tester.getD().setVisible(true); // niet als label?
 			d.destroy();
 			return tester.getD(); // drop on the floor...
+		}
+		return addAlways(d, vector);
+	}
+	
+	private <T extends Destroyable> T addNotIfVisible(T d, Vector<T> vector) {
+		clearSelection();
+		if(contains(d, vector)) {
+			if(tester.getD().isVisible()) {
+				d.destroy();
+				return (T) tester.getD();
+			}
 		}
 		return addAlways(d, vector);
 	}
@@ -901,7 +914,7 @@ public class Model extends Observable implements Observer, NameMapper {
 
 	public Destroyable add(Destroyable d) {
 		if(d instanceof Punt)
-			return addPunt(d);
+			return addPunt((Punt) d);
 		return add(d, lijnen);
 	}
 
