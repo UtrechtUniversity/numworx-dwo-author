@@ -259,6 +259,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	JPanel south = new JPanel(new FlowLayout(FlowLayout.TRAILING, 2, 2));
 	JButton checkBtn = new JButton(Messages.getString("kijkNa"));
 	JLabel  checkLabel = new JLabel();
+	JLabel  statusLabel = new JLabel();
 
 	public final class Snapper extends nl.numworx.geodefiner.common.Snapper {
 		
@@ -529,6 +530,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		@Override
 		public void setStatus(String string) {
 			System.out.println(string);
+			statusLabel.setText(string);
 		}
 
 		private WeakHashMap<String, Destroyable> cache = new WeakHashMap<String,Destroyable>();
@@ -1017,10 +1019,18 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		panel.add(toolbox, BorderLayout.NORTH);
 		checkBtn.setVisible(false);
 		checkLabel.setVisible(false);
+		statusLabel.setVisible(false);
 		south.add(checkBtn);
 		south.add(checkLabel);
 		south.setOpaque(false);
-		panel.add(south, BorderLayout.SOUTH);
+		if(GeoDefiner.isExperimental) {
+			statusLabel.setVisible(true);
+			JPanel south2 = new JPanel(new BorderLayout());
+			south2.add(south, BorderLayout.LINE_END);
+			south2.add(statusLabel, BorderLayout.CENTER);
+			panel.add(south2, BorderLayout.SOUTH);
+		} else 
+			panel.add(south, BorderLayout.SOUTH);
 	}
 
 	public void addCBookEventListener(CBookEventListener listener, final String command) {

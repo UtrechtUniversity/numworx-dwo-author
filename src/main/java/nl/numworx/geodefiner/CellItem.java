@@ -53,13 +53,19 @@ public class CellItem extends JPanel {
 
 		public void actionPerformed(ActionEvent e) {
 			UIEditor editor = getEditor();
-			Object defaultOption = "Bewaar";
-			Object[] options = { defaultOption, "Verwijderen", "Annuleren" };
+			Object defaultOption = Messages.getString("save");
+			Object[] options = { defaultOption, Messages.getString("delete"), Messages.getString("cancel") };
 			Icon icon = iconOf(getCell().item);
+			String name = viewer.toString(getCell().item);
+// local patches: e, grid
+			if("e".equals(name))
+				name = "point(1,0)";
+			else if ("$#@".equals(name))
+				name = "grid";
 			int ok = 
 					canDelete ?
-							JOptionPane.showOptionDialog(CellItem.this, editor, viewer.toString(getCell().item), JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, icon, options, defaultOption)
-					:		JOptionPane.showConfirmDialog(CellItem.this, editor, viewer.toString(getCell().item), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
+							JOptionPane.showOptionDialog(CellItem.this, editor, name, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, icon, options, defaultOption)
+					:		JOptionPane.showConfirmDialog(CellItem.this, editor, name, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
 					
 			if(ok == JOptionPane.YES_OPTION) {
 				editor.commit();
