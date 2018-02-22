@@ -33,8 +33,6 @@ public class DestroyHandler extends EventHandler {
 	 * @see euclides.event.EventHandler#command()
 	 */
 	public void command() {
-		//super.command();
-		
 		final Model model = getModel();
 		if(model.getSelect().isEmpty())
 		{	Collection<Destroyable> d = new ArrayList<>(2);
@@ -49,7 +47,10 @@ public class DestroyHandler extends EventHandler {
 				d.add(punten.lastElement());
 			}
 			if(filterSelection(d))
+			{
 				getTracker().setPointerHandler(this);
+				setStatus(Messages.getString("Euclides.37"));
+			}
 		} else {
 			if(filterSelection(model.getSelect()))
 			{
