@@ -1,14 +1,12 @@
 package fi.wiskopdr;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.*;
 
 import javax.swing.*;
 
+import fi.wiskopdr.WiskOpdr.StudentModel;
 import fi.wiskopdr.opdrnav.PlusMinKnop;
 
 public class ObjectiveSettingsButton extends JButton implements ActionListener
@@ -29,6 +27,7 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 	private String[][] objectives;
 	private JButton okButton; 
 	private JButton cancelButton;
+	private JButton importButton;
 	
 	JPanel objectivesPanel = new JPanel();
 	JPanel bottomPanel = new JPanel();
@@ -37,6 +36,7 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 	private String buttonLabel;
 	private String rowLabel;
 	private String columnLabel;
+	private StudentModel studentModel;
 		
 	public ObjectiveSettingsButton(){	
 		this(WiskOpdr.rb.getString("OPT_objectives"), WiskOpdr.rb.getString("OBJ_leerdoel"), WiskOpdr.rb.getString("OBJ_categorie"));
@@ -56,6 +56,17 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 	
 	public void setCategories(String[] categorieString){   
 		this.categorieString = categorieString;
+	}
+	
+	public void setStudentModelID(String id) {
+		studentModel = null;
+		for( StudentModel s: WiskOpdr.applet.studentModels) {
+			if( s.id.equals(id))
+			{
+				studentModel = s;
+				break;
+			}
+		}
 	}
 	
 	private void makeObjects(){   
@@ -105,6 +116,13 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
     
     public String[] getCategories(){
     	return categorieString;
+    }
+    
+    public String getStudentModelID() {
+    		if(studentModel != null) {
+    			return studentModel.id;
+    		}
+    		return null;
     }
     
     public void makeTextFields()
@@ -178,6 +196,11 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
         cancelButton.addActionListener(this);
         bottomPanel.add(cancelButton);
         
+        importButton = new JButton("Import");
+        importButton.addActionListener(this);
+        if (WiskOpdr.isExperimental())
+        		bottomPanel.add(importButton);
+        
 		scrollPane = new JScrollPane(objectivesPanel);
     }
     
@@ -217,12 +240,16 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 						if(objectives[i] != null && objectives[i].length > aantalRijen)
 							aantalRijen = objectives[i].length;
 			}
-			
+			boolean m = studentModel == null;
 			makeGUI(aantalRijen, aantalKolommen);
+			aantalKolommenKnop.setEnabled(m);
+			aantalRijenKnop.setEnabled(m);
 			for (int j = 0 ; objectives!=null &&  j < objectives.length; j++)
 			for (int i = 0 ; objectives[j]!=null && i < objectives[j].length; i++){	
 				objectiveTextFields[j][i].setText(objectives[j][i]);
+				objectiveTextFields[j][i].setEnabled(m);
 				categoryTextFields[j].setText(categorieString[j]);
+				categoryTextFields[j].setEnabled(m);
 			}
 			
 			makeFrame();
@@ -281,5 +308,46 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
             frame.dispose();
             frame=null;
         }
+		else if(e.getSource().equals(importButton)) {
+			JComboBox<StudentModel> combo = new JComboBox<>(WiskOpdr.applet.studentModels);
+			combo.setSelectedItem(studentModel);
+			int result = JOptionPane.showConfirmDialog(importButton, combo, "Importeer model", JOptionPane.OK_CANCEL_OPTION);
+			if(result == JOptionPane.OK_OPTION) {
+				result = combo.getSelectedIndex();
+				System.out.println("import model " + result);
+				if(result <= 0) {
+					studentModel = null;
+					for(JTextField t: categoryTextFields) t.setEnabled(true);
+					for(JTextField[] tt: objectiveTextFields) for(JTextField t: tt) t.setEnabled(true);
+					aantalKolommenKnop.setEnabled(true);
+					aantalRijenKnop.setEnabled(true);
+					return;
+				}
+				studentModel = (StudentModel) combo.getSelectedItem();
+				aantalKolommen = studentModel.categories.length;
+				aantalRijen = studentModel.getMaxObjectives();
+				makeGUI(aantalRijen, aantalKolommen);
+				aantalKolommenKnop.setEnabled(false);
+				aantalRijenKnop.setEnabled(false);
+				for(int i = 0;i < aantalKolommen; i++) {
+					categoryTextFields[i].setText(studentModel.categories[i].category);
+					categoryTextFields[i].setEnabled(false);
+					
+					for (int j = 0; j < aantalRijen; j ++) {
+						int n = studentModel.categories[i].objectives.length;
+						String s = n < j ? "" : studentModel.categories[i].objectives[j];
+						objectiveTextFields[i][j].setText(s);
+						objectiveTextFields[i][j].setEnabled(false);
+					}
+				}
+				frame.getContentPane().removeAll();
+				frame.getContentPane().add(scrollPane);
+				frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+				frame.pack();
+						
+			} else {
+				System.out.println("import canceled");
+			}
+		}
 	}   
 }

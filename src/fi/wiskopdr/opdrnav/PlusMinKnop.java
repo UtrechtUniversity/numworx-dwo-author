@@ -59,9 +59,9 @@ public class PlusMinKnop extends JPanel implements MouseListener
 	}
 	
 	public void setEnabled(boolean b)
-	{
+	{	boolean old = enabled;
 		enabled = b;
-		
+		if(old != b) repaint();
 		
 	}
 	public void paintComponent(Graphics g)

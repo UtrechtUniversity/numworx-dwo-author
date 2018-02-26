@@ -41,7 +41,11 @@ import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 
 import org.cbook.cbookif.LessonMode;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;
@@ -137,9 +141,119 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	
 	public static String[][] objectives = null;
 	public static String[] categorieString = null;
+	public StudentModel studentModel;
+	public StudentModel studentModels[];
 	public static String[][] misconceptions = null;
 	public static String[] mccCategorieString = null;
 	
+	
+	private JSONArray studentModelsJSON;
+	
+	private static final String studentModelsMock =
+	
+	"[{\"id\": null, \"info\": {\"title\": {\"en\": \"A model\", \"nl\": \"A model\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}, \"categories\": [{\"info\": {\"title\": {\"en\": \"A cat 0\", \"nl\": \"A cat 0\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"A obj 0\", \"nl\": \"A obj 0\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}, {\"info\": {\"title\": {\"en\": \"A obj 1\", \"nl\": \"A obj 1\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}]}, {\"info\": {\"title\": {\"en\": \"A cat 1\", \"nl\": \"A cat 1\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"A obj 0\", \"nl\": \"A obj 0\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}, {\"info\": {\"title\": {\"en\": \"A obj 1\", \"nl\": \"A obj 1\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}]}, {\"info\": {\"title\": {\"en\": \"A cat 2\", \"nl\": \"A cat 2\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"A obj 0\", \"nl\": \"A obj 0\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}, {\"info\": {\"title\": {\"en\": \"A obj 1\", \"nl\": \"A obj 1\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}]}]},{\"id\": null, \"info\": {\"title\": {\"en\": \"B model\", \"nl\": \"B model\"}, \"description\": {\"nl\": \"B description\"}}, \"categories\": [{\"info\": {\"title\": {\"en\": \"B cat 0\", \"nl\": \"B cat 0\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"B obj 0\", \"nl\": \"B obj 0\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}, {\"info\": {\"title\": {\"en\": \"B obj 1\", \"nl\": \"B obj 1\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}]}, {\"info\": {\"title\": {\"en\": \"B cat 1\", \"nl\": \"B cat 1\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"B obj 0\", \"nl\": \"B obj 0\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}, {\"info\": {\"title\": {\"en\": \"B obj 1\", \"nl\": \"B obj 1\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}]}, {\"info\": {\"title\": {\"en\": \"B cat 2\", \"nl\": \"B cat 2\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"B obj 0\", \"nl\": \"B obj 0\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}, {\"info\": {\"title\": {\"en\": \"B obj 1\", \"nl\": \"B obj 1\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}]}]}]";
+
+	{
+		JSONParser parser = new JSONParser();
+		try {
+			studentModelsJSON = (JSONArray) parser.parse(studentModelsMock);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		studentModels = getStudentModels();
+	}
+	
+	
+	static public class StudentCategory {
+		public String category;
+		public String[] objectives;
+	}
+	
+	static public class StudentModel {
+		public String title;
+		public String id;
+		public StudentCategory[] categories;
+		public String toString() {
+			return String.valueOf(title);
+		}
+
+		public int getMaxObjectives() {
+			int max = 0;
+			for(StudentCategory c: categories)
+				max = Math.max(max, c.objectives.length);
+			return max;
+		}
+	}
+	
+	private StudentModel[] getStudentModels() {
+		int size = studentModelsJSON.size();
+		StudentModel[] result = new StudentModel[size+1];
+		for(int i = 0; i < size; i++) {
+			StudentModel model = readModel(studentModelsJSON.get(i));
+			result[i+1] = model;
+		}
+		
+		return result;
+	}
+ 	
+	
+	private static StudentModel readModel(Object object) {
+		StudentModel result = new StudentModel();
+		JSONObject map = (JSONObject) object;
+		result.title = getTitle(map);
+		result.id = getId(map); // FIXME 
+		result.categories = readCategories(map.get("categories"));		
+		return result;
+	}
+
+	private static String getId(JSONObject map) {
+		Object id = map.get("id");
+		if(id instanceof Map) {
+			return (String) ((Map) id).get("idString");
+		}
+		return null;
+	}
+
+
+	private static StudentCategory[] readCategories(Object object) {
+		JSONArray array = (JSONArray) object;
+		int size = array.size();
+		StudentCategory[] categories = new StudentCategory[size];
+		for(int i = 0; i < size; i++)  {
+			categories[i] = readStudentCategory(array.get(i));
+		}
+		return categories;
+	}
+
+	private static StudentCategory readStudentCategory(Object object) {
+		JSONObject map = (JSONObject) object;
+		StudentCategory result = new StudentCategory();
+		result.category = getTitle(map);
+		result.objectives = readObjectives(map.get("objectives"));
+		return result;
+	}
+
+	protected static String getTitle(JSONObject map) {
+		return (String) ((Map) ((Map) map.get("info")).get("title")).get(language.toString());
+	}
+
+	private static String[] readObjectives(Object object) {
+		JSONArray array = (JSONArray) object;
+		int size = array.size();
+		String[] result = new String[size];
+		for (int i = 0; i < size; i++) {
+			result[i] = readObjective(array.get(i));
+		}
+		return result;
+	}
+
+	private static String readObjective(Object object) {
+		JSONObject map = (JSONObject) object;
+		return getTitle(map);
+	}
+
 	private static URL defaultCodeBase; // allow code injection?
 	private static boolean COMPLETED = false;
 	public static String defaultEditModeState = null;

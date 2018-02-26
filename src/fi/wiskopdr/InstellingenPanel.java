@@ -638,7 +638,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean scoresZichtbaar = true;
 		int aftrekCorrectieZelftoets = 5;
 		boolean templateEdit = false;
-		
+		String studentModelId = null;
 		try
 		{	fontSize = Integer.parseInt(fontSizeTF.getText());
 			navigatieSize = Integer.parseInt(navigatieSizeTF.getText());
@@ -693,6 +693,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		hasObjectives = objectivesCB.isSelected();
 		hasMisconceptions = misconceptionsCB.isSelected();
 		objectives = objectivesButton.getObjectives();
+		studentModelId = objectivesButton.getStudentModelID();
 		pilotObjectives = pilotObjectivesCB.isSelected();
 		misconceptions = misconceptionsButton.getObjectives();
 		categorieString = objectivesButton.getCategories();
@@ -758,6 +759,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	h.put("objectives", objectives);
 			h.put("categorieString", categorieString);
 			h.put("pilotObjectives", new Boolean(pilotObjectives));
+			if(studentModelId != null) {
+				h.put("studentModelId", studentModelId);
+			}
 		}
 		h.put("hasMisconceptions", new Boolean(hasMisconceptions));
 		if(hasMisconceptions && misconceptions!=null)
@@ -819,6 +823,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean hasObjectives = false;
 		String[][] objectives = null;
 		String[] categorieString = null;
+		String studentModelId = null;
 		boolean pilotObjectives = false;
 		boolean hasMisconceptions = false;
 		String[][] misconceptions = null;
@@ -877,6 +882,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				
 			}
 		if(h.containsKey("categorieString")) categorieString = (String[])h.get("categorieString");
+		if(h.containsKey("studentModelId"))  studentModelId = (String) h.get("studentModelId");
 		if(h.containsKey("pilotObjectives")) pilotObjectives = ((Boolean)h.get("pilotObjectives")).booleanValue();
 		if(h.containsKey("hasMisconceptions")) hasMisconceptions = ((Boolean)h.get("hasMisconceptions")).booleanValue();
 		if(h.containsKey("misconceptions")) 
@@ -956,6 +962,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	objectivesButton.setObjectives(objectives);
 			objectivesButton.setCategories(categorieString);
 			pilotObjectivesCB.setSelected(pilotObjectives);
+			objectivesButton.setStudentModelID(studentModelId);
 		}
 		misconceptionsCB.setSelected(hasMisconceptions);
 		misconceptionsButton.setVisible(hasMisconceptions);
