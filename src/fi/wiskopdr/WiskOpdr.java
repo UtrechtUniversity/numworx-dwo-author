@@ -142,27 +142,24 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static String[][] objectives = null;
 	public static String[] categorieString = null;
 	public StudentModel studentModel;
-	public StudentModel studentModels[];
+	private StudentModel studentModels[];
 	public static String[][] misconceptions = null;
 	public static String[] mccCategorieString = null;
 	
 	
 	private JSONArray studentModelsJSON;
 	
-	private static final String studentModelsMock =
-	
-	"[{\"id\": null, \"info\": {\"title\": {\"en\": \"A model\", \"nl\": \"A model\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}, \"categories\": [{\"info\": {\"title\": {\"en\": \"A cat 0\", \"nl\": \"A cat 0\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"A obj 0\", \"nl\": \"A obj 0\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}, {\"info\": {\"title\": {\"en\": \"A obj 1\", \"nl\": \"A obj 1\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}]}, {\"info\": {\"title\": {\"en\": \"A cat 1\", \"nl\": \"A cat 1\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"A obj 0\", \"nl\": \"A obj 0\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}, {\"info\": {\"title\": {\"en\": \"A obj 1\", \"nl\": \"A obj 1\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}]}, {\"info\": {\"title\": {\"en\": \"A cat 2\", \"nl\": \"A cat 2\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"A obj 0\", \"nl\": \"A obj 0\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}, {\"info\": {\"title\": {\"en\": \"A obj 1\", \"nl\": \"A obj 1\"}, \"description\": {\"en\": \"A description\", \"nl\": \"A description\"}}}]}]},{\"id\": null, \"info\": {\"title\": {\"en\": \"B model\", \"nl\": \"B model\"}, \"description\": {\"nl\": \"B description\"}}, \"categories\": [{\"info\": {\"title\": {\"en\": \"B cat 0\", \"nl\": \"B cat 0\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"B obj 0\", \"nl\": \"B obj 0\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}, {\"info\": {\"title\": {\"en\": \"B obj 1\", \"nl\": \"B obj 1\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}]}, {\"info\": {\"title\": {\"en\": \"B cat 1\", \"nl\": \"B cat 1\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"B obj 0\", \"nl\": \"B obj 0\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}, {\"info\": {\"title\": {\"en\": \"B obj 1\", \"nl\": \"B obj 1\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}]}, {\"info\": {\"title\": {\"en\": \"B cat 2\", \"nl\": \"B cat 2\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}, \"objectives\": [{\"info\": {\"title\": {\"en\": \"B obj 0\", \"nl\": \"B obj 0\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}, {\"info\": {\"title\": {\"en\": \"B obj 1\", \"nl\": \"B obj 1\"}, \"description\": {\"en\": \"B description\", \"nl\": \"B description\"}}}]}]}]";
-
+	private void readStudentModelsJSON()
 	{
 		JSONParser parser = new JSONParser();
 		try {
+			String studentModelsMock = getParameter("studentModelContexts");
 			studentModelsJSON = (JSONArray) parser.parse(studentModelsMock);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			studentModelsJSON = new JSONArray();
 		}
-		
-		studentModels = getStudentModels();
 	}
 	
 	
@@ -187,7 +184,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 	}
 	
-	private StudentModel[] getStudentModels() {
+	private StudentModel[] getStudentModelsInit() {
 		int size = studentModelsJSON.size();
 		StudentModel[] result = new StudentModel[size+1];
 		for(int i = 0; i < size; i++) {
@@ -198,13 +195,23 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return result;
 	}
  	
+	public StudentModel[] getStudentModels() {
+		if(studentModels == null) {
+			readStudentModelsJSON();
+			studentModels = getStudentModelsInit();
+		}
+		return studentModels;
+	}
+	
+	
 	
 	private static StudentModel readModel(Object object) {
 		StudentModel result = new StudentModel();
 		JSONObject map = (JSONObject) object;
-		result.title = getTitle(map);
+		JSONObject model = (JSONObject) map.get("modelStructure");
+		result.title = getTitle(model);
 		result.id = getId(map); // FIXME 
-		result.categories = readCategories(map.get("categories"));		
+		result.categories = readCategories(model.get("categories"));		
 		return result;
 	}
 
@@ -218,6 +225,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 
 	private static StudentCategory[] readCategories(Object object) {
+		if(object == null) return new StudentCategory[0];
 		JSONArray array = (JSONArray) object;
 		int size = array.size();
 		StudentCategory[] categories = new StudentCategory[size];
@@ -240,6 +248,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 
 	private static String[] readObjectives(Object object) {
+		if (object == null) return new String[0];
 		JSONArray array = (JSONArray) object;
 		int size = array.size();
 		String[] result = new String[size];

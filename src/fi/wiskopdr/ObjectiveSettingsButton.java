@@ -60,8 +60,8 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 	
 	public void setStudentModelID(String id) {
 		studentModel = null;
-		for( StudentModel s: WiskOpdr.applet.studentModels) {
-			if( s.id.equals(id))
+		for( StudentModel s: WiskOpdr.applet.getStudentModels()) {
+			if( s != null && s.id.equals(id))
 			{
 				studentModel = s;
 				break;
@@ -309,7 +309,7 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
             frame=null;
         }
 		else if(e.getSource().equals(importButton)) {
-			JComboBox<StudentModel> combo = new JComboBox<>(WiskOpdr.applet.studentModels);
+			JComboBox<StudentModel> combo = new JComboBox<>(WiskOpdr.applet.getStudentModels());
 			combo.setSelectedItem(studentModel);
 			int result = JOptionPane.showConfirmDialog(importButton, combo, "Importeer model", JOptionPane.OK_CANCEL_OPTION);
 			if(result == JOptionPane.OK_OPTION) {
