@@ -85,7 +85,7 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		
 		tComponentTV.insert(dragComponent.toCompleteString());
 		tComponentTV.insert("\n\n"+checkUnit.toCompleteString());
-		tekstVak.insert(tComponent.toCompleteString());
+		tekstVak.insertDups(tComponent.toCompleteString());
 	}
 	
 	public void editComponent(TekstInteractiePanelVak oldTComponent, Hashtable<String,Object> preferences) {
@@ -159,7 +159,7 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		tComponentTV.insert("\n\n"+checkUnit.toCompleteString());
 		oldTComponent.setSelected(true);
 		tekstVak.deleteSelection();
-		tekstVak.insert(tComponent.toCompleteString());
+		tekstVak.insertDups(tComponent.toCompleteString());
 	}
 	
 	public void decompose(TekstInteractiePanelVak oldComponent) {

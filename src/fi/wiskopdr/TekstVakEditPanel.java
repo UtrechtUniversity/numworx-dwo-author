@@ -1305,7 +1305,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("locationX")) locationX = ((Integer)h.get("locationX")).intValue();
         if(h.containsKey("locationY")) locationY = ((Integer)h.get("locationY")).intValue();
 		
-        System.out.println("logOption: "+logOption);
+        //System.out.println("logOption: "+logOption);
 
 		this.randZichtbaar = randZichtbaar;
 		this.randDikte = randDikte;

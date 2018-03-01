@@ -116,7 +116,13 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 	}
 	
 	public void vulVak(String s)
-	{	super.vulVak(s.substring(2));
+	{
+		if(s.length() < 2) {
+			System.err.println("vulVak error: " + s);
+			s = "$f@";
+		}
+		
+		super.vulVak(s.substring(2));
 		
 		kind1.setCaretPosition(kind1.getSize().width);
 		kind1.requestFocus();

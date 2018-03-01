@@ -75,7 +75,7 @@ public class ListGenerator implements TComponentGenerator, ActionListener {
 			TekstInteractiePanelVak listNr = new TekstInteractiePanelVak(tv, makeListNrLD(initPreferences, i));
 			tv.insert(listNr.toCompleteString());
 		}
-		tekstVak.insert(tComponent.toCompleteString());
+		tekstVak.insertDups(tComponent.toCompleteString());
 	}
 		
 	public void editComponent(TekstInteractiePanelVak oldComponent, Hashtable preferences) {
@@ -101,7 +101,7 @@ public class ListGenerator implements TComponentGenerator, ActionListener {
 		}
 		oldComponent.setSelected(true);
 		tekstVak.deleteSelection();
-		tekstVak.insert(tComponent.toCompleteString());
+		tekstVak.insertDups(tComponent.toCompleteString());
 	}
 	
 	public void decompose(TekstInteractiePanelVak oldComponent) {

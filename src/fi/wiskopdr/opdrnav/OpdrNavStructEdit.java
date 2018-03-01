@@ -117,7 +117,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		Object ob = StringCodeObject.decodeStringToObject(instellingenString);
 		instellingen = (Hashtable) ob;
 		zetInstellingen(instellingen);
-		System.out.println("templatepages"+ TekstVakPanel.templatePages);
+		//System.out.println("templatepages"+ TekstVakPanel.templatePages);
 		
 		opdrEditContainer.refreshFonts();
 

@@ -2246,8 +2246,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					totaalMax += scoresMax[i][j];
 				}
 			
-			System.out.println("TotaalMax " + totaalMax);
-			System.out.println("TotaalScore " + totaalScore);
+			//System.out.println("TotaalMax " + totaalMax);
+			//System.out.println("TotaalScore " + totaalScore);
 			if (totaalMax == 0)
 				return 0;
 		}
