@@ -39,12 +39,15 @@ public class CirkelAction extends XXXAction {
 			Object l = viewer.getModel().getSelect().lastElement();
 			if(f instanceof Segment || l instanceof Segment)
 			{
+				putValue(LARGE_ICON_KEY, compassIcon);
 				putValue(SMALL_ICON, compassIcon); break;
 			}
 		default:
+			putValue(LARGE_ICON_KEY, cirkelIcon);
 			putValue(SMALL_ICON, cirkelIcon); break;
 
 		case 3: 
+			putValue(LARGE_ICON_KEY, cirkel3Icon);
 			putValue(SMALL_ICON, cirkel3Icon); break;
 		}
 	}
