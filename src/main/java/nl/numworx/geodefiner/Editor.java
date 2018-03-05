@@ -117,7 +117,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		random = new RandomPanel();
 		tabs.addTab(definition.getName(), null, definition, definition.getToolTipText());
 		tabs.addTab(checkDWO.getName(), null, checkDWO, checkDWO.getToolTipText());
-		if(GeoDefiner.isExperimental)
+		if(true || GeoDefiner.isExperimental)
 		{	tabs.addTab(checkObjects.getName(), null, checkObjects, checkObjects.getToolTipText());
 			tabs.addTab(toolbox.getName(), null, toolbox, toolbox.getToolTipText());
 		}

@@ -1023,8 +1023,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		south.add(checkBtn);
 		south.add(checkLabel);
 		south.setOpaque(false);
-		if(GeoDefiner.isExperimental) {
-			statusLabel.setVisible(true);
+		if(true ||GeoDefiner.isExperimental) {
 			JPanel south2 = new JPanel(new BorderLayout());
 			south2.add(south, BorderLayout.LINE_END);
 			south2.add(statusLabel, BorderLayout.CENTER);
@@ -1239,7 +1238,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		p.selector = selector;
 		p.formule.definitions = getDefinitions();
 		p.setToolbox(toolbox, this);
-		p.fromList(launchData.getObjectList("toolbox"));
+		ObjectList tools = launchData.getObjectList("toolbox");
+		statusLabel.setVisible(tools.size() != 0);
+		p.fromList(tools);
 	}	
 
 	void installToolTip() {
