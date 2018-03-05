@@ -70,6 +70,7 @@ public class AddLoodLijnHandler extends EventHandler {
 			track = new Track(Numbers.ZERO, Numbers.ZERO);
 			getTracker().setPointerHandler(this);
 			setStatus(Messages.getString("AddLoodLijnHandler.0")); //$NON-NLS-1$
+			return;
 		} else if (state == 1)
 		{
 			clear();
@@ -77,6 +78,8 @@ public class AddLoodLijnHandler extends EventHandler {
 			return;
 		}
 		build();
+		clear();
+		command();
 	}
 
 	Lijn build() {
@@ -117,13 +120,14 @@ public class AddLoodLijnHandler extends EventHandler {
 		
 		
 			if(select.size()==1 && select.firstElement() instanceof Punt)
-				p1 = (Destroyable) select.elementAt(0);
+				p1 = select.elementAt(0);
 			else {
 				p1 = getModel().buildPunt(x, y);
 				getModel().toggle(p1);
 			}
 			getModel().toggle(o1);
 			build();
+			getModel().clearSelection();
 			command();
 		} else if(state == 0)
 		{
