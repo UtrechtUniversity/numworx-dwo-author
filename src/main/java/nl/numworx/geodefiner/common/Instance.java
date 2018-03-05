@@ -492,13 +492,12 @@ public abstract class Instance /*implements Observer*/ {
 		if(checkObjects != null) {
 			checkObjects.verify();
 			score += checkObjects.getScore();
-			if(Boolean.TRUE == status) {
-				status = checkObjects.isStatus();
-				if (Boolean.FALSE == status) status = null;
-			} else if (Boolean.FALSE == status) {
-				status = checkObjects.isStatus();
-				if( Boolean.TRUE == status) status = null;
-			}
+			if(score == getMaxScore()) // if maxscore == 0, return TRUE
+				status = Boolean.TRUE;
+			else if (score == 0)
+				status = Boolean.FALSE;
+			else
+				status = null;
 		}
 	}
 
