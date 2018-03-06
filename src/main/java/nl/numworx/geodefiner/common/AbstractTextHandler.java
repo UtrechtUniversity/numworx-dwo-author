@@ -40,6 +40,11 @@ public abstract class AbstractTextHandler extends EventHandler {
 	
 	
 	@Override
+	public boolean allowSelection(Vector selection) {
+		return selection.isEmpty() || (selection.size() == 1 && selection.firstElement() instanceof Punt);
+	}
+
+	@Override
 	public void pointerPressed(Numbers x, Numbers y) {
 		getTracker().setTrack(getTrack());
 		pointerDragged(x,y);
