@@ -162,7 +162,7 @@ public class PieChartView extends JPanel implements Observer
 
 	public void paintComponent(Graphics g)
 	{
-		System.out.println("PieChartView.paintComponent()");
+		//System.out.println("PieChartView.paintComponent()");
 		
 		super.paintComponent(g);
 
