@@ -1,9 +1,11 @@
--injars ..\output\classes
--outjars ..\output\jar\statistiek.jar
+#-injars ..\output\classes
+#-outjars ..\output\jar\statistiek.jar
 
--libraryjars <java.home>\lib\rt.jar
--libraryjars ..\lib\mayscript.jar
--libraryjars ..\lib\cbookif-1.0.2.jar
+#-libraryjars 'C:\Program Files\Java\jdk1.7.0_51\jre\lib\rt.jar'
+#-libraryjars ..\lib\mayscript.jar
+#-libraryjars ..\lib\cbookif-1.0.2.jar
+#-libraryjars ..\lib\xchart-3.5.0.jar
+#-libraryjars ..\lib\xchart-demo-3.5.0.jar
 
 -target 1.6
 
