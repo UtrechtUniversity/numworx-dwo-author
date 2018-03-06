@@ -633,25 +633,26 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		
 		@Override
 		public void visitSegment(Segment s) {
-			s = drawTips(s);
+			s = drawTips(s,s);
 			super.visitSegment(s);
 		}
 	
 		public void visitRay(Lijn r) {
 			rr.setLijn(r);
 			Segment l;
-			l = drawTips(rr);
-			super.visitSegment(l);
+			l = drawTips(rr,r);
+			selectColor(r);
+			drawLine(l.getX1(), l.getY1() , l.getX2(), l.getY2());
 		}
 
 		public void visitLijn(Lijn l) {
 			if(l instanceof Ray) visitRay(l);
 			else super.visitLijn(l);
 		}
-		private Segment drawTips(Segment s) {
+		private Segment drawTips(Segment s, Destroyable o) {
 			Tips tip = s.adapt(Tips.class);
 			if(tip == null) return s;
-			selectColor(s);
+			selectColor(o);
 			double dx = s.getDX();
 			double dy = s.getDY();
 			double len = Math.hypot(dx, dy);
