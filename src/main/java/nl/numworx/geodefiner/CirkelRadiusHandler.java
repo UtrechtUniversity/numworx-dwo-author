@@ -23,7 +23,7 @@ public class CirkelRadiusHandler extends AbstractCirkelLabelHandler {
 		message.random = null; // no randomizer
 		message.instance = null; // no NPE!
 		Component parent = getTracker().adapt(Component.class);
-		int r = JOptionPane.showConfirmDialog(parent, message, string, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		int r = JOptionPane.showConfirmDialog(parent, message, Messages.getString("CirkelRadiusHandler.0"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if(r == JOptionPane.OK_OPTION) {
 			String formule = message.toString();
 			formule = formule.substring(2, formule.length()-1);
