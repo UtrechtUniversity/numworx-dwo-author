@@ -81,7 +81,7 @@ public class Label extends Destroyable implements Observer {
 	public Numbers value;
 	
 	public Label() {
-		value = Numbers.createDouble(Double.NaN);
+		value = Numbers.NaN;
 	}
 
 	public String key() {
