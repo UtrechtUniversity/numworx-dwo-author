@@ -39,6 +39,7 @@
 							<includeScope>compile</includeScope>
 							<excludeArtifactIds>balansfruitapplet,graphtool,geodefiner</excludeArtifactIds>
 							<stripVersion>true</stripVersion>
+							<stripClassifier>true</stripClassifier>
 						</configuration>
 					</execution>
 					<execution>
@@ -224,6 +225,35 @@
                             </dependency>
                         </dependencies>                
                     </plugin>        
+                    <!-- jar signing -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jarsigner-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify</id>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <processMainArtifact>true</processMainArtifact>
+                            <keystore>${dwoKeyStore}</keystore>
+                            <alias>${dwoCertKeyAlias}</alias>
+                            <storepass>${dwoCertKeyStorePassword}</storepass>
+                            <keypass>${dwoCertKeyPassword}</keypass>
+                            <sigfile>UU</sigfile>
+                            <tsa>http://sha256timestamp.ws.symantec.com/sha256/timestamp</tsa>
+                        </configuration>            
+                    </plugin>  
 		</plugins>
 	</build>
 	<properties>
@@ -272,9 +302,18 @@
 		<dependency>
 			<groupId>fi.statistiek</groupId>
 			<artifactId>statistiek</artifactId>
-			<version>0.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/output/jar/statistiek.jar</systemPath>
+			<version>1.0.0-SNAPSHOT</version>
+			<classifier>jar-with-dependencies</classifier>
+			<exclusions>
+				<exclusion>
+					<groupId>org.knowm.xchart</groupId>
+					<artifactId>xchart</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.knowm.xchart</groupId>
+					<artifactId>xchart-demo</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>fi.doorziendwo</groupId>
@@ -389,6 +428,12 @@
 			<groupId>fi.graphtool</groupId>
 			<artifactId>graphtool</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>fi.beans</groupId>
+					<artifactId>lineairealgebra</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.github.lookfirst</groupId>
