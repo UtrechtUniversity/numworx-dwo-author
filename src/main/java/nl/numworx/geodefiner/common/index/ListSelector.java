@@ -30,7 +30,10 @@ public class ListSelector implements Visitor, Observer {
 		if(element instanceof Groep) 
 			indexed = new GroepIndex(this);
 		else
+		if (element != null)
 			element.visit(this);
+		else
+			indexed = new GeneralDestroyable(this);
 		recalc();
 	}
 	
@@ -114,6 +117,13 @@ public class ListSelector implements Visitor, Observer {
 	public void update(Observable observable, Object arg) {
 		if(arg == Destroyable.DESTROY)
 		{
+			if(observable == indexed.getDelegate()) {
+				indexed.setDefined(false);
+				indexed.changed();
+				indexed.notifyObservers();
+				return;
+			}
+			if(observable != grp || observable != index) return;
 			if(grp != null) grp.deleteObserver(this);
 			if(index != null) index.deleteObserver(this);
 			if(indexed.getDelegate() != null) indexed.getDelegate().deleteObserver(this);
@@ -139,8 +149,8 @@ public class ListSelector implements Visitor, Observer {
 			if(i >= 1 && i <= grp.size()) {
 				if(indexed.getDelegate() != null) indexed.getDelegate().deleteObserver(this);
 				Destroyable delegate = grp.elementAt(i-1);
-				delegate.addObserver(this);
-				indexed.setDefined(delegate.isDefined());
+				if(delegate != null) delegate.addObserver(this);
+				indexed.setDefined(delegate != null && delegate.isDefined());
 				indexed.setDelegate(delegate);
 				return;
 			}

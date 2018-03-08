@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Definitions;
 import nl.numworx.geodefiner.common.GroupOf;
 import nl.numworx.geodefiner.common.Polygon;
@@ -33,18 +34,17 @@ import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
-import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.OMConstants;
 import fi.euclides.proof.HoekHandler;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.proof.LabelValue;
 import fi.euclides.util.DComparator;
-import fi.euclides.util.DefaultAdapter;
 
 public class Expression extends fi.euclides.openmath.Expression {
 
 	public final Checked CHECKED;
+	public CheckObjectList object;
 	@Override
 	public Destroyable interpret(OMObject o, Label l, NameMapper mapper) {
 		
@@ -52,7 +52,10 @@ public class Expression extends fi.euclides.openmath.Expression {
 			CHECKED.define(l);
 			return l;
 		}
-		
+		if(GEODEFINER_OBJECT.isSame(o)) {
+			if(object != null) 
+				return object;
+		}
 		return super.interpret(o, l, mapper);
 	}
 
@@ -148,6 +151,7 @@ public class Expression extends fi.euclides.openmath.Expression {
 		install(new PoissonPDF(), tracker);
 		install(new AantalSign(), tracker);
 		install(CHECKED = new Checked(), tracker);
+		install(new Exists(), tracker);
 		GCD gcd = new GCD(); gcd.setTracker(tracker);
 		symbolmap.put("arith1.gcd", gcd);
 		
@@ -345,6 +349,10 @@ public class Expression extends fi.euclides.openmath.Expression {
 		
 		
 		return super.copyOMA(l, o, mapper);
+	}
+
+	public void setObject(CheckObjectList checkObjectList) {
+		this.object = checkObjectList;
 	}
 
 }
