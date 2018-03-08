@@ -1,7 +1,11 @@
 package nl.numworx.geodefiner.common;
 
+import java.util.Vector;
+
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
+import fi.euclides.model.Model;
+import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
@@ -11,6 +15,7 @@ public abstract class AbstractCirkelLabelHandler extends AbstractTextHandler {
 
 	public AbstractCirkelLabelHandler(String string) {
 		super(string);
+		testLijn=true;
 	}
 	
 	protected void build(Punt p, Numbers r) {
@@ -22,5 +27,21 @@ public abstract class AbstractCirkelLabelHandler extends AbstractTextHandler {
 		Destroyable[] depend = { p, l };
 		getModel().buildCirkel(depend);
 	}
+
+	@Override
+	public void pointerReleased(Numbers x, Numbers y) {
+		pointerDragged(x,y);
+		getTracker().setTrack(null);
+		Model model = getModel();
+		Vector<Destroyable> select = model.getSelect();		
+		if (select.isEmpty() 
+			|| select.firstElement() instanceof OpObject
+		) {
+			Destroyable p = model.buildPunt(x, y);
+			model.toggle(p);
+		} 
+		attachSelection();
+	}
+
 
 }

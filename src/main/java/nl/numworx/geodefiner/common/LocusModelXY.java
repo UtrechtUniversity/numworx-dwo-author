@@ -88,8 +88,6 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 		OMApplication oma = new OMApplication();
 		oma.addElement(fvar);oma.addElement(xvar);	
 		Expression expression = tracker.adapt(Expression.class);
-		if(expression == null)
-			expression = new nl.numworx.geodefiner.common.math.Expression(tracker);
 		y1 = (Label) expression.interpret(oma, y1, this);
 		oma = new OMApplication();
 		fvar = new OMVariable("%fy");

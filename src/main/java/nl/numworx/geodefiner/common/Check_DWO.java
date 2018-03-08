@@ -53,7 +53,6 @@ public class Check_DWO extends Observable implements Observer {
 		maxScore = map.getInt("score");
 		score = 0;
 		Expression expr = tracker.adapt(Expression.class);
-		if(expr == null) expr = new nl.numworx.geodefiner.common.math.Expression(tracker);
 		OMObject logic;
 		try {
 			logic = new FormuleParser(formule.substring(2)).logic();

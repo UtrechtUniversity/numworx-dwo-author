@@ -57,7 +57,6 @@ public class Definitions implements Observer /*, ListModel*/ {
 	public Definitions(Tracker viewer) {
 		this.viewer = viewer;
 		expression = viewer.adapt(fi.euclides.openmath.Expression.class);
-		if(expression == null) expression = new Expression(viewer);
 		Interval delegate = new Interval();
 		delegate.setTracker(viewer);
 		expression.put(INTERVAL, delegate);

@@ -39,10 +39,12 @@ public interface Tools {
 	int PAN = 25;
 	int DESTROY = 26;
 	int RESET = 27;
+	
+	int CIRCLE_WITH_RADIUS = 28;
 // NOT YET
-	int UNDO = 28;
-	int REDO = 29;
+	int UNDO = 29;
+	int REDO = 30;
 	
 	
-	int TOOL_SIZE = 28;
+	int TOOL_SIZE = 29;
 }

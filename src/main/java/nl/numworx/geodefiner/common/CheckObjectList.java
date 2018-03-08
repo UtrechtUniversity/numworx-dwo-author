@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.common;
 
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import nl.numworx.geodefiner.common.math.Expression;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Boog;
@@ -23,7 +25,6 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
-import fi.euclides.openmath.Expression;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
@@ -105,6 +106,7 @@ public class CheckObjectList extends Groep implements Observer {
 	public CheckObjectList(Tracker tracker) {
 		this.tracker = tracker;
 		expression = tracker.adapt(Expression.class);
+		expression.setObject(this);
 	}
 
 	public int getSize() {
@@ -157,6 +159,7 @@ public class CheckObjectList extends Groep implements Observer {
 					if(co.verify(d))
 					{	co.addObserver(this);
 						i.remove();
+						setChanged();
 						break;
 					}
 				}
@@ -169,6 +172,7 @@ public class CheckObjectList extends Groep implements Observer {
 				co.destroy();
 				running.add(co);
 				setNagekeken(false);
+				setChanged();
 			}
 			userItems.remove(observable);
 		} else if(arg == null) {
@@ -177,8 +181,10 @@ public class CheckObjectList extends Groep implements Observer {
 				co.deleteObserver(this);
 				running.add(co);
 				setNagekeken(false);
+				setChanged();
 			}
 		}
+		notifyObservers();
 	}
 	
 	private CheckObject findCO(Observable observable) {
@@ -289,10 +295,12 @@ public class CheckObjectList extends Groep implements Observer {
 					co.addObserver(this);
 					i.remove();
 					u.remove();
+					setChanged();
 					break;
 				}
 			}
 		}
+		notifyObservers();
 	}
 	
 	public void setNagekeken(boolean b) {
@@ -302,4 +310,38 @@ public class CheckObjectList extends Groep implements Observer {
 	public void setInstance(Instance instance) {
 		this.instance = instance;
 	}
+
+	@Override
+	public Destroyable prototype() {
+		return null; // No defined prototype, helaas.
+	}
+
+	@Override
+	public int size() {
+		// TODO Auto-generated method stub
+		return getSize();
+	}
+
+	@Override
+	public Destroyable elementAt(int index) {
+		return getElementAt(index).getItem();
+	}
+	
+	@Override
+	public void destroy() {
+		System.err.println("you cannot destroy this");
+	}
+
+	@Override
+	public void addObserver(Observer observer) {
+		// TODO Auto-generated method stub
+		super.addObserver(observer);
+	}
+
+	@Override
+	public void deleteObserver(Observer observer) {
+		// TODO Auto-generated method stub
+		super.deleteObserver(observer);
+	}
+	
 }

@@ -22,7 +22,7 @@ public abstract class AbstractTextHandler extends EventHandler {
 			super.command();
 	}
 
-	private boolean attachSelection() {
+	boolean attachSelection() {
 		Vector<Destroyable> selection = getModel().getSelect();
 		if(selection.size() == 1) {
 			Destroyable first = selection.firstElement();

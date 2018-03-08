@@ -179,15 +179,14 @@ public abstract class Instance /*implements Observer*/ {
 	protected void installCheckObjects() {
 		ObjectList list = launchData.getObjectList("checkObjects");
 		if(list != null && list.size() > 0) {
-			checkObjects = new CheckObjectList(viewer);
 			checkObjects.fromList(list);
 			if(checkObjects.getMaxScore() == 0) 
-				checkObjects = null;
+				checkObjects .clear();
 			else {
 				checkObjects.setInstance(this);
 			}
 		} else {
-			checkObjects = null;
+			checkObjects.clear();
 		}
 		fetchScore();
 	}
@@ -489,7 +488,7 @@ public abstract class Instance /*implements Observer*/ {
 	protected void fetchScore() {
 		score = checkDWO.getScore();
 		status = checkDWO.isStatus(); 
-		if(checkObjects != null) {
+		if(checkObjects.size() != 0) {
 			checkObjects.verify();
 			score += checkObjects.getScore();
 			if(score == getMaxScore()) // if maxscore == 0, return TRUE
