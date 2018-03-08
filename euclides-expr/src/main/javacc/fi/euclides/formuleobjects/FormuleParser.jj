@@ -197,7 +197,9 @@ TOKEN:
 {
   < GEODEFINER : ( "point" | "line" | "segment" | "text" | "circle" | "equals" | "halfline"
                  | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd"|"rnq"
-                 | "sgf" | "binomcdf" | "binompdf" | "invNorm"| "normalcdf" | "poissoncdf" | "poissonpdf") >
+                 | "sgf" | "binomcdf" | "binompdf" | "invNorm"| "normalcdf" | "poissoncdf" | "poissonpdf"
+                 | "exists"
+                 ) >
 | < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln"|"log"|"sec"|"csc"|"cot") >
 | < SUCHTHAT : "suchthat" >
 | < MAP : "map" >
@@ -217,6 +219,7 @@ TOKEN:
 | <  E : "e" >
 | <  Y : "y" >
 | < CHECKED : "checked" >
+| < OBJECT : ("Object"| "object" ) >
 | < PI : ( "\u03C0"| "pi" ) >
 | < IF : "if" >
 | < INFINITY : "\u221e" >
@@ -512,6 +515,7 @@ OMApplication bracket() :
 	}
 	
 | < CHECKED > { return GEODEFINER_CHECKED; } 
+| < OBJECT > { return GEODEFINER_OBJECT; }
 | < IF > "(" expr = relation() < KOMMA > expr2 = sum() < KOMMA > expr3 = sum() ")" {
   oma = binop(PROG1_IF, expr, expr2); oma.addElement(expr3); return oma; }
 | LOOKAHEAD( < TRANSC > noterm() )

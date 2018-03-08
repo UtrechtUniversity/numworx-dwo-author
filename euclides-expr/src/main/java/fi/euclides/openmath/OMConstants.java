@@ -79,5 +79,6 @@ public interface OMConstants {
 	  OMSymbol LIST2_SIZE = new OMSymbol("list2", "size");
 	    
 	  OMSymbol GEODEFINER_CHECKED = new OMSymbol("geodefiner", "checked");
+	  OMSymbol GEODEFINER_OBJECT = new OMSymbol("geodefiner", "object");
 
 }
