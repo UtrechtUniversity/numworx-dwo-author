@@ -981,7 +981,8 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		viewer = new InstanceViewer();
 		getViewer().expression = new nl.numworx.geodefiner.common.math.Expression(viewer); // Inject!!! 
 		getViewer().expression.symbolmap.put("list1.list", new HerleidList(viewer));
-		
+		checkObjects = new CheckObjectList(viewer); // Inject
+
 		definitions = new Definitions(viewer);
 		uiModelFactory = new UIModelFactory(viewer);
 		tiptest = viewer.getHitTester().copy();
@@ -1028,6 +1029,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			JPanel south2 = new JPanel(new BorderLayout());
 			south2.add(south, BorderLayout.LINE_END);
 			south2.add(statusLabel, BorderLayout.CENTER);
+			south2.setOpaque(false);
 			panel.add(south2, BorderLayout.SOUTH);
 		} else 
 			panel.add(south, BorderLayout.SOUTH);
@@ -1067,7 +1069,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void destroy() {
-		if(checkObjects != null) checkObjects.destroy();
+		if(checkObjects != null) checkObjects.clear();
 		getViewer().getModel().destroyAll();
 	}
 
@@ -1240,8 +1242,10 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		p.formule.definitions = getDefinitions();
 		p.setToolbox(toolbox, this);
 		ObjectList tools = launchData.getObjectList("toolbox");
-		statusLabel.setVisible(tools.size() != 0);
+		statusLabel.setVisible(tools != null && tools.size() != 0);
 		p.fromList(tools);
+		
+		statusLabel.getParent().setVisible(statusLabel.isVisible()||checkBtn.isVisible()||checkLabel.isVisible());
 	}	
 
 	void installToolTip() {

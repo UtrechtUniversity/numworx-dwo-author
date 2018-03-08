@@ -55,7 +55,6 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 				oma.addElement(new OMVariable(tracker.getMapper().toString(item)));
 				oma.addElement(o);
 				Expression expr = tracker.adapt(Expression.class);
-				if (expr == null) expr = new nl.numworx.geodefiner.common.math.Expression(tracker);
 				Destroyable v = expr.interpret(oma, visibility, tracker.getMapper());
 				v.setVisible(false);
 				tracker.getModel().add(v);

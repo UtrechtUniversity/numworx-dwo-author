@@ -218,7 +218,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 
 		actions.set(RESET, new XXXAction("Reset", "/reseticon.gif", resetter, viewer));
 
-		
+		actions.set(CIRCLE_WITH_RADIUS, new XXXAction("Cirkel met opgegeven straal", "/fixedcircle.png", new CirkelRadiusHandler(Messages.getString("AddCirkelHandler.0")),viewer));
 		
 		
 		for(Action action: actions) {
