@@ -16,7 +16,7 @@ public class CirkelAction extends XXXAction {
 			AWTViewer viewer) {
 		super(name, icon, handler, viewer);
 		cirkelIcon = (Icon) getValue(SMALL_ICON);
-		cirkel3Icon = reduced("/fixedcircle.png");
+		cirkel3Icon = reduced("/4.png");
 		compassIcon = reduced("/circle3.png");
 	}
 	/* (non-Javadoc)
