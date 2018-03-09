@@ -54,6 +54,7 @@ import nl.numworx.geodefiner.common.NamingModel;
 import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.ShortSegment;
 import nl.numworx.geodefiner.common.Tips;
+import nl.numworx.geodefiner.common.locus.Builder;
 import nl.numworx.geodefiner.ui.AxesModel;
 import nl.numworx.geodefiner.ui.TextModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
@@ -979,13 +980,15 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	
 	{
 		viewer = new InstanceViewer();
-		getViewer().expression = new nl.numworx.geodefiner.common.math.Expression(viewer); // Inject!!! 
+		getViewer().expression = new nl.numworx.geodefiner.common.math.Expression();
+		getViewer().expression.setAllTracker(viewer); // Inject!!! 
 		getViewer().expression.symbolmap.put("list1.list", new HerleidList(viewer));
 		checkObjects = new CheckObjectList(viewer); // Inject
 
 		definitions = new Definitions(viewer);
 		uiModelFactory = new UIModelFactory(viewer);
 		tiptest = viewer.getHitTester().copy();
+		Locus.BUILDER = new Builder();
 	}
 	
 	Definitions getDefinitions() {
