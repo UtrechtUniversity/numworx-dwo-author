@@ -43,7 +43,7 @@ import fi.euclides.util.DComparator;
 
 public class Expression extends fi.euclides.openmath.Expression {
 
-	public final Checked CHECKED;
+	public final Checked CHECKED = new Checked();
 	public CheckObjectList object;
 	@Override
 	public Destroyable interpret(OMObject o, Label l, NameMapper mapper) {
@@ -106,10 +106,11 @@ public class Expression extends fi.euclides.openmath.Expression {
 
 	}
 
+	public Expression() {};
 
-
-	public Expression(Tracker tracker) {
-		super(tracker);
+	@Override
+	public void setAllTracker(Tracker tracker) {
+		super.setAllTracker(tracker);
 		LabelDelegate value = new HoekHandler();
 		value.setTracker(tracker);
 		symbolmap.put("geodefiner.angle", value);
@@ -150,12 +151,15 @@ public class Expression extends fi.euclides.openmath.Expression {
 		install(new PoissonCDF(), tracker);
 		install(new PoissonPDF(), tracker);
 		install(new AantalSign(), tracker);
-		install(CHECKED = new Checked(), tracker);
+		install(CHECKED, tracker);
 		install(new Exists(), tracker);
 		GCD gcd = new GCD(); gcd.setTracker(tracker);
 		symbolmap.put("arith1.gcd", gcd);
-		
 	}
+
+//	public Expression(Tracker tracker) {
+//		super(tracker);	
+//	}
 
 	private void install(LabelDelegate value, Tracker tracker) {
 		value.setTracker(tracker);
