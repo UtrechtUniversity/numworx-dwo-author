@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.Box;
 import javax.swing.JApplet;
@@ -76,6 +78,8 @@ import fi.wiskopdr.tekstobjects.TekstImageVak;
 
 public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, ComponentListener, PartialScoreIF, LinkIF, Printable {
 	
+	private static final Logger LOG = Logger.getLogger(WiskOpdr.class.getName());
+	
 	private static final String CMI_COMPLETION_STATUS = "cmi.completion_status";
 	private static final String CMI_CORE_LESSON_LOCATION = "cmi.core.lesson_location";
 	private static final String CMI_COMMENTS_FROM_LMS_0_COMMENT = "cmi.comments_from_lms.0.comment";
@@ -90,6 +94,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private static final LessonMode LESSON_MODE_browse = LessonMode.browse;
 	private static final LessonMode LESSON_MODE_normal = LessonMode.normal;
 	private static final LessonMode LESSON_MODE_review = LessonMode.review;
+	
 	
 	private static Hashtable suspendData = new Hashtable();
 	private static Hashtable log = new Hashtable();
@@ -154,10 +159,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		JSONParser parser = new JSONParser();
 		try {
 			String studentModelsMock = getParameter("studentModelContexts");
+			if(studentModelsMock == null)
+				studentModelsMock = "[]";
 			studentModelsJSON = (JSONArray) parser.parse(studentModelsMock);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			LOG.log(Level.WARNING, "readStudentModelsJSON", e);
 			studentModelsJSON = new JSONArray();
 		}
 	}
@@ -808,7 +814,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		try {
 			ideas = new IdeasClient(this, IdeasClient.IDEAS);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.WARNING, "ideas", e);
 		}
 		
 		applet = this;
@@ -923,7 +929,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		try {
 			phrasebook = new MathematicaLink(this); // doCAS?
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			LOG.log(Level.WARNING, "MathematicaLink", e);
 		} // echte applet
 
 		addComponentListener(this);
@@ -1056,7 +1062,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 * Start van het applet. Hier worden suspenddata en andere data binnegehaald
 	 */
 	public void start() {
-		System.out.println("Start");
+		LOG.info("Start");
 		log = new Hashtable();
 		reviewData = new Hashtable();
 		suspendData = null; // Deze moet altijd VERS zijn.....
@@ -1087,7 +1093,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			}
 			loaded = true;
 		}
-		System.out.println("State");
+		LOG.info("State");
 		Thread startDraad = new Thread() {
 			public void run() {
 				try {
@@ -1124,7 +1130,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public void stop() {
 		if (api != null && loaded) {
 			
-			System.out.println("opgestuurde reviewStateString :" + "dummy");
+			LOG.info("opgestuurde reviewStateString :" + "dummy");
 			
 					ons.stop();
 			//Thread stopDraad = new Thread() {
@@ -1155,7 +1161,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 					if (review) {
 						Hashtable reviewState = ons.getReviewStateHashtable();
 						String reviewStateString = JSONValue.toJSONString(reviewState);
-						System.out.println("weggeschreven reviewStateString: "+ reviewStateString);
+						LOG.info("weggeschreven reviewStateString: "+ reviewStateString);
 						String old = api.LMSGetValue(CMI_COMPLETION_STATUS);
 						if("completed" .equals(old) ) api.LMSSetValue(CMI_COMPLETION_STATUS, "review"); // ontzegel voor review FIXME security hack
 						api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);

@@ -60,6 +60,7 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 	
 	public void setStudentModelID(String id) {
 		studentModel = null;
+		if (id == null) return;
 		for( StudentModel s: WiskOpdr.applet.getStudentModels()) {
 			if( s != null && s.id.equals(id))
 			{
