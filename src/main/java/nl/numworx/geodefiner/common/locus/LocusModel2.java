@@ -28,16 +28,18 @@ public class LocusModel2 extends Observable implements Codec, Observer, LocusMod
 	private PuntOp<?> sourceCopy;
 	final private Punt dest;
 	private Punt destCopy;
-	private Queue<Object> q;
+	@SuppressWarnings("rawtypes")
+	private Queue q;
 	private HashMap<String,Destroyable> map;
 	private int cnt;
 	
+	@SuppressWarnings("rawtypes")
 	LocusModel2(PuntOp<?> sourceorg, Punt destorg, NameMapper mapper) {
 		this.mapper = mapper;
 		this.source = sourceorg;
 		this.dest = destorg;
 		map = new HashMap<String, Destroyable>();
-		q = new Queue<>();
+		q = new Queue();
 		punten = new Vector<Destroyable>();
 		copies = new HashMap<>();
 		toDestroy = new Vector<Destroyable>();
@@ -55,6 +57,7 @@ public class LocusModel2 extends Observable implements Codec, Observer, LocusMod
 		toDestroy = null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void writeObject(Object o) {
 		q.addElement(o);
 	}
