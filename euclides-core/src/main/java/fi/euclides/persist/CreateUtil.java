@@ -7,8 +7,10 @@ import fi.euclides.model.Cirkel3;
 import fi.euclides.model.CirkelLijnSnijpunt;
 import fi.euclides.model.CirkelSnijpunt;
 import fi.euclides.model.ConflictLijn;
+import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Dpunt;
+import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
@@ -127,13 +129,24 @@ public class CreateUtil {
 			public Destroyable create() {
 				return new Triangle();
 			}});
-
+		buildmap.put(HorizontalPunt.TYPE, new Creator() {
+			@Override
+			public Destroyable create() {
+				return new HorizontalPunt();
+			}
+		});
+		buildmap.put(Coordinaten.TYPE, new Creator() {
+			public Destroyable create() {
+				return new Coordinaten();
+			}
+		});
 	}
 
 	public static Destroyable create(String q) {	
 		try {
 			return buildmap.get(q).create();
 		} catch (RuntimeException e) {
+			System.err.println("create " + q + "," + e);
 			throw e;
 		}
 	}

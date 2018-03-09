@@ -9,9 +9,11 @@ import fi.euclides.util.Observable;
 
 public class HorizontalPunt extends Punt implements FreePoint {
 
+	public static final String TYPE = "PH";
+
 	@Override
 	public String key() {
-			return "PH";
+			return TYPE;
 	}
 	
 	private Punt op;
@@ -24,9 +26,12 @@ public class HorizontalPunt extends Punt implements FreePoint {
 		setOp(o);
 	}
 
+	public HorizontalPunt() {
+	}
+
 	@Override
 	public void read(Codec codec) throws IOException {
-		Numbers dx = (codec.readNumber());
+		x = codec.readNumber();
 		setOp(codec.readPunt());
 		distance = Numbers.sub(x, op.getX());
 		setY(op.getY());

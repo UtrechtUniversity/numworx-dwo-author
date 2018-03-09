@@ -152,7 +152,7 @@ public class Label extends Destroyable implements Observer {
 	public void write(Codec codec) throws IOException {
 		codec.writePunt(getP());
 		codec.writeUTF(getString());
-		codec.writeUTF(getSubKey());
+		codec.writeDelegate(getRegistered());
 		getRegistered().prepareDepend(codec, this);
 		for (int i = 0; i < depend.length; i++) {
 				codec.writeDestroyable(depend[i]);
