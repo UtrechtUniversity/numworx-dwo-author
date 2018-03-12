@@ -207,12 +207,12 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	*/	
 		actions.set(DISTANCE,new XXXAction(Messages.getString("Euclides.88"), "/distance.png", new AfstandHandler(Messages.getString("Euclides.90")), viewer));
 		actions.set(AREA,new XXXAction(Messages.getString("Euclides.91"), "/area.png", new OppHandler(Messages.getString("Euclides.93")), viewer));
-		actions.set(ANGLE, new XXXAction(Messages.getString("Euclides.85"), "/angle.png", new HoekHandler(Messages.getString("Euclides.85")), viewer));
-		actions.set(VECTOR,new XXXAction("Vector", "/ray.png", new VectorHandler("Vector"), viewer));
+		actions.set(ANGLE, new XXXAction(Messages.getString("Euclides.85"), "/angle2.png", new HoekHandler(Messages.getString("Euclides.85")), viewer));
+		actions.set(VECTOR,new XXXAction("Vector", "/arrow.png", new VectorHandler("Vector"), viewer));
 		
 		
 		actions.set(FORMULA, new XXXAction("Definitie", "/function.png", formule, viewer));
-		actions.set(TEXT, new XXXAction("Text", "/text.png", text, viewer));
+		actions.set(TEXT, new XXXAction("Tekst", "/text.png", text, viewer));
 
 		actions.set(TRAIL, new TrailAction(Messages.getString("Euclides.44"), viewer)); //$NON-NLS-1$
 
