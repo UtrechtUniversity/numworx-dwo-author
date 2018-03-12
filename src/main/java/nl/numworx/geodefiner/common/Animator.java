@@ -117,8 +117,9 @@ public class Animator extends LabelTester implements Observer {
 		} else {
 			if(button != null)
 			{
-				button.destroy();
-				button = null;
+				Label btn = button;
+				button = null; // THIS ORDER, destroy can do 'install(null)' again
+				btn.destroy();
 			}
 		}
 		return button;

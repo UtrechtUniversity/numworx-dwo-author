@@ -112,57 +112,45 @@ public class Expression extends fi.euclides.openmath.Expression {
 	public void setAllTracker(Tracker tracker) {
 		super.setAllTracker(tracker);
 		LabelDelegate value = new HoekHandler();
-		value.setTracker(tracker);
 		symbolmap.put("geodefiner.angle", value);
 		value = new Phi();
-		value.setTracker(tracker);
 		symbolmap.put("geodefiner.phi", value);
-		install(new Rnd(), tracker);
-		install(new Rnq(), tracker);
+		install(new Rnd());
+		install(new Rnq());
 		value = new Equals();
-		value.setTracker(tracker);
 		symbolmap.put("geodefiner.equals", value);
 		symbolmap.put("relation1.approx", value);
 		value = new Eq();
-		value.setTracker(tracker);
 		symbolmap.put("relation1.eq", value);
 		Abs abs = new Abs();
-		abs.setTracker(tracker);
 		put(OMConstants.ARITH1_ABS, abs);
 		Faculteit fac = new Faculteit();
-		fac.setTracker(tracker);
 		symbolmap.put("integer1.factorial", fac);
-		Sigma sigma = new Sigma();
-		sigma.setTracker(tracker);
-		symbolmap.put("arith1.sum", sigma);
+		symbolmap.put("arith1.sum", new Sigma());
 		Prv prv = new Prv();
-		prv.setTracker(tracker);
 		symbolmap.put("wiskopdr.prv", prv);
-		MinMax m = MinMax.MAX(); m.setTracker(tracker);symbolmap.put("minmax1.max", m);
-		 m = MinMax.MIN(); m.setTracker(tracker);symbolmap.put("minmax1.min", m);
+		MinMax m = MinMax.MAX();symbolmap.put("minmax1.max", m);
+		 m = MinMax.MIN();symbolmap.put("minmax1.min", m);
 		toc = new ToComplex();
 		toc.setTracker(tracker);
-		Binomial bin = new Binomial(); bin.setTracker(tracker);
-		symbolmap.put("combinat1.binomial", bin);
-		install(new BinomCDF(), tracker);
-		install(new BinomPDF(), tracker);
-		install(new InvNorm(), tracker);
-		install(new NormalCDF(), tracker);
-		install(new PoissonCDF(), tracker);
-		install(new PoissonPDF(), tracker);
-		install(new AantalSign(), tracker);
-		install(CHECKED, tracker);
-		install(new Exists(), tracker);
-		GCD gcd = new GCD(); gcd.setTracker(tracker);
+		symbolmap.put("combinat1.binomial", new Binomial());
+		install(new BinomCDF());
+		install(new BinomPDF());
+		install(new InvNorm());
+		install(new NormalCDF());
+		install(new PoissonCDF());
+		install(new PoissonPDF());
+		install(new AantalSign());
+		install(CHECKED);
+		install(new Exists());
+		GCD gcd = new GCD();
 		symbolmap.put("arith1.gcd", gcd);
+
+		for(LabelDelegate delegate: symbolmap.values())
+			delegate.setTracker(tracker);
 	}
 
-//	public Expression(Tracker tracker) {
-//		super(tracker);	
-//	}
-
-	private void install(LabelDelegate value, Tracker tracker) {
-		value.setTracker(tracker);
+	private void install(LabelDelegate value) {
 		symbolmap.put("geodefiner."+value.getSubKey(), value);		
 	}
 

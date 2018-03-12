@@ -109,6 +109,13 @@ public class CheckObjectList extends Groep implements Observer {
 		expression.setObject(this);
 	}
 
+	public CheckObjectList(Tracker tracker, Expression expression) {
+		this.tracker = tracker;
+		this.expression = expression;
+		expression.setObject(this);
+	}
+	
+	
 	public int getSize() {
 		return list.size();
 	}
