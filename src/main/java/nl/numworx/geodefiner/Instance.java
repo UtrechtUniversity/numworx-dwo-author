@@ -984,7 +984,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		getViewer().expression.setAllTracker(viewer); // Inject!!! 
 		getViewer().expression.symbolmap.put("list1.list", new HerleidList(viewer));
 		checkObjects = new CheckObjectList(viewer); // Inject
-
+		checkObjects.setInstance(this);
 		definitions = new Definitions(viewer);
 		uiModelFactory = new UIModelFactory(viewer);
 		tiptest = viewer.getHitTester().copy();
