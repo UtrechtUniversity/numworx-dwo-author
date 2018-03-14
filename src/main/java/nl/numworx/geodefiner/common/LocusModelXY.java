@@ -132,6 +132,7 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 
 	@Override
 	public void writeModel(Codec codec) throws IOException {
+		codec.writeNumber(Numbers.TWO);
 		codec.write(getDepend());
 	}
 
