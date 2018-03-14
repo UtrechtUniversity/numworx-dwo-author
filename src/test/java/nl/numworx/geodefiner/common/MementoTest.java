@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -14,83 +13,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import fi.euclides.event.EventHandler;
-import fi.euclides.event.HitTester;
-import fi.euclides.event.NameMapper;
-import fi.euclides.event.Tracker;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
-import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelDelegate;
 
 public class MementoTest {
-
-	public class MockTracker implements Tracker {
-		Model model = new Model();
-		
-		@Override
-		public void setTrack(Track track) {
-		}
-
-		@Override
-		public void setPointerHandler(EventHandler eventHandler) {
-		}
-
-		@Override
-		public void setStatus(String string) {
-		}
-
-		@Override
-		public Model getModel() {
-			return model;
-		}
-
-		@Override
-		public void paint() {
-		}
-
-		@Override
-		public boolean contains(double x, double y) {
-			return false;
-		}
-
-		@Override
-		public String describe(Destroyable d) {
-			return d.toString();
-		}
-
-		@Override
-		public NameMapper getMapper() {
-			return model;
-		}
-
-		HashMap<String,LabelDelegate> map = new HashMap<>();
-		
-		@Override
-		public void register(String key, LabelDelegate delegate) {
-			map.put(key, delegate);
-		}
-
-		@Override
-		public LabelDelegate getRegistered(String key) {
-			return map.get(key);
-		}
-
-		@Override
-		public HitTester getHitTester() {
-			return null;
-		}
-
-		@Override
-		public <T> T adapt(Class<T> cls) {
-			return null;
-		}
-
-	}
 
 	private MockTracker tracker;
 	private Memento memento;
