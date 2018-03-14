@@ -182,9 +182,6 @@ public abstract class Instance /*implements Observer*/ {
 			checkObjects.fromList(list);
 			if(checkObjects.getMaxScore() == 0) 
 				checkObjects .clear();
-			else {
-				checkObjects.setInstance(this);
-			}
 		} else {
 			checkObjects.clear();
 		}
