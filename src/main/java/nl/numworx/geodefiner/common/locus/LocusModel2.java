@@ -272,6 +272,7 @@ public class LocusModel2 extends Observable implements Codec, Observer, LocusMod
 
 	@Override
 	public void writeModel(Codec codec) throws IOException {
+		codec.writeNumber(Numbers.ZERO);
 		codec.write(getDepend());
 	}
 

@@ -9,6 +9,8 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
 import fi.euclides.openmath.LocusModelF;
+import nl.numworx.geodefiner.common.LocusModelFX;
+import nl.numworx.geodefiner.common.LocusModelXY;
 import fi.euclides.model.Locus.LocusModel;
 
 public class Builder implements LocusModel.Builder {
@@ -20,19 +22,30 @@ public class Builder implements LocusModel.Builder {
 	}
 	@Override
 	public LocusModel readModel(Codec codec) throws IOException {
-		Destroyable een = codec.readDestroyable();
-		if(een instanceof PuntOp) {
+		int type = (int) codec.readNumber().longValue();
+		switch(type) {
+		case 0:
+			PuntOp<?> een = (PuntOp<?>) codec.readPunt();
 			Punt twee = codec.readPunt();
-			return build( (PuntOp<?>)een, twee, codec.getModel());
-		}
-		if(een instanceof Label) {
-			return build( (Label) een);
+			return build( een, twee, codec.getModel());
+		case 1:
+			Label label = (Label) codec.readDestroyable();
+			return build( label );
+		case 2:
+			Label label1 = (Label) codec.readDestroyable();
+			Label label2 = (Label) codec.readDestroyable();
+			Label label3 = (Label) codec.readDestroyable();
+			return build(label1, label2, label3);
 		}
 		return null;
 	}
 
+	private LocusModel build(Label label1, Label label2, Label label3) {
+		return new LocusModelXY(label1, label2, label3, label1.getRegistered().getTracker());
+	}
 	@Override
 	public LocusModel build(Label f) {
-		return new LocusModelF(f, f.getRegistered().getTracker());
+		//return new LocusModelF(f, f.getRegistered().getTracker());
+		return new LocusModelFX(f, f.getRegistered().getTracker());
 	}
 }
