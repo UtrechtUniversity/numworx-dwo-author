@@ -229,6 +229,7 @@ public class LocusModelF extends Observable implements LocusModel, Observer, Nam
 	}
 
 	public void writeModel(Codec codec) throws IOException {
+		codec.writeNumber(Numbers.ONE);
 		codec.writeDestroyable(f);
 	}
 

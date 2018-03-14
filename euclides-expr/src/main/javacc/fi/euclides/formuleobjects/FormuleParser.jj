@@ -206,6 +206,7 @@ TOKEN:
 | < COMPLEX : ("argument"|"real"|"imaginary") >
 | < MINMAX: ( "max" | "min" ) >
 | < ARITH: ("gcd"|"abs") >
+| < IDENTITY: "identity" >
 }
 
 TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >
@@ -506,6 +507,7 @@ OMApplication bracket() :
 | tok = < MINMAX > oma = arglist() {  return minmax(tok, oma); }
 | tok = < ARITH > oma = arglist() {  return arith(tok, oma); }
 | tok = < COMPLEX > expr = element() {  return complex(tok, expr); }
+| <IDENTITY> { return FNS1_IDENTITY; }
 | tok = < STRING >
 	{
 	  	String s = tok.toString();

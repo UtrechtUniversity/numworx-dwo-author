@@ -2,7 +2,7 @@ package fi.euclides.util;
 
 import java.util.Vector;
 
-public class Observable implements Adaptee {
+public class Observable {
 
 	private boolean changed;
 	private Vector<Observer> obs  = new Vector<Observer>();
@@ -83,8 +83,8 @@ public class Observable implements Adaptee {
 		return null;
 	}
 
-	public void setAdapter(Adapter result) {
-	}
+//	public void setAdapter(Adapter result) {
+//	}
 
 	public <T> T adapt(Class<T> clz) {
 		Adapter a = getAdapter();

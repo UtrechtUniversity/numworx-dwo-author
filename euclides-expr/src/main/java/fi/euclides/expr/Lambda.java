@@ -16,6 +16,10 @@ public class Lambda extends LabelDelegate {
 		super(TYPE);
 	}
 
+	protected Lambda(String string) {
+		super(string);
+	}
+
 	public Destroyable[] createDepend() {
 		return Label.EMPTY;
 	}

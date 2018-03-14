@@ -25,10 +25,7 @@ public class DefaultAdapter implements Adapter {
 			table.put(key, value);
 		}
 	}
-	
-	public static DefaultAdapter getDefault(Observable o) {
-		return getDefault( (Adaptee)o);
-	}
+
 	public static DefaultAdapter getDefault(Adaptee d) {
 		DefaultAdapter result = d.getAdapter().adapt(DefaultAdapter.class);
 		if(result == null)

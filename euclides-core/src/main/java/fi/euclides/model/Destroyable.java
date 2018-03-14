@@ -5,11 +5,12 @@ import java.io.IOException;
 import fi.euclides.model.Locus;
 import fi.euclides.model.algo.Algorithm;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.util.Adaptee;
 import fi.euclides.util.Adapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
-public abstract class Destroyable extends Observable implements Observer {
+public abstract class Destroyable extends Observable implements Observer, Adaptee {
 	public final static String DESTROY = "DESTROY";
 	public static final String VISIBLE = "VISIBLE";
 	public static final Object RENAME  = new Object();

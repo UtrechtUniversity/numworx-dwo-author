@@ -355,10 +355,5 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 	public void register(String key, LabelDelegate delegate) {
 		map.put(key, delegate);
 	}
-	
-	public <T> T adapt(Class<T> cls) {
-		return null;
-	}
-	
 
 }

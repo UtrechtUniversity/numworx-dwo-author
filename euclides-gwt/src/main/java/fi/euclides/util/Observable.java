@@ -4,7 +4,7 @@ import java.util.Vector;
 
 import fi.euclides.gwt.CreateUtil;
 
-public class Observable implements Adaptee {
+public class Observable {
 
 	private boolean changed;
 	private Vector<Observer> obs  = new Vector<Observer>();
@@ -35,8 +35,7 @@ public class Observable implements Adaptee {
 	}
 	public void addObserver(Observer observer) {
 		if(!contains(observer))
-			obs.addElement(observer);
-		
+			obs.addElement(observer);	
 	}
 
 
@@ -81,7 +80,5 @@ public class Observable implements Adaptee {
 	}
 
 
-	public void setAdapter(Adapter result) {
-	}
 	
 }
