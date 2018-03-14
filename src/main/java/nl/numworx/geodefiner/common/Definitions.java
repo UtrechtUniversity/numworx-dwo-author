@@ -16,6 +16,7 @@ import nl.tue.win.riaca.openmath.lang.OMSymbol;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.formuleobjects.Lambda;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.Destroyable;
@@ -35,7 +36,6 @@ import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.expr.DestroyDependency;
 import fi.euclides.expr.InterpretException;
-import fi.euclides.expr.Lambda;
 import fi.euclides.openmath.LocusModelF;
 import fi.euclides.openmath.OMConstants;
 import fi.euclides.proof.LabelDelegate;
@@ -60,6 +60,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 		Interval delegate = new Interval();
 		delegate.setTracker(viewer);
 		expression.put(INTERVAL, delegate);
+		new Lambda().setTracker(viewer);
 	}
 	public static final OMSymbol POINT = new OMSymbol("geodefiner", "point");
 	public static final OMSymbol LINE  = new OMSymbol("geodefiner" , "line");
@@ -380,7 +381,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					model.add(f);
 // display function
 					if(f instanceof Label && isYFX((Label) f))
-					{    LocusModel lm = new LocusModelFX((Label)f, viewer);
+					{    LocusModel lm = new LocusModelFX(fx(f), viewer);
 					     Locus locus = new Locus(lm);
 					     String name = "y="+var.getName()+"(x)";
 						 viewer.getMapper().rename(locus, name);
@@ -417,7 +418,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 					OMVariable var = (OMVariable) arg;
 					if("y".equals(var.getName())) {
 						Label fx = new Label();
-						fx.setString(text);
+						fx.setString("x→" + text.substring(text.indexOf('=')+1, text.length()-1));
 						fx.setVisible(false);
 						OMBinding lambda= new OMBinding(FormuleParser.FNS1_LAMBDA, new Vector(), oma.getElementAt(2));
 						lambda.addVariable(new OMVariable("x"));
@@ -437,7 +438,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 						DefaultAdapter.getDefault(fx).put(OMObject.class, OMConstants.FNS1_IDENTITY);
 						model.add(fx);
 						Label fy = new Label();
-						fy.setString(text);
+						fy.setString("y→" + text.substring(text.indexOf('=')+1,text.length()-1));
 						fy.setVisible(false);
 						OMBinding lambda= new OMBinding(FormuleParser.FNS1_LAMBDA, new Vector(), oma.getElementAt(2));
 						lambda.addVariable(new OMVariable("y"));
@@ -519,6 +520,19 @@ public class Definitions implements Observer /*, ListModel*/ {
 	}
 
 	
+private Label fx(Destroyable f) {
+		Label l = (Label) f;
+		OMObject om = f.adapt(OMObject.class);
+		String text = l.getString(); // is al gestript met $f
+		if(om instanceof OMBinding) {
+			OMObject v = ((OMBinding) om).getVariableAt(0);
+			String x = ((OMVariable) v).getName();
+			l.setString(x + "->" + text.substring(text.indexOf('=')+1));
+			l.register(viewer.getRegistered(Lambda.TYPE)); // correct LAMBDA
+		}
+		return l;
+	}
+
 	private void n(Object n, String m) {
 		if(n == null)
 			throw new InterpretException(m);
@@ -595,7 +609,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 	
 	
 	protected boolean isYFX(Label f) {
-		boolean typeOk = f.getSubKey().equals(Lambda.TYPE);
+		boolean typeOk = f.getRegistered() instanceof fi.euclides.expr.Lambda;
 		if(typeOk) {
 			OMObject obj = f.adapt(OMObject.class);
 			if (obj instanceof OMBinding) {
