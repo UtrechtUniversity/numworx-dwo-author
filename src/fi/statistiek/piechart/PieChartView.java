@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -124,12 +122,6 @@ public class PieChartView extends JPanel implements Observer
 		else
 			h = this.height;
 		
-		// fallback on default size
-//		if (w == 0)
-//			w = 607;
-//		if (h == 0)
-//			h = 419;
-		
 		pieChart = new PieChartBuilder().width(w).height(h).title(columnName).build();
 		
 		pieChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
@@ -157,13 +149,15 @@ public class PieChartView extends JPanel implements Observer
 		panelChart.setBackground(Color.green);
 		mainPanel.removeAll();
 		mainPanel.add(panelChart);
+
+		// om een of andere reden moet dit, anders is bij eerste binnenkomst mainpanel onnodig groot en worden scrollbars getoond
+		mainPanel.setPreferredSize(new Dimension(w, h));
+		
 		scrollPane.updateUI(); // anders wordt view leeg bij klik elders... (?)
 	}
 
 	public void paintComponent(Graphics g)
 	{
-		//System.out.println("PieChartView.paintComponent()");
-		
 		super.paintComponent(g);
 
 		// teken pie chart met de goede maat
@@ -185,10 +179,15 @@ public class PieChartView extends JPanel implements Observer
 		int w = this.scrollPane.getViewport().getWidth();
 		int h = this.scrollPane.getViewport().getHeight();
 		
-		if (w == 0)
+		if ((w <= 0) || (h <= 0))
 		{
 			w = width;
 			h = height;
+		}
+		else
+		{
+			width = w;
+			height = h;
 		}
 		
 		Dimension d = new Dimension(w, h);
