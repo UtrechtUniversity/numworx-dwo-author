@@ -226,8 +226,8 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 		int tabInt = this.model.mainWindowIndexToGeneralIndex(this.view
 			.getSelectedView());
 		h.put("selectedView", new Integer(tabInt));
-		System.out.println("StatInteractiePanel.getState(): this.model.mainWindowIndexToGeneralIndex(this.view.getselectedView()="
-			+ this.view.getSelectedView() + ") = " + tabInt);
+//		System.out.println("StatInteractiePanel.getState(): this.model.mainWindowIndexToGeneralIndex(this.view.getselectedView()="
+//			+ this.view.getSelectedView() + ") = " + tabInt);
 
 		return h;
 	}
