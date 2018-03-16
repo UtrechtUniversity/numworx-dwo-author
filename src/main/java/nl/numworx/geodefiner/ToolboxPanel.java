@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.inject.Inject;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -161,7 +162,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	Vector<Action> actions = new Vector<Action>();
 	List<JCheckBox> boxes = new ArrayList<JCheckBox>();
 	
-	void createActions(Instance instance) {
+	void createActions(nl.numworx.geodefiner.common.Instance instance) {
 		actions.clear();
 		resetter = new ResetHandler("Reset", instance);
 		actions.setSize(TOOL_SIZE);
@@ -234,13 +235,23 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	}
 	
 
-	ToolboxPanel() {
+	@Inject ToolboxPanel() {
 		super(new BorderLayout());
 		setName("Toolbox");
 		vbox = Box.createVerticalBox();		
 		add(new JScrollPane(vbox));
 	}
 
+	// Voor later....
+	ToolboxPanel(nl.numworx.geodefiner.common.Instance instance, AWTViewer viewer, Definitions definitions) {
+		this();
+		selector = instance.selector;
+		this.viewer = viewer;
+		this.formule.definitions = definitions;
+		createActions(instance);
+	}
+	
+	
 	private Component createCheckBox(Action action) {
 		Icon icon = (Icon) action.getValue(Action.LARGE_ICON_KEY);
 		String name = (String) action.getValue(Action.NAME);

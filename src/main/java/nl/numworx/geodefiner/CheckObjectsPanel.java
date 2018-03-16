@@ -242,7 +242,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener, Randomi
 		super(new BorderLayout());
 		setName("CheckObjects");
 		checkObjects = new CheckObjectList(tracker);
-		CheckObject obj = new CheckObject();
+		CheckObject obj = new CheckObject(0);
 // Sample
 		obj.setFormule("$f@");
 		obj.setMaxScore(5);
@@ -273,7 +273,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener, Randomi
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if ( "+".equals(e.getActionCommand())) {
-			CheckObject o = new CheckObject();
+			CheckObject o = new CheckObject(model.getRowCount());
 			o.setMaxScore(5);
 			model.addElement(o);
 			return;

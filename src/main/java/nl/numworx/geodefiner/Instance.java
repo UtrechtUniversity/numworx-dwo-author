@@ -443,9 +443,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 
 		InstanceViewer(NamingModel nm, nl.numworx.geodefiner.common.math.Expression expression) {
+			super(nm.getModel());
 			this.nameMapper = nm;
 			this.expression = expression;
-			setModel(nm.getModel());
 			getModel().addObserver(this);
 			hitTester = (new HitTester3(content.getFontMetrics(content.getFont())));
 			nameMapper = new NamingModel(this, cache);
@@ -1039,10 +1039,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	public void stop() {
 		checkObjects.stop();
+		started = false;
 	}
 
 	@Override
 	public void setState(Map<String, ?> state) {
+		startToolbox();
+		panel.validate();
 		checkObjects.start();
 		super.setState(state);
 		observeNewItems(UserConfig.INSTANCE, new CheckObjectList.CheckVisitor(checkObjects, viewer.getModel()));
@@ -1147,8 +1150,12 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		getViewer().getModel().addObserver(UserConfig.INSTANCE);
 	}
 
+	@Inject Lazy<ToolboxPanel> toolboxPanel;
+	boolean started;
 	void startToolbox() {
-		ToolboxPanel p = new ToolboxPanel();
+		if(started) return;
+		started = true;
+		ToolboxPanel p = toolboxPanel.get();
 		p.viewer = getViewer();
 		p.selector = selector;
 		p.formule.definitions = getDefinitions();
