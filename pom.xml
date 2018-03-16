@@ -54,6 +54,22 @@
 			<version>${euclidesVersion}</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.dagger</groupId>
+			<artifactId>dagger</artifactId>
+			<version>${daggerVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.dagger</groupId>
+			<artifactId>dagger-compiler</artifactId>
+			<version>${daggerVersion}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -122,6 +138,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<euclidesVersion>0.0.3-SNAPSHOT</euclidesVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<daggerVersion>2.11</daggerVersion>
 	</properties>
 	<scm>
 		<developerConnection>scm:svn:https://svn.science.uu.nl/repos/sci.velth101.numworx/geodefiner/trunk</developerConnection>

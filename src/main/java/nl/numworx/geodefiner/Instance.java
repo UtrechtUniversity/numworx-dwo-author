@@ -14,7 +14,6 @@ import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
@@ -30,11 +29,10 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.WeakHashMap;
 
-import javax.swing.AbstractAction;
+import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -55,6 +53,8 @@ import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.ShortSegment;
 import nl.numworx.geodefiner.common.Tips;
 import nl.numworx.geodefiner.common.locus.Builder;
+import nl.numworx.geodefiner.module.Components;
+import nl.numworx.geodefiner.module.DaggerComponents;
 import nl.numworx.geodefiner.ui.AxesModel;
 import nl.numworx.geodefiner.ui.TextModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
@@ -69,6 +69,7 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.SuccessStatus;
 
+import dagger.Lazy;
 import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.event.HitTester;
 import fi.euclides.event.NameMapper;
@@ -106,66 +107,6 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 
 
 public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener, PropertyChangeListener, Randomizer {
-
-	public class KijkNaAction extends AbstractAction implements Icon, Observer {
-
-		ImageIcon goed, half, fout, current;
-		
-		public KijkNaAction() {
-			super(Messages.getString("kijkNa"));
-			putValue(LARGE_ICON_KEY, this);
-			fout = new ImageIcon(getClass().getResource("resources/foutkruis.gif"));
-			half = new ImageIcon(getClass().getResource("resources/goedkrulhalf.gif"));
-			goed = new ImageIcon(getClass().getResource("resources/goedkrul.gif"));
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			fetchScore();
-			setNagekeken(true);
-			feedback();
-			handler.fire(Constants.CHECKED); // Score changed
-		}
-
-		void feedback() {
-			Boolean status = getStatus();
-			if(status == null) putValue(LARGE_ICON_KEY, current = half);
-			else if(status.booleanValue())
-				putValue(LARGE_ICON_KEY, current = goed);
-			else putValue(LARGE_ICON_KEY, current = fout);
-			if(checkObjects != null)
-				checkObjects.feedback();
-		}
-
-
-		@Override
-		public void paintIcon(Component c, Graphics g, int x, int y) {
-			if(current != null) current.paintIcon(c, g, x, y);
-		}
-
-		@Override
-		public int getIconWidth() {
-			return goed.getIconWidth();
-		}
-
-		@Override
-		public int getIconHeight() {
-			return goed.getIconHeight();
-		}
-
-
-		@Override
-		public void update(Observable observable, Object arg) {
-			nofeedback();
-			setNagekeken(false); // remove "feedback" is nagekeken.
-		}
-
-		void nofeedback() {
-			current = null;
-			putValue(LARGE_ICON_KEY, this);
-		}
-
-	}
 
 	static final Stroke DEFAULT_STROKE = new BasicStroke();
 
@@ -262,48 +203,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	JLabel  checkLabel = new JLabel();
 	JLabel  statusLabel = new JLabel();
 
-	public final class Snapper extends nl.numworx.geodefiner.common.Snapper {
-		
-		public void translate(MouseEvent ev) {
-			if (gravity) {
-				int ox = (int) viewer.getModel().getO().getXd();
-				int dx = (int) viewer.getModel().getU().getXd() - ox;
-				//System.out.print(ev.getX() + " " + ox + " " + dx);
-				int x = (ev.getX()-ox) % dx;
-				if ( x < 0 ) x += dx;
-				if ( x*2 > dx) x -= dx;
-				//System.out.println(" " + x);
-				if(x > SNAP || x < -SNAP) x = 0;
-
-				int oy = (int) viewer.getModel().getO().getYd();
-				int dy = dx;
-				//System.out.print(ev.getX() + " " + ox + " " + dx);
-				int y = (ev.getY()-oy) % dy;
-				if ( y < 0 ) y += dy;
-				if ( y*2 > dy) y -= dy;
-				//System.out.println(" " + x);
-				if(y > SNAP || y < -SNAP) y = 0;
-				ev.translatePoint(-x, -y);
-			}
-// Keep mouse inside panel
-			{
-				int x = ev.getX();
-				if (x < 0) ev.translatePoint(-x, 0);
-				else if (x > getViewer().width) {
-					ev.translatePoint(getViewer().width-x, 0);
-				}
-			}
-			{
-				int y = ev.getY();
-				if (y < 0) ev.translatePoint(0, -y);
-				else if (y > getViewer().height) {
-					ev.translatePoint(0, getViewer().height-y);
-				}
-			}
-		}
-		
-	}
-
 	final class InstanceViewer extends AWTViewer implements Observer {
 
 		class PathVisitor implements SegmentVisitor {
@@ -359,7 +258,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		static final float DEFAULT_POINTSIZE = 5f;
 
 		private NamingModel nameMapper;
-		private Snapper snapper = new Snapper();
+		private Snapper snapper = new Snapper(this);
 		Expression expression; 
 
 		@Override
@@ -518,7 +417,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		public void setModel(Model model) { // Never null!
 			Model old = getModel();
 			old.deleteObserver(this);
-			cache.clear();
+			nameMapper.clear();
 			super.setModel(model);
 			model.addObserver(this);
 		}
@@ -543,12 +442,16 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			return nameMapper;
 		}
 
-		InstanceViewer() {
-			super();
+		InstanceViewer(NamingModel nm, nl.numworx.geodefiner.common.math.Expression expression) {
+			this.nameMapper = nm;
+			this.expression = expression;
+			setModel(nm.getModel());
 			getModel().addObserver(this);
 			hitTester = (new HitTester3(content.getFontMetrics(content.getFont())));
 			nameMapper = new NamingModel(this, cache);
 			hilighter = new HighLighter(hitTester.copy(), this);
+			
+			expression.setAllTracker(this);
 		}
 
 		@Override
@@ -976,13 +879,17 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 	}
 
-	private CBookEventHandler handler = new CBookEventHandler(this);
+	@Inject CBookEventHandler handler;
+	@Inject Provider<KijkNaAction> actionProvider;
 	
 	{
-		viewer = new InstanceViewer();
-		getViewer().expression = new nl.numworx.geodefiner.common.math.Expression();
-		getViewer().expression.setAllTracker(viewer); // Inject!!! 
-		getViewer().expression.symbolmap.put("list1.list", new HerleidList(viewer));
+		
+		Components components = DaggerComponents.builder()
+				.instance(this)
+				.build();
+		components.inject(this);
+		
+		viewer = new InstanceViewer(components.getNameMapper(), components.getExpression());
 		checkObjects = new CheckObjectList(viewer); // Inject
 		checkObjects.setInstance(this);
 		definitions = new Definitions(viewer);
@@ -1072,7 +979,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void destroy() {
-		if(checkObjects != null) checkObjects.clear();
+		checkObjects.destroyAll();
 		getViewer().getModel().destroyAll();
 	}
 
@@ -1102,6 +1009,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		checkLabel.setVisible(false);checkLabel.invalidate();
 		toolbox.setVisible(false);
 		panel.doLayout();
+		checkObjects.destroyAll();
 		createModel(viewer.getModel(), content.getWidth(), content.getHeight());
 		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
 		InstanceViewer view = getViewer();
@@ -1130,11 +1038,12 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public void stop() {
-		if(checkObjects != null) checkObjects.stop();
+		checkObjects.stop();
 	}
 
 	@Override
 	public void setState(Map<String, ?> state) {
+		checkObjects.start();
 		super.setState(state);
 		observeNewItems(UserConfig.INSTANCE, new CheckObjectList.CheckVisitor(checkObjects, viewer.getModel()));
 		if(isNagekeken() && action != null)
@@ -1195,7 +1104,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		if  (super.installCheckDWO())
 		{
 			if(action == null)
-			{	action = new KijkNaAction();
+			{	action = actionProvider.get();
 				checkBtn.addActionListener(action);
 				action.addPropertyChangeListener(this);
 			}
@@ -1261,7 +1170,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	@Override
-	protected void setNagekeken(boolean nagekeken) {
+	public void setNagekeken(boolean nagekeken) {
 		if(!nagekeken&&action !=null)
 			action.nofeedback();
 		super.setNagekeken(nagekeken);

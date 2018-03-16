@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.Map;
 
 import nl.numworx.geodefiner.Instance;
-import nl.numworx.geodefiner.Instance.Snapper;
+import nl.numworx.geodefiner.Snapper;
 import nl.numworx.geodefiner.common.LineType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
