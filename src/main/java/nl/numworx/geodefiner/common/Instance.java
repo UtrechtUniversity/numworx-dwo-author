@@ -446,6 +446,7 @@ public abstract class Instance /*implements Observer*/ {
 		this.state = JSONUtilities.wrapMap(state);
 		setValues(this.state.getObjectMap("values"));
 		setPositions(this.state.getObjectMap("positions"));
+		viewer.getModel().executeDelay(); // essentieel.
 		setModelState(this.state.getObjectList("model"), this.state.getObjectList("toolbox"));
 		if(this.state.containsKey("nagekeken"))
 			setNagekeken(this.state.getBoolean("nagekeken"));

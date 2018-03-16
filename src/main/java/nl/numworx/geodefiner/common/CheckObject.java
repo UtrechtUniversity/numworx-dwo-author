@@ -22,7 +22,7 @@ import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
-public class CheckObject extends Observable implements Observer {
+public class CheckObject extends Observable implements Observer, Comparable<CheckObject> {
 	int maxScore;
 	int present = Label.UNKNOWN;
 	private Destroyable item, cache;
@@ -31,6 +31,13 @@ public class CheckObject extends Observable implements Observer {
 	private EqualsVisitor eq;
 	private List<Destroyable> depend = Collections.emptyList();
 	
+	public final int order;
+	
+	
+	public CheckObject(int order) {
+		this.order = order;
+	}
+
 	public int getScore() {
 		return (present > 0) ? getMaxScore() : 0;
 	}
@@ -169,6 +176,9 @@ public class CheckObject extends Observable implements Observer {
 		if(arg == Label.DESTROY) destroy();
 		else if(item != null && arg == null|| (arg == Label.STATE && observable == cache)) {
 			verify();
+		} else if (observable == cache) {
+			setChanged();
+			notifyObservers(arg);
 		}
 	}
 
@@ -233,6 +243,11 @@ public class CheckObject extends Observable implements Observer {
 				}
 			}
 		}
+	}
+
+	@Override
+	public int compareTo(CheckObject o) {
+		return Integer.signum(order-o.order);
 	}
 	
 }

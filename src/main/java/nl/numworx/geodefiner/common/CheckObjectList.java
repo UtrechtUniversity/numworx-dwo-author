@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 
 import nl.numworx.geodefiner.common.math.Expression;
@@ -94,7 +95,7 @@ public class CheckObjectList extends Groep implements Observer {
 	}
 	
 	protected final Vector<CheckObject> list = new Vector<CheckObject>();
-	protected Set<CheckObject> running = new HashSet<CheckObject>();
+	protected Set<CheckObject> running = new TreeSet<CheckObject>();
 	protected Map<Destroyable,CheckObject> userItems = new HashMap<Destroyable,CheckObject>();
 	private int userIndex;
 	
@@ -175,7 +176,7 @@ public class CheckObjectList extends Groep implements Observer {
 		} else if(arg == Destroyable.DESTROY) {
 			observable.deleteObserver(this);
 			CheckObject co = findCO(observable);
-			if(co != null) 
+			if(co != null && co != observable) 
 			{	co.deleteObserver(this);
 				co.setItem();
 				running.add(co);
@@ -192,7 +193,9 @@ public class CheckObjectList extends Groep implements Observer {
 				setNagekeken(false);
 				setChanged();
 			} else if(observable == co)
+			{
 				setChanged(); // message from observable
+			}
 		}
 		notifyObservers();
 	}
@@ -221,7 +224,7 @@ public class CheckObjectList extends Groep implements Observer {
 		clear();
 		int s = list.size();
 		for(int i = 0; i < s; i++) {
-			CheckObject co = new CheckObject();
+			CheckObject co = new CheckObject(i);
 			co.fromMap(list.getObjectMap(i));
 			addElement(co);
 		}
@@ -258,7 +261,7 @@ public class CheckObjectList extends Groep implements Observer {
 		for( CheckObject co : list) {
 			if(co.getCache() == null) {
 				Destroyable c = co.createObject(expression, tracker.getMapper(), tracker.adapt(Randomizer.class));
-				if(CheckObject.isTest(c))
+				if(true || CheckObject.isTest(c))
 					co.addObserver(this);
 			}
 		}
@@ -270,6 +273,7 @@ public class CheckObjectList extends Groep implements Observer {
 		for(int i = 0; i < s; i++) {
 			CheckObject co = list.elementAt(i);
 			co.destroy();
+			running.add(co);
 		}
 	}
 
@@ -295,7 +299,8 @@ public class CheckObjectList extends Groep implements Observer {
 		for(CheckObject co: list) {
 			if(co.verify()) { // side effect: adds to running if failed
 				userItems.remove(co.getItem());
-			}
+			} else
+				running.add(co);
 		}
 		
 		Iterator<CheckObject> i = running.iterator();
@@ -316,6 +321,7 @@ public class CheckObjectList extends Groep implements Observer {
 					break;
 				}
 			}
+			notifyObservers();
 		}
 		notifyObservers();
 	}
@@ -375,6 +381,8 @@ public class CheckObjectList extends Groep implements Observer {
 
 	public void destroyAll() {
 		stop();
+		setChanged();
+		notifyObservers(DESTROY);
 		clear();
 		
 	}
