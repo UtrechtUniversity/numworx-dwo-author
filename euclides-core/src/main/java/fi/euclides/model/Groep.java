@@ -104,4 +104,8 @@ public class Groep extends Destroyable {
 		super.setVisible(visible);
 	}
 
+	public Destroyable prototype(int index) {
+		return prototype();
+	}
+
 }

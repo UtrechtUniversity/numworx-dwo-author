@@ -16,6 +16,7 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Locus;
 import fi.euclides.model.LoodLijn;
+import fi.euclides.model.MP;
 import fi.euclides.model.MiddelPunt;
 import fi.euclides.model.ParallelLijn;
 import fi.euclides.model.Punt;
@@ -140,6 +141,8 @@ public class CreateUtil {
 				return new Coordinaten();
 			}
 		});
+
+		buildmap.put(MP.PUNTOP, buildmap.get(Lijn.PUNTOP));
 	}
 
 	public static Destroyable create(String q) {	

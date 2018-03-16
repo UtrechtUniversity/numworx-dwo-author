@@ -35,10 +35,17 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 
 	protected boolean trail;
 	protected boolean tracking;
-	private Model model = new Model();
+	private Model model;
 	private boolean polar, axes;
 	protected float pointSize = 5f;
 
+	protected AbstractViewer(Model model) {
+		this.model = model;
+	}
+	protected AbstractViewer() {
+		this(new Model());
+	}
+	
 	/**
 	 * @return the polar
 	 */
