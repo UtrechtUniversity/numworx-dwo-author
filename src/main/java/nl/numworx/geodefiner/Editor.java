@@ -97,7 +97,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		setPreferredSize(getSize());
 		JPanel flow = new JPanel(false);
 		flow.setBackground(new Color(250,250,255));
-		instance = new Instance();
+		command = new CommandPanel();
+		instance = new Instance(command);
 		instance.installToolTip();
 		JComponent component = instance.asComponent();
 		component.setPreferredSize(instanceSize);
@@ -123,12 +124,11 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		}
 		tabs.addTab(random.getName(), null, random, random.getToolTipText());
 
-		command = new CommandPanel();
 // inject
 		command.random = random.getRandomVars();
 		command.instance = instance;
 		definition.randomizer = command;
-		instance.randomizer = command;
+		//instance.randomizer = command;
 		checkObjects.randomizer = command;
 		toolbox.viewer = instance.getViewer();
 		toolbox.setToolbox(instance.toolbox, instance);

@@ -235,15 +235,14 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	}
 	
 
-	@Inject ToolboxPanel() {
+	ToolboxPanel() {
 		super(new BorderLayout());
 		setName("Toolbox");
 		vbox = Box.createVerticalBox();		
 		add(new JScrollPane(vbox));
 	}
 
-	// Voor later....
-	ToolboxPanel(nl.numworx.geodefiner.common.Instance instance, AWTViewer viewer, Definitions definitions) {
+	@Inject ToolboxPanel(nl.numworx.geodefiner.common.Instance instance, AWTViewer viewer, Definitions definitions) {
 		this();
 		selector = instance.selector;
 		this.viewer = viewer;
@@ -267,11 +266,16 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		createActions(instance);
 	}
 
+	public void setToolbox(JToolBar toolbox) {
+		this.toolbox = toolbox;
+	}
+	
+	
 	boolean hold = false;
 	SelectHandler selector = new SelectHandler();
 	ResetHandler  resetter;
 	FormuleHandler formule = new FormuleHandler("Definitie");
-	TextHandler text = new TextHandler("Text");
+	TextHandler text = new TextHandler(Messages.getString("AddLoodLijnHandler.1"));
 	
 	private Box vbox;
 	public void itemStateChanged(ItemEvent e) {

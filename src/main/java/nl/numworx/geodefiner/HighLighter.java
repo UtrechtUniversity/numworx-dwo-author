@@ -19,8 +19,6 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
-import nl.numworx.geodefiner.Instance.InstanceViewer;
-import nl.numworx.geodefiner.common.Grid;
 
 class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 

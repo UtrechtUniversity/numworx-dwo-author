@@ -7,20 +7,32 @@ import javax.inject.Singleton;
 
 import org.cbook.cbookif.CBookEventHandler;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.StringKey;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Model;
 import fi.euclides.proof.LabelDelegate;
+import fi.euclides.swing.AWTViewer;
 import nl.numworx.geodefiner.HerleidList;
+import nl.numworx.geodefiner.InstanceViewer;
+import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.NamingModel;
 import nl.numworx.geodefiner.common.math.Expression;
 
-@Module
+@Module(includes= {Modules.Conversions.class})
 public abstract class Modules {
+	
+	@Module
+	public interface Conversions {
+		@Binds Tracker tracker(InstanceViewer viewer);
+		@Binds AWTViewer awtviewer(InstanceViewer viewer);
+	}
+		
 	@Provides @Singleton static
 	Model model() { return new Model(); }
 	
@@ -42,5 +54,12 @@ public abstract class Modules {
 	@Provides @Singleton static
 	CBookEventHandler eventHandler(Instance instance) {
 		return new CBookEventHandler(instance);
+	}
+	
+	@Provides @Singleton static
+	CheckObjectList checkObjectList(Instance instance, Tracker viewer, Expression expression) {
+		CheckObjectList c = new CheckObjectList(viewer, expression);
+		c.setInstance(instance);
+		return c;
 	}
 }

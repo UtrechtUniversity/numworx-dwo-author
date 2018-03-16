@@ -46,6 +46,7 @@ public enum UserConfig implements Observer, Visitor {
 
 	@Override
 	public void visitLabel(Label label) {
+		DefaultAdapter.getDefault(label).put(Boolean.TRUE); 
 	}
 
 	@Override

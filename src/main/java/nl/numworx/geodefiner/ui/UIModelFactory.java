@@ -4,6 +4,10 @@ import nl.numworx.geodefiner.common.Grid;
 import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.UIModel;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
@@ -19,11 +23,12 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 
+@Singleton
 public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory implements Visitor {
 
 	private UIModel<? extends Destroyable, UIEditor> model;
 	private Tracker tracker;
-	public UIModelFactory(Tracker viewer) {
+	@Inject public UIModelFactory(Tracker viewer) {
 		this.tracker = viewer;
 	}
 
