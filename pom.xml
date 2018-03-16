@@ -82,7 +82,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>nl.numworx.geodefiner</Export-Package>
-						<Import-Package>!com.google.*,!com.googlecode.*,!nl.uu.fi.dwo.interaction.client.*,fi.*;resolution:=optional,*</Import-Package>
+						<Import-Package>!dagger.internal.codegen,!dagger.releasablereferences,!com.google.*,!com.googlecode.*,!nl.uu.fi.dwo.interaction.client.*,fi.*;resolution:=optional,*</Import-Package>
 						<DynamicImport-Package>fi.wiskopdr.*</DynamicImport-Package>
 						<Private-Package>
 							fi.euclides.*,
@@ -90,7 +90,11 @@
 							nl.tue.win.riaca.openmath.lang,
 							nl.uu.fi.dwo.interaction.client,
 							nl.uu.fi.dwo.interaction.client.json,
-							com.google.gwt.json.client
+							com.google.gwt.json.client,
+							dagger,
+							dagger.internal,
+							dagger.multibindings,
+							javax.inject.*
 						</Private-Package>
 						<Main-class>nl.numworx.geodefiner.GeoDefiner</Main-class>
 						<Trusted-Only>true</Trusted-Only>
