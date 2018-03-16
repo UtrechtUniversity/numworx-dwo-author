@@ -63,7 +63,7 @@ public class Coord extends LabelValue {
 //			Numbers value =  string == xKey ? s.getDXn() : s.getDYn();
 //			setStringValue(l,value);
 //		}
-		else {
+		else if (d instanceof Label) {
 			Numbers v = ((Label)d).value;
 			Numbers value = string == xKey ? Numbers.real(v) : Numbers.imag(v);
 			setStringValue(l,value);

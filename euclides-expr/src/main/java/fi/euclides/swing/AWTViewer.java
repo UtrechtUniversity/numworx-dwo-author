@@ -18,6 +18,7 @@ import fi.euclides.event.EventHandler;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.ExtendedLijn;
 import fi.euclides.model.Lijn;
+import fi.euclides.model.Model;
 import fi.euclides.model.Segment;
 import fi.euclides.model.math.Numbers;
 
@@ -89,6 +90,13 @@ public abstract class AWTViewer extends AbstractViewer implements MouseListener,
 	}
 	
 	
+	protected AWTViewer() {
+	}
+
+	protected AWTViewer(Model model) {
+		super(model);
+	}
+
 	{
 		LABELER = new Labeler2();
 	}
