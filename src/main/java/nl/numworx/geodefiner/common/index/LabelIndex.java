@@ -2,6 +2,7 @@ package nl.numworx.geodefiner.common.index;
 
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
+import fi.euclides.model.math.Numbers;
 
 class LabelIndex extends Label implements Indexed<Label> {
 	
@@ -29,6 +30,12 @@ class LabelIndex extends Label implements Indexed<Label> {
 
 	@Override
 	public void changed() {
+		if(delegate == null) {
+			setString("");
+			setValue(Numbers.NaN);
+			setState(Label.FALSE);
+			return;
+		}
 		setString(delegate.getString());
 		setValue(delegate.value);
 		setState(delegate.getState());
@@ -37,7 +44,8 @@ class LabelIndex extends Label implements Indexed<Label> {
 
 	@Override
 	public void destroy() {
-		delegate.deleteObserver(selector);
+		if(delegate != null)
+			delegate.deleteObserver(selector);
 		super.destroy();
 	}
 

@@ -48,7 +48,7 @@ public abstract class Instance /*implements Observer*/ {
 	protected Definitions definitions;
 	protected Tracker viewer;
 	private Boolean nagekeken;
-	protected CheckObjectList checkObjects;
+	public CheckObjectList checkObjects;
 	
 	//protected int width, height;
 	
@@ -482,7 +482,7 @@ public abstract class Instance /*implements Observer*/ {
 		}
 	}
 
-	protected void fetchScore() {
+	public void fetchScore() {
 		score = checkDWO.getScore();
 		status = checkDWO.isStatus(); 
 		if(checkObjects.size() != 0) {
@@ -549,7 +549,7 @@ public abstract class Instance /*implements Observer*/ {
 		return nagekeken != null && nagekeken.booleanValue();
 	}
 
-	protected void setNagekeken(boolean nagekeken) {
+	public void setNagekeken(boolean nagekeken) {
 		if(!nagekeken && this.nagekeken == null) return; 
 		this.nagekeken = nagekeken;
 		viewer.adapt(Expression.class).CHECKED.setValue(isNagekeken());

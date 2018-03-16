@@ -91,7 +91,11 @@ public class Memento extends fi.euclides.persist.Memento implements DataInput, D
 
 	@Override
 	public double readDouble() throws IOException {
-		return olist.getDouble(cursor++);
+		try {
+			return olist.getDouble(cursor++);
+		} catch (NullPointerException e) { // need patch in OBJECTLIST?
+			return Double.NaN;
+		}
 	}
 
 	@Override

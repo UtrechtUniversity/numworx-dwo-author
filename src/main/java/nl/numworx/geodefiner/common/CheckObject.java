@@ -12,9 +12,12 @@ import fi.euclides.event.NameMapper;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
+import fi.euclides.model.Model;
+import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.Expression;
 import fi.euclides.openmath.LocusModelF;
+import fi.euclides.proof.LabelTester;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
@@ -86,15 +89,25 @@ public class CheckObject extends Observable implements Observer {
 			cache = interpreter.interpret(obj, new Label(), mapper);
 			depend = LocusModelF.varsOf(obj, mapper);
 			for(Destroyable d: depend) d.addObserver(this);
-			eq = new EqualsVisitor(cache, mapper);
+			if(!isTest(cache))
+				eq = new EqualsVisitor(cache, mapper);
+			else 
+				cache.addObserver(this);
 			return cache;
 		} catch(Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
 	
+	public static boolean isTest(Destroyable c) {
+		return c instanceof Label && ((Label) c).getRegistered() instanceof LabelTester;
+	}
+
 	public void destroy() {
 		for(Destroyable d:depend) d.deleteObserver(this);
+		if(cache != null)
+			cache.deleteObserver(this);
 		if(cache != null && cache.getIndex() == 0) 
 			cache.destroy();
 		cache = null;
@@ -106,20 +119,37 @@ public class CheckObject extends Observable implements Observer {
 	}
 	
 	public boolean verify(Destroyable item) {
-		present = similar(item);
-		if(present > 0)
-		{
-			item.addObserver(this);
-			this.item = item;
+		if(isTest(cache))
+		{	int oldpresent = present;
+			present = test(cache);
+			if(present != oldpresent) 
+			{
+				setChanged();
+			}
+		}
+		else
+		{	present = similar(item);
+			if(present > 0)
+			{
+				item.addObserver(this);
+				this.item = item;
+			}
 		}
 		return present > 0;
 	}
 	
+	private int test(Destroyable d) {
+		Label l = (Label)d;
+		if(!l.isDefined()) return Label.FALSE;
+		l.registered.update(l, Model.DELAY);
+		return l.getState();
+	}
+
 	private int similar(Destroyable item) {
 		if(item == null) return Label.FALSE;
 		EqualsVisitor eq = this.eq;
 		//if(item == this.item) return present;
-		if(eq == null)
+		if(eq == null || !cache.isDefined())
 			return Label.UNKNOWN;
 		Numbers test = Numbers.ONE;
 		synchronized(eq) {
@@ -137,7 +167,7 @@ public class CheckObject extends Observable implements Observer {
 	@Override
 	public void update(Observable observable, Object arg) {
 		if(arg == Label.DESTROY) destroy();
-		else if(item != null && arg == null) {
+		else if(item != null && arg == null|| (arg == Label.STATE && observable == cache)) {
 			verify();
 		}
 	}
@@ -146,15 +176,15 @@ public class CheckObject extends Observable implements Observer {
 		boolean b = verify(item);
 		if(!b) {
 			setItem();
-			notifyObservers();
 		}
+		notifyObservers();
 		return b;
 	}
 
 	void setItem() {
 		if(item != null) {
-			DefaultAdapter.getDefault(item).put(CheckObject.class, null);
 			item.deleteObserver(this);
+			removeFeedback();
 			item = null;
 			setChanged();
 		}
@@ -177,6 +207,32 @@ public class CheckObject extends Observable implements Observer {
 
 	public void setItem(Destroyable item) {
 		this.item = item;
+	}
+
+	void removeFeedback() {
+		if(item != null) {
+			DefaultAdapter.getDefault(item).put(CheckObject.class,null);
+			if(cache instanceof Label) {
+				boolean free = VrijPunt.TYPE == ((Label) cache).getP().key();
+				if(free) {
+					Destroyable p = ((Label) item).getP().getDepend()[0];
+					DefaultAdapter.getDefault(p).put(CheckObject.class,null);
+				}
+			}
+		}
+	}
+
+	void feedback() {
+		if(item != null) {
+			DefaultAdapter.getDefault(item).put(this);
+			if(cache instanceof Label) {
+				boolean free = VrijPunt.TYPE == ((Label) cache).getP().key();
+				if(free) {
+					Destroyable p = ((Label) item).getP().getDepend()[0];
+					DefaultAdapter.getDefault(p).put(this);
+				}
+			}
+		}
 	}
 	
 }

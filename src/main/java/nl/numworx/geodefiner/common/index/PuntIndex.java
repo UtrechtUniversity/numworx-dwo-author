@@ -65,7 +65,10 @@ class PuntIndex extends Punt implements Indexed<Punt> {
 
 	@Override
 	public void changed() {
-		setXY(delegate.getX(), delegate.getY());
+		if (delegate != null)
+			setXY(delegate.getX(), delegate.getY());
+		else
+			setXY(Numbers.NaN, Numbers.NaN);
 	}
 
 	public Destroyable[] getDepend() { return selector.getDepend(); }

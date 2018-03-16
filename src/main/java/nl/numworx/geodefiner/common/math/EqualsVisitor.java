@@ -16,6 +16,7 @@ import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
+import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import nl.numworx.geodefiner.common.Volgpunt;
 
@@ -137,7 +138,13 @@ public class EqualsVisitor implements Visitor {
 					pa = ((Volgpunt) pa).getP();
 				if(pb instanceof Volgpunt)
 					pb = ((Volgpunt) pb).getP();
-				test = puntenTest(pa,pb);	
+				else if (pb.key() == VrijPunt.TYPE)
+				{
+					test = Numbers.ZERO;
+					return;
+				}
+					
+					test = puntenTest(pa,pb);	
 			}
 			else
 				test = Numbers.abs(Numbers.sub(label.value, lb.value));

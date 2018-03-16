@@ -23,6 +23,24 @@ public class ListSelector implements Visitor, Observer {
 	private Groep grp;
 	private Label index;
 
+	public ListSelector(Groep grp, int index) {
+		setGrp(grp);
+		Label l = new Label();
+		l.setValue(Numbers.createInteger(index));
+		setIdx(l);
+		Destroyable element;
+		element = grp.prototype(index-1);
+		if(element instanceof Groep) 
+			indexed = new GroepIndex(this);
+		else
+		if (element != null)
+			element.visit(this);
+		else
+			indexed = new GeneralDestroyable(this);
+		recalc();
+	}
+	
+	
 	public ListSelector(Groep grp, Label index) {
 		setGrp(grp);
 		setIdx(index);

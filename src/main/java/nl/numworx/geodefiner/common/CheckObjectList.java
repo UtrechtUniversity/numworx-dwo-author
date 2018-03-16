@@ -25,7 +25,6 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
-import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -161,7 +160,9 @@ public class CheckObjectList extends Groep implements Observer {
 				while(i.hasNext()) {
 					CheckObject co = i.next();
 					if(co.getCache() == null) {
-						co.createObject(expression, tracker.getMapper(), tracker.adapt(Randomizer.class));
+						Destroyable c = co.createObject(expression, tracker.getMapper(), tracker.adapt(Randomizer.class));
+						if(CheckObject.isTest(c))
+							co.addObserver(this);
 					}
 					if(co.verify(d))
 					{	co.addObserver(this);
@@ -176,7 +177,7 @@ public class CheckObjectList extends Groep implements Observer {
 			CheckObject co = findCO(observable);
 			if(co != null) 
 			{	co.deleteObserver(this);
-				co.destroy();
+				co.setItem();
 				running.add(co);
 				setNagekeken(false);
 				setChanged();
@@ -185,11 +186,13 @@ public class CheckObjectList extends Groep implements Observer {
 		} else if(arg == null) {
 			CheckObject co = findCO(observable);
 			if (co != null && !co.verify() ) {
-				co.deleteObserver(this);
+				if(co != observable)
+					co.deleteObserver(this);
 				running.add(co);
 				setNagekeken(false);
 				setChanged();
-			}
+			} else if(observable == co)
+				setChanged(); // message from observable
 		}
 		notifyObservers();
 	}
@@ -252,27 +255,34 @@ public class CheckObjectList extends Groep implements Observer {
 	public void start() {
 		userIndex = tracker.getModel().getIndex();
 		tracker.getModel().addObserver(this);
-		
+		for( CheckObject co : list) {
+			if(co.getCache() == null) {
+				Destroyable c = co.createObject(expression, tracker.getMapper(), tracker.adapt(Randomizer.class));
+				if(CheckObject.isTest(c))
+					co.addObserver(this);
+			}
+		}
 	}
 	
-	public void stop() {		
+	public void stop() {	
 		tracker.getModel().deleteObserver(this);
+		int s = getSize();
+		for(int i = 0; i < s; i++) {
+			CheckObject co = list.elementAt(i);
+			co.destroy();
+		}
 	}
 
 	public void feedback() {
 		for(CheckObject co: list) {
-			if(co.getItem() != null) {
-				DefaultAdapter.getDefault(co.getItem()).put(co);
-			}
+				co.feedback();
 		}
 		tracker.paint();
 	}
 	
 	public void removeFeedback() {
 		for(CheckObject co: list) {
-			if(co.getItem() != null) {
-				DefaultAdapter.getDefault(co.getItem()).put(CheckObject.class,null);
-			}
+			co.removeFeedback();
 		}
 		tracker.paint();
 	}
@@ -322,7 +332,16 @@ public class CheckObjectList extends Groep implements Observer {
 	public Destroyable prototype() {
 		return null; // No defined prototype, helaas.
 	}
-
+	public Destroyable prototype(int i) {
+		try {
+			return getElementAt(i).getCache();
+		} catch(Exception e)
+		{
+			return null;
+		}
+	}
+	
+	
 	@Override
 	public int size() {
 		// TODO Auto-generated method stub
@@ -331,7 +350,10 @@ public class CheckObjectList extends Groep implements Observer {
 
 	@Override
 	public Destroyable elementAt(int index) {
-		return getElementAt(index).getItem();
+		CheckObject co = getElementAt(index);
+		if(CheckObject.isTest(co.getCache()))
+			return co.getCache();
+		return co.getItem();
 	}
 	
 	@Override
@@ -349,6 +371,12 @@ public class CheckObjectList extends Groep implements Observer {
 	public void deleteObserver(Observer observer) {
 		// TODO Auto-generated method stub
 		super.deleteObserver(observer);
+	}
+
+	public void destroyAll() {
+		stop();
+		clear();
+		
 	}
 	
 }

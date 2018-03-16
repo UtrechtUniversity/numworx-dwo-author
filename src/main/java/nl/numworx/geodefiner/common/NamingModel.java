@@ -12,11 +12,16 @@ import fi.euclides.util.DefaultAdapter;
 
 public class NamingModel implements NameMapper {
 
-	private Tracker viewer;
+	private Model model;
 	private Map<String,Destroyable> cache;
 	
 	public NamingModel(Tracker viewer, Map<String,Destroyable> map) {
-		this.viewer = viewer;
+		this.model = viewer.getModel();
+		this.cache = map;
+	}
+
+	public NamingModel(Model viewer, Map<String,Destroyable> map) {
+		this.model = viewer;
 		this.cache = map;
 	}
 
@@ -35,8 +40,8 @@ public class NamingModel implements NameMapper {
 		return null;
 	}
 
-	private Model getModel() {
-		return viewer.getModel();
+	public Model getModel() {
+		return model;
 	}
 
 	public Punt getO() {
@@ -60,4 +65,7 @@ public class NamingModel implements NameMapper {
 		return s;
 	}
 
+	public void clear() {
+		cache.clear();
+	}
 }

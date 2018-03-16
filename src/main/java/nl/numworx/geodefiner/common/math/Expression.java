@@ -13,6 +13,7 @@ import nl.numworx.geodefiner.common.Volgpunt;
 import nl.numworx.geodefiner.common.index.ListSelector;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMBinding;
+import nl.tue.win.riaca.openmath.lang.OMInteger;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
 import fi.euclides.event.NameMapper;
@@ -309,6 +310,12 @@ public class Expression extends fi.euclides.openmath.Expression {
 		if (OMConstants.LIST2_LIST_SELECTOR.isSame(func)) {
 			Destroyable depend[] = new Destroyable[2];
 			copy(oma, mapper, depend);
+			if (depend[0] instanceof Groep && oma.getElementAt(2) instanceof OMInteger) {
+				OMInteger i = (OMInteger) oma.getElementAt(2);
+				int index = i.intValue();
+				return new ListSelector((Groep)depend[0], index).get();
+				
+			} else
 			if(depend[0] instanceof Groep && depend[1] instanceof Label) {
 				return new ListSelector((Groep)depend[0], (Label)depend[1]).get();
 			}

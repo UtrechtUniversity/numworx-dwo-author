@@ -4,8 +4,10 @@ import java.io.IOException;
 
 import fi.euclides.model.Codec;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Label;
 import fi.euclides.model.Visitor;
 import fi.euclides.util.Observable;
+import nl.numworx.geodefiner.common.CheckObject;
 
 class GeneralDestroyable extends Destroyable implements Indexed<Destroyable> {
 
@@ -66,9 +68,15 @@ class GeneralDestroyable extends Destroyable implements Indexed<Destroyable> {
 
 	@Override
 	public boolean isDefined() {
-		return defined && delegate != null && delegate.isDefined();
+		return defined && delegate != null && delegate.isDefined() && isTrueLabel();
 	}
 
+
+	private boolean isTrueLabel() {
+		if(! CheckObject.isTest(delegate) ) return true;
+		int state = ((Label) delegate).getState();
+		return state > 0;
+	}
 
 	@Override
 	public void update(Observable observable, Object arg) {
