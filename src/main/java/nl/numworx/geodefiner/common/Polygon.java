@@ -43,7 +43,7 @@ public class Polygon extends Triangle {
 	@Override
 	protected void createDepend(Codec codec) throws IOException {
 		Numbers n = codec.readNumber();
-		depend = new Punt[(int) n.longValue()];
+		depend = new Punt[n.intValue()];
 	}
 
 	@Override

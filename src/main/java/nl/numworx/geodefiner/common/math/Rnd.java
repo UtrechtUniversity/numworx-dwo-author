@@ -25,7 +25,7 @@ public class Rnd extends Som {
 			value = labels[1].value;
 		else
 			value = Numbers.ZERO;
-		int y = (int) Numbers.round(value).longValue();
+		int y = Numbers.round(value).intValue();
 		x = roundToSignificantFigures(x, y);
 		Numbers n;
 		if(y > 0 || Math.abs(x)>= Integer.MAX_VALUE)

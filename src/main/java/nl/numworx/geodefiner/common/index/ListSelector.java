@@ -163,7 +163,7 @@ public class ListSelector implements Visitor, Observer {
 	@SuppressWarnings("unchecked")
 	void recalc() {
 		if( grp != null && index != null) {
-			int i = (int) Numbers.round(index.value).longValue();
+			int i = Numbers.round(index.value).intValue();
 			if(i >= 1 && i <= grp.size()) {
 				if(indexed.getDelegate() != null) indexed.getDelegate().deleteObserver(this);
 				Destroyable delegate = grp.elementAt(i-1);

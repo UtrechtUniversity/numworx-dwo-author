@@ -4,11 +4,9 @@ import java.io.IOException;
 
 import fi.euclides.event.NameMapper;
 import fi.euclides.model.Codec;
-import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
-import fi.euclides.openmath.LocusModelF;
 import nl.numworx.geodefiner.common.LocusModelFX;
 import nl.numworx.geodefiner.common.LocusModelXY;
 import fi.euclides.model.Locus.LocusModel;
@@ -22,7 +20,7 @@ public class Builder implements LocusModel.Builder {
 	}
 	@Override
 	public LocusModel readModel(Codec codec) throws IOException {
-		int type = (int) codec.readNumber().longValue();
+		int type = codec.readNumber().intValue();
 		switch(type) {
 		case 0:
 			PuntOp<?> een = (PuntOp<?>) codec.readPunt();

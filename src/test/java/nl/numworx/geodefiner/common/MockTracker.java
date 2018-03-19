@@ -11,6 +11,8 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Model;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.proof.Const;
+import fi.euclides.proof.FlipFlop;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.Adaptee;
 import fi.euclides.util.Adapter;
@@ -19,6 +21,11 @@ import fi.euclides.util.DefaultAdapter;
 public class MockTracker  extends AbstractViewer implements Tracker, Adaptee {
 	Model model = new Model();
 	
+	
+	{
+		new Const().setTracker(this);
+		new FlipFlop().setTracker(this);
+	}
 	@Override
 	public void setTrack(Track track) {
 	}

@@ -28,7 +28,6 @@ public class MementoTest {
 	@Before
 	public void setUp() throws Exception {
 		tracker = new MockTracker();
-		LabelDelegate.setAllTracker(tracker);
 		memento = new Memento(tracker);
 		memento.fromList(JSONUtilities.wrapList(memento.toList())); // shortcut
 	}

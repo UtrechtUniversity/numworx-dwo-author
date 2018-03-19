@@ -49,7 +49,12 @@ public class NumberIO implements NumberCodec, DataInput {
 	}
 
 	public void writeDouble(Numbers numbers) throws IOException {
-		output.add(FP);output.add(numbers.doubleValue());
+		if(numbers.isNaN())
+			output.add(NAN);
+		else {
+			output.add(FP);
+			output.add(numbers.doubleValue());
+		}
 	}
 
 	public void writeRational(long a, long b) throws IOException {
