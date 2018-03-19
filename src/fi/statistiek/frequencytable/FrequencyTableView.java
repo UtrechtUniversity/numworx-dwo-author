@@ -874,7 +874,7 @@ public class FrequencyTableView extends JPanel implements Observer
 		
 		Dimension dimension;
 		
-		if (this.model.getSplitOptions().getColumnSplitIndex() == -1)
+		if (numberOfSplitClasses <= 1)
 		{
     		if (this.tableHeight > this.scrollPane.getHeight())
     		{
