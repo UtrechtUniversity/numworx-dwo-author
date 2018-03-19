@@ -16,6 +16,7 @@ import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 import javax.inject.Inject;
@@ -45,6 +46,7 @@ import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.Expression;
 import fi.euclides.proof.FlipFlop;
+import fi.euclides.proof.LabelDelegate;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.util.Adaptee;
 import fi.euclides.util.Adapter;
@@ -397,7 +399,7 @@ final public class InstanceViewer extends AWTViewer implements Observer {
 			return nameMapper;
 		}
 
-		@Inject InstanceViewer(NamingModel nm, nl.numworx.geodefiner.common.math.Expression expression, Randomizer r) {
+		@Inject InstanceViewer(NamingModel nm, nl.numworx.geodefiner.common.math.Expression expression, Randomizer r, Set<LabelDelegate> set) {
 			super(nm.getModel());
 			this.nameMapper = nm;
 			this.expression = expression;
@@ -407,7 +409,7 @@ final public class InstanceViewer extends AWTViewer implements Observer {
 			nameMapper = new NamingModel(this, cache);
 			hilighter = new HighLighter(hitTester.copy(), this);
 			tiptest = hitTester.copy();
-
+			for(LabelDelegate ld: set) ld.setTracker(this);
 			expression.setAllTracker(this);
 		}
 

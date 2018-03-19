@@ -11,6 +11,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
+import dagger.multibindings.IntoSet;
 import dagger.multibindings.StringKey;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
@@ -23,14 +24,16 @@ import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.NamingModel;
 import nl.numworx.geodefiner.common.math.Expression;
+import nl.numworx.geodefiner.common.math.ToC;
 
-@Module(includes= {Modules.Conversions.class})
+@Module(includes= {Modules.Conversions.class, DelegateModule.class})
 public abstract class Modules {
 	
 	@Module
 	public interface Conversions {
 		@Binds Tracker tracker(InstanceViewer viewer);
 		@Binds AWTViewer awtviewer(InstanceViewer viewer);
+		@Binds @IntoSet LabelDelegate toc(ToC toc);
 	}
 		
 	@Provides @Singleton static
@@ -50,6 +53,9 @@ public abstract class Modules {
 	
 	@Provides @IntoMap @StringKey("list1.list") static
 	LabelDelegate herleidList() { return new HerleidList(); }
+	
+	@Provides @Singleton static
+	ToC toc() { return new ToC(); }
 	
 	@Provides @Singleton static
 	CBookEventHandler eventHandler(Instance instance) {

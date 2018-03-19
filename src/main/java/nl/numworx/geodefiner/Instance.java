@@ -218,7 +218,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		InstanceViewer view = getViewer();
 		JComponent content = view.content;
 		createModel(viewer.getModel(), content.getWidth(), content.getHeight());
-		LabelDelegate.setAllTracker(viewer); // FIXME statics...... singleton considered harmfull!
 		view.height = content.getHeight();
 		view.width = content.getWidth();
 		view.offX = view.offY = 0;
@@ -361,13 +360,17 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	void startToolbox() {
 		if(started) return;
 		started = true;
-		ToolboxPanel p = toolboxPanel.get();
-		JLabel statusLabel = getViewer().statusLabel;
-		p.setToolbox(toolbox);
 		ObjectList tools = launchData.getObjectList("toolbox");
+		JLabel statusLabel = getViewer().statusLabel;
 		statusLabel.setVisible(tools != null && tools.size() != 0);
-		p.fromList(tools);
-		
+		if(statusLabel.isVisible())
+		{ 	ToolboxPanel p = toolboxPanel.get();
+			p.setToolbox(toolbox);
+			p.fromList(tools);
+		} else {
+			toolbox.removeAll();
+			toolbox.setVisible(false);
+		}		
 		statusLabel.getParent().setVisible(statusLabel.isVisible()||checkBtn.isVisible()||checkLabel.isVisible());
 	}	
 
