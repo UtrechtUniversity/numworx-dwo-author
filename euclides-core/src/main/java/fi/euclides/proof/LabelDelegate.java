@@ -46,29 +46,6 @@ public abstract class LabelDelegate extends EventHandler implements Observer {
 		return Arrays.equals(ld, od);
 	}
 	
-	/**
-	 * FIXME singleton antipattern
-	 * @param t
-	 */
-	public static void setAllTracker(Tracker t) {
-		LabelDelegate[] standards = {
-				new PointOnObject(),
-				new DrieOpEenRij(),
-				new MidpointTester(),
-				new VierOpEenCirkel(),
-				new LijnLijnTest(" \u2225 ", true),
-				new LijnLijnTest(" \u22A5 ", false),
-				new Equidistant(),
-				new Const(),
-				new FlipFlop(),
-		};
-		for (int i = 0; i < standards.length; i++) {
-			LabelDelegate delegate = standards[i];
-			delegate.setTracker(t);
-			t.register(delegate.getSubKey(), delegate);
-		}
-	}
-
 	public void prepareDepend(Codec codec, Label label) throws IOException {
 	}
 

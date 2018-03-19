@@ -37,7 +37,7 @@ public class VierOpEenCirkel extends LabelTester {
 			setStatus("Selecteer eerst 4 punten");
 	}
 
-	VierOpEenCirkel() {
+	public VierOpEenCirkel() {
 		super(TYPE);
 	}
 

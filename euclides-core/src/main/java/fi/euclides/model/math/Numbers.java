@@ -269,6 +269,9 @@ public abstract class Numbers {
 	public long longValue() {
 		return (long) doubleValue();
 	}
+	public int intValue() {
+		return (int) doubleValue();
+	}
 
 	public boolean isNaN() {
 		return Double.isNaN(doubleValue());

@@ -297,6 +297,7 @@ public class Memento implements Codec , NumberCodec {
 		int b = dis.readUnsignedByte();
 		switch(b) {
 		case NUL: return Numbers.ZERO;
+		case NAN: return Numbers.NaN;
 		case INT: return Numbers.createInteger(dis.readInt());
 		case RAT: return Numbers.createRational(dis.readLong(), dis.readLong());
 		case FP:  return Numbers.createDouble(dis.readDouble());
@@ -314,8 +315,12 @@ public class Memento implements Codec , NumberCodec {
 	}
 
 	public void writeDouble(Numbers numbers) throws IOException {
-		dos.writeByte(NumberCodec.FP);
-		dos.writeDouble(numbers.doubleValue());
+		if (numbers.isNaN())
+			dos.writeByte(NAN);
+		else {
+			dos.writeByte(NumberCodec.FP);
+			dos.writeDouble(numbers.doubleValue());
+		}
 	}
 
 

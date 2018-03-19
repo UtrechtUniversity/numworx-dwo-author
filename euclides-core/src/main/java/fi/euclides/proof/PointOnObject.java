@@ -22,7 +22,7 @@ public class PointOnObject extends LabelTester {
 	public static final String TYPE = "O"; //$NON-NLS-1$
 	public String getSubKey() { return TYPE; }
 	
-	PointOnObject() {
+	public PointOnObject() {
 		super(" "); //$NON-NLS-1$
 	}
 

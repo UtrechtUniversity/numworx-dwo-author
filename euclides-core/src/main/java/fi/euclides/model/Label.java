@@ -141,7 +141,7 @@ public class Label extends Destroyable implements Observer {
 		// state/value
 		Numbers n;
 		n = codec.readNumber();
-		state = (int)n.longValue();
+		state = n.intValue();
 		setValue( codec.readNumber() );
 	}
 

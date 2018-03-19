@@ -10,6 +10,8 @@ public interface NumberCodec {
 	public static final byte FP = 3;
 	public static final byte COMPLEX = 4;
 	public static final byte HILBERT = 5;
+	public static final byte NAN = 6; // in json no NaN
+	
 	// for number streaming
 	void writeDouble(Numbers numbers) throws IOException;
 	void writeRational(long a, long b) throws IOException;
