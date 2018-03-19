@@ -30,6 +30,12 @@ public class IntegerValue extends Exact {
 		return value;
 	}
 
+
+	@Override
+	public int intValue() {
+		return value;
+	}
+
 	IntegerValue(int value) {
 		this.value = value;
 	}
