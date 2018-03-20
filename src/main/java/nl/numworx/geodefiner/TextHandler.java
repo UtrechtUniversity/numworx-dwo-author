@@ -22,7 +22,7 @@ public class TextHandler extends AbstractTextHandler {
 	}
 
 	protected void attachLabel(Punt p) {
-		CommandPanel message = new CommandPanel();
+		CommandPanel message = new CommandPanel(null);
 		message.random = null; // no randomizer
 		message.instance = null; // no NPE!
 		Component parent = getTracker().adapt(Component.class);

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -89,7 +90,12 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	private JTabbedPane tabs;
 	private FeedbackTekstArea feedback;
 	
-	Editor(CBookContext context) {
+	@Inject Editor(final CBookContext context, 
+			final CommandPanel command, 
+			final Instance instance,
+			final DefinitionPanel definition,
+			final RandomPanel random
+			) {
 		content = new JPanel(new BorderLayout());
 		this.context = context;
 		content.setBounds(0,0,800,600);setSize(content.getSize());
@@ -97,8 +103,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		setPreferredSize(getSize());
 		JPanel flow = new JPanel(false);
 		flow.setBackground(new Color(250,250,255));
-		command = new CommandPanel();
-		instance = new Instance(command);
+		this.command = command;
+		this.instance = instance;
 		instance.installToolTip();
 		JComponent component = instance.asComponent();
 		component.setPreferredSize(instanceSize);
@@ -111,11 +117,11 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(flow), tabs);
 		//split.setDividerLocation(0.7);
 		content.add(split, BorderLayout.CENTER);
-		definition = new DefinitionPanel(instance.getDefinitions(), instance.getViewer());
+		this.definition = definition;
 		checkDWO = new CheckDWOPanel();
 		checkObjects = new CheckObjectsPanel(instance.getViewer());
 		toolbox = new ToolboxPanel();
-		random = new RandomPanel();
+		this.random = random;
 		tabs.addTab(definition.getName(), null, definition, definition.getToolTipText());
 		tabs.addTab(checkDWO.getName(), null, checkDWO, checkDWO.getToolTipText());
 		if(true || GeoDefiner.isExperimental)
@@ -125,9 +131,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		tabs.addTab(random.getName(), null, random, random.getToolTipText());
 
 // inject
-		command.random = random.getRandomVars();
-		command.instance = instance;
-		definition.randomizer = command;
+		command.instance = instance; // backlink
+		//definition.randomizer = command;
 		//instance.randomizer = command;
 		checkObjects.randomizer = command;
 		toolbox.viewer = instance.getViewer();

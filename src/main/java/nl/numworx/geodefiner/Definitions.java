@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import javax.swing.event.EventListenerList;
@@ -43,7 +44,7 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
     protected EventListenerList listenerList = new EventListenerList();
 
 	
-	@Inject public Definitions(Tracker viewer) {
+	public Definitions(Tracker viewer) {
 		super(viewer);
 		factory  = new UIModelFactory(viewer);
 

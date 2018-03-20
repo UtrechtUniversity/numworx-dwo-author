@@ -103,7 +103,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		Locus.BUILDER = new Builder();
 	}
 	
-	Definitions getDefinitions() {
+	public Definitions getDefinitions() {
 		return (Definitions) definitions;
 	}
 

@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.swing.JPanel;
 
 import fi.wiskopdr.VariableCollection;
@@ -18,10 +20,11 @@ import fi.wiskopdr.tekstobjects.TekstVak;
 class RandomPanel extends JPanel implements ActionListener, FocusListener {
 
 	private TekstEditor randomVarEditor;
-	private Map<String,Number> randomVars = new LinkedHashMap<String, Number>();
+	final private Map<String,Number> randomVars;
 
-	RandomPanel() {
+	@Inject RandomPanel( @Named("random") Map<String,Number> randomVars) {
 		super(null);
+		this.randomVars = randomVars;
 		setName("Default Random Vars");
 		TekstVak tekstVak = new TekstVak();
 		tekstVak.addFocusListener(this);

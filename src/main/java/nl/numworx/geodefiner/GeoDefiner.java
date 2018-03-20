@@ -21,6 +21,7 @@ import fi.euclides.model.math.Numbers;
 import fi.euclides.swing.DoubleFormat;
 //import fi.euclides.swing.SwingSymbols;
 import fi.wiskopdr.WiskOpdr;
+import nl.numworx.geodefiner.module.DaggerEditComponents;
 
 public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet {
 
@@ -48,7 +49,8 @@ public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet
 	}
 	
 	public CBookWidgetEditIF getEditor(CBookContext context) {
-		Editor editor = new Editor(context);
+		Editor editor = 
+				DaggerEditComponents.builder().context(context).build().editor();
 		return editor;
 	}
 

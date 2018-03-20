@@ -18,6 +18,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Model;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.swing.AWTViewer;
+import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.HerleidList;
 import nl.numworx.geodefiner.InstanceViewer;
 import nl.numworx.geodefiner.common.CheckObjectList;
@@ -67,5 +68,10 @@ public abstract class Modules {
 		CheckObjectList c = new CheckObjectList(viewer, expression);
 		c.setInstance(instance);
 		return c;
+	}
+	
+	@Provides @Singleton static
+	Definitions definitions(InstanceViewer tracker) {
+		return new Definitions(tracker);
 	}
 }

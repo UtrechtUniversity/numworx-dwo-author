@@ -8,6 +8,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.swing.Box;
 import javax.swing.JPanel;
 
@@ -17,7 +19,7 @@ import fi.euclides.formuleobjects.FormuleParser;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
 @SuppressWarnings("serial")
-class CommandPanel extends JPanel implements ActionListener, PropertyChangeListener, Randomizer {
+public class CommandPanel extends JPanel implements ActionListener, PropertyChangeListener, Randomizer {
 	
 	private FormuleEditor editor = new FormuleEditor(false) {
 
@@ -37,8 +39,9 @@ class CommandPanel extends JPanel implements ActionListener, PropertyChangeListe
 	private Object config;
 
 
-	CommandPanel() {
+	@Inject CommandPanel(@Named("random") Map<String,Number> random) {
 		super(new BorderLayout());
+		this.random = random;
 		add(Box.createVerticalStrut(120), BorderLayout.WEST);
 		add(editor, BorderLayout.CENTER);
 		editor.addActionListener(this);

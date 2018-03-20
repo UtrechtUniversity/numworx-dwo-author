@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -123,11 +125,12 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener, PosConve
 	};
 	private Map<String, Object> config = Collections.EMPTY_MAP;
 	
-	DefinitionPanel(Definitions model, AbstractViewer viewer) {
+	@Inject DefinitionPanel(Definitions model, AbstractViewer viewer, Randomizer randomizer) {
 		super(new BorderLayout());
 		setName(Messages.getString("DefinitionPanel.1"));
 		this.model = model;
 		this.viewer = viewer;
+		this.randomizer = randomizer;
 		setPreferredSize(new Dimension(200,400));
 		setBackground(Color.white);
 		list = Box.createVerticalBox();

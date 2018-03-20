@@ -1,6 +1,5 @@
 package nl.numworx.geodefiner;
 
-import java.awt.BorderLayout;
 import java.util.Collections;
 import java.util.Hashtable;
 
@@ -9,6 +8,7 @@ import javax.swing.JPanel;
 import org.cbook.cbookif.CBookContext;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import nl.numworx.geodefiner.module.DaggerEditComponents;
 
 public class GeoDefinerInteractieEditPanel extends JPanel implements
 		InteractieEditPanel, CBookContext {
@@ -19,11 +19,12 @@ public class GeoDefinerInteractieEditPanel extends JPanel implements
 	
 	GeoDefinerInteractieEditPanel() {
 		super(null);
-		editor = new Editor(this);
+		editor = DaggerEditComponents.builder().context(this).build().editor();
+
 		editor.setLocation(0, 0);
 		editor.setInstanceWidth(500);
 		editor.setInstanceHeight(450);
-		editor.setLaunchData(Collections.EMPTY_MAP);
+		editor.setLaunchData(Collections.emptyMap());
 		add(editor);
 	}
 

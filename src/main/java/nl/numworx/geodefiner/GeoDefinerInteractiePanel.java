@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +94,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 
 	private Map launchRandomVars() {
 		// TODO zonder panel.
-				RandomPanel randompanel = new RandomPanel();
+				RandomPanel randompanel = new RandomPanel(new HashMap<>());
 				randompanel.setText((String)launchData.get("random"));
 				Map randomvars = randompanel.getRandomVars();
 		return randomvars;
