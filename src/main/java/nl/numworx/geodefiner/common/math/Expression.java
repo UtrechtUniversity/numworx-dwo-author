@@ -198,6 +198,9 @@ public class Expression extends fi.euclides.openmath.Expression {
 				Destroyable on = depend[2];
 				OpObject op = (OpObject) on;
 				p.destroy();
+				DestroyDependency dd = new DestroyDependency(p);
+				ix.addObserver(dd);
+				iy.addObserver(dd);
 				p = op.pointOn(p.getX(), p.getY());
 			} else {
 

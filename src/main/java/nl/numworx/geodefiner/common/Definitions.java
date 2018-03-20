@@ -145,16 +145,25 @@ public class Definitions implements Observer /*, ListModel*/ {
 						Label ix = (Label) arg0; // toNumber(object)
 						Label iy = (Label) arg1;
 						p = model.buildCoordinaten(ix, iy);
+						if(depend.length == 3 && depend[2] instanceof Label && isYFX((Label) depend[2]))
+						{
+							depend[2] = new Locus(Locus.BUILDER.build((Label) depend[2]));
+						}
 						if(depend.length == 3 && depend[2] instanceof OpObject) {
 // $P := point(1, 2, $lijn)
 							Destroyable on = depend[2];
-							OpObject op = (OpObject) on;
+							OpObject<?> op = (OpObject<?>) on;
 							p.destroy();
 							p = op.pointOn(p.getX(), p.getY());
+							DestroyDependency dd = new DestroyDependency(p);
+							ix.addObserver(dd);
+							iy.addObserver(dd);
 							model.add(p);
 							DefaultAdapter.getDefault(p).put(State.INITIAL);
 						} else {
 							DefaultAdapter.getDefault(p).put(State.INITIAL);
+							if(depend.length == 3)
+								throw new InterpretException("wrong type");
 						}
 					} else {
 						model.clearSelection();
@@ -166,7 +175,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 						{	PuntOp2 p2 = (PuntOp2)p;
 							Destroyable arg2 = depend[2];
 							if(arg2 instanceof Label) {
-								byte b = (byte) ((Label) arg2).value.doubleValue();
+								byte b = (byte) ((Label) arg2).value.intValue();
 								p2.setFuse(b);
 								p2.update(arg0, arg1);
 							}

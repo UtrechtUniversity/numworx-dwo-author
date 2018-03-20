@@ -130,7 +130,7 @@ public class EqualsVisitor implements Visitor {
 		if(b instanceof Label) {
 			Label lb = (Label)b;
 // text("A",a) equals text("b",b) if "a" == "b" and a near b
-			if(lb.same(label))
+			if(label.same(lb))
 			{
 				Punt pa = label.getP();
 				Punt pb = lb.getP();

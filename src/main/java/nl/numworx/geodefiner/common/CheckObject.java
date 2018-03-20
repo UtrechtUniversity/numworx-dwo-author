@@ -222,26 +222,26 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 	void removeFeedback() {
 		if(item != null) {
 			DefaultAdapter.getDefault(item).put(CheckObject.class,null);
-			if(cache instanceof Label) {
-				boolean free = VrijPunt.TYPE == ((Label) cache).getP().key();
-				if(free) {
-					Destroyable p = ((Label) item).getP().getDepend()[0];
-					DefaultAdapter.getDefault(p).put(CheckObject.class,null);
-				}
-			}
+//			if(cache instanceof Label) {
+//				boolean free = VrijPunt.TYPE == ((Label) cache).getP().key();
+//				if(free) {
+//					Destroyable p = ((Label) item).getP().getDepend()[0];
+//					DefaultAdapter.getDefault(p).put(CheckObject.class,null);
+//				}
+//			}
 		}
 	}
 
 	void feedback() {
 		if(item != null) {
 			DefaultAdapter.getDefault(item).put(this);
-			if(cache instanceof Label) {
-				boolean free = VrijPunt.TYPE == ((Label) cache).getP().key();
-				if(free) {
-					Destroyable p = ((Label) item).getP().getDepend()[0];
-					DefaultAdapter.getDefault(p).put(this);
-				}
-			}
+//			if(cache instanceof Label) {
+//				boolean free = VrijPunt.TYPE == ((Label) cache).getP().key();
+//				if(free) {
+//					Destroyable p = ((Label) item).getP().getDepend()[0];
+//					DefaultAdapter.getDefault(p).put(this);
+//				}
+//			}
 		}
 	}
 

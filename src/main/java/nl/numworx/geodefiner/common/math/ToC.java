@@ -70,5 +70,10 @@ public class ToC extends LabelValue {
 		l.setValue(value);
 	}
 
+	@Override
+	public boolean equals(Label label, Label other) {
+		return label.getString().equals(other.getString()); // only String compare! (for EqualVisitor)
+	}
+
 
 }
