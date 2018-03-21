@@ -13,6 +13,9 @@ import java.beans.VetoableChangeListener;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -44,14 +47,14 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 	private FormuleEditor formule;
 	private Tracker tracker;
 	
-	JButton checkBtn;
-	JComponent validator = this;
+	@Inject @Named("checkBtn") JButton checkBtn;
+	@Inject @Named("validator") JComponent validator = this;
 	ObjectiveChoiceButton objBtn;
 
-	void setTracker(Tracker tracker) {
+	@Inject void setTracker(Tracker tracker) {
 		this.tracker = tracker;
-		Randomizer random = tracker.adapt(Randomizer.class);
-		Expression expr = tracker.adapt(Expression.class);
+//		Randomizer random = tracker.adapt(Randomizer.class);
+//		Expression expr = tracker.adapt(Expression.class);
 	}
 
 	private boolean checkFormula() {
@@ -78,7 +81,7 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 	
 	
 	
-	CheckDWOPanel() {
+	@Inject CheckDWOPanel() {
 		super(null);
 		BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		setLayout(layout);

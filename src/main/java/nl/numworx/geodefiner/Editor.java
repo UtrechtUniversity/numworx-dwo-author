@@ -94,7 +94,9 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 			final CommandPanel command, 
 			final Instance instance,
 			final DefinitionPanel definition,
-			final RandomPanel random
+			final RandomPanel random,
+			final CheckObjectsPanel checkObjects,
+			final CheckDWOPanel checkDWO
 			) {
 		content = new JPanel(new BorderLayout());
 		this.context = context;
@@ -118,8 +120,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		//split.setDividerLocation(0.7);
 		content.add(split, BorderLayout.CENTER);
 		this.definition = definition;
-		checkDWO = new CheckDWOPanel();
-		checkObjects = new CheckObjectsPanel(instance.getViewer());
+		this.checkDWO = checkDWO;
+		this.checkObjects = checkObjects;
 		toolbox = new ToolboxPanel();
 		this.random = random;
 		tabs.addTab(definition.getName(), null, definition, definition.getToolTipText());
@@ -131,15 +133,14 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		tabs.addTab(random.getName(), null, random, random.getToolTipText());
 
 // inject
-		command.instance = instance; // backlink
 		//definition.randomizer = command;
 		//instance.randomizer = command;
-		checkObjects.randomizer = command;
+		//checkObjects.randomizer = command;
 		toolbox.viewer = instance.getViewer();
 		toolbox.setToolbox(instance.toolbox, instance);
-		checkDWO.checkBtn = instance.checkBtn;
-		checkDWO.validator = component;
-		checkDWO.setTracker(instance.getViewer());
+//		checkDWO.checkBtn = instance.checkBtn;
+//		checkDWO.validator = component;
+//		checkDWO.setTracker(instance.getViewer());
 // 
 		command.addPropertyChangeListener("command", definition);
 		command.addPropertyChangeListener("config", definition);

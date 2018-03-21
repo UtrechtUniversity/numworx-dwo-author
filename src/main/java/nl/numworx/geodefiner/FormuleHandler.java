@@ -21,13 +21,10 @@ public class FormuleHandler extends EventHandler {
 	public void command() {
 
 		CommandPanel message = new CommandPanel(null);
-		message.random = null; // no randomizer
-		message.instance = null; // no NPE!
 		Component parent = getTracker().adapt(Component.class);
 		int r = JOptionPane.showConfirmDialog(parent, message, "Definitie", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if(r == JOptionPane.OK_OPTION) {
 			String formule = message.toString();
-			System.out.println(formule);
 			OMObject object;
 			try {
 				object = new FormuleParser(formule.substring(2)).parse();

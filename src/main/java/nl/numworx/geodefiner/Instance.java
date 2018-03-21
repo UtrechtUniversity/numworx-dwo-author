@@ -8,6 +8,7 @@ import java.awt.Stroke;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
@@ -26,6 +27,7 @@ import javax.swing.ToolTipManager;
 
 import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Check_DWO;
+import nl.numworx.geodefiner.common.DefaultRandomizer;
 import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.locus.Builder;
 import nl.numworx.geodefiner.module.Components;
@@ -58,14 +60,14 @@ import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleParser;
 
 
-public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener, PropertyChangeListener, Randomizer {
+public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener, PropertyChangeListener  {
 
 	static final Stroke DEFAULT_STROKE = new BasicStroke();
 
 	
 	private JPanel panel = new JPanel(new BorderLayout());
 	JPanel south = new JPanel(new FlowLayout(FlowLayout.TRAILING, 2, 2));
-	JButton checkBtn = new JButton(Messages.getString("kijkNa"));
+	public final JButton checkBtn = new JButton(Messages.getString("kijkNa"));
 	JLabel  checkLabel = new JLabel();
 
 	@Inject CBookEventHandler handler;
@@ -84,9 +86,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 	
 	
-	void inject(Randomizer r)
+	void inject(WiskOpdrRandomizer r)
 	{
-		if (r == null) r = this;
+		random = r;
 		Components components = DaggerComponents.builder()
 				.instance(this)
 				.randomizer(r)
@@ -111,15 +113,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		return (InstanceViewer) viewer;
 	}
 
-	private Map<String, Number> random = Collections.emptyMap();
-
 	JToolBar toolbox;
 
 	private KijkNaAction action;
 
 	private AssessmentMode mode;
 	
-	public Instance(Randomizer command) {
+	public Instance(WiskOpdrRandomizer command) {
 		inject(command);
 		//content.setBackground(Color.white);
 		panel.setOpaque(false);panel.setBackground(null);
@@ -147,7 +147,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public Instance() {
-		this(null);
+		this(new WiskOpdrRandomizer(new HashMap<String, Number>()));
 	}
 
 	public void addCBookEventListener(CBookEventListener listener, final String command) {
@@ -290,22 +290,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 	}
 
-	@Override
-	public String randomize(Map<String, Number> random, String text) {
-		Hashtable randomVarWaarden = new Hashtable(random);
-		String[] randomVarNamen = random.keySet().toArray(new String[random.size()]);
-		Locale lcl = WiskOpdr.language;
-		try {
-			WiskOpdr.language = Locale.ROOT; // POSIX: decimal point
-			String randomizeString = FormuleParser.randomizeString(text,randomVarNamen,randomVarWaarden);
-			return randomizeString;
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			WiskOpdr.language = lcl;
-		}
-		return super.randomize(random, text);
-	}
 
 	@Override
 	protected boolean installCheckDWO() {
@@ -376,11 +360,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	void installToolTip() {
 		ToolTipManager.sharedInstance().registerComponent(getViewer().content);
-	}
-
-	@Override
-	public String randomize(String input) {
-		return randomize(random, input);
 	}
 
 	@Override

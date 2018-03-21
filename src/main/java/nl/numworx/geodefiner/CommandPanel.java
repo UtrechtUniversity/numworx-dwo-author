@@ -31,15 +31,11 @@ public class CommandPanel extends JPanel implements ActionListener, PropertyChan
 		} 
 	};
 	
-	//@Inject
-	Map<String, Number> random = Collections.emptyMap();
-	//@Inject
-	nl.numworx.geodefiner.Instance instance;
 
 	private Object config;
+	private final Randomizer random;
 
-
-	@Inject CommandPanel(@Named("random") Map<String,Number> random) {
+	@Inject CommandPanel(Randomizer random) {
 		super(new BorderLayout());
 		this.random = random;
 		add(Box.createVerticalStrut(120), BorderLayout.WEST);
@@ -76,7 +72,7 @@ public class CommandPanel extends JPanel implements ActionListener, PropertyChan
 	
 	public String randomize(String input) {
 		if(random != null)
-			return instance.randomize(random, input);
+			return random.randomize(input);
 		else 
 			return input;
 	}

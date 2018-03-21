@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -34,7 +36,8 @@ import nl.numworx.geodefiner.common.Randomizer;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 
-public class CheckObjectsPanel extends JPanel implements ActionListener, Randomizer {
+@Singleton
+public class CheckObjectsPanel extends JPanel implements ActionListener {
 
 	JButton plus, min;
 	JTable  table;
@@ -224,13 +227,8 @@ public class CheckObjectsPanel extends JPanel implements ActionListener, Randomi
 		}
 	}
 	
-	Randomizer randomizer = this;
-	
-	@Override
-	public String randomize(String input) {
-		return input;
-	}
-	
+	@Inject Randomizer randomizer;
+		
 	public void firePropertyChange(PropertyChangeEvent e) {
 		for (PropertyChangeListener l : getPropertyChangeListeners(e.getPropertyName())) {
 			l.propertyChange(e);
@@ -238,7 +236,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener, Randomi
 		
 	}
 
-	CheckObjectsPanel(Tracker tracker) {
+	@Inject CheckObjectsPanel(Tracker tracker) {
 		super(new BorderLayout());
 		setName("CheckObjects");
 		checkObjects = new CheckObjectList(tracker);

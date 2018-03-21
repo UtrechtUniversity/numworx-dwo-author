@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import javax.swing.event.EventListenerList;
