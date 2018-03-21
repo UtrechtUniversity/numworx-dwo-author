@@ -156,11 +156,11 @@ public abstract class Instance /*implements Observer*/ {
 	};
 	
 	protected ObjectMap launchData, state;
-	protected Map<String, Number> random;
+	protected DefaultRandomizer random = new DefaultRandomizer();
 	
 	public void setLaunchData(Map<String, ? extends Object> launchData, Map<String, Number> random) {
 		this.launchData = JSONUtilities.wrapMap(launchData);
-		this.random = random;		
+		this.random.setRandom(random);		
 		installLaunchData();
 	}
 
@@ -265,7 +265,7 @@ public abstract class Instance /*implements Observer*/ {
 			String text = iterator.next();
 			OMObject object;
 			try {
-				String toParse = randomize(this.random, text);
+				String toParse = random.randomize(text);
 				object = new FormuleParser(toParse.substring(2)).parse();
 				definitions.define(text, object);
 			} catch (Throwable e) {
@@ -273,14 +273,6 @@ public abstract class Instance /*implements Observer*/ {
 				//break;
 			}
 		}
-	}
-
-	public String randomize(Map<String, Number> random, String text) {
-		for(Map.Entry<String, Number> entry: random.entrySet()) {
-			String key = "#" + entry.getKey() + "#";
-			text = text.replaceAll(key, "(" + entry.getValue().toString() + ")");
-		}
-		return text;
 	}
 
 	protected void setPositions(Object object) {
