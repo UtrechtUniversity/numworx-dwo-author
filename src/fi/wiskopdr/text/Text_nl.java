@@ -777,6 +777,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"SYM_pijl", "Pijl"},
 				{"SYM_accolade", "Accolade"},
 				{"SYM_ellips", "Ellips"},
+				{"SYM_haak", "Haak"},
 				{"SYM_kiesEerstSymbool", "Kies eerst symbool"},
 				{"SYM_dikte", "Dikte"},
 				{"SYM_kleur", "Kleur"},

@@ -43,6 +43,8 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 			symbool = new Accolade(richting);
 		else if(keuze == Symbool.ELLIPS)
 			symbool = new Ellips(richting);
+		else if(keuze == Symbool.HAAK)
+			symbool = new Haak(richting);
 		symbool.setBounds(0,0,this.getWidth(), this.getHeight());
 		add(symbool);
 		symbool.repaint(); 
@@ -78,6 +80,13 @@ public class SymboolPanel extends JPanel implements InteractiePanel{
 		}
 		else if(symbool instanceof Ellips)
 		{	//nog invullen
+		}
+		else if(symbool instanceof Haak)
+		{
+			if(keuze == 0)
+				richting = Symbool.RICHTING_LINKS;
+			else
+				richting = Symbool.RICHTING_RECHTS;
 		}
 		symbool.zetRichting(richting);
 		symbool.repaint();

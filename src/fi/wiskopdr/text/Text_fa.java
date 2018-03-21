@@ -692,6 +692,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"SYM_pijl", "Arrow"},
 				{"SYM_accolade", "Curly bracket"},
 				{"SYM_ellips", "Ellipse"},
+				{"SYM_haak", "Bracket"},
 				{"SYM_kiesEerstSymbool", "Choose symbol first"},
 				{"SYM_dikte", "Line width"},
 				{"SYM_kleur", "Color"},

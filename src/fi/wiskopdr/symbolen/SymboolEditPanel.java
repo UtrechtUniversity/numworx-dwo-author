@@ -59,7 +59,7 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 		
 		String[] symboolString = {WiskOpdr.rb.getString("SYM_kiesSymbool"), 
 				WiskOpdr.rb.getString("SYM_lijn"), WiskOpdr.rb.getString("SYM_pijl"),
-				WiskOpdr.rb.getString("SYM_accolade"), WiskOpdr.rb.getString("SYM_ellips")};
+				WiskOpdr.rb.getString("SYM_accolade"), WiskOpdr.rb.getString("SYM_ellips"), WiskOpdr.rb.getString("SYM_haak")};
 		symboolKeuzeBox = new JComboBox(symboolString);
 		symboolKeuzeBox.setBounds(currentX, currentY, width, height);
 		symboolKeuzeBox.setFont(theFont);
@@ -163,6 +163,12 @@ public class SymboolEditPanel extends JPanel implements InteractieEditPanel, Act
 			richtingString[0] = WiskOpdr.rb.getString("SYM_geenRichting");
 			//nog kijken wat ik hiermee doe. Schuine ellipsen mogelijk maken? 
 			//anders is richting kiezen hier vrij zinloos. 
+		}
+		else if(symboolKeuze == Symbool.HAAK)
+		{
+			richtingString = new String[2];
+			richtingString[0] = WiskOpdr.rb.getString("SYM_links");
+			richtingString[1] = WiskOpdr.rb.getString("SYM_rechts");
 		}
 		//ook nog optie bouwen voor als geen symboolkeuze?
 		//nog testen of onderstaande allemaal nodig. richtingkeuzebox opnieuw initialiseren.

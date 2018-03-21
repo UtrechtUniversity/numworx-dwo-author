@@ -560,6 +560,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			opnieuwKnop.setVisible(opnieuwMogelijk);
 		else
 			opnieuwKnop.setVisible(false);
+		add(itemOpnieuwKnop, 0); // item opnieuw is in html5 mogelijk
 		add(opnieuwKnop, 0);
 
 		String imageName = "/fi/beans/wnwidgets/resources/popup-gray.png";
@@ -818,7 +819,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			opnieuwKnop.setBounds(vorigeKnop.getX() - opnieuwKnop.getWidth() - 5, orPosY + 2, 4 * orSize + 15, orSize - 5);
 			nakijkKnop.setBounds(opnieuwKnop.getX() - nakijkKnop.getWidth() - 5, orPosY + 2, 4 * orSize + 15, orSize - 5);
 			scoreGeschiedenisBox.setBounds(nakijkKnop.getX() - scoreGeschiedenisBox.getWidth() - 5, orPosY + 2, 4 * orSize + 15, orSize - 5);
-			itemOpnieuwKnop.setBounds(vorigeKnop.getX() - itemOpnieuwKnop.getWidth() - 5, orPosY + 2, 2 * orSize + 20, orSize - 5);
+			itemOpnieuwKnop.setBounds(scoreGeschiedenisBox.getX() - itemOpnieuwKnop.getWidth() - 5, orPosY + 2, 2 * orSize + 20, orSize - 5);
 			klaarKnop.setBounds(itemOpnieuwKnop.getX() - klaarKnop.getWidth() - 5, orPosY + 2, 2 * orSize + 15, orSize - 5);
 			mwScoreLab.setBounds(margeLinks + 18, orPosY - 3, 200, 20);
 		}
@@ -831,14 +832,21 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				klaarKnop.setBounds(getSize().width - 90 - (3 * orSize + 30), orPosY - 2 * orSize, 4 * orSize + 30, 3 * orSize / 2 - 5);
 			else
 				klaarKnop.setBounds(getSize().width - 90 - (2 * orSize + 30), orPosY - 30, 2 * orSize + 30, orSize - 5);
-			nakijkKnop.setBounds(orPosX + aantalOpdrMax * orSize + 2 * orSize + 90, orPosY + 4, 2 * orSize + 30, orSize - 5);
-			scoreGeschiedenisBox.setBounds(orPosX + aantalOpdrMax * orSize + 2 * orSize + 90 + nakijkKnop.getWidth() + 20, 
-				orPosY + 4, (int) scoreGeschiedenisBox.getPreferredSize().getWidth(), orSize - 5);
-			itemOpnieuwKnop.setBounds(orPosX + aantalOpdrMax * orSize + 20, orPosY + 4, 2 * orSize + 30, orSize - 5);
-			if (!itemOpnieuwKnop.isVisible())
-				opnieuwKnop.setBounds(orPosX + aantalOpdrMax * orSize + 20, orPosY + 4, 2 * orSize + 50, orSize - 5);
+			
+			int nr = 0;
+			if (bolletjesZichtbaar)
+				nr = aantalOpdrMax;
+			if (itemOpnieuwMogelijk && opnieuwMogelijk) // als beide dan iets meer ruimte
+				nakijkKnop.setBounds(orPosX + nr * orSize + 2 * orSize + 90 + opnieuwKnop.getWidth(), orPosY + 4, 2 * orSize + 30, orSize - 5);
 			else
-				opnieuwKnop.setBounds(orPosX + aantalOpdrMax * orSize + 2 * orSize + 70, orPosY + 4, 2 * orSize + 50, orSize - 5);
+				nakijkKnop.setBounds(orPosX + nr * orSize + 2 * orSize + 90, orPosY + 4, 2 * orSize + 30, orSize - 5);
+			scoreGeschiedenisBox.setBounds(orPosX + nr * orSize + 2 * orSize + 90 + nakijkKnop.getWidth() + 20, 
+				orPosY + 4, (int) scoreGeschiedenisBox.getPreferredSize().getWidth(), orSize - 5);
+			itemOpnieuwKnop.setBounds(orPosX + nr * orSize + 20, orPosY + 4, 2 * orSize + 30, orSize - 5);
+			if (!itemOpnieuwKnop.isVisible())
+				opnieuwKnop.setBounds(orPosX + nr * orSize + 20, orPosY + 4, 2 * orSize + 50, orSize - 5);
+			else
+				opnieuwKnop.setBounds(orPosX + nr * orSize + 2 * orSize + 70, orPosY + 4, 2 * orSize + 50, orSize - 5);
 //			lockToetsCB.setBounds(getWidth() - 220, getHeight() - 23, 120, 20);
 			aantalSessiesLabel.setBounds(getWidth() - 320, getHeight() - 23, 120, 20);
 			lockToetsLabel.setBounds(getWidth() - 120, getHeight() - 23, 100, 20);
@@ -2546,7 +2554,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				viewMisconceptionsKnop.setEnabled(lessonMode.equals("review"));
 			}
 			klaarKnop.setVisible(false);
-			itemOpnieuwKnop.setVisible(false);
+			
+			// in html 5 is item opnieuw gewoon mogelijk
+			//itemOpnieuwKnop.setVisible(false);
 
 			Point locationNakijkKnop = nakijkKnop.getLocation();
 			Point locationOpnieuwKnop = opnieuwKnop.getLocation();
@@ -3310,7 +3320,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 						activiteitScoreLabels[0].setText(WiskOpdr.rb.getString("voortgang") + bepaalVoortgangPercentage(activiteitNr, opdrachtNr) + "%");
 				}
 			}
-			if (timer && allCorrect)
+			if (timer && allCorrect && !isDocentReviewMode())
 			{
 				zetAfdekPanel(true, 1);
 				timerPanel.stop();

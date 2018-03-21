@@ -15,6 +15,7 @@ public class Symbool extends JLabel {
 	public static int PIJL = 2;
 	public static int ACCOLADE = 3;
 	public static int ELLIPS = 4;
+	public static int HAAK = 5;
 	
 	public static int RICHTING_LINKS = 0;
 	public static int RICHTING_RECHTS = 1;
