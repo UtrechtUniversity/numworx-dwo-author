@@ -6,32 +6,39 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JToolBar;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.AbstractViewer;
+import fi.euclides.swing.AWTViewer;
 import nl.numworx.geodefiner.CommandPanel;
 import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.Instance;
+import nl.numworx.geodefiner.InstanceViewer;
 import nl.numworx.geodefiner.WiskOpdrRandomizer;
 import nl.numworx.geodefiner.common.Randomizer;
 
-@Module
+@Module(includes= {ToolBoxModule.class})
 public abstract class EditModule {
 
-	@Provides @Singleton static Instance instance(WiskOpdrRandomizer r) {
-		return new Instance(r);
+	@Provides @Singleton static Instance instance(WiskOpdrRandomizer r, JToolBar toolbar) {
+		return new Instance(r, toolbar);
 	}
+
 	@Binds abstract Randomizer randomizer(WiskOpdrRandomizer p);
-	@Binds abstract Tracker tracker(AbstractViewer v);
+	@Binds abstract Tracker tracker(InstanceViewer v);
+	@Binds abstract AWTViewer awtviewer(InstanceViewer v);
+	@Binds abstract AbstractViewer abstractViewer(InstanceViewer v);
+	@Binds abstract nl.numworx.geodefiner.common.Instance commonInstance(Instance instance);
 	
 	@Provides @Singleton @Named("random") static Map<String,Number> random() {
 		return new LinkedHashMap<String,Number>();
 	}
 	
-	@Provides static AbstractViewer viewer(Instance instance) {
+	@Provides static InstanceViewer viewer(Instance instance) {
 		return instance.getViewer();
 	}
 	@Provides static Definitions definitions(Instance instance) {
@@ -43,5 +50,9 @@ public abstract class EditModule {
 
 	@Provides @Named("validator") static JComponent validator(Instance instance) {
 		return instance.asComponent();
+	}
+	
+	@Provides @Singleton static JToolBar toolbar() {
+		return new JToolBar();
 	}
 }

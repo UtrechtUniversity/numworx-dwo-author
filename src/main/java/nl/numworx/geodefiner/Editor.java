@@ -96,7 +96,9 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 			final DefinitionPanel definition,
 			final RandomPanel random,
 			final CheckObjectsPanel checkObjects,
-			final CheckDWOPanel checkDWO
+			final CheckDWOPanel checkDWO,
+			final ToolboxPanel toolbox,
+			final Axes axes
 			) {
 		content = new JPanel(new BorderLayout());
 		this.context = context;
@@ -122,22 +124,20 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		this.definition = definition;
 		this.checkDWO = checkDWO;
 		this.checkObjects = checkObjects;
-		toolbox = new ToolboxPanel();
+		this.toolbox = toolbox;
 		this.random = random;
 		tabs.addTab(definition.getName(), null, definition, definition.getToolTipText());
 		tabs.addTab(checkDWO.getName(), null, checkDWO, checkDWO.getToolTipText());
-		if(true || GeoDefiner.isExperimental)
-		{	tabs.addTab(checkObjects.getName(), null, checkObjects, checkObjects.getToolTipText());
-			tabs.addTab(toolbox.getName(), null, toolbox, toolbox.getToolTipText());
-		}
+		tabs.addTab(checkObjects.getName(), null, checkObjects, checkObjects.getToolTipText());
+		tabs.addTab(toolbox.getName(), null, toolbox, toolbox.getToolTipText());
 		tabs.addTab(random.getName(), null, random, random.getToolTipText());
 
 // inject
 		//definition.randomizer = command;
 		//instance.randomizer = command;
 		//checkObjects.randomizer = command;
-		toolbox.viewer = instance.getViewer();
-		toolbox.setToolbox(instance.toolbox, instance);
+//		toolbox.viewer = instance.getViewer();
+//		toolbox.setToolbox(instance.toolbox, instance);
 //		checkDWO.checkBtn = instance.checkBtn;
 //		checkDWO.validator = component;
 //		checkDWO.setTracker(instance.getViewer());
@@ -150,7 +150,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		checkDWO.addPropertyChangeListener("feedback", this);
 		content.add(command, BorderLayout.SOUTH);
 		add(content, JLayeredPane.DEFAULT_LAYER);
-		axes = new Axes(instance.getViewer());
+		this.axes = axes;
 		tabs.addTab("Axes", null, axes, null);
 	}
 

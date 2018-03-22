@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner.module;
 
 import javax.inject.Singleton;
+import javax.swing.JToolBar;
 
 import dagger.BindsInstance;
 import dagger.Component;
@@ -16,6 +17,7 @@ public interface Components {
 	interface Builder {
 		@BindsInstance Builder instance(nl.numworx.geodefiner.common.Instance instance);
 		@BindsInstance Builder randomizer(Randomizer random);
+		@BindsInstance Builder toolbox(JToolBar toolbox);
 		Components build();
 	}
 }

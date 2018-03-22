@@ -12,10 +12,11 @@ import fi.euclides.swing.AWTViewer;
 
 public class FormuleHandler extends EventHandler {
 
-	public FormuleHandler(String string) {
+	public FormuleHandler(String string, Definitions d) {
 		super(string);
+		definitions = d;
 	}
-	Definitions definitions;
+	private Definitions definitions;
 
 	@Override
 	public void command() {

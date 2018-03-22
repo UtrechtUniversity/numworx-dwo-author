@@ -16,9 +16,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -32,6 +34,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
 
+import dagger.Lazy;
 import nl.numworx.geodefiner.common.FilteredDestroyHandler;
 import nl.numworx.geodefiner.common.AddCirkelHandler;
 import nl.numworx.geodefiner.common.AddPolygonHandler;
@@ -57,7 +60,6 @@ import fi.euclides.event.AddSpiegelHandler;
 import fi.euclides.event.AddTriangleHandler2;
 import fi.euclides.event.DestroyHandler;
 import fi.euclides.event.SelectHandler;
-import fi.euclides.expr.TrailHandler;
 import fi.euclides.proof.AfstandHandler;
 import fi.euclides.proof.HoekHandler;
 import fi.euclides.proof.OppHandler;
@@ -67,13 +69,10 @@ import fi.euclides.swing.CirkelAction;
 import fi.euclides.swing.PanHandler;
 import fi.euclides.swing.PuntAction;
 import fi.euclides.util.Messages;
-import fi.euclides.swing.XXXAction;
 
 public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 
 	private JToolBar toolbox;
-	AWTViewer viewer;
-
 	ImageIcon getIcon(String name) {
 		ImageIcon icon = new ImageIcon(getClass().getResource("/fi/euclides/resources" + name));
 		return icon;
@@ -159,42 +158,10 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		};
 	}
 
-	Vector<Action> actions = new Vector<Action>();
 	List<JCheckBox> boxes = new ArrayList<JCheckBox>();
+	private Map<Integer, Provider<Action>> actionsMap;
 	
 	void createActions(nl.numworx.geodefiner.common.Instance instance) {
-		actions.clear();
-		resetter = new ResetHandler("Reset", instance);
-		actions.setSize(TOOL_SIZE);
-		actions.set(SELECTOR, new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer));
-		actions.set(POINT, new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddSnapPuntHandler(),viewer));
-
-		actions.set(LINE, new XXXAction(Messages.getString("Euclides.50"), "/line.png", new AddLijnHandler(AddLijnHandler.LINE),viewer));
-		actions.set(HALFLINE, new XXXAction(Messages.getString("Euclides.49"), "/ray.png", new AddLijnHandler(AddLijnHandler.RAY),viewer));
-		actions.set(SEGMENT, new XXXAction(Messages.getString("Euclides.48"), "/segment.png", new AddLijnHandler(AddLijnHandler.SEGMENT),viewer));
-
-		actions.set(PERPENDICULAR, new XXXAction(Messages.getString("Euclides.56"), "/plumb.png", new AddLoodLijnHandler(),viewer));
-		actions.set(PARALLEL, new XXXAction(Messages.getString("Euclides.58"), "/parallel.png", new AddParallelHandler(),viewer));
-
-		
-		XXXAction xaction=new XXXAction(Messages.getString("Euclides.41"), "/pan.png", new PanHandler(Messages.getString("Euclides.41"), viewer), viewer);
-		xaction.cursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
-		actions.set(PAN, xaction);
-		
-		actions.set(TRIANGLE, new XXXAction("Veelhoek", "/triangle.png", new AddPolygonHandler("Veelhoek"), viewer));
-		actions.set(CIRCLE, new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer));
-
-		actions.set(DESTROY,new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new FilteredDestroyHandler(instance),viewer));
-
-		actions.set(ARC, new XXXAction("Boog", "/angle.png", new AddBoogHandler("Boog"),viewer));
-		actions.set(MIDPOINT, new XXXAction(Messages.getString("Euclides.54"), "/midpoint.png", new AddMiddelPuntHandler(),viewer));
-		actions.set(BISECTRICE, new XXXAction(Messages.getString("Euclides.60"), "/bissectrice.png", new AddBissectriceHandler(),viewer));
-		actions.set(MIRROR, new XXXAction(Messages.getString("Euclides.62"), "/mirror.png", new AddSpiegelHandler(), viewer));
-		actions.set(CONIC_SECTION, new XXXAction("Kegelsnede", "/quadric.png", new AddKegelsnedeHandler("Kegelsnede"), viewer));
-		actions.set(FOCUS, new XXXAction("Brandpunt", "/quadric.png", new AddFocusHandler(), viewer));
-		actions.set(LOCUS, new XXXAction("Meetkundige plaats", "/objecttracker.png", new AddLocusHandler("Meetkundige plaats"), viewer));
-		actions.set(TANGENT, new XXXAction("Raaklijn", "/line.png", new AddRaakLijnHandler(), viewer));
-		actions.set(POLELINE, new XXXAction("Poollijn", "/line.png", new AddPoollijnHandler(), viewer));
 
 /*			case 19:
 				btn = newBtn(url + "/segment.png", new AfstandHandler("lengte"), tracker); break;
@@ -206,47 +173,24 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 				btn = newBtn(url + "/ray.png", new VectorHandler("vector"), tracker); break;
 
 	*/	
-		actions.set(DISTANCE,new XXXAction(Messages.getString("Euclides.88"), "/distance.png", new AfstandHandler(Messages.getString("Euclides.90")), viewer));
-		actions.set(AREA,new XXXAction(Messages.getString("Euclides.91"), "/area.png", new OppHandler(Messages.getString("Euclides.93")), viewer));
-		actions.set(ANGLE, new XXXAction(Messages.getString("Euclides.85"), "/angle2.png", new HoekHandler(Messages.getString("Euclides.85")), viewer));
-		actions.set(VECTOR,new XXXAction("Vector", "/arrow.png", new VectorHandler("Vector"), viewer));
-		
-		
-		actions.set(FORMULA, new XXXAction("Definitie", "/function.png", formule, viewer));
-		actions.set(TEXT, new XXXAction("Tekst", "/text.png", text, viewer));
-
-		actions.set(TRAIL, new TrailAction(Messages.getString("Euclides.44"), viewer)); //$NON-NLS-1$
-
-		actions.set(RESET, new XXXAction("Reset", "/reseticon.gif", resetter, viewer));
-
-		actions.set(CIRCLE_WITH_RADIUS, new XXXAction("Cirkel met opgegeven straal", "/fixedcircle.png", new CirkelRadiusHandler(Messages.getString("AddCirkelHandler.0")),viewer));
-		
-		
-		for(Action action: actions) {
-			vbox.add(createCheckBox(action));
+			
+		for(int i = 0; i < TOOL_SIZE; i++) {
+			Provider<Action> action = actionsMap.get(i);
+			vbox.add(createCheckBox(action.get()));
 		}
 	}
 
-	class TrailAction extends XXXAction {
-
-		public TrailAction(String name, AWTViewer viewer) {
-			super(name, "/thickness2.png", new TrailHandler(name), viewer);
-		}
-	}
-	
-
-	ToolboxPanel() {
+	private ToolboxPanel() {
 		super(new BorderLayout());
 		setName("Toolbox");
 		vbox = Box.createVerticalBox();		
 		add(new JScrollPane(vbox));
 	}
 
-	@Inject ToolboxPanel(nl.numworx.geodefiner.common.Instance instance, AWTViewer viewer, Definitions definitions) {
+	@Inject ToolboxPanel(nl.numworx.geodefiner.common.Instance instance, JToolBar toolbox, Map<Integer, Provider<Action>> actions) {
 		this();
-		selector = instance.selector;
-		this.viewer = viewer;
-		this.formule.definitions = definitions;
+		this.toolbox = toolbox;
+		this.actionsMap = actions;
 		createActions(instance);
 	}
 	
@@ -260,22 +204,9 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	public JToolBar getToolbox() {
 		return toolbox;
 	}
-
-	public void setToolbox(JToolBar toolbox, Instance instance) {
-		this.toolbox = toolbox;
-		createActions(instance);
-	}
-
-	public void setToolbox(JToolBar toolbox) {
-		this.toolbox = toolbox;
-	}
 	
 	
 	boolean hold = false;
-	SelectHandler selector = new SelectHandler();
-	ResetHandler  resetter;
-	FormuleHandler formule = new FormuleHandler("Definitie");
-	TextHandler text = new TextHandler(Messages.getString("AddLoodLijnHandler.1"));
 	
 	private Box vbox;
 	public void itemStateChanged(ItemEvent e) {
@@ -285,12 +216,12 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 
 	private void insertActions() {
 		toolbox.removeAll();
-		for(int i = 0; i < actions.size(); i++) {
+		for(int i = 0; i < TOOL_SIZE; i++) {
 			JCheckBox box = ((ToolPanel) vbox.getComponent(i)).getCheck();
 			if(box.isSelected())
 			{
 				int n = boxes.indexOf(box);
-				toolbox.add(actions.get(n));
+				toolbox.add(actionsMap.get(n).get());
 			}
 				
 		}
@@ -300,7 +231,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 
 	List<Integer> toList() {
 		ArrayList<Integer> list = new ArrayList<Integer>();
-		for(int i = 0; i < actions.size(); i++) {
+		for(int i = 0; i < TOOL_SIZE; i++) {
 			JCheckBox box = ((ToolPanel) vbox.getComponent(i)).getCheck();
 			if(box.isSelected())
 				list.add(boxes.indexOf(box));

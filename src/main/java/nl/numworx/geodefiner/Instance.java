@@ -86,20 +86,18 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 	
 	
-	void inject(WiskOpdrRandomizer r)
+	void inject(WiskOpdrRandomizer r, JToolBar toolbar)
 	{
 		random = r;
-		Components components = DaggerComponents.builder()
+		toolbox = toolbar;
+		Components.Builder builder = DaggerComponents.builder();
+		Components components = builder
 				.instance(this)
 				.randomizer(r)
+				.toolbox(toolbar)
 				.build();
 		components.inject(this);
 		
-		//viewer = new InstanceViewer(components.getNameMapper(), components.getExpression(), r);
-		//checkObjects = new CheckObjectList(viewer); // Inject
-		//checkObjects.setInstance(this);
-		//definitions = new Definitions(viewer);
-		//uiModelFactory = new UIModelFactory(viewer);
 	}
 	static {
 		Locus.BUILDER = new Builder();
@@ -119,14 +117,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	private AssessmentMode mode;
 	
-	public Instance(WiskOpdrRandomizer command) {
-		inject(command);
+	public Instance(WiskOpdrRandomizer command, JToolBar toolbar) {
+		inject(command, toolbar);
 		//content.setBackground(Color.white);
 		panel.setOpaque(false);panel.setBackground(null);
 		//content.setBorder(BorderFactory.createEtchedBorder());
 		selector.setTracker(viewer);
 		panel.add(getViewer().content, BorderLayout.CENTER);
-		toolbox = new JToolBar();
 		toolbox.setFloatable(false);
 		toolbox.setVisible(false);
 		panel.add(toolbox, BorderLayout.NORTH);
@@ -147,7 +144,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	}
 
 	public Instance() {
-		this(new WiskOpdrRandomizer(new HashMap<String, Number>()));
+		this(new WiskOpdrRandomizer(new HashMap<String, Number>()), new JToolBar());
 	}
 
 	public void addCBookEventListener(CBookEventListener listener, final String command) {
@@ -349,7 +346,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		statusLabel.setVisible(tools != null && tools.size() != 0);
 		if(statusLabel.isVisible())
 		{ 	ToolboxPanel p = toolboxPanel.get();
-			p.setToolbox(toolbox);
 			p.fromList(tools);
 		} else {
 			toolbox.removeAll();

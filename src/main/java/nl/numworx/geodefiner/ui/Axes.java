@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -23,7 +24,7 @@ public class Axes extends JPanel implements ChangeListener {
 	CellItem o,u,x,y,g;
 	Box content;
 	AWTViewer viewer;
-	public Axes(AWTViewer viewer) {
+	@Inject public Axes(AWTViewer viewer) {
 		super(new BorderLayout());
 		Box h = Box.createVerticalBox();
 		content = h;

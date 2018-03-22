@@ -27,7 +27,7 @@ import nl.numworx.geodefiner.common.NamingModel;
 import nl.numworx.geodefiner.common.math.Expression;
 import nl.numworx.geodefiner.common.math.ToC;
 
-@Module(includes= {Modules.Conversions.class, DelegateModule.class})
+@Module(includes= {Modules.Conversions.class, DelegateModule.class, ToolBoxModule.class})
 public abstract class Modules {
 	
 	@Module
@@ -74,4 +74,5 @@ public abstract class Modules {
 	Definitions definitions(InstanceViewer tracker) {
 		return new Definitions(tracker);
 	}
+	
 }

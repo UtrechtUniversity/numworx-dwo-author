@@ -17,7 +17,7 @@ import nl.numworx.geodefiner.common.math.ToC;
 public class TextHandler extends AbstractTextHandler {
 
 	
-	TextHandler(String string) {
+	public TextHandler(String string) {
 		super(string);
 	}
 
