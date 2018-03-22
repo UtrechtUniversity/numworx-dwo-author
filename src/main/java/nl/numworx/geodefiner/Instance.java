@@ -345,13 +345,17 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		JLabel statusLabel = getViewer().statusLabel;
 		statusLabel.setVisible(tools != null && tools.size() != 0);
 		if(statusLabel.isVisible())
-		{ 	ToolboxPanel p = toolboxPanel.get();
+		{ 	ToolboxPanel p = getToolboxPanel();
 			p.fromList(tools);
 		} else {
 			toolbox.removeAll();
 			toolbox.setVisible(false);
 		}		
 		statusLabel.getParent().setVisible(statusLabel.isVisible()||checkBtn.isVisible()||checkLabel.isVisible());
+	}
+
+	public ToolboxPanel getToolboxPanel() {
+		return toolboxPanel.get();
 	}	
 
 	void installToolTip() {

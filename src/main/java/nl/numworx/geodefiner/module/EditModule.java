@@ -8,6 +8,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JToolBar;
 
+import org.openjdk.tools.javadoc.internal.doclets.toolkit.util.VisibleMemberMap.GetterSetter;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
@@ -18,10 +20,11 @@ import nl.numworx.geodefiner.CommandPanel;
 import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.Instance;
 import nl.numworx.geodefiner.InstanceViewer;
+import nl.numworx.geodefiner.ToolboxPanel;
 import nl.numworx.geodefiner.WiskOpdrRandomizer;
 import nl.numworx.geodefiner.common.Randomizer;
 
-@Module(includes= {ToolBoxModule.class})
+@Module()
 public abstract class EditModule {
 
 	@Provides @Singleton static Instance instance(WiskOpdrRandomizer r, JToolBar toolbar) {
@@ -54,5 +57,9 @@ public abstract class EditModule {
 	
 	@Provides @Singleton static JToolBar toolbar() {
 		return new JToolBar();
+	}
+	
+	@Provides static ToolboxPanel toolboxPanel(Instance instance) {
+		return instance.getToolboxPanel();
 	}
 }
