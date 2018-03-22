@@ -19,7 +19,7 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 	private String[] categorieString;
 	
 	private int maxObjectives  = 20;
-	private int maxCategories = 6;
+	private int maxCategories = 10; // Sietske heeft er 7 in haar nieuwe domainmodel
 	int aantalRijen = 4;
 	int aantalKolommen = 1;
 	PlusMinKnop aantalRijenKnop;
@@ -326,7 +326,9 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 				}
 				studentModel = (StudentModel) combo.getSelectedItem();
 				aantalKolommen = studentModel.categories.length;
+				aantalKolommen = Math.min(maxCategories, aantalKolommen);
 				aantalRijen = studentModel.getMaxObjectives();
+				aantalRijen = Math.min(maxObjectives, aantalRijen);
 				makeGUI(aantalRijen, aantalKolommen);
 				aantalKolommenKnop.setEnabled(false);
 				aantalRijenKnop.setEnabled(false);
@@ -336,7 +338,7 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 					
 					for (int j = 0; j < aantalRijen; j ++) {
 						int n = studentModel.categories[i].objectives.length;
-						String s = n < j ? "" : studentModel.categories[i].objectives[j];
+						String s = n <= j ? "" : studentModel.categories[i].objectives[j];
 						objectiveTextFields[i][j].setText(s);
 						objectiveTextFields[i][j].setEnabled(false);
 					}
