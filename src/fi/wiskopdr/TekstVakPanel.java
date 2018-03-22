@@ -171,6 +171,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private boolean colorSelection = false;
 	private Color selectieColor = new Color(255, 128, 0, 128);
 	private boolean sleepbaar = false;
+	private boolean draaibaar = false;
 	private boolean sleepdoel = false;
 	private boolean sleepHandle = false;
 	private int sleepdoelMarge = 10;
@@ -422,6 +423,16 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	public boolean isIpSleepbaar()
 	{
 		return sleepbaar;
+	}
+	
+	public void setIpDraaibaar(boolean b)
+	{
+		draaibaar = b;
+	}
+
+	public boolean isIpDraaibaar()
+	{
+		return draaibaar;
 	}
 
 	public boolean hasSleepHandle()
@@ -700,6 +711,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
+		boolean draaibaar = false;
 		boolean sleepdoel = false;
 		boolean sleepHandle = false;
 		String checkExpressieString = "$f@";
@@ -845,6 +857,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			locationY = ((Integer) h.get("locationY")).intValue();
 		if (h.containsKey("interactiePanelLaunchData"))
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
+		if (h.containsKey("draaibaar"))
+			draaibaar = ((Boolean) h.get("draaibaar")).booleanValue();
 		if (h.containsKey("sleepbaar"))
 			sleepbaar = ((Boolean) h.get("sleepbaar")).booleanValue();
 		if (h.containsKey("sleepdoel"))
@@ -985,6 +999,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.selected = selected;
 		this.colorSelection = colorSelection;
 		this.sleepbaar = sleepbaar;
+		this.draaibaar = draaibaar;
 		this.sleepdoel = sleepdoel;
 		this.sleepHandle = sleepHandle;
 		this.checkExpressieString = checkExpressieString;
@@ -1740,6 +1755,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
+		boolean draaibaar = false;
 		boolean sleepdoel = false;
 		boolean sleepHandle = false;
 		String checkExpressieString = "$f@";
@@ -1811,6 +1827,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		selected = this.selected;
 		colorSelection = this.colorSelection;
 		sleepbaar = this.sleepbaar;
+		draaibaar = this.draaibaar;
 		sleepdoel = this.sleepdoel;
 		sleepHandle = this.sleepHandle;
 		checkExpressieString = this.checkExpressieString;
@@ -1941,6 +1958,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if (scoreMaxObjectives != null)
 			h.put("scoreMaxObjectives", scoreMaxObjectives);
 		h.put("sleepbaar", new Boolean(sleepbaar));
+		h.put("draaibaar", new Boolean(draaibaar));
 		h.put("sleepdoel", new Boolean(sleepdoel));
 		h.put("sleepHandle", new Boolean(sleepHandle));
 		h.put("checkExpressieString", checkExpressieString);
@@ -2447,6 +2465,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			cbookEventHandler.fire("double.ycoordinate",mapy);
 		}
 	}
+	
+	public void zetDraaing(double h)
+	{
+		hoek = hoek+(int)h;
+		repaint();
+	}
 
 	public void setStartSleep(int x, int y)
 	{
@@ -2537,6 +2561,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
+		boolean draaibaar = false;
 		boolean sleepdoel = false;
 		boolean sleepHandle = false;
 		String checkExpressieString = "$f@";
@@ -2681,6 +2706,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
 		if (h.containsKey("sleepbaar"))
 			sleepbaar = ((Boolean) h.get("sleepbaar")).booleanValue();
+		if (h.containsKey("draaibaar"))
+			draaibaar = ((Boolean) h.get("draaibaar")).booleanValue();
 		if (h.containsKey("sleepdoel"))
 			sleepdoel = ((Boolean) h.get("sleepdoel")).booleanValue();
 		if (h.containsKey("sleepHandle"))
@@ -2797,6 +2824,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.selected = selected;
 		this.colorSelection = colorSelection;
 		this.sleepbaar = sleepbaar;
+		this.draaibaar = draaibaar;
 		this.sleepdoel = sleepdoel;
 		this.sleepHandle = sleepHandle;
 		this.checkExpressieString = checkExpressieString;
@@ -3812,6 +3840,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	public void startDrag()
 	{
 		produceAction("pick");
+	}
+	
+	public void startRotate()
+	{
+		//produceAction("pick");
 	}
 
 	public void mouseMoved(MouseEvent e)

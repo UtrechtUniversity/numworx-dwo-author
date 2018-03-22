@@ -421,6 +421,7 @@ public class Text_de extends java.util.ListResourceBundle
                 {"TVEP_selectieKleur" , "Farbe"},
                 {"TVEP_selectieKleurKnopLabel" , "Selection color"},
                 {"TVEP_sleepObject" , "Objekt ziehen"},
+                {"TVEP_draaiObject" , "Rotating object"},
                 {"TVEP_sleepDoel" , "Ziel ziehen"},
                 {"TVEP_sleepHandle" , "Griff"},
                 {"TVEP_selectieSleepWaarde" , "wert    ("},

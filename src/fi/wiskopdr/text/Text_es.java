@@ -420,6 +420,7 @@ public class Text_es extends java.util.ListResourceBundle
                 {"TVEP_selectieKleur" , "Color"},
                 {"TVEP_selectieKleurKnopLabel" , "Selection color"},
                 {"TVEP_sleepObject" , "Arrastrar objeto"},
+                {"TVEP_draaiObject" , "Rotating object"},
                 {"TVEP_sleepDoel" , "Arrastrar objetivo"},
                 {"TVEP_sleepHandle" , "Manipular"},
                 {"TVEP_selectieSleepWaarde" , "valor    ("},

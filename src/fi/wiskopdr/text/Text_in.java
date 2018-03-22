@@ -378,6 +378,7 @@ public class Text_in extends java.util.ListResourceBundle
                 {"TVEP_selectieKleur" , "Warna"},
                 {"TVEP_selectieKleurKnopLabel" , "Selection color"},
                 {"TVEP_sleepObject" , "Drag obyek"},
+                {"TVEP_draaiObject" , "Rotating object"},
                 {"TVEP_sleepDoel" , "Drag target"},
                 {"TVEP_sleepHandle" , "pegangan"},
                 {"TVEP_selectieSleepWaarde" , "Nilai   ("},

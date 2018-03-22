@@ -435,6 +435,7 @@ public class Text_jp extends java.util.ListResourceBundle
                 {"TVEP_selectieKleur" , "色"},
                 {"TVEP_selectieKleurKnopLabel" , "Selection color"},
                 {"TVEP_sleepObject" , "オブジェクトをドラッグします"},
+                {"TVEP_draaiObject" , "Rotating object"},
                 {"TVEP_sleepDoel" , "ターゲットをドラッグします"},
                 {"TVEP_sleepHandle" , "操作します"},
                 {"TVEP_selectieSleepWaarde" , "値    ("},
