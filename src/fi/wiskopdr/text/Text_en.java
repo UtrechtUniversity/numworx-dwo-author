@@ -443,6 +443,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_selectieKleur" , ""},
                 {"TVEP_selectieKleurKnopLabel" , "Color"},
                 {"TVEP_sleepObject" , "Drag object"},
+                {"TVEP_draaiObject" , "Rotating object"},
                 {"TVEP_sleepDoel" , "Drag target"},
                 {"TVEP_sleepHandle" , "handle"},
                 {"TVEP_selectieSleepWaarde" , "value    ("},

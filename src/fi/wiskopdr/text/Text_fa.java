@@ -412,6 +412,7 @@ public class Text_fa extends java.util.ListResourceBundle
                 {"TVEP_selectieKleur" , "رنگ"},
                 {"TVEP_selectieKleurKnopLabel" , "Selection color"},
                 {"TVEP_sleepObject" , "شیء کشیده شده"},
+                {"TVEP_draaiObject" , "Rotating object"},
                 {"TVEP_sleepDoel" , "مقصد کشیدن"},
                 {"TVEP_sleepHandle" , "کنترل کردن"},
                 {"TVEP_selectieSleepWaarde" , "مقدار"},

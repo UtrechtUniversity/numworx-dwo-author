@@ -97,6 +97,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JCheckBox selectedCB;
 	private JCheckBox colorSelectionCB;
 	private JCheckBox sleepbaarCB;
+	private JCheckBox draaibaarCB;
 	private JCheckBox sleepdoelCB;
 	private JCheckBox sleepHandleCB;
 	private FormuleVak checkExpressieFormuleVak;
@@ -106,6 +107,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean selected;
 	private boolean colorSelection;
 	private boolean sleepbaar;
+	private boolean draaibaar;
 	private boolean sleepdoel;
 	private boolean sleepHandle;
 	private String checkExpressieString;
@@ -249,6 +251,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		pasAanB = false;
 		selectable = false;
 		sleepbaar = false;
+		draaibaar = false;
 		
 		optionsPanel = new JPanel();
 		optionsPanel.setLayout(null);
@@ -300,8 +303,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		colorSelectionCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_selectieKleur"), 150,70,20,20, selectable, interactionOptionsPanel);
 		selectedCB = maakCheckBox("", 250,70,20,20, selected, interactionOptionsPanel);
 		sleepbaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepObject"), 10,95,140,20, sleepbaar, interactionOptionsPanel);
+		draaibaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_draaiObject"), 10,145,140,20, draaibaar, interactionOptionsPanel);
+		
 		sleepdoelCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepDoel"), 10,120,160,20, sleepdoel, interactionOptionsPanel);
-		linkCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_linkObject"), 10,145,140,20, isLink, interactionOptionsPanel);
+		linkCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_linkObject"), 10,170,140,20, isLink, interactionOptionsPanel);
 		sleepHandleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepHandle"), 150,95,160,20, sleepHandle, interactionOptionsPanel);
 		zichtbaarNaNakijkenCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_zichtbaarNaNakijken"), 10,195,240,20, zichtbaarNaNakijken, interactionOptionsPanel);
 		balansVergComCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_balansVergCom"), 10,673,240,20, balansVergCom, interactionOptionsPanel);
@@ -349,6 +354,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		selectedCB.setVisible(false);
 		checkUitklapVakCB.setVisible(false);
 		sleepbaarCB.setEnabled(false);
+		draaibaarCB.setEnabled(false);
 		sleepdoelCB.setEnabled(false);
 		templateModeEditCB.setVisible(WiskOpdr.isExperimental());
 		templateModeFillCB.setVisible(WiskOpdr.isExperimental());
@@ -578,7 +584,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		linkButton = new JButton(WiskOpdr.rb.getString("TVEP_editLink"));
 		linkButton.addActionListener(this);
 		linkButton.setFont(ifFont);
-		linkButton.setBounds(150,145,120,20);
+		linkButton.setBounds(150,170,120,20);
 		linkButton.setVisible(false);
 		interactionOptionsPanel.add(linkButton);
 
@@ -828,6 +834,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
+		boolean draaibaar = false;
 		boolean sleepdoel = false;
 		boolean sleepHandle = false;
 		String checkExpressieString = "$f@";
@@ -906,6 +913,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		selected = this.selected;
 		colorSelection = this.colorSelection;
 		sleepbaar = this.sleepbaar;
+		draaibaar = this.draaibaar;
 		sleepdoel = this.sleepdoel;
 		sleepHandle = this.sleepHandle;
 		checkExpressieString = checkExpressieFormuleVak.toString();
@@ -998,6 +1006,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(hoogtes!=null)h.put("hoogtes", hoogtes);
 		
 		h.put("sleepbaar", new Boolean(sleepbaar));
+		h.put("draaibaar", new Boolean(draaibaar));
 		h.put("sleepdoel", new Boolean(sleepdoel));
 		h.put("sleepHandle", new Boolean(sleepHandle));
 		h.put("checkExpressieString", checkExpressieString);
@@ -1142,6 +1151,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean selected = false;
 		boolean colorSelection = false;
 		boolean sleepbaar = false;
+		boolean draaibaar = false;
 		boolean sleepdoel = false;
 		boolean sleepHandle = false;
 		String checkExpressieString = "$f@";
@@ -1266,6 +1276,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(h.containsKey("anderFont")) anderFont = ((Boolean)h.get("anderFont")).booleanValue();
 		if(h.containsKey("buttonOptie")) buttonOptie = ((Boolean)h.get("buttonOptie")).booleanValue();
 		if(h.containsKey("sleepbaar")) sleepbaar = ((Boolean)h.get("sleepbaar")).booleanValue();
+		if(h.containsKey("draaibaar")) draaibaar = ((Boolean)h.get("draaibaar")).booleanValue();
 		if(h.containsKey("sleepdoel")) sleepdoel = ((Boolean)h.get("sleepdoel")).booleanValue();
 		if(h.containsKey("sleepHandle")) sleepHandle = ((Boolean)h.get("sleepHandle")).booleanValue();
 		if(h.containsKey("checkExpressieString")) checkExpressieString = (String)h.get("checkExpressieString");
@@ -1332,6 +1343,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.selected = selected;
 		this.colorSelection = colorSelection;
 		this.sleepbaar = sleepbaar;
+		this.draaibaar = draaibaar;
 		this.sleepdoel = sleepdoel;
 		this.sleepHandle = sleepHandle;
 		this.ipId = ipId;
@@ -1393,6 +1405,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		colorSelectionCB.setSelected(colorSelection);
 		selectieColorButton.setVisible(selectable);
 		sleepbaarCB.setSelected(sleepbaar);
+		draaibaarCB.setSelected(draaibaar);
 		sleepdoelCB.setSelected(sleepdoel);
 		sleepHandleCB.setSelected(sleepHandle);
 		zichtbaarNaNakijkenCB.setSelected(zichtbaarNaNakijken);
@@ -1465,6 +1478,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		checkExpressieFormuleVak.vulVak(checkExpressieString);
 		//checkExpressieFormuleVak.setEnabled(selectable);
 		sleepbaarCB.setEnabled(zwevend);
+		draaibaarCB.setEnabled(zwevend);
 		sleepdoelCB.setEnabled(zwevend);
 		sleepHandleCB.setVisible(sleepbaar);
 		visibleCB.setSelected(visible);
@@ -1778,11 +1792,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			locationXTF.setVisible(zwevend);
 			locationYTF.setVisible(zwevend);
 			sleepbaarCB.setEnabled(zwevend);
+			draaibaarCB.setEnabled(zwevend);
 			sleepdoelCB.setEnabled(zwevend);
 			if(!zwevend) 
 			{	sleepbaarCB.setSelected(false);
+				draaibaarCB.setSelected(false);
 				sleepdoelCB.setSelected(false);
 				sleepbaar = false;
+				draaibaar = false;
 				sleepdoel = false;
 			}
 			
@@ -1845,6 +1862,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			tekstVakPanel.setEditState(getEditState());
 			if(!zwevend || selectable) 
 			{	sleepbaarCB.setSelected(false);
+				draaibaarCB.setSelected(false);
 				sleepdoelCB.setSelected(false);
 				sleepbaar = false;
 				sleepdoel = false;
@@ -1871,6 +1889,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				selectable = false; 
 				sleepdoel = false; 
 			}
+			tekstVakPanel.setEditState(getEditState());
+			repaint();
+		}
+		if(e.getSource().equals(draaibaarCB))
+		{	draaibaar = draaibaarCB.isSelected();
 			tekstVakPanel.setEditState(getEditState());
 			repaint();
 		}
@@ -1942,8 +1965,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			if(sleepdoel) 
 			{	selectableCB.setSelected(false);
 				sleepbaarCB.setSelected(false);
+				draaibaarCB.setSelected(false);
 				selectable = false; 
 				sleepbaar = false;
+				draaibaar = false;
 			}
 			tekstVakPanel.setEditState(getEditState());
 			repaint();

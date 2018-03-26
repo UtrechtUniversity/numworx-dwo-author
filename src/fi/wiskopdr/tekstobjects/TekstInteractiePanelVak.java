@@ -108,6 +108,8 @@ import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListener, InteractiePanelContainerIF, MouseListener, MouseMotionListener, KeyListener
 {
 	
+	private static final Logger LOG = Logger.getLogger(TekstInteractiePanelVak.class.getName());
+
 	public static class Connector extends AbstractMap<String, String> implements Entry<String,String>, Serializable, Comparable<Connector> {
 
 		/**
@@ -259,6 +261,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private int reviewScoreCorrectie;
 	
 	private boolean sleepModus;
+	private boolean draaiModus;
 	private boolean resizeModus;
 	
 	private boolean eersteKeer = true;
@@ -267,7 +270,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private TekstTeken anchor;
 	
 	private int sleepX, sleepY, startX, startY;
-	
+	private double startHoek;
 	private boolean studentEditor = false;
 	
 	public static TekstInteractiePanelVak potentialSource, potentialDest;
@@ -1907,7 +1910,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 					interactiePanel.zetOpdracht(interactiePanelLaunchState,randomVars,randomValues);
 					interactiePanel.start();
 				} catch (Exception e) {
-					Logger.getLogger(getClass().getName()).log(Level.WARNING, "zetOpdracht " + interactiePanel, e);
+					LOG.log(Level.WARNING, "zetOpdracht " + interactiePanel, e);
 				}
         	}
         }
@@ -1919,7 +1922,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         setStudentEditor(studentEditor);
         
         
-        if(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isIpSleepbaar())
+        if(interactiePanel instanceof TekstVakPanel && (((TekstVakPanel)interactiePanel).isIpSleepbaar() || ((TekstVakPanel)interactiePanel).isIpDraaibaar()))
         {
 	        if(sleepPanel==null) 
 	        {	sleepPanel = new JPanel();
@@ -1985,7 +1988,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    	return o.getInteractiePanel();
 		}
 		catch(Exception e)
-		{	//System.out.println("kijk"+e.toString());
+		{	LOG.log(Level.SEVERE, "maakInteractiePanel " + name, e);
 			return null;
 		}
 	}
@@ -2433,21 +2436,43 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	}
 	
 	public void mouseDragged(MouseEvent e)
-	{	if(sleepModus)
-		{	int dx = e.getX() - startX;
-			int dy = e.getY() - startY;
-			int xNieuw = getLocation().x + dx;
-			int yNieuw = getLocation().y + dy;
-			if(xNieuw + getSize().width > tekstVak.getSize().width) xNieuw = tekstVak.getSize().width - getSize().width;
-			if(yNieuw + getSize().height > tekstVak.getSize().height) yNieuw = tekstVak.getSize().height - getSize().height;
-			if(xNieuw < 0) xNieuw = 0;
-			if(yNieuw < 0) yNieuw = 0;
-			setLocation(xNieuw, yNieuw);
-			((TekstVakPanel)interactiePanel).zetLocatie(getLocation().x, getLocation().y);
-			repaint();
-			
-			WiskOpdr.setLaunchDataChanged();
-		}
+	{	if(draaiModus || sleepModus)
+			if(sleepModus)
+			{	int dx = e.getX() - startX;
+				int dy = e.getY() - startY;
+				int xNieuw = getLocation().x + dx;
+				int yNieuw = getLocation().y + dy;
+				if(!draaiModus) {
+					if(xNieuw + getSize().width > tekstVak.getSize().width) xNieuw = tekstVak.getSize().width - getSize().width;
+					if(yNieuw + getSize().height > tekstVak.getSize().height) yNieuw = tekstVak.getSize().height - getSize().height;
+				}
+				if(xNieuw < 0) xNieuw = 0;
+				if(yNieuw < 0) yNieuw = 0;
+				setLocation(xNieuw, yNieuw);
+				((TekstVakPanel)interactiePanel).zetLocatie(getLocation().x, getLocation().y);
+				repaint();
+				
+				WiskOpdr.setLaunchDataChanged();
+			}
+			if(draaiModus)
+			{	int dx = e.getX() - startX;
+				int dy = e.getY() - startY;
+	//			int xNieuw = getLocation().x + dx;
+	//			int yNieuw = getLocation().y + dy;
+	//			if(xNieuw + getSize().width > tekstVak.getSize().width) xNieuw = tekstVak.getSize().width - getSize().width;
+	//			if(yNieuw + getSize().height > tekstVak.getSize().height) yNieuw = tekstVak.getSize().height - getSize().height;
+	//			if(xNieuw < 0) xNieuw = 0;
+	//			if(yNieuw < 0) yNieuw = 0;
+	//			setLocation(xNieuw, yNieuw);
+				int mx = getLocation().x + getWidth()/2;
+				int my = getLocation().y + getHeight()/2;
+				double hoek = Math.atan2(e.getY()-getHeight()/2, e.getX()-getWidth()/2)-startHoek;
+				((TekstVakPanel)interactiePanel).zetDraaing(hoek*180/Math.PI);
+				repaint();
+				startHoek = Math.atan2(e.getY()-getHeight()/2, e.getX()-getWidth()/2);
+				
+				WiskOpdr.setLaunchDataChanged();
+			}
 		else if(resizeModus)
 		{	int dx = e.getX() - startX;
 			int dy = e.getY() - startY;
@@ -2577,17 +2602,37 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 					
 				}
 			}
-			else  if(e.getSource()==sleepPanel &&((TekstVakPanel)interactiePanel).isIpSleepbaar() &&((TekstVakPanel)interactiePanel).isIpSleepbaar()&&  !getBasisTekstVak().crossWidgetViewActief())
-			{	//if(getParent()instanceof TekstVak)
-				//	((TekstVak)getParent()).add(this,0);
-				if(getParent()instanceof TekstVak)
-					getParent().setComponentZOrder(this, 0);
-				
-				((TekstVakPanel)interactiePanel).startDrag();
-				sleepModus = true;
-				startX = e.getX();
-				startY = e.getY();
-				((TekstVakPanel)interactiePanel).requestFocus();
+			else if(((TekstVakPanel)interactiePanel).isIpSleepbaar() && ((TekstVakPanel)interactiePanel).isIpDraaibaar())
+			{
+				if(e.getSource()==sleepPanel &&((TekstVakPanel)interactiePanel).isIpSleepbaar() &&  !getBasisTekstVak().crossWidgetViewActief())
+				{	//if(getParent()instanceof TekstVak)
+					//	((TekstVak)getParent()).add(this,0);
+					if(getParent()instanceof TekstVak)
+						getParent().setComponentZOrder(this, 0);
+					double d = Math.sqrt((e.getX()-getWidth()/2)*(e.getX()-getWidth()/2)+(e.getY()-getHeight()/2)*(e.getY()-getHeight()/2));
+					if(!((TekstVakPanel)interactiePanel).isIpDraaibaar() ||  d<30) {
+						((TekstVakPanel)interactiePanel).startDrag();
+						sleepModus = true;
+						startX = e.getX();
+						startY = e.getY();
+						((TekstVakPanel)interactiePanel).requestFocus();
+					}
+				}
+				if(e.getSource()==sleepPanel &&((TekstVakPanel)interactiePanel).isIpDraaibaar() &&  !getBasisTekstVak().crossWidgetViewActief())
+				{	//if(getParent()instanceof TekstVak)
+					//	((TekstVak)getParent()).add(this,0);
+					if(getParent()instanceof TekstVak)
+						getParent().setComponentZOrder(this, 0);
+					double d = Math.sqrt((e.getX()-getWidth()/2)*(e.getX()-getWidth()/2)+(e.getY()-getHeight()/2)*(e.getY()-getHeight()/2));
+					if(!((TekstVakPanel)interactiePanel).isIpSleepbaar() ||  d>30) {
+						((TekstVakPanel)interactiePanel).startRotate();
+						draaiModus = true;
+						startHoek = Math.atan2(e.getY()-getHeight()/2, e.getX()-getWidth()/2);
+						//startX = e.getX();
+						//startY = e.getY();
+						((TekstVakPanel)interactiePanel).requestFocus();
+					}
+				}
 			}
 			else  if(e.getSource()==afdekPanel)
 			{
@@ -2685,9 +2730,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 		}
 		// inhoud die op 'volle breedte' is ingesteld wordt aangepast
-		if(editMode && interactiePanel instanceof TekstVakPanel)setEditState(getEditState());
+		if(editMode && interactiePanel instanceof TekstVakPanel)
+			setEditState(getEditState());
 		
 		sleepModus = false;
+		draaiModus = false;
+		
 		if(anchor!=null)
 		{	anchor.setChar('\u25cb');
 			anchor.repaint();

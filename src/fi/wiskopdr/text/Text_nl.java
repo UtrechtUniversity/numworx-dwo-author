@@ -460,6 +460,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_selectieKleur" , ""},
                 {"TVEP_selectieKleurKnopLabel" , "Kleur"},
                 {"TVEP_sleepObject" , "Sleepobject"},
+                {"TVEP_draaiObject" , "Draaiobject"},
                 {"TVEP_sleepDoel" , "Sleepdoel"},
                 {"TVEP_sleepHandle" , "handvat"},
                 {"TVEP_selectieSleepWaarde" , "waarde   ("},

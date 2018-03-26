@@ -422,6 +422,7 @@ public class Text_gr extends java.util.ListResourceBundle
                 {"TVEP_selectieKleur" , "Χρώμα"},
                 {"TVEP_selectieKleurKnopLabel" , "Selection color"},
                 {"TVEP_sleepObject" , "Σύρσιμο αντικειμένου"},
+                {"TVEP_draaiObject" , "Rotating object"},
                 {"TVEP_sleepDoel" , "Σύρσιμο στόχου"},
                 {"TVEP_sleepHandle" , "χειρισμός"},
                 {"TVEP_selectieSleepWaarde" , "τιμή    ("},
