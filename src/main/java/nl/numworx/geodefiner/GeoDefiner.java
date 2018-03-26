@@ -32,7 +32,8 @@ public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet
 	static {
 //		Popcorn.map = new SwingSymbols();
 		isExperimental = WiskOpdr.isExperimental();
-		Numbers.setFactory(IntegerFactory.INSTANCE);
+//		Numbers.setFactory(IntegerFactory.INSTANCE);
+		Numbers.setFactory(new fi.euclides.bigmath.ExactImpl());
 	}
 		
 	public static void main(String[] args) {
