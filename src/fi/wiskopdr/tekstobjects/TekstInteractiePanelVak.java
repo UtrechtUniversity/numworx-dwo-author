@@ -108,6 +108,8 @@ import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListener, InteractiePanelContainerIF, MouseListener, MouseMotionListener, KeyListener
 {
 	
+	private static final Logger LOG = Logger.getLogger(TekstInteractiePanelVak.class.getName());
+
 	public static class Connector extends AbstractMap<String, String> implements Entry<String,String>, Serializable, Comparable<Connector> {
 
 		/**
@@ -1908,7 +1910,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 					interactiePanel.zetOpdracht(interactiePanelLaunchState,randomVars,randomValues);
 					interactiePanel.start();
 				} catch (Exception e) {
-					Logger.getLogger(getClass().getName()).log(Level.WARNING, "zetOpdracht " + interactiePanel, e);
+					LOG.log(Level.WARNING, "zetOpdracht " + interactiePanel, e);
 				}
         	}
         }
@@ -1986,7 +1988,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    	return o.getInteractiePanel();
 		}
 		catch(Exception e)
-		{	//System.out.println("kijk"+e.toString());
+		{	LOG.log(Level.SEVERE, "maakInteractiePanel " + name, e);
 			return null;
 		}
 	}
