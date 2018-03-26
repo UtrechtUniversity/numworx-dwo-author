@@ -395,6 +395,8 @@ public class Model extends Observable implements Observer, NameMapper {
 				return (Lijn) add(new CarryingLine((Ray) first), lijnen);
 			}
 		}
+		
+		
 		return twoPuntBuilder(new PuntenLijn(), true);
 	}
 	
@@ -921,6 +923,21 @@ public class Model extends Observable implements Observer, NameMapper {
 	}
 
 	public Lijn buildLijn(Destroyable[] depend) {
+		if(depend.length == 1) {
+			if(depend[0]instanceof Segment) {
+				return (Lijn) add(new CarryingLine((Segment) depend[0]),lijnen);
+			}
+			if(depend[0]instanceof Ray) {
+				return (Lijn) add(new CarryingLine((Ray) depend[0]),lijnen);
+			}
+		}
+
+		if(depend.length == 2) {
+			if(depend[1] instanceof Lijn && depend[0] instanceof Punt) {
+				return (Lijn) add(new ParallelLijn((Lijn)depend[1], (Punt) depend[0]),lijnen);
+			}
+		}
+		
 		return twoPuntBuilder(new PuntenLijn(), true, depend);
 	}
 	
