@@ -4,18 +4,23 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import nl.numworx.geodefiner.common.math.EqualsVisitor;
+import nl.numworx.geodefiner.common.math.Expression;
+import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.tue.win.riaca.openmath.lang.OMString;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.NameMapper;
+import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Model;
 import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.openmath.Expression;
 import fi.euclides.openmath.LocusModelF;
 import fi.euclides.proof.LabelTester;
 import fi.euclides.util.DefaultAdapter;
@@ -23,6 +28,7 @@ import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
 public class CheckObject extends Observable implements Observer, Comparable<CheckObject> {
+	final static private Logger LOG = Logger.getLogger(CheckObject.class.getName());
 	int maxScore;
 	int present = Label.UNKNOWN;
 	private Destroyable item, cache;
@@ -93,7 +99,8 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 			String string = random.randomize(getFormule());
 			FormuleParser parser = new FormuleParser(string.substring(2));
 			OMObject obj = parser.expr();
-			cache = interpreter.interpret(obj, new Label(), mapper);
+			
+			cache = interpret(interpreter, mapper, obj);
 			depend = LocusModelF.varsOf(obj, mapper);
 			for(Destroyable d: depend) d.addObserver(this);
 			if(!isTest(cache))
@@ -102,9 +109,22 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 				cache.addObserver(this);
 			return cache;
 		} catch(Exception e) {
-			e.printStackTrace();
+			LOG.log(Level.WARNING, "createObject " + getFormule(), e);
 			return null;
 		}
+	}
+
+	protected Destroyable interpret(Expression interpreter, NameMapper mapper, OMObject obj) {
+		if(obj instanceof OMApplication) {
+			OMApplication oma = (OMApplication)obj;
+			if (Definitions.POINT.isSame( oma.firstElement()) && oma.getLength() == 2 && oma.getElementAt(1) instanceof OMString) {
+				String str = ((OMString) oma.getElementAt(1)).getString();
+				Tracker tracker = interpreter.CONST.getTracker();
+				return new NamedPoint(str, tracker);
+			}
+		}
+		
+		return interpreter.interpret(obj, new Label(), mapper);
 	}
 	
 	public static boolean isTest(Destroyable c) {
@@ -137,7 +157,10 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 		else
 		{	present = similar(item);
 			if(present > 0)
-			{
+			{	
+				if(cache instanceof NamedPoint) {
+					item = ((NamedPoint) cache).getP();
+				}
 				item.addObserver(this);
 				this.item = item;
 			}

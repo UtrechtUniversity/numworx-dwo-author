@@ -18,6 +18,7 @@ import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
+import nl.numworx.geodefiner.common.NamedPoint;
 import nl.numworx.geodefiner.common.Volgpunt;
 
 public class EqualsVisitor implements Visitor {
@@ -63,6 +64,9 @@ public class EqualsVisitor implements Visitor {
 
 	@Override
 	public void visitPunt(Punt p) {
+		if (b instanceof NamedPoint) {
+			test = ((NamedPoint) b).similar(p) ? Numbers.ZERO : Numbers.ONE;
+		} else
 		if (b instanceof Punt) {
 			Punt pb = (Punt) b;
 			test = puntenTest(p, pb);
@@ -127,6 +131,11 @@ public class EqualsVisitor implements Visitor {
 
 	@Override
 	public void visitLabel(Label label) {
+		if(b instanceof NamedPoint) {
+			test = ((NamedPoint) b).similar(label) ? Numbers.ZERO : Numbers.ONE;
+		} else
+		
+		
 		if(b instanceof Label) {
 			Label lb = (Label)b;
 // text("A",a) equals text("b",b) if "a" == "b" and a near b
