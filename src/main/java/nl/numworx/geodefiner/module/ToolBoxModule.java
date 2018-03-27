@@ -176,7 +176,7 @@ public abstract class ToolBoxModule implements Tools {
 	@Provides @Singleton @IntoMap @IntKey(TEXT) static 
 	Action text(AWTViewer viewer) {
 		TextHandler text = new TextHandler(Messages.getString("AddLoodLijnHandler.1"));
-		return new XXXAction("Tekst", "/text.png", text, viewer);
+		return new XXXAction("Tekst", "/showname.png", text, viewer);
 	}
 	@Provides @Singleton @IntoMap @IntKey(TRAIL) static 
 	Action trail(AWTViewer viewer) {
