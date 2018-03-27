@@ -209,7 +209,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public void init() {
 		checkBtn.setVisible(false);checkBtn.invalidate();
 		checkLabel.setVisible(false);checkLabel.invalidate();
-		toolbox.setVisible(false);
+		toolbox.setVisible(false); started = false;
 		panel.doLayout();
 		checkObjects.destroyAll();
 		InstanceViewer view = getViewer();
