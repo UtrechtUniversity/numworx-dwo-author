@@ -934,7 +934,7 @@ public class Model extends Observable implements Observer, NameMapper {
 
 		if(depend.length == 2) {
 			if(depend[1] instanceof Lijn && depend[0] instanceof Punt) {
-				return (Lijn) add(new ParallelLijn((Lijn)depend[1], (Punt) depend[0]),lijnen);
+				return (Lijn) add(new ParallelLijn((Lijn)depend[1], (Punt)depend[0]),lijnen);
 			}
 		}
 		
