@@ -804,7 +804,11 @@ public class FrequencyTableView extends JPanel implements Observer
 			// third column
 			if (this.model.isShowPercentage())
 			{
-				double d = freq * 100 / (double) sum;
+				double d;
+				if (sum == 0) // bij lege split
+					d = 0;
+				else
+					d = freq * 100 / (double) sum;
 				//d = Math.round(d * 100) / (double) 100;
 				// round to one decimal
 				int decimals = 1;
@@ -837,7 +841,11 @@ public class FrequencyTableView extends JPanel implements Observer
 			// fifth column
 	    	if (this.model.isShowPercentage() && this.model.isShowCumulative())
 	    	{
-				double d = (double) cumulative * 100 / (double) sum;
+				double d;
+				if (sum == 0) // bij lege split
+					d = 0;
+				else
+					d = (double) cumulative * 100 / (double) sum;
 				//d = Math.round(d * 100) / (double) 100;
 				// round to one decimal
 				int decimals = 1;
