@@ -1,4 +1,4 @@
-﻿package fi.wiskopdr.text;
+package fi.wiskopdr.text;
 
 
 public class Text_fr extends java.util.ListResourceBundle

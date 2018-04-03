@@ -1,42 +1,12 @@
--injars ../output/classes
--outjars ../output/jar/wiskopdr.jar
--injars ../../GraphTool/target/classes
--outjars ../output/jar/graphtool.jar
--injars ../../BalansFruitApplet/target/classes
--outjars ../output/jar/balansfruitapplet.jar
-#-injars  ../../geodefiner/target/geodefiner.jar
--injars ../lib/geodefiner.jar
--outjars ../output/jar/geodefiner.jar
-
-
--libraryjars <java.home>/lib/rt.jar
--libraryjars <java.home>/lib/ext/jfxrt.jar
--libraryjars <java.home>/lib/jce.jar
--libraryjars ../lib/junit.jar
--libraryjars ../lib/mayscript.jar
--libraryjars ../lib/AppleJavaExtensions-1.4.jar
--libraryjars ../lib/classes
--libraryjars ../output/jar/geogebra.jar
--libraryjars ../output/jar/geogebra3.jar
--libraryjars ../output/jar/geogebra3_cas.jar
--libraryjars ../output/jar/geogebra3_export.jar
--libraryjars ../output/jar/geogebra3_gui.jar
--libraryjars ../output/jar/geogebra3_main.jar
--libraryjars ../output/jar/geogebra3_properties.jar
--libraryjars ../output/jar/geogebra_algos.jar
--libraryjars ../output/jar/geogebra_cas.jar
--libraryjars ../output/jar/geogebra_export.jar
--libraryjars ../output/jar/geogebra_gui.jar
--libraryjars ../output/jar/geogebra_javascript.jar
--libraryjars ../output/jar/geogebra_main.jar
--libraryjars ../output/jar/geogebra_properties.jar
--libraryjars ../output/jar/jlatexmath.jar
--libraryjars ../output/jar/jlm_cyrillic.jar
--libraryjars ../output/jar/jlm_greek.jar
--libraryjars ../output/jar/sardine.jar
+-injars ../target/dependency/graphtool.jar
+-outjars ../target/graphtool.jar
+-injars ../target/dependency/balansfruitapplet.jar
+-outjars ../target/balansfruitapplet.jar
+-injars ../target/dependency/geodefiner.jar
+-outjars ../target/geodefiner.jar
 
 -target 1.8
--printmapping mapping.txt
+-printmapping target/mapping.txt
 -optimizations !class/merging/*
 -forceprocessing
 -dontwarn

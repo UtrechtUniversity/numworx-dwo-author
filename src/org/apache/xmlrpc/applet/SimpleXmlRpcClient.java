@@ -60,6 +60,8 @@ import uk.co.wilson.xml.MinML;
 import org.xml.sax.*;
 import java.io.*;
 import java.util.*;
+import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
 import java.text.*;
 import java.net.*;
 
@@ -198,8 +200,8 @@ class XmlRpcSupport extends HandlerBase {
 	    writer.endElement ("dateTime.iso8601");
 	} else if (what instanceof byte[]) {
 	    writer.startElement ("base64");
-	   	hplb.misc.BASE64Encoder encoder = new hplb.misc.BASE64Encoder (false);
-	    writer.write (encoder.encodeBuffer ((byte[]) what));
+	   	Encoder encoder = Base64.getEncoder();
+	    writer.write (encoder.encodeToString((byte[]) what));
 	    writer.endElement ("base64");
 	} else if (what instanceof Vector) {
 	    writer.startElement ("array");
@@ -558,9 +560,9 @@ class XmlRpcSupport extends HandlerBase {
                     }
                     break;
                 case BASE64:
-                    hplb.misc.BASE64Decoder decoder = new hplb.misc.BASE64Decoder ();
+                    Decoder decoder = Base64.getDecoder();
                     try {
-                        value = decoder.decodeBuffer (cdata);
+                        value = decoder.decode(cdata);
                     } catch (Exception x) {
                         throw new RuntimeException ("Error decoding base64 tag: "+x.getMessage ());
                     }
