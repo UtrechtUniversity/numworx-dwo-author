@@ -36,6 +36,7 @@ public class TextModel extends ColorModel<Label> {
 
 	public void install() {
 		install(item);
+		super.install();
 	}
 	
 	public void install(Label item) {
