@@ -287,7 +287,7 @@ public class Expression extends fi.euclides.openmath.Expression {
 			copy(oma, mapper, depend);
 			if(depend[1] instanceof Punt && depend[0] instanceof Label) {
 				Label t = (Label) depend[0];
-				t.setP(new Volgpunt((Punt) depend[1]));
+				t.setP(/*new Volgpunt*/((Punt) depend[1])); // XXX Geen Volgpunt, want je kan niet met de hand dx/dy zetten, dus ook niet via ModelUI.install
 				depend[1].addObserver(new DestroyDependency(t));
 				if( "".equals(t.getSubKey())) {
 					String plain = t.getString();
