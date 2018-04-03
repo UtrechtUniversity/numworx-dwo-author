@@ -444,28 +444,12 @@
 			<groupId>nl.numworx.geodefiner</groupId>
 			<artifactId>geodefiner</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>nl.numworx.geodefiner</groupId>
-					<artifactId>geodefiner-common</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>fi.euclides</groupId>
-					<artifactId>euclides-util</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>fi.euclides</groupId>
-					<artifactId>euclides-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>fi.euclides</groupId>
-					<artifactId>euclides-expr</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>nl.tue.win.riaca.openmath</groupId>
-					<artifactId>om-lib</artifactId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>nl.uu.fi.dwo</groupId>
+			<artifactId>DWOJClient</artifactId>
+			<version>2.2.0</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
