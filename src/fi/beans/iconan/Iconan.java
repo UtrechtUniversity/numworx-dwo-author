@@ -48,15 +48,14 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.basic.BasicTreeUI.SelectionModelPropertyChangeHandler;
-
 import fi.beans.iconan.text.Text;
 
+@SuppressWarnings("serial")
 public class Iconan extends JPanel implements ActionListener, FocusListener, ListSelectionListener {
 
 	private Component component;
-	private Hashtable namemap;
-	private Hashtable imagemap;
+	private Hashtable<String,Object> namemap;
+	private Hashtable<String,Image> imagemap;
 	private ActionListener al;
 	private JButton newBtn, okBtn, cancelBtn, rmBtn, urlBtn, chngBtn;
 	private JTextField widthField, heightField;
@@ -116,9 +115,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 				g.drawImage(image, x, y, getIconWidth(), getIconHeight(), list);
 		}
 
-		public Component getListCellRendererComponent(JList list, Object value,
+		public Component getListCellRendererComponent(JList<String> list, String value,
 				int index, boolean isSelected, boolean cellHasFocus) {
-			String item = (String)value;
+			String item = value;
 			image = getImage(item);
 			Object u = namemap.get(item + "/u");
 			//if(u == null)
@@ -326,9 +325,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 	private void rebuildList() {
 		list.removeAll();
-		Enumeration keys = namemap.keys();
+		Enumeration<String> keys = namemap.keys();
 		while (keys.hasMoreElements()) {
-			String string = (String) keys.nextElement();
+			String string = keys.nextElement();
 			if(string.indexOf('/')<0)
 				add(string);
 		}
@@ -358,7 +357,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	 */
 	private void remove(String item) {
 		try {
-			DefaultListModel model = dataModel;
+			DefaultListModel<String> model = dataModel;
 			model.removeElement(item);
 		} catch (IllegalArgumentException e) {
 		}
@@ -366,9 +365,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	
 	static final private byte[] EMPTY = new byte[0];
 	public void removeAllData() {
-		Enumeration iter = namemap.keys();
+		Enumeration<String> iter = namemap.keys();
 		while (iter.hasMoreElements()) {
-			String key = (String) iter.nextElement();
+			String key = iter.nextElement();
 			if(key.indexOf('/')<0)
 				namemap.put(key, EMPTY);
 		}
@@ -379,7 +378,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		byte[] data = (byte[]) namemap.get(name);
 		if(data == null)
 			return null;
-		Image result = (Image) imagemap.get(name);
+		Image result = imagemap.get(name);
 		if(result != null)
 			return result;
 		if(data.length==0 && namemap.containsKey(name + "/u"))
@@ -610,6 +609,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	 * @param component
 	 * @param namemap
 	 */
+	@SuppressWarnings("rawtypes")
 	public Iconan(Applet component, Hashtable namemap) {
 		this(component, component, namemap);
 	}
@@ -617,6 +617,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	/**
 	 * @deprecated 
 	 */
+	@SuppressWarnings("rawtypes")
 	public Iconan(Component component, Hashtable namemap) {
 		this(null, component, namemap);
 	}
@@ -628,12 +629,13 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	 * @param component
 	 * @param namemap
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Iconan(Applet Applet, Component component, Hashtable namemap) {	
-		this.applet = applet;
+		this.applet = Applet;
 		this.component = component;
 		this.namemap = namemap;
 		setLocale(component.getLocale());
-		imagemap = new Hashtable();
+		imagemap = new Hashtable<>();
 		initialize();
 		reLocale();
 	
@@ -648,8 +650,8 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	
 	public Iconan(Applet applet) {
 		this.applet = applet;
-		namemap = new Hashtable();
-		imagemap = new Hashtable();
+		namemap = new Hashtable<>();
+		imagemap = new Hashtable<String, Image>();
 		initialize();
 	}
 
@@ -809,7 +811,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 		newPnl.setBorder(BorderFactory.createTitledBorder(rb.getString(Text.NIEUW)));
 		editPnl.setBorder(BorderFactory.createTitledBorder(rb.getString(Text.EDIT)));
 		cancelBtn.setText(rb.getString(Text.ANNULEER));
-		title = rb.getString(Text.TITEL);
+		//title = rb.getString(Text.TITEL);
 		rmBtn.setText(rb.getString(Text.REMOVE));
 		chngBtn.setText(rb.getString(Text.WIJZIG));
 	}
@@ -817,6 +819,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	/**
 	 * @return the namemap
 	 */
+	@SuppressWarnings("rawtypes")
 	public Hashtable getNamemap() {
 		return namemap;
 	}
@@ -824,6 +827,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	/**
 	 * @param namemap the namemap to set
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void setNamemap(Hashtable namemap) {
 		this.namemap = namemap;
 		imagemap.clear();
@@ -831,7 +835,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	}
 	
 	private JFileChooser fd;
-	private String title = Text.TITEL;
+	//private String title = Text.TITEL;
 	/**
 	 * Open file dialog. 
 	 * @return
@@ -952,7 +956,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 			return applet.getDocumentBase();
 		else
 			try {
-				return new File(".").toURL();
+				return new File(".").toURI().toURL();
 			} catch (MalformedURLException e) {
 				return null;
 			}
@@ -969,15 +973,15 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 		return applet = (Applet)parent;
 	}
 
-	private JList buildList() {
-		dataModel = new DefaultListModel();
-		list = new JList(dataModel);
+	private JList<String> buildList() {
+		dataModel = new DefaultListModel<String>();
+		list = new JList<String>(dataModel);
 		list.addListSelectionListener(this);
 		list.setCellRenderer(new MyListRenderer());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		Enumeration keys = namemap.keys();
+		Enumeration<String> keys = namemap.keys();
 		while (keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
+			String key = keys.nextElement();
 			if(key.indexOf('/')<0)
 				add(key);
 		}
@@ -985,22 +989,22 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	}
 	
 	private Image preview; String previewName;
-	private JList list;
+	private JList<String> list;
 	private JPanel newPnl, editPnl;
-	private DefaultListModel dataModel;
+	private DefaultListModel<String> dataModel;
 	
 	
 	public static void main(String[] args) { 
 		JFrame f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setLocale(new Locale("en"));
-		Hashtable hashtable = new Hashtable();
+		Hashtable<Object, Object> hashtable = new Hashtable<Object, Object>();
 		Iconan i = new Iconan(f, hashtable);
 		f.getContentPane().setLayout(new BorderLayout());
 		f.getContentPane().add(i);
 		f.setSize(100,100);
 		f.pack();
-		f.show();
+		f.setVisible(true);
 	}
 
 	/**
@@ -1031,7 +1035,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 
 	public void select(String imagename) {
 		rebuildList();
-		ListModel model = list.getModel();
+		ListModel<String> model = list.getModel();
 		for(int i = 0; i < model.getSize(); i++)
 		{
 			if(model.getElementAt(i).equals(imagename))
