@@ -189,7 +189,18 @@ public class SimpleSwingBrowser extends JFrame {
             }
         });
     }
-
+    
+    public void loadContent(final String content, final String type) {
+    		Platform.runLater(() -> {
+    			engine.loadContent(content, type);
+    		});
+    }
+ 
+    public void loadContent(String content) {
+    		loadContent(content, "text/html");
+    }
+    
+    
     private static String toURL(String str) {
         try {
             return new URL(str).toExternalForm();
