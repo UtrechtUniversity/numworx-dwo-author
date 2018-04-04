@@ -62,13 +62,13 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<addClasspath>true</addClasspath>
+							<addClasspath>false</addClasspath>
 							<classpathLayoutType>custom</classpathLayoutType>
 							<customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
 							<mainClass>fi.wiskopdr.WiskOpdr</mainClass>
 						</manifest>
 						<manifestEntries>
-							<Class-Path>geogebra3.jar geogebra3_main.jar geogebra3_gui.jar geogebra3_cas.jar geogebra3_properties.jar geogebra3_export.jar	verknippen.jar mozarch.jar tegels.jar geomalgebra.jar stroomdiagrammen.jar statistiek.jar doorziendwo.jar flowdiagrams.jar</Class-Path>
+							<Class-Path>balansfruitapplet.jar doorziendwo.jar flowdiagrams.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar</Class-Path>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -257,7 +257,7 @@
 		</plugins>
 	</build>
 	<properties>
-		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.test.skip>true</maven.test.skip>
 	</properties>
 	<dependencies>
