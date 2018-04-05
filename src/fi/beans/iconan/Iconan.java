@@ -31,6 +31,7 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -381,6 +382,10 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		Image result = imagemap.get(name);
 		if(result != null)
 			return result;
+
+		String mime = (String) namemap.get(name + "/t");
+		if( mime.contains("svg")) return null; // No preview
+		
 		if(data.length==0 && namemap.containsKey(name + "/u"))
 		{
 			try {
@@ -395,6 +400,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		{
 			try {
 				URL url = ((URI)namemap.get(name + "/f")).toURL();
+				
 				result = getImage(url);
 			} catch (MalformedURLException e) {
 				return null;
@@ -854,6 +860,14 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 		URL u = file.toURI().toURL();
 		URLConnection uc = openConnection(u);
 		String type = uc.getContentType();
+// Not automatic. Why?
+		InputStream mime = getClass().getClassLoader().getResourceAsStream("META-INF/mime.types");
+		MimetypesFileTypeMap map = new MimetypesFileTypeMap(mime);
+		mime.close();
+		String type4 = map.getContentType(filename);
+		if( type4 != null && type4.startsWith("image"))
+			type = type4;		
+		
 		if(! type.startsWith("image/"))
 			throw new IOException(file + ":" + type);
 
