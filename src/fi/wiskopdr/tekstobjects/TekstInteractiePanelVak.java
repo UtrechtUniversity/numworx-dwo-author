@@ -2602,7 +2602,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 					
 				}
 			}
-			else if(((TekstVakPanel)interactiePanel).isIpSleepbaar() && ((TekstVakPanel)interactiePanel).isIpDraaibaar())
+			else if(((TekstVakPanel)interactiePanel).isIpSleepbaar() || ((TekstVakPanel)interactiePanel).isIpDraaibaar())
 			{
 				if(e.getSource()==sleepPanel &&((TekstVakPanel)interactiePanel).isIpSleepbaar() &&  !getBasisTekstVak().crossWidgetViewActief())
 				{	//if(getParent()instanceof TekstVak)
