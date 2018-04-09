@@ -384,7 +384,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			return result;
 
 		String mime = (String) namemap.get(name + "/t");
-		if( mime.contains("svg")) return null; // No preview
+		if( mime != null && mime.contains("svg")) return null; // No preview
 		
 		if(data.length==0 && namemap.containsKey(name + "/u"))
 		{
