@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import fi.euclides.util.Messages;
 import fi.euclides.model.Bissectrice;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.LijnTrack;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
@@ -17,14 +18,14 @@ public class AddBissectriceHandler extends EventHandler {
 	
 	public AddBissectriceHandler() {
 		super(Messages.getString("AddBissectriceHandler.0")); //$NON-NLS-1$
-		testLijn = false;
+		testLijn = true;
 		testPunt = true;
 	}
 	
 	
 	AddBissectriceHandler(String string) {
 		super(string);
-		testLijn = false;
+		testLijn = true;
 		testPunt = true;
 	}
 
@@ -92,23 +93,38 @@ public class AddBissectriceHandler extends EventHandler {
 	public void pointerReleased(Numbers x, Numbers y) {
 		pointerDragged(x,y);
 		tracker.setTrack(null);
-		Vector select = getModel().getSelect();
-		if(state == 1)
-		{
+		Model m = getModel();
+		Vector<Destroyable> select = m.getSelect();
+		switch(state) {
+		case 0:
+			if(select.size() == 1 && select.firstElement() instanceof Punt) 
+				; // okay
+			else {
+				m.toggle(m.buildPunt(x, y));
+			}
+			break;
+		case 1:
 			if(select.size()==1 && select.firstElement() instanceof Punt)
 				select.insertElementAt(p1, 0);
-		} else if(state == 2)
-		{
+			else {
+				Punt p = m.buildPunt(x, y);
+				m.toggle(p1);
+				m.toggle(p);
+			}
+			break;
+		case 2:
 			if(select.size()==1 && select.firstElement() instanceof Punt)
 			{	
 				select.insertElementAt(p1, 0);
 				select.insertElementAt(p2, 1);
-			} else if(select.isEmpty())
-			{ 	Model m = getModel();
-				m.toggle(m.buildPunt(x, y));
-				select.insertElementAt(p1, 0);
-				select.insertElementAt(p2, 1);
+			} else 
+			{ 	
+				Punt p = m.buildPunt(x, y);
+				m.toggle(p1);
+				m.toggle(p2);
+				m.toggle(p);
 			}
+			break;
 		}
 		command();
 	}
