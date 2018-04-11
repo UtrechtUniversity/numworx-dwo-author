@@ -3,9 +3,12 @@ package fi.beans.iconan;
 import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.swing.JComponent;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,18 +18,22 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class SVGStrategy {
+import fi.wiskopdr.SimpleSwingBrowser;
+
+public class SVGStrategy implements Strategy {
 	
 	private static final String SVG = "http://www.w3.org/2000/svg";
 	private final Map<String,Object> map;
 	private final Iconan parent;
+    private SimpleSwingBrowser browser = new SimpleSwingBrowser();
+
 
 	SVGStrategy(Iconan parent) {
 		this.parent = parent;
 		this.map = parent.getNamemap();
 	}
 	
-	int getHeight(String name) {
+	public int getHeight(String name) {
 		Integer w = (Integer) map.get(name + "/h");
 		if(w != null)
 			return w.intValue();
@@ -40,8 +47,8 @@ public class SVGStrategy {
 		}
 		return -1;
 	}
-    int getWidth(String name) {
-      Integer w = (Integer) map.get(name + "/h");
+    public int getWidth(String name) {
+      Integer w = (Integer) map.get(name + "/w");
       if(w != null)
           return w.intValue();
       byte[] data = (byte[])map.get(name);
@@ -97,6 +104,26 @@ public class SVGStrategy {
       }
     }
     return result;
+  }
+
+  @Override
+  public JComponent getPreviewPanel(String name) {
+    InputStream in = new ByteArrayInputStream((byte[])map.get(name));
+    try {
+      byte[] data= new byte[in.available()];
+      in.read(data);
+      in.close();
+      String content = new String(data, "UTF-8");
+      browser.loadContent(content, "image/svg+xml");
+    } catch (UnsupportedEncodingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } 
+ 
+    return browser.getBrowserPanel();
   }
 	
 }

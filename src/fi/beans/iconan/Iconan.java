@@ -3,7 +3,6 @@ package fi.beans.iconan;
 import java.applet.Applet;
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -15,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +26,9 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.swing.BorderFactory;
@@ -37,8 +36,8 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -56,47 +55,14 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 	private Component component;
 	private Hashtable<String,Object> namemap;
-	private Hashtable<String,Image> imagemap;
+	private Strategy imageStrategy, svgStrategy;
+	
+	Hashtable<String,Image> imagemap;
 	private ActionListener al;
 	private JButton newBtn, okBtn, cancelBtn, rmBtn, urlBtn, chngBtn;
-	private JTextField widthField, heightField;
+	JTextField widthField, heightField;
 	int previewWidth = 32, previewHeight = 32;
-	private JPanel previewCanvas = new JPanel() { 
-		
-		public void paint(Graphics g) {
-			if(preview != null)
-			{
-				int w = previewWidth;
-				int h = previewHeight;
-// scale down to fit.
-				if(w > getWidth())
-				{
-					h = h * getWidth()/w;
-					w = getWidth();
-				}
-				if (h > getHeight())
-				{
-					w = w * getHeight()/h;
-					h = getHeight();
-				}
-				int x = (getWidth() - w)/2;
-				int y = (getHeight() - h)/2;
-
-				if(w < getWidth() || h < getHeight())
-				{
-					g.setColor(getBackground());
-					g.fillRect(0, 0, getWidth(), getHeight());
-				}
-				
-				g.drawImage(preview, x, y, w, h, getBackground(), this);
-			}
-			else {
-				g.setColor(Color.green);
-				g.fillRect(0, 0, getWidth(), getHeight());
-			}
-		}
-	};
-	
+	private JPanel previewCanvas = new JPanel(new BorderLayout()); { previewCanvas.setBorder(BorderFactory.createEtchedBorder()); }
 	private Applet applet;
 	
 	class MyListRenderer extends DefaultListCellRenderer implements Icon {
@@ -310,7 +276,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 	public void selectPreview(String name) {
 		previewName = name;
-		setPreview(getImage(name));
+		setPreview(getStrategy(name).getPreviewPanel(name));
 		setSizes(name);
 	}
 
@@ -320,11 +286,39 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	private void setSizes(String name) {
 		previewWidth = getWidth(name);
 		widthField.setText(String.valueOf(previewWidth));
+	    widthField.setColumns(5);
+	    widthField.revalidate();
+
 		previewHeight = getHeight(name);
 		heightField.setText(String.valueOf(previewHeight));
 	}
 
-	private void rebuildList() {
+	Map<String,Strategy> strategies = new TreeMap<String,Strategy>();
+	
+	public int getWidth(String name) {
+      return getStrategy(name).getWidth(name);
+  }
+
+
+  protected Strategy getStrategy(String name) {
+    Strategy s = strategies.get(name);
+    if(s == null) {
+      Object mime = namemap.get(name + "/t");
+      if("image/svg+xml".equals(mime)) {
+        s = svgStrategy;
+      } else {
+        s = imageStrategy;
+      }
+      strategies.put(name, s);
+    }
+    return s;
+  }
+
+	public int getHeight(String name) {
+	  return getStrategy(name).getHeight(name);
+	}
+
+  private void rebuildList() {
 		list.removeAll();
 		Enumeration<String> keys = namemap.keys();
 		while (keys.hasMoreElements()) {
@@ -356,7 +350,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	 * Catch IllegalArgumentException uit {@link java.awt.List#remove(String)}
 	 * @param item to remove
 	 */
-	private void remove(String item) {
+	void remove(String item) {
 		try {
 			DefaultListModel<String> model = dataModel;
 			model.removeElement(item);
@@ -491,124 +485,13 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		}
 	}
 
-	class NameObserver implements ImageObserver {
-		String name;
 
-		public boolean imageUpdate(Image img, int infoflags, int x, int y,
-				int width, int height) {
-			if((infoflags & (ImageObserver.ABORT|ImageObserver.ERROR)) != 0)
-			{	
-System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);				
-				synchronized(Iconan.this) {
-					imagemap.remove(name);
-					namemap.remove(name);
-					namemap.remove(name +"/w");
-					namemap.remove(name +"/h");
-					namemap.remove(name +"/u");
-					namemap.remove(name +"/f");
-					Iconan.this.remove(name);
-					Iconan.this.notifyAll();
-				}
-				return false;
-			}
-			synchronized(Iconan.this) {
-				if((infoflags & ImageObserver.WIDTH) != 0)
-				{
-					namemap.put(name + "/w", new Integer(width));
-					if(img == preview)
-					{
-						previewWidth = width;
-						widthField.setText(String.valueOf(width));
-						previewCanvas.repaint();
-					}
-					Iconan.this.notifyAll();
-				}
-				if((infoflags & ImageObserver.HEIGHT) != 0)
-				{
-					namemap.put(name + "/h", new Integer(height));
-					if(img == preview)
-					{
-						previewHeight = height;
-						heightField.setText(String.valueOf(height));
-						previewCanvas.repaint();
-					}
-					Iconan.this.notifyAll();
-				}
-			}
-			return true;
-		}
-
-		/**
-		 * @param name
-		 */
-		NameObserver(String name) {
-			this.name = name;
-		}
-		
-	}
 	
 	
-	public synchronized int getWidth(String name)
-	{
-		Integer w = (Integer) namemap.get(name + "/w");
-		if(w != null)
-			return w.intValue();
-		Image img = getImage(name);
-		if(img != null)
-			return getWidth(name, img);
-		return -1;
-	}
-
-	/**
-	 * @param name
-	 * @param img
-	 * @return
-	 */
-	private synchronized int getWidth(String name, Image img) {
-		int result = -1;
-		while ( inNamemap(name) && (result = img.getWidth(new NameObserver(name))) < 0 && inNamemap(name) )
-		{
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				return result;
-			}
-		}	
-		return result;
-	}
-
-	private boolean inNamemap(String name) {
-		return namemap.containsKey(name);
-	}
 
 
-	public synchronized int getHeight(String name)
-	{
-		Integer w = (Integer) namemap.get(name + "/h");
-		if(w != null)
-			return w.intValue();
-		Image img = getImage(name);
-		if(img != null)
-			return getHeight(name, img);
-		return -1;
-	}
 
-	/**
-	 * @param name
-	 * @param img
-	 * @return
-	 */
-	private synchronized int getHeight(String name, Image img) {
-		int result = -1;
-		while ( inNamemap(name) && (result=img.getHeight(new NameObserver(name)))<0 && inNamemap(name)) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
-	}
+
 	
 
 	/**
@@ -732,8 +615,10 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 		cancelBtn.addActionListener(this);
 		rmBtn.addActionListener(this);
 		chngBtn.addActionListener(this);
-		previewCanvas.setSize(128,128);
-		previewCanvas.setPreferredSize(previewCanvas.getSize());
+        previewCanvas.setSize(128,128);
+        previewCanvas.setPreferredSize(previewCanvas.getSize());
+        previewCanvas.setMinimumSize(previewCanvas.getSize());
+        
         GridBagConstraints previewConstraints = new GridBagConstraints();
         previewConstraints.gridx = 2;
         previewConstraints.gridy = 0;
@@ -744,8 +629,10 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 		
 		widthField = new JTextField("16");
 		widthField.setColumns(5);
+		widthField.setMinimumSize(widthField.getPreferredSize());
 		heightField = new JTextField("16");
 		heightField.setColumns(5);
+		heightField.setMinimumSize(heightField.getPreferredSize());
 		
         GridBagConstraints wlConstraints = new GridBagConstraints();
         Insets wl = new Insets(10,0,1,0);
@@ -790,6 +677,9 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 		widthField.addFocusListener(this);
 		heightField.addFocusListener(this);
 		
+		
+		svgStrategy = new SVGStrategy(this);
+		imageStrategy = new ImageStrategy(this);
 	}
 
 	/**
@@ -1002,37 +892,24 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 		return list;
 	}
 	
-	private Image preview; String previewName;
+	String previewName;
 	private JList<String> list;
 	private JPanel newPnl, editPnl;
 	private DefaultListModel<String> dataModel;
 	
 	
-	public static void main(String[] args) { 
-		JFrame f = new JFrame();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setLocale(new Locale("en"));
-		Hashtable<Object, Object> hashtable = new Hashtable<Object, Object>();
-		Iconan i = new Iconan(f, hashtable);
-		f.getContentPane().setLayout(new BorderLayout());
-		f.getContentPane().add(i);
-		f.setSize(100,100);
-		f.pack();
-		f.setVisible(true);
-	}
+
 
 	/**
-	 * @return the preview
+	 * @param jComponent the preview to set
 	 */
-	Image getPreview() {
-		return preview;
-	}
-
-	/**
-	 * @param preview the preview to set
-	 */
-	void setPreview(Image preview) {
-		this.preview = preview;
+	void setPreview(JComponent jComponent) {
+		previewCanvas.removeAll();
+		if(jComponent != null) {
+		  previewCanvas.add(jComponent,BorderLayout.CENTER);
+		  jComponent.setBounds(0, 0, previewCanvas.getWidth(), previewCanvas.getHeight());
+		  previewCanvas.revalidate();
+		}
 		previewCanvas.repaint();
 	}
 	
@@ -1083,6 +960,8 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 	private void deselectPreview() {
 		setPreview(null);
 		widthField.setText("");
+		widthField.setColumns(5);
+
 		heightField.setText("");
 	}
 	
