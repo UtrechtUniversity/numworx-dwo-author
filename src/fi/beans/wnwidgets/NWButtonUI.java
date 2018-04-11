@@ -119,7 +119,7 @@ public class NWButtonUI extends BasicButtonUI {
 	
 	public static void setIcon(String code, JButton button){
 		String imageName = "";
-		if(code.equals("±")) imageName = "mw_meerpallet_1.gif";
+		if(code.equals("\u00B1")) imageName = "mw_meerpallet_1.gif";
 		else if(code.equals("\u2248")) imageName = "mw_meerpallet_2.gif";
 		else if(code.equals("?")) imageName = "mw_vraagteken.gif";
 		else if(code.equals("\u2260")) imageName = "mw_meerpallet_3.gif";

@@ -379,7 +379,7 @@ public class AntwoordFormuleVakChecker
 		FormuleParser p = new FormuleParser();
 		for(int i=0 ; i<antwoordStrings.length; i++) 
 		{	if(antwoordStrings[i]!=null)
-			{	String[] antwoordDelen = StringUtils.split(antwoordStrings[i],"±");//"ï¿½");
+			{	String[] antwoordDelen = StringUtils.split(antwoordStrings[i],"\u00B1");// +-
 				if(antwoordDelen.length>1)
 				{
 					String antwoordStr = "$f" + antwoordDelen[0] + "@";
