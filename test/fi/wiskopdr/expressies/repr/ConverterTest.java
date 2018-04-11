@@ -149,7 +149,7 @@ if(c instanceof StringConverter)
 		
 		t = "testMacht";
 		s.addTest(new ConverterTest(t));
-		s.addTest(new ConverterTest(MathematicaConverter.getInstance(),t));
+		//s.addTest(new ConverterTest(MathematicaConverter.getInstance(),t));
 		s.addTest(new ConverterTest(MPReduceConverter.getInstance(),t));
 		s.addTest(new ConverterTest(StrictConverter.getInstance(),t));
 
