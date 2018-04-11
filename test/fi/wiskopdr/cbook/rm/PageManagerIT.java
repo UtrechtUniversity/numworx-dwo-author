@@ -5,7 +5,7 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-public class PageManagerTest extends TestCase {
+public class PageManagerIT extends TestCase {
 
 	AbstractPageManager man;
 	int total = 10;
