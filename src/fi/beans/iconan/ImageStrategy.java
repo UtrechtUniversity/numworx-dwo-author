@@ -21,11 +21,11 @@ class ImageStrategy implements Strategy {
 System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);                
             synchronized(ImageStrategy.this) {
                 parent.imagemap.remove(name);
-                namemap.remove(name);
-                namemap.remove(name +"/w");
-                namemap.remove(name +"/h");
-                namemap.remove(name +"/u");
-                namemap.remove(name +"/f");
+                parent.namemap.remove(name);
+                parent.namemap.remove(name +"/w");
+                parent.namemap.remove(name +"/h");
+                parent.namemap.remove(name +"/u");
+                parent.namemap.remove(name +"/f");
                 parent.remove(name);
                 ImageStrategy.this.notifyAll();
             }
@@ -34,7 +34,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
         synchronized(ImageStrategy.this) {
             if((infoflags & ImageObserver.WIDTH) != 0)
             {
-                namemap.put(name + "/w", new Integer(width));
+            	parent.namemap.put(name + "/w", new Integer(width));
                 if(img == preview)
                 {
                     parent.previewWidth = width;
@@ -47,7 +47,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
             }
             if((infoflags & ImageObserver.HEIGHT) != 0)
             {
-                namemap.put(name + "/h", new Integer(height));
+            	parent.namemap.put(name + "/h", new Integer(height));
                 if(img == preview)
                 {
                     parent.previewHeight = height;
@@ -104,17 +104,15 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
     }
 };
 
-    final Hashtable namemap;
     final Iconan parent;
   
     ImageStrategy(Iconan parent) {
         this.parent = parent;
-        namemap = parent.getNamemap();
     }
     
     public synchronized int getWidth(String name)
     {
-        Integer w = (Integer) namemap.get(name + "/w");
+        Integer w = (Integer) parent.namemap.get(name + "/w");
         if(w != null)
             return w.intValue();
         Image img = parent.getImage(name);
@@ -125,7 +123,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 
     public synchronized int getHeight(String name)
     {
-        Integer w = (Integer) namemap.get(name + "/h");
+        Integer w = (Integer) parent.namemap.get(name + "/h");
         if(w != null)
             return w.intValue();
         Image img = parent.getImage(name);
@@ -169,7 +167,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
     }
 
     private boolean inNamemap(String name) {
-        return namemap.containsKey(name);
+        return parent.namemap.containsKey(name);
     }
 
     @Override

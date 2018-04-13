@@ -142,8 +142,7 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 		imagename = s;
 		if(iconman == null)
 		{
-			iconman = new Iconan(WiskOpdr.applet);
-			iconman.setNamemap(imagemap);
+			iconman = new Iconan(WiskOpdr.applet, imagemap);
 		}
 		image = iconman.getImage(s);
 		zetMaat();

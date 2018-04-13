@@ -54,7 +54,7 @@ import fi.beans.iconan.text.Text;
 public class Iconan extends JPanel implements ActionListener, FocusListener, ListSelectionListener {
 
 	private Component component;
-	private Hashtable<String,Object> namemap;
+	final Hashtable<String,Object> namemap;
 	private Strategy imageStrategy, svgStrategy;
 	
 	Hashtable<String,Image> imagemap;
@@ -720,15 +720,15 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		return namemap;
 	}
 
-	/**
-	 * @param namemap the namemap to set
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void setNamemap(Hashtable namemap) {
-		this.namemap = namemap;
-		imagemap.clear();
-		rebuildList();
-	}
+//	/**
+//	 * @param namemap the namemap to set
+//	 */
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	public void setNamemap(Hashtable namemap) {
+//		this.namemap = namemap;
+//		imagemap.clear();
+//		rebuildList();
+//	}
 	
 	private JFileChooser fd;
 	//private String title = Text.TITEL;

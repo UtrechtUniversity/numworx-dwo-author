@@ -23,21 +23,19 @@ import fi.wiskopdr.SimpleSwingBrowser;
 public class SVGStrategy implements Strategy {
 	
 	private static final String SVG = "http://www.w3.org/2000/svg";
-	private final Map<String,Object> map;
 	private final Iconan parent;
     private SimpleSwingBrowser browser = new SimpleSwingBrowser();
 
 
 	SVGStrategy(Iconan parent) {
 		this.parent = parent;
-		this.map = parent.getNamemap();
 	}
 	
 	public int getHeight(String name) {
-		Integer w = (Integer) map.get(name + "/h");
+		Integer w = (Integer) parent.namemap.get(name + "/h");
 		if(w != null)
 			return w.intValue();
-		byte[] data = (byte[])map.get(name);
+		byte[] data = (byte[])parent.namemap.get(name);
 		if (data == null) return -1;
 		try {
 			return parseData(data, name).height;
@@ -48,10 +46,10 @@ public class SVGStrategy implements Strategy {
 		return -1;
 	}
     public int getWidth(String name) {
-      Integer w = (Integer) map.get(name + "/w");
+      Integer w = (Integer) parent.namemap.get(name + "/w");
       if(w != null)
           return w.intValue();
-      byte[] data = (byte[])map.get(name);
+      byte[] data = (byte[])parent.namemap.get(name);
       if (data == null) return -1;
       try {
           return parseData(data, name).width;
@@ -75,13 +73,13 @@ public class SVGStrategy implements Strategy {
     if(width.isEmpty()) width = svg.getAttributeNS(null, "width");
     if (!width.isEmpty()) {
       result.width = Integer.parseInt(width);
-      map.put(name + "/w", result.width);
+      parent.namemap.put(name + "/w", result.width);
     }
     String height = svg.getAttributeNS(SVG, "height");
     if(height.isEmpty()) height = svg.getAttributeNS(null, "height");
     if (!height.isEmpty()) {
       result.height = Integer.parseInt(height);
-      map.put(name + "/h", result.height);
+      parent.namemap.put(name + "/h", result.height);
     }
     if (result.width <=0 || result.height <= 0) {
       String viewBox = svg.getAttributeNS(SVG, "viewBox");
@@ -94,11 +92,11 @@ public class SVGStrategy implements Strategy {
           height = st.nextToken();
           if(result.width <= 0) {
             result.width = Integer.parseInt(width);
-            map.put(name + "/w", result.width);
+            parent.namemap.put(name + "/w", result.width);
           }
           if(result.height <= 0) {
             result.height = Integer.parseInt(height);
-            map.put(name + "/h", result.height);
+            parent.namemap.put(name + "/h", result.height);
           }
         }
       }
@@ -108,7 +106,7 @@ public class SVGStrategy implements Strategy {
 
   @Override
   public JComponent getPreviewPanel(String name) {
-    InputStream in = new ByteArrayInputStream((byte[])map.get(name));
+    InputStream in = new ByteArrayInputStream((byte[])parent.namemap.get(name));
     try {
       byte[] data= new byte[in.available()];
       in.read(data);
