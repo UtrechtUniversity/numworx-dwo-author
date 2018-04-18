@@ -38,8 +38,10 @@ public class KijkNaAction extends AbstractAction implements Icon, Observer {
 	public void actionPerformed(ActionEvent e) {
 		this.instance.fetchScore();
 		this.instance.setNagekeken(true);
+		this.instance.incErrorCount();
 		feedback();
 		handler.fire(Constants.CHECKED); // Score changed
+		fire();
 	}
 
 	void feedback() {
@@ -51,6 +53,18 @@ public class KijkNaAction extends AbstractAction implements Icon, Observer {
 		this.instance.checkObjects.feedback();
 	}
 
+	void fire() {
+		Boolean status = instance.getStatus();
+		if( Boolean.TRUE.equals(status)) 
+			handler.fire("action.correct");
+		else if (Boolean.FALSE.equals(status)) {
+			if(instance.getErrorCount() > 1) {
+				handler.fire("action.false_2");
+			} else {
+				handler.fire("action.false");
+			}
+		}
+	}
 
 	@Override
 	public void paintIcon(Component c, Graphics g, int x, int y) {

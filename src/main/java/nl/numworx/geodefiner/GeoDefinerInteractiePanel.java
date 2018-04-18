@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -241,11 +242,14 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	public String getLocalizedCmd(String cmd) {
 		if(cmd.startsWith("double."))
 			return cmd.substring(7);
+		if(cmd.startsWith("action."))
+			return Messages.getString(cmd);
 		return cmd;
 	}
 
 	public String[] getSendCmds() {
 		List<String> cmds = getCmds(false);
+		cmds.addAll(Arrays.asList("action.correct","action.false","action.false_2"));
 		return cmds.toArray(new String[cmds.size()]);
 	}
 
