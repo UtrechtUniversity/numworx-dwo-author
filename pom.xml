@@ -268,6 +268,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.test.skip>true</maven.test.skip>
+		<geogebraVersion>4.0.29-r2017</geogebraVersion>
 	</properties>
 	<dependencies>
 		<!-- #fi.verknippen #fi.mozarch #fi.tegels #fi.geomalgebra #fi.stroomdiagrammen 
@@ -397,7 +398,7 @@
 		<dependency>
 			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra</artifactId>
-			<version>4.0.29</version>
+			<version>${geogebraVersion}</version>
 		</dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>org.geogebra</groupId> -->
@@ -407,12 +408,12 @@
 		<dependency>
 			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra_cas</artifactId>
-			<version>4.0.29</version>
+			<version>${geogebraVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra_main</artifactId>
-			<version>4.0.29</version>
+			<version>${geogebraVersion}</version>
 		</dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>org.geogebra</groupId> -->
