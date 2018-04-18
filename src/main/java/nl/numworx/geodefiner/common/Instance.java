@@ -48,6 +48,7 @@ public abstract class Instance /*implements Observer*/ {
 	protected Definitions definitions;
 	protected Tracker viewer;
 	private Boolean nagekeken;
+	private int errorCount;
 	public CheckObjectList checkObjects;
 	
 	//protected int width, height;
@@ -366,6 +367,7 @@ public abstract class Instance /*implements Observer*/ {
 		}
 		if (nagekeken != null) 
 			map.put("nagekeken", nagekeken);
+		if(errorCount > 0) map.put("errorCount", errorCount);
 		return map;
 	}
 
@@ -442,6 +444,10 @@ public abstract class Instance /*implements Observer*/ {
 		setModelState(this.state.getObjectList("model"), this.state.getObjectList("toolbox"));
 		if(this.state.containsKey("nagekeken"))
 			setNagekeken(this.state.getBoolean("nagekeken"));
+		if(this.state.containsKey("errorCount"))
+			errorCount = this.state.getInt("errorCount");
+		else 
+			errorCount = 0;
 		if(isNagekeken()) {
 			viewer.getModel().executeDelay(); // essentieel.
 			fetchScore();
@@ -548,4 +554,11 @@ public abstract class Instance /*implements Observer*/ {
 		viewer.adapt(Expression.class).CHECKED.setValue(isNagekeken());
 	}
 	
+	public int getErrorCount() {
+		return errorCount;
+	}
+	public void incErrorCount() {
+		if(! Boolean.TRUE.equals(status))
+			errorCount ++ ;
+	}
 }
