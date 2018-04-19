@@ -976,7 +976,7 @@ System.err.println(sb);
 			if (dialogModel.getDonePressed())
 			{
 				this.statTableModel.addColumn(dialogModel.getName(),
-					new ColumnType(dialogModel));
+					new ColumnType(dialogModel), dialogView.getComputeVariableFormula());
 			}
 		}
 		else if (e.getSource() == this.deleteRowsButton)
@@ -1012,35 +1012,35 @@ System.err.println(sb);
 		}
 		else if (actionCommand.equals("editItem"))
 		{
-			AddColumnDialogModel m = new AddColumnDialogModel(
+			AddColumnDialogModel dialogModel = new AddColumnDialogModel(
 				this.statTableModel,
 				this.statTableModel.getColumnName(this.popUpColumnIndex),
 				this.statTableModel.getColumnTypes().get(popUpColumnIndex),
 				this.popUpColumnIndex);
-			AddColumnDialogView v;
+			AddColumnDialogView dialogView;
 
 			Container c = Statistiek.getTopLevelAncestor(this);
 			if (c instanceof Frame)
 			{
-				v = new AddColumnDialogView((Frame) c, m, Statistiek.rb.getString("editacolumn"));
+				dialogView = new AddColumnDialogView((Frame) c, dialogModel, Statistiek.rb.getString("editacolumn"));
 			}
 			else if (c instanceof Dialog)
 			{
-				v = new AddColumnDialogView((Dialog) c, m, Statistiek.rb.getString("editacolumn"));
+				dialogView = new AddColumnDialogView((Dialog) c, dialogModel, Statistiek.rb.getString("editacolumn"));
 			}
 			else
 			{
 				System.out.println("Error finding top level frame/dialog.");
 				return;
 			}
-			AddColumnDialogController c2 = new AddColumnDialogController(m, v);
+			AddColumnDialogController c2 = new AddColumnDialogController(dialogModel, dialogView);
 
-			v.setVisible(true);
+			dialogView.setVisible(true);
 
-			if (m.getDonePressed())
+			if (dialogModel.getDonePressed())
 			{
 				this.statTableModel.editColumn(this.popUpColumnIndex,
-					m.getName(), new ColumnType(m));
+					dialogModel.getName(), new ColumnType(dialogModel), dialogView.getComputeVariableFormula());
 			}
 		}
 		else if (actionCommand.equals("infocolumnItem"))
@@ -1232,7 +1232,7 @@ System.err.println(sb);
 		for (int i = 0; i < names.length; i++)
 		{
     		this.statTableModel.addColumnWithoutEvent(names[i],
-    			new ColumnType(AllowedTypes.STRING));
+    			new ColumnType(AllowedTypes.STRING), "");
 		}
 	}
 
