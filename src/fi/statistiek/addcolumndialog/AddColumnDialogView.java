@@ -1,11 +1,14 @@
 package fi.statistiek.addcolumndialog;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,13 +30,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
-
 import fi.statistiek.ColorGenerator;
+import fi.statistiek.DisabledItemsComboBox;
 import fi.statistiek.Statistiek;
 import fi.statistiek.orderablejlist.OrderableJList;
 import fi.statistiek.orderablejlist.OrderableJListModel;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
+import fi.wiskopdr.formuleobjects.FormuleEditor;
+import fi.wiskopdr.formuleobjects.FormuleVak;
 
 /**
  * View for add column dialog
@@ -53,6 +59,49 @@ public class AddColumnDialogView extends JDialog implements Observer
 	private JComboBox typeBox;
 	private JPanel setTypePanel;
 
+	/**
+	 *  Compute variable button.
+	 */
+	private JButton computeVariableButton;
+	/**
+	 * Boolean indicating 'Computer variable' button
+	 * has been clicked yes or no.
+	 */
+	private boolean hasClickedComputeVariable = false;
+	/**
+	 * Combobox met de kolomnamen, t.b.v. bereken veriabele.
+	 */
+	private DisabledItemsComboBox columnsBox;
+	/**
+	 * De editor voor het invoeren van de berekening
+	 * voor 'bereken variabele'.
+	 */
+	private FormuleEditor computeVariableEditor;
+
+	private JPanel typePanel;
+	/**
+	 * Panel met cards voor compute variable en enumeration.
+	 */
+	private JPanel subTypePanel;
+	/**
+	 * Card layout voor subtypepanel.
+	 */
+	private CardLayout cardLayout;
+	/**
+	 * Leeg panel om in cardlayout te tonen.
+	 */
+	private JPanel emptyPanel;
+	/**
+	 * Panel voor bepalen 'compute variable'
+	 * bij een numeriek columtype.
+	 */
+	private JPanel computeVariablePanel;
+	/**
+	 * The panel for computing the variable.
+	 */
+	/**
+	 * Panel voor bewerken van type opsomming.
+	 */
 	private JPanel createEnumPanel;
 	private JPanel addEnumElementPanel;
 	private JLabel addEnumElementLabel;
@@ -75,8 +124,6 @@ public class AddColumnDialogView extends JDialog implements Observer
 	private JButton sortElements;
 	private JButton moveElementUp;
 	private JButton moveElementDown;
-
-	private JPanel typePanel;
 	private JPanel uitlegPanel;
 	private JLabel uitlegLabel;
 	private JScrollPane uitlegScrollPane;
@@ -88,7 +135,11 @@ public class AddColumnDialogView extends JDialog implements Observer
 	private Font font;
 
 	public static final int DEFAULT_WIDTH = 600;
-	public static final int DEFAULT_HEIGHT = 300;
+	public static final int DEFAULT_HEIGHT = 350;
+	
+	final static String COMPUTE_VAR_PANEL = "Compute variable panel";
+	final static String ENUM_PANEL = "Enum panel";
+	final static String EMPTY_PANEL = "Empty panel";
 
 	/**
 	 * Constructor with Frame owner
@@ -148,6 +199,7 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.font = Statistiek.font;
 		Border border = BorderFactory.createEmptyBorder(5, 0, 5, 5);
 
+		// set type panel
 		this.kiesNaam = new JLabel(Statistiek.rb.getString("columnname"));
 		this.kiesNaam.setFont(this.font);
 		this.kiesNaam.setBorder(border);
@@ -171,14 +223,44 @@ public class AddColumnDialogView extends JDialog implements Observer
 		setTypeBox();
 
 		this.typeBox.setActionCommand("typeBox");
+		
+		this.computeVariableButton = new JButton(Statistiek.rb.getString("computeVariable"));
+		this.computeVariableButton.setActionCommand("computeVariable");
 
 		this.setTypePanel = new JPanel();
-		this.setTypePanel.setLayout(new GridLayout(2, 2));
+		this.setTypePanel.setLayout(new GridLayout(3, 2));
 		this.setTypePanel.add(this.kiesNaam);
 		this.setTypePanel.add(this.nameField);
 		this.setTypePanel.add(this.kiesType);
 		this.setTypePanel.add(this.typeBox);
+		this.setTypePanel.add(this.computeVariableButton);
 
+		// card: compute variable panel
+		this.columnsBox = new DisabledItemsComboBox();
+		this.columnsBox.setActionCommand("columnsBox");
+		fillColumnsListBox();
+		
+		this.computeVariableEditor = new FormuleEditor(false)
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				super.actionPerformed(e);
+				if (e.getSource() == this.formuleVak)
+					produceAction(e.getActionCommand());
+			} 
+		};
+		this.computeVariableEditor.setBounds(0, 0, 150, 70);
+		this.computeVariableEditor.setSize(new Dimension(150, 70));
+		this.computeVariableEditor.setPreferredSize(new Dimension(150, 70));
+		
+		this.computeVariablePanel = new JPanel();
+		this.computeVariablePanel.setLayout(new BoxLayout(computeVariablePanel, BoxLayout.Y_AXIS));
+		this.computeVariablePanel.add(new JLabel(Statistiek.rb.getString("computeVariableLabel")));
+		this.computeVariablePanel.add(columnsBox);
+		this.computeVariablePanel.add(computeVariableEditor);
+
+		// card: create enum panel
 		this.addEnumElementLabel = new JLabel(
 			Statistiek.rb.getString("addenumeration"));
 		this.addEnumElementLabel.setFont(this.font);
@@ -192,11 +274,6 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.addEnumElementPanel.add(this.addEnumElementField);
 
 		this.createEnumPanel = new JPanel();
-		/*
-		 * this.enumElementsView = new JTextArea();
-		 * this.enumElementsView.setFont(this.font);
-		 * this.enumElementsView.setEditable(false);
-		 */
 		this.enumElementsList = new OrderableJList(new OrderableJListModel(
 			this.model.getEnumOptions()));
 		this.enumElementsList.setFont(this.font);
@@ -256,11 +333,24 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.createEnumPanel.add(this.enumEastPanel, BorderLayout.EAST);
 		this.createEnumPanel.add(this.enumSouthPanel, BorderLayout.SOUTH);
 
+		// card: empty panel
+		emptyPanel = new JPanel();
+
+		// sub type card layout panel
+		cardLayout = new CardLayout();
+		subTypePanel = new JPanel();
+		subTypePanel.setLayout(cardLayout);
+		subTypePanel.add(computeVariablePanel, COMPUTE_VAR_PANEL);
+		subTypePanel.add(createEnumPanel, ENUM_PANEL);
+		subTypePanel.add(emptyPanel, EMPTY_PANEL);
+		
+		// type panel links
 		this.typePanel = new JPanel();
 		this.typePanel.setLayout(new BorderLayout());
-		this.typePanel.add(this.createEnumPanel, BorderLayout.CENTER);
 		this.typePanel.add(this.setTypePanel, BorderLayout.NORTH);
+		this.typePanel.add(subTypePanel, BorderLayout.CENTER);
 
+		// uitlegpanel rechts
 		this.uitlegLabel = new JLabel(Statistiek.rb.getString("uitlegbijkolom"));
 		this.uitlegLabel.setFont(this.font);
 		this.uitlegLabel.setBorder(border);
@@ -293,6 +383,26 @@ public class AddColumnDialogView extends JDialog implements Observer
 
 		this.update(null, null);
 	}
+
+	/**
+	 * Vul columnslistbox met de kolomnamen.
+	 */
+	private void fillColumnsListBox()
+	{
+		ArrayList<ColumnType> types = model.getTableModel().getColumnTypes();
+
+		columnsBox.addItem(Statistiek.rb.getString("chooseItem"));
+		
+		for (int i = 0; i < model.getTableModel().getColumnCount(); i++)
+		{
+			String name = model.getTableModel().getColumnName(i);
+			if (types.get(i).getType().isNumber())
+				columnsBox.addItem(name, false);
+			else
+				columnsBox.addItem(name, true);
+		}
+	}
+
 
 	/**
 	 * Set column info mode yes/no, i.e. in column info mode
@@ -436,6 +546,7 @@ public class AddColumnDialogView extends JDialog implements Observer
 	public void addActionListeners(ActionListener al)
 	{
 		this.typeBox.addActionListener(al);
+		this.columnsBox.addActionListener(al);
 		this.addEnumElementField.addActionListener(al);
 		this.removeSelectedElement.addActionListener(al);
 		this.removeAllElements.addActionListener(al);
@@ -444,6 +555,7 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.moveElementDown.addActionListener(al);
 		this.doneButton.addActionListener(al);
 		this.nameField.addActionListener(al);
+		this.computeVariableButton.addActionListener(al);
 	}
 
 	/**
@@ -482,10 +594,10 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.typeBox.setSelectedItem(this.model.getType());
 
 		// set the visibility
-		this.createEnumPanel.setVisible(this.model.getType().equals(
-			AllowedTypes.ENUM));
-		this.enumElementsList.setVisible(this.model.getType().equals(
-			AllowedTypes.ENUM));
+		boolean showEnum = this.model.getType().equals(
+			AllowedTypes.ENUM);
+
+		this.computeVariableButton.setVisible(this.model.getType().isNumber());
 
 		// Update the list with options of current enumeration
 		// or with string options if there is no current enumeration
@@ -503,10 +615,60 @@ public class AddColumnDialogView extends JDialog implements Observer
 
 		this.nameField.setText(this.model.getName());
 
+		// zet de tekst van de knop
+		if (hasClickedComputeVariable())
+			setTextComputeVariableButton(Statistiek.rb.getString("cancelComputeVariable"));
+		else
+			setTextComputeVariableButton(Statistiek.rb.getString("computeVariable"));
+
+		// toon compute variable panel als op de knop is gedrukt
+		boolean showComputeVariable = hasClickedComputeVariable() && this.model.getType().isNumber();
+
+		if (showComputeVariable)
+		{
+			setComputeVariableEditorFocus(true);
+			cardLayout.show(subTypePanel, COMPUTE_VAR_PANEL);
+		}
+		else if (showEnum)
+		{
+			cardLayout.show(subTypePanel, ENUM_PANEL);
+		}
+		else
+		{
+			cardLayout.show(subTypePanel, EMPTY_PANEL);
+		}
+		
 		this.uitlegArea.setText(this.model.getUitleg());
 
 		super.validate();
 	}
+
+	public void setComputeVariableEditorFocus(boolean b)
+	{
+		if (b)
+		{
+			FormuleVak vak = computeVariableEditor.geefFormuleVak();
+			if (vak != null)
+			{
+				vak.requestFocus();
+			}
+		}
+	}
+
+	/**
+	 * Zet de gegeven tekst op de computeVariableButton.
+	 * 
+	 * @param text
+	 */
+	void setTextComputeVariableButton(String text)
+	{
+		computeVariableButton.setText(text);
+	}
+
+	boolean hasClickedComputeVariable()
+	{
+		return hasClickedComputeVariable;
+	}	
 
 	public AllowedTypes getOriginalColumnType()
 	{
@@ -636,5 +798,81 @@ public class AddColumnDialogView extends JDialog implements Observer
 			isValid = true;
 		
 		return isValid;
+	}
+
+	public void setHasClickedComputeVariable(boolean b)
+	{
+		hasClickedComputeVariable = b;
+	}
+	
+	/**
+	 * Voeg de huidige geselecteerde kolomnaam in columnsListBox 
+	 * zonder spaties toe aan computeVariableEditor.
+	 *  
+	 */
+	public void addToEditor()
+	{
+		// strip spaces from column name
+		String strippedColumnName = columnsBox.getSelectedItem().toString().replaceAll("\\s", "");
+		String[] regels = computeVariableEditor.geefRegels();
+		if (regels.length == 0)
+		{
+			regels = new String[1];
+			regels[0] = "$f@";
+		}
+		
+		if (regels.length > 0)
+			regels[0] = addFormulaCodes(stripFormulaCodes(regels[0]) + strippedColumnName);
+		computeVariableEditor.zetRegels(regels);
+		setComputeVariableEditorFocus(true);
+	}
+
+	/**
+	 * Surround the given string with the formule codes "$f" and "@".
+	 * Used for fomula editor.
+	 * 
+	 * @param string
+	 * @return
+	 */
+	private String addFormulaCodes(String string)
+	{
+		String startCode = "$f";
+		String endCode = "@";
+		String s = startCode + string + endCode;
+		return s;
+	}
+
+	/**
+	 * Strip the given string and remove the formule codes "$f" and "@".
+	 * Used for fomula editor.
+	 * 
+	 * @param string
+	 * @return
+	 */
+	private String stripFormulaCodes(String string)
+	{
+		int endIndex = string.length() - 1;
+		String s = string.substring(2, endIndex);
+		return s;
+	}
+
+	public JComboBox getColumnsBox()
+	{
+		return this.columnsBox;
+	}
+	
+	/**
+	 * @return De formulestring om de variabele te berekenen.
+	 */
+	public String getComputeVariableFormula()
+	{
+		String formula = "";
+		String[] regels = computeVariableEditor.geefRegels(); 
+		if (regels != null && regels.length > 0)
+		{
+			// neem de eerste regel (er is er maar 1)
+			formula = regels[0].toString();
+		}
+		return formula;
 	}
 }
