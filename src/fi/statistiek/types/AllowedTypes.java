@@ -60,7 +60,7 @@ public class AllowedTypes implements Serializable
 		{
 			try
 			{
-				Integer.parseInt((String) o);
+				Integer.parseInt(String.valueOf(o));
 				return true;
 			}
 			catch (NumberFormatException e)
@@ -74,8 +74,7 @@ public class AllowedTypes implements Serializable
 			{
 				// Allow commas in doubles
 				String s = ((String) o).replaceAll(",", ".");
-				Double.parseDouble((String) s);
-//				Double.parseDouble((String) o);
+				Double.parseDouble(String.valueOf(s));
 				return true;
 			}
 			catch (NumberFormatException e)
@@ -87,7 +86,7 @@ public class AllowedTypes implements Serializable
 		{
 			try
 			{
-				String a = (String) o;
+				String a = String.valueOf(o);
 				if (!a.equals(""))
 					return true;
 				else
