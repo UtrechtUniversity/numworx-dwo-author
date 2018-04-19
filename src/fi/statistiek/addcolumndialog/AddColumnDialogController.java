@@ -45,6 +45,7 @@ public class AddColumnDialogController implements ActionListener,
 	public void actionPerformed(ActionEvent arg0)
 	{
 		String actionCommand = arg0.getActionCommand();
+
 		if (actionCommand.equals("addEnumElementField"))
 		{
 			if (this.wasEnum())
@@ -140,6 +141,12 @@ public class AddColumnDialogController implements ActionListener,
 		{
 			this.model.setType(this.view.getSelectedType());
 		}
+		else if (actionCommand.equals("columnsBox"))
+		{
+			this.view.addToEditor();
+			// reset de listbox zodat je ook twee keer dezelfde variabele kunt kiezen
+			this.view.getColumnsBox().setSelectedIndex(0);
+		}
 		else if (actionCommand.equals("doneButton"))
 		{
 			// als type gewijzigd in enum, update enum options
@@ -154,6 +161,11 @@ public class AddColumnDialogController implements ActionListener,
 		else if (actionCommand.equals("nameField"))
 		{
 			this.model.setName(this.view.getCurrentName());
+		}
+		else if (actionCommand.equals("computeVariable"))
+		{
+			this.view.setHasClickedComputeVariable(!this.view.hasClickedComputeVariable());
+			this.view.update(null, null);
 		}
 	}
 	
