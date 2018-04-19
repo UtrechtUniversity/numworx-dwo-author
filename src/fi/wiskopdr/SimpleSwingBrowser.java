@@ -13,6 +13,7 @@ import javafx.scene.web.WebView;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.ImageObserver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -24,7 +25,21 @@ public class SimpleSwingBrowser {
 		Platform.setImplicitExit(false);
 	}
 
-	private final JFXPanel jfxPanel = new JFXPanel();
+	private Component observer;
+	
+	public void setRepaintObserver(Component c) {
+	  observer = c;
+	}
+	
+	
+	private final JFXPanel jfxPanel = new JFXPanel() {
+	    public void repaint() {
+	      super.repaint();
+	      if(observer != null) {
+	        observer.repaint();
+	      }
+	    }
+	};
 	private WebEngine engine;
 
 	private final JPanel panel = new JPanel(new BorderLayout());

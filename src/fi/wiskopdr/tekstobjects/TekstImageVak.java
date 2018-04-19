@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Hashtable;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import fi.beans.base64code.StringCodeObject;
@@ -46,7 +47,7 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 	private Iconan iconman;
 	
 	private String imagename = "EMPTY";
-	private Image image;
+	private JComponent image;
 	
 	public TekstImageVak(TekstVak tekstVak) {
 		super(tekstVak);
@@ -88,7 +89,9 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 
 	public void paint(Graphics g)
 	{	
-		Dimension size = getSize();
+
+	  super.paint(g);
+	  Dimension size = getSize();
 		if(image == null)
 		{	g.setColor(Color.black);
 			g.drawRect(0,0,size.width-1,size.height-1);
@@ -106,12 +109,12 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 	}
 
 	private void drawImage(Graphics g, Dimension size) {
-		try {
-			g.drawImage(image, 0, 0, size.width, size.height, this);
-		} catch (Exception e) {
-			// SecurityException mostly.
-			java.util.logging.Logger.getLogger(getClass().getName()).severe("drawImage " + e);
-		}
+//		try {
+//			g.drawImage(image, 0, 0, size.width, size.height, this);
+//		} catch (Exception e) {
+//			// SecurityException mostly.
+//			java.util.logging.Logger.getLogger(getClass().getName()).severe("drawImage " + e);
+//		}
 	}
 	
 	public void setSelected(boolean b)
@@ -144,8 +147,20 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 		{
 			iconman = new Iconan(WiskOpdr.applet, imagemap);
 		}
-		image = iconman.getImage(s);
+		if(image != null) 
+		  remove(image);
+		image = iconman.getComponent(s);
+		if(image != null) {
+		  add(image);
+          image.setBounds(0, 0, getWidth(), getHeight());
+		}
 		zetMaat();
+	}
+	
+	public void setBounds(int x, int y, int w , int h) { // Layoutmanager
+	  super.setBounds(x, y,   w, h);
+	  if(image != null) 
+	    image.setSize(w,h);
 	}
 	
 	public void setEditMode(boolean b)
@@ -240,7 +255,13 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 			if(!"".equals(name))
 			{
 				imagename = name;
-				this.image = iconman.getImage(name);
+				if(image != null) 
+				  remove(image);
+				this.image = iconman.getComponent(name);
+				if(image != null) {
+				  add(image);
+				  image.setBounds(0, 0, getWidth(), getHeight());
+				}
 				repaint();
 				WiskOpdr.setLaunchDataChanged();
 			}

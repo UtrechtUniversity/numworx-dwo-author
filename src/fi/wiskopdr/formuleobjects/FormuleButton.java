@@ -32,7 +32,7 @@ public class FormuleButton extends JButton implements MouseListener
 	protected boolean focusable = true;
 	protected boolean toggle = false;
 	boolean toggleAan = false;
-	private Image popupButtonImage;
+	private Icon popupButtonImage;
 	
 	private static String[] imageNames = 
 	{	
@@ -112,10 +112,31 @@ public class FormuleButton extends JButton implements MouseListener
 		
 	}
 	
-	public void setPopupButtonImage(Image image)
+	public void setPopupButtonImage(final Image image)
 	{
-	    popupButtonImage = image;
+	    popupButtonImage = image == null ? null : new Icon() {
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+          g.drawImage(image,x,y, getWidth(), getHeight(), getParent());
+        }
+
+        @Override
+        public int getIconWidth() {
+          return getWidth();
+        }
+
+        @Override
+        public int getIconHeight() {
+          return getHeight();
+        } }; // image;
 	}
+	
+	public void setPopupButtonIcon(Icon icon) {
+	  popupButtonImage = icon;
+	}
+	
+	
 	
 	public static Image getImage(String name)
 	{	return(Image)images.get(name);
@@ -180,7 +201,8 @@ public class FormuleButton extends JButton implements MouseListener
 	public void paintComponent(Graphics g)
 	{	
 	    if(popupButtonImage!=null){
-	        g.drawImage(popupButtonImage,0,0,getWidth(), getHeight(),getParent());
+	        //g.drawImage(popupButtonImage,0,0,getWidth(), getHeight(),getParent());
+	      popupButtonImage.paintIcon(this, g, 0, 0);
 	        return;
 	    }
 		//Graphics g;

@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -27,7 +28,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	private Dialog imageDialog;
 	private Iconan iconman;
 	private String knopImageString = "";
-	private Image knopImage;
+	private Icon knopImage;
 	
 	private JCheckBox kijkNaCB;
 	private JCheckBox bewaarCB;
@@ -129,11 +130,11 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		bewaarCB.setSelected(actieBewaren);
 		rondAfCB.setSelected(actieAfronden);
 		
-		knopImageButton.setPopupButtonImage(knopImage);
+		knopImageButton.setPopupButtonIcon(knopImage);
 	    iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
 	    if(knopImageString!=null && !"".equals(knopImageString)) {
-	    	knopImage = iconman.getImage(knopImageString);
-	    	knopImageButton.setPopupButtonImage(knopImage);
+	    	knopImage = iconman.getIcon(knopImageString);
+	    	knopImageButton.setPopupButtonIcon(knopImage);
 	    }
 	    else {
 	    	knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
@@ -230,8 +231,8 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	        if(!"".equals(name))
 	        {
 	        	knopImageString = name;
-	            this.knopImage = iconman.getImage(name);
-	            knopImageButton.setPopupButtonImage(knopImage);
+	            this.knopImage = iconman.getIcon(name);
+	            knopImageButton.setPopupButtonIcon(knopImage);
 	            int imWidth = iconman.getWidth(knopImageString);
 				int imHeight = iconman.getHeight(knopImageString);
 				if(imWidth == -1) imWidth = 20;

@@ -407,7 +407,14 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		return result;
 	}
 
+	public JComponent getComponent(String name) {
+	    return getStrategy(name).getComponent(name);
+	}
 
+	public Icon getIcon(String name) {
+	    return getStrategy(name).getIcon(name);
+	}
+	
 	static final private String redirect = "/servlet/fi.servlet.imageredirector.ImageRedirector?url=";
 
 
@@ -484,15 +491,6 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			throw new MalformedURLException(e.toString());
 		}
 	}
-
-
-	
-	
-
-
-
-
-	
 
 	/**
 	 * @param component

@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.swing.Icon;
 import javax.swing.JPanel;
 
 import org.cbook.cbookif.CBookEvent;
@@ -81,8 +82,8 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 		
 		if(knopImageString!=null && !"".equals(knopImageString))
        	{  	Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-			Image knopImage = iconman.getImage(knopImageString);
-	    	checkButton.setPopupButtonImage(knopImage);
+			Icon knopImage = iconman.getIcon(knopImageString);
+	    	checkButton.setPopupButtonIcon(knopImage);
 		    int imWidth = iconman.getWidth(knopImageString);
 			int imHeight = iconman.getHeight(knopImageString);
 			if(imWidth == -1) imWidth = 80;
@@ -107,8 +108,8 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 		
 		if(knopImageString!=null && !"".equals(knopImageString))
 		{   Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-			Image knopImage = iconman.getImage(knopImageString);
-	    	checkButton.setPopupButtonImage(knopImage);
+			Icon knopImage = iconman.getIcon(knopImageString);
+	    	checkButton.setPopupButtonIcon(knopImage);
 	    	int imWidth = iconman.getWidth(knopImageString);
 			int imHeight = iconman.getHeight(knopImageString);
 			if(imWidth == -1) imWidth = 80;

@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -1268,10 +1269,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		klapUitButton.setSize(checkUitklapVak?30:15,15);
 		
 		if(knopImageString1!=null && !"".equals(knopImageString1))
-       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-			Image knopImage1 = iconman.getImage(knopImageString1);
+       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+			Icon knopImage1 = iconman.getIcon(knopImageString1);
 	    	if(knopImage1!=null) 
-	    		klapUitButton.setIcon(new ImageIcon(knopImage1));
+	    		klapUitButton.setIcon((knopImage1));
 		    int imWidth = iconman.getWidth(knopImageString1);
 			int imHeight = iconman.getHeight(knopImageString1);
 			if(imWidth == -1) imWidth = checkUitklapVak?30:15;
@@ -1280,10 +1281,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 		
 		if(knopImageString2!=null && !"".equals(knopImageString2))
-       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-			Image knopImage2 = iconman.getImage(knopImageString2);
+       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+			Icon knopImage2 = iconman.getIcon(knopImageString2);
 			if(knopImage2!=null) 
-	    		klapUitButton.setSelectedIcon(new ImageIcon(knopImage2));
+	    		klapUitButton.setSelectedIcon((knopImage2));
 		}
 		
 		klapUitButton.setSelected(!ingeklapt);	

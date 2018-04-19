@@ -4,13 +4,35 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.ImageObserver;
-import java.util.Hashtable;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 
 class ImageStrategy implements Strategy {
+
+  private class ImageComponent extends JComponent {
+
+    private Image image;
+
+    public ImageComponent(Image image, int width, int height) {
+      setSize(Math.max(0, width), Math.max(height,0));
+      setPreferredSize(getSize());
+      this.image = image;
+      setOpaque(false); // transparant!
+    }
+
+    public void paintComponent(Graphics g) {
+      try {
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+      } catch (Exception e) {
+        java.util.logging.Logger.getLogger(getClass().getName()).severe("drawImage " + e);
+      }
+    }
+  }
+
   private class NameObserver implements ImageObserver {
     String name;
 
@@ -176,5 +198,20 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
       return previewCanvas;
     }
 
-    
+    public JComponent getComponent(String name) {
+        JComponent result = new ImageComponent(parent.getImage(name), getWidth(name), getHeight(name));
+        return result;
+    }
+
+    @Override
+    public Icon getIcon(String name) {
+      Image image = parent.getImage(name);
+      if(image == null) return null;
+      int w = getWidth(name);
+      int h = getHeight(name);
+      if(w > 0 && h > 0) {
+          image = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+      }
+      return new ImageIcon(image);
+    }
 }

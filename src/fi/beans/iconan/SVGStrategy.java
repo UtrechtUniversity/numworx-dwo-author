@@ -1,6 +1,8 @@
 package fi.beans.iconan;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -106,13 +109,20 @@ public class SVGStrategy implements Strategy {
 
   @Override
   public JComponent getPreviewPanel(String name) {
+    return getPreviewPanel(name, browser);
+  }
+
+  
+  private JComponent getPreviewPanel(String name, SimpleSwingBrowser simpleSwingBrowser) {
     InputStream in = new ByteArrayInputStream((byte[])parent.namemap.get(name));
+// add unzip?
+    //in = new GzipInputStream(in);
     try {
       byte[] data= new byte[in.available()];
       in.read(data);
       in.close();
       String content = new String(data, "UTF-8");
-      browser.loadContent(content, "image/svg+xml");
+      simpleSwingBrowser.loadContent(content, "image/svg+xml");
     } catch (UnsupportedEncodingException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -121,7 +131,49 @@ public class SVGStrategy implements Strategy {
       e.printStackTrace();
     } 
  
-    return browser.getBrowserPanel();
+    return simpleSwingBrowser.getBrowserPanel();
+  }
+
+  @Override
+  public JComponent getComponent(String name) {
+    SimpleSwingBrowser browser = new SimpleSwingBrowser();
+    JComponent result = getPreviewPanel(name, browser);
+    result.setSize(Math.max(getWidth(name),0), Math.max(getHeight(name),0));
+    result.setPreferredSize(result.getSize());
+    return result;
+  }
+
+  @Override
+  public Icon getIcon(final String name) {
+    
+    SimpleSwingBrowser browser = new SimpleSwingBrowser();
+    JComponent component = getPreviewPanel(name, browser);
+    
+    return new Icon() {
+      {
+        component.setSize(getIconWidth(), getIconHeight());
+        component.doLayout();
+       
+      }
+      @Override
+      public void paintIcon(Component c, Graphics g, int x, int y) {
+        browser.setRepaintObserver(c);
+        g = g.create();
+        g.translate(x, y);
+        g.clipRect(0, 0, getIconWidth(), getIconHeight());
+        component.print(g);
+        g.dispose();
+      }
+
+      @Override
+      public int getIconWidth() {
+        return Math.max(1, getWidth(name));
+      }
+
+      @Override
+      public int getIconHeight() {
+        return Math.max(getHeight(name),1);
+      } };
   }
 	
 }

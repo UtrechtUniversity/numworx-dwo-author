@@ -1300,20 +1300,28 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         					FormuleButton popupButton;
         				popupJButton = popupButton = new FormuleButton(interactiePanelSetNames[setNr]);
         				popupButton.setBounds(0,0,20,20);
-        				popupButton.setBorder(BorderFactory.createLineBorder(Color.gray));
-        				popupButton.addActionListener(this);
         				
         				if(popupImageString!=null && !"".equals(popupImageString))
         				{   iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
 	        		    	if(popupImageString!=null && !"".equals(popupImageString))popupImage = iconman.getImage(popupImageString);
-	        		    	popupButton.setPopupButtonImage(popupImage);
+	        		    	if( popupImage != null) 
+	        		    	  popupButton.setPopupButtonImage(popupImage);
+	        		    	else {
+	        		    	  popupJButton = new JButton(iconman.getIcon(popupImageString));
+	        		    	  popupButton = null;
+	        		    	}
 	        		    	int imWidth = iconman.getWidth(popupImageString);
 	        				int imHeight = iconman.getHeight(popupImageString);
 	        				if(imWidth == -1) imWidth = 20;
 	        				if(imHeight == -1) imHeight = 20;
-	        				popupButton.setSize(imWidth,imHeight);
+	        				popupJButton.setSize(imWidth,imHeight);
 	        		    	//popupButton.setSize(popupImage.getWidth(null), popupImage.getHeight(null));
-        				}}
+        				}
+                        popupJButton.setBorder(BorderFactory.createLineBorder(Color.gray));
+                        //popupJButton.addActionListener(this);
+
+        				
+        				}
         	        }
         			//if(popupFrame==null) maakPopupFrame();
         			//popupFrame.getContentPane().add((Component)interactiePanel,0);
@@ -1875,18 +1883,27 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	        			popupJButton = popupButton = new FormuleButton(interactiePanelSetNames[setNr],FormuleButton.MEERKNOP);
 	    				popupButton.setBounds(0,0,20,20);
 	    				if("MW".equals(WiskOpdr.deployVariant) && (soortInteractiePanel==8 || soortInteractiePanel==9 || soortInteractiePanel==10))popupButton.setBounds(0,0,50,50);
-	    				popupButton.addActionListener(this);
 	    				
 	    				if(popupImageString!=null && !"".equals(popupImageString))
-	    				{   iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-	        		    	if(popupImageString!=null && !"".equals(popupImageString))popupImage = iconman.getImage(popupImageString);
-	        		    	popupButton.setPopupButtonImage(popupImage);
+	    				{   iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+	        		    	if(popupImageString!=null && !"".equals(popupImageString))
+	        		    	  popupImage = iconman.getImage(popupImageString);
+	        		    	if(popupImage == null) {
+	        		    	  popupJButton = new JButton(iconman.getIcon(popupImageString));
+	        		    	  popupButton = null;
+	                          //popupJButton.setBorder(BorderFactory.createLineBorder(Color.gray));
+	                          popupJButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));                     
+
+	        		    	} else {
+	        		    	  popupButton.setPopupButtonImage(popupImage);
+	        		    	}
 	        		    	int imWidth = iconman.getWidth(popupImageString);
 	        				int imHeight = iconman.getHeight(popupImageString);
 	        				if(imWidth == -1) imWidth = 20;
 	        				if(imHeight == -1) imHeight = 20;
-	        				popupButton.setSize(imWidth,imHeight);
+	        				popupJButton.setSize(imWidth,imHeight);
 	    				}
+                        popupJButton.addActionListener(this);
 	    			}
     	        }
         		interactiePanel.setBounds(0,0,breedte,hoogte);

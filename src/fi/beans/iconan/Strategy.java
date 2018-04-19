@@ -1,6 +1,9 @@
 package fi.beans.iconan;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
+
+import fi.wiskopdr.SimpleSwingBrowser;
 
 interface Strategy {
 
@@ -9,4 +12,8 @@ interface Strategy {
   int getHeight(String name);
 
   JComponent getPreviewPanel(String name);
+
+  JComponent getComponent(String name);
+
+  Icon getIcon(String name);
 }
