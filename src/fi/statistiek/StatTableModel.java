@@ -25,6 +25,8 @@ import fi.statistiek.histogram.HistogramModel;
 import fi.statistiek.histogram.HistogramModel.FrequencyTuple;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
+import fi.wiskopdr.expressies.Expressie;
+import fi.wiskopdr.formuleobjects.FormuleParser;
 
 /**
  * data model, implements TableModel for JTable
@@ -228,7 +230,7 @@ public class StatTableModel implements TableModel
 		Hashtable<String, Integer> hashtable)
 	{
 		ArrayList<String> list = new ArrayList<String>(hashtable.keySet());
-		// Use collator to sort for example 'é' correctly
+		// Use collator to sort for example 'ï¿½' correctly
 		Collator collator = Collator.getInstance(Locale.getDefault());
 		Collections.sort(list, collator);
 		return list;
@@ -812,34 +814,12 @@ public class StatTableModel implements TableModel
 	 *            this column's name
 	 * @param columnType
 	 *            this colum's ColumnType
+	 * @param formula
+	 * 		eventueel de formula om de kolom te berekenen o.b.v. andere kolommen
 	 */
-	public synchronized void addColumn(String columnName, ColumnType columnType)
+	public synchronized void addColumn(String columnName, ColumnType columnType, String formula)
 	{
-//		this.columnClass.add(columnType);
-//		this.columnNames.add(columnName);
-//
-//		for (int i = 0; i < this.rowCount; i++)
-//		{
-//			this.values.get(i).add(ColumnType.WILDCARD);
-//		}
-//		this.columnCount++;
-//
-////		System.out.println("StatTableModel.addColumn(" 
-////			+ columnName + ", " + columnType + "): stringFrequencies.add(" 
-////			+ this.buildColumnStringOptions(this.columnCount - 1) 
-////			+ "); stringFrequencies = " + stringFrequencies);
-//		this.stringFrequencies.add(this.buildColumnStringOptions(this.columnCount - 1));
-//		this.stringOptions.add(this.stringColumnOptions(this.columnCount - 1));
-//		
-//		// update cell outlier list; add an arraylist for the new column
-//		ArrayList<Boolean> newArray = new ArrayList<Boolean>(this.rowCount);
-//		for (int i = 0; i < this.rowCount; i++)
-//		{
-//			newArray.add(false);
-//		}
-//		this.cellOutlierList.add(newArray);
-		
-		this.addColumnWithoutEvent(columnName, columnType);
+		this.addColumnWithoutEvent(columnName, columnType, formula);
 
 		this.fireEvent(new TableModelEvent(this));
 		this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
@@ -853,16 +833,36 @@ public class StatTableModel implements TableModel
 	 *            this column's name
 	 * @param columnType
 	 *            this colum's ColumnType
+	 * @param formula
+	 * 		eventueel de formula om de kolom te berekenen o.b.v. andere kolommen
 	 */
-	public synchronized void addColumnWithoutEvent(String columnName, ColumnType columnType)
+	public synchronized void addColumnWithoutEvent(String columnName, ColumnType columnType, String formula)
 	{
 		this.columnClass.add(columnType);
-		this.columnNames.add(columnName);
 
-		for (int i = 0; i < this.rowCount; i++)
+		if ("".equals(formula))
 		{
-			this.values.get(i).add(ColumnType.WILDCARD);
+			for (int i = 0; i < this.rowCount; i++)
+			{
+				this.values.get(i).add(ColumnType.WILDCARD);
+			}
 		}
+		else
+		{
+			// compute variable
+			for (int i = 0; i < this.rowCount; i++)
+			{
+				Object value = getComputedValue(formula, i);
+				if (columnType.getType().equals(AllowedTypes.INTEGER))
+				{
+					// afronden op geheel getal
+					value = (int) Statistiek.round(Double.parseDouble((String) value), 0);
+				}
+				this.values.get(i).add(value);
+			}			
+		}
+		
+		this.columnNames.add(columnName);
 		this.columnCount++;
 
 		this.stringFrequencies.add(this.buildColumnStringOptions(this.columnCount - 1));
@@ -882,6 +882,80 @@ public class StatTableModel implements TableModel
 	}
 
 	/**
+	 * Get the computed value for the given row for the given formula.
+	 * 
+	 * @param formula
+	 * @param rowIndex
+	 * @return
+	 */
+	private Object getComputedValue(String formula, int rowIndex)
+	{
+		String computedValue = "";
+		
+		// FormuleParser met woordformule aan om de kolomnaam-variabelen te herkennen
+		FormuleParser.zetWoordFormule(true);
+		Expressie expressie = FormuleParser.geefExpressie(formula, true);
+
+//		int nr = StatistiekGWT.getNumberOfDecimals(s);
+//		if (nr > numberOfDecimals)
+//			numberOfDecimals = nr;
+
+		double d = expressie.geefWaarde(
+			toPrimitive(this.values.get(rowIndex)), 
+			getStrippedColumnNames().toArray(new String[0]));
+		computedValue = String.valueOf(d);
+		
+		return computedValue;
+	}
+
+	/**
+	 * Geef een array van kolomnamen waaruit de spaties zijn weggehaald.
+	 * T.b.v. toevoegen van kolom met 'compute variable'.
+	 * @return
+	 */
+	private ArrayList<String> getStrippedColumnNames()
+	{
+		ArrayList<String> strippedList = new ArrayList<>(columnNames);
+		
+		for (int i = 0; i < strippedList.size(); i++)
+		{
+			strippedList.set(i, strippedList.get(i).replaceAll("\\s", ""));
+		}
+		return strippedList;
+	}
+
+	/**
+	 * 
+	 * @param arrayList
+	 * @return
+	 */
+	public static double[] toPrimitive(ArrayList<Object> arrayList)
+	{
+		if (arrayList == null)
+		{
+			return null;
+		}
+		else if (arrayList.size() == 0)
+		{
+			return new double[0];//EMPTY_DOUBLE_ARRAY;
+		}
+		final double[] result = new double[arrayList.size()];
+		for (int i = 0; i < arrayList.size(); i++)
+		{
+			try
+			{
+				result[i] = Double.parseDouble(String.valueOf(arrayList.get(i)));
+			}
+			catch (NumberFormatException e)
+			{
+				// doe niets, result[i] blijft 0, niet-numerieke
+				// kolommen worden niet gebruikt
+			}
+		}
+		return result;
+	}
+	
+	/**
 	 * Edit a column
 	 * 
 	 * @param columnIndex
@@ -890,55 +964,14 @@ public class StatTableModel implements TableModel
 	 *            the new column name
 	 * @param cType
 	 *            the new column type
+	 * @param formula 
+	 * 		eventueel de formula om de kolom te berekenen o.b.v. andere kolommen
 	 */
 	public synchronized void editColumn(int columnIndex, String columnName,
-		ColumnType cType)
+		ColumnType cType, String formula)
 	{
-		this.columnNames.set(columnIndex, columnName);
-		this.columnClass.set(columnIndex, cType);
-
-		if (!cType.getType().isNumber())
-		{
-			this.stringFrequencies.set(columnIndex,
-				this.buildColumnStringOptions(columnIndex));
-			this.stringOptions.set(columnIndex, this
-				.stringsInHashtable(this.stringFrequencies.get(columnIndex)));
-		}
-		else
-		{
-			this.stringFrequencies.set(columnIndex,new Hashtable<String, Integer>());
-			this.stringOptions.set(columnIndex, new ArrayList<String>());
-		}
-
-		for (int row = 0; row < this.rowCount; row++)
-		{
-			if (!cType.isValidInput(this.getValueAt(row, columnIndex)))
-			{
-				this.setValueAt(ColumnType.WILDCARD, row, columnIndex);
-			}
-			else
-			{
-				// valid input but comma in double fields should be replaced
-				if (cType.getType().equals(AllowedTypes.DOUBLE) 
-					&& (((String) this.getValueAt(row, columnIndex)).indexOf(",") > -1))
-				{
-					String s = "";
-					try
-					{
-						// Allow commas in doubles
-						s = ((String) this.getValueAt(row, columnIndex)).replaceAll(",", ".");
-						Double.parseDouble((String) s);
-					}
-					catch (NumberFormatException e)
-					{
-						// This should not happen since it is validInput
-					}
-
-					this.setValueAt(s, row, columnIndex);
-				}
-			}
-		}
-
+		editColumnWithoutEvent(columnIndex, columnName, cType, formula);
+		
 		this.fireEvent(new TableModelEvent(this));
 		this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
 	}
@@ -952,9 +985,11 @@ public class StatTableModel implements TableModel
 	 *            the new column name
 	 * @param cType
 	 *            the new column type
+	 * @param formula
+	 * 		eventueel de formula om de kolom te berekenen o.b.v. andere kolommen
 	 */
 	public synchronized void editColumnWithoutEvent(int columnIndex, String columnName,
-		ColumnType cType)
+		ColumnType cType, String formula)
 	{
 		this.columnNames.set(columnIndex, columnName);
 		this.columnClass.set(columnIndex, cType);
@@ -972,33 +1007,50 @@ public class StatTableModel implements TableModel
 			this.stringOptions.set(columnIndex, new ArrayList<String>());
 		}
 
-		for (int row = 0; row < this.rowCount; row++)
+		if ("".equals(formula))
 		{
-			if (!cType.isValidInput(this.getValueAt(row, columnIndex)))
+			for (int row = 0; row < this.rowCount; row++)
 			{
-				this.setValueAt(ColumnType.WILDCARD, row, columnIndex);
-			}
-			else
-			{
-				// valid input but comma in double fields should be replaced
-				if (cType.getType().equals(AllowedTypes.DOUBLE) 
-					&& (((String) this.getValueAt(row, columnIndex)).indexOf(",") > -1))
+				if (!cType.isValidInput(this.getValueAt(row, columnIndex)))
 				{
-					String s = "";
-					try
+					this.setValueAtWithoutEvent(ColumnType.WILDCARD, row, columnIndex);
+				}
+				else
+				{
+					// valid input but comma in double fields should be replaced
+					if (cType.getType().equals(AllowedTypes.DOUBLE) 
+						&& (((String) this.getValueAt(row, columnIndex)).indexOf(",") > -1))
 					{
-						// Allow commas in doubles
-						s = ((String) this.getValueAt(row, columnIndex)).replaceAll(",", ".");
-						Double.parseDouble((String) s);
+						String s = "";
+						try
+						{
+							// Allow commas in doubles
+							s = ((String) this.getValueAt(row, columnIndex)).replaceAll(",", ".");
+							Double.parseDouble((String) s);
+						}
+						catch (NumberFormatException e)
+						{
+							// This should not happen since it is validInput
+						}
+	
+						this.setValueAtWithoutEvent(s, row, columnIndex);
 					}
-					catch (NumberFormatException e)
-					{
-						// This should not happen since it is validInput
-					}
-
-					this.setValueAtWithoutEvent(s, row, columnIndex);
 				}
 			}
+		}
+		else
+		{
+			// compute variable values with formula
+			for (int row = 0; row < this.rowCount; row++)
+			{
+				Object value = getComputedValue(formula, row);
+				if (cType.getType().equals(AllowedTypes.INTEGER))
+				{
+					// afronden op geheel getal
+					value = (int) Statistiek.round(Double.parseDouble((String) value), 0);
+				}
+				this.setValueAtWithoutEvent(value, row, columnIndex);
+			}			
 		}
 	}
 
@@ -2782,7 +2834,7 @@ public class StatTableModel implements TableModel
 					}
 					List<String> keyList = Arrays.asList(keySet.toArray(new String[0]));
 
-					// Use collator to sort for example 'é' correctly
+					// Use collator to sort for example 'ï¿½' correctly
 					Collator collator = Collator.getInstance(Locale.getDefault());
 					Collections.sort(keyList, collator);
 					
@@ -2924,7 +2976,7 @@ public class StatTableModel implements TableModel
 					}
 					List<String> keyList = Arrays.asList(keySet.toArray(new String[0]));
 
-					// Use collator to sort for example 'é' correctly
+					// Use collator to sort for example 'ï¿½' correctly
 					Collator collator = Collator.getInstance(Locale.getDefault());
 					Collections.sort(keyList, collator);
 					
@@ -2976,7 +3028,7 @@ public class StatTableModel implements TableModel
 			if (this.hasIntegerValues(i))
 			{
 				this.editColumn(i, this.getColumnName(i), 
-					new ColumnType(AllowedTypes.INTEGER));
+					new ColumnType(AllowedTypes.INTEGER), "");
 				// test syl
 //				this.editColumnWithoutEvent(i, this.getColumnName(i), 
 //					new ColumnType(AllowedTypes.INTEGER));
@@ -2984,7 +3036,7 @@ public class StatTableModel implements TableModel
 			else if (this.hasDoubleValues(i))
 			{
 				this.editColumn(i, this.getColumnName(i), 
-					new ColumnType(AllowedTypes.DOUBLE));
+					new ColumnType(AllowedTypes.DOUBLE), "");
 //				this.editColumnWithoutEvent(i, this.getColumnName(i), 
 //					new ColumnType(AllowedTypes.DOUBLE));
 			} 
