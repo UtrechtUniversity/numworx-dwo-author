@@ -28,6 +28,7 @@ import fi.statistiek.dotplot.DotplotController;
 import fi.statistiek.frequencytable.FrequencyTableController;
 import fi.statistiek.histogram.HistogramController;
 import fi.statistiek.piechart.PieChartController;
+import fi.wiskopdr.WiskOpdr;
 
 /**
  * Statistische representaties
@@ -68,6 +69,9 @@ public class Statistiek implements WiskOpdrApplet
 
 	public Statistiek()
 	{
+		// voor standalone test aanzetten
+		//WiskOpdr.applet = new WiskOpdr();
+		
 		Locale language = new Locale("nl", "");
 		this.language = language;
 		rb = ResourceBundle.getBundle("fi.statistiek.text.Text", language);
