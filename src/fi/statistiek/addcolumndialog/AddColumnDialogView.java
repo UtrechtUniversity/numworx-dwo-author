@@ -25,6 +25,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -37,6 +38,7 @@ import fi.statistiek.orderablejlist.OrderableJList;
 import fi.statistiek.orderablejlist.OrderableJListModel;
 import fi.statistiek.types.AllowedTypes;
 import fi.statistiek.types.ColumnType;
+import fi.wiskopdr.TabletOwningLayeredPane;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 
@@ -48,6 +50,11 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
  */
 public class AddColumnDialogView extends JDialog implements Observer
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private AddColumnDialogModel model;
 
 	private JPanel alles;
@@ -126,7 +133,6 @@ public class AddColumnDialogView extends JDialog implements Observer
 	private JButton moveElementDown;
 	private JPanel uitlegPanel;
 	private JLabel uitlegLabel;
-	private JScrollPane uitlegScrollPane;
 	private JTextArea uitlegArea;
 	private JButton doneButton;
 
@@ -355,7 +361,6 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.uitlegLabel.setFont(this.font);
 		this.uitlegLabel.setBorder(border);
 		this.uitlegArea = new JTextArea();
-		this.uitlegScrollPane = new JScrollPane(this.uitlegArea);
 		this.doneButton = new JButton(Statistiek.rb.getString("doneButton"));
 		this.doneButton.setFont(this.font);
 		this.doneButton.setActionCommand("doneButton");
@@ -371,7 +376,10 @@ public class AddColumnDialogView extends JDialog implements Observer
 		this.alles.setLayout(gl);
 		this.alles.add(this.typePanel);
 		this.alles.add(this.uitlegPanel);
-		this.add(this.alles);
+		// gebruik een tablet owning layered pane t.b.v. tonen popup tablet (keyboard) in popup
+		JLayeredPane layeredPane = new TabletOwningLayeredPane(this.alles);
+		this.setLayeredPane(layeredPane);
+		this.setContentPane(this.alles);
 		
 		this.originalColumnType = this.model.getType();
 		this.setStringOptions();
@@ -824,6 +832,7 @@ public class AddColumnDialogView extends JDialog implements Observer
 		if (regels.length > 0)
 			regels[0] = addFormulaCodes(stripFormulaCodes(regels[0]) + strippedColumnName);
 		computeVariableEditor.zetRegels(regels);
+		computeVariableEditor.setMultiLine(false);
 		setComputeVariableEditorFocus(true);
 	}
 
