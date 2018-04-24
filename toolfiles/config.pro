@@ -4,6 +4,9 @@
 -outjars ../target/balansfruitapplet.jar
 -injars ../target/dependency/geodefiner.jar
 -outjars ../target/geodefiner.jar
+-injars ../target/dependency/statistiek-jar-with-dependencies.jar
+-outjars ../target/statistiek.jar
+
 
 -target 1.8
 -printmapping target/mapping.txt

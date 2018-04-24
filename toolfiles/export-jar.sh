@@ -16,3 +16,5 @@ cp ../target/balansfruitapplet.jar $R/www-dev/dwo/jars/balansfruitapplet.jar
 cp ../target/balansfruitapplet.jar.pack.gz $R/www-dev/dwo/jars/balansfruitapplet.jar.pack.gz
 cp ../target/geodefiner.jar $R/www-dev/dwo/jars/geodefiner.jar
 cp ../target/geodefiner.jar.pack.gz $R/www-dev/dwo/jars/geodefiner.jar.pack.gz
+cp ../target/statistiek.jar $R/www-dev/dwo/jars/statistiek.jar
+cp ../target/statistiek.jar.pack.gz $R/www-dev/dwo/jars/statistiek.jar.pack.gz

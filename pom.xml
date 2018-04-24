@@ -45,7 +45,7 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<includeScope>compile</includeScope>
-							<excludeArtifactIds>balansfruitapplet,graphtool,geodefiner</excludeArtifactIds>
+							<excludeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek</excludeArtifactIds>
 							<stripVersion>true</stripVersion>
 							<stripClassifier>true</stripClassifier>
 						</configuration>
@@ -58,7 +58,7 @@
 						<phase>process-classes</phase>
 						<configuration>
 							<includeScope>compile</includeScope>
-							<includeArtifactIds>balansfruitapplet,graphtool,geodefiner</includeArtifactIds>
+							<includeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek</includeArtifactIds>
 							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
@@ -117,6 +117,10 @@
 						<exclusion>
 							<groupId>nl.numworx.geodefiner</groupId>
 							<artifactId>geodefiner</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>fi.statistiek</groupId>
+							<artifactId>statistiek</artifactId>
 						</exclusion>
 					</exclusions>
 					<proguardInclude>toolfiles/config.pro</proguardInclude>
@@ -185,6 +189,11 @@
                   <file>${project.build.directory}/geodefiner.jar</file>
                   <type>jar</type>
                   <classifier>geodefiner</classifier>
+                </artifact>
+                <artifact>
+                  <file>${project.build.directory}/statistiek.jar</file>
+                  <type>jar</type>
+                  <classifier>statistiek</classifier>
                 </artifact>
               </artifacts>
             </configuration>
