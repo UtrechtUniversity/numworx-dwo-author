@@ -6,3 +6,5 @@ copy ..\target\balansfruitapplet.jar N:\www-dev\dwo\jars\balansfruitapplet.jar
 copy ..\target\balansfruitapplet.jar.pack.gz N:\www-dev\dwo\jars\balansfruitapplet.jar.pack.gz
 copy ..\target\geodefiner.jar N:\www-dev\dwo\jars\geodefiner.jar
 copy ..\target\geodefiner.jar.pack.gz N:\www-dev\dwo\jars\geodefiner.jar.pack.gz
+copy ..\target\statistiek.jar N:\www-dev\dwo\jars\statistiek.jar
+copy ..\target\statistiek.jar.pack.gz N:\www-dev\dwo\jars\statistiek.jar.pack.gz

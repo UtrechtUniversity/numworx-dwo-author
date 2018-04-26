@@ -232,6 +232,7 @@
                                 <includeClassifier>graphtool</includeClassifier>
                                 <includeClassifier>geodefiner</includeClassifier>
                                 <includeClassifier>balansfruitapplet</includeClassifier>
+                                <includeClassifier>statistiek</includeClassifier>
                             </includeClassifiers>
                         </configuration>                
                         <dependencies>
