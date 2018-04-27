@@ -7,7 +7,6 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
 import fi.euclides.proof.AfstandHandler;
 import fi.euclides.proof.LabelValue;
-import fi.euclides.util.Observable;
 
 class Abs extends LabelValue {
 
