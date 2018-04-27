@@ -26,7 +26,7 @@ public abstract class AbstractIdeas implements IdeasIF {
 	
 	static private class R extends AbstractRule
 	{
-		private ThreadLocal e = new ThreadLocal();
+		private ThreadLocal<String> e = new ThreadLocal<String>();
 
 		private R() {
 

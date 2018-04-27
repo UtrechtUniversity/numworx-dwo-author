@@ -1,8 +1,6 @@
 package fi.wiskopdr.formuleobjects;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Vector;
 
 
 public class AbsVak extends RegelVak

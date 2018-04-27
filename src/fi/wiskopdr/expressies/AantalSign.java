@@ -1,7 +1,5 @@
 package fi.wiskopdr.expressies;
 
-import java.awt.*;
-
 import fi.beans.stringutils.StringUtils;
 import fi.wiskopdr.expressies.repr.AbstractConverter;
 
