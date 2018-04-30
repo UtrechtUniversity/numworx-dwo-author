@@ -20,7 +20,9 @@ public class Text_ca extends java.util.ListResourceBundle
             { "roterenTekst" , "Rotate objects" },
             { "schalenTekst" , "Scale objects" },
 
-
+            { "CBA_drawing", "drawing"},
+            { "CBA_double.translationX", "translation x"},
+            { "CBA_double.translationY", "translation y"},
             
             
 		};

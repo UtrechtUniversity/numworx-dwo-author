@@ -14,15 +14,20 @@ import java.util.*;
 
 import javax.swing.*;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 // deze moet vanwege interface WiskOpdrApplet
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.CBookAware;
 // deze moet vanwege interface InteractiePanel
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.kladje.Kladje.TekenGumAL;
 
 public class KladjeInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel,
-							                                ActionListener
+							                                ActionListener,CBookAware
 									
 {
 	Image penDefault, penRollover, penSelected, gumDefault, gumRollover, gumSelected;
@@ -87,6 +92,12 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	
 	boolean roteren = true;
 	boolean schalen = true;
+	
+	private Point translation = new Point(0,0);
+	private double scale = 1.0;
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
+	
 	
 	public KladjeInteractiePanel()
 	{
@@ -523,6 +534,20 @@ System.out.println("klip " + getBackground().toString());
 			schalen = ((Boolean) b.get("schalen")).booleanValue();
 		zetSchalen(schalen);
 		
+		int translationx = 0;
+		if(b.containsKey("translationX"))
+			translationx = ((Integer) b.get("translationX")).intValue();
+		int translationy = 0;
+		if(b.containsKey("translationY"))
+			translationy = ((Integer) b.get("translationY")).intValue();
+		zetTranslation(translationx,translationy);
+		
+		double scale = 0;
+		if(b.containsKey("scale"))
+			scale = ((Double) b.get("scale")).doubleValue();
+		zetScale(scale);
+			
+		
 /*		
 		// backwards-compatibility
 		Vector stateVector = new Vector();
@@ -605,7 +630,18 @@ System.out.println("klip " + getBackground().toString());
 			schalen = ((Boolean) b.get("schalen")).booleanValue();
 		zetSchalen(schalen);
 		
+		int translationx = 0;
+		if(b.containsKey("translationX"))
+			translationx = ((Integer) b.get("translationX")).intValue();
+		int translationy = 0;
+		if(b.containsKey("translationY"))
+			translationy = ((Integer) b.get("translationY")).intValue();
+		zetTranslation(translationx,translationy);
 		
+		double scale = 1.0;
+		if(b.containsKey("scale"))
+			scale = ((Double) b.get("scale")).doubleValue();
+		zetScale(scale);
 		
 /*		
 		Vector stateVector = new Vector();
@@ -655,6 +691,10 @@ System.out.println("klip " + getBackground().toString());
 		
 		h.put("roteren", new Boolean(roteren));
 		h.put("schalen", new Boolean(schalen));
+		
+		h.put("translationX", translation.x);
+		h.put("translationY", translation.y);
+		h.put("scale", scale);
 		
 //		Vector stateVector = kladjeVeld.getState();
 //		h.put("pixels", stateVector);
@@ -771,6 +811,18 @@ System.out.println("klip " + getBackground().toString());
 		
 	}
 	
+	public void zetTranslation(int x, int y)
+	{
+		this.translation = new Point(x,y);
+		kladjeVeld.zetTranslation(x, y);
+	}
+	
+	public void zetScale(double scale)
+	{
+		this.scale = scale;
+		kladjeVeld.zetScale(scale);
+	}
+	
 	public void layoutBottom()
 	{
 // dit kan wel iets eenvoudiger, vgl Grafiek3DTest	
@@ -864,6 +916,7 @@ System.out.println("klip " + getBackground().toString());
 			//kladjeVeld.setLocation(offSet, offSet);
 			kladjeVeld = new KladjeVeld(b, h - bottomHeight);
 			kladjeVeld.setLocation(0, 0);
+			kladjeVeld.addActionListener(this);
 			add(kladjeVeld);
 //System.out.println("kladjeVeld created");
 			tekenGumGroup = new ButtonGroup();
@@ -1495,6 +1548,75 @@ System.out.println("kladjeVeld sized");
 		{
 			kladjeVeld.scaleObjectSelected(kladjeVeld.scaleDownStep);
 		}
+		
+		if(e.getSource() == kladjeVeld && e.getActionCommand().equals("changed"))
+		{
+			Map map = kladjeVeld.getState();
+			cbookEventHandler.fire("drawing",map);
+		}
 
+	}
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		String command = event.getCommand();
+		if (command.startsWith("drawing"))
+		{
+			Map map = (Map)event.getParameters();
+			if (map!=null)
+			{	kladjeVeld.setState((Hashtable)map, false);
+				kladjeVeld.repaint();
+			}
+		}
+		if (command.startsWith("double.translationX"))
+		{
+			Map map = (Map)event.getParameters();
+			if (map!=null)
+			{	int valueX = ((Integer)map.get("value")).intValue();
+				translation = new Point(-valueX, translation.y);
+				kladjeVeld.zetTranslation(translation.x, translation.y);
+				kladjeVeld.repaint();
+			}
+		}
+		if (command.startsWith("double.translationY"))
+		{
+			Map map = (Map)event.getParameters();
+			if (map!=null)
+			{	int valueY = ((Integer)map.get("value")).intValue();
+				translation = new Point(translation.x, -valueY);
+				kladjeVeld.zetTranslation(translation.x, translation.y);
+				kladjeVeld.repaint();
+			}
+		}
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"drawing"};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		String[] commands = {"drawing","double.translationX", "double.translationY"};
+		return commands;
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = Kladje.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
 	}
 }

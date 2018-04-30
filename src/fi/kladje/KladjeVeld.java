@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.GeneralPath;
 import java.util.*;
 import java.awt.image.*;
 import java.io.Serializable;
@@ -135,6 +136,8 @@ public class KladjeVeld extends JPanel
 	
 	boolean initialState = false;
 	
+	private Point translation = new Point(0,0);
+	private double scale = 1.0;
 	//Graphics kvGraphics = null;
 	
 	
@@ -381,6 +384,7 @@ System.out.println("returned " + (numHistories - 1));
 			tekstElementen[tCnt] = tekstElement.getState();
 		}
 		h.put("tekstElementen", tekstElementen);
+		
 		
 		
 		return h;
@@ -673,6 +677,16 @@ System.out.println("returned " + (numHistories - 1));
 		repaint();
 	}
 	
+	public void zetTranslation(int x, int y)
+	{
+		this.translation = new Point(x,y);
+	}
+	
+	public void zetScale(double scale)
+	{
+		this.scale = scale;
+	}
+	
 	public ArrayList<DoublePoint> gaussianSmooth(ArrayList<DoublePoint> doublePoints)
 	{
 		if (doublePoints.size() < 3) 
@@ -796,6 +810,9 @@ System.out.println("returned " + (numHistories - 1));
 	
 	void tekenProgramma(Graphics2D g, boolean wis)
 	{
+		g.scale(scale, scale);
+		g.translate(translation.x,translation.y);
+		
 		
 //System.out.println("tekenProgramma");
 
@@ -889,23 +906,39 @@ System.out.println("returned " + (numHistories - 1));
 		}
 */		
 		
-		if (draggDoublePoints.size() == 1)
-		{	Point p = draggDoublePoints.get(0).getPoint();
-			g.drawLine(p.x, p.y, p.x, p.y);
-		}
+//		if (draggDoublePoints.size() == 1)
+//		{	Point p = draggDoublePoints.get(0).getPoint();
+//			g.drawLine(p.x, p.y, p.x, p.y);
+//		}
+//		if (draggDoublePoints.size() > 1)
+//		{	
+//			ArrayList<DoublePoint> smoothedDraggDoublePoints = smooth(draggDoublePoints, smoothType);
+//									
+//			Point p1 = smoothedDraggDoublePoints.get(0).getPoint();
+//			for (int pCnt = 1; pCnt < smoothedDraggDoublePoints.size(); pCnt++)
+//			{	Point p2 = smoothedDraggDoublePoints.get(pCnt).getPoint();
+//				g.drawLine(p1.x, p1.y, p2.x, p2.y);
+//				p1 = p2;
+//			}
+//			
+//		}
 		if (draggDoublePoints.size() > 1)
 		{	
 			ArrayList<DoublePoint> smoothedDraggDoublePoints = smooth(draggDoublePoints, smoothType);
-									
-			Point p1 = smoothedDraggDoublePoints.get(0).getPoint();
-			for (int pCnt = 1; pCnt < smoothedDraggDoublePoints.size(); pCnt++)
-			{	Point p2 = smoothedDraggDoublePoints.get(pCnt).getPoint();
-				g.drawLine(p1.x, p1.y, p2.x, p2.y);
-				p1 = p2;
-			}
 			
+			g.setPaint(Color.BLACK);
+	        g.setStroke(new BasicStroke(1.2f));
+			GeneralPath path = new GeneralPath();
+			if (smoothedDraggDoublePoints.size() > 1)
+				path.moveTo(smoothedDraggDoublePoints.get(0).x,smoothedDraggDoublePoints.get(0).y);
+			for (int pCnt = 1; pCnt < smoothedDraggDoublePoints.size(); pCnt++)
+			{	
+				path.lineTo(smoothedDraggDoublePoints.get(pCnt).x,smoothedDraggDoublePoints.get(pCnt).y);
+			}
+			path.moveTo(smoothedDraggDoublePoints.get(0).x,smoothedDraggDoublePoints.get(0).y);
+			path.closePath();
+			g.draw(path);
 		}
-		
 		
 		if ((mouseMode == lijnTekenen) && (figuurStart != null) && (lijnEinde != null))
 		{	
@@ -2555,16 +2588,50 @@ System.out.println("returned " + (numHistories - 1));
 				
 	}
 	
+	//ActionProducer
+		private ActionListener actionListener = null;
+
+		public void addActionListener(ActionListener l)
+		{
+			actionListener = AWTEventMulticaster.add(actionListener, l);
+		}
+
+		public void removeActionListener(ActionListener l)
+		{
+			actionListener = AWTEventMulticaster.remove(actionListener, l);
+		}
+
+		public void produceAction(String command)
+		{
+			if (actionListener != null)
+			{
+				actionListener.actionPerformed(new ActionEvent(this, 0, command));
+			}
+		}
+
+		public void produceThisAction(ActionEvent e)
+		{
+			if (actionListener != null)
+			{
+				actionListener.actionPerformed(e);
+			}
+		}
+
+		//end ActionProducer
+	
 	class MLMML extends MouseAdapter implements MouseMotionListener
 	{
 		int startX, startY;
 		
 		public void mousePressed(MouseEvent e)
 		{
+			double eX = (e.getX())/scale -translation.x;
+			double eY = (e.getY())/scale -translation.y;
+			
 			if (mouseMode == tekenen)
 			{
 				//draggPoints.addElement(new Point(e.getX(), e.getY()));
-				draggDoublePoints.add(new DoublePoint(e.getX(), e.getY()));
+				draggDoublePoints.add(new DoublePoint(eX, eY));
 			}
 /*			
 			else if (mouseMode == gummen)
@@ -2576,14 +2643,14 @@ System.out.println("returned " + (numHistories - 1));
 					 (mouseMode == rechthoekTekenen) ||
 					 (mouseMode == cirkelTekenen))
 			{
-				figuurStart = new Point(e.getX(), e.getY());
+				figuurStart = new Point((int)eX, (int)eY);
 			}
 			else if (mouseMode == tekstTekenen)
 			{
 
 				if (tekstVeld.isVisible())
 					hideTekstVeld(true);
-				tekstEdited = getClickedTekstElement(e.getX(), e.getY());
+				tekstEdited = getClickedTekstElement((int)eX, (int)eY);
 				//tekstVeld.setLocation(e.getX(), e.getY());
 				if (tekstEdited != null)
 				{	tekstVeld.setText(tekstEdited.tekst);
@@ -2593,7 +2660,7 @@ System.out.println("returned " + (numHistories - 1));
 				}
 				else	
 				{	tekstVeld.setText("");
-					tekstVeld.setLocation(e.getX(), e.getY());
+					tekstVeld.setLocation((int)eX, (int)eY);
 					tekstVeld.setSize(tekstBreedte, tekstVeld.getSize().height);
 					
 				}
@@ -2604,25 +2671,25 @@ System.out.println("returned " + (numHistories - 1));
 			else if (mouseMode == selecteren)
 			{
 
-				if (selecteerRechthoekHandlesContain(e.getX(), e.getY()))
+				if (selecteerRechthoekHandlesContain((int)eX, (int)eY))
 				{
-					startX = e.getX();
-					startY = e.getY();
+					startX = (int)eX;
+					startY = (int)eY;
 //System.out.println("mp oshc");			
 					
 					objectHandled = false;
 				}
-				else if ((selecteerRechthoek != null) && selecteerRechthoek.contains(e.getX(), e.getY()))
+				else if ((selecteerRechthoek != null) && selecteerRechthoek.contains((int)eX, (int)eY))
 				{
 					resetSelectedObject();
 					sleepSelectie = true;
-					startX = e.getX();
-					startY = e.getY();
+					startX = (int)eX;
+					startY = (int)eY;
 				}
-				else if (objectSelectedHandlesContain(e.getX(), e.getY()))
+				else if (objectSelectedHandlesContain((int)eX, (int)eY))
 				{
-					startX = e.getX();
-					startY = e.getY();
+					startX = (int)eX;
+					startY = (int)eY;
 //System.out.println("mp oshc");			
 //System.out.println("mp ha " + handleAction);
 //System.out.println("mp ta " + scalingBottomRight);
@@ -2645,11 +2712,11 @@ System.out.println("returned " + (numHistories - 1));
 				}
 */				
 				// individueel object aangeklikt, was mogelijk al geselecteerd
-				else if (setSelectedObject(e.getX(), e.getY()) || objectSelectedContains(e.getX(), e.getY()))
+				else if (setSelectedObject((int)eX, (int)eY) || objectSelectedContains((int)eX, (int)eY))
 				{
 					sleepSelectie = true;
-					startX = e.getX();
-					startY = e.getY();
+					startX = (int)eX;
+					startY = (int)eY;
 					selecteerRechthoek = null;
 					killScaleHandles();
 					killRotateHandles();
@@ -2671,7 +2738,7 @@ System.out.println("returned " + (numHistories - 1));
 					sleepSelectie = false;
 					resetSelectedObject();
 					resetSelectedObjects();
-					figuurStart = new Point(e.getX(), e.getY());
+					figuurStart = new Point((int)eX, (int)eY);
 					selecteerRechthoek = null;
 					killScaleHandles();
 					killRotateHandles();
@@ -2685,11 +2752,13 @@ System.out.println("returned " + (numHistories - 1));
 		}
 		
 		public void mouseDragged(MouseEvent e)
-		{
+		{	
+			double eX = (e.getX())/scale -translation.x;
+			double eY = (e.getY())/scale -translation.y;
 			if (mouseMode == tekenen)
 			{
 				//draggPoints.addElement(new Point(e.getX(), e.getY()));
-				draggDoublePoints.add(new DoublePoint(e.getX(), e.getY()));
+				draggDoublePoints.add(new DoublePoint(eX, eY));
 			}
 /*			
 			else if (mouseMode == gummen)
@@ -2701,16 +2770,16 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				if (e.isShiftDown())
 				{
-					if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
+					if ((eX > figuurStart.x) && (eY > figuurStart.y))
 					{	
-						double xZijde = (double) e.getX() - figuurStart.x;
-						double yZijde = (double) e.getY() - figuurStart.y;
-						int min = Math.min(e.getX() - figuurStart.x, e.getY() - figuurStart.y);
+						double xZijde = (double) eX - figuurStart.x;
+						double yZijde = (double) eY - figuurStart.y;
+						int min = Math.min((int)eX - figuurStart.x, (int)eY - figuurStart.y);
 						if (yZijde > xZijde - NZERO)
 						{
 							if (xZijde < yZijde / 2 + NZERO)
 							{
-								lijnEinde = new Point(figuurStart.x, e.getY());
+								lijnEinde = new Point(figuurStart.x, (int)eY);
 							}
 							else
 							{
@@ -2725,21 +2794,21 @@ System.out.println("returned " + (numHistories - 1));
 							}
 							else
 							{
-								lijnEinde = new Point(e.getX(), figuurStart.y);
+								lijnEinde = new Point((int)eX, figuurStart.y);
 							}
 						}
 
 					}	
-					else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
+					else if ((eX > figuurStart.x) && (eY < figuurStart.y))
 					{	
-						double xZijde = (double) e.getX() - figuurStart.x;
-						double yZijde = (double) figuurStart.y - e.getY();
-						int min = Math.min(e.getX() - figuurStart.x, figuurStart.y - e.getY());
+						double xZijde = (double) eX - figuurStart.x;
+						double yZijde = (double) figuurStart.y - eY;
+						int min = Math.min((int)eX - figuurStart.x, figuurStart.y - (int)eY);
 						if (yZijde > xZijde + NZERO)
 						{
 							if (xZijde < yZijde / 2 + NZERO)
 							{
-								lijnEinde = new Point(figuurStart.x, e.getY());
+								lijnEinde = new Point(figuurStart.x, (int)eY);
 							}
 							else
 							{
@@ -2754,23 +2823,23 @@ System.out.println("returned " + (numHistories - 1));
 							}
 							else
 							{
-								lijnEinde = new Point(e.getX(), figuurStart.y);
+								lijnEinde = new Point((int)eX, figuurStart.y);
 							}
 						}
 
  
 
 					}	
-					else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
+					else if ((eX < figuurStart.x) && (eY > figuurStart.y))
 					{	
-						double xZijde = (double) figuurStart.x - e.getX();
-						double yZijde = (double) e.getY() - figuurStart.y;
-						int min = Math.min(figuurStart.x - e.getX(), e.getY() - figuurStart.y);
+						double xZijde = (double) figuurStart.x - eX;
+						double yZijde = (double) eY - figuurStart.y;
+						int min = Math.min(figuurStart.x - (int)eX, (int)eY - figuurStart.y);
 						if (yZijde > xZijde + NZERO)
 						{
 							if (xZijde < yZijde / 2 + NZERO)
 							{
-								lijnEinde = new Point(figuurStart.x, e.getY());
+								lijnEinde = new Point(figuurStart.x, (int)eY);
 							}
 							else
 							{
@@ -2785,22 +2854,22 @@ System.out.println("returned " + (numHistories - 1));
 							}
 							else
 							{
-								lijnEinde = new Point(e.getX(), figuurStart.y);
+								lijnEinde = new Point((int)eX, figuurStart.y);
 							}
 						}
 						
 						
 					}	
-					else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
+					else if ((eX < figuurStart.x) && (eY < figuurStart.y))
 					{	
-						int xZijde = figuurStart.x - e.getX();
-						int yZijde = figuurStart.y - e.getY();
-						int min = Math.min(figuurStart.x - e.getX(), figuurStart.y - e.getY());
+						int xZijde = figuurStart.x - (int)eX;
+						int yZijde = figuurStart.y - (int)eY;
+						int min = Math.min(figuurStart.x - (int)eX, figuurStart.y - (int)eY);
 						if (yZijde > xZijde + NZERO)
 						{
 							if (xZijde < yZijde / 2 + NZERO)
 							{
-								lijnEinde = new Point(figuurStart.x, e.getY());
+								lijnEinde = new Point(figuurStart.x, (int)eY);
 							}
 							else
 							{
@@ -2815,7 +2884,7 @@ System.out.println("returned " + (numHistories - 1));
 							}
 							else
 							{
-								lijnEinde = new Point(e.getX(), figuurStart.y);
+								lijnEinde = new Point((int)eX, figuurStart.y);
 							}
 						}
 						        
@@ -2824,7 +2893,7 @@ System.out.println("returned " + (numHistories - 1));
 				}
 				else
 				{	
-					lijnEinde = new Point(e.getX(), e.getY());
+					lijnEinde = new Point((int)eX, (int)eY);
 				}	
 			}
 			else if ((mouseMode == rechthoekTekenen) || (mouseMode == cirkelTekenen))
@@ -2835,48 +2904,48 @@ System.out.println("returned " + (numHistories - 1));
 					if (e.isShiftDown())
 					{
 //System.out.println("ShiftDown");
-						if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
+						if ((eX > figuurStart.x) && (eY > figuurStart.y))
 						{	
-							int zijde = Math.min(e.getX() - figuurStart.x, e.getY() - figuurStart.y);
+							int zijde = Math.min((int)eX - figuurStart.x, (int)eY - figuurStart.y);
 							tekenRechthoek = new Rectangle(figuurStart.x, figuurStart.y, zijde, zijde); 
 
 						}	
-						else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
+						else if ((eX > figuurStart.x) && (eY < figuurStart.y))
 						{	
-							int zijde = Math.min(e.getX() - figuurStart.x, figuurStart.y - e.getY());
-							tekenRechthoek = new Rectangle(figuurStart.x, e.getY(), zijde, zijde); 
+							int zijde = Math.min((int)eX - figuurStart.x, figuurStart.y - (int)eY);
+							tekenRechthoek = new Rectangle(figuurStart.x, (int)eY, zijde, zijde); 
  
 						}	
-						else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
+						else if ((eX < figuurStart.x) && (eY > figuurStart.y))
 						{	
-							int zijde = Math.min(figuurStart.x - e.getX(), e.getY() - figuurStart.y);
-							tekenRechthoek = new Rectangle(e.getX(), figuurStart.y, zijde, zijde);
+							int zijde = Math.min(figuurStart.x - (int)eX, (int)eY - figuurStart.y);
+							tekenRechthoek = new Rectangle((int)eX, figuurStart.y, zijde, zijde);
 							
 						}	
-						else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
+						else if ((eX < figuurStart.x) && (eY < figuurStart.y))
 						{	
-							int zijde = Math.min(figuurStart.x - e.getX(), figuurStart.y - e.getY());
-							tekenRechthoek = new Rectangle(e.getX(), e.getY(), zijde, zijde); 
+							int zijde = Math.min(figuurStart.x - (int)eX, figuurStart.y - (int)eY);
+							tekenRechthoek = new Rectangle((int)eX, (int)eY, zijde, zijde); 
 							        
 						}
 					}
 					else
 					{	
-						if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
+						if ((eX > figuurStart.x) && (eY > figuurStart.y))
 						{	tekenRechthoek = new Rectangle(figuurStart.x, figuurStart.y, 
-							                           	   e.getX() - figuurStart.x, e.getY() - figuurStart.y); 
+								(int)eX - figuurStart.x, (int)eY - figuurStart.y); 
 						}	
-						else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
-						{	tekenRechthoek = new Rectangle(figuurStart.x, e.getY(), 
-								                           e.getX() - figuurStart.x, figuurStart.y - e.getY()); 
+						else if ((eX > figuurStart.x) && (eY < figuurStart.y))
+						{	tekenRechthoek = new Rectangle(figuurStart.x, (int)eY, 
+								(int)eX - figuurStart.x, figuurStart.y - (int)eY); 
 						}	
-						else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
-						{	tekenRechthoek = new Rectangle(e.getX(), figuurStart.y, 
-													       figuurStart.x - e.getX(), e.getY() - figuurStart.y); 
+						else if ((eX < figuurStart.x) && (eY > figuurStart.y))
+						{	tekenRechthoek = new Rectangle((int)eX, figuurStart.y, 
+													       figuurStart.x - (int)eX, (int)eY - figuurStart.y); 
 						}	
-						else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
-						{	tekenRechthoek = new Rectangle(e.getX(), e.getY(), 
-													       figuurStart.x - e.getX(), figuurStart.y - e.getY()); 
+						else if ((eX < figuurStart.x) && (eY < figuurStart.y))
+						{	tekenRechthoek = new Rectangle((int)eX, (int)eY, 
+													       figuurStart.x - (int)eX, figuurStart.y - (int)eY); 
 						}
 					}
 				}	
@@ -2889,28 +2958,28 @@ System.out.println("returned " + (numHistories - 1));
 			{
 				if (handleAction)
 				{
-					int dx = e.getX() - startX;
-					int dy = e.getY() - startY;
+					int dx = (int)eX - startX;
+					int dy = (int)eY - startY;
 
 					processHandleAction(dx,dy);
 					
 //System.out.println("md ha");
 
-					startX = e.getX();
-					startY = e.getY();
+					startX = (int)eX;
+					startY = (int)eY;
 					
 					objectHandled = true;
 					
 				}
 				else if (groupHandleAction)
 				{
-					int dx = e.getX() - startX;
-					int dy = e.getY() - startY;
+					int dx = (int)eX - startX;
+					int dy = (int)eY - startY;
 
 					processSelecteerRechthoekHandleAction(dx,dy);
 					
-					startX = e.getX();
-					startY = e.getY();
+					startX = (int)eX;
+					startY = (int)eY;
 					
 					objectHandled = true;
 					
@@ -2918,8 +2987,8 @@ System.out.println("returned " + (numHistories - 1));
 				
 				else if (sleepSelectie) // verplaats de selecteerRechthoek met inhoud!!
 				{	
-					int dx = e.getX() - startX;
-					int dy = e.getY() - startY;
+					int dx = (int)eX - startX;
+					int dy = (int)eY - startY;
 					
 					if (selecteerRechthoek != null)
 					{	selecteerRechthoek.translate(dx, dy);
@@ -2945,8 +3014,8 @@ System.out.println("returned " + (numHistories - 1));
 					
 					translateObjectsSelected(dx, dy);
 
-					startX = e.getX();
-					startY = e.getY();
+					startX = (int)eX;
+					startY = (int)eY;
 					
 					objectMoved = true;
 					
@@ -2954,21 +3023,21 @@ System.out.println("returned " + (numHistories - 1));
 				
 				else // sleepSelectie, vorm de selecteerRechthoek
 				{	
-					if ((e.getX() > figuurStart.x) && (e.getY() > figuurStart.y))
+					if ((eX > figuurStart.x) && (eY > figuurStart.y))
 					{	selecteerRechthoek = new Rectangle(figuurStart.x, figuurStart.y, 
-							e.getX() - figuurStart.x, e.getY() - figuurStart.y); 
+							(int)eX - figuurStart.x, (int)eY - figuurStart.y); 
 					}	
-					else if ((e.getX() > figuurStart.x) && (e.getY() < figuurStart.y))
-					{	selecteerRechthoek = new Rectangle(figuurStart.x, e.getY(), 
-					        e.getX() - figuurStart.x, figuurStart.y - e.getY()); 
+					else if ((eX > figuurStart.x) && (eY < figuurStart.y))
+					{	selecteerRechthoek = new Rectangle(figuurStart.x, (int)eY, 
+							(int)eX - figuurStart.x, figuurStart.y - (int)eY); 
 					}	
-					else if ((e.getX() < figuurStart.x) && (e.getY() > figuurStart.y))
-					{	selecteerRechthoek = new Rectangle(e.getX(), figuurStart.y, 
-					       figuurStart.x - e.getX(), e.getY() - figuurStart.y); 
+					else if ((eX < figuurStart.x) && (eY > figuurStart.y))
+					{	selecteerRechthoek = new Rectangle((int)eX, figuurStart.y, 
+					       figuurStart.x - (int)eX, (int)eY - figuurStart.y); 
 					}	
-					else if ((e.getX() < figuurStart.x) && (e.getY() < figuurStart.y))
-					{	selecteerRechthoek = new Rectangle(e.getX(), e.getY(), 
-					       figuurStart.x - e.getX(), figuurStart.y - e.getY()); 
+					else if ((eX < figuurStart.x) && (eY < figuurStart.y))
+					{	selecteerRechthoek = new Rectangle((int)eX, (int)eY, 
+					       figuurStart.x - (int)eX, figuurStart.y - (int)eY); 
 					}
 					
 					//if (schalen)
@@ -3002,6 +3071,7 @@ System.out.println("returned " + (numHistories - 1));
 				//draggPoints.removeAllElements();
 				draggDoublePoints.clear();
 				repaint();
+				produceAction("changed");
 			}
 /*			
 			else if (mouseMode == gummen)
@@ -3024,6 +3094,7 @@ System.out.println("returned " + (numHistories - 1));
 				
 				addToHistory();
 				repaint();
+				produceAction("changed");
 			}
 			else if (mouseMode == rechthoekTekenen)
 			{	
@@ -3040,7 +3111,8 @@ System.out.println("returned " + (numHistories - 1));
 				tekenRechthoek = null;
 				
 				addToHistory();
-				repaint();				
+				repaint();	
+				produceAction("changed");
 			}
 			else if (mouseMode == cirkelTekenen)
 			{	
@@ -3057,7 +3129,8 @@ System.out.println("returned " + (numHistories - 1));
 				tekenRechthoek = null;
 				
 				addToHistory();
-				repaint();				
+				repaint();	
+				produceAction("changed");
 			}
 			
 			else if (mouseMode == tekstTekenen)
@@ -3076,6 +3149,7 @@ System.out.println("returned " + (numHistories - 1));
 					objectMoved = false;
 					//sleepSelectie = false;
 					repaint();
+					produceAction("changed");
 				}
 				
 				if (objectsSelected.size() == 0)
@@ -3085,6 +3159,7 @@ System.out.println("returned " + (numHistories - 1));
 					killRotateHandles();
 					
 					repaint();
+					produceAction("changed");
 				}
 				else if (objectsSelected.size() == 1)
 				{	
@@ -3107,6 +3182,7 @@ System.out.println("returned " + (numHistories - 1));
 					resetSelectedObjects();
 					
 					repaint();
+					produceAction("changed");
 					
 					
 				}
@@ -3137,6 +3213,7 @@ System.out.println("returned " + (numHistories - 1));
 				angleSum = 0;
 				
 				repaint();
+				produceAction("changed");
 
 			}
 

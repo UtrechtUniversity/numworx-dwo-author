@@ -675,19 +675,29 @@ public class Streep
 	public void teken(Graphics2D g)
 	{
 		
-		g.setColor(kleur);		
+		g.setPaint(kleur);
+        g.setStroke(new BasicStroke(1.2f));
+		GeneralPath path = new GeneralPath();
+		path.moveTo(pXD[0],pYD[0]);
+		for (int pCnt = 1; pCnt < puntenXD.length; pCnt++)
+		{	
+			path.lineTo(pXD[pCnt], pYD[pCnt]);
+		}
+		path.moveTo(pXD[0],pYD[0]);
+		path.closePath();
+		g.draw(path);
 		
-		if (puntenXD.length == 1)
-		{	g.drawLine((int) Math.round(pXD[0]), (int) Math.round(pYD[0]), 
-				       (int) Math.round(pXD[0]), (int) Math.round(pYD[0]));
-		}
-		if (puntenXD.length > 1)
-		{	for (int pCnt = 1; pCnt < puntenXD.length; pCnt++)
-			{	g.drawLine((int) Math.round(pXD[pCnt - 1]), (int) Math.round(pYD[pCnt - 1]), 
-						   (int) Math.round(pXD[pCnt]), (int) Math.round(pYD[pCnt]));
-			}
-			
-		}
+//		if (puntenXD.length == 1)
+//		{	g.drawLine((int) Math.round(pXD[0]), (int) Math.round(pYD[0]), 
+//				       (int) Math.round(pXD[0]), (int) Math.round(pYD[0]));
+//		}
+//		if (puntenXD.length > 1)
+//		{	for (int pCnt = 1; pCnt < puntenXD.length; pCnt++)
+//			{	g.drawLine((int) Math.round(pXD[pCnt - 1]), (int) Math.round(pYD[pCnt - 1]), 
+//						   (int) Math.round(pXD[pCnt]), (int) Math.round(pYD[pCnt]));
+//			}
+//			
+//		}
 		
 		//tekenBB(g);
 	}

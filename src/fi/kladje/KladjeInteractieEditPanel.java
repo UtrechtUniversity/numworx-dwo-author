@@ -39,6 +39,11 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox, tekstTekenenBox;
 	JCheckBox roterenBox, schalenBox;
 	
+	JLabel translationLabel;
+	JTextField translationXTF, translationYTF;
+	JLabel scaleLabel;
+	JTextField scaleTF;
+	
 	public KladjeInteractieEditPanel()
 	{
 		setLayout(null);
@@ -80,7 +85,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		blancoButton.addActionListener(this);
 		achtergrondGroep.add(blancoButton);
 		
-		currentY += height + offset / 3;		
+		currentY += height;// + offset / 3;		
 		
 		lijnenButton = new JRadioButton(Kladje.rb.getString("lijnenTekst"), false);
 		lijnenButton.setFont(theFont);
@@ -90,7 +95,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		lijnenButton.addActionListener(this);
 		achtergrondGroep.add(lijnenButton);
 		
-		currentY += height + offset / 3;		
+		currentY += height;// + offset / 3;		
 		
 		ruitjes20Button = new JRadioButton(Kladje.rb.getString("ruitjesTekst"), false);
 		ruitjes20Button.setFont(theFont);
@@ -100,7 +105,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		ruitjes20Button.addActionListener(this);
 		achtergrondGroep.add(ruitjes20Button);
 		
-		currentY += height + offset / 3;
+		currentY += height;// + offset / 3;
 		
 		ruitjes40Button = new JRadioButton(Kladje.rb.getString("ruitjes40Tekst"), false);
 		ruitjes40Button.setFont(theFont);
@@ -110,7 +115,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		ruitjes40Button.addActionListener(this);
 		achtergrondGroep.add(ruitjes40Button);
 		
-		currentY += height + offset / 3;
+		currentY += height;// + offset / 3;
 		
 		ruitjes80Button = new JRadioButton(Kladje.rb.getString("ruitjes80Tekst"), false);
 		ruitjes80Button.setFont(theFont);
@@ -133,7 +138,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		add(lijnTekenenBox);
 		lijnTekenenBox.addActionListener(this);
 		
-		currentY += height + offset;
+		currentY += height;// + offset;
 		
 		rechthoekTekenenBox = new JCheckBox(Kladje.rb.getString("rechthoekTekenenTekst"), true);
 		rechthoekTekenenBox.setFont(theFont);
@@ -142,7 +147,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		add(rechthoekTekenenBox);
 		rechthoekTekenenBox.addActionListener(this);
 		
-		currentY += height + offset;
+		currentY += height;// + offset;
 
 		cirkelTekenenBox = new JCheckBox(Kladje.rb.getString("cirkelTekenenTekst"), true);
 		cirkelTekenenBox.setFont(theFont);
@@ -151,7 +156,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		add(cirkelTekenenBox);
 		cirkelTekenenBox.addActionListener(this);
 		
-		currentY += height + offset;
+		currentY += height;// + offset;
 
 		tekstTekenenBox = new JCheckBox(Kladje.rb.getString("tekstTekenenTekst"), true);
 		tekstTekenenBox.setFont(theFont);
@@ -169,7 +174,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		add(roterenBox);
 		roterenBox.addActionListener(this);
 		
-		currentY += height + offset;
+		currentY += height;// + offset;
 		
 		schalenBox = new JCheckBox(Kladje.rb.getString("schalenTekst"), true);
 		schalenBox.setFont(theFont);
@@ -178,8 +183,37 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		add(schalenBox);
 		schalenBox.addActionListener(this);
 		
-		currentY += height + offset;
+		currentY += height + 2*offset;
 		
+		translationLabel = new JLabel("translation");
+		translationLabel.setFont(theFont);
+		translationLabel.setBounds(currentX, currentY, 100, height);
+		add(translationLabel);
+		
+		translationXTF = new JTextField("0");
+		translationXTF.setFont(theFont);
+		translationXTF.setBounds(currentX+100, currentY, 30, height);
+		translationXTF.addActionListener(this);
+		add(translationXTF);
+		
+		translationYTF = new JTextField("0");
+		translationYTF.setFont(theFont);
+		translationYTF.setBounds(currentX+140, currentY, 30, height);
+		translationYTF.addActionListener(this);
+		add(translationYTF);
+		
+		currentY += height;
+		
+		scaleLabel = new JLabel("scale");
+		scaleLabel.setFont(theFont);
+		scaleLabel.setBounds(currentX, currentY, 100, height);
+		add(scaleLabel);
+		
+		scaleTF = new JTextField("1.0");
+		scaleTF.setFont(theFont);
+		scaleTF.setBounds(currentX+100, currentY, 30, height);
+		scaleTF.addActionListener(this);
+		add(scaleTF);
 		
 		componentsCreated = true;
 	}	
@@ -202,6 +236,13 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			
 			roterenBox.setLocation(klip.getSize().width + offset, roterenBox.getLocation().y);
 			schalenBox.setLocation(klip.getSize().width + offset, schalenBox.getLocation().y);
+			
+			translationLabel.setLocation(klip.getSize().width + offset, translationLabel.getLocation().y);
+			translationXTF.setLocation(klip.getSize().width + offset+100, translationXTF.getLocation().y);
+			translationYTF.setLocation(klip.getSize().width + offset+130, translationYTF.getLocation().y);
+			
+			scaleLabel.setLocation(klip.getSize().width + offset, scaleLabel.getLocation().y);
+			scaleTF.setLocation(klip.getSize().width + offset+100, scaleTF.getLocation().y);
 		}
 	}
 	
@@ -256,6 +297,20 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		if (b.containsKey("schalen"))
 			schalen = ((Boolean) b.get("schalen")).booleanValue();
 		schalenBox.setSelected(schalen);
+		
+		int translationx = 0;
+		if(b.containsKey("translationX"))
+			translationx = ((Integer) b.get("translationX")).intValue();
+		translationXTF.setText(""+translationx);
+		int translationy = 0;
+		if(b.containsKey("translationY"))
+			translationy = ((Integer) b.get("translationY")).intValue();
+		translationYTF.setText(""+translationy);
+		
+		double scale = 1.0;
+		if(b.containsKey("scale"))
+			scale = ((Double) b.get("scale")).doubleValue();
+		scaleTF.setText(""+scale);
 		
 		if (b.containsKey("klipBreedte"))
 			klipBreedte = ((Integer) b.get("klipBreedte")).intValue();
@@ -389,6 +444,14 @@ System.out.println("kliep getEditState");
 		else if (e.getSource() == schalenBox)
 		{
 			klip.zetSchalen(schalenBox.isSelected());
+		}
+		else if (e.getSource() == translationXTF || e.getSource() == translationYTF)
+		{
+			klip.zetTranslation(Integer.parseInt(translationXTF.getText()), Integer.parseInt(translationYTF.getText()));
+		}
+		else if (e.getSource() == scaleTF)
+		{
+			klip.zetScale(Double.parseDouble(scaleTF.getText()));
 		}
 
 	}

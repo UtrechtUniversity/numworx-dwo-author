@@ -20,7 +20,9 @@ public class Text_nl extends java.util.ListResourceBundle
             { "roterenTekst" , "Objecten draaien" },
             { "schalenTekst" , "Objecten schalen" },
             
-            
+            { "CBA_drawing", "tekening"},
+            { "CBA_double.translationX", "translatie x"},
+            { "CBA_double.translationY", "translatie y"},
             
 		};
 }
