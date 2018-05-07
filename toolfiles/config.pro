@@ -99,6 +99,30 @@
     <methods>;
 }
 
+# extra's voor statistiek
+-keeppackagenames fi.statistiek.**,org.knowm.**,de.**,org.apache.**
+
+-keep class fi.statistiek.text.* {
+    <fields>;
+    <methods>;
+}
+
+-keep class fi.beans.*.* {
+    <fields>;
+    <methods>;
+}
+
+-keep class fi.statistiek.Statistiek {
+    <methods>;
+}
+
+-keep class fi.statistiek.types.* {
+	<methods>;
+	<fields>;
+}
+
+
+
 # Keep - Applications. Keep all application classes, along with their 'main'
 # methods.
 -keepclasseswithmembers public class * {
