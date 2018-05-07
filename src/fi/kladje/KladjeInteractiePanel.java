@@ -1522,11 +1522,15 @@ System.out.println("kladjeVeld sized");
 		if (e.getSource() == wisButton)
 		{
 			kladjeVeld.wis(true);
+			Map map = kladjeVeld.getState();
+			cbookEventHandler.fire("drawing",map);
 		}
 		
 		if (e.getSource() == undoButton)
 		{
 			kladjeVeld.undo();
+			Map map = kladjeVeld.getState();
+			cbookEventHandler.fire("drawing",map);
 		}
 		
 		if (e.getSource() == roteerLinksomButton)
