@@ -42,14 +42,14 @@ public class SimpleSwingBrowser {
 	};
 	private WebEngine engine;
 
-	private final JPanel panel = new JPanel(new BorderLayout());
-	private final JLabel lblStatus = new JLabel();
+//	private final JPanel panel = new JPanel(new BorderLayout());
+//	private final JLabel lblStatus = new JLabel();
 
-	private final JButton btnGo = new JButton("Go");
-	private final JTextField txtURL = new JTextField();
-	private final JProgressBar progressBar = new JProgressBar();
-	private final JPanel topBar = new JPanel(new BorderLayout(5, 0));
-	private final JPanel statusBar = new JPanel(new BorderLayout(5, 0));
+//	private final JButton btnGo = new JButton("Go");
+//	private final JTextField txtURL = new JTextField();
+	//private final JProgressBar progressBar = new JProgressBar();
+//	private final JPanel topBar = new JPanel(new BorderLayout(5, 0));
+//	private final JPanel statusBar = new JPanel(new BorderLayout(5, 0));
 
 	public SimpleSwingBrowser() {
 		super();
@@ -57,42 +57,42 @@ public class SimpleSwingBrowser {
 	}
 
 	public void setAdressFieldVisible(boolean b) {
-		if (!b)
-			panel.remove(topBar);
+//		if (!b)
+//			panel.remove(topBar);
 	}
 
 	public void setStatusBarVisible(boolean b) {
-		if (!b)
-			panel.remove(statusBar);
+//		if (!b)
+//			panel.remove(statusBar);
 	}
 
 	private void initComponents() {
 		createScene();
 
-		ActionListener al = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				loadURL(txtURL.getText());
-			}
-		};
+//		ActionListener al = new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				loadURL(txtURL.getText());
+//			}
+//		};
+//
+//		btnGo.addActionListener(al);
+//		txtURL.addActionListener(al);
+//
+//		//progressBar.setPreferredSize(new Dimension(150, 18));
+//		//progressBar.setStringPainted(true);
+//
+//		topBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
+//		topBar.add(txtURL, BorderLayout.CENTER);
+//		topBar.add(btnGo, BorderLayout.EAST);
+//
+//		statusBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
+//		statusBar.add(lblStatus, BorderLayout.CENTER);
+//		//statusBar.add(progressBar, BorderLayout.EAST);
 
-		btnGo.addActionListener(al);
-		txtURL.addActionListener(al);
-
-		progressBar.setPreferredSize(new Dimension(150, 18));
-		progressBar.setStringPainted(true);
-
-		topBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
-		topBar.add(txtURL, BorderLayout.CENTER);
-		topBar.add(btnGo, BorderLayout.EAST);
-
-		statusBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
-		statusBar.add(lblStatus, BorderLayout.CENTER);
-		statusBar.add(progressBar, BorderLayout.EAST);
-
-		panel.add(topBar, BorderLayout.NORTH);
-		panel.add(jfxPanel, BorderLayout.CENTER);
-		panel.add(statusBar, BorderLayout.SOUTH);
+//		panel.add(topBar, BorderLayout.NORTH);
+//		panel.add(jfxPanel, BorderLayout.CENTER);
+//		panel.add(statusBar, BorderLayout.SOUTH);
 
 		// getContentPane().add(panel);
 
@@ -128,42 +128,42 @@ public class SimpleSwingBrowser {
 					}
 				});
 
-				engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
-					@Override
-					public void handle(final WebEvent<String> event) {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								lblStatus.setText(event.getData());
-							}
-						});
-					}
-				});
+//				engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
+//					@Override
+//					public void handle(final WebEvent<String> event) {
+//						SwingUtilities.invokeLater(new Runnable() {
+//							@Override
+//							public void run() {
+//								lblStatus.setText(event.getData());
+//							}
+//						});
+//					}
+//				});
 
-				engine.locationProperty().addListener(new ChangeListener<String>() {
-					@Override
-					public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								txtURL.setText(newValue);
-							}
-						});
-					}
-				});
+//				engine.locationProperty().addListener(new ChangeListener<String>() {
+//					@Override
+//					public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
+//						SwingUtilities.invokeLater(new Runnable() {
+//							@Override
+//							public void run() {
+//								txtURL.setText(newValue);
+//							}
+//						});
+//					}
+//				});
 
-				engine.getLoadWorker().workDoneProperty().addListener(new ChangeListener<Number>() {
-					@Override
-					public void changed(ObservableValue<? extends Number> observableValue, Number oldValue,
-							final Number newValue) {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								progressBar.setValue(newValue.intValue());
-							}
-						});
-					}
-				});
+//				engine.getLoadWorker().workDoneProperty().addListener(new ChangeListener<Number>() {
+//					@Override
+//					public void changed(ObservableValue<? extends Number> observableValue, Number oldValue,
+//							final Number newValue) {
+//						SwingUtilities.invokeLater(new Runnable() {
+//							@Override
+//							public void run() {
+//								progressBar.setValue(newValue.intValue());
+//							}
+//						});
+//					}
+//				});
 
 				engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
 
@@ -172,7 +172,7 @@ public class SimpleSwingBrowser {
 							SwingUtilities.invokeLater(new Runnable() {
 								@Override
 								public void run() {
-									JOptionPane.showMessageDialog(panel,
+									JOptionPane.showMessageDialog(jfxPanel,
 											(value != null) ? engine.getLocation() + "\n" + value.getMessage()
 													: engine.getLocation() + "\nUnexpected error.",
 											"Loading error...", JOptionPane.ERROR_MESSAGE);
@@ -231,7 +231,7 @@ public class SimpleSwingBrowser {
 	private JFrame getFrame() {
 		if (frame == null) {
 			frame = new JFrame();
-			frame.setContentPane(panel);
+			frame.setContentPane(jfxPanel);
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // for fire and forget
 			frame.setPreferredSize(new Dimension(1024, 600));
 			frame.pack();

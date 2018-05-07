@@ -25,10 +25,23 @@ import fi.wiskopdr.SimpleSwingBrowser;
 
 public class SVGStrategy implements Strategy {
 	
+    
+  
+  
+  
+  
 	private static final String SVG = "http://www.w3.org/2000/svg";
 	private final Iconan parent;
-    private SimpleSwingBrowser browser = new SimpleSwingBrowser();
-
+    private SimpleSwingBrowser _browser;
+    /**
+     * Lqzy initialization
+     * @return svg browser
+     */
+    private synchronized SimpleSwingBrowser getBrowser() {
+      if(_browser==null) _browser = new SimpleSwingBrowser();
+      return _browser;
+    }
+    
 
 	SVGStrategy(Iconan parent) {
 		this.parent = parent;
@@ -109,7 +122,7 @@ public class SVGStrategy implements Strategy {
 
   @Override
   public JComponent getPreviewPanel(String name) {
-    return getPreviewPanel(name, browser);
+    return getPreviewPanel(name, getBrowser());
   }
 
   
