@@ -1,6 +1,7 @@
 package fi.euclides.model;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -833,6 +834,15 @@ public class Model extends Observable implements Observer, NameMapper {
 		}
 	}
 	
+	public boolean removeFromSelection(Collection<?> items) {
+	  if( select.removeAll(items))
+	  {
+	      setChanged();
+	      notifyObservers(SELECT);
+	      return true;
+	  }
+	  return false;
+	}
 	
 	public int getIndex() {
 		return index;
