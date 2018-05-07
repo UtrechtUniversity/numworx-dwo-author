@@ -22,9 +22,10 @@ public class FilteredDestroyHandler extends DestroyHandler {
 	public FilteredDestroyHandler(nl.numworx.geodefiner.common.Instance instance) {
 		this.instance = instance;
 	}
+
 	@Override
 	protected boolean filterSelection(Collection<? extends Destroyable> set) {	
-		set.removeAll(instance.resetItems);
+		getModel().removeFromSelection(instance.resetItems);
 		return super.filterSelection(set);
 	}
 
