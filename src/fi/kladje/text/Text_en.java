@@ -17,6 +17,7 @@ public class Text_en extends java.util.ListResourceBundle
             { "rechthoekTekenenTekst" , "Drawing rectangles" },
             { "cirkelTekenenTekst" , "Drawing circles" },
             { "tekstTekenenTekst" , "Drawing text" },
+            { "formuleOptieTekst" , "Formula option" },
             { "roterenTekst" , "Rotate objects" },
             { "schalenTekst" , "Scale objects" },
 

@@ -36,11 +36,11 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	ImageIcon tekenCursorIcon, gumCursorIcon; 
 	
 	Image lijnDefault, lijnRollover, lijnSelected, rechthoekDefault, rechthoekRollover, rechthoekSelected,
-		  cirkelDefault, cirkelRollover, cirkelSelected, tekstDefault, tekstRollover, tekstSelected,
-		  selecterenDefault, selecterenRollover, selecterenSelected;;
+		  cirkelDefault, cirkelRollover, cirkelSelected, tekstDefault, tekstRollover, tekstSelected, formuleDefault, formuleRollover, formuleSelected,
+		  selecterenDefault, selecterenRollover, selecterenSelected;
 	ImageIcon lijnDefaultIcon, lijnRolloverIcon, lijnSelectedIcon, rechthoekDefaultIcon, rechthoekRolloverIcon, rechthoekSelectedIcon,
 			  cirkelDefaultIcon, cirkelRolloverIcon, cirkelSelectedIcon, tekstDefaultIcon, tekstRolloverIcon, tekstSelectedIcon,
-			  selecterenDefaultIcon, selecterenRolloverIcon, selecterenSelectedIcon;
+			  selecterenDefaultIcon, selecterenRolloverIcon, selecterenSelectedIcon, formuleDefaultIcon, formuleRolloverIcon, formuleSelectedIcon;
 	
 	Image lijnCursor, rechthoekCursor, cirkelCursor, tekstCursor, selecterenCursor;
 	ImageIcon lijnCursorIcon, rechthoekCursorIcon, cirkelCursorIcon, tekstCursorIcon, selecterenCursorIcon; 
@@ -60,7 +60,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	int bottomHeight = 30;
 	int offSet = 5;
 	
-	JToggleButton tekenButton, lijnButton, rechthoekButton, cirkelButton, tekstButton, selecterenButton;
+	JToggleButton tekenButton, lijnButton, rechthoekButton, cirkelButton, tekstButton, formuleButton, selecterenButton;
 	ButtonGroup tekenGumGroup;
 	JButton undoButton, wisButton;
 	JToggleButton[] kleurKeuzeButtons;
@@ -88,6 +88,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	boolean rechthoekTekenen = true;
 	boolean cirkelTekenen = true;
 	boolean tekstTekenen = true;
+	boolean formuleOptie = false;
 //	boolean selecteren = true;
 	
 	boolean roteren = true;
@@ -280,6 +281,34 @@ System.out.println("klip " + getBackground().toString());
 			System.out.println("Error reading teken_tekst_selected.gif");
 		}
 		
+		imageURL = Kladje.class.getResource("resources/formuleknop.gif");
+		if (imageURL != null) 
+		{
+			formuleDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading formuleknop.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/formuleknop.gif");
+		if (imageURL != null) 
+		{
+			formuleRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading formuleknop.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/formuleknop.gif");
+		if (imageURL != null) 
+		{
+			formuleSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading formuleknop.gif");
+		}
+		
 		imageURL = Kladje.class.getResource("resources/teken_selecteren_default.gif");
 		if (imageURL != null) 
 		{
@@ -446,6 +475,12 @@ System.out.println("klip " + getBackground().toString());
 			tekstRollover = tekstRolloverIcon.getImage();
 		if (tekstSelectedIcon != null)
 			tekstSelected = tekstSelectedIcon.getImage();
+		if (formuleDefaultIcon != null)
+			formuleDefault = formuleDefaultIcon.getImage();
+		if (formuleRolloverIcon != null)
+			formuleRollover = formuleRolloverIcon.getImage();
+		if (formuleSelectedIcon != null)
+			formuleSelected = formuleSelectedIcon.getImage();
 		if (selecterenDefaultIcon != null)
 			selecterenDefault = selecterenDefaultIcon.getImage();
 		if (selecterenRolloverIcon != null)
@@ -524,7 +559,10 @@ System.out.println("klip " + getBackground().toString());
 		if (b.containsKey("tekstTekenen"))
 			tekstTekenen = ((Boolean) b.get("tekstTekenen")).booleanValue();
 		zetTekstTekenen(tekstTekenen);
-
+		if (b.containsKey("formuleOptie"))
+			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue();
+		zetFormuleOptie(formuleOptie);
+		
 		boolean roteren = true;
 		if (b.containsKey("roteren"))
 			roteren = ((Boolean) b.get("roteren")).booleanValue();
@@ -620,6 +658,9 @@ System.out.println("klip " + getBackground().toString());
 		if (b.containsKey("tekstTekenen"))
 			tekstTekenen = ((Boolean) b.get("tekstTekenen")).booleanValue();
 		zetTekstTekenen(tekstTekenen);
+		if (b.containsKey("formuleOptie"))
+			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue();
+		zetFormuleOptie(formuleOptie);
 		
 		boolean roteren = true;
 		if (b.containsKey("roteren"))
@@ -688,6 +729,7 @@ System.out.println("klip " + getBackground().toString());
 		h.put("rechthoekTekenen", new Boolean(rechthoekTekenen));
 		h.put("cirkelTekenen", new Boolean(cirkelTekenen));
 		h.put("tekstTekenen", new Boolean(tekstTekenen));
+		h.put("formuleOptie", new Boolean(formuleOptie));
 		
 		h.put("roteren", new Boolean(roteren));
 		h.put("schalen", new Boolean(schalen));
@@ -775,6 +817,14 @@ System.out.println("klip " + getBackground().toString());
 		layoutBottom();
 	}
 	
+	public void zetFormuleOptie(boolean b)
+	{
+		formuleOptie = b;
+		formuleButton.setVisible(formuleOptie);
+		
+		layoutBottom();
+	}
+	
 	public void zetRoteren(boolean b)
 	{
 		roteren = b;
@@ -858,6 +908,12 @@ System.out.println("klip " + getBackground().toString());
 			
 		}
 		
+		if (formuleOptie)
+		{
+			formuleButton.setLocation(currentX, currentY);
+			currentX += formuleButton.getSize().width + offSet;
+			
+		}
 		selecterenButton.setLocation(currentX, currentY);
 		currentX += selecterenButton.getSize().width + 3 * offSet;
 		
@@ -1009,6 +1065,24 @@ System.out.println("klip " + getBackground().toString());
 			add(tekstButton);
 			tekstButton.addActionListener(new TekenGumAL());
 			
+			if (formuleDefault != null && formuleRollover != null && formuleSelected != null)
+			{
+				formuleButton = new JToggleButton(new ImageIcon(formuleDefault), false);
+				formuleButton.setRolloverIcon(new ImageIcon(formuleRollover));
+				formuleButton.setSelectedIcon(new ImageIcon(formuleSelected));
+				formuleButton.setVisible(formuleOptie);
+				
+			}
+			else
+			{
+				formuleButton = new JToggleButton("F");
+			}
+			formuleButton.setBorder(null);
+			formuleButton.setBounds(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
+		                           getSize().height - offSet - 20, 20, 20);
+			add(formuleButton);
+			formuleButton.addActionListener(new TekenGumAL());
+			
 			if (selecterenDefault != null && selecterenRollover != null && selecterenSelected != null)
 			{
 				selecterenButton = new JToggleButton(new ImageIcon(selecterenDefault), false);
@@ -1021,7 +1095,7 @@ System.out.println("klip " + getBackground().toString());
 				selecterenButton = new JToggleButton("S");
 			}
 			selecterenButton.setBorder(null);
-			selecterenButton.setBounds(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
+			selecterenButton.setBounds(formuleButton.getLocation().x + formuleButton.getSize().width + offSet, 
 		                           getSize().height - offSet - 20, 20, 20);
 			add(selecterenButton);
 			selecterenButton.addActionListener(new TekenGumAL());
@@ -1033,6 +1107,7 @@ System.out.println("klip " + getBackground().toString());
 			tekenGumGroup.add(rechthoekButton);
 			tekenGumGroup.add(cirkelButton);
 			tekenGumGroup.add(tekstButton);
+			tekenGumGroup.add(formuleButton);
 			tekenGumGroup.add(selecterenButton);
 			
 
@@ -1151,7 +1226,9 @@ System.out.println("klip " + getBackground().toString());
       			  getSize().height - offSet - 20);
 			tekstButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + offSet, 
 	      			  getSize().height - offSet - 20);
-			selecterenButton.setLocation(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
+			formuleButton.setLocation(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
+	      			  getSize().height - offSet - 20);
+			selecterenButton.setLocation(formuleButton.getLocation().x + formuleButton.getSize().width + offSet, 
 	      			  getSize().height - offSet - 20);
 			
 			undoButton.setLocation(selecterenButton.getLocation().x + selecterenButton.getSize().width + 3 * offSet,

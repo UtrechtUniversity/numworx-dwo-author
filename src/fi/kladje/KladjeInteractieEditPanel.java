@@ -36,7 +36,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	JCheckBox kleurkeuzeBox;
 	ButtonGroup achtergrondGroep;
 	JRadioButton blancoButton, lijnenButton, ruitjes20Button, ruitjes40Button, ruitjes80Button; 
-	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox, tekstTekenenBox;
+	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox, tekstTekenenBox, formuleOptieBox;
 	JCheckBox roterenBox, schalenBox;
 	
 	JLabel translationLabel;
@@ -165,6 +165,15 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		add(tekstTekenenBox);
 		tekstTekenenBox.addActionListener(this);
 		
+		currentY += height;// + offset;
+
+		formuleOptieBox = new JCheckBox(Kladje.rb.getString("formuleOptieTekst"), false);
+		formuleOptieBox.setFont(theFont);
+		formuleOptieBox.setBackground(Color.white);
+		formuleOptieBox.setBounds(currentX, currentY, width, height);
+		add(formuleOptieBox);
+		formuleOptieBox.addActionListener(this);
+		
 		currentY += height + 2 * offset;
 
 		roterenBox = new JCheckBox(Kladje.rb.getString("roterenTekst"), true);
@@ -233,6 +242,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			rechthoekTekenenBox.setLocation(klip.getSize().width + offset, rechthoekTekenenBox.getLocation().y);
 			cirkelTekenenBox.setLocation(klip.getSize().width + offset, cirkelTekenenBox.getLocation().y);
 			tekstTekenenBox.setLocation(klip.getSize().width + offset, tekstTekenenBox.getLocation().y);
+			formuleOptieBox.setLocation(klip.getSize().width + offset, formuleOptieBox.getLocation().y);
 			
 			roterenBox.setLocation(klip.getSize().width + offset, roterenBox.getLocation().y);
 			schalenBox.setLocation(klip.getSize().width + offset, schalenBox.getLocation().y);
@@ -288,6 +298,10 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		if (b.containsKey("tekstTekenen"))
 			tekstTekenen = ((Boolean) b.get("tekstTekenen")).booleanValue();
 		tekstTekenenBox.setSelected(tekstTekenen);
+		boolean formuleOptie = false;
+		if (b.containsKey("formuleOptie"))
+			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue();
+		formuleOptieBox.setSelected(formuleOptie);
 		
 		boolean roteren = true;
 		if (b.containsKey("roteren"))
@@ -436,6 +450,10 @@ System.out.println("kliep getEditState");
 		else if (e.getSource() == tekstTekenenBox)
 		{
 			klip.zetTekstTekenen(tekstTekenenBox.isSelected());
+		}
+		else if (e.getSource() == formuleOptieBox)
+		{
+			klip.zetFormuleOptie(formuleOptieBox.isSelected());
 		}
 		else if (e.getSource() == roterenBox)
 		{
