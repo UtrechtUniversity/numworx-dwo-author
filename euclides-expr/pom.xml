@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>fi.euclides</groupId>
 		<artifactId>euclides-parent</artifactId>
-		<version>0.0.3</version>
+		<version>0.0.4-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>euclides-expr</artifactId>
@@ -12,12 +12,12 @@
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-core</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-util</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
