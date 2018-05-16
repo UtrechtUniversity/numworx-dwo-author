@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.numworx.geodefiner</groupId>
 	<artifactId>geodefiner</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>GeoDefiner</name>
 	<dependencies>
 		<dependency>
@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>nl.numworx.geodefiner</groupId>
 			<artifactId>geodefiner-common</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.wiskopdr</groupId>
@@ -145,7 +145,7 @@
 		<daggerVersion>2.11</daggerVersion>
 	</properties>
 	<scm>
-		<developerConnection>scm:svn:https://svn.science.uu.nl/repos/sci.velth101.numworx/geodefiner/tags/geodefiner-0.0.2</developerConnection>
+		<developerConnection>scm:svn:https://svn.science.uu.nl/repos/sci.velth101.numworx/geodefiner/trunk</developerConnection>
 	</scm>
 	<distributionManagement>
 		<repository>
