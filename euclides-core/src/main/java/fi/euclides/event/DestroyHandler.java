@@ -60,9 +60,9 @@ public class DestroyHandler extends EventHandler {
 		}
 	}
 
-	public void pointerClicked(Numbers x, Numbers y) {
-		testHits(x.doubleValue(), y.doubleValue());
-		if(filterSelection(getModel().getSelect()))
+	public void pointerClicked(Numbers x, Numbers y, TrackerContext context) {
+		testHits(x.doubleValue(), y.doubleValue(),context);
+		if(filterSelection(context.selection()))
 			getModel().destroy();
 	}	
 }

@@ -13,16 +13,20 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Vector;
 
 import fi.euclides.event.EventHandler;
+import fi.euclides.event.TrackerContext;
 import fi.euclides.model.AbstractViewer;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.ExtendedLijn;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
 import fi.euclides.model.Segment;
+import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 
-public abstract class AWTViewer extends AbstractViewer implements MouseListener, MouseMotionListener {
+public abstract class AWTViewer extends AbstractViewer implements MouseListener, MouseMotionListener, TrackerContext {
 	protected Graphics2D g;
 	protected EventHandler handler;
 	public int offX, offY, width, height; 
@@ -186,7 +190,7 @@ public abstract class AWTViewer extends AbstractViewer implements MouseListener,
 	
 	public void mouseClicked(MouseEvent e) {
 		if(handler != null) {
-			handler.pointerClicked(e.getX()-offX, e.getY()-offY);
+			handler.pointerClicked(e.getX()-offX, e.getY()-offY, this);
 			paint();
 		}
 	}
@@ -199,21 +203,21 @@ public abstract class AWTViewer extends AbstractViewer implements MouseListener,
 
 	public void mousePressed(MouseEvent e) {
 		if(handler != null) {
-			handler.pointerPressed(e.getX()-offX, e.getY()-offY);
+			handler.pointerPressed(e.getX()-offX, e.getY()-offY,this);
 			paint();
 		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
 		if(handler != null) {
-			handler.pointerReleased(e.getX()-offX, e.getY()-offY);
+			handler.pointerReleased(e.getX()-offX, e.getY()-offY,this);
 			paint();
 		}
 	}
 
 	public void mouseDragged(MouseEvent e) {
 		if(handler != null) {
-			handler.pointerDragged(e.getX()-offX, e.getY()-offY);
+			handler.pointerDragged(e.getX()-offX, e.getY()-offY,this);
 			paint();
 		}
 	}
@@ -241,10 +245,22 @@ public abstract class AWTViewer extends AbstractViewer implements MouseListener,
 		return Numbers.createInteger(width-offX);
 	}
 
-	/**
-	 * @param p
-	 * @param string
-	 * @return
-	 */
+  @Override
+  public void clearSelection() {
+    getModel().clearSelection();
+    
+  }
+
+  @Override
+  public void toggle(Destroyable d) {
+    getModel().toggle(d);
+    
+  }
+
+  @Override
+  public Vector<Destroyable> selection() {
+    return getModel().getSelect();
+  }
+
 	
 }

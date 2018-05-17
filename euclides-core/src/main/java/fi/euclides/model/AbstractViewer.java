@@ -1,10 +1,14 @@
 package fi.euclides.model;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.event.EventHandler;
 import fi.euclides.event.HitTester;
 import fi.euclides.event.NameMapper;
 import fi.euclides.event.Tracker;
+import fi.euclides.event.TrackerContext;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Locus;
 import fi.euclides.model.MP;
@@ -136,7 +140,7 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 	protected ExtendedLijn ll = new ExtendedLijn();
 	protected ExtendedLijn rr = new ExtendRay();
 
-	private Track track;
+	protected Iterable<TrackerContext> track = Collections.emptySet();
 	private boolean labels;
 
 	public void visitLijn(Lijn l) {
@@ -204,7 +208,7 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 	}
 	
 	protected int rint(double x) {
-		return (int)JMath.round(x);
+		return (int)Math.round(x);
 	}
 	
 	protected abstract void setColor(int magenta);
@@ -244,13 +248,20 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 		if(track!=null) {
 			setColor(magenta);
 			tracking = true;
-			track.visit(this);
+			for(TrackerContext t: track) {
+              Track track2 = t.getTrack();
+              if (track2 != null) track2.visit(this);
+            }
 			tracking = false;
 		}
 
 	}
 	
-	public void setTrack(Track track) {
+	public void setTrack(TrackerContext track) {
+	  this.track = Collections.singleton(track);
+	}
+		
+	public void setTrack(Iterable<TrackerContext> track) {
 		this.track = track;
 	}
 

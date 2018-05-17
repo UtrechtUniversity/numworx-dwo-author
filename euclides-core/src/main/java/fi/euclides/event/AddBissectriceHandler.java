@@ -1,5 +1,6 @@
 package fi.euclides.event;
 
+import java.util.List;
 import java.util.Vector;
 
 import fi.euclides.util.Messages;
@@ -77,30 +78,30 @@ public class AddBissectriceHandler extends EventHandler {
 		state = 0;
 	}
 
-	public void pointerPressed(Numbers x, Numbers y) {
+	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
 		if(state == 2)
 		{
-			tracker.setTrack(track);
-			pointerDragged(x,y);
+			context.setTrack(track);
+			pointerDragged(x,y,context);
 		} else if(state == 0 || state == 1)
 		{	
 			track=new Track(x, y);
-			tracker.setTrack(track);
-			pointerDragged(x,y);
+			context.setTrack(track);
+			pointerDragged(x,y,context);
 		}		
 	}
 
-	public void pointerReleased(Numbers x, Numbers y) {
-		pointerDragged(x,y);
-		tracker.setTrack(null);
+	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
+		pointerDragged(x,y,context);
+		context.setTrack(null);
 		Model m = getModel();
-		Vector<Destroyable> select = m.getSelect();
+		Vector<Destroyable> select = context.selection();
 		switch(state) {
 		case 0:
 			if(select.size() == 1 && select.firstElement() instanceof Punt) 
 				; // okay
 			else {
-				m.toggle(m.buildPunt(x, y));
+				context.toggle(m.buildPunt(x, y));
 			}
 			break;
 		case 1:
@@ -108,8 +109,8 @@ public class AddBissectriceHandler extends EventHandler {
 				select.insertElementAt(p1, 0);
 			else {
 				Punt p = m.buildPunt(x, y);
-				m.toggle(p1);
-				m.toggle(p);
+				context.toggle(p1);
+				context.toggle(p);
 			}
 			break;
 		case 2:
@@ -120,9 +121,9 @@ public class AddBissectriceHandler extends EventHandler {
 			} else 
 			{ 	
 				Punt p = m.buildPunt(x, y);
-				m.toggle(p1);
-				m.toggle(p2);
-				m.toggle(p);
+				context.toggle(p1);
+				context.toggle(p2);
+				context.toggle(p);
 			}
 			break;
 		}

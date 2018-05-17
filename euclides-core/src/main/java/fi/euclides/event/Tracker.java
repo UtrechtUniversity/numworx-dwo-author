@@ -2,12 +2,10 @@ package fi.euclides.event;
 
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Model;
-import fi.euclides.model.Track;
 import fi.euclides.proof.LabelDelegate;
 
 public interface Tracker {
 
-	void setTrack(Track track);
 
 	void setPointerHandler(EventHandler eventHandler);
 

@@ -18,14 +18,7 @@ import fi.euclides.model.Track;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.math.Numbers;
 
-public abstract class EventHandler implements Visitor {
-
-	/* (non-Javadoc)
-	 * @see euclides.Visitor#visitLabel(euclides.Label)
-	 */
-	public void visitLabel(Label label) {
-		if(testLabel) getModel().toggle(label);
-	}
+public abstract class EventHandler {
 
 	Tracker tracker;
 	Track track;
@@ -40,10 +33,74 @@ public abstract class EventHandler implements Visitor {
 		setStatus(this.string);
 	}
 	
-	protected void testHits(double x, double y) {
-		clear();
-		HitTester hitTester = getTracker().getHitTester();
-		hitTester.setVisitor(this);
+  protected class InContext implements Visitor {
+    protected final TrackerContext context;
+
+    protected InContext(TrackerContext context) {
+      this.context = context;
+    }
+
+    public void visitCirkel(Cirkel c) {
+      if (testLijn) context.toggle(c);
+    }
+
+    public void visitBoog(Boog b) {
+      if (testLijn) context.toggle(b);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see euclides.Visitor#visitSegment(euclides.Segment)
+     */
+    public void visitSegment(Segment s) {
+      visitLijn(s);
+    }
+
+    public void visitLijn(Lijn l) {
+      if (testLijn) context.toggle(l);
+    }
+
+    protected void visitMP(MP l) {
+      if (testLijn) context.toggle(l);
+    }
+
+    public void visitTriangle(Triangle t) {
+      visitMP(t);
+    }
+
+    public void visitKegelsnede(Kegelsnede2 k) {
+      visitMP(k);
+    }
+
+    public void visitLocus(Locus l) {
+      visitMP(l);
+    }
+
+    public void visitPunt(Punt p) {
+      context.toggle(p);
+      done = true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see euclides.Visitor#visitLabel(euclides.Label)
+     */
+    public void visitLabel(Label label) {
+      if (testLabel) context.toggle(label);
+    }
+
+  }
+
+	protected Visitor inContext(TrackerContext context) {
+	  return new InContext(context);
+	}
+	
+	protected void testHits(double x, double y, TrackerContext context) {
+		clear(context);
+		HitTester hitTester = context.getHitTester();
+		hitTester.setVisitor(inContext(context));
 		hitTester.setXY(x, y);
 		done = false;
 		if(testPunt)
@@ -53,57 +110,29 @@ public abstract class EventHandler implements Visitor {
 		hitTester.done();
 	}
 
-	void clear() {
-		getModel().clearSelection();
+	void clear(TrackerContext context) {
+		context.clearSelection();
 	}
 	
 	
-	public void pointerDragged(Numbers x, Numbers y)
+	public void pointerDragged(Numbers x, Numbers y, TrackerContext context)
 	{
-		testHits(x.doubleValue(),y.doubleValue());
+		testHits(x.doubleValue(),y.doubleValue(), context);
+		Track track = context.getTrack();
 		if(track!= null) 
 			track.setXY(x, y);
 	}
 	
-	public void pointerPressed(Numbers x, Numbers y)
+	public void pointerPressed(Numbers x, Numbers y, TrackerContext context)
 	{
 		
 	}
 	
-	public void pointerReleased(Numbers x, Numbers y)
+	public void pointerReleased(Numbers x, Numbers y, TrackerContext context)
 	{
 		
 	}
 	
-	public void visitCirkel(Cirkel c) {
-		if(testLijn) getModel().toggle(c);
-	}
-	
-	public void visitBoog(Boog b) {
-		if(testLijn) getModel().toggle(b);
-	}
-
-	public void visitLijn(Lijn l) {
-		if(testLijn) getModel().toggle(l);
-	}
-	public void visitMP(MP l) {
-		if(testLijn) getModel().toggle(l);
-	}
-	
-	public void visitTriangle(Triangle t) {
-		visitMP(t);	
-	}
-	public void visitKegelsnede(Kegelsnede2 k) {
-		visitMP(k);	
-	}
-	public void visitLocus(Locus l) {
-		visitMP(l);
-	}
-
-	public void visitPunt(Punt p) {
-		getModel().toggle(p);
-		done = true;
-	}
 
 	final public Model getModel() {
 		return tracker.getModel();
@@ -125,13 +154,13 @@ public abstract class EventHandler implements Visitor {
 		return tracker;
 	}
 
-	public void pointerClicked(Numbers x, Numbers y) {
+	public void pointerClicked(Numbers x, Numbers y, TrackerContext context) {
 	}
-	final public void pointerClicked(int x, int y) {
-		pointerClicked(Numbers.createInteger(x),Numbers.createInteger(y));
+	final public void pointerClicked(int x, int y, TrackerContext context) {
+		pointerClicked(Numbers.createInteger(x),Numbers.createInteger(y), context);
 	}
-	final public void pointerClicked(double x, double y) {
-		pointerClicked(Numbers.createDouble(x), Numbers.createDouble(y));
+	final public void pointerClicked(double x, double y, TrackerContext context) {
+		pointerClicked(Numbers.createDouble(x), Numbers.createDouble(y),context);
 	}
 
 	/**
@@ -141,36 +170,30 @@ public abstract class EventHandler implements Visitor {
 		this.string = string;
 	}
 
-	/* (non-Javadoc)
-	 * @see euclides.Visitor#visitSegment(euclides.Segment)
-	 */
-	public void visitSegment(Segment s) {
-		visitLijn(s);
-	}
 
 	protected void setStatus(String string) {
 		getTracker().setStatus(string);
 	}
 
-	final public void pointerDragged(int i, int j) {
-		pointerDragged(Numbers.createInteger(i), Numbers.createInteger(j));	
+	final public void pointerDragged(int i, int j, TrackerContext context) {
+		pointerDragged(Numbers.createInteger(i), Numbers.createInteger(j), context);	
 	}
-	final public void pointerDragged(double i, double j) {
-		pointerDragged(Numbers.createDouble(i), Numbers.createDouble(j));	
-	}
-
-	final public void pointerPressed(int i, int j) {
-		pointerPressed(Numbers.createInteger(i), Numbers.createInteger(j));	
-	}
-	final public void pointerPressed(double i, double j) {
-		pointerPressed(Numbers.createDouble(i), Numbers.createDouble(j));	
+	final public void pointerDragged(double i, double j, TrackerContext context) {
+		pointerDragged(Numbers.createDouble(i), Numbers.createDouble(j), context);	
 	}
 
-	public final void pointerReleased(int i, int j) {
-		pointerReleased(Numbers.createInteger(i), Numbers.createInteger(j));	
+	final public void pointerPressed(int i, int j, TrackerContext context) {
+		pointerPressed(Numbers.createInteger(i), Numbers.createInteger(j), context);	
 	}
-	public final void pointerReleased(double i, double j) {
-		pointerReleased(Numbers.createDouble(i), Numbers.createDouble(j));	
+	final public void pointerPressed(double i, double j, TrackerContext context) {
+		pointerPressed(Numbers.createDouble(i), Numbers.createDouble(j), context);	
+	}
+
+	public final void pointerReleased(int i, int j, TrackerContext context) {
+		pointerReleased(Numbers.createInteger(i), Numbers.createInteger(j), context);	
+	}
+	public final void pointerReleased(double i, double j, TrackerContext context) {
+		pointerReleased(Numbers.createDouble(i), Numbers.createDouble(j), context);	
 	}
 
 	protected String s(Destroyable d) {

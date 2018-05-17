@@ -3,11 +3,15 @@ package fi.euclides.proof;
 import fi.euclides.event.EventHandler;
 import fi.euclides.model.MP;
 import fi.euclides.model.Triangle;
+import fi.euclides.model.Visitor;
+import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.LabelTrack;
 import fi.euclides.model.Lijn;
+import fi.euclides.model.Locus;
 import fi.euclides.model.MiddelPunt;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp2;
@@ -18,7 +22,7 @@ import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
-public class IncidentHandler extends EventHandler implements Observer {
+public class IncidentHandler extends EventHandler implements Observer, Visitor {
 
 	
 	boolean selected, trivial = false;
@@ -294,5 +298,29 @@ public class IncidentHandler extends EventHandler implements Observer {
 		}
 	
 	}
+
+  @Override
+  public void visitTriangle(Triangle t) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void visitKegelsnede(Kegelsnede2 k) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void visitLocus(Locus l) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void visitBoog(Boog b) {
+    // TODO Auto-generated method stub
+    
+  }
 
 }

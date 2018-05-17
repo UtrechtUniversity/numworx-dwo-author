@@ -1,5 +1,9 @@
 package fi.euclides.gwt.canvas;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.TextAlign;
@@ -11,18 +15,68 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 import fi.euclides.event.EventHandler;
+import fi.euclides.event.HitTester;
 import fi.euclides.event.NameMapper;
+import fi.euclides.event.TrackerContext;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.gwt.GWTMouseHandler;
+import fi.euclides.gwt.GWTMultiTouchHandler;
 import fi.euclides.gwt.GWTTouchHandler;
 import fi.euclides.gwt.ViewerWidget;
 
 public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
-	private final CssColor black = CssColor.make(0,0,0);
+	class SpeelVeldContext implements TrackerContext {
+
+	  final int id;
+	  Track track;
+	  
+    SpeelVeldContext(int id) {
+      this.id = id;
+    }
+
+    @Override
+    public void setTrack(Track track) {
+      this.track = track;
+    }
+
+    @Override
+    public Track getTrack() {
+      return track;
+    }
+
+    @Override
+    public HitTester getHitTester() {
+      return SpeelVeld.this.getHitTester();
+    }
+
+    @Override
+    public void clearSelection() {
+      getModel().clearSelection();
+    }
+
+    @Override
+    public void toggle(Destroyable d) {
+      getModel().toggle(d);
+    }
+
+    @Override
+    public Vector<Destroyable> selection() {
+      return getModel().getSelect();
+    }
+
+    @Override
+    public <T> T adapt(Class<T> cls) {
+      return null;
+    }
+
+  }
+
+  private final CssColor black = CssColor.make(0,0,0);
 	private final CssColor white = CssColor.make(255,255,255);
 	private final static int POINTER_COLOR=5;
 	private final static int WHITE=6;
@@ -64,6 +118,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		ll.setClip(0, 0, width, height);
 		rr.setClip(0, 0, width, height);
 		this.status = status;
+		setTrack(contexts.values());
 		initHandlers(canvas);
 	}
 
@@ -88,13 +143,14 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		status = new Label(" ");
 		ll.setClip(0, 0, width, height);
 		rr.setClip(0, 0, width, height);
+		setTrack(contexts.values());
 		initHandlers(canvas);
 	}
 	
 	private void initHandlers(final Canvas canvas) {
 		boolean hastouch = TouchStartEvent.isSupported();
 		if(hastouch) {
-			GWTTouchHandler h = new GWTTouchHandler(this);
+			GWTMultiTouchHandler h = new GWTMultiTouchHandler(this);
 			canvas.addTouchCancelHandler(h);
 			canvas.addTouchEndHandler(h);
 			canvas.addTouchMoveHandler(h);
@@ -240,8 +296,19 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	protected int offX;
 	protected int offY;
 	
-	public void processMouseDown(int x, int y) {
-		handler.pointerPressed(x-offX, y-offY);
+	Map<Integer, TrackerContext> contexts = new HashMap<>();
+	
+	TrackerContext getCtx(int id) {
+	  TrackerContext c = contexts.get(id);
+	  if(c == null) {
+	      c = new SpeelVeldContext(id);
+	      contexts.put(id, c);
+	  }
+	  return c;
+	}
+	
+	public void processMouseDown(int x, int y,int id) {
+		handler.pointerPressed(x-offX, y-offY,getCtx(id));
 		moved = false;
 		paint();
 	}
@@ -251,17 +318,17 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		handler = eventHandler;
 	}
 
-	public void processMouseDrag(int x, int y) {
+	public void processMouseDrag(int x, int y,int id ) {
 		moved=true;
-		handler.pointerDragged(x-offX, y-offY);
+		handler.pointerDragged(x-offX, y-offY,getCtx(id));
 		paint();
 	}
 
-	public void processMouseUp(int x, int y) {
+	public void processMouseUp(int x, int y,int id) {
 		x -= offX; y -= offY;
 		if (!moved)
-			handler.pointerClicked(x, y);
-		handler.pointerReleased(x, y);
+			handler.pointerClicked(x, y,getCtx(id));
+		handler.pointerReleased(x, y,getCtx(id));
 		paint();
 	}
 
@@ -382,4 +449,5 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	@Override
 	public void setBackground(String string) {		
 	}
+
 }

@@ -3,13 +3,17 @@ package fi.euclides.expr;
 import java.io.IOException;
 
 import fi.euclides.model.MP;
+import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Codec;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
+import fi.euclides.model.Locus;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
+import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelDelegate;
@@ -97,5 +101,25 @@ public class List extends LabelDelegate implements Visitor {
 
 	public Destroyable[] createDepend(int args) {
 		return new Destroyable[args];
-	}	
+	}
+
+  @Override
+  public void visitTriangle(Triangle t) {
+    visitMP(t);
+  }
+
+  @Override
+  public void visitKegelsnede(Kegelsnede2 k) {
+    visitMP(k);
+  }
+
+  @Override
+  public void visitLocus(Locus l) {
+    visitMP(l);
+  }
+
+  @Override
+  public void visitBoog(Boog b) {
+    appendName(b);
+  }	
 }

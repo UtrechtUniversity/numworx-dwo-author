@@ -9,8 +9,8 @@ public class AddRaakLijnHandler extends EventHandler {
 		
 	}
 
-	public void pointerReleased(Numbers x, Numbers y) {
-		super.pointerReleased(x, y);
+	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
+		super.pointerReleased(x, y,context);
 		getModel().buildRaaklijn(x, y);
 	}
 

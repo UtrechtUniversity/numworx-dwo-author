@@ -11,11 +11,11 @@ public interface ViewerWidget extends IsWidget {
 	AbstractViewer getViewer();
 	EventHandler   getPanHandler();
 	
-	void processMouseDown(int x, int y);
+	void processMouseDown(int x, int y, int id);
 
-	void processMouseUp(int x, int y);
+	void processMouseUp(int x, int y, int id);
 
-	void processMouseDrag(int x, int y);
+	void processMouseDrag(int x, int y, int id);
 	
 	void init(int w, int h);
 	

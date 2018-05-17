@@ -63,25 +63,25 @@ public class AddMiddelPuntHandler extends EventHandler {
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerPressed(double, double)
 	 */
-	public void pointerPressed(Numbers x, Numbers y) {
+	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
 		if(state == 1)
 		{
-			tracker.setTrack(track);
-			pointerDragged(x,y);
+			context.setTrack(track);
+			pointerDragged(x,y,context);
 		} else if(state == 0)
 		{	
 			track=new Track(x, y);
-			tracker.setTrack(track);
-			pointerDragged(x,y);
+			context.setTrack(track);
+			pointerDragged(x,y,context);
 		}		
 	}
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerReleased(double, double)
 	 */
 
-	public void pointerReleased(Numbers x, Numbers y) {
-		pointerDragged(x,y);
-		tracker.setTrack(null);
+	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
+		pointerDragged(x,y,context);
+		context.setTrack(null);
 		Vector select = getModel().getSelect();
 		if(state == 1)
 		{	Destroyable p1;

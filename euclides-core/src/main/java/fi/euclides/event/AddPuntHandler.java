@@ -41,10 +41,10 @@ public class AddPuntHandler extends EventHandler {
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerPressed(double, double)
 	 */
-	public void pointerPressed(Numbers x, Numbers y) {
+	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
 		track = new Track(x, y);
-		tracker.setTrack(track);
-		pointerDragged(x,y);
+		context.setTrack(track);
+		pointerDragged(x,y,context);
 	}
 
 	/* (non-Javadoc)
@@ -58,10 +58,10 @@ public class AddPuntHandler extends EventHandler {
 	/* (non-Javadoc)
 	 * @see fi.euclides.event.EventHandler#pointerReleased(double, double)
 	 */
-	public void pointerReleased(Numbers x, Numbers y) {
+	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
 		punt = null;
-		HitTester hitTester = getTracker().getHitTester();
-		hitTester.setVisitor(this);
+		HitTester hitTester = context.getHitTester();
+		hitTester.setVisitor(inContext(context));
 		hitTester.setXY(x.doubleValue(), y.doubleValue());
 		done = false;
 		Enumeration<Punt> e = getModel().getPunten().elements();
@@ -86,7 +86,7 @@ public class AddPuntHandler extends EventHandler {
 				}
 			}
 		}
-		tracker.setTrack(null);
+		context.setTrack(null);
 		command();
 	}
 
@@ -162,19 +162,19 @@ public class AddPuntHandler extends EventHandler {
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerDragged(double, double)
 	 */
-	public void pointerDragged(Numbers x, Numbers y) {
+	public void pointerDragged(Numbers x, Numbers y, TrackerContext context) {
 		if(state != 0)
-			track.setXY(x, y);
+			context.getTrack().setXY(x, y);
 		else
-			super.pointerDragged(x, y);
+			super.pointerDragged(x, y,context);
 	}
 
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#clear()
 	 */
-	void clear() {
+	void clear(TrackerContext context) {
 		if(testLijn)
-			super.clear();
+			super.clear(context);
 	}
 
 	private boolean isLijnOfConic(Object o)

@@ -51,7 +51,8 @@ implements TouchStartHandler, TouchMoveHandler, TouchEndHandler, TouchCancelHand
 		current = touch;
 		x = touch.getRelativeX(e);
 		y = touch.getRelativeY(e);
-		viewer.processMouseDown(x,y);
+		int id = touch.getIdentifier();
+		viewer.processMouseDown(x,y,id);
 		event.getNativeEvent().preventDefault();
 		event.getNativeEvent().stopPropagation();
 	}
@@ -63,8 +64,9 @@ implements TouchStartHandler, TouchMoveHandler, TouchEndHandler, TouchCancelHand
 			Element element = event.getRelativeElement();
 			x = touch.getRelativeX(element);
 			y = touch.getRelativeY(element);
+			int id = touch.getIdentifier();
 			viewer.moveAway(x, y);
-			viewer.processMouseDrag(x,y);
+			viewer.processMouseDrag(x,y,id);
 			event.getNativeEvent().preventDefault();
 			event.getNativeEvent().stopPropagation();
 		}
@@ -75,7 +77,7 @@ implements TouchStartHandler, TouchMoveHandler, TouchEndHandler, TouchCancelHand
 		Touch touch = getTouch(event);
 		if(current != null && touch == null)
 		{	viewer.moveBack();
-			viewer.processMouseUp(x, y);
+			viewer.processMouseUp(x, y,current.getIdentifier());
 			current = null;
 			event.getNativeEvent().preventDefault();
 			event.getNativeEvent().stopPropagation();
@@ -87,7 +89,7 @@ implements TouchStartHandler, TouchMoveHandler, TouchEndHandler, TouchCancelHand
 		Touch touch = getTouch(event);
 		if(current != null && touch == null)
 		{	viewer.moveBack();
-			viewer.processMouseUp(x, y);
+			viewer.processMouseUp(x, y, current.getIdentifier());
 			current = null;
 			event.getNativeEvent().preventDefault();
 			event.getNativeEvent().stopPropagation();

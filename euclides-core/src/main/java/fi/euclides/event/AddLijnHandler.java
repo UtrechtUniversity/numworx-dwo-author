@@ -44,16 +44,16 @@ public class AddLijnHandler extends EventHandler {
 	/* (non-Javadoc)
 	 * @see fi.euclides.model.event.EventHandler#pointerPressed(double, double)
 	 */
-	public void pointerPressed(Numbers x, Numbers y) {
+	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
 		if(state == 1)
 		{
-			tracker.setTrack(track);
-			pointerDragged(x,y);
+			context.setTrack(track);
+			pointerDragged(x,y,context);
 		} else if(state == 0)
 		{	
 			track=new Track(x, y);
-			tracker.setTrack(track);
-			pointerDragged(x,y);
+			context.setTrack(track);
+			pointerDragged(x,y,context);
 		}
 		
 	}
@@ -61,9 +61,9 @@ public class AddLijnHandler extends EventHandler {
 	/* (non-Javadoc)
 	 * @see fi.euclides.model.event.EventHandler#pointerReleased(double, double)
 	 */
-	public void pointerReleased(Numbers x, Numbers y) {
-		pointerDragged(x,y);
-		tracker.setTrack(null);
+	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
+		pointerDragged(x,y,context);
+		context.setTrack(null);
 		Model model = getModel();
 		Vector<Destroyable> select = model.getSelect();
 		if (state == 1)

@@ -102,10 +102,10 @@ public class SelectHandler extends EventHandler {
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerClicked(double, double)
 	 */
-	public void pointerClicked(Numbers x, Numbers y) {
+	public void pointerClicked(Numbers x, Numbers y, TrackerContext context) {
 		click=true;
 		//testLijn=true;
-		testHits(x.doubleValue(),y.doubleValue());
+		testHits(x.doubleValue(),y.doubleValue(),context);
 		click=false;
 		//testLijn=false;
 	}
@@ -113,49 +113,34 @@ public class SelectHandler extends EventHandler {
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerPressed(double, double)
 	 */
-	public void pointerPressed(Numbers x, Numbers y) {
+	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
 		this.lastx = x;
 		this.lasty = y;
 		track = null;
-		testHits(x.doubleValue(), y.doubleValue());
-		tracker.setTrack(track);
+		testHits(x.doubleValue(), y.doubleValue(),context);
+		context.setTrack(track);
 	}
 
 	/* (non-Javadoc)
 	 * @see fi.euclides.event.EventHandler#pointerDragged(fi.euclides.model.math.Numbers, fi.euclides.model.math.Numbers)
 	 */
-	public void pointerDragged(Numbers x, Numbers y) {
+	public void pointerDragged(Numbers x, Numbers y, TrackerContext context) {
 		if(track == null)  // for capture effect.
 		{
 			lastx = x; 
 			lasty = y;
 		}
-		super.pointerDragged(x, y);
+		super.pointerDragged(x, y,context);
 	}
 
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerReleased(double, double)
 	 */
-	public void pointerReleased(Numbers x, Numbers y) {
+	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
 		track = null;
-		tracker.setTrack(null);
+		context.setTrack(null);
 	}
 
-	/* (non-Javadoc)
-	 * @see euclides.event.EventHandler#visitPunt(euclides.Punt)
-	 */
-	public void visitPunt(Punt p) {
-		if(click)
-		{
-			super.visitPunt(p);
-			return;
-		}
-		
-		if(freePunt(p) )
-		{	if(track == null) track = new Track(p);
-		    done = true;
-		}
-	}
 
 	/**
 	 * @param p
@@ -175,23 +160,6 @@ public class SelectHandler extends EventHandler {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see fi.euclides.event.EventHandler#visitLijn(fi.euclides.model.Lijn)
-	 */
-	public void visitLijn(Lijn l) {
-		if(click)
-			super.visitLijn(l);
-		else if(track == null) {
-			
-			if(freePuntenLine(l))
-			{
-				track = new Track(new LineMover(lastx, lasty, (PuntenLijn)l));
-			} else if(freeCombiLijn(l))
-			{
-				track = new Track(new LineMover(lastx, lasty, (LijnPuntCombi<?>)l));
-			}
-		}
-	}
 
 	protected boolean freeCombiLijn(Lijn l) {
 		if (l instanceof Poollijn)
@@ -219,51 +187,99 @@ public class SelectHandler extends EventHandler {
 		return freePunt(c.getCenter()) && (!c.isr2c() || freePunt(c.getRadius()));
 	}
 
-	public void visitLabel(Label l)
-	{
-		if(click)
-			super.visitLabel(l);
-		else if(track == null)
-		{
-			track = new LabelTrack(l,lastx, lasty);
-		}
+	@Override
+	protected Visitor inContext(TrackerContext context) {
+	  return new InSelectContext(context);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see fi.euclides.event.EventHandler#visitCirkel(fi.euclides.model.Cirkel)
-	 */
-	public void visitCirkel(Cirkel c) {
-		if(click)
-			super.visitCirkel(c);
-		else if(track == null && freeCirkel(c))
-			track = new Track(new LineMover(lastx, lasty, c));
-	}
+  protected class InSelectContext extends InContext {
 
-	/* (non-Javadoc)
-	 * @see fi.euclides.event.EventHandler#visitMP(fi.euclides.locus.MP)
-	 */
-	public void visitMP(MP l) {
-		if(click)
-			super.visitMP(l);
-		else if(track == null && freeMP(l))
-			track = new Track(new LineMover(lastx, lasty, l));
-	}
+    protected InSelectContext(TrackerContext context) {
+      super(context);
+    }
 
-	protected boolean freeMP(MP l) {
-		return l.getDepend() instanceof Punt[] && freePunt((Punt[])l.getDepend());
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see euclides.event.EventHandler#visitPunt(euclides.Punt)
+     */
+    public void visitPunt(Punt p) {
+      if (click) {
+        super.visitPunt(p);
+        return;
+      }
+
+      if (freePunt(p)) {
+        if (track == null) track = new Track(p);
+        done = true;
+      }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fi.euclides.event.EventHandler#visitLijn(fi.euclides.model.Lijn)
+     */
+    public void visitLijn(Lijn l) {
+      if (click)
+        super.visitLijn(l);
+      else if (track == null) {
+
+        if (freePuntenLine(l)) {
+          track = new Track(new LineMover(lastx, lasty, (PuntenLijn) l));
+        } else if (freeCombiLijn(l)) {
+          track = new Track(new LineMover(lastx, lasty, (LijnPuntCombi<?>) l));
+        }
+      }
+    }
+
+    public void visitLabel(Label l) {
+      if (click)
+        super.visitLabel(l);
+      else if (track == null) {
+        track = new LabelTrack(l, lastx, lasty);
+      }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fi.euclides.event.EventHandler#visitCirkel(fi.euclides.model.Cirkel)
+     */
+    public void visitCirkel(Cirkel c) {
+      if (click)
+        super.visitCirkel(c);
+      else if (track == null && freeCirkel(c)) track = new Track(new LineMover(lastx, lasty, c));
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fi.euclides.event.EventHandler#visitMP(fi.euclides.locus.MP)
+     */
+    public void visitMP(MP l) {
+      if (click)
+        super.visitMP(l);
+      else if (track == null && freeMP(l)) track = new Track(new LineMover(lastx, lasty, l));
+    }
+
+    protected boolean freeMP(MP l) {
+      return l.getDepend() instanceof Punt[] && freePunt((Punt[]) l.getDepend());
+    }
+
+    @Override
+    public void visitBoog(Boog b) {
+      if (click) super.visitBoog(b);
+    }
+
+  }
 
 	/* Empty...
 	 * @see euclides.event.EventHandler#clear()
 	 */
-	void clear() {
+	@Override
+	void clear(TrackerContext context) {
 	}
 
-	@Override
-	public void visitBoog(Boog b) {
-		if (click)
-			super.visitBoog(b);
-	}
 
 }

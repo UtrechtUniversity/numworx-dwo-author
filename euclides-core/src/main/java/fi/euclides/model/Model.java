@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
-
 import fi.euclides.util.Hashtable;
 
 import java.util.Vector;

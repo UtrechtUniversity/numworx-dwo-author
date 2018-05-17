@@ -1,5 +1,7 @@
 package fi.euclides.gwt.svg;
 
+import java.util.Vector;
+
 import org.vectomatic.dom.svg.OMNode;
 import org.vectomatic.dom.svg.OMNodeList;
 import org.vectomatic.dom.svg.OMSVGCircleElement;
@@ -25,16 +27,19 @@ import com.google.gwt.user.client.ui.Widget;
 
 import fi.euclides.event.EventHandler;
 import fi.euclides.event.NameMapper;
+import fi.euclides.event.TrackerContext;
 import fi.euclides.gwt.GWTMouseHandler;
 import fi.euclides.gwt.GWTTouchHandler;
 import fi.euclides.gwt.ViewerWidget;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.Punt;
+import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 
 
-public class SVGWidget extends AbstractViewer implements ViewerWidget {
+public class SVGWidget extends AbstractViewer implements ViewerWidget, TrackerContext {
 
 	private SVGImage image;
 	protected OMSVGDocument doc;
@@ -43,6 +48,7 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 	private int offX,offY;
 	private OMSVGGElement g;
 	private OMSVGCircleElement pointer;
+	private Track track;
 
 	public SVGWidget(int width, int height) {
 		this();
@@ -50,6 +56,7 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 	}
 
 	public SVGWidget() {
+        setTrack(this);
 		doc = OMSVGParser.currentDocument();
 		image = new SVGImage();
 		image.setSvgElement(doc.createSVGSVGElement());		
@@ -265,8 +272,8 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 	}
 
 	@Override
-	public void processMouseDown(int x, int y) {
-		handler.pointerPressed(x, y);
+	public void processMouseDown(int x, int y,int id) {
+		handler.pointerPressed(x, y,this);
 		moved = false;
 		paint();
 	}
@@ -291,16 +298,16 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 	}
 
 	@Override
-	public void processMouseUp(int x, int y) {
+	public void processMouseUp(int x, int y, int id) {
 		if(!moved)
-			handler.pointerClicked(x, y);
-		handler.pointerReleased(x, y);
+			handler.pointerClicked(x, y,this);
+		handler.pointerReleased(x, y,this);
 		paint();
 	}
 
 	@Override
-	public void processMouseDrag(int x, int y) {
-		handler.pointerDragged(x, y);
+	public void processMouseDrag(int x, int y, int id) {
+		handler.pointerDragged(x, y,this);
 		moved = true;
 		paint();
 	}
@@ -337,5 +344,30 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget {
 		// TODO Auto-generated method stub
 		
 	}
+
+  @Override
+  public Track getTrack() {
+    return track;
+  }
+
+  @Override
+  public void clearSelection() {
+    getModel().clearSelection();
+  }
+
+  @Override
+  public void toggle(Destroyable d) {
+    getModel().toggle(d);
+  }
+
+  @Override
+  public Vector<Destroyable> selection() {
+    return getModel().getSelect();
+  }
+
+  @Override
+  public void setTrack(Track track) {
+    this.track = track;
+  }
 
 }
