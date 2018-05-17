@@ -3,6 +3,7 @@ package nl.numworx.geodefiner.common;
 import java.util.Vector;
 
 import fi.euclides.event.EventHandler;
+import fi.euclides.event.TrackerContext;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.LijnTrack;
 import fi.euclides.model.Model;
@@ -55,8 +56,8 @@ public class AddPolygonHandler extends EventHandler {
 	}
 
 	@Override
-	public void pointerReleased(Numbers x, Numbers y) {
-		pointerDragged(x,y);
+	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
+		pointerDragged(x,y,context);
 		Model model = getModel();
 		Vector<Destroyable> select = model.getSelect();
 		Punt p;
@@ -113,7 +114,7 @@ public class AddPolygonHandler extends EventHandler {
 			setTrack(new PolygonTrack(x,y, points));
 			break;
 		}
-		getTracker().setTrack(null);
+		context.setTrack(null);
 		getTracker().paint();
 	}
 
@@ -145,10 +146,10 @@ public class AddPolygonHandler extends EventHandler {
 	}
 
 	@Override
-	public void pointerPressed(Numbers x, Numbers y) {	
+	public void pointerPressed(Numbers x, Numbers y,  TrackerContext context) {	
 		final Track t = getTrack();
 		t.setXY(x, y);
-		getTracker().setTrack(t);
+		context.setTrack(t);
 	}
 
 	

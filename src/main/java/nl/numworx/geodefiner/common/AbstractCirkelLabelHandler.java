@@ -2,6 +2,7 @@ package nl.numworx.geodefiner.common;
 
 import java.util.Vector;
 
+import fi.euclides.event.TrackerContext;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Model;
@@ -29,9 +30,9 @@ public abstract class AbstractCirkelLabelHandler extends AbstractTextHandler {
 	}
 
 	@Override
-	public void pointerReleased(Numbers x, Numbers y) {
-		pointerDragged(x,y);
-		getTracker().setTrack(null);
+	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
+		pointerDragged(x,y,context);
+		context.setTrack(null);
 		Model model = getModel();
 		Vector<Destroyable> select = model.getSelect();		
 		if (select.isEmpty() 

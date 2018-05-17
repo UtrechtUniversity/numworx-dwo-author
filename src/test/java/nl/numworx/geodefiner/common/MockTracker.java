@@ -1,7 +1,5 @@
 package nl.numworx.geodefiner.common;
 
-import java.util.HashMap;
-
 import fi.euclides.event.EventHandler;
 import fi.euclides.event.HitTester;
 import fi.euclides.event.NameMapper;
@@ -9,11 +7,9 @@ import fi.euclides.event.Tracker;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Model;
-import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
-import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.Adaptee;
 import fi.euclides.util.Adapter;
 import fi.euclides.util.DefaultAdapter;
@@ -25,9 +21,6 @@ public class MockTracker  extends AbstractViewer implements Tracker, Adaptee {
 	{
 		new Const().setTracker(this);
 		new FlipFlop().setTracker(this);
-	}
-	@Override
-	public void setTrack(Track track) {
 	}
 
 	@Override

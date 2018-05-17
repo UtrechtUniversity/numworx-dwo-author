@@ -20,6 +20,7 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.event.Tracker;
+import fi.euclides.event.TrackerContext;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Coordinaten;
@@ -39,7 +40,6 @@ import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
-import fi.euclides.util.Observer;
 
 public abstract class Instance /*implements Observer*/ {
 
@@ -53,108 +53,126 @@ public abstract class Instance /*implements Observer*/ {
 	
 	//protected int width, height;
 	
-	public final SelectHandler selector = new SelectHandler() {
+  public final SelectHandler selector = new SelectHandler() {
 
-		@Override
-		public void visitLabel(Label l) {
-			if (click && testLabel && l.getRegistered() instanceof FlipFlop)  { 
-				flip(l);
-				return;
-			}
-			if (click && testLabel && l.getRegistered() instanceof Interval) {
-				Animator anima = l.adapt(Animator.class);
-				if(anima != null) {
-					anima.command();
-					return;
-				}
-			}
-			if (click && testLabel && l.getRegistered() instanceof Animator) {
-				Animator anima = (Animator) l.getRegistered();
-				anima.command();
-				return;
-			}
-			if (!click && getTrack() == null && l.adapt(StepValue.class) != null) {
-				setTrack(new IntervalLabelTrack(l, lastx, lasty));
-				return;
-			}
-			super.visitLabel(l);
-		}
+    protected Visitor inContext(TrackerContext context) {
+      return new InInstanceSelectContext(context);
+    }
 
-		@Override
-		protected boolean freePuntenLine(Lijn l) {			
-			return super.freePuntenLine(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
-		}
 
-		@Override
-		protected boolean freeCombiLijn(Lijn l) {
-			return super.freeCombiLijn(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
-		}
+    class InInstanceSelectContext extends SelectHandler.InSelectContext {
 
-		@Override
-		protected boolean freeCirkel(Cirkel c) {
-			return super.freeCirkel(c) && !Boolean.TRUE.equals(c.adapt(Boolean.class));
-		}
+      protected InInstanceSelectContext(TrackerContext context) {
+        super(context);
+      }
 
-		@Override
-		protected boolean freeMP(MP l) {
-			return super.freeMP(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
-		}
+      @Override
+      public void visitLabel(Label l) {
+        if (click && testLabel && l.getRegistered() instanceof FlipFlop) {
+          flip(l);
+          return;
+        }
+        if (click && testLabel && l.getRegistered() instanceof Interval) {
+          Animator anima = l.adapt(Animator.class);
+          if (anima != null) {
+            anima.command();
+            return;
+          }
+        }
+        if (click && testLabel && l.getRegistered() instanceof Animator) {
+          Animator anima = (Animator) l.getRegistered();
+          anima.command();
+          return;
+        }
+        if (!click && getTrack() == null && l.adapt(StepValue.class) != null) {
+          setTrack(new IntervalLabelTrack(l, lastx, lasty));
+          return;
+        }
+        super.visitLabel(l);
+      }
 
-		@Override
-		public void visitPunt(Punt p) {
-			if (!click && getTrack() == null && p.adapt(Label.class) != null) {
-				setTrack(new IntervalLabelTrack(p.adapt(Label.class), lastx, lasty));
-				setGravity(false);
-				return;
-			}
-			boolean gOff = isGOff(p);
-			super.visitPunt(p);
-			if (gOff && getTrack() != null) { setGravity(false); }
-		}
-		
-		boolean isGOff(Punt p ) {
-			Model m = getTracker().getModel();
-			return 	!click && 
-					getTrack() == null &&
-					freePunt(p) && 
-					( m.getO() == p || m.getU() == p);
-		}
-		
-		
-		boolean gravity;
-		private void saveGravity() {
-			Snapper snap = getTracker().adapt(Snapper.class);
-			gravity = snap.isGravity();
-		}
-		
-		private void restoreGravity() {
-			setGravity(gravity);
-		}
-		
-		private void setGravity(boolean gravity) {
-			Snapper snap = getTracker().adapt(Snapper.class);
-			snap.setGravity(gravity);
-		}
+      @Override
+      protected boolean freeMP(MP l) {
+        return super.freeMP(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
+      }
 
-		/* (non-Javadoc)
-		 * @see fi.euclides.event.SelectHandler#pointerPressed(fi.euclides.model.math.Numbers, fi.euclides.model.math.Numbers)
-		 */
-		@Override
-		public void pointerPressed(Numbers x, Numbers y) {
-			saveGravity();
-			super.pointerPressed(x, y);
-		}
+      @Override
+      public void visitPunt(Punt p) {
+        if (!click && getTrack() == null && p.adapt(Label.class) != null) {
+          setTrack(new IntervalLabelTrack(p.adapt(Label.class), lastx, lasty));
+          setGravity(false);
+          return;
+        }
+        boolean gOff = isGOff(p);
+        super.visitPunt(p);
+        if (gOff && getTrack() != null) {
+          setGravity(false);
+        }
+      }
+    }
 
-		/* (non-Javadoc)
-		 * @see fi.euclides.event.SelectHandler#pointerReleased(fi.euclides.model.math.Numbers, fi.euclides.model.math.Numbers)
-		 */
-		@Override
-		public void pointerReleased(Numbers x, Numbers y) {
-			super.pointerReleased(x, y);
-			restoreGravity();
-		}
- 		
-	};
+    @Override
+    protected boolean freeCombiLijn(Lijn l) {
+      return super.freeCombiLijn(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
+    }
+
+    @Override
+    protected boolean freeCirkel(Cirkel c) {
+      return super.freeCirkel(c) && !Boolean.TRUE.equals(c.adapt(Boolean.class));
+    }
+
+    @Override
+    protected boolean freePuntenLine(Lijn l) {
+      return super.freePuntenLine(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
+    }
+
+    boolean isGOff(Punt p) {
+      Model m = getTracker().getModel();
+      return !click && getTrack() == null && freePunt(p) && (m.getO() == p || m.getU() == p);
+    }
+
+
+    boolean gravity;
+
+    private void saveGravity() {
+      Snapper snap = getTracker().adapt(Snapper.class);
+      gravity = snap.isGravity();
+    }
+
+    private void restoreGravity() {
+      setGravity(gravity);
+    }
+
+    private void setGravity(boolean gravity) {
+      Snapper snap = getTracker().adapt(Snapper.class);
+      snap.setGravity(gravity);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fi.euclides.event.SelectHandler#pointerPressed(fi.euclides.model.math.Numbers,
+     * fi.euclides.model.math.Numbers)
+     */
+    @Override
+    public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
+      saveGravity();
+      super.pointerPressed(x, y, context);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see fi.euclides.event.SelectHandler#pointerReleased(fi.euclides.model.math.Numbers,
+     * fi.euclides.model.math.Numbers)
+     */
+    @Override
+    public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
+      super.pointerReleased(x, y, context);
+      restoreGravity();
+    }
+
+  };
 	
 	protected ObjectMap launchData, state;
 	protected DefaultRandomizer random = new DefaultRandomizer();

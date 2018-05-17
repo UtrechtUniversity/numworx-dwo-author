@@ -3,6 +3,7 @@ package nl.numworx.geodefiner.common;
 import java.util.Vector;
 
 import fi.euclides.event.EventHandler;
+import fi.euclides.event.TrackerContext;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Track;
@@ -45,16 +46,16 @@ public abstract class AbstractTextHandler extends EventHandler {
 	}
 
 	@Override
-	public void pointerPressed(Numbers x, Numbers y) {
-		getTracker().setTrack(getTrack());
-		pointerDragged(x,y);
+	public void pointerPressed(Numbers x, Numbers y,  TrackerContext context) {
+		context.setTrack(getTrack());
+		pointerDragged(x,y,context);
 	}
 
 	@Override
-	public void pointerReleased(Numbers x, Numbers y) {
-		pointerDragged(x,y);
+	public void pointerReleased(Numbers x, Numbers y,  TrackerContext context) {
+		pointerDragged(x,y,context);
 		attachSelection();
-		getTracker().setTrack(null);
+		context.setTrack(null);
 	}
 
 	abstract protected void attachLabel(Punt p);
