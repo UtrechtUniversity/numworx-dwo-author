@@ -21,7 +21,6 @@ public class AddPuntHandler extends EventHandler {
 
 	private static final String NIEUW_PUNT = Messages.getString("AddPuntHandler.0"); //$NON-NLS-1$
 	private int state;
-	private Punt punt;
 	/**
 	 * 
 	 */
@@ -42,26 +41,31 @@ public class AddPuntHandler extends EventHandler {
 	 * @see euclides.event.EventHandler#pointerPressed(double, double)
 	 */
 	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
-		track = new Track(x, y);
+		Track track = new Track(x, y);
 		context.setTrack(track);
 		pointerDragged(x,y,context);
 	}
 
-	/* (non-Javadoc)
-	 * @see euclides.event.EventHandler#visitPunt(fi.euclides.model.Punt)
-	 */
+  class InPuntContext extends InContext {
+    private Punt punt;
+
+    protected InPuntContext(TrackerContext context) {
+      super(context);
+    }
+
+	@Override
 	public void visitPunt(Punt p) {
 		this.punt = p;
 		done = true;
-	}
+	}}
 
 	/* (non-Javadoc)
 	 * @see fi.euclides.event.EventHandler#pointerReleased(double, double)
 	 */
 	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
-		punt = null;
+		InPuntContext ipc = new InPuntContext(context);
 		HitTester hitTester = context.getHitTester();
-		hitTester.setVisitor(inContext(context));
+		hitTester.setVisitor(ipc);
 		hitTester.setXY(x.doubleValue(), y.doubleValue());
 		done = false;
 		Enumeration<Punt> e = getModel().getPunten().elements();
@@ -71,9 +75,9 @@ public class AddPuntHandler extends EventHandler {
 				hitTester.visitPunt(p);
 		}
 		hitTester.done();
-		if(punt != null)
+		if(ipc.punt != null)
 		{
-			getModel().clearSelection();
+			context.clearSelection();
 		} else
 		{
 			Punt p = buildPunt(x, y);
@@ -113,9 +117,9 @@ public class AddPuntHandler extends EventHandler {
 		{
 			Cirkel c1 = (Cirkel) p2.getOp1();
 			Cirkel c2 = (Cirkel) p2.getOp2();
-			Enumeration e = getModel().getPunten().elements();
+			Enumeration<Punt> e = getModel().getPunten().elements();
 			while (e.hasMoreElements()) {
-				Punt p = (Punt) e.nextElement();
+				Punt p = e.nextElement();
 				if(p == p2) break;
 				if(PuntOp2.incident(p, c1) && PuntOp2.incident(p, c2))
 				{

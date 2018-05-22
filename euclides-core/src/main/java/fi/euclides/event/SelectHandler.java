@@ -1,8 +1,6 @@
 package fi.euclides.event;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Messages;
 import fi.euclides.model.MP;
 import fi.euclides.model.Boog;
@@ -15,11 +13,9 @@ import fi.euclides.model.Lijn;
 import fi.euclides.model.LijnPuntCombi;
 import fi.euclides.model.Poollijn;
 import fi.euclides.model.Punt;
-import fi.euclides.model.PuntOp;
 import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Track;
 import fi.euclides.model.Visitor;
-import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 
 public class SelectHandler extends EventHandler {
@@ -95,18 +91,15 @@ public class SelectHandler extends EventHandler {
 		testLijn =true;
 	}
 	
-	protected boolean click;
-	protected Numbers lastx;
-	protected Numbers lasty;
 
 	/* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerClicked(double, double)
 	 */
 	public void pointerClicked(Numbers x, Numbers y, TrackerContext context) {
-		click=true;
+		getSelectContext(context).click=true;
 		//testLijn=true;
 		testHits(x.doubleValue(),y.doubleValue(),context);
-		click=false;
+		getSelectContext(context).click=false;
 		//testLijn=false;
 	}
 
@@ -114,21 +107,22 @@ public class SelectHandler extends EventHandler {
 	 * @see euclides.event.EventHandler#pointerPressed(double, double)
 	 */
 	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
-		this.lastx = x;
-		this.lasty = y;
-		track = null;
-		testHits(x.doubleValue(), y.doubleValue(),context);
-		context.setTrack(track);
+	  InSelectContext selectContext = getSelectContext(context);
+      selectContext.lastx = x;
+	  selectContext.lasty = y;
+	  selectContext.track = null;
+	  testHits(x.doubleValue(), y.doubleValue(),context);
+	  context.setTrack(selectContext.track);
 	}
 
 	/* (non-Javadoc)
 	 * @see fi.euclides.event.EventHandler#pointerDragged(fi.euclides.model.math.Numbers, fi.euclides.model.math.Numbers)
 	 */
 	public void pointerDragged(Numbers x, Numbers y, TrackerContext context) {
-		if(track == null)  // for capture effect.
+		if(getSelectContext(context).track == null)  // for capture effect.
 		{
-			lastx = x; 
-			lasty = y;
+		  getSelectContext(context).lastx = x; 
+		  getSelectContext(context).lasty = y;
 		}
 		super.pointerDragged(x, y,context);
 	}
@@ -137,8 +131,8 @@ public class SelectHandler extends EventHandler {
 	 * @see euclides.event.EventHandler#pointerReleased(double, double)
 	 */
 	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
-		track = null;
-		context.setTrack(null);
+	  getSelectContext(context).track = null;
+	  context.setTrack(null);
 	}
 
 
@@ -187,13 +181,30 @@ public class SelectHandler extends EventHandler {
 		return freePunt(c.getCenter()) && (!c.isr2c() || freePunt(c.getRadius()));
 	}
 
-	@Override
-	protected Visitor inContext(TrackerContext context) {
+	protected InSelectContext createContext(TrackerContext context) {
 	  return new InSelectContext(context);
 	}
 	
+	@Override protected final Visitor inContext(TrackerContext c) {
+	  return getSelectContext(c);
+	}
+
+	protected InSelectContext getSelectContext(TrackerContext context) {
+	  DefaultAdapter t = DefaultAdapter.getDefault(context);
+	  InSelectContext r = t.adapt(InSelectContext.class);
+	  if (r == null) {
+	    r = createContext(context);
+	    t.put(InSelectContext.class, r);
+	  }
+	  return r;
+	}
   protected class InSelectContext extends InContext {
 
+    protected boolean click;
+    protected Numbers lastx;
+    protected Numbers lasty;
+    protected Track track;
+ 
     protected InSelectContext(TrackerContext context) {
       super(context);
     }

@@ -25,6 +25,7 @@ import fi.euclides.model.Model;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.util.Adapter;
 
 public abstract class AWTViewer extends AbstractViewer implements MouseListener, MouseMotionListener, TrackerContext {
 	protected Graphics2D g;
@@ -248,13 +249,11 @@ public abstract class AWTViewer extends AbstractViewer implements MouseListener,
   @Override
   public void clearSelection() {
     getModel().clearSelection();
-    
   }
 
   @Override
   public void toggle(Destroyable d) {
     getModel().toggle(d);
-    
   }
 
   @Override
@@ -262,5 +261,17 @@ public abstract class AWTViewer extends AbstractViewer implements MouseListener,
     return getModel().getSelect();
   }
 
+  private Adapter adapter = Adapter.NULL;
+
+  @Override
+  public Adapter getAdapter() {
+    return adapter;
+  }
+
+  @Override
+  public void setAdapter(Adapter adapter) {
+    this.adapter = adapter;
+  }
+  
 	
 }

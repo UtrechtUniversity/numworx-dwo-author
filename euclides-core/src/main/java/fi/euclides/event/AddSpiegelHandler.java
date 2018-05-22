@@ -14,6 +14,7 @@ public class AddSpiegelHandler extends EventHandler {
 	
 	private Destroyable m;
 	private int state;
+    private LijnTrack track;
 	
 	public AddSpiegelHandler() {
 		super(Messages.getString("AddSpiegelHandler.0")); //$NON-NLS-1$
@@ -23,10 +24,10 @@ public class AddSpiegelHandler extends EventHandler {
 	 * @see fi.euclides.event.EventHandler#command()
 	 */
 	public void command() {
-		Vector select = getModel().getSelect();
+		Vector<Destroyable> select = getModel().getSelect();
 		state = select.size();
 		if(state==2)
-		{ 	Destroyable d = (Destroyable) select.firstElement();
+		{ 	Destroyable d = select.firstElement();
 			getModel().toggle(d); // swap 1st and 2nd
 			getModel().toggle(d);
 			build();
@@ -37,7 +38,7 @@ public class AddSpiegelHandler extends EventHandler {
 			testLijn = false;
 			testPunt = true;
 			SpiegelPunt ll = new SpiegelPunt();
-			ll.setMirror(m = (Destroyable) select.firstElement());
+			ll.setMirror(m = select.firstElement());
 			track = new LijnTrack(Numbers.ZERO,Numbers.ZERO, ll);
 			getTracker().setPointerHandler(this);
 			setStatus(Messages.getString("AddSpiegelHandler.1")); //$NON-NLS-1$

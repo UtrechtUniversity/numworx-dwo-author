@@ -4,8 +4,9 @@ import java.util.Vector;
 
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Track;
+import fi.euclides.util.Adaptee;
 
-public interface TrackerContext {
+public interface TrackerContext extends Adaptee {
   void setTrack(Track track);
   Track getTrack();
   
@@ -14,7 +15,5 @@ public interface TrackerContext {
   void clearSelection();
   void toggle(Destroyable d);
   Vector<Destroyable> selection();
-
-  <T> T adapt(Class<T> cls); // extension point
 
 }

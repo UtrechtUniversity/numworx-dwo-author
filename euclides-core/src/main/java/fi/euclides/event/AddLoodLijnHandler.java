@@ -35,6 +35,7 @@ public class AddLoodLijnHandler extends EventHandler {
 
 	private int state;
 	private Destroyable o1;
+    private Track track;
 	public AddLoodLijnHandler() {
 		super(Messages.getString("AddLoodLijnHandler.0")); //$NON-NLS-1$
 	}

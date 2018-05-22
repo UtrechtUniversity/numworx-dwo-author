@@ -21,7 +21,7 @@ import fi.euclides.model.math.Numbers;
 public abstract class EventHandler {
 
 	Tracker tracker;
-	Track track;
+	//Track track;
 	protected boolean testPunt;
 	protected boolean testLijn;
 	protected boolean testLabel;
@@ -138,13 +138,13 @@ public abstract class EventHandler {
 		return tracker.getModel();
 	}
 
-	public void setTrack(Track track) {
-		this.track = track;
-	}
-
-	public Track getTrack() {
-		return track;
-	}
+//	public void setTrack(Track track) {
+//		this.track = track;
+//	}
+//
+//	public Track getTrack() {
+//		return track;
+//	}
 
 	public void setTracker(Tracker tracker) {
 		this.tracker = tracker;

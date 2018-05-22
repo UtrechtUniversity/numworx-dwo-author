@@ -1,9 +1,11 @@
 package fi.euclides.util;
 
+import java.util.HashMap;
+import java.util.Map;
 
 public class DefaultAdapter implements Adapter {
 
-	Hashtable table = new Hashtable();
+	private Map<Class<?>, Object> table = new HashMap<>();
 	
 	@SuppressWarnings("unchecked")
 	public <T> T adapt(Class<T> cls) {
@@ -12,12 +14,10 @@ public class DefaultAdapter implements Adapter {
 		return (T) instance;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void put(Object instance) {
 		table.put(instance.getClass(), instance);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public <K> void put(Class<? super K> key, K value) {
 		if(value == null) {
 			table.remove(key);
@@ -35,5 +35,10 @@ public class DefaultAdapter implements Adapter {
 		}
 		return result;
 	}
+
+  @Override
+  public String toString() {
+    return "DefaultAdapter [table=" + table + "]";
+  }
 
 }

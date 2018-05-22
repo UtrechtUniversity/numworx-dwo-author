@@ -19,6 +19,11 @@ public class AddCirkelHandler extends EventHandler {
 
 	private int state;
 	private Destroyable p;
+    private Track track;
+
+    private void setTrack(Track track) {
+    this.track = track;
+  }
 
 
 	/* (non-Javadoc)

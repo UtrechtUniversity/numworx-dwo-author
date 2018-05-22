@@ -24,10 +24,6 @@ public class DefaultAdapter implements Adapter {
 		}
 	}
 	
-//	public static DefaultAdapter getDefault(Observable d) {
-//		return getDefault( (Adaptee) d);
-//	}
-
 	public static DefaultAdapter getDefault(Adaptee d) {
 		DefaultAdapter result = d.getAdapter().adapt(DefaultAdapter.class);
 		if(result == null)

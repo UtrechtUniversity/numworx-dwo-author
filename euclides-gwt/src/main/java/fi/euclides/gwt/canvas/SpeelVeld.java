@@ -22,6 +22,7 @@ import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.util.Adapter;
 import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.gwt.GWTMouseHandler;
 import fi.euclides.gwt.GWTMultiTouchHandler;
@@ -37,6 +38,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	  
     SpeelVeldContext(int id) {
       this.id = id;
+      adapter = Adapter.NULL;
     }
 
     @Override
@@ -69,9 +71,15 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
       return getModel().getSelect();
     }
 
+    private Adapter adapter;
     @Override
-    public <T> T adapt(Class<T> cls) {
-      return null;
+    public Adapter getAdapter() {
+      return adapter;
+    }
+
+    @Override
+    public void setAdapter(Adapter adapter) {
+      this.adapter = adapter;
     }
 
   }

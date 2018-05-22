@@ -37,6 +37,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.util.Adapter;
 
 
 public class SVGWidget extends AbstractViewer implements ViewerWidget, TrackerContext {
@@ -49,8 +50,17 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget, TrackerCo
 	private OMSVGGElement g;
 	private OMSVGCircleElement pointer;
 	private Track track;
+	private Adapter adapter;
 
-	public SVGWidget(int width, int height) {
+	public Adapter getAdapter() {
+    return adapter;
+  }
+
+  public void setAdapter(Adapter adapter) {
+    this.adapter = adapter;
+  }
+
+  public SVGWidget(int width, int height) {
 		this();
 		init(width, height);
 	}

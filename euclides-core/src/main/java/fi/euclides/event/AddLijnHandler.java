@@ -47,11 +47,12 @@ public class AddLijnHandler extends EventHandler {
 	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
 		if(state == 1)
 		{
+		    Track track = new LijnTrack(p.getX(), p.getY(), getTrackable());
 			context.setTrack(track);
 			pointerDragged(x,y,context);
 		} else if(state == 0)
 		{	
-			track=new Track(x, y);
+			Track track=new Track(x, y);
 			context.setTrack(track);
 			pointerDragged(x,y,context);
 		}
@@ -130,9 +131,6 @@ public class AddLijnHandler extends EventHandler {
 			if(object instanceof Punt)
 			{	testLijn=true;	
 				p = (Punt) object;
-				setTrack(
-					new LijnTrack(p.getX(), p.getY(), getTrackable())
-					);
 				getTracker().setPointerHandler(this);
 				setStatus(Messages.getString("AddLijnHandler.1")); //$NON-NLS-1$
 				return;

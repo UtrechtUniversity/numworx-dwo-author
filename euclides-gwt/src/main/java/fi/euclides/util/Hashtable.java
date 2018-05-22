@@ -7,11 +7,11 @@ import java.util.Map;
 
 public class Hashtable<K,V> extends HashMap<K,V> {
 
-	private static class Bridge implements Enumeration {
+	private static class Bridge<T> implements Enumeration<T> {
 
-		private Iterator iterator;
+		private Iterator<T> iterator;
 
-		private Bridge(Iterator iterator) {
+		private Bridge(Iterator<T> iterator) {
 			this.iterator = iterator;
 		}
 
@@ -19,37 +19,32 @@ public class Hashtable<K,V> extends HashMap<K,V> {
 			return iterator.hasNext();
 		}
 
-		public Object nextElement() {
+		public T nextElement() {
 			return iterator.next();
 		}
 	}
 
 	public Hashtable() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Hashtable(int arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
 	public Hashtable(Map<? extends K, ? extends V> arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
 	public Hashtable(int arg0, float arg1) {
 		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
 	}
 
-	public Enumeration keys() {
-		// TODO Auto-generated method stub
-		return new Bridge(keySet().iterator());
+	public Enumeration<K> keys() {
+		return new Bridge<>(keySet().iterator());
 	}
 
-	public Enumeration elements() {
-		return new Bridge(values().iterator());
+	public Enumeration<V> elements() {
+		return new Bridge<>(values().iterator());
 	}
 
 }

@@ -18,6 +18,7 @@ public class AddMiddelPuntHandler extends EventHandler {
 
 	private int state;
 	Punt p;
+    private Track track;
 	
 	public AddMiddelPuntHandler() {
 		super(Messages.getString("AddMiddelPuntHandler.0")); //$NON-NLS-1$
@@ -42,7 +43,7 @@ public class AddMiddelPuntHandler extends EventHandler {
 			{		
 				testLijn = false;
 				p = (Punt) object;
-				setTrack(
+				track = (
 					new LijnTrack(p.getX(), p.getY(), new MiddelPunt())
 					);
 				getTracker().setPointerHandler(this);

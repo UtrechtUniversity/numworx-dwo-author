@@ -13,6 +13,8 @@ import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 
 public class AddBissectriceHandler extends EventHandler {
+  protected Track track;
+
 
 	private int state;
 	Punt p1, p2;
