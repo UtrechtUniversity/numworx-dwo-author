@@ -22,9 +22,17 @@ public class AddCirkelHandler extends EventHandler {
 
 	private int state;
 	private Destroyable p;
+	private Track track;
 
+	private Track getTrack() {
+    return track;
+  }
 
-	/* (non-Javadoc)
+  private void setTrack(Track track) {
+    this.track = track;
+  }
+
+  /* (non-Javadoc)
 	 * @see euclides.event.EventHandler#pointerPressed(double, double)
 	 */
 	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {

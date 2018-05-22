@@ -17,6 +17,15 @@ import fi.euclides.model.math.Numbers;
 
 public class AddPolygonHandler extends EventHandler {
 
+  private Track track;
+
+  private Track getTrack() {
+  return track;
+}
+
+private void setTrack(Track track) {
+  this.track = track;
+}
 	class PolygonTrack extends Track {
 
 		private Polygon poly;

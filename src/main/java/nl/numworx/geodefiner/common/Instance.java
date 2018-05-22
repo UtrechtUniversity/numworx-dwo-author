@@ -55,7 +55,7 @@ public abstract class Instance /*implements Observer*/ {
 	
   public final SelectHandler selector = new SelectHandler() {
 
-    protected Visitor inContext(TrackerContext context) {
+    protected SelectHandler.InSelectContext createContext(TrackerContext context) {
       return new InInstanceSelectContext(context);
     }
 
@@ -84,8 +84,8 @@ public abstract class Instance /*implements Observer*/ {
           anima.command();
           return;
         }
-        if (!click && getTrack() == null && l.adapt(StepValue.class) != null) {
-          setTrack(new IntervalLabelTrack(l, lastx, lasty));
+        if (!click && track == null && l.adapt(StepValue.class) != null) {
+          track = (new IntervalLabelTrack(l, lastx, lasty));
           return;
         }
         super.visitLabel(l);
@@ -96,16 +96,21 @@ public abstract class Instance /*implements Observer*/ {
         return super.freeMP(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
       }
 
+      boolean isGOff(Punt p) {
+        Model m = getTracker().getModel();
+        return !click && track == null && freePunt(p) && (m.getO() == p || m.getU() == p);
+      }
+
       @Override
       public void visitPunt(Punt p) {
-        if (!click && getTrack() == null && p.adapt(Label.class) != null) {
-          setTrack(new IntervalLabelTrack(p.adapt(Label.class), lastx, lasty));
+        if (!click && track == null && p.adapt(Label.class) != null) {
+          track = (new IntervalLabelTrack(p.adapt(Label.class), lastx, lasty));
           setGravity(false);
           return;
         }
         boolean gOff = isGOff(p);
         super.visitPunt(p);
-        if (gOff && getTrack() != null) {
+        if (gOff && track != null) {
           setGravity(false);
         }
       }
@@ -126,10 +131,6 @@ public abstract class Instance /*implements Observer*/ {
       return super.freePuntenLine(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
     }
 
-    boolean isGOff(Punt p) {
-      Model m = getTracker().getModel();
-      return !click && getTrack() == null && freePunt(p) && (m.getO() == p || m.getU() == p);
-    }
 
 
     boolean gravity;

@@ -14,7 +14,6 @@ public abstract class AbstractTextHandler extends EventHandler {
 	protected AbstractTextHandler(String string) {
 		super(string);
 		testPunt = true;
-		setTrack(new Track(Numbers.ZERO, Numbers.ZERO));
 	}
 
 	@Override
@@ -36,9 +35,6 @@ public abstract class AbstractTextHandler extends EventHandler {
 		selection.clear();
 		return false;
 	}
-
-	
-	
 	
 	@Override
 	public boolean allowSelection(Vector selection) {
@@ -47,7 +43,7 @@ public abstract class AbstractTextHandler extends EventHandler {
 
 	@Override
 	public void pointerPressed(Numbers x, Numbers y,  TrackerContext context) {
-		context.setTrack(getTrack());
+		context.setTrack(new Track(x,y));
 		pointerDragged(x,y,context);
 	}
 
