@@ -28,9 +28,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
  */
 
 public class NabouwenAanzichtenInteractiePanel extends JPanel 
-	   implements InteractiePanel, InteractieEditPanel, NabouwenAanzichtenIF, NumberListener, ActionListener
-// restore (1)	   
-	   			  , CBookAware
+	   implements InteractiePanel, InteractieEditPanel, NabouwenAanzichtenIF, NumberListener, ActionListener, CBookAware
 {	
 	/**
 	 * 
@@ -134,7 +132,6 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	
 	NabouwenAanzichtenInteractieEditPanel naiep;
 	
-// restore (1)	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
 	private String buildHistory = "";
 	
@@ -196,8 +193,7 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
         docentV.setVisible(false);
 		add(docentV);
 		
-		// panel met aanzichten boven
-		//                      voor   rechts
+		// panel met aanzichten boven voor rechts
 		// loopt mee met vloertje
         if (mobileVersion) 
         	vp = new VaktekPanel(kr,0,175,130,130,3, this);
@@ -278,35 +274,24 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 	{	
 		if ((x == getLocation().x) && (y == getLocation().y) &&
 			(b == getSize().width) && (h == getSize().height))
-		{	
-			//System.out.println("naip setBounds return");			
+		{
 			return;
 		}	
 		
 		if (noSetBounds)
 		{
 			noSetBounds = false;	
-			//System.out.println("naip noSetBounds");			
 			return;
 		}
-		
-		//System.out.println("naip setBounds");		
 
 		if (v != null)
-		{	remove(v);
+		{
+			remove(v);
 		}
-/*
-		int vpZijde = Math.min(b, h - 24 - 24);
-		int vpX = (b - vpZijde) / 2;
-		int vpY = (h - 24 - 24 - vpZijde) / 2;
-*/		
 
 		int vpZijde = Math.min(b, h);
 		int vpX = (b - vpZijde) / 2;
 		int vpY = (h - vpZijde) / 2;
-		
-		//System.out.println("create vpX = " + vpX + " vpY = " + vpY);
-		//System.out.println("create vpZijde = " + vpZijde);
 
         v = new Viewer3d(kr, vpX, vpY, vpZijde, vpZijde, this);
         v.zetAchtergrond(bgcolor);
@@ -353,39 +338,18 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 
 		zetKeuzeBouwenSlopen(keuzeBouwenSlopen);
 
-		//System.out.println("kbs vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
-		//System.out.println("kbs vpZijde = " + v.getSize().width);
-		
 		zetVolLeegOptie(volLeegOptie);
 		
-		//System.out.println("vlo vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
-		//System.out.println("vlo vpZijde = " + v.getSize().width);
-		
 		zetAantalBlokjes(aantalBlokjes);
-		
-		//System.out.println("abl vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
-		//System.out.println("abl vpZijde = " + v.getSize().width);
 		
 		zetPijlAan(pijlAan);
 		zetBalkAan(balkAan);
 
-		//System.out.println("pb vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
-		//System.out.println("pb vpZijde = " + v.getSize().width);
-
-		
 		zetBovenAanzichtMetHoogtes(bovenAanzichtMetHoogtes);
 		
-		//System.out.println("setBounds bamh " + bovenAanzichtMetHoogtes);
-		
 		zetMaakAanzicht(maakAanzicht);
-
-		//System.out.println("setBounds ma " + maakAanzicht);		
-		//System.out.println("bah vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
-		//System.out.println("bah vpZijde = " + v.getSize().width);
 		
 		zetBlokkenBouwsel(blokkenBouwsel);
-		
-		//System.out.println("setBounds bb " + blokkenBouwsel);
 
 		zetSilhouet(silhouet);
 		zetDrieAanzichten(drieAanzichten);
@@ -394,43 +358,19 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		zetVoorAanzicht(voorAanzicht);
 		zetRechtsAanzicht(rechtsAanzicht);
 
-		//System.out.println("rec vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
-		//System.out.println("rec vpZijde = " + v.getSize().width);
-		
 		int tabIndex = 0;
 		if ((naiep != null) && (naiep.tabbedPane != null))
 			tabIndex = naiep.tabbedPane.getSelectedIndex();
 		
-//		if (kijkNaActiefKlein)
-//		{	kijkNaActiefKlein = false;
-//		}
-//		else 
 		if (isNakijkModus() && !kPanel.isVisible() && v.isVisible() && (tabIndex == 0))
-		{	noSetBounds = true;
+		{
+			noSetBounds = true;
 			kPanel.setVisible(true);
-			
-//HIER
-			
-			//System.out.println("kijkNa setVis true");			
-			
 		}
 		else if (isNakijkModus() && (tabIndex == 1))
 		{
 			toonDocentViewer(true);
 		}
-/*		
-		else if (kijkNaActief && kijkNaPanel.isVisible() && docentV.isVisible())
-		{	noSetBounds = true;
-			kijkNaPanel.setVisible(false);
-System.out.println("kijkNa setVis false");			
-			
-		}
-*/		
-		//System.out.println("setBounds naip b = " + b + " h = " + h);
-		
-		//System.out.println("final vpX = " + v.getLocation().x + " vpY = " + v.getLocation().y);
-		//System.out.println("final vpZijde = " + v.getSize().width);
-
 		
 		newViewer = false;
 	}
@@ -448,20 +388,11 @@ System.out.println("kijkNa setVis false");
 	
 	public void zetBreedte(int b)
 	{
-		//setBounds(getLocation().x, getLocation().y, b, getSize().height);
 	}
 	
 	public void zetHoogte(int h)
 	{
-		//setBounds(getLocation().x, getLocation().y, getSize().width, h);
 	}
-/*	
-	public void paintComponent(Graphics g)
-	{
-		g.setColor(Color.red);
-		g.drawRect(0, 0, getSize().width - 1, getSize().height - 1);
-	}
-*/	
 	
 	public void setBackground(Color color)
 	{
@@ -582,11 +513,7 @@ System.out.println("kijkNa setVis false");
 					noSetBounds = true;
 					v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
 				}
-				else
-				{
-					//noSetBounds = true;
-					//v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
-				}
+
 				v.zetGetalRooster2(bovenAanzichtMetHoogtes);
 				v.zetHoogtes();
 			
@@ -677,11 +604,7 @@ System.out.println("kijkNa setVis false");
 				noSetBounds = true;
 				v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
 			}
-			else
-			{
-				//noSetBounds = true;
-				//v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
-			}
+
 			v.zetGetalRooster2(bovenAanzichtMetHoogtes);
 			v.zetHoogtes();
 			
@@ -781,11 +704,7 @@ System.out.println("kijkNa setVis false");
 				noSetBounds = true;
 				v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
 			}
-			else
-			{
-				//noSetBounds = true;
-				//v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
-			}
+
 			v.zetGetalRooster2(bovenAanzichtMetHoogtes);
 			v.zetHoogtes();
 			
@@ -913,14 +832,14 @@ System.out.println("kijkNa setVis false");
 			zetPerspectief(perspectief);
 			zetRotatieVast(rotatieVast);
 			newViewer = true;
-			zetBlokkenBouwsel(true); //blokkenBouwsel);
+			zetBlokkenBouwsel(true);
 			newViewer = false; 
-			zetSilhouet(false); //silhouet);
-			zetDrieAanzichten(false); //drieAanzichten);
-			zetVoorZijAanzicht(false); //voorZijAanzicht);
-			zetBovenAanzicht(false); //bovenAanzicht);
-			zetVoorAanzicht(false); //voorAanzicht);
-			zetRechtsAanzicht(false); //rechtsAanzicht);
+			zetSilhouet(false);
+			zetDrieAanzichten(false);
+			zetVoorZijAanzicht(false);
+			zetBovenAanzicht(false);
+			zetVoorAanzicht(false);
+			zetRechtsAanzicht(false);
 		}
 		else
 		{
@@ -1004,8 +923,7 @@ System.out.println("kijkNa setVis false");
 					else
 					{
 						noSetBounds = true;
-						kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width,
-							24);
+						kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
 					}
 					noSetBounds = true;
 					kPanel.setVisible(true);
@@ -1017,9 +935,7 @@ System.out.println("kijkNa setVis false");
 		docentV.zetMaakAanzicht(maakAanzicht);
 		
 		if (!maakAanzicht && !bovenAanzichtMetHoogtes)
-		{	
-			//System.out.println("!ma && !bamh");
-
+		{
 			v.zetSchaduw(true);
 			
 			if ((Math.abs(beginHoekX - 90) < NZERO) && (Math.abs(beginHoekY) < NZERO))
@@ -1164,8 +1080,7 @@ System.out.println("kijkNa setVis false");
 					else
 					{
 						noSetBounds = true;
-						kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width,
-							24);
+						kPanel.setBounds(v.getLocation().x, v.getLocation().y + v.getSize().height, v.getSize().width, 24);
 					}
 					noSetBounds = true;
 					kPanel.setVisible(true);
@@ -1187,15 +1102,12 @@ System.out.println("kijkNa setVis false");
 		else
 		{
 			if (bovenAanzichtMetHoogtes)
-			{	v.zetGetalRooster2(bovenAanzichtMetHoogtes);
+			{
+				v.zetGetalRooster2(bovenAanzichtMetHoogtes);
 				v.zetHoogtes();
 			}
 			
-			//System.out.println("zetBlokkenBouwsel else");
 			v.tekenOpnieuw();
-			//System.out.println("v xhoek = " + v.getXHoek());
-			//System.out.println("v yhoek = " + v.getYHoek());
-			//System.out.println("v schaduw = " + v.schaduw);
 		}
 	}
 	
@@ -1244,7 +1156,6 @@ System.out.println("kijkNa setVis false");
 				{
 					noSetBounds = true;
 					ip.setVisible(false);
-//					noSetBounds = true;
 //					v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);					
 				}
 				
@@ -1252,7 +1163,6 @@ System.out.println("kijkNa setVis false");
 				{
 					noSetBounds = true;
 					kPanel.setVisible(false);
-//					noSetBounds = true;
 //					v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);					
 				}
 				
@@ -1292,7 +1202,6 @@ System.out.println("kijkNa setVis false");
 				// vp.zetDrieAanzichten();
 				noSetBounds = true;
 				vp.setVisible(true);
-				// vp.repaint();
 				if (ip.isVisible())
 				{
 					noSetBounds = true;
@@ -1330,7 +1239,6 @@ System.out.println("kijkNa setVis false");
 				// vp.zetDrieAanzichten();
 				noSetBounds = true;
 				vp.setVisible(true);
-				// vp.repaint();
 				if (ip.isVisible())
 				{
 					noSetBounds = true;
@@ -1368,7 +1276,6 @@ System.out.println("kijkNa setVis false");
 				noSetBounds = true;
 				// vp.zetEenAanzicht(vp.BOVEN);
 				vp.setVisible(true);
-				// vp.repaint();
 				if (ip.isVisible())
 				{
 					noSetBounds = true;
@@ -1406,7 +1313,6 @@ System.out.println("kijkNa setVis false");
 				noSetBounds = true;
 				// vp.zetEenAanzicht(vp.VOOR);
 				vp.setVisible(true);
-				// vp.repaint();
 				if (ip.isVisible())
 				{
 					noSetBounds = true;
@@ -1444,7 +1350,7 @@ System.out.println("kijkNa setVis false");
 				noSetBounds = true;
 				// vp.zetEenAanzicht(vp.RECHTS);
 				vp.setVisible(true);
-				// vp.repaint();
+
 				if (ip.isVisible())
 				{
 					noSetBounds = true;
@@ -1480,7 +1386,8 @@ System.out.println("kijkNa setVis false");
 	public void toonDocentViewer(boolean b)
 	{
 		if (b)
-		{	if (v.isVisible())
+		{
+			if (v.isVisible())
 			{
 				noSetBounds = true;
 				v.setVisible(false);
@@ -1546,7 +1453,6 @@ System.out.println("kijkNa setVis false");
 		
 			if (vIsVisible & !silhouet)
 			{	
-				//v.setVisible(true);
 				noSetBounds = true;
 				kPanel.kijkNaPanel.setVisible(isNakijkModus());
 				kPanel.layoutComponents();
@@ -1555,7 +1461,6 @@ System.out.println("kijkNa setVis false");
 				{	
 					if (!kPanel.isVisible() || (newViewer && !kCorrected))
 					{
-						//System.out.println("!kPanel.isVisible() || (newViewer && !kCorrected");						
 						int vSpace = getSize().height - v.getSize().height - 24;
 						if (ip.isVisible())
 							vSpace -= 24;
@@ -1602,6 +1507,7 @@ System.out.println("kijkNa setVis false");
 
 					int hSpace = getSize().width - v.getSize().width;
 					int vSpace = getSize().height - v.getSize().height + 24;
+					
 					if (ip.isVisible())
 						vSpace -= 24;
 					if (hSpace > 24)
@@ -1609,11 +1515,7 @@ System.out.println("kijkNa setVis false");
 						noSetBounds = true;
 						v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
 					}
-					else
-					{
-						//noSetBounds = true;
-						//v.setBounds(v.getLocation().x - 12, v.getLocation().y, v.getSize().width + 24, v.getSize().height + 24);
-					}
+					
 					v.zetGetalRooster2(bovenAanzichtMetHoogtes);
 					v.zetHoogtes();
 					
@@ -1794,7 +1696,6 @@ System.out.println("kijkNa setVis false");
     		checkBovenZijAanzicht = false;
     		checkBovenAanzicht = false;
     		checkVoorAanzicht = false;
-		
     	}
     }
     
@@ -1809,9 +1710,7 @@ System.out.println("kijkNa setVis false");
     }
 	
 	public void setState(Hashtable h)
-	{	
-		// System.out.println("naip setState");
-
+	{
 		double beginHoekX = 30;
 		double beginHoekY = -30;
 		if (h.containsKey("beginHoekX"))
@@ -1940,10 +1839,6 @@ System.out.println("kijkNa setVis false");
 
 	public void zetOpdracht(Hashtable h , String[] variables, Hashtable values)
 	{
-		//System.out.println("naip zetOpdracht begin");	
-		//if (v!= null)
-		//System.out.println("vw = " + v.getSize().width);	
-		
 		// viewer opties
 		
 		boolean rotatieVast = false;
@@ -2194,9 +2089,6 @@ System.out.println("kijkNa setVis false");
 				kr.zetVulkleur("zwart"); 
 			}
 		}
-		
-//System.out.println("zetOpdracht aantalBlokjes " + aantalBlokjes);
-//System.out.println("zetOpdracht aantal = " + kr.geefAantalK());
 
 		if (aantalBlokjes) 
 			setKPanelText(); // Ook in zetOpdracht: toon aantal blokjes
@@ -2220,10 +2112,6 @@ System.out.println("kijkNa setVis false");
 	    docentV.zetKubusRooster(docentKr);
 	    docentV.zetAchtergrond(getBackground());
 	    
-		//System.out.println("zetOpdracht einde");	
-		//if (v!= null)
-		//System.out.println("vw = " + v.getSize().width);
-
 	    ingevuld = false;
 	}
 	
@@ -2238,8 +2126,6 @@ System.out.println("kijkNa setVis false");
 	    {	
 			booleanKRs[i] = kr.geefBooleanRooster(); //later uitbreiden naar meer kubusroosters
 	    }
-
-		//System.out.println("getState " + kr.geefAantalK());
 
 	    String state = StringCodeObject.encodeObjectToString(booleanKRs);
 	    Hashtable h = new Hashtable();
@@ -2309,8 +2195,6 @@ System.out.println("kijkNa setVis false");
 	
 	public void zetVeranderd()
 	{
-		//System.out.println("zetVeranderd");
-
 		if (v.isVisible())
 		{	
 			v.tekenOpnieuw();
@@ -2333,7 +2217,6 @@ System.out.println("kijkNa setVis false");
 		boolean[][][]  booleanKR = kr.geefBooleanRooster();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("booleanKR", booleanKR);
-		// restore (1)		
 		cbookEventHandler.fire("blockBuilding",map);
 		
 		String lastBuildCommand = v.getLastBuildCommand();
@@ -2442,8 +2325,6 @@ System.out.println("kijkNa setVis false");
 	
 	public void setEditState(Hashtable h)
 	{
-		//System.out.println("naip setEditState");
-
 		boolean rotatieVast = false;
 		if (h.containsKey("rotatieVast"))
 			rotatieVast = ((Boolean) h.get("rotatieVast")).booleanValue();
@@ -2498,28 +2379,21 @@ System.out.println("kijkNa setVis false");
 		if (h.containsKey("bovenAanzichtMetHoogtes"))
 			bovenAanzichtMetHoogtes = ((Boolean) h.get("bovenAanzichtMetHoogtes")).booleanValue();
 		zetBovenAanzichtMetHoogtes(bovenAanzichtMetHoogtes);
-		
-		//System.out.println("bovenAanzichtMetHoogtes " + bovenAanzichtMetHoogtes);		
 
 		boolean maakAanzicht = false;
 		if (h.containsKey("maakAanzicht"))
 			maakAanzicht = ((Boolean) h.get("maakAanzicht")).booleanValue();
 		zetMaakAanzicht(maakAanzicht);
 		
-		//System.out.println("maakAanzicht " + maakAanzicht);		
-		
 		boolean blokkenBouwsel = true;
 		if (h.containsKey("blokkenBouwsel"))
 			blokkenBouwsel = ((Boolean) h.get("blokkenBouwsel")).booleanValue();
 		zetBlokkenBouwsel(blokkenBouwsel);
 		
-		//System.out.println("blokkenBouwsel " + blokkenBouwsel);		
-		
 		boolean silhouet = false;
 		if (h.containsKey("silhouet"))
 			silhouet = ((Boolean) h.get("silhouet")).booleanValue();
 		zetSilhouet(silhouet);
-		//System.out.println("ses " + silhouet);		
 		newViewer = false;
 		
 		boolean drieAanzichten = false;
@@ -2944,7 +2818,6 @@ System.out.println("kijkNa setVis false");
 					score = scoreMax;
 				}
 			}
-
 		}
         else if (checkRechtsAanzicht)
         {	
@@ -2993,21 +2866,13 @@ System.out.println("kijkNa setVis false");
         nagekeken = true;
         ingevuld = true;
         
-        //System.out.println("score = " + score);		
 		fireChangeEvent();
-		//ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "changed");
-		//for (int lCnt = 0; lCnt < listeners.size(); lCnt++)
-		//{
-		//	((ActionListener) listeners.elementAt(lCnt)).actionPerformed(event);
-		//}
     }
     
     public void answerChanged()
     {
     	if (isNakijkModus())
     	{	
-    		//System.out.println("changed");
-
     		correct = false;
     		fout = false;
     		score = 0;
@@ -3048,8 +2913,6 @@ System.out.println("kijkNa setVis false");
     {	
     	listeners.addElement(al);
     }
-
-// restore method
     
     @Override
 	public void addCBookEventListener(CBookEventListener listener, String command) 
@@ -3057,25 +2920,24 @@ System.out.println("kijkNa setVis false");
 		cbookEventHandler.addCBookEventListener(listener, command);
 	}
 
-// restore method
-    
 	@Override
 	public void removeCBookEventListener(CBookEventListener listener,String command) 
 	{
 		cbookEventHandler.removeCBookEventListener(listener, command);
 	}
 
-// restore method
-    
 	@Override
 	public String[] getSendCmds() 
 	{
-		String[] commands = {"blockBuilding", "text.buildingProgram"};
+		String[] commands = {
+			"blockBuilding", 
+			"text.buildingProgram",
+			"action.correct",
+			"action.false",
+			"action.false_2"};
 		return commands;
 	}
 
-// restore method
-    
 	@Override
 	public String[] getAcceptedCmds() 
 	{
@@ -3083,8 +2945,6 @@ System.out.println("kijkNa setVis false");
 		return commands;
 	}
 
-// restore method
-    
 	@Override
 	public void acceptCBookEvent(CBookEvent event) 
 	{
@@ -3100,12 +2960,11 @@ System.out.println("kijkNa setVis false");
 				na.setValue(kr.maxAantal);
 				setKPanelText();	
 			}
-			
 		}
-		if (command.startsWith("text.buildingProgram"))
+		else if (command.startsWith("text.buildingProgram"))
 		{
 			Map map = (Map)event.getParameters();
-			if(map!=null)
+			if (map!=null)
 			{
 				String programText = (String)map.get("content");
 				setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -3118,16 +2977,12 @@ System.out.println("kijkNa setVis false");
 		}
 	}
 			
-	
-// restore method
-    
 	@Override
 	public String getLocalizedCmd(String cmd) 
 	{
 		String localizedCmd = NabouwenAanzichten.rb.getString(CBA_PREFIX + cmd);
-		if(localizedCmd==null)
+		if (localizedCmd == null)
 			return cmd;
 		return localizedCmd;
 	}
-	
 }
