@@ -4,16 +4,13 @@ import java.applet.Applet;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
+
 import java.io.*;
-import fi.nabouwenaanzichten.text.*;
 import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.base64code.*;
-import fi.beans.copyright.*;
 import fi.nabouwenaanzichten.NabouwenAanzichtenInteractiePanel;
-
-import fi.beans.appletutil.*;
 
 /**
  * @author Peter Boon
@@ -21,6 +18,10 @@ import fi.beans.appletutil.*;
 
 public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionListener, NabouwenAanzichtenIF, WiskOpdrApplet
 {	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Image im;
   	private Graphics gIm;
   	private boolean resized = false;
