@@ -121,8 +121,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "CBA_blockBuilding", "blokkenbouwsel"},
 				{ "CBA_text.buildingProgram", "bouwprogramma"},
-				
-				
+				{ "CBA_action.correct", "Actie: correct antwoord"},
+				{ "CBA_action.false", "Actie: fout antwoord"},
+				{ "CBA_action.false_2", "Actie: 2x fout antwoord"}
         };
 }
 
