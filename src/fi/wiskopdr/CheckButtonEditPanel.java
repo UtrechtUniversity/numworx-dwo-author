@@ -33,6 +33,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	private JCheckBox kijkNaCB;
 	private JCheckBox bewaarCB;
 	private JCheckBox rondAfCB;
+	private JCheckBox volgendeCB;
 	
 	private JRadioButton kijkNaEigenVakRB;
 	private JRadioButton kijkNaAllesRB;
@@ -72,6 +73,13 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		rondAfCB.setFont(ifFont);
 		rondAfCB.addActionListener(this);
 		add(rondAfCB);
+		
+		volgendeCB = new JCheckBox("Naar volgende Pagina");
+		volgendeCB.setBounds(20,175,100,20);
+		volgendeCB.setOpaque(false);
+		volgendeCB.setFont(ifFont);
+		volgendeCB.addActionListener(this);
+		add(volgendeCB);
 		
 		kijkNaEigenVakRB = new JRadioButton("Alles in eigen vak");
 		kijkNaEigenVakRB.setBounds(130,50,200,20);
@@ -113,6 +121,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		boolean nakijkenXWidget=false;
 		boolean actieBewaren=false;
 		boolean actieAfronden=false;
+		boolean actionNextPage=false;
 		
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		if(h.containsKey("nakijkenPagina")) nakijkenPagina = ((Boolean)h.get("nakijkenPagina")).booleanValue();
@@ -121,6 +130,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		if(h.containsKey("nakijkenXWidget")) nakijkenXWidget = ((Boolean)h.get("nakijkenXWidget")).booleanValue();
 		if(h.containsKey("actieBewaren")) actieBewaren = ((Boolean)h.get("actieBewaren")).booleanValue();
 		if(h.containsKey("actieAfronden")) actieAfronden = ((Boolean)h.get("actieAfronden")).booleanValue();
+		if(h.containsKey("actionNextPage")) actionNextPage = ((Boolean)h.get("actionNextPage")).booleanValue();
 		
 		this.knopImageString = knopImageString;
 		kijkNaCB.setSelected(nakijken);
@@ -129,6 +139,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		kijkNaXWidgetRB.setSelected(nakijkenXWidget); kijkNaXWidgetRB.setEnabled(nakijken);
 		bewaarCB.setSelected(actieBewaren);
 		rondAfCB.setSelected(actieAfronden);
+		volgendeCB.setSelected(actionNextPage);
 		
 		knopImageButton.setPopupButtonIcon(knopImage);
 	    iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
@@ -152,6 +163,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		boolean actieBewaren=false;
 		boolean actieAfronden=false;
 		boolean nakijken = true;
+		boolean actionNextPage = false;
 		
 		knopImageString = this.knopImageString;
 		nakijken = kijkNaCB.isSelected();
@@ -160,6 +172,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		nakijkenXWidget = kijkNaXWidgetRB.isSelected();
 		actieBewaren = bewaarCB.isSelected();
 		actieAfronden = rondAfCB.isSelected();
+		actionNextPage = volgendeCB.isSelected();
 		
 		Hashtable h = new Hashtable();
 		h.put("knopImageString", knopImageString);
@@ -169,6 +182,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		h.put("nakijkenXWidget", new Boolean(nakijkenXWidget));
 		h.put("actieBewaren", new Boolean(actieBewaren));
 		h.put("actieAfronden", new Boolean(actieAfronden));
+		h.put("actionNextPage", new Boolean(actionNextPage));
 		
 		return h;
 	}

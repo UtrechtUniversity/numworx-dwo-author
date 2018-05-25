@@ -36,6 +36,7 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 	boolean nakijkenXWidget=false;
 	boolean actieBewaren=false;
 	boolean actieAfronden=false;
+	boolean actionNextPage=false;
 	
 	public CheckButtonPanel() {
 		
@@ -65,6 +66,7 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 		boolean actieBewaren=false;
 		boolean actieAfronden=false;
 		boolean nakijken = true;
+		boolean actionNextPage=false;
 		
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		if(h.containsKey("nakijkenPagina")) nakijkenPagina = ((Boolean)h.get("nakijkenPagina")).booleanValue();
@@ -73,12 +75,14 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 		if(h.containsKey("nakijkenXWidget")) nakijkenXWidget = ((Boolean)h.get("nakijkenXWidget")).booleanValue();
 		if(h.containsKey("actieBewaren")) actieBewaren = ((Boolean)h.get("actieBewaren")).booleanValue();
 		if(h.containsKey("actieAfronden")) actieAfronden = ((Boolean)h.get("actieAfronden")).booleanValue();
+		if(h.containsKey("actionNextPage")) actionNextPage = ((Boolean)h.get("actionNextPage")).booleanValue();
 		
 		this.nakijkenPagina = nakijkenPagina && nakijken;
 		this.nakijkenVak = nakijkenVak && nakijken;
 		this.nakijkenXWidget = nakijkenXWidget && nakijken;
 		this.actieBewaren = actieBewaren;
 		this.actieAfronden = actieAfronden;
+		this.actionNextPage = actionNextPage;
 		
 		if(knopImageString!=null && !"".equals(knopImageString))
        	{  	Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
@@ -266,6 +270,10 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 			
 		}
 		if(actieAfronden)
+		{
+			
+		}
+		if(actionNextPage)
 		{
 			
 		}
