@@ -305,6 +305,15 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"javaLogoIpLabel", "JavaLogo"},
                 {"symboolIpLabel", "Symbool"},
                 
+                //CheckButtonEditor
+                {"CB_kijkNaOptieLabel", "Kijk na" },
+                {"CB_bewaarOptieLabel", "Bewaar" },
+                {"CB_rondAfOptieLabel", "Rond af" },
+                {"CB_nextPageOptieLabel", "Naar volgende pagina" },
+                {"CB_eigenVakOptieLabel","Alles in eigen vak"},
+                {"CB_opPaginaOptieLabel","Alles op pagina"},
+                {"CB_viaXWidgetOptieLabel","Alles verbonden via x-widget"},
+                
 				//InstellingenPanel
                 {"OPT_wiskundeLabel" , "Wiskunde"},
                 {"OPT_navigatieLabel" , "Navigatie"},

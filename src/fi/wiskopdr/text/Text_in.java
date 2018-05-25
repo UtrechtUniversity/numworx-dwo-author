@@ -264,6 +264,16 @@ public class Text_in extends java.util.ListResourceBundle
 				{"statSimIpLabel" , "[test] Statistics Simulations"},
 				{"stelselVakLabel", "[test] Stelsel-antwoordvak"},
 	            {"javaLogoIpLabel", "JavaLogo"},
+
+	            //CheckButtonEditor
+                {"CB_kijkNaOptieLabel", "Check" },
+                {"CB_bewaarOptieLabel", "Save" },
+                {"CB_rondAfOptieLabel", "set completed" },
+                {"CB_nextPageOptieLabel", "To next page" },
+                {"CB_eigenVakOptieLabel","All in same box"},
+                {"CB_opPaginaOptieLabel","All on page"},
+                {"CB_viaXWidgetOptieLabel","All connected via x-widget"},
+                
 				
 				//InstellingenPanel
 				{"OPT_vermenigvTeken" , "Tanda perkalian: X"},
