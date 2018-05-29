@@ -77,7 +77,8 @@ public class LayersButton extends JButton implements ActionListener, FocusListen
         
         for(int i = 0; i < maxLayers; i++)
         {	
-        	layerNames[i] = "layer"+(i+1);
+        	if(layerNames[i]==null || layerNames[i].trim().equals(""))
+        			layerNames[i] = "layer"+(i+1);
         	layerVisible[i] = true;
         	
         	Dimension dim = new Dimension(120,20);
