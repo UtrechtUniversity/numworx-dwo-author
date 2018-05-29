@@ -42,13 +42,13 @@ public class GWTMultiTouchHandler
     Element e = event.getRelativeElement();
     JsArray<Touch> touches = event.getChangedTouches();
     int len = touches.length();
-    LOG.info("touch start " + len);
     for (int i = 0; i < len; i++) {
       Touch touch = touches.get(i);
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
       //touchMap.put(id, touch);
+      LOG.fine("touch start " + x + "," + y + "," + id);
       viewer.processMouseDown(x, y, id);
     }
     event.getNativeEvent().preventDefault();
@@ -60,13 +60,13 @@ public class GWTMultiTouchHandler
     Element e = event.getRelativeElement();
     JsArray<Touch> touches = event.getChangedTouches();
     int len = touches.length();
-    LOG.info("touch move " + len);
     for (int i = 0; i < len; i++) {
       Touch touch = touches.get(i);
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
       //touchMap.put(id, touch);
+      LOG.fine("touch move " + x + "," + y + "," + id);
       viewer.processMouseDrag(x, y, id);
     }
     event.getNativeEvent().preventDefault();
@@ -78,13 +78,13 @@ public class GWTMultiTouchHandler
     Element e = event.getRelativeElement();
     JsArray<Touch> touches = event.getChangedTouches();
     int len = touches.length();
-    LOG.info("touch end " + len);
     for (int i = 0; i < len; i++) {
       Touch touch = touches.get(i);
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
       //touchMap.remove(id);
+      LOG.fine("touch end " + x + "," + y + "," + id);
       viewer.processMouseUp(x, y, id);
     }
     event.getNativeEvent().preventDefault();
@@ -96,13 +96,13 @@ public class GWTMultiTouchHandler
     Element e = event.getRelativeElement();
     JsArray<Touch> touches = event.getChangedTouches();
     int len = touches.length();
-    LOG.info("touch cancel " + len);
     for (int i = 0; i < len; i++) {
       Touch touch = touches.get(i);
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
       //touchMap.remove(id);
+      LOG.fine("touch cancel " + x + "," + y + "," + id);
       viewer.processMouseUp(x, y, id);
     }
     event.getNativeEvent().preventDefault();
