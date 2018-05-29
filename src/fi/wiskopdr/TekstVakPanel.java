@@ -80,6 +80,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	public static Map<String,String> templateComponents = new Hashtable<String,String>();
 	public static ArrayList<String> templatePagesKeys = new ArrayList<String>();
 	public static ArrayList<String> templateComponentsKeys = new ArrayList<String>();
+	public static String[] layerNames;
+	public static boolean[] layerVisible;
 	public static boolean TEMPLATE_EDITOR;
 	
 	public static void addTemplatePage(String key, String content) {

@@ -326,6 +326,7 @@ public class Text_es extends java.util.ListResourceBundle
 				{"OPT_styles" , "Use styles"},
 				{"OPT_importStyles" , "Import"},
 				{"OPT_exportStyles" , "Export"},
+				{"OPT_layers" , "Use layers"},
 				
 				{"OBJ_leerdoel", "Objetivo"},
 				{"OBJ_categorie", "Categoría"},

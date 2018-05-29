@@ -1086,6 +1086,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		Hashtable templateComponents = null;
 		ArrayList<String> templatePagesKeys = null;
 		ArrayList<String> templateComponentsKeys = null;
+		boolean hasLayers = false;
+		String[] layerNames = null;
+		boolean[] layerVisible = null;
 		
 		boolean templateEdit = false;
 		
@@ -1216,6 +1219,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			templateComponentsKeys = (ArrayList<String>) h.get("TekstVakPanelTemplateComponentsKeys");
 		if (h != null && h.containsKey("templateEdit"))
 			templateEdit = ((Boolean) h.get("templateEdit")).booleanValue();
+		if (h!=null && h.containsKey("hasLayers"))
+			hasLayers = ((Boolean) h.get("hasLayers")).booleanValue();
+		if (h != null && h.containsKey("layerNames"))
+			layerNames = (String[]) h.get("layerNames");
+		if (h != null && h.containsKey("layerVisible"))
+			layerVisible = (boolean[]) h.get("layerVisible");
 
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
@@ -1226,6 +1235,9 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		TekstVakPanel.templateComponents = templateComponents;
 		TekstVakPanel.templatePagesKeys = templatePagesKeys;
 		TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
+		
+		TekstVakPanel.layerNames = layerNames;
+		TekstVakPanel.layerVisible = layerVisible;
 		
 		AntwoordFormuleVak.zetFontOverervingForm(fontOverervingForm);
 		SimpelAntwoordFormuleVak.zetFontOverervingForm(fontOverervingForm);

@@ -365,7 +365,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_templateEditor" , "Template editor"},
 				{"OPT_styles" , "Gebruik styles"},
 				{"OPT_importStyles" , "Importeer"},
-				{"OPT_exportStyles" , "Exporteer"},				
+				{"OPT_exportStyles" , "Exporteer"},	
+				{"OPT_layers" , "Gebruik layers"},
 				
 				{"OBJ_leerdoel", "Leerdoel"},
 				{"OBJ_categorie", "Vul naam in van categorie"},
@@ -750,6 +751,10 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CN_regelMeer", "Voeg regel toe"},
 				{"CN_regelMinder", "Verwijder regel"},
 					
+				//layer panels
+				{"L_layers", "Layers"},
+				{"L_layerName", "Layer-naam"},
+				{"L_layerVisible","Zichtbaar"},
 				
 				{"CBA_input", "invoer"},
 				{"CBA_int.index", "keuze" },

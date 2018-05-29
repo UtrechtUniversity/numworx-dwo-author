@@ -339,6 +339,7 @@ public class Text_cn extends java.util.ListResourceBundle
 				{"OPT_styles" , "Use styles"},
 				{"OPT_importStyles" , "Import"},
 				{"OPT_exportStyles" , "Export"},
+				{"OPT_layers" , "Use layers"},
 				
 				{"OBJ_leerdoel", "Objective"},
 				{"OBJ_categorie", "Category"},

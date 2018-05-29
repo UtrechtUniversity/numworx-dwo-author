@@ -62,6 +62,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JButton importStylesButton;
 	private JButton importStylesNowButton;
 	private JButton exportStylesButton;
+	private JCheckBox layersCB;
 	
 	
 	private JLabel wiskundeLabel, navigatieLabel, layoutLabel, nakijkenLabel;
@@ -79,6 +80,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JTextField aftrekCorrectieZelftoetsTF;
 	
 	public VoorwaardelijkeNavigatieButton condButton;
+	public LayersButton layersButton;
 	
 	private JLabel margesLabel;
 	private JLabel margeLinksLabel;
@@ -430,6 +432,19 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(Box.createHorizontalStrut(10));
 		boxv3.add(boxh);
 		
+		boxh = Box.createHorizontalBox();
+		layersCB = maakCheckBox(WiskOpdr.rb.getString("OPT_layers"), boxh, false);
+		layersCB.addActionListener(this);
+		boxh.add(Box.createHorizontalStrut(10));
+		
+		layersButton = new LayersButton();
+		layersButton.setFont(font);
+		layersButton.setVisible(false);
+		boxh.add(layersButton);
+		boxh.add(Box.createGlue());
+		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
+		boxv3.add(boxh);
+		
 		boxv3.add(Box.createVerticalStrut(70));
 		
 		//Nakijk-opties
@@ -639,6 +654,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		int aftrekCorrectieZelftoets = 5;
 		boolean templateEdit = false;
 		String studentModelId = null;
+		boolean hasLayers = false;
+		String[] layerNames = null;
+		boolean[] layerVisible = null;
+		
 		try
 		{	fontSize = Integer.parseInt(fontSizeTF.getText());
 			navigatieSize = Integer.parseInt(navigatieSizeTF.getText());
@@ -700,6 +719,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		mccCategorieString = misconceptionsButton.getCategories();
 		scoresZichtbaar = scoresZichtbaarCB.isSelected();
 		templateEdit = templateEditCB.isSelected();
+		hasLayers = layersCB.isSelected();
+		if(hasLayers)
+		{	layerNames = layersButton.getLayerNames();
+			layerVisible = layersButton.getLayerVisible();
+		}
 		
 		try{aftrekCorrectieZelftoets = Integer.parseInt(aftrekCorrectieZelftoetsTF.getText());
 		}
@@ -768,6 +792,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	h.put("misconceptions", misconceptions);
 			h.put("mccCategorieString", mccCategorieString);
 		}
+		h.put("hasLayers", new Boolean(hasLayers));
+		if(hasLayers && layerNames!=null && layerVisible!=null)
+		{	h.put("layerNames", layerNames);
+			h.put("layerVisible", layerVisible);
+		}
 		h.put("scoresZichtbaar", new Boolean(scoresZichtbaar));
 		h.put("templateEdit", new Boolean(templateEdit));
 		h.put("aftrekCorrectieZelftoets", new Integer(aftrekCorrectieZelftoets));
@@ -831,6 +860,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean scoresZichtbaar = true;
 		int aftrekCorrectieZelftoets = 5;
 		boolean templateEdit = false;
+		boolean hasLayers = false;
+		String[] layerNames = null;
+		boolean[] layerVisible = null;
 		
 		if(h.containsKey("fontSize")) fontSize = ((Integer)h.get("fontSize")).intValue();
 		if(h.containsKey("maalTeken")) maalTeken = ((Boolean)h.get("maalTeken")).booleanValue();
@@ -894,6 +926,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("mccCategorieString")) mccCategorieString = (String[])h.get("mccCategorieString");
 		if(h.containsKey("scoresZichtbaar")) scoresZichtbaar = ((Boolean)h.get("scoresZichtbaar")).booleanValue();
 		if(h.containsKey("templateEdit")) templateEdit = ((Boolean)h.get("templateEdit")).booleanValue();
+		if(h.containsKey("hasLayers")) hasLayers = ((Boolean)h.get("hasLayers")).booleanValue();
+		if(h.containsKey("layerNames")) layerNames = (String[])h.get("layerNames");
+		if(h.containsKey("layerVisible")) layerVisible = (boolean[])h.get("layerVisible");
 		
 		fontSizeTF.setText(""+fontSize);
 		navigatieSizeTF.setText(""+navigatieSize);
@@ -973,6 +1008,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		}
 		scoresZichtbaarCB.setSelected(scoresZichtbaar);
 		templateEditCB.setSelected(templateEdit);
+		layersCB.setSelected(hasLayers);
+		layersButton.setVisible(hasLayers);
+		layersButton.zetLayerInfo(layerNames, layerVisible);
 	}
 	
 	public void cancel()
@@ -1028,6 +1066,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(misconceptionsCB.isSelected())
 		{	WiskOpdr.setMisconceptions(misconceptionsButton.getObjectives());
 			WiskOpdr.setMccCategories(misconceptionsButton.getCategories());
+		}
+		if(layersCB.isSelected())
+		{	TekstVakPanel.layerNames = layersButton.getLayerNames();
+			TekstVakPanel.layerVisible = layersButton.getLayerVisible();
 		}
 		//opdrNavStruct.zetScoresZichtbaar(scoresZichtbaarCB.isSelected());
 		TekstVakPanel.setTemplateEditor(templateEditCB.isSelected());
@@ -1172,6 +1214,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				
 				TekstVakPanel.styles.put(styleKeys[i],style);
 			}
+		}
+		if(e.getSource().equals(layersCB))
+		{
+			layersButton.setVisible(layersCB.isSelected());
 		}
 	}
 	//Eenvoudige parser voor styles van Strings naar Objects

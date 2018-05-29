@@ -256,7 +256,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		instellingenPanel = new InstellingenPanel(instellingenDialog, this);
 		instellingenPanel.addActionListener(this);
-		instellingenPanel.setBounds(0, 0, 650, 700);
+		instellingenPanel.setBounds(0, 0, 650, 740);
 		instellingenPanel.zetInstellingen(instellingen);
 
 		instellingenDialog.getContentPane().add(instellingenPanel);
@@ -349,6 +349,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		ArrayList<String> templatePagesKeys = null;
 		ArrayList<String> templateComponentsKeys = null;
 		boolean templateEdit = false;
+		boolean hasLayers = false;
+		String[] layerNames = null;
+		boolean[] layerVisible = null;
 
 		if (h != null && h.containsKey("fontSize"))
 			fontSize = ((Integer) h.get("fontSize")).intValue();
@@ -408,6 +411,12 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			templateComponentsKeys = (ArrayList<String>) h.get("TekstVakPanelTemplateComponentsKeys");
 		if (h != null && h.containsKey("templateEdit"))
 			templateEdit = ((Boolean) h.get("templateEdit")).booleanValue();
+		if (h!=null && h.containsKey("hasLayers"))
+			hasLayers = ((Boolean) h.get("hasLayers")).booleanValue();
+		if (h != null && h.containsKey("layerNames"))
+			layerNames = (String[]) h.get("layerNames");
+		if (h != null && h.containsKey("layerVisible"))
+			layerVisible = (boolean[]) h.get("layerVisible");
 		
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
@@ -444,6 +453,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		AntwoordFormuleVakEditPanel.zetSignificantieAan(significantie);
 		AntwoordVergelijkingVakEditPanel.zetSignificantieAan(significantie);
 		TekstVakPanel.setTemplateEditor(templateEdit);
+		TekstVakPanel.layerNames = layerNames;
+		TekstVakPanel.layerVisible = layerVisible;
 
 		this.abcDeelOpdr = abcDeelOpdr;
 		this.globalParam = globalParam;
