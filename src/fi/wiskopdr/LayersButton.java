@@ -52,7 +52,8 @@ public class LayersButton extends JButton implements ActionListener, FocusListen
         {	this.layerNames[i] = layerNames[i];
 			this.layerVisible[i] = layerVisible[i];
         }
-		aantalRijen = layerNames.length;
+		if(layerNames!=null)
+			aantalRijen = layerNames.length;
 	}
 	
 	public String[] getLayerNames()
