@@ -1,7 +1,5 @@
 package fi.euclides.gwt;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import com.google.gwt.core.client.JsArray;
@@ -25,7 +23,6 @@ public class GWTMultiTouchHandler
 
   final private static Logger LOG = Logger.getLogger("GWTMultiTouchHandler");
   private ViewerWidget viewer;
-//  private Map<Integer, Touch> touchMap = new HashMap<>();
 
   /**
    * 
@@ -47,12 +44,11 @@ public class GWTMultiTouchHandler
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
-      //touchMap.put(id, touch);
       LOG.fine("touch start " + x + "," + y + "," + id);
       viewer.processMouseDown(x, y, id);
     }
-    event.getNativeEvent().preventDefault();
-    event.getNativeEvent().stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   @Override
@@ -65,12 +61,11 @@ public class GWTMultiTouchHandler
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
-      //touchMap.put(id, touch);
       LOG.fine("touch move " + x + "," + y + "," + id);
       viewer.processMouseDrag(x, y, id);
     }
-    event.getNativeEvent().preventDefault();
-    event.getNativeEvent().stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   @Override
@@ -83,12 +78,11 @@ public class GWTMultiTouchHandler
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
-      //touchMap.remove(id);
       LOG.fine("touch end " + x + "," + y + "," + id);
       viewer.processMouseUp(x, y, id);
     }
-    event.getNativeEvent().preventDefault();
-    event.getNativeEvent().stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   @Override
@@ -101,11 +95,10 @@ public class GWTMultiTouchHandler
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
-      //touchMap.remove(id);
       LOG.fine("touch cancel " + x + "," + y + "," + id);
       viewer.processMouseUp(x, y, id);
     }
-    event.getNativeEvent().preventDefault();
-    event.getNativeEvent().stopPropagation();
+    event.preventDefault();
+    event.stopPropagation();
   }
 }
