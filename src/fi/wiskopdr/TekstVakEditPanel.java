@@ -217,6 +217,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean hintButton = false;
 	private JCheckBox hintButtonCB;
 	
+	private JComboBox layerChoice;
+	private int layerNr;
+	private boolean layerVisible;
+	
 	public TekstVakEditPanel(XWidgetManager manager)
 	{	
 		setLayout(null);
@@ -321,7 +325,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		checkUitklapVakCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_checkUitklapVak"), 210,415,120,20, checkUitklapVak, layoutOptionsPanel);
 		randomCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_random"), 240,20,70,24, random, this);
 		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,280,70,20,false,interactionOptionsPanel);
-		visibleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_visible"), 10,530,225,20, visible, layoutOptionsPanel);
+		visibleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_visible"), 10,530,100,20, visible, layoutOptionsPanel);
 		ideasCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_ideasStatistiek"), 10, 555, 150, 20, ideasStatistiek, interactionOptionsPanel);
 		backButtonCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_backButton"), 10, 580, 150, 20, backButton, interactionOptionsPanel);
 		hintButtonCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_hintButton"), 10, 605, 150, 20, hintButton, interactionOptionsPanel);
@@ -738,6 +742,19 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		editStylesButton.setVisible(manageStyles);
 		layoutOptionsPanel.add(editStylesButton);
 		
+		layerChoice = new JComboBox();
+		layerChoice.setFont(ifFont);
+		layerChoice.addItem("Default layer");
+		if(TekstVakPanel.layerNames != null)
+			for (int i=0 ; i<TekstVakPanel.layerNames.length ; i++) 
+			{	layerChoice.addItem(TekstVakPanel.layerNames[i]);
+			}
+		//kiesStyleChoice.addItem("Style 1");
+		layerChoice.addActionListener(this);
+		layerChoice.setBounds(110,530,125,20);
+		layerChoice.setVisible(TekstVakPanel.layerNames!=null);
+		layoutOptionsPanel.add(layerChoice);
+		
 		//JSONTextField = new JTextField();
 		//JSONTextField.setBounds(10,500,240,20);
 		//interactionOptionsPanel.add(JSONTextField);
@@ -881,6 +898,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean hintButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
+		int layerNr = 0;
 		
 		int locationX = Integer.parseInt(locationXTF.getText());
 		int locationY = Integer.parseInt(locationYTF.getText());
@@ -953,6 +971,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		hintButton = this.hintButton;
 		templateModeEdit = this.templateModeEdit;
 		templateModeFill = this.templateModeFill;
+		layerNr = this.layerNr;
 			
 		Hashtable h = null;
 		 
@@ -1048,7 +1067,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		h.put("hintButton", new Boolean(hintButton));
 		h.put("templateModeEdit", new Boolean(templateModeEdit));
 		h.put("templateModeFill", new Boolean(templateModeFill));
-		
+		h.put("layerNr", new Integer(layerNr));
 		return h;
 	}
 	
@@ -1190,6 +1209,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean templateModeFill = false;
 		int locationX = 0;
 		int locationY = 0;
+		int layerNr = 0;
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -1315,6 +1335,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("templateModeFill")) templateModeFill = ((Boolean) h.get("templateModeFill")).booleanValue();
         if(h.containsKey("locationX")) locationX = ((Integer)h.get("locationX")).intValue();
         if(h.containsKey("locationY")) locationY = ((Integer)h.get("locationY")).intValue();
+        if(h.containsKey("layerNr")) layerNr = ((Integer)h.get("layerNr")).intValue();
 		
         //System.out.println("logOption: "+logOption);
 
@@ -1373,6 +1394,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.hintButton = hintButton;
 		this.templateModeEdit = templateModeEdit;
 		this.templateModeFill = templateModeFill;
+		this.layerNr = layerNr;
 		
 		if(isLink)
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
@@ -1527,6 +1549,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     	}
     	templateModeEditCB.setSelected(templateModeEdit);
     	templateModeFillCB.setSelected(templateModeFill);
+    	
+    	if(layerNr<layerChoice.getItemCount())
+    		layerChoice.setSelectedIndex(layerNr);
 	}
 	
 	
@@ -2266,6 +2291,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 	    if(e.getSource().equals(templateModeFillCB))
 		{	templateModeFill = templateModeFillCB.isSelected();
+			tekstVakPanel.setEditState(getEditState());
+		}
+	    if(e.getSource().equals(layerChoice))
+		{	layerNr = layerChoice.getSelectedIndex();
 			tekstVakPanel.setEditState(getEditState());
 		}
 

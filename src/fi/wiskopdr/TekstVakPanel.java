@@ -268,6 +268,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private boolean hintButton = false;
 	public boolean templateModeEdit;
 	public boolean templateModeFill;
+	private int layerNr;
+	private boolean thisLayerVisible = true;
 	
 	public TekstVakPanel()
 	{
@@ -761,6 +763,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean ideasStatistiek = false;
 		boolean backButton = false;
 		boolean hintButton = false;
+		int layerNr = 0;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) 
@@ -957,6 +960,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	backButton = ((Boolean)h.get("backButton")).booleanValue();
         if(h.containsKey("hintButton"))
         	hintButton = ((Boolean)h.get("hintButton")).booleanValue();
+        if (h.containsKey("layerNr"))
+        	layerNr = ((Integer) h.get("layerNr")).intValue();
         
 		this.zichtbaarNaNakijken = zichtbaarNaNakijken;
 		this.balansVergCom = balansVergCom;
@@ -964,7 +969,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if (zichtbaarNaNakijken)
 		{
 			if (nagekeken)
-				setVisible(true);
+				setVisible(true && thisLayerVisible);
 			else
 				setVisible(false);
 		}
@@ -1037,6 +1042,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.ideasStatistiek = ideasStatistiek;
 	    this.backButton = backButton;
 	    this.hintButton = hintButton;
+	    this.layerNr = layerNr;
 	    
 		if (isLink) {
 			if(!linkUrl.equals("")) {
@@ -1253,7 +1259,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			setForeground(fgColorOvererving);
 			layoutTekst();
 		}
-		setVisible(visible);
+		if(TekstVakPanel.layerVisible!=null && TekstVakPanel.layerVisible.length>layerNr-1)
+			thisLayerVisible = TekstVakPanel.layerVisible[layerNr-1];
+		else
+			layerNr = 0;
+		setVisible(visible && thisLayerVisible);
 	}
 	
 	public void initConnections(XWidgetManager manager)
@@ -1807,6 +1817,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean hintButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
+		int layerNr = 0;
 
 		styleString = this.styleString;
 		randZichtbaar = this.randZichtbaar;
@@ -1881,6 +1892,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		hintButton = this.hintButton;
 		templateModeEdit = this.templateModeEdit;
 		templateModeFill = this.templateModeFill;
+		layerNr = this.layerNr;
 
 		if (WiskOpdr.objectives != null)
 		{
@@ -2019,6 +2031,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("hintButton", new Boolean(hintButton));
 		h.put("templateModeEdit", new Boolean(templateModeEdit));
 		h.put("templateModeFill", new Boolean(templateModeFill));
+		h.put("layerNr", new Integer(layerNr));
 		
 //		for (int i = 0; i < aantalRijen && inklapbaar; i++)
 //		{	if(uitklapHoogtes.length>i)System.out.println("uitklapH: rij "+i +"="+uitklapHoogtes[i]);
@@ -2277,7 +2290,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 
 		if (zichtbaarNaNakijken)
-			setVisible(nagekeken);
+			setVisible(nagekeken && thisLayerVisible);
 		
 		if(inklapbaar)
 		{	if(this.ingeklapt != ingeklapt)
@@ -2613,6 +2626,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean hintButton = false;
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
+		int layerNr = 0;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
@@ -2799,6 +2813,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	templateModeEdit = ((Boolean) h.get("templateModeEdit")).booleanValue();
         if (h.containsKey("templateModeFill"))
         	templateModeFill = ((Boolean) h.get("templateModeFill")).booleanValue();
+        if (h.containsKey("layerNr"))
+			layerNr = ((Integer) h.get("layerNr")).intValue();
         
        	this.styleString = styleString;
         this.randZichtbaar = randZichtbaar;
@@ -2895,6 +2911,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.hintButton = hintButton;
 	    this.templateModeEdit = templateModeEdit;
 	    this.templateModeFill = templateModeFill;
+	    this.layerNr = layerNr;
 
 		tekstVakken = new TekstVak[aantalRijen][aantalKolommen];
 		removeAll();
@@ -3830,7 +3847,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	{
 		nagekeken = b;
 		if (zichtbaarNaNakijken)
-			setVisible(nagekeken);
+			setVisible(nagekeken && thisLayerVisible);
 
 		Vector v = geefInteractiePanels();
 		for (int i = 0; i < v.size(); i++)
@@ -4121,12 +4138,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String command = event.getCommand();
 		if(command.startsWith("action.setVisible"))
 		{	visible = true;
-			setVisible(visible);
+			setVisible(visible && thisLayerVisible);
 			zetMaat();
 		}
 		else if(command.startsWith("action.setNotVisible"))
 		{	visible = false;
-			setVisible(visible);
+			setVisible(visible && thisLayerVisible);
 			zetMaat();
 		}
 		else if(command.startsWith("action.select"))
@@ -4294,7 +4311,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	public void prepareForPrint() {
 		// TODO iets met zwevend
 		visible = true;
-		setVisible(visible);
+		setVisible(visible && thisLayerVisible);
 		if(isInklapbaar() && ingeklapt)
 			klapUitAction();
 		zetMaat();	
