@@ -52,7 +52,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		knopImageButton.addActionListener(this);
 		add(knopImageButton);
 		
-		kijkNaCB = new JCheckBox("Kijk na");
+		kijkNaCB = new JCheckBox(WiskOpdr.rb.getString("CB_kijkNaOptieLabel"));
 		kijkNaCB.setBounds(20,50,100,20);
 		kijkNaCB.setOpaque(false);
 		kijkNaCB.setFont(ifFont);
@@ -60,28 +60,28 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		kijkNaCB.addActionListener(this);
 		add(kijkNaCB);
 		
-		bewaarCB = new JCheckBox("Bewaar");
+		bewaarCB = new JCheckBox(WiskOpdr.rb.getString("CB_bewaarOptieLabel"));
 		bewaarCB.setBounds(20,125,100,20);
 		bewaarCB.setOpaque(false);
 		bewaarCB.setFont(ifFont);
 		bewaarCB.addActionListener(this);
 		add(bewaarCB);
 		
-		rondAfCB = new JCheckBox("Rond af");
+		rondAfCB = new JCheckBox(WiskOpdr.rb.getString("CB_rondAfOptieLabel"));
 		rondAfCB.setBounds(20,150,100,20);
 		rondAfCB.setOpaque(false);
 		rondAfCB.setFont(ifFont);
 		rondAfCB.addActionListener(this);
 		add(rondAfCB);
 		
-		volgendeCB = new JCheckBox("Naar volgende Pagina");
-		volgendeCB.setBounds(20,175,100,20);
+		volgendeCB = new JCheckBox(WiskOpdr.rb.getString("CB_nextPageOptieLabel"));
+		volgendeCB.setBounds(20,175,200,20);
 		volgendeCB.setOpaque(false);
 		volgendeCB.setFont(ifFont);
 		volgendeCB.addActionListener(this);
 		add(volgendeCB);
 		
-		kijkNaEigenVakRB = new JRadioButton("Alles in eigen vak");
+		kijkNaEigenVakRB = new JRadioButton(WiskOpdr.rb.getString("CB_eigenVakOptieLabel"));
 		kijkNaEigenVakRB.setBounds(130,50,200,20);
 		kijkNaEigenVakRB.setOpaque(false);
 		kijkNaEigenVakRB.setFont(ifFont);
@@ -89,14 +89,14 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		kijkNaEigenVakRB.addActionListener(this);
 		add(kijkNaEigenVakRB);
 		
-		kijkNaAllesRB = new JRadioButton("Alles op pagina");
+		kijkNaAllesRB = new JRadioButton(WiskOpdr.rb.getString("CB_opPaginaOptieLabel"));
 		kijkNaAllesRB.setBounds(130,75,200,20);
 		kijkNaAllesRB.setOpaque(false);
 		kijkNaAllesRB.setFont(ifFont);
 		kijkNaAllesRB.addActionListener(this);
 		add(kijkNaAllesRB);
 		
-		kijkNaXWidgetRB = new JRadioButton("alles verbonden via x-widget");
+		kijkNaXWidgetRB = new JRadioButton(WiskOpdr.rb.getString("CB_viaXWidgetOptieLabel"));
 		kijkNaXWidgetRB.setBounds(130,100,200,20);
 		kijkNaXWidgetRB.setOpaque(false);
 		kijkNaXWidgetRB.setFont(ifFont);
