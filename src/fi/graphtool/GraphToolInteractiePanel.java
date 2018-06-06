@@ -5945,7 +5945,12 @@ MouseListener, MouseMotionListener, CBookAware {
 
 		@Override
 		public String[] getSendCmds() {
-			String[] s = {"input", "vergelijking"};
+			String[] s = {
+				"input", 
+				"vergelijking",
+				"action.correct",
+				"action.false",
+				"action.false_2"};
 			return s;
 		}
 
