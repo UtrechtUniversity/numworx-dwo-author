@@ -1259,7 +1259,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			setForeground(fgColorOvererving);
 			layoutTekst();
 		}
-		if(TekstVakPanel.layerVisible!=null && TekstVakPanel.layerVisible.length>layerNr-1)
+		if(TekstVakPanel.layerVisible!=null && TekstVakPanel.layerVisible.length>layerNr-1 && layerNr > 0)
 			thisLayerVisible = TekstVakPanel.layerVisible[layerNr-1];
 		else
 			layerNr = 0;
