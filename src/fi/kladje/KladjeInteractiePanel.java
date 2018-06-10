@@ -35,8 +35,8 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	Image tekenCursor, gumCursor;
 	ImageIcon tekenCursorIcon, gumCursorIcon; 
 	
-	Image lijnDefault, lijnRollover, lijnSelected, rechthoekDefault, rechthoekRollover, rechthoekSelected,
-		  cirkelDefault, cirkelRollover, cirkelSelected, tekstDefault, tekstRollover, tekstSelected, formuleDefault, formuleRollover, formuleSelected,
+	Image formuleDefault, formuleRollover, formuleSelected, lijnDefault, lijnRollover, lijnSelected, rechthoekDefault, rechthoekRollover, rechthoekSelected,
+		  cirkelDefault, cirkelRollover, cirkelSelected, tekstDefault, tekstRollover, tekstSelected,
 		  selecterenDefault, selecterenRollover, selecterenSelected;
 	ImageIcon lijnDefaultIcon, lijnRolloverIcon, lijnSelectedIcon, rechthoekDefaultIcon, rechthoekRolloverIcon, rechthoekSelectedIcon,
 			  cirkelDefaultIcon, cirkelRolloverIcon, cirkelSelectedIcon, tekstDefaultIcon, tekstRolloverIcon, tekstSelectedIcon,
@@ -281,32 +281,32 @@ System.out.println("klip " + getBackground().toString());
 			System.out.println("Error reading teken_tekst_selected.gif");
 		}
 		
-		imageURL = Kladje.class.getResource("resources/formuleknop.gif");
+		imageURL = Kladje.class.getResource("resources/teken_formule_default.gif");
 		if (imageURL != null) 
 		{
 			formuleDefaultIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading formuleknop.gif");
+			System.out.println("Error reading teken_formule_default.gif");
 		}
-		imageURL = Kladje.class.getResource("resources/formuleknop.gif");
+		imageURL = Kladje.class.getResource("resources/teken_formule_rollover.gif");
 		if (imageURL != null) 
 		{
 			formuleRolloverIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading formuleknop.gif");
+			System.out.println("Error reading teken_formule_rollover.gif");
 		}
-		imageURL = Kladje.class.getResource("resources/formuleknop.gif");
+		imageURL = Kladje.class.getResource("resources/teken_formule_selected.gif");
 		if (imageURL != null) 
 		{
 			formuleSelectedIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading formuleknop.gif");
+			System.out.println("Error reading teken_formule_selected.gif");
 		}
 		
 		imageURL = Kladje.class.getResource("resources/teken_selecteren_default.gif");
