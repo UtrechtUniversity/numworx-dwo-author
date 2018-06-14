@@ -24,7 +24,9 @@ public class Text_es extends java.util.ListResourceBundle
             { "CBA_drawing", "drawing"},
             { "CBA_double.translationX", "translation x"},
             { "CBA_double.translationY", "translation y"},
-            
+            { "CBA_equation", "equation"},
+            { "CBA_action.setCorrect", "action: set correct"},
+            { "CBA_action.check", "action: check"},
 		};
 }
 
