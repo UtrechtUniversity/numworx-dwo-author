@@ -138,7 +138,7 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 	}
 
 	protected ExtendedLijn ll = new ExtendedLijn();
-	protected ExtendedLijn rr = new ExtendRay();
+	protected ExtendRay rr = new ExtendRay();
 
 	protected Iterable<TrackerContext> track = Collections.emptySet();
 	private boolean labels;

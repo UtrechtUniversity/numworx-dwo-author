@@ -26,4 +26,21 @@ public class ExtendRay extends ExtendedLijn {
 		}
 	}
 
+  private Punt p1;
+	
+  @Override
+  public Punt getP1() {
+    return p1;
+  }
+
+  @Override
+  public void setLijn(Lijn lijn) {
+    setLijn((Ray) lijn);
+  }
+
+  public void setLijn(Ray ray) {
+    p1 = ray.getP1();
+    super.setLijn(ray);
+    
+  }
 }
