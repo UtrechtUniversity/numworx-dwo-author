@@ -13,7 +13,7 @@ import java.util.*;
 
 import javax.swing.*;
 
-import org.json.simple.JSONValue;
+import org.json.fimple.JSONValue;
 
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;

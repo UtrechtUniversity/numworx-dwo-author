@@ -1,4 +1,4 @@
-package org.json.simple;
+package org.json.fimple;
 
 /**
  * Beans that support customized output of JSON text shall implement this interface.  

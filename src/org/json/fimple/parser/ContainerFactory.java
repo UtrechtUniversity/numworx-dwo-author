@@ -1,4 +1,4 @@
-package org.json.simple.parser;
+package org.json.fimple.parser;
 
 import java.util.List;
 import java.util.Map;

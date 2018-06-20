@@ -14,9 +14,9 @@ import org.cbook.cbookif.rm.ReadOnlyException;
 import org.cbook.cbookif.rm.Resource;
 import org.cbook.cbookif.rm.ResourceContainer;
 import org.cbook.cbookif.rm.ResourceException;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
+import org.json.fimple.JSONObject;
+import org.json.fimple.JSONValue;
+import org.json.fimple.parser.JSONParser;
 
 import com.github.sardine.DavResource;
 import com.github.sardine.Sardine;

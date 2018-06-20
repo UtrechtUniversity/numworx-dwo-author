@@ -1,4 +1,4 @@
-package org.json.simple.parser;
+package org.json.fimple.parser;
 
 import java.io.IOException;
 

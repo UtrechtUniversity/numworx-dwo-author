@@ -62,7 +62,7 @@ import javax.swing.JScrollPane;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.CBookWidgetIF;
-import org.json.simple.JSONArray;
+import org.json.fimple.JSONArray;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.iconan.Iconan;

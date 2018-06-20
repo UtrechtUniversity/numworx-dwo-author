@@ -2,7 +2,7 @@
  * $Id: JSONValue.java,v 1.1 2006/04/15 14:37:04 platform Exp $
  * Created on 2006-4-15
  */
-package org.json.simple;
+package org.json.fimple;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -13,8 +13,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.fimple.parser.JSONParser;
+import org.json.fimple.parser.ParseException;
 
 
 /**
@@ -220,9 +220,11 @@ public class JSONValue {
 // extra types
 		if(value instanceof Collection)
 			return JSONArray.toJSONStringCollection((Collection)value);
-		if(value.getClass().isArray())
-			return JSONArray.toJSONStringArray(value);
-		
+ 		if(value.getClass().isArray())
+		{		  
+		  return JSONArray.toJSONStringArray(value);
+		}
+        System.err.println("unsupported class = " + value.getClass() + ":" + value);		
 		return value.toString();
 	}
 

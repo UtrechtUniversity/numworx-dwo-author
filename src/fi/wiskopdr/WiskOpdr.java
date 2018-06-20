@@ -43,11 +43,11 @@ import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 
 import org.cbook.cbookif.LessonMode;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.fimple.JSONArray;
+import org.json.fimple.JSONObject;
+import org.json.fimple.JSONValue;
+import org.json.fimple.parser.JSONParser;
+import org.json.fimple.parser.ParseException;
 
 import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;

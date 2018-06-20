@@ -45,7 +45,7 @@ import javax.swing.border.Border;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
-import org.json.simple.JSONArray;
+import org.json.fimple.JSONArray;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.iconan.Iconan;
