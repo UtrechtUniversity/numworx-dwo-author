@@ -26,6 +26,7 @@ public class Text_gr extends java.util.ListResourceBundle
             { "CBA_double.translationY", "translation y"},
             { "CBA_equation", "equation"},
             { "CBA_action.setCorrect", "action: set correct"},
+            { "CBA_action.setFalse", "actie: set false"},
             { "CBA_action.check", "action: check"},
 		};
 }

@@ -1689,7 +1689,7 @@ System.out.println("kladjeVeld sized");
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] commands = {"drawing","double.translationX", "double.translationY", "action.setCorrect"};
+		String[] commands = {"drawing","double.translationX", "double.translationY", "action.setCorrect", "action.setFalse"};
 		return commands;
 	}
 

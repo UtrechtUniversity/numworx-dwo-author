@@ -26,6 +26,7 @@ public class Text_nl extends java.util.ListResourceBundle
             { "CBA_double.translationY", "translatie y"},
             { "CBA_equation", "vergelijking"},
             { "CBA_action.setCorrect", "actie: zet correct"},
+            { "CBA_action.setFalse", "actie: zet fout"},
             { "CBA_action.check", "actie: check"},
             
 		};
