@@ -1,52 +1,20 @@
 package fi.wiskopdr;
 
 
-import java.applet.Applet;
-import java.applet.AppletContext;
-import java.applet.AppletStub;
-import java.applet.AudioClip;
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
-import java.awt.KeyboardFocusManager;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Frame;
-import java.awt.Dialog;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Image;
-import java.awt.ScrollPane;
-import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.ImageProducer;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Locale;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -55,24 +23,15 @@ import javax.swing.border.Border;
 import org.cbook.cbookif.rm.ResourceContainer;
 import org.cbook.cbookif.rm.ResourceManager;
 
-import fi.wiskopdr.cbook.WidgetBridge;
-import fi.wiskopdr.formuleobjects.EditorContentPanel;
-import fi.wiskopdr.formuleobjects.FormuleVakHouder;
-import fi.wiskopdr.formuleobjects.Tablet;
-import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.formuleobjects.FormuleButton;
-import fi.wiskopdr.opdrnav.MyOpdrEditContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.beans.base64code.Base64StringEncoder;
-import fi.beans.base64code.StringCodeObject;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.ResourceManagerClient;
-import fi.beans.wiskopdrbeans.WiskOpdrApplet;
-import geogebra.GeoGebraApplet;
-import geogebra.GeoGebra;
+import nl.uu.fi.dwo.interaction.client.OpdrNavIF;
 
 public class GeogebraPanel extends JRootPane implements  ActionListener, InteractiePanel, InteractieEditPanel, ResourceManagerClient
 {	
@@ -123,6 +82,7 @@ public class GeogebraPanel extends JRootPane implements  ActionListener, Interac
     
 	private int score;
     private int errorCount;
+    private int foutStraf = 2;
     private int scoreMax=10;
     
 	static int GOED = 1;
@@ -865,6 +825,7 @@ System.out.println("end refresh geogebra");System.out.flush();
 				if (show && check)
 					huidigIC.setVisible(true);
 			}
+			
 			if (ingevuld && show)
 				produceAction("changed");
 		}
@@ -961,7 +922,11 @@ System.out.println("end refresh geogebra");System.out.flush();
 	
 	public String getIpExpString(){return null;}
 	
-	public int getScore(){
+	public int getScore()
+	{
+		if (mode == OpdrNavIF.OEFENEN_STRAFPUNTEN)
+			return Math.max(0, score - errorCount * foutStraf);
+		
 		return score;
 	}
 	
