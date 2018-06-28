@@ -588,21 +588,23 @@ final public class InstanceViewer extends AWTViewer implements Observer {
 			int y = (int) label.getYd();
 			boolean on = label.getState() != Label.FALSE;
 			boolean withText = Align.NONE != label.adapt(Align.class);
+			int square = g.getFontMetrics().getAscent();
+			int space = 2;
 			Graphics g3 = g.create();
 			if(on) {
 				g3.setColor(Color.gray);
-				g3.fillRect(x, y, 10, 10);
+				g3.fillRect(x, y, square, square);
 			}
 			g.setStroke(Instance.DEFAULT_STROKE);
-			g.drawRect(x, y, 10, 10);
+			g.drawRect(x, y, square, square);
 			Shape s;
 			if(withText) {
 				String text = getMapper().toString(label);
-				g.setFont(fi.wiskopdr.WiskOpdr.tekstFont);
-				g.drawString(text, x+12, y+10);
-				s = new Rectangle(x, y, 12 + g.getFontMetrics().stringWidth(text), 10);
+				//g.setFont(fi.wiskopdr.WiskOpdr.tekstFont);
+				g.drawString(text, x+square+space, y+square);
+				s = new Rectangle(x, y, square + space + g.getFontMetrics().stringWidth(text), square);
 			} else
-				s = new Rectangle(x, y, 12, 10);
+				s = new Rectangle(x, y, square, square);
 			DefaultAdapter.getDefault(label).put(Shape.class, s);
 
 			g3.dispose();
