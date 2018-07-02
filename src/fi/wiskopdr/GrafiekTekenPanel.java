@@ -1,5 +1,6 @@
 package fi.wiskopdr;
 
+import java.applet.AppletStub;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -424,6 +425,10 @@ frame.getContentPane().add(basisPanel);
     public InteractiePanel getInteractiePanel()
     {
         return this;
+    }
+
+    @Override
+    public void setStub(AppletStub stub) {
     }
     
     

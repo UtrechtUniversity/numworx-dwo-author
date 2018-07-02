@@ -209,6 +209,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		
 	}
 
+	
 	public static class CBEDecorator implements CBookEventListener {
 
 		private EventDecorator event;
@@ -2002,6 +2003,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 			Constructor<WiskOpdrApplet> cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
 	    	WiskOpdrApplet o = cc.newInstance(new Object[] { language } );
+	    	Stub.setStub(o);
 	    	return o.getInteractiePanel();
 		}
 		catch(Exception e)

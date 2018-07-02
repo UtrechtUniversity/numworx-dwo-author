@@ -613,6 +613,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			}
 			Constructor<WiskOpdrApplet> cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
 		    WiskOpdrApplet o = cc.newInstance(new Object[] { language } );
+		    Stub.setStub(o);
 			return o.getInteractiePanel().getEditPanel();
 		}
 		catch(Exception e)

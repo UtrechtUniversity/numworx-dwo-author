@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.ScrollPane;
+import java.applet.AppletStub;
 import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -1801,5 +1802,9 @@ System.out.println("gp setEditState");
  		}
  	}
  	//end ActionProducer	
+
+  @Override
+  public void setStub(AppletStub stub) {
+  }
     
 } // GrafiekPanel
