@@ -717,6 +717,10 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 			((FormuleVak)formuleComponent).vulVak(formuleString);
 			System.out.println("formulestring"+formuleString);
 		}
+		if(command.startsWith("action.check"))
+		{
+	 		kijkNa();
+		}
 		
 	}
 
@@ -736,7 +740,7 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 	}
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] s = {"equation", "action.setNotEditable" };
+		String[] s = {"equation", "action.setNotEditable", "action.check"};
 		return s;
 	}
 

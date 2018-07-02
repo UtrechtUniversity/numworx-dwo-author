@@ -782,6 +782,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_action.setNotVisible", "Actie: maak onzichtbaar"},
 				{"CBA_action.select", "Actie: selecteer"},
 				{"CBA_action.deselect", "Actie: deselecteer"},
+				{"CBA_action.check", "Actie: kijk na"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},

@@ -660,6 +660,7 @@ public class Text_in extends java.util.ListResourceBundle
 				{"CBA_action.setNotVisible", "Action: set not visible"},
 				{"CBA_action.select", "Action: select"},
 				{"CBA_action.deselect", "Action: deselect"},
+				{"CBA_action.check", "Action: check"},
 				
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},

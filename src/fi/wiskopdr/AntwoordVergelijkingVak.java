@@ -3990,6 +3990,10 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			vulVak(formuleString);
 			
 		}
+		if(command.startsWith("action.check"))
+		{
+	 		kijkNa();
+		}
 		
 	}
 
@@ -4021,7 +4025,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] commands = {"balansvergelijking", "maakStap", "equation", "action.setNotEditable" };
+		String[] commands = {"balansvergelijking", "maakStap", "equation", "action.setNotEditable", "action.check" };
 		return commands;
 	}
 
