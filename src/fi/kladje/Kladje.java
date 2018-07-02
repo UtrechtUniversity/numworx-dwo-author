@@ -27,6 +27,8 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	boolean scormed = false;
 	boolean reviewMode = false;	
 	
+	public static boolean isExperimental;
+	
 	public static void main(String[] args)    
 	{	int width = 500;
         int height = 450;
@@ -110,8 +112,10 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		{	api = Scorm.findAPI(this);
 		}
 		catch(Exception e){}
+	
+		isExperimental = isExperimental();
 		
-System.out.println(Color.orange.toString());		
+		System.out.println(Color.orange.toString());		
 		
 		getContentPane().setLayout(null);
 
