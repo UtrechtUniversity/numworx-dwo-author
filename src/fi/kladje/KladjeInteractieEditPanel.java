@@ -15,7 +15,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 																	ActionListener	
 {	
 	int editWidth = 190;
-	int editHeight = 450; 
+	int editHeight = 500; 
 	int klipBreedte = 500; // startbreedte spip
 	int klipHoogte = 450; // starthoogte spip
 	
@@ -36,7 +36,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	JCheckBox kleurkeuzeBox;
 	ButtonGroup achtergrondGroep;
 	JRadioButton blancoButton, lijnenButton, ruitjes20Button, ruitjes40Button, ruitjes80Button; 
-	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox, tekstTekenenBox, formuleOptieBox;
+	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox, tekstTekenenBox, formuleOptieBox, ivmOptieBox;
 	JCheckBox roterenBox, schalenBox;
 	
 	JLabel translationLabel;
@@ -224,6 +224,15 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		scaleTF.addActionListener(this);
 		add(scaleTF);
 		
+		currentY += height;
+		
+		ivmOptieBox = new JCheckBox(Kladje.rb.getString("ivmOptieTekst"), false);
+		ivmOptieBox.setFont(theFont);
+		ivmOptieBox.setBackground(Color.white);
+		ivmOptieBox.setBounds(currentX, currentY, width, height);
+		add(ivmOptieBox);
+		ivmOptieBox.addActionListener(this);
+		
 		componentsCreated = true;
 	}	
 	
@@ -253,6 +262,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			
 			scaleLabel.setLocation(klip.getSize().width + offset, scaleLabel.getLocation().y);
 			scaleTF.setLocation(klip.getSize().width + offset+100, scaleTF.getLocation().y);
+			ivmOptieBox.setLocation(klip.getSize().width + offset, ivmOptieBox.getLocation().y);
 		}
 	}
 	
@@ -302,6 +312,10 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		if (b.containsKey("formuleOptie"))
 			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue();
 		formuleOptieBox.setSelected(formuleOptie);
+		boolean ivmOptie = false;
+		if (b.containsKey("ivmOptie"))
+			ivmOptie = ((Boolean) b.get("ivmOptie")).booleanValue();
+		ivmOptieBox.setSelected(ivmOptie);
 		
 		boolean roteren = true;
 		if (b.containsKey("roteren"))
@@ -454,6 +468,10 @@ System.out.println("kliep getEditState");
 		else if (e.getSource() == formuleOptieBox)
 		{
 			klip.zetFormuleOptie(formuleOptieBox.isSelected());
+		}
+		else if (e.getSource() == ivmOptieBox)
+		{
+			klip.zetIvmOptie(ivmOptieBox.isSelected());
 		}
 		else if (e.getSource() == roterenBox)
 		{

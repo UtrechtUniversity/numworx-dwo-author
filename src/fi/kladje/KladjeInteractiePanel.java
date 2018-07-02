@@ -89,6 +89,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	boolean cirkelTekenen = true;
 	boolean tekstTekenen = true;
 	boolean formuleOptie = false;
+	boolean ivmOptie = false;
 //	boolean selecteren = true;
 	
 	boolean roteren = true;
@@ -661,6 +662,9 @@ System.out.println("klip " + getBackground().toString());
 		if (b.containsKey("formuleOptie"))
 			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue();
 		zetFormuleOptie(formuleOptie);
+		if (b.containsKey("ivmOptie"))
+			ivmOptie = ((Boolean) b.get("ivmOptie")).booleanValue();
+		zetIvmOptie(ivmOptie);
 		
 		boolean roteren = true;
 		if (b.containsKey("roteren"))
@@ -730,6 +734,7 @@ System.out.println("klip " + getBackground().toString());
 		h.put("cirkelTekenen", new Boolean(cirkelTekenen));
 		h.put("tekstTekenen", new Boolean(tekstTekenen));
 		h.put("formuleOptie", new Boolean(formuleOptie));
+		h.put("ivmOptie", new Boolean(ivmOptie));
 		
 		h.put("roteren", new Boolean(roteren));
 		h.put("schalen", new Boolean(schalen));
@@ -815,6 +820,14 @@ System.out.println("klip " + getBackground().toString());
 		tekstButton.setVisible(tekstTekenen);
 		
 		layoutBottom();
+	}
+	
+	public void zetIvmOptie(boolean b)
+	{
+		ivmOptie = b;
+		//formuleButton.setVisible(formuleOptie);
+		
+		//layoutBottom();
 	}
 	
 	public void zetFormuleOptie(boolean b)

@@ -20,7 +20,8 @@ public class Text_fr extends java.util.ListResourceBundle
             { "formuleOptieTekst" , "Formula option" },
             { "roterenTekst" , "Rotate objects" },
             { "schalenTekst" , "Scale objects" },
-
+            { "ivmOptieTekst" , "IVM option" },
+            
             { "CBA_drawing", "drawing"},
             { "CBA_double.translationX", "translation x"},
             { "CBA_double.translationY", "translation y"},
