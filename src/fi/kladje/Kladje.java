@@ -1042,5 +1042,17 @@ System.out.println(Color.orange.toString());
     {	return null;
     }
 
+    
+    /**
+     * Bepaal of we in test modus draaien.
+     * De parameter "dwo_env" is "test"
+     * @return experimental
+     */
+    public boolean isExperimental() {
+    	try {
+    		return "test".equals(getParameter("dwo_env"));
+    	} catch(Throwable t) {}
+    	return false;
+    }
 
 }
