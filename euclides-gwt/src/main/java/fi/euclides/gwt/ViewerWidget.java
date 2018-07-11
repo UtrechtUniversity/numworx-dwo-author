@@ -6,16 +6,11 @@ import fi.euclides.event.NameMapper;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.event.EventHandler;
 
-public interface ViewerWidget extends IsWidget {
+public interface ViewerWidget extends IsWidget, MouseConsumer {
 
 	AbstractViewer getViewer();
-	EventHandler   getPanHandler();
+	//EventHandler   getPanHandler();
 	
-	void processMouseDown(int x, int y, int id);
-
-	void processMouseUp(int x, int y, int id);
-
-	void processMouseDrag(int x, int y, int id);
 	
 	void init(int w, int h);
 	

@@ -20,12 +20,12 @@ implements MouseDownHandler, MouseUpHandler, MouseMoveHandler {
 	/**
 	 * @param viewer Widget
 	 */
-	public GWTMouseHandler(ViewerWidget viewer) {
+	public GWTMouseHandler(MouseConsumer viewer) {
 		this.viewer = viewer;
 	}
 
 	protected boolean mouseDown;
-	private ViewerWidget viewer;
+	private MouseConsumer viewer;
 
 	public void onMouseDown(MouseDownEvent event) {
 		int x = event.getX();

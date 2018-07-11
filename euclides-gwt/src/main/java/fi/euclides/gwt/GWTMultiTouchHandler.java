@@ -22,7 +22,7 @@ public class GWTMultiTouchHandler
       TouchCancelHandler {
 
   final private static Logger LOG = Logger.getLogger("GWTMultiTouchHandler");
-  private ViewerWidget viewer;
+  private MouseConsumer viewer;
 
   /**
    * 
@@ -30,7 +30,7 @@ public class GWTMultiTouchHandler
   /**
    * @param viewer
    */
-  public GWTMultiTouchHandler(ViewerWidget viewer) {
+  public GWTMultiTouchHandler(MouseConsumer viewer) {
     this.viewer = viewer;
   }
 

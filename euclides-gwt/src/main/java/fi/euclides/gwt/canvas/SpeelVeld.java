@@ -24,6 +24,7 @@ import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Adapter;
 import fi.euclides.event.DescriptionBuilder;
+import fi.euclides.gwt.DelayMouse;
 import fi.euclides.gwt.GWTMouseHandler;
 import fi.euclides.gwt.GWTMultiTouchHandler;
 import fi.euclides.gwt.GWTTouchHandler;
@@ -158,13 +159,13 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	private void initHandlers(final Canvas canvas) {
 		boolean hastouch = TouchStartEvent.isSupported();
 		if(hastouch) {
-			GWTMultiTouchHandler h = new GWTMultiTouchHandler(this);
+			GWTMultiTouchHandler h = new GWTMultiTouchHandler(new DelayMouse(this));
 			canvas.addTouchCancelHandler(h);
 			canvas.addTouchEndHandler(h);
 			canvas.addTouchMoveHandler(h);
 			canvas.addTouchStartHandler(h);
 		} else {
-			GWTMouseHandler h = new GWTMouseHandler(this);
+			GWTMouseHandler h = new GWTMouseHandler(new DelayMouse(this, 200L, 4)); // testing...
 			canvas.addMouseDownHandler(h);
 			canvas.addMouseUpHandler(h);
 			canvas.addMouseMoveHandler(h);
@@ -449,10 +450,10 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		
 	}
 
-	@Override
-	public EventHandler getPanHandler() {
-		return new PanHandler("Pan", this);
-	}
+//	@Override
+//	public EventHandler getPanHandler() {
+//		return new PanHandler("Pan", this);
+//	}
 
 	@Override
 	public void setBackground(String string) {		

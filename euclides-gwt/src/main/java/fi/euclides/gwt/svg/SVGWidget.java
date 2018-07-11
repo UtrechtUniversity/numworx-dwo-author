@@ -343,11 +343,11 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget, TrackerCo
 		}
 	}
 
-	@Override
-	public EventHandler getPanHandler() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public EventHandler getPanHandler() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public void setBackground(String string) {
