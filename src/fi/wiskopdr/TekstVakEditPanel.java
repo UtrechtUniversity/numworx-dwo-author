@@ -1768,13 +1768,16 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				for(int i=0 ; i<aantalRandom-1 ; i++)
 				{	randomTekstenNew[i] = randomteksten[i];
 				}
-				randomTekstenNew[aantalRandom-1] = randomteksten[aantalRandom-2];
+				String[][] teksten = new String[1][1];
+				teksten[0][0]="";
+				randomTekstenNew[aantalRandom-1] = teksten;//randomteksten[aantalRandom-2];
 				randomteksten = randomTekstenNew;
 				Hashtable[][]  randomIpLaunchdataNew = new Hashtable[aantalRandom][];
 				for(int i=0 ; i<aantalRandom-1 ; i++)
 				{	randomIpLaunchdataNew[i] = randomIpLaunchdata[i];
 				}
-				randomIpLaunchdataNew[aantalRandom-1] = randomIpLaunchdata[aantalRandom-2];
+				
+				randomIpLaunchdataNew[aantalRandom-1] = new Hashtable[0];//randomIpLaunchdata[aantalRandom-2];
 				randomIpLaunchdata = randomIpLaunchdataNew;
 				repaint();
 			}
