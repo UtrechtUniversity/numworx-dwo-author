@@ -44,7 +44,7 @@ public class GWTMultiTouchHandler
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
-      LOG.fine("touch start " + x + "," + y + "," + id);
+      LOG.finest("touch start " + x + "," + y + "," + id);
       viewer.processMouseDown(x, y, id);
     }
     event.preventDefault();
@@ -61,7 +61,7 @@ public class GWTMultiTouchHandler
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
-      LOG.fine("touch move " + x + "," + y + "," + id);
+      LOG.finest("touch move " + x + "," + y + "," + id);
       viewer.processMouseDrag(x, y, id);
     }
     event.preventDefault();
@@ -78,7 +78,7 @@ public class GWTMultiTouchHandler
       int x = touch.getRelativeX(e);
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
-      LOG.fine("touch end " + x + "," + y + "," + id);
+      LOG.finest("touch end " + x + "," + y + "," + id);
       viewer.processMouseUp(x, y, id);
     }
     event.preventDefault();

@@ -45,7 +45,7 @@ public class DelayMouse implements MouseConsumer {
    * 
    */
   public DelayMouse(MouseConsumer view) {
-    this(view, 500L, 5);
+    this(view, 1000L, 10);
   }
 
   public DelayMouse(MouseConsumer view, long l, int i) {
@@ -70,7 +70,12 @@ public class DelayMouse implements MouseConsumer {
    */
   @Override
   public void processMouseUp(int x, int y, int id) {
-    ctx.remove(id);
+    Context c = ctx.remove(id);
+    if(c != null) LOG.fine("up, time = " + (System.currentTimeMillis()-c.time));
+    if(!c.moved(x, y))
+    {	x = c.x0;
+        y = c.y0;
+    }
     view.processMouseUp(x, y, id);
   }
 
