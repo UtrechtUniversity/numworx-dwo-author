@@ -339,7 +339,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		x -= offX; y -= offY;
 		if (!moved)
 		{
-			LOG.warning("clicked " + handler);
+			LOG.fine("clicked " + handler);
 			handler.pointerClicked(x, y,getCtx(id));
 		}
 		handler.pointerReleased(x, y,getCtx(id));
