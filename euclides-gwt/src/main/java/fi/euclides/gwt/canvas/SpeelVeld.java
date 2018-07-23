@@ -3,6 +3,7 @@ package fi.euclides.gwt.canvas;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
@@ -31,6 +32,7 @@ import fi.euclides.gwt.GWTTouchHandler;
 import fi.euclides.gwt.ViewerWidget;
 
 public class SpeelVeld extends AbstractViewer implements ViewerWidget {
+	  static final Logger LOG = Logger.getLogger("fi.euclides.gwt.canvas.SpeelVeld");
 
 	class SpeelVeldContext implements TrackerContext {
 
@@ -336,7 +338,10 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	public void processMouseUp(int x, int y,int id) {
 		x -= offX; y -= offY;
 		if (!moved)
+		{
+			LOG.warning("clicked " + handler);
 			handler.pointerClicked(x, y,getCtx(id));
+		}
 		handler.pointerReleased(x, y,getCtx(id));
 		paint();
 	}

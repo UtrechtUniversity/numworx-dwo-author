@@ -32,7 +32,7 @@ public class DelayMouse implements MouseConsumer {
           || System.currentTimeMillis() > time
           || Math.abs(x-x0) > distance
           || Math.abs(y-y0) > distance;
-      LOG.fine("moved " + moved + " " + (System.currentTimeMillis()-time) + " " + (x-x0) + " " + (y-y0));
+      LOG.warning("moved " + moved + " " + (System.currentTimeMillis()-time) + " " + (x-x0) + " " + (y-y0));
       return moved;
     }
 
@@ -71,7 +71,7 @@ public class DelayMouse implements MouseConsumer {
   @Override
   public void processMouseUp(int x, int y, int id) {
     Context c = ctx.remove(id);
-    if(c != null) LOG.fine("up, time = " + (System.currentTimeMillis()-c.time));
+    if(c != null) LOG.warning("up, time = " + (System.currentTimeMillis()-c.time));
     if(!c.moved(x, y))
     {	x = c.x0;
         y = c.y0;
