@@ -21,6 +21,7 @@ import fi.euclides.model.math.Numbers;
 import fi.euclides.swing.DoubleFormat;
 //import fi.euclides.swing.SwingSymbols;
 import fi.wiskopdr.WiskOpdr;
+import nl.numworx.geodefiner.common.math.CommonFactory;
 import nl.numworx.geodefiner.module.DaggerEditComponents;
 
 public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet {
@@ -33,7 +34,7 @@ public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet
 //		Popcorn.map = new SwingSymbols();
 		isExperimental = WiskOpdr.isExperimental();
 //		Numbers.setFactory(IntegerFactory.INSTANCE);
-		Numbers.setFactory(new fi.euclides.bigmath.ExactImpl());
+		Numbers.setFactory(new CommonFactory());
 	}
 		
 	public static void main(String[] args) {

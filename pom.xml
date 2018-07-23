@@ -35,7 +35,7 @@
 		<dependency>
 			<groupId>nl.numworx.geodefiner</groupId>
 			<artifactId>geodefiner-common</artifactId>
-			<version>0.0.2</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.wiskopdr</groupId>
@@ -140,7 +140,7 @@
 		<jarsigner.skip>true</jarsigner.skip>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<euclidesVersion>0.0.3</euclidesVersion>
+		<euclidesVersion>0.0.4-SNAPSHOT</euclidesVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<daggerVersion>2.11</daggerVersion>
 	</properties>

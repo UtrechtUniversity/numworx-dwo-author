@@ -42,6 +42,7 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.SegmentVisitor;
+import fi.euclides.model.Track;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.Expression;
@@ -838,4 +839,15 @@ final public class InstanceViewer extends AWTViewer implements Observer {
 		void setPointSize(float f) {
 			pointSize = f;
 		}
+
+	private Track track;	
+    @Override
+    public void setTrack(Track track) {
+        this.track = track;
+    }
+
+    @Override
+    public Track getTrack() {
+      return this.track;
+    }
 	}
