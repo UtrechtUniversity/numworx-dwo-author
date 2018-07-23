@@ -1,5 +1,7 @@
 package fi.euclides.bigmath;
 
+import java.math.BigInteger;
+
 import fi.euclides.model.math.DefaultFactory;
 import fi.euclides.model.math.DoubleFormat;
 import fi.euclides.model.math.Exact;
@@ -105,4 +107,14 @@ public class ExactImpl implements ExactFactory {
 		
 	}
 
+	protected boolean isIntegral(Rational r) {
+	  return r.noemer.equals(BigInteger.ONE);
+	}
+	
+	protected boolean isIntegral(Exact n) {
+	  if(n instanceof Rational)
+	    return isIntegral((Rational)n);
+	  return false;
+	}
+	
 }
