@@ -3027,20 +3027,19 @@ public class StatTableModel implements TableModel
 		{
 			if (this.hasIntegerValues(i))
 			{
-				this.editColumn(i, this.getColumnName(i), 
+				this.editColumnWithoutEvent(i, this.getColumnName(i), 
 					new ColumnType(AllowedTypes.INTEGER), "");
-				// test syl
-//				this.editColumnWithoutEvent(i, this.getColumnName(i), 
-//					new ColumnType(AllowedTypes.INTEGER));
 			}
 			else if (this.hasDoubleValues(i))
 			{
-				this.editColumn(i, this.getColumnName(i), 
+				this.editColumnWithoutEvent(i, this.getColumnName(i), 
 					new ColumnType(AllowedTypes.DOUBLE), "");
-//				this.editColumnWithoutEvent(i, this.getColumnName(i), 
-//					new ColumnType(AllowedTypes.DOUBLE));
 			} 
 		}
+		
+		// fire event voor alle table model wijzigingen
+		this.fireEvent(new TableModelEvent(this));
+		this.fireEvent(new TableModelEvent(this, TableModelEvent.HEADER_ROW));
 	}
 
 	/**
