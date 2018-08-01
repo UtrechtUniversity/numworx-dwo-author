@@ -1364,9 +1364,18 @@ System.err.println(sb);
 		
 		statTableModel.updateNumericalColumnTypes();
 		
-		// update the view
-		if (statInteractiePanel != null)
-			statInteractiePanel.getView().update(null, null);
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				// update the view
+				if (statInteractiePanel != null)
+					statInteractiePanel.getView().update(null, null);
+			}
+		});
+		//		// update the view
+//		if (statInteractiePanel != null)
+//			statInteractiePanel.getView().update(null, null);
 		
 		this.setCursor(Cursor.getDefaultCursor());
 	}
