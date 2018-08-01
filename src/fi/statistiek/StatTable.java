@@ -249,6 +249,7 @@ public class StatTable extends JPanel implements StatistiekView,
 			}
 		};
 		this.table.getSelectionModel().addListSelectionListener(this);
+		this.table.setAutoCreateColumnsFromModel(true);
 		this.statTableModel.addTableModelListener(this);
 		this.statTableModel.addSelectionListener(this);
 		this.scrollPane.setViewportView(this.table);
@@ -668,7 +669,7 @@ public class StatTable extends JPanel implements StatistiekView,
 	{
 		System.out.println("StatTable.setCellRenderers(): statTableModel.getColumnCount() = " + this.statTableModel.getColumnCount()
 			+ ", table.getColumnCount() = " + this.table.getColumnCount() + ", table.getColumnModel().getColumnCount() = " + this.table.getColumnModel().getColumnCount()
-			+ ", table.getModel().getColumnCount()" + this.table.getModel().getColumnCount());
+			+ ", table.getModel().getColumnCount() = " + this.table.getModel().getColumnCount());
 
 		
 		ArrayList<ColumnType> types = this.statTableModel.getColumnTypes();
