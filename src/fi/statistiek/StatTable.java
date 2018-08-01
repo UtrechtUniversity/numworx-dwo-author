@@ -1234,14 +1234,14 @@ System.err.println(sb);
 	 */
 	private void createColumns(String[] names)
 	{
-		System.out.println("StatTable.createColumns(): " + names.toString());
 		for (int i = 0; i < names.length; i++)
 		{
-    		this.statTableModel.addColumnWithoutEvent(names[i],
+//    		this.statTableModel.addColumnWithoutEvent(names[i],
+//    			new ColumnType(AllowedTypes.STRING), "");
+    		this.statTableModel.addColumn(names[i],
     			new ColumnType(AllowedTypes.STRING), "");
 		}
-		
-		this.table.setModel(this.statTableModel);
+		System.out.println("StatTable.createColumns(): na add columns loop");
 	}
 
 	/*
