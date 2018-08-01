@@ -666,14 +666,12 @@ public class StatTable extends JPanel implements StatistiekView,
 	 */
 	private void setCellRenderers()
 	{
-		ArrayList<ColumnType> types = this.statTableModel.getColumnTypes();
+		System.out.println("StatTable.setCellRenderers(): statTableModel.getColumnCount() = " + this.statTableModel.getColumnCount()
+			+ ", table.getColumnCount() = " + this.table.getColumnCount() + ", table.getColumnModel().getColumnCount() = " + this.table.getColumnModel().getColumnCount()
+			+ ", table.getModel().getColumnCount()" + this.table.getModel().getColumnCount());
+
 		
-		if (this.statTableModel.getColumnCount() != this.table.getColumnCount())
-		{
-			System.out.println("StatTable.setCellRenderers(): statTableModel.columncount = " + this.statTableModel.getColumnCount()
-				+ ", table.columncount = " + this.table.getColumnCount());
-			return;
-		}
+		ArrayList<ColumnType> types = this.statTableModel.getColumnTypes();
 		
 		// loop over the columns
 		for (int i = 0; i < this.statTableModel.getColumnCount(); i++)
