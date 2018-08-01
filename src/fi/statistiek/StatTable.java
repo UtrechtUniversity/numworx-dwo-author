@@ -47,7 +47,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -1235,14 +1234,14 @@ System.err.println(sb);
 	 */
 	private void createColumns(String[] names)
 	{
-		//System.out.println("StatTable.createColumns(): " + names.toString());
+		System.out.println("StatTable.createColumns(): " + names.toString());
 		for (int i = 0; i < names.length; i++)
 		{
     		this.statTableModel.addColumnWithoutEvent(names[i],
     			new ColumnType(AllowedTypes.STRING), "");
 		}
 		
-		this.statTableModel.fireTableModelEvent();
+		this.table.setModel(this.statTableModel);
 	}
 
 	/*
@@ -1364,18 +1363,9 @@ System.err.println(sb);
 		
 		statTableModel.updateNumericalColumnTypes();
 		
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				// update the view
-				if (statInteractiePanel != null)
-					statInteractiePanel.getView().update(null, null);
-			}
-		});
-		//		// update the view
-//		if (statInteractiePanel != null)
-//			statInteractiePanel.getView().update(null, null);
+		// update the view
+		if (statInteractiePanel != null)
+			statInteractiePanel.getView().update(null, null);
 		
 		this.setCursor(Cursor.getDefaultCursor());
 	}
