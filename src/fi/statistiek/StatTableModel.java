@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 import fi.statistiek.boxplot.BoxplotModel;
@@ -34,7 +35,7 @@ import fi.wiskopdr.formuleobjects.FormuleParser;
  * @author Manu Drijvers, Sylvia van Borkulo
  * 
  */
-public class StatTableModel implements TableModel
+public class StatTableModel extends AbstractTableModel implements TableModel
 {
 	private static final int WILDCARD = -2;
 	private static final int OUTLIER = -3;
@@ -2452,7 +2453,7 @@ public class StatTableModel implements TableModel
 	 * Get the table model listeners.
 	 * @return
 	 */
-	public ArrayList<TableModelListener> getTableModelListeners()
+	public ArrayList<TableModelListener> getMyTableModelListeners()
 	{
 		return this.listeners;
 	}
@@ -3272,5 +3273,10 @@ public class StatTableModel implements TableModel
 		}
 		
 		this.fireOutliersChanged();
+	}
+
+	public void fireTableStructureChanged()
+	{
+		((AbstractTableModel) this).fireTableStructureChanged();
 	}
 }

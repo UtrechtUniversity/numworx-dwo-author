@@ -1167,7 +1167,7 @@ System.err.println(sb);
 	private void removeViewListeners()
 	{
 		// remove table model listeners
-		ArrayList<TableModelListener> listeners = this.statTableModel.getTableModelListeners();
+		ArrayList<TableModelListener> listeners = this.statTableModel.getMyTableModelListeners();
 		
 		for (int i = listeners.size() - 1; i >= 0; i--)
 		{
@@ -1236,12 +1236,12 @@ System.err.println(sb);
 	{
 		for (int i = 0; i < names.length; i++)
 		{
-//    		this.statTableModel.addColumnWithoutEvent(names[i],
-//    			new ColumnType(AllowedTypes.STRING), "");
-    		this.statTableModel.addColumn(names[i],
+    		this.statTableModel.addColumnWithoutEvent(names[i],
     			new ColumnType(AllowedTypes.STRING), "");
 		}
-		System.out.println("StatTable.createColumns(): na add columns loop");
+		
+		this.statTableModel.fireTableStructureChanged();
+		System.out.println("StatTable.createColumns(): na add columns loop, na fireTableStructureChanged()");
 	}
 
 	/*
