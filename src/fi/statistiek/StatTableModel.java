@@ -3274,9 +3274,4 @@ public class StatTableModel extends AbstractTableModel implements TableModel
 		
 		this.fireOutliersChanged();
 	}
-
-	public void fireTableStructureChanged()
-	{
-		((AbstractTableModel) this).fireTableStructureChanged();
-	}
 }
