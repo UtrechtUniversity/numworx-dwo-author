@@ -595,7 +595,7 @@ public class StatInteractiePanelView extends JPanel implements Observer
 
 	public void update(Observable arg0, Object arg1)
 	{
-		//System.out.println("StatInteractiePanelView.update()");
+		System.out.println("StatInteractiePanelView.update()");
 		super.setVisible(false);
 		super.removeAll(); // this can be very slow if there are many children
 		super.setVisible(true);
