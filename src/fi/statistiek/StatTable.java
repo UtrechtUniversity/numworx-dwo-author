@@ -671,6 +671,11 @@ public class StatTable extends JPanel implements StatistiekView,
 			+ ", table.getColumnCount() = " + this.table.getColumnCount() + ", table.getColumnModel().getColumnCount() = " + this.table.getColumnModel().getColumnCount()
 			+ ", table.getModel().getColumnCount() = " + this.table.getModel().getColumnCount());
 
+		if (this.statTableModel.getColumnCount() != this.table.getColumnCount())
+		{
+			// something went wrong in updating and handling change events...
+			return;
+		}
 		
 		ArrayList<ColumnType> types = this.statTableModel.getColumnTypes();
 		
