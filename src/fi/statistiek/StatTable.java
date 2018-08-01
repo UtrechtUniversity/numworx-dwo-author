@@ -1241,6 +1241,8 @@ System.err.println(sb);
     		this.statTableModel.addColumnWithoutEvent(names[i],
     			new ColumnType(AllowedTypes.STRING), "");
 		}
+		
+		this.statTableModel.fireTableModelEvent();
 	}
 
 	/*
@@ -1362,15 +1364,9 @@ System.err.println(sb);
 		
 		statTableModel.updateNumericalColumnTypes();
 		
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				// update the view
-				if (statInteractiePanel != null)
-					statInteractiePanel.getView().update(null, null);
-			}
-		});
+		// update the view
+		if (statInteractiePanel != null)
+			statInteractiePanel.getView().update(null, null);
 		
 		this.setCursor(Cursor.getDefaultCursor());
 	}
