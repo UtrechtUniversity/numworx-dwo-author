@@ -669,11 +669,17 @@ public class StatTable extends JPanel implements StatistiekView,
 	{
 		ArrayList<ColumnType> types = this.statTableModel.getColumnTypes();
 		
+		if (this.statTableModel.getColumnCount() != this.table.getColumnCount())
+		{
+			System.out.println("StatTable.setCellRenderers(): statTableModel.columncount = " + this.statTableModel.getColumnCount()
+				+ ", table.columncount = " + this.table.getColumnCount());
+			return;
+		}
+		
 		// loop over the columns
 		for (int i = 0; i < this.statTableModel.getColumnCount(); i++)
 		{
 			// set cell renderer for different background for outliers
-			
 			
 			ColumnType type = types.get(i);
 			if (type.getType().equals(AllowedTypes.ENUM))
@@ -1354,17 +1360,17 @@ System.err.println(sb);
 		// add row data
 		this.addDataRowsWithoutEvent(dataRows);
 		
+		statTableModel.updateNumericalColumnTypes();
+		
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
-				statTableModel.updateNumericalColumnTypes();
+				// update the view
+				if (statInteractiePanel != null)
+					statInteractiePanel.getView().update(null, null);
 			}
 		});
-		
-		// update the view
-		if (this.statInteractiePanel != null)
-			this.statInteractiePanel.getView().update(null, null);
 		
 		this.setCursor(Cursor.getDefaultCursor());
 	}
