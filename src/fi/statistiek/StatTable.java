@@ -1240,7 +1240,9 @@ System.err.println(sb);
 		}
 		
 		this.statTableModel.fireTableStructureChanged();
-		System.out.println("StatTable.createColumns(): na add columns loop, na fireTableStructureChanged()");
+		this.table.createDefaultColumnsFromModel();
+		System.out.println("StatTable.createColumns(): na add columns loop, na fireTableStructureChanged(); statTableModel.getColumnCount() = " 
+			+ statTableModel.getColumnCount() + ", table.getColumnCount() = " + table.getColumnCount());
 	}
 
 	/*
