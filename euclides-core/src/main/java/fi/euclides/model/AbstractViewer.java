@@ -1,6 +1,5 @@
 package fi.euclides.model;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import fi.euclides.event.DescriptionBuilder;
@@ -16,7 +15,6 @@ import fi.euclides.model.SegmentVisitor;
 import fi.euclides.model.Triangle;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.Hashtable;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 
 public abstract class AbstractViewer extends Observable implements Visitor, Tracker, SegmentVisitor {

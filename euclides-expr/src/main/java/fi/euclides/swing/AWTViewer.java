@@ -23,7 +23,6 @@ import fi.euclides.model.ExtendedLijn;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
 import fi.euclides.model.Segment;
-import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Adapter;
 
