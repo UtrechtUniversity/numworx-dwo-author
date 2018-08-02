@@ -22,7 +22,7 @@ public class ToComplex extends LabelValue {
 
 	@Override
 	public Destroyable[] createDepend() {
-		return new Destroyable[3];
+		return new Destroyable[1];
 	}
 
 	@Override
