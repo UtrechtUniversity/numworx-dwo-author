@@ -750,6 +750,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		String type = uc.getContentType();
 // Not automatic. Why?
 		InputStream mime = getClass().getClassLoader().getResourceAsStream("META-INF/mime.types");
+// FIXME java.activation not available by default
 		MimetypesFileTypeMap map = new MimetypesFileTypeMap(mime);
 		mime.close();
 		String type4 = map.getContentType(filename);
