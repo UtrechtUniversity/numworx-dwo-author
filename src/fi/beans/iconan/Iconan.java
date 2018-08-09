@@ -29,6 +29,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.swing.BorderFactory;
@@ -749,14 +750,18 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		URLConnection uc = openConnection(u);
 		String type = uc.getContentType();
 // Not automatic. Why?
+		try {
 		InputStream mime = getClass().getClassLoader().getResourceAsStream("META-INF/mime.types");
 // FIXME java.activation not available by default
 		MimetypesFileTypeMap map = new MimetypesFileTypeMap(mime);
 		mime.close();
 		String type4 = map.getContentType(filename);
+		
 		if( type4 != null && type4.startsWith("image"))
 			type = type4;		
-		
+		} catch (Throwable e) {
+		  Logger.getLogger(getClass().getName()).warning("MimeTypesFileTypeMap: " + e );
+		}
 		if(! type.startsWith("image/"))
 			throw new IOException(file + ":" + type);
 

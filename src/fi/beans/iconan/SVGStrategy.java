@@ -82,18 +82,23 @@ public class SVGStrategy implements Strategy {
     ByteArrayInputStream in = new ByteArrayInputStream(data);
     InputSource input = new InputSource(in);
     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    dbFactory.setValidating(false);
     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
     Document doc = dBuilder.parse(input);
     Element svg = doc.getDocumentElement();
     String width = svg.getAttributeNS(SVG, "width");
     if(width.isEmpty()) width = svg.getAttributeNS(null, "width");
     if (!width.isEmpty()) {
+      if(width.endsWith("px"))
+        width = width.substring(0, width.length()-2);
       result.width = Integer.parseInt(width);
       parent.namemap.put(name + "/w", result.width);
     }
     String height = svg.getAttributeNS(SVG, "height");
     if(height.isEmpty()) height = svg.getAttributeNS(null, "height");
     if (!height.isEmpty()) {
+      if(height.endsWith("px"))
+        height = height.substring(0, height.length()-2);
       result.height = Integer.parseInt(height);
       parent.namemap.put(name + "/h", result.height);
     }
