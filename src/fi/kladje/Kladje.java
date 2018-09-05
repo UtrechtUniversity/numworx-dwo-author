@@ -99,12 +99,14 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		langArg = "nl";
 		Locale language = new Locale (langArg, "");
 		rb = ResourceBundle.getBundle("fi.kladje.text.Text", language);	
+		isExperimental = isExperimental();
 	}
 	
 	public Kladje(Locale language)
 	{	
 		langArg = language.getLanguage();
-		rb = ResourceBundle.getBundle("fi.kladje.text.Text", language);	
+		rb = ResourceBundle.getBundle("fi.kladje.text.Text", language);
+		isExperimental = isExperimental();
 	}
 	
 	public void init() 
