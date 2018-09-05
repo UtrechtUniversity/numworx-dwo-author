@@ -446,6 +446,8 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 				cbookEventHandler.fire("action.false"); 
 			if(antwoordVergelijkingVak.isFout() && antwoordVergelijkingVak.getErrorCount()>1 && cbookEventHandler.hasListeners("action.false_2"))
 				cbookEventHandler.fire("action.false_2");
+			if(!antwoordVergelijkingVak.isCorrect() && !antwoordVergelijkingVak.isFout() && cbookEventHandler.hasListeners("action.half"))
+				cbookEventHandler.fire("action.half");
 			
 			//((FormuleVak)formuleComponent).setEditable(true);
 		}
@@ -749,6 +751,7 @@ public class SimpelAntwoordVergelijkingVak extends JPanel implements InteractieP
 		String[] s = {				
 				"action.correct",
 				"action.false",
+				"action.half",
 				"action.false_2",
 				"equation"};
 		return s;
