@@ -470,6 +470,8 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 				cbookEventHandler.fire("action.false"); 
 			if(antwoordFormuleVak.isFout() && antwoordFormuleVak.getErrorCount()>1 && cbookEventHandler.hasListeners("action.false_2"))
 				cbookEventHandler.fire("action.false_2");
+			if(!antwoordFormuleVak.isCorrect() && !antwoordFormuleVak.isFout() && cbookEventHandler.hasListeners("action.half"))
+				cbookEventHandler.fire("action.half"); 
 		}
 		else if(e.getSource()==formuleComponent && e.getActionCommand().equals("focus"))
 		{	if(formuleToolBijFocus)zetTabletUser();
@@ -880,6 +882,17 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 				((FormuleVak)formuleComponent).vulVak(doubleString);
 			}
 		}
+		if(command.startsWith("equation"))
+		{
+	 		String formuleString = (String)event.getMessage();
+	 		if(formuleString.charAt(0)!='$') formuleString = "$f" + formuleString + "@";
+			((FormuleVak)formuleComponent).vulVak(formuleString);
+			System.out.println("formulestring"+formuleString);
+		}
+		if(command.startsWith("action.check"))
+		{
+	 		kijkNa();
+		}
 		
 	}
 
@@ -903,7 +916,9 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		String[] s = {//org.cbook.cbookif.Constants.USER_INPUT,
 				"action.setNotEditable",
 				"double", 
-				"expression"};
+				"expression",
+				"equation", //is equation/expression from Kladje
+				"action.check"};
 		return s;
 	}
 
@@ -915,6 +930,7 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 				"expression", 
 				POPCORN_FORMULA,
 				"action.correct",
+				"action.half",
 				"action.false",
 				"action.false_2"};
 		return s;
