@@ -723,6 +723,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"CBA_action.correct", "Action: correct answer"},
 				{"CBA_action.false", "Action: incorrect answer"},
 				{"CBA_action.false_2", "Actie: 2x incorrect answer"},
+				{"CBA_action.half", "Action: partial-correct answer"},
 				{"CBA_action.setVisible", "Action: set visible"},
 				{"CBA_action.setNotVisible", "Action: set not visible"},
 				{"CBA_action.select", "Action: select"},
