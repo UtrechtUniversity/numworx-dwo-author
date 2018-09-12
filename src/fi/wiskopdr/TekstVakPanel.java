@@ -3989,7 +3989,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			return;
 		}
 		if (!editable)
+		{
+			if(cbookEventHandler.hasListeners("action.select"))
+				cbookEventHandler.fire("action.select");
 			return;
+		}
 		for (int i = 0; i < aantalKolommen; i++)
 		{
 			if (dragColomsRects[i].contains(e.getX(), e.getY()) && (!templateModeEdit || TEMPLATE_EDITOR))
@@ -4283,7 +4287,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				"action.unfold",
 				"action.fold",
 				"action.select",
-				"action.deselect"};
+				"action.deselect",
+				"action.click"};
 		return sendCommands;
 	}
 
