@@ -26,10 +26,13 @@ public class Text_nl extends java.util.ListResourceBundle
             { "CBA_double.translationX", "translatie x"},
             { "CBA_double.translationY", "translatie y"},
             { "CBA_equation", "vergelijking/expressie"},
+            { "CBA_equation.correct", "correcte vergelijking/expressie"},
             { "CBA_action.setCorrect", "actie: zet correct"},
             { "CBA_action.setFalse", "actie: zet fout"},
             { "CBA_action.setHalf", "actie: zet half"},
             { "CBA_action.check", "actie: check"},
+            { "CBA_action.closePopup", "actie: sluit popup"},
+            { "CBA_action.popup", "actie: popup"},
             
 		};
 }

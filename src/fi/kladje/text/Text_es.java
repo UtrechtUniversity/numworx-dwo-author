@@ -26,10 +26,13 @@ public class Text_es extends java.util.ListResourceBundle
             { "CBA_double.translationX", "translation x"},
             { "CBA_double.translationY", "translation y"},
             { "CBA_equation", "equation/expression"},
+            { "CBA_equation.correct", "correct equation/expression"},
             { "CBA_action.setHalf", "action: set half"},
             { "CBA_action.setCorrect", "action: set correct"},
             { "CBA_action.setFalse", "actie: set false"},
             { "CBA_action.check", "action: check"},
+            { "CBA_action.closePopup", "action: close popup"},
+            { "CBA_action.popup", "action: open popup"},
 		};
 }
 
