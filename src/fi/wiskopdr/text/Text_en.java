@@ -739,6 +739,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_action.select", "Action: select"},
 				{"CBA_action.deselect", "Action: deselect"},
 				{"CBA_action.check", "Action: check"},
+				{"CBA_action.click", "Action: click"},
 				
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},
