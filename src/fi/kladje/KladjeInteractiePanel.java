@@ -1696,7 +1696,7 @@ System.out.println("kladjeVeld sized");
 
 	@Override
 	public String[] getSendCmds() {
-		String[] commands = {"drawing",	"equation", "equation.correct", "action.check", "action.closePopup"};
+		String[] commands = {"drawing",	"equation", "equation.correct", "action.check", "action.closePopup", "equation.1", "equation.2", "equation.3", "equation.4", "equation.5"};
 		return commands;
 	}
 
