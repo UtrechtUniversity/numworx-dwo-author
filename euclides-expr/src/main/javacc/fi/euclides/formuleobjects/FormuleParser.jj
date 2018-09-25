@@ -420,8 +420,11 @@ OMApplication arglist() :
 { OMApplication list = new OMApplication(); list.addElement(null);
   OMObject expr;
 }
-{  "(" ( expr = expr() { list.addElement(expr); })
+{  "(" 
+  	 (
+  	  ( expr = expr() { list.addElement(expr); })
 	  ( < KOMMA > expr = expr() { list.addElement(expr); })*
+	 )?
   ")"  {
     return list;
   }
@@ -434,6 +437,8 @@ OMApplication arglist() :
   }
 |
   < APPLY > ( expr = element() { list.addElement(expr); return list; })
+
+
 }
 
 void lookforhaakjes() :
