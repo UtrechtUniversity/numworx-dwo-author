@@ -117,13 +117,18 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 	protected Destroyable interpret(Expression interpreter, NameMapper mapper, OMObject obj) {
 		if(obj instanceof OMApplication) {
 			OMApplication oma = (OMApplication)obj;
+// point("LABEL")
 			if (Definitions.POINT.isSame( oma.firstElement()) && oma.getLength() == 2 && oma.getElementAt(1) instanceof OMString) {
 				String str = ((OMString) oma.getElementAt(1)).getString();
 				Tracker tracker = interpreter.CONST.getTracker();
 				return new NamedPoint(str, tracker);
 			}
-		}
-		
+// point()
+			if (Definitions.POINT.isSame(oma.firstElement()) && oma.getLength() == 1) {
+			    Tracker tracker = interpreter.CONST.getTracker();
+			    return new UnnamedPoint(tracker);
+			}
+		}		
 		return interpreter.interpret(obj, new Label(), mapper);
 	}
 	
@@ -160,6 +165,8 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 			{	
 				if(cache instanceof NamedPoint) {
 					item = ((NamedPoint) cache).getP();
+				} else if (cache instanceof UnnamedPoint) {
+				    item = ((UnnamedPoint) cache).getP();
 				}
 				item.addObserver(this);
 				this.item = item;

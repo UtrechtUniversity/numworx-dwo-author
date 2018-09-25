@@ -41,6 +41,7 @@ class PuntIndex extends Punt implements Indexed<Punt> {
 	 * @see fi.euclides.model.Punt#getY()
 	 */
 	public Numbers getY() {
+      if (delegate == null) return Numbers.NaN;
 		return delegate.getY();
 	}
 
@@ -49,6 +50,7 @@ class PuntIndex extends Punt implements Indexed<Punt> {
 	 * @see fi.euclides.model.Punt#getX()
 	 */
 	public Numbers getX() {
+	    if (delegate == null) return Numbers.NaN;
 		return delegate.getX();
 	}
 

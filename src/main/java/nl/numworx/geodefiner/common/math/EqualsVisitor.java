@@ -19,6 +19,7 @@ import fi.euclides.model.Visitor;
 import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import nl.numworx.geodefiner.common.NamedPoint;
+import nl.numworx.geodefiner.common.UnnamedPoint;
 import nl.numworx.geodefiner.common.Volgpunt;
 
 public class EqualsVisitor implements Visitor {
@@ -43,7 +44,7 @@ public class EqualsVisitor implements Visitor {
 	}
 
 	Numbers test = Numbers.ONE;
-	Destroyable b;
+	final private Destroyable b;
 	
 	public void reset() {
 		test = Numbers.ONE;
@@ -66,6 +67,9 @@ public class EqualsVisitor implements Visitor {
 	public void visitPunt(Punt p) {
 		if (b instanceof NamedPoint) {
 			test = ((NamedPoint) b).similar(p) ? Numbers.ZERO : Numbers.ONE;
+		} else
+		if (b instanceof UnnamedPoint) {
+		  test = ((UnnamedPoint) b).similar(p) ? Numbers.ZERO : Numbers.ONE;
 		} else
 		if (b instanceof Punt) {
 			Punt pb = (Punt) b;
