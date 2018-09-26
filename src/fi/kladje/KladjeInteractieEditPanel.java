@@ -43,6 +43,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	JTextField translationXTF, translationYTF;
 	JLabel scaleLabel;
 	JTextField scaleTF;
+	FormuleInstellingenButton fiButton;
 	
 	public KladjeInteractieEditPanel()
 	{
@@ -170,9 +171,16 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		formuleOptieBox = new JCheckBox(Kladje.rb.getString("formuleOptieTekst"), false);
 		formuleOptieBox.setFont(theFont);
 		formuleOptieBox.setBackground(Color.white);
-		formuleOptieBox.setBounds(currentX, currentY, width, height);
+		formuleOptieBox.setBounds(currentX, currentY, 120, height);
 		add(formuleOptieBox);
 		formuleOptieBox.addActionListener(this);
+		
+		fiButton = new FormuleInstellingenButton("settings");
+		fiButton.setFont(theFont);
+		fiButton.setBounds(currentX+120, currentY, 80, height);
+		add(fiButton);
+		fiButton.addActionListener(this);
+		fiButton.setVisible(false);
 		
 		currentY += height + 2 * offset;
 
@@ -254,6 +262,8 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			tekstTekenenBox.setLocation(klip.getSize().width + offset, tekstTekenenBox.getLocation().y);
 			formuleOptieBox.setLocation(klip.getSize().width + offset, formuleOptieBox.getLocation().y);
 			
+			fiButton.setLocation(klip.getSize().width+120 + offset, formuleOptieBox.getLocation().y);
+			
 			roterenBox.setLocation(klip.getSize().width + offset, roterenBox.getLocation().y);
 			schalenBox.setLocation(klip.getSize().width + offset, schalenBox.getLocation().y);
 			
@@ -313,6 +323,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		if (b.containsKey("formuleOptie"))
 			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue();
 		formuleOptieBox.setSelected(formuleOptie);
+		fiButton.setVisible(formuleOptie);
 		boolean ivmOptie = false;
 		if (b.containsKey("ivmOptie"))
 			ivmOptie = ((Boolean) b.get("ivmOptie")).booleanValue();
@@ -348,6 +359,11 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		
 		setBounds(getLocation().x, getLocation().y, klipBreedte + editWidth, Math.max(klipHoogte, editHeight));
 		
+		if (b.containsKey("formuleInstellingen")) {
+			Hashtable formuleInstellingen = ((Hashtable) b.get("formuleInstellingen"));
+			fiButton.setInstellingen(formuleInstellingen);
+		}
+		
 		// HIER !!
 		klip.setEditState(b);		
 		
@@ -363,6 +379,9 @@ System.out.println("kliep getEditState");
 		
 		h.put("klipBreedte", new Integer(klipBreedte));
 		h.put("klipHoogte", new Integer(klipHoogte));
+		
+		if(formuleOptieBox.isSelected() && fiButton.getInstellingen()!=null)
+			h.put("formuleInstellingen", fiButton.getInstellingen());
 		
 		return h;
 		
@@ -469,6 +488,7 @@ System.out.println("kliep getEditState");
 		else if (e.getSource() == formuleOptieBox)
 		{
 			klip.zetFormuleOptie(formuleOptieBox.isSelected());
+			fiButton.setVisible(formuleOptieBox.isSelected());
 		}
 		else if (e.getSource() == ivmOptieBox)
 		{
