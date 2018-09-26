@@ -18,6 +18,7 @@ import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.event.HitTester;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.event.Tracker;
 import fi.euclides.event.TrackerContext;
@@ -33,32 +34,74 @@ import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
 import fi.euclides.model.Segment;
+import fi.euclides.model.Track;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.FlipFlop;
+import fi.euclides.util.Adapter;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 
 public abstract class Instance /*implements Observer*/ {
 
-	protected Logger logger = Logger.getLogger(getClass().getName());
-	protected UIModelFactory uiModelFactory;
-	protected Definitions definitions;
-	protected Tracker viewer;
-	private Boolean nagekeken;
-	private int errorCount;
-	public CheckObjectList checkObjects;
-	
-	//protected int width, height;
-	
-  public final SelectHandler selector = new SelectHandler() {
+	public final class Selector extends SelectHandler {
+      boolean gravity;
+      boolean hasTools;
 
+    public void destroyContext(TrackerContext context) {
+      DefaultAdapter.getDefault(context).put(InSelectContext.class, null);
+    }
+      
+      
     protected SelectHandler.InSelectContext createContext(TrackerContext context) {
-      return new InInstanceSelectContext(context);
+      return new InInstanceSelectContext(wrap(context));
     }
 
+    private TrackerContext wrap(final TrackerContext context) {
+      if(hasTools) return context;
+      return new TrackerContext() {
+
+        @Override
+        public Adapter getAdapter() {
+          return context.getAdapter();
+        }
+
+        @Override
+        public void setAdapter(Adapter result) {
+          context.setAdapter(result);
+        }
+
+        @Override
+        public void setTrack(Track track) {
+          context.setTrack(track);
+        }
+
+        @Override
+        public Track getTrack() {
+          return context.getTrack();
+        }
+
+        @Override
+        public HitTester getHitTester() {
+          return context.getHitTester();
+        }
+
+        @Override
+        public void clearSelection() {
+          context.clearSelection();
+        }
+
+        @Override
+        public void toggle(Destroyable d) {
+        }
+
+        @Override
+        public Vector<Destroyable> selection() {
+          return context.selection();
+        }};
+    }
 
     class InInstanceSelectContext extends SelectHandler.InSelectContext {
 
@@ -131,10 +174,6 @@ public abstract class Instance /*implements Observer*/ {
       return super.freePuntenLine(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
     }
 
-
-
-    boolean gravity;
-
     private void saveGravity() {
       Snapper snap = getTracker().adapt(Snapper.class);
       gravity = snap.isGravity();
@@ -172,8 +211,18 @@ public abstract class Instance /*implements Observer*/ {
       super.pointerReleased(x, y, context);
       restoreGravity();
     }
-
-  };
+  }
+  protected Logger logger = Logger.getLogger(getClass().getName());
+	protected UIModelFactory uiModelFactory;
+	protected Definitions definitions;
+	protected Tracker viewer;
+	private Boolean nagekeken;
+	private int errorCount;
+	public CheckObjectList checkObjects;
+	
+	//protected int width, height;
+	
+  public final Selector selector = new Selector();
 	
 	protected ObjectMap launchData, state;
 	protected DefaultRandomizer random = new DefaultRandomizer();
@@ -219,7 +268,11 @@ public abstract class Instance /*implements Observer*/ {
 	}
 
 	protected void installToolbox() {
-		
+      if( launchData.containsKey("toolbox")) {
+        ObjectList list = launchData.getObjectList("toolbox");
+        selector.hasTools = list.size() > 0;
+      } else
+        selector.hasTools = false;
 	}
 
 	protected boolean installCheckDWO() {
