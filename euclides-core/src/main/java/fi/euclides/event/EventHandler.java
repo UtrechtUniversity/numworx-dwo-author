@@ -40,12 +40,16 @@ public abstract class EventHandler {
       this.context = context;
     }
 
+    protected void toggle(Destroyable d) {
+      context.toggle(d);
+    }
+    
     public void visitCirkel(Cirkel c) {
-      if (testLijn) context.toggle(c);
+      if (testLijn) toggle(c);
     }
 
     public void visitBoog(Boog b) {
-      if (testLijn) context.toggle(b);
+      if (testLijn) toggle(b);
     }
 
     /*
@@ -58,11 +62,11 @@ public abstract class EventHandler {
     }
 
     public void visitLijn(Lijn l) {
-      if (testLijn) context.toggle(l);
+      if (testLijn) toggle(l);
     }
 
     protected void visitMP(MP l) {
-      if (testLijn) context.toggle(l);
+      if (testLijn) toggle(l);
     }
 
     public void visitTriangle(Triangle t) {
@@ -78,7 +82,7 @@ public abstract class EventHandler {
     }
 
     public void visitPunt(Punt p) {
-      context.toggle(p);
+      toggle(p);
       done = true;
     }
 
@@ -88,7 +92,7 @@ public abstract class EventHandler {
      * @see euclides.Visitor#visitLabel(euclides.Label)
      */
     public void visitLabel(Label label) {
-      if (testLabel) context.toggle(label);
+      if (testLabel) toggle(label);
     }
 
   }
