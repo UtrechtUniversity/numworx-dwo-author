@@ -220,6 +220,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		view.offX = view.offY = 0;
 		selector.command();
 		definitions.clear();
+	    selector.destroyContext(view);
 	}
 
 	public void removeCBookEventListener(CBookEventListener listener, String command) {
