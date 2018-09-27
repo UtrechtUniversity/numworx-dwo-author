@@ -3,6 +3,10 @@ package nl.numworx.samllogin;
 import java.util.Properties;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import org.osgi.util.promise.Deferred;
+import org.osgi.util.promise.Promise;
 
 import fi.beans.browser.PrintStreamConsole;
 import fi.beans.browser.SimpleSwingBrowser;
@@ -18,32 +22,55 @@ public class SamlLoginPanel {
 		}
 	}
 
-	private static class API extends DefaultAPI
-	{
-		Properties map = new Properties();
-		@Override
-		public String LMSSetValue(String key, String value) {
-			System.out.println(key + " : " + value);
-			map.setProperty(key, value);
-			return super.LMSSetValue(key, value);
-		}
-		
-	}
+	/**
+	 * capture 
+	 * @author wim
+	 *
+	 */
+  public static class API extends DefaultAPI
+  {
+    private Properties map = new Properties();
+    private Deferred<Properties> defer = new Deferred<>();
+    @Override
+    public String LMSSetValue(String key, String value) {
+      map.setProperty(key, value);
+      return super.LMSSetValue(key, value);
+    }
+
+    @Override
+    public String LMSFinish(String iParam) {
+      defer.resolve(map);
+      return super.LMSFinish(iParam);
+    }
+
+    public Promise<Properties> getPromise() {
+        return defer.getPromise();
+    }
+  }
 	
 	
 	public static void main(String[] args) {
 		
-		JFrame f = new JFrame("Login uu-dev");
+		final JFrame f = new JFrame("Login uu-dev");
+		SimpleSwingBrowser.debug = true;
 		SimpleSwingBrowser browser = new SimpleSwingBrowser();
 		browser.setConsole(new PrintStreamConsole());
-		browser.setApi(new API());
+		API api = new API();
+		api.getPromise().then( p -> {
+		    p.getValue().store(System.out, "Login succeeded");
+		    SwingUtilities.invokeLater(f::dispose);
+		    return null;
+		});
+		
+        browser.setApi(api);
 		browser.setStatus(new PrintStatus());
 		f.setContentPane(browser);
 		
 		f.pack();
 		f.setVisible(true);
 		browser.loadURL("https://uu-dev.dwo.nl/dwo/snoop");
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        //browser.loadURL("http://localhost:8080/dwo/saml/login.jsp");
+		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 }
