@@ -1163,10 +1163,12 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 						String reviewStateString = JSONValue.toJSONString(reviewState);
 						LOG.info("weggeschreven reviewStateString: "+ reviewStateString);
 						String old = api.LMSGetValue(CMI_COMPLETION_STATUS);
-						if("completed" .equals(old) ) api.LMSSetValue(CMI_COMPLETION_STATUS, "review"); // ontzegel voor review FIXME security hack
-						api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);
-						api.LMSSetValue(CMI_CORE_SCORE_RAW, d);
-						api.LMSSetValue(CMI_COMPLETION_STATUS, old);
+						if("completed" .equals(old) ) {
+						  api.LMSSetValue(CMI_COMPLETION_STATUS, "review"); // ontzegel voor review FIXME security hack
+						  api.LMSSetValue(CMI_COMMENTS_FROM_LMS_0_COMMENT, reviewStateString);
+						  api.LMSSetValue(CMI_CORE_SCORE_RAW, d);
+						  api.LMSSetValue(CMI_COMPLETION_STATUS, old);
+					    }
 //						api.LMSSetValue(CMI_CORE_LESSON_LOCATION, location); // Altijd, ook als reviewData empty is!
 						if (suspendData == null || suspendData.isEmpty() || reviewData == null || reviewData.isEmpty())
 							return;
