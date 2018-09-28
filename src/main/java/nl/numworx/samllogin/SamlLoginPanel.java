@@ -59,6 +59,7 @@ public class SamlLoginPanel {
 		api.getPromise().then( p -> {
 		    p.getValue().store(System.out, "Login succeeded");
 		    SwingUtilities.invokeLater(f::dispose);
+		    System.exit(0);
 		    return null;
 		});
 		
@@ -68,7 +69,7 @@ public class SamlLoginPanel {
 		
 		f.pack();
 		f.setVisible(true);
-		browser.loadURL("https://uu-dev.dwo.nl/dwo/snoop");
+		browser.loadURL("https://uu-dev.dwo.nl/dwo/saml/login.jsp");
         //browser.loadURL("http://localhost:8080/dwo/saml/login.jsp");
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
