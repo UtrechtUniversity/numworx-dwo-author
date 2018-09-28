@@ -315,7 +315,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
           }
           
           expr = name + "=" + x + "->" + expr;
-          Definitions definitions = getDefinitions();
           int readonly = definitions.readonly;
           try {
             OMObject object = new fi.euclides.formuleobjects.FormuleParser(expr).parse();

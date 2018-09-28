@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.DefaultListModel;
@@ -16,7 +14,6 @@ import javax.swing.event.ListDataListener;
 
 import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.common.Interval;
-import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.common.Volgpunt;
 import nl.numworx.geodefiner.ui.UIModelFactory;
@@ -24,9 +21,6 @@ import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.Tracker;
-import fi.euclides.formuleobjects.FormuleParser;
-import fi.euclides.formuleobjects.ParseException;
-import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.util.Observer;
@@ -238,26 +232,6 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
     public <T extends EventListener> T[] getListeners(Class<T> listenerType) {
         return listenerList.getListeners(listenerType);
     }
-
-	public void redefine(Randomizer random) {
-		List<CELL> undef = new LinkedList<CELL>();
-		for(CELL cell : delegate) {
-			if(cell.item == null) undef.add(cell);
-		}
-		for(CELL cell : undef) {
-			try {
-				String substring = random.randomize(cell.text);
-				FormuleParser parser = new FormuleParser(substring.substring(2));
-				OMObject object = parser.parse();
-				define(cell.text, object);
-			} catch (ParseException pe) {
-			} catch (Exception e) {
-				e.printStackTrace();
-				addElement(cell);
-			} catch (TokenMgrError te) {				
-			}
-		}
-	}
 
 	private UIModelFactory factory;
 	
