@@ -2,6 +2,7 @@ package nl.numworx.geodefiner.common;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -703,4 +704,24 @@ private Label fx(Destroyable f) {
 	public int indexOf(CELL c) {
 		return delegate.indexOf(c);
 	}
+
+  public void redefine(Randomizer random) {
+  	List<CELL> undef = new LinkedList<CELL>();
+  	for(CELL cell : delegate) {
+  		if(cell.item == null) undef.add(cell);
+  	}
+  	for(CELL cell : undef) {
+  		try {
+  			String substring = random.randomize(cell.text);
+  			FormuleParser parser = new FormuleParser(substring.substring(2));
+  			OMObject object = parser.parse();
+  			define(cell.text, object);
+  		} catch (ParseException pe) {
+  		} catch (Exception e) {
+  			e.printStackTrace();
+  			addElement(cell);
+  		} catch (TokenMgrError te) {				
+  		}
+  	}
+  }
 }
