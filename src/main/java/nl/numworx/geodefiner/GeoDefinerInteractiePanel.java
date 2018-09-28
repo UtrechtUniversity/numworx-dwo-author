@@ -25,6 +25,7 @@ import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.euclides.event.NameMapper;
+import fi.euclides.formuleobjects.Lambda;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
@@ -32,6 +33,8 @@ import fi.euclides.model.Model;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.LabelValue;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import nl.tue.win.riaca.openmath.lang.OMBinding;
+import nl.tue.win.riaca.openmath.lang.OMObject;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class GeoDefinerInteractiePanel extends JPanel implements
@@ -230,10 +233,20 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 				
 				String naam = mapper.toString(label);
 				if("i".equals(naam)) continue;
+				if(naam.startsWith("%")) continue;
 				if(isValue) 
 				{
 					cmds.add("double." + naam);
 				}
+				
+				boolean isExpression = 
+				      label.getSubKey() == Lambda.TYPE &&
+				      label.adapt(OMObject.class) instanceof OMBinding;
+				if (isExpression) {
+				  cmds.add("expression." + naam);
+				}
+				
+				
 			}
 		}
 		return cmds;
@@ -244,6 +257,8 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 			return cmd.substring(7);
 		if(cmd.startsWith("action."))
 			return Messages.getString(cmd);
+		if(cmd.startsWith("expression."))
+		    return cmd.substring(11);
 		return cmd;
 	}
 

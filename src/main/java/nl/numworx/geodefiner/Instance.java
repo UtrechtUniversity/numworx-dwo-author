@@ -2,17 +2,21 @@ package nl.numworx.geodefiner;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Stroke;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -28,6 +32,7 @@ import javax.swing.ToolTipManager;
 import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Check_DWO;
 import nl.numworx.geodefiner.common.DefaultRandomizer;
+import nl.numworx.geodefiner.common.LocusModelFX;
 import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.locus.Builder;
 import nl.numworx.geodefiner.module.Components;
@@ -35,6 +40,9 @@ import nl.numworx.geodefiner.module.DaggerComponents;
 import nl.numworx.geodefiner.ui.TextModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.numworx.geodefiner.ui.UserConfig;
+import nl.tue.win.riaca.openmath.lang.OMApplication;
+import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.tue.win.riaca.openmath.lang.OMVariable;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 
 import org.cbook.cbookif.AssessmentMode;
@@ -46,6 +54,7 @@ import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.SuccessStatus;
 
 import dagger.Lazy;
+import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Locus;
@@ -285,11 +294,56 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				label.setValue(value);
 				label.notifyObservers();
 			}
+			return;
+		}
+		if (ev.getCommand().startsWith("expression.") ) {
+          int dot = ev.getCommand().indexOf('.');
+          String name = ev.getCommand().substring(dot+1);
+          String expr = ev.getMessage();
+          expr = expr.substring(2);
+          String x = "x"; // var of expr
+          try {
+            OMObject o = new fi.euclides.formuleobjects.FormuleParser(expr).expr();
+            Collection<String> vars = varsOf(o, new HashSet<String>());
+            if(vars.size() == 1) 
+              x = vars.iterator().next();
+            else if (!vars.isEmpty())
+              return;
+          } catch (ParseException e1) {
+            e1.printStackTrace();
+            return;
+          }
+          
+          expr = name + "=" + x + "->" + expr;
+          Definitions definitions = getDefinitions();
+          int readonly = definitions.readonly;
+          try {
+            OMObject object = new fi.euclides.formuleobjects.FormuleParser(expr).parse();
+            definitions.readonly = 4;
+            definitions.define("$f" + expr, object);
+            definitions.redefine(random);
+            
+          } catch (Exception e) {
+            e.printStackTrace();
+          } finally {
+            definitions.readonly = readonly;
+          }
+          
 		}
 	}
 
 
-	@Override
+	private Collection<String> varsOf(OMObject o, HashSet<String> set) {
+    if(o instanceof OMVariable) {
+      set.add(((OMVariable) o).getName());
+    }
+    if (o instanceof OMApplication) {
+      Vector<OMObject> elements = ((OMApplication) o).getElements();
+      elements.forEach(p -> varsOf(p, set));      
+    }
+    return set;
+  }
+  @Override
 	protected boolean installCheckDWO() {
 		if  (super.installCheckDWO())
 		{
