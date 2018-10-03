@@ -9,20 +9,25 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import nl.numworx.geodefiner.common.math.Expression;
+import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.tue.win.riaca.openmath.lang.OMVariable;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.HitTester;
+import fi.euclides.event.NameMapper;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.event.Tracker;
 import fi.euclides.event.TrackerContext;
 import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
@@ -220,7 +225,6 @@ public abstract class Instance /*implements Observer*/ {
 	private int errorCount;
 	public CheckObjectList checkObjects;
 	
-	//protected int width, height;
 	
   public final Selector selector = new Selector();
 	
@@ -257,7 +261,7 @@ public abstract class Instance /*implements Observer*/ {
 		fetchScore();
 	}
 
-	List<Destroyable> resetItems;
+	protected List<Destroyable> resetItems;
 	public void installPrepare() {
 		Model m = viewer.getModel();
 		int size = m.getPunten().size() + m.getLijnen().size();
@@ -382,6 +386,7 @@ public abstract class Instance /*implements Observer*/ {
 	protected int score;
 	protected Check_DWO checkDWO;
 	private Boolean status;
+    protected Map<String,String> expressions;
 
 	public Boolean getStatus() {
 		return status;
@@ -392,7 +397,24 @@ public abstract class Instance /*implements Observer*/ {
 	}
 
 	protected Map<String, Object> getState(Map<String, Object> map) {
-		Map<String, List<Object>> positions = new HashMap<String, List<Object>>();
+      if (!expressions.isEmpty())
+      {
+        map.put("expressions", new ArrayList<>(expressions.values()));
+        Map<String,Integer> indices = new HashMap<>();
+        map.put("indices", indices);
+        int r = definitions.readonly;
+        NameMapper m = viewer.getMapper();
+        for (Destroyable d: resetItems) {
+          int index = d.getIndex();
+          String name = //d.adapt(String.class);
+              m.toString(d);
+          if (index>r) {
+            indices.put(name, index);
+          }
+        }
+      }
+	  
+	  Map<String, List<Object>> positions = new HashMap<String, List<Object>>();
 		Map<String, List<Object>> values = new HashMap<String, List<Object>>();
 		List<Destroyable> punten;
 		punten = new ArrayList<Destroyable> (viewer.getModel().getPunten());
@@ -455,8 +477,54 @@ public abstract class Instance /*implements Observer*/ {
 		
 		return m.toList();
 	}
-	
-	private void setModelState(ObjectList list, ObjectList toolbox) {
+	   protected void updateResetItems(int modelcount) {
+	        Model model = viewer.getModel();
+	        List<Destroyable> objects = new ArrayList<>();
+	        List<Punt> punten = model.getPunten();
+	        List<Destroyable> lijnen = model.getLijnen();
+	        objects.addAll(lijnen);
+	        objects.addAll(punten);
+	        resetItems.retainAll(objects); // destroy old definitions
+	        for(Destroyable d: objects) {
+	          if(d.getIndex() > modelcount) {
+	            resetItems.add(d);         // add new definitions.
+	          }
+	        }
+	  }
+
+	protected void setModelState(ObjectList list, ObjectList toolbox) {
+	    if(state.containsKey("expressions")) {
+	      ObjectList expressions = state.getObjectList("expressions");
+	      ObjectMap  indices = state.getObjectMap("indices");
+	      int size = expressions.size();
+	      for (int i = 0; i < size; i++) {
+	        String expr = expressions.getString(i);
+	        String name = expr.substring(0, expr.indexOf('='));
+	        OMObject object = null;
+	        try {
+	          object = new fi.euclides.formuleobjects.FormuleParser(expr).parse();
+	        } catch (ParseException e) { // should not happen.
+	        }
+	        int old = definitions.readonly;
+	        definitions.readonly = Definitions.PREDEFINED_INDEX;
+	        int modelcount = viewer.getModel().getIndex();
+	        definitions.define("$f" + expr, object);
+	        definitions.redefine(random);
+	        this.expressions.remove(name);
+	        this.expressions.put(name, expr);
+	        updateResetItems(modelcount);
+	        definitions.readonly = old;
+	      }
+	      Set<String> set = indices.keySet();
+	      int max = viewer.getModel().getIndex();
+	      for(String name : set) {
+	        Destroyable d = viewer.getMapper().fromString(name);
+	        int i = indices.getInt(name);
+	        max = Math.max(max, i);
+	        d.setIndex(i);
+	      }
+	      viewer.getModel().setIndex(max);
+	    }
 		if(list == null && (toolbox == null || toolbox.size() == 0) ) 
 			return;
 		Memento m = new Memento(viewer);
@@ -633,4 +701,52 @@ public abstract class Instance /*implements Observer*/ {
 		if(! Boolean.TRUE.equals(status))
 			errorCount ++ ;
 	}
+
+  protected void acceptExpressionEvent(String name, String expr) {
+    expr = expr.substring(2);
+    String x = "x"; // var of expr
+    try {
+      OMObject o = new fi.euclides.formuleobjects.FormuleParser(expr).expr();
+      Collection<String> vars = varsOf(o, new HashSet<String>());
+      vars.remove("i"); // i is a var, but cannot be used.
+      if(vars.size() == 1) 
+        x = vars.iterator().next();
+      else if (!vars.isEmpty())
+        return;
+    } catch (ParseException e1) {
+      logger.log(Level.WARNING, "expression " + name, e1);
+      return;
+    }
+    
+    expr = name + "=" + x + "->" + expr;
+  
+    int readonly = definitions.readonly;
+    try {
+      OMObject object = new fi.euclides.formuleobjects.FormuleParser(expr).parse();
+      definitions.readonly = Definitions.PREDEFINED_INDEX;
+      int modelcount = viewer.getModel().getIndex();
+      definitions.define("$f" + expr, object);
+      definitions.redefine(random);
+      expressions.remove(name);
+      expressions.put(name, expr);
+      updateResetItems(modelcount);
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "expression " + name, e);
+    } finally {
+      definitions.readonly = readonly;
+    }
+  }
+
+  protected Collection<String> varsOf(OMObject o, HashSet<String> set) {
+    if(o instanceof OMVariable) {
+      set.add(((OMVariable) o).getName());
+    }
+    if (o instanceof OMApplication) {
+      @SuppressWarnings("unchecked")
+      List<OMObject> elements = ((OMApplication) o).getElements();
+      elements = elements.subList(1, elements.size()); // not first. in case of $f($x)
+      for (OMObject p: elements) varsOf(p, set);      
+    }
+    return set;
+  }
 }

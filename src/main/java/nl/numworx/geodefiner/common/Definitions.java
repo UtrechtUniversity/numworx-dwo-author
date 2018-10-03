@@ -53,7 +53,8 @@ public class Definitions implements Observer /*, ListModel*/ {
 
 	protected final List<CELL> delegate = new Vector<CELL>();
 	protected final Tracker viewer;
-	public int readonly = 4;
+	public static final int PREDEFINED_INDEX = 6;
+	public int readonly = PREDEFINED_INDEX;
 
 	public Definitions(Tracker viewer) {
 		this.viewer = viewer;
