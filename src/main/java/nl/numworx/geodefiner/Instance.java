@@ -8,17 +8,19 @@ import java.awt.Image;
 import java.awt.Stroke;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -40,10 +42,8 @@ import nl.numworx.geodefiner.module.DaggerComponents;
 import nl.numworx.geodefiner.ui.TextModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.numworx.geodefiner.ui.UserConfig;
-import nl.tue.win.riaca.openmath.lang.OMApplication;
-import nl.tue.win.riaca.openmath.lang.OMObject;
-import nl.tue.win.riaca.openmath.lang.OMVariable;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookEvent;
@@ -54,10 +54,11 @@ import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.SuccessStatus;
 
 import dagger.Lazy;
-import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Locus;
+import fi.euclides.model.Model;
+import fi.euclides.model.Punt;
 import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
@@ -212,6 +213,15 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public void setLaunchData(Map<String, ? extends Object> launchData,
 			Map<String, Number> random) {		
 		super.setLaunchData(launchData, random);
+        definitions.readonly = viewer.getModel().getIndex(); // readonly moet gezet na init definitions, niet idempotent, na of voor setState
+	}
+	
+	/**
+	 * For Editor only.
+	 * Don't set readonly to a high value
+	 */
+	void setLaunchData(Map<String, ? extends Object> launchData, RandomPanel random) {
+	    super.setLaunchData(launchData, random.getRandomVars());
 	}
 
 	// Assume getSize() is okay.
@@ -229,6 +239,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		view.offX = view.offY = 0;
 		selector.command();
 		definitions.clear();
+		expressions.clear();
 	    selector.destroyContext(view);
 	}
 
@@ -268,6 +279,19 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		}
 	}
 
+	
+	
+	
+	
+	@Override
+  protected void setModelState(ObjectList list, ObjectList toolbox) {
+    super.setModelState(list, toolbox);
+  }
+
+  @Inject void setExpressions(@Named("expressions") Map<String,String> map) {
+    expressions = map;
+  }
+	
 	public void acceptCBookEvent(CBookEvent ev) {
 		if(Constants.CHECK.equals(ev.getCommand()) && action != null)
 		{
@@ -299,50 +323,13 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		if (ev.getCommand().startsWith("expression.") ) {
           int dot = ev.getCommand().indexOf('.');
           String name = ev.getCommand().substring(dot+1);
-          String expr = ev.getMessage();
-          expr = expr.substring(2);
-          String x = "x"; // var of expr
-          try {
-            OMObject o = new fi.euclides.formuleobjects.FormuleParser(expr).expr();
-            Collection<String> vars = varsOf(o, new HashSet<String>());
-            if(vars.size() == 1) 
-              x = vars.iterator().next();
-            else if (!vars.isEmpty())
-              return;
-          } catch (ParseException e1) {
-            e1.printStackTrace();
-            return;
-          }
-          
-          expr = name + "=" + x + "->" + expr;
-          int readonly = definitions.readonly;
-          try {
-            OMObject object = new fi.euclides.formuleobjects.FormuleParser(expr).parse();
-            definitions.readonly = 4;
-            definitions.define("$f" + expr, object);
-            definitions.redefine(random);
-            
-          } catch (Exception e) {
-            e.printStackTrace();
-          } finally {
-            definitions.readonly = readonly;
-          }
-          
+          String expr = ev.getMessage(); 
+          acceptExpressionEvent(name, expr);
+          return;
 		}
 	}
-
-
-	private Collection<String> varsOf(OMObject o, HashSet<String> set) {
-    if(o instanceof OMVariable) {
-      set.add(((OMVariable) o).getName());
-    }
-    if (o instanceof OMApplication) {
-      Vector<OMObject> elements = ((OMApplication) o).getElements();
-      elements.forEach(p -> varsOf(p, set));      
-    }
-    return set;
-  }
-  @Override
+ 
+	@Override
 	protected boolean installCheckDWO() {
 		if  (super.installCheckDWO())
 		{
@@ -384,7 +371,6 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	public void start() {
 		startToolbox();
 		super.start();
-		getDefinitions().readonly = viewer.getModel().getIndex();
 		if(checkObjects != null)
 			checkObjects.start();
 		getViewer().getModel().addObserver(UserConfig.INSTANCE);

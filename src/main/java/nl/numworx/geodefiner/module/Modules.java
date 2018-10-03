@@ -1,8 +1,10 @@
 package nl.numworx.geodefiner.module;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.cbook.cbookif.CBookEventHandler;
@@ -75,4 +77,8 @@ public abstract class Modules {
 		return new Definitions(tracker);
 	}
 	
-}
+	@Provides @Named("expressions") static
+	Map<String,String> expressions() {
+	  return new LinkedHashMap<String, String>();
+	}
+  }

@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -17,6 +16,7 @@ import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.tekstobjects.TekstEditor;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
+@SuppressWarnings("serial")
 class RandomPanel extends JPanel implements ActionListener, FocusListener {
 
 	private TekstEditor randomVarEditor;

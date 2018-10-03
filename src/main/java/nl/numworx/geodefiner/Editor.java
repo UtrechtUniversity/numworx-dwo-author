@@ -260,8 +260,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	public void setLaunchData(Map<String, ?> launchdata) {
 		instance.init();
 		random.setText((String)launchdata.get("random"));
-		Map randomvars = random.getRandomVars();
-		instance.setLaunchData(launchdata, randomvars);
+		instance.setLaunchData(launchdata, random);
 		axes.init();
 // fill checkDWO for the editor		
 		ObjectMap map = JSONUtilities.wrapMap(launchdata);
