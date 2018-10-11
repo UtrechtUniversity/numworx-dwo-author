@@ -37,6 +37,7 @@ public class Text_es extends java.util.ListResourceBundle
             { "CBA_action.setCorrect", "action: set correct"},
             { "CBA_action.setFalse", "actie: set false"},
             { "CBA_action.check", "action: check"},
+            { "CBA_action.check.n", "action: check n"},
             { "CBA_action.closePopup", "action: close popup"},
             { "CBA_action.popup", "action: open popup"},
 		};

@@ -37,6 +37,7 @@ public class Text_nl extends java.util.ListResourceBundle
             { "CBA_action.setFalse", "actie: zet fout"},
             { "CBA_action.setHalf", "actie: zet half"},
             { "CBA_action.check", "actie: check"},
+            { "CBA_action.check.n", "actie: check n"},
             { "CBA_action.closePopup", "actie: sluit popup"},
             { "CBA_action.popup", "actie: popup"},
             

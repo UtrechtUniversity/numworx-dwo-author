@@ -240,7 +240,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		ivmOptieBox.setBounds(currentX, currentY, width, height);
 		add(ivmOptieBox);
 		ivmOptieBox.addActionListener(this);
-		ivmOptieBox.setVisible(Kladje.isExperimental);
+		//ivmOptieBox.setVisible(Kladje.isExperimental);
 		
 		componentsCreated = true;
 	}	
