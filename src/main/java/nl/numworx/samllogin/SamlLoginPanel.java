@@ -1,6 +1,8 @@
 package nl.numworx.samllogin;
 
+import java.awt.Component;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -8,25 +10,33 @@ import javax.swing.SwingUtilities;
 import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
 
-import fi.beans.browser.PrintStreamConsole;
+import fi.beans.browser.Console;
 import fi.beans.browser.SimpleSwingBrowser;
 import fi.beans.browser.Status;
 import fi.previewhtml.DefaultAPI;
 
-public class SamlLoginPanel {
-	
-	private static final class PrintStatus implements Status {
-		@Override
-		public void showStatus(String message) {
-			System.out.println(message);
-		}
-	}
+@SuppressWarnings("serial")
+public class SamlLoginPanel extends SimpleSwingBrowser {
+    
+    static final Logger LOG = Logger.getLogger(SamlLoginPanel.class.getName());
+  
+    public static final class PrintStatus extends Console implements Status {
+        @Override
+        public void showStatus(String message) {
+            LOG.fine(message);
+        }
 
-	/**
-	 * capture 
-	 * @author wim
-	 *
-	 */
+      @Override
+      public void log(String object) {
+            LOG.info(object);
+      }
+    }
+
+    /**
+     * capture 
+     * @author wim
+     *
+     */
   public static class API extends DefaultAPI
   {
     private Properties map = new Properties();
@@ -47,31 +57,38 @@ public class SamlLoginPanel {
         return defer.getPromise();
     }
   }
-	
-	
-	public static void main(String[] args) {
-		
-		final JFrame f = new JFrame("Login uu-dev");
-		SimpleSwingBrowser.debug = true;
-		SimpleSwingBrowser browser = new SimpleSwingBrowser();
-		browser.setConsole(new PrintStreamConsole());
-		API api = new API();
-		api.getPromise().then( p -> {
-		    p.getValue().store(System.out, "Login succeeded");
-		    SwingUtilities.invokeLater(f::dispose);
-		    System.exit(0);
-		    return null;
-		});
-		
-        browser.setApi(api);
-		browser.setStatus(new PrintStatus());
-		f.setContentPane(browser);
-		
-		f.pack();
-		f.setVisible(true);
-		browser.loadURL("https://uu-dev.dwo.nl/dwo/saml/login.jsp");
-        //browser.loadURL("http://localhost:8080/dwo/saml/login.jsp");
-		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	}
+    
+    
+ 
+    public Promise<Properties> getPromise() {
+      return api.getPromise().map(this::getCookie);
+    }
 
+    public Properties getCookie(Properties p) {
+      String cookie = p.getProperty("dme.cookies");
+      if(cookie != null) {
+        for ( String item : cookie.split(";"))  {
+          String[] pair = item.trim().split("=", 2);
+          p.setProperty(pair[0], pair[1]);
+        }
+      }
+      return p;
+    }
+    
+    public SamlLoginPanel(String url) {
+      this();
+      loadURL(url);
+    }
+    API api = new API();
+
+  public SamlLoginPanel() {
+    PrintStatus status = new PrintStatus();
+    setConsole(status);
+    setApi(api);
+    setStatus(status);
+  }
+    
+  public Component asComponent() {
+    return this;
+  }
 }
