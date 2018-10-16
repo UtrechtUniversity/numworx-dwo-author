@@ -4,9 +4,6 @@ import java.awt.Component;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
 import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
 
