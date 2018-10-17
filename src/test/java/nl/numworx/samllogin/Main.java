@@ -8,13 +8,15 @@ import java.awt.event.ComponentListener;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import fi.beans.scorm.SAMLLoginIF;
+
 public class Main {
 
   public static void main(String[] args) {
     
     final JFrame f = new JFrame("Login uu-dev");
     SamlLoginPanel.debug = true;
-    SamlLoginPanel browser = new SamlLoginPanel("https://uu-dev.dwo.nl/dwo/saml/login.jsp");
+    SAMLLoginIF browser = new SamlLoginPanel("https://uu-dev.dwo.nl/dwo/saml/login.jsp");
     browser
       .getPromise()
       .then( p -> {
@@ -23,7 +25,7 @@ public class Main {
         System.exit(0);
         return null;
     });
-    browser.addComponentListener(new ComponentAdapter() {
+    browser.asComponent().addComponentListener(new ComponentAdapter() {
 
       @Override
       public void componentResized(ComponentEvent e) {
@@ -31,7 +33,7 @@ public class Main {
       }
       
     });
-    f.setContentPane(browser);
+    f.setContentPane(browser.asComponent());
     
     f.pack();
     Insets inset = f.getInsets();

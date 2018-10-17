@@ -1,8 +1,9 @@
 package nl.numworx.samllogin;
 
-import java.awt.Component;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.swing.JComponent;
 
 import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
@@ -10,10 +11,11 @@ import org.osgi.util.promise.Promise;
 import fi.beans.browser.Console;
 import fi.beans.browser.SimpleSwingBrowser;
 import fi.beans.browser.Status;
+import fi.beans.scorm.SAMLLoginIF;
 import fi.previewhtml.DefaultAPI;
 
 @SuppressWarnings("serial")
-public class SamlLoginPanel extends SimpleSwingBrowser {
+public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     
     static final Logger LOG = Logger.getLogger(SamlLoginPanel.class.getName());
   
@@ -83,9 +85,12 @@ public class SamlLoginPanel extends SimpleSwingBrowser {
     setConsole(status);
     setApi(api);
     setStatus(status);
+    setSize(320,446); // UU 
+    setPreferredSize(getSize());
+    setMinimumSize(getSize());
   }
     
-  public Component asComponent() {
+  public JComponent asComponent() {
     return this;
   }
 }
