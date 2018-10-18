@@ -73,8 +73,9 @@ public class FormuleParser implements OMConstants{
   private static OMSymbol transc(Token token) {
     return new OMSymbol("transc1", token.toString() );
   }
-  private static String unescape(String str)
+  static String unescape(String str)
   {
+	str = str.substring(0, str.length()-1);
 	int i = 0;
 	while ( (i = str.indexOf('\\', i)) >= 0)
 	{
@@ -157,8 +158,9 @@ public class FormuleParser implements OMConstants{
 
   
 }  
-PARSER_END(FormuleParser)SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : ("*"|"\u00B7"|"\u00D7"|"\u2062") >| < DIVIDE : ("/"|":") >
-| < KOMMA :  "," >}
+PARSER_END(FormuleParser)SPECIAL_TOKEN :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : ("*"|"\u00B7"|"\u00D7"|"\u2062") >| < DIVIDE : ("/"|":") >
+| < KOMMA :  "," >
+}
 
 TOKEN : /* VAKKEN */
 {
@@ -249,7 +251,24 @@ SKIP: /* Strings */
 	<~[]>
 }
 
-
+List<Token> tokens() :
+{
+	Token head,tail;
+}
+{
+	{ head = getToken(1); }
+	parse()
+	{ 
+		tail = getToken(0);
+		List<Token> result = new ArrayList<Token>();
+		do { 
+			result.add(head);
+			head = head.next;
+		} while( head != tail );
+		return result; 
+	}
+}
+	
 OMObject parse() :{OMObject o;}{  o = assign() ( "@" | < EOF >)  {    return o;  }| "@" { return null; }
 | < EOF > { return null; }}
 
@@ -516,7 +535,6 @@ OMApplication bracket() :
 | tok = < STRING >
 	{
 	  	String s = tok.toString();
-	  	s = s.substring(0, s.length()-1);
 	  	s = unescape(s);
 		return new OMString(s);
 	}
