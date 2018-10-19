@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import nl.tue.win.riaca.openmath.lang.OMApplication;
+
 public class TokenTest {
 
 	@BeforeClass
@@ -42,6 +44,21 @@ public class TokenTest {
 		assertEquals("rename", "b=i+x", toString(tokens));		
 	}
 
+	   @Test
+	    public void testParse5() throws ParseException {
+	       String source;
+	        FormuleParser p = new FormuleParser(source="a= i + x ");
+	        List<Token> tokens = p.tokens();
+	        assertEquals("size tokens", 5, tokens.size());
+	        System.out.println(tokens);
+	        tokens = insertSpecials(tokens);
+	        assertEquals("size + specials" , 9, tokens.size()) ;
+	        System.out.println(tokens);
+	        assertEquals("toString", source, toString(tokens));
+	    }
+
+	
+	
 	@Test
 	public void testParseP1() throws ParseException {
 		FormuleParser p = new FormuleParser("P1=P11");
@@ -74,7 +91,7 @@ public class TokenTest {
 			FormuleParser p = new FormuleParser("[\""+plain+"\"]");
 			try {
 				Token head = p.getToken(1);
-				p.bracket();
+				OMApplication oma = p.bracket();
 				Token tail = p.getToken(1);
 				List<Token> result = new ArrayList<>();
 				do { 
@@ -82,23 +99,22 @@ public class TokenTest {
 					head = head.next;
 				} while( head != tail );
 				renameTokens(result, map);
-				StringBuilder sb = new StringBuilder('"');
+				StringBuilder sb = new StringBuilder();
 				for(Token t: result.subList(1, result.size()-1)) {
 					int kind = t.kind;
-					if (kind == FormuleParser.KOMMA)
-						continue;
-					if (kind != FormuleParserConstants.STRING) 
-						sb.append('{');
-					else {
+					if (kind == FormuleParserConstants.STRING) 
+					{
 						t.image = FormuleParser.unescape(t.image);
 						t.image = t.image.replace("\"", "\\\"");
+						t.image = "}" + t.image + "{";
 					}
 					sb.append(t.toString());			
-					if (kind != FormuleParserConstants.STRING) 
-						sb.append('}');
 				}
-				sb.append('"');
-				return sb.toString();
+				plain = sb.toString();
+				plain = plain.replace("{,",  "{").replace(",}","}");
+				if(plain.startsWith("}")) plain = plain.substring(1);
+				if(plain.endsWith("{")) plain = plain.substring(0, plain.length()-1);
+				return plain + '"';
 				
 			} catch (ParseException e) {
 				// log.fine(e.toString())
@@ -118,14 +134,14 @@ public class TokenTest {
 	}
 	@Test
 	public void testParse2() throws ParseException {
-		FormuleParser p = new FormuleParser("t=text(\"123*{a}\",P)");
+		FormuleParser p = new FormuleParser("t=text(\"{1}{2}3*{a+point(1,3)}\",P)");
 		List<Token> tokens = p.tokens();
 		assertEquals("size tokens", 8, tokens.size());
 		System.out.println(tokens);
 		Token t4 = tokens.get(4);
 		assertEquals("string" , FormuleParserConstants.STRING, t4.kind);
 		renameTokens(tokens, Collections.singletonMap("a", "aa"));
-		assertEquals("rename string","t=text(\"123*{aa}\",P)" , toString(tokens));
+		assertEquals("rename string","t=text(\"{1}{2}3*{aa+point(1,3)}\",P)" , toString(tokens));
 	}
 
 	@Test // D I Y parsing:
@@ -148,7 +164,7 @@ public class TokenTest {
 
 	@Test
 	public void testParse4() throws ParseException {
-		String source = "a= \"1\"+\r x";
+		String source = "a= \"1 \\\"{b} \"+\r x";
 		FormuleParser p = new FormuleParser(source);
 		List<Token> tokens = p.tokens();
 		assertEquals("size tokens", 5, tokens.size());
@@ -157,12 +173,17 @@ public class TokenTest {
 		assertEquals("size + specials" , 8, tokens.size()) ;
 		System.out.println(tokens);
 		assertEquals("toString", source, toString(tokens));
-		
+		renameTokens(tokens, Collections.singletonMap("b", "B"));
+		String s = toString(tokens);
+		assertEquals("rename", source, toString(tokens));
 	}
 
 	private List<Token> insertSpecials(List<Token> tokens) {
 		List<Token> result = new LinkedList<Token>();
 		tokens.forEach(t -> collect(result,t));
+// spaces at end.
+		Token last = result.listIterator(result.size()).previous();
+		collect(result,last.next.specialToken);
 		return result;
 	}
 
