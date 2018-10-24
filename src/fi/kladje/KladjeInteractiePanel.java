@@ -1706,7 +1706,13 @@ System.out.println("kladjeVeld sized");
 				"equation.2", 
 				"equation.3", 
 				"equation.4", 
-				"equation.5"};
+				"equation.5",
+				"equation.6",
+				"equation.7",
+				"equation.8",
+				"equation.9",
+				"equation.10",
+				};
 		return commands;
 	}
 
