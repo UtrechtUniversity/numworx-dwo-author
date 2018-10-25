@@ -199,7 +199,7 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
         
         importButton = new JButton("Import");
         importButton.addActionListener(this);
-        if (WiskOpdr.isExperimental())
+        if (WiskOpdr.isExperimental() && WiskOpdr.isPremium())
         		bottomPanel.add(importButton);
         
 		scrollPane = new JScrollPane(objectivesPanel);

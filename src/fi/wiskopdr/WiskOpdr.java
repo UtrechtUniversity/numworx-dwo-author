@@ -143,6 +143,10 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static boolean isExperimental() {
 		return "test".equals(dwo_env);
 	}
+	public static String abo_type; // free,demo,premium,standard
+	public static boolean isPremium() {
+	  return "premium".equals(abo_type);
+	}
 	
 	public static String[][] objectives = null;
 	public static String[] categorieString = null;
@@ -804,6 +808,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		//else return; 
 
 		dwo_env = getParameter("dwo_env"); // Zie Wiskopdr.isExperimental();
+		abo_type = getParameter("abo_type"); // Zie WiskOpdr.isPremium();
 		
 		doJSON = "true".equals(getParameter("JSON"));
 		doCAS  = CAS_LOCAL;
