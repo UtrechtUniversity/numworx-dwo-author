@@ -35,6 +35,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	boolean reviewMode = false;	
 	
 	public static boolean isExperimental;
+	public static boolean isPremium;
 	
 	public static void main(String[] args)    
 	{	int width = 500;
@@ -121,7 +122,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 		}
 		catch(Exception e){}
 	
-		isExperimental = isExperimental();
+        setEnvironment(); // setStub is nu gezet.
 		
 		System.out.println(Color.orange.toString());		
 		
@@ -1006,7 +1007,7 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
 	
 	public InteractiePanel getInteractiePanel()
 	{
-	  isExperimental = isExperimental(); // setStub is nu gezet.
+	  setEnvironment(); // setStub is nu gezet.
 	  return new KladjeInteractiePanel();
 	}
 	
@@ -1058,14 +1059,16 @@ public class Kladje extends JApplet implements WiskOpdrApplet, ScormAppletIF, Ac
     
     /**
      * Bepaal of we in test modus draaien.
-     * De parameter "dwo_env" is "test"
-     * @return experimental
+     * De parameter "dwo_env" is "test".
+     * Bepaal of we in premium modus draaien.
+     * De parameter "abo_type" is "premium".
+     * Nota Bene, setStub moet gezet zijn, anders NPE in getParameter
+     * @see java.applet.Applet#getParameter(String)
      */
-    public boolean isExperimental() {
-    	try {
-    		return "test".equals(getParameter("dwo_env"));
-    	} catch(Throwable t) {}
-    	return false;
+    private void setEnvironment() {
+    		isExperimental = "test".equals(getParameter("dwo_env"));
+    		isPremium = "premium".equals(getParameter("abo_type"));    		
+    		System.out.println("features: " + isExperimental + ", " + isPremium);
     }
 
 }
