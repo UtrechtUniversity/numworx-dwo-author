@@ -3302,7 +3302,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			{
 				or[activiteitNr].zetGemaakt(opdrachtNr + 1, correct);
 				opdrachtenCorrect[activiteitNr][opdrachtNr] = correct;
-				or[activiteitNr].zetScore(opdrachtNr + 1, score);
+				or[activiteitNr].zetScore(opdrachtNr + 1, score); // zonder correctie
 
 				if (e.getActionCommand().equals("checked"))
 				{
