@@ -50,12 +50,12 @@ public class StelselVak extends RegelVak
 		if(selected)g.setColor(Color.white);
 		else g.setColor(fgColor);
 		
-		g.drawArc(5, 1, 10, 10, 90, 90);
+		g.drawArc(5, 1, 10, 10, 90, 90); // bovenste bochtje
 		g.drawLine(5, 6, 5, getSize().height / 2 - 3);
-		g.drawArc(0, getSize().height / 2 - 6, 5, 5, 270, 90);
-		g.drawArc(0, getSize().height / 2, 5, 5, 0, 90);
+		g.drawArc(0, getSize().height / 2 - 6, 5, 5, 270, 90); // bovenste deel puntje
+		g.drawArc(0, getSize().height / 2, 5, 5, 0, 90); // onderste deel puntje
 		g.drawLine(5, getSize().height / 2 + 3, 5, getSize().height - 6);
-		g.drawArc(5, getSize().height - 12, 10, 10, 180, 90);
+		g.drawArc(5, getSize().height - 12, 10, 10, 180, 90); // onderste bochtje
 		
 		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		((Graphics2D)g).setStroke(new BasicStroke(0.7f));
