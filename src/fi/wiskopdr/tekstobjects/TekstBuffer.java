@@ -91,7 +91,8 @@ public class TekstBuffer
 					index = indexH;
 				}
 				String formString = completeString.substring(index,i+1);
-				if(indexF == index || indexR == index)	tfv.vulVak(formString);
+				if (indexF == index || indexR == index)
+					tfv.vulVak(formString);
 				else if(indexV != index || setEdit) tfv.vulVak(formString.substring(2,formString.length()-1));
 				completeString = ""+completeString.substring(0,index)+"@"+completeString.substring(i+1);
 				tekstDeelVakken.insertElementAt(tfv,0);
