@@ -36,73 +36,224 @@ public class Algebra
 	}
 	
 	public static boolean checkGelijkwaardig(Expressie e1, Expressie e2, String[] varNamen, double[] tryValues)
-	{	double[] defaultTryIntValues = {0.101, 1.102, 2.103, 3.104, 7.105};
-		if(tryValues==null) tryValues = defaultTryIntValues;
+	{
+		if (isVector(e1) && isVector(e2))
+		{
+			VectorExpr vector1, vector2;
+			if (e1 instanceof VectorExpr)
+				vector1 = (VectorExpr) e1;
+			else
+				vector1 = e1.geefVector();
+				
+			if (e2 instanceof VectorExpr)
+				vector2 = (VectorExpr) e2;
+			else
+				vector2 = e2.geefVector();
+			
+			if (vector1 == null || vector2 == null) // er is iets mis, ongeldige vector-expressie
+				return false;
+			else
+				return checkGelijkwaardigVectoren(vector1, vector2, varNamen, tryValues);
+		}
+		else if (isMatrix(e1) && isMatrix(e2))
+		{
+			Matrix matrix1, matrix2;
+			if (e1 instanceof Matrix)
+				matrix1 = (Matrix) e1;
+			else
+				matrix1 = e1.geefMatrix();
+				
+			if (e2 instanceof Matrix)
+				matrix2 = (Matrix) e2;
+			else
+				matrix2 = e2.geefMatrix();
+			
+			if (matrix1 == null || matrix2 == null) // er is iets mis, ongeldige matrix
+				return false;
+			else
+				return checkGelijkwaardigMatrices(matrix1, matrix2, varNamen, tryValues);
+		}
+		
+		double[] defaultTryIntValues =
+			{ 0.101, 1.102, 2.103, 3.104, 7.105 };
+		if (tryValues == null)
+			tryValues = defaultTryIntValues;
 		double e1Waarde = e1.geefWaarde();
 		double e2Waarde = e2.geefWaarde();
-		if(varNamen.length==0  || (!Double.isNaN(e1Waarde) && !Double.isNaN(e2Waarde)))
-		{	boolean nan1 = (Double.isInfinite (e1Waarde) || Double.isNaN(e1Waarde));
-			boolean nan2 = (Double.isInfinite (e2Waarde) || Double.isNaN(e2Waarde));
-			boolean ongelijk = Math.abs(e1Waarde - e2Waarde)>absPrecision && (Math.abs(e1Waarde/e2Waarde-1)>relPrecision); //niet nodig en zelfs onwenselijk bij kleine getallen?
+		if (varNamen.length == 0 || (!Double.isNaN(e1Waarde) && !Double.isNaN(e2Waarde)))
+		{
+			boolean nan1 = (Double.isInfinite(e1Waarde) || Double.isNaN(e1Waarde));
+			boolean nan2 = (Double.isInfinite(e2Waarde) || Double.isNaN(e2Waarde));
+			boolean ongelijk = Math.abs(e1Waarde - e2Waarde) > absPrecision 
+				&& (Math.abs(e1Waarde / e2Waarde - 1) > relPrecision); //niet nodig en zelfs onwenselijk bij kleine getallen?
 			//if(absPrecision == defaultPrecision) {
 			//	if(e1Waarde==0 || e2Waarde==0) ongelijk = Math.abs(e1Waarde - e2Waarde)>absPrecision;
 			//	else ongelijk = Math.abs(e1Waarde/e2Waarde-1)>relPrecision;
 			//}
 			
-			if(nan1 && !nan2 || !nan1 &&nan2 || (ongelijk && !(nan1 && nan2)))
-			{	return false;
+			if (nan1 && !nan2 || !nan1 && nan2 || (ongelijk && !(nan1 && nan2)))
+			{
+				return false;
 			}
 			return true;
 		}
 		else
-		{	String[] varNamenNieuw = new String[varNamen.length-1];
-			for(int i=0 ; i<varNamen.length-1 ; i++)
-			{	varNamenNieuw[i] = varNamen[i+1];
+		{
+			String[] varNamenNieuw = new String[varNamen.length - 1];
+			for (int i = 0; i < varNamen.length - 1; i++)
+			{
+				varNamenNieuw[i] = varNamen[i + 1];
 			}
-			for(int i=0 ; i<tryValues.length ; i++)
-			{	double value = tryValues[i];
-				//System.out.println(""+value);
+			for (int i = 0; i < tryValues.length; i++)
+			{
+				double value = tryValues[i];
+				// System.out.println(""+value);
 				Expressie ee1 = e1.substitueer(value, varNamen[0]);
-                Expressie ee2 = e2.substitueer(value, varNamen[0]);
-                double[] tryValuesNieuw = new double[tryValues.length];
-                for(int j=0 ; j<tryValues.length ; j++) tryValuesNieuw[j] = tryValues[j]+0.012*tryValuesWidthfactor;
-                boolean gelijkwaardig = checkGelijkwaardig(ee1,ee2,varNamenNieuw,tryValuesNieuw);
-				//System.out.println(""+i);
-				if(!gelijkwaardig)return false;
+				Expressie ee2 = e2.substitueer(value, varNamen[0]);
+				double[] tryValuesNieuw = new double[tryValues.length];
+				for (int j = 0; j < tryValues.length; j++)
+					tryValuesNieuw[j] = tryValues[j] + 0.012 * tryValuesWidthfactor;
+				boolean gelijkwaardig = checkGelijkwaardig(ee1, ee2, varNamenNieuw, tryValuesNieuw);
+				// System.out.println(""+i);
+				if (!gelijkwaardig)
+					return false;
 			}
 			return true;
 		}
 	}
 	
+	/**
+	 * Check de gelijkwaardigheid van de twee gegeven vectoren door paarsgewijs de kinderen te
+	 * checken op gelijkwaardigheid.
+	 * 
+	 * @param e1
+	 * @param e2
+	 * @param varNamen
+	 * @param tryValues
+	 * @return
+	 */
+	private static boolean checkGelijkwaardigVectoren(VectorExpr e1, VectorExpr e2, String[] varNamen, double[] tryValues)
+	{
+		boolean isGelijkwaardig = true;
+	
+		ArrayList<Expressie> kinderen1 = e1.geefKinderen();
+		ArrayList<Expressie> kinderen2 = e2.geefKinderen();
+		
+		if (kinderen1.size() != kinderen2.size())
+			isGelijkwaardig = false;
+		else
+		{
+			for (int i = 0; i < kinderen1.size(); i++)
+			{
+				if (!checkGelijkwaardig(kinderen1.get(i), kinderen2.get(i), varNamen, tryValues))
+				{
+					isGelijkwaardig = false;
+					break;
+				}
+			}
+		}
+		
+		return isGelijkwaardig;
+	}
+
+	/**
+	 * Check de gelijkwaardigheid van de twee gegeven matrices door paarsgewijs de kinderen te
+	 * checken op gelijkwaardigheid.
+	 * 
+	 * @param e1
+	 * @param e2
+	 * @param varNamen
+	 * @param tryValues
+	 * @return
+	 */
+	private static boolean checkGelijkwaardigMatrices(Matrix e1, Matrix e2, String[] varNamen, double[] tryValues)
+	{
+		boolean isGelijkwaardig = true;
+	
+		ArrayList<ArrayList<Expressie>> kinderen1 = e1.geefKinderen();
+		ArrayList<ArrayList<Expressie>> kinderen2 = e2.geefKinderen();
+		
+		int[] dimensie1 = e1.geefDimensie();
+		int[] dimensie2 = e2.geefDimensie();
+		
+		if (!isGelijkeDimensies(dimensie1, dimensie2)) // aantal rijen en kolommen moet gelijk zijn
+			isGelijkwaardig = false;
+		else
+		{
+			for (int i = 0; i < dimensie1[0]; i++) // rijen
+			{
+				if (!isGelijkwaardig)
+					break;
+				for (int j = 0; j < dimensie1[1]; j++) // kolommen
+				{
+					if (!checkGelijkwaardig(kinderen1.get(i).get(j), kinderen2.get(i).get(j), varNamen, tryValues))
+					{
+						isGelijkwaardig = false;
+						break;
+					}
+				}
+			}
+		}
+		
+		return isGelijkwaardig;
+	}
+
+	/**
+	 * Retourneert true als beide dimensies gelijk zijn.
+	 * 
+	 * @param dimensie1
+	 * @param dimensie2
+	 * @return
+	 */
+	private static boolean isGelijkeDimensies(int[] dimensie1, int[] dimensie2)
+	{
+		boolean isGelijk = false;
+		
+		if ((dimensie1[0] == dimensie2[0]) // aantal rijen
+			&& (dimensie1[1] == dimensie2[1])) // aantal kolommen
+			isGelijk = true;
+		
+		return isGelijk;
+	}
+
 	public static boolean domainTryValuesOK(Expressie e1, Expressie e2, String[] varNamen, double[] tryValues)
-	{	double[] defaultTryIntValues = {0.101, 1.102, 2.103, 3.104, 7.105};
-		if(tryValues==null) tryValues = defaultTryIntValues;
+	{
+		double[] defaultTryIntValues =
+			{ 0.101, 1.102, 2.103, 3.104, 7.105 };
+		if (tryValues == null)
+			tryValues = defaultTryIntValues;
 		double e1Waarde = e1.geefWaarde();
 		double e2Waarde = e2.geefWaarde();
 		//System.out.println("e1: "+e1Waarde+"   e2: "+e2Waarde);
 		
-		if(varNamen.length==0  || (!Double.isNaN(e1Waarde) && !Double.isNaN(e2Waarde)))
-		{	boolean nan1 = (Double.isInfinite (e1Waarde) || Double.isNaN(e1Waarde));
+		if (varNamen.length==0  || (!Double.isNaN(e1Waarde) && !Double.isNaN(e2Waarde)))
+		{
+			boolean nan1 = (Double.isInfinite (e1Waarde) || Double.isNaN(e1Waarde));
 			boolean nan2 = (Double.isInfinite (e2Waarde) || Double.isNaN(e2Waarde));
 			//boolean ongelijk = Math.abs(e1Waarde - e2Waarde)>0.000000001 &&  Math.abs(e1Waarde/e2Waarde-1)>0.000000001;
 			if(!(nan1 && nan2))
-			{	return true;
+			{
+				return true;
 			}
 			return false;
 		}
 		else
 		{	String[] varNamenNieuw = new String[varNamen.length-1];
-			for(int i=0 ; i<varNamen.length-1 ; i++)
-			{	varNamenNieuw[i] = varNamen[i+1];
+			for (int i=0 ; i<varNamen.length-1 ; i++)
+			{
+				varNamenNieuw[i] = varNamen[i+1];
 			}
-			for(int i=0 ; i<tryValues.length ; i++)
-			{	double value = tryValues[i];
+			for (int i = 0; i < tryValues.length; i++)
+			{
+				double value = tryValues[i];
 				Expressie ee1 = e1.substitueer(value, varNamen[0]);
                 Expressie ee2 = e2.substitueer(value, varNamen[0]);
                 double[] tryValuesNieuw = new double[tryValues.length];
-                for(int j=0 ; j<tryValues.length ; j++) tryValuesNieuw[j] = tryValues[j]+0.012*tryValuesWidthfactor;
-                boolean domainTryValuesOK = domainTryValuesOK(ee1,ee2,varNamenNieuw,tryValuesNieuw);
-				if(domainTryValuesOK)return true;
+				for (int j = 0; j < tryValues.length; j++)
+					tryValuesNieuw[j] = tryValues[j] + 0.012 * tryValuesWidthfactor;
+                boolean domainTryValuesOK = domainTryValuesOK(ee1, ee2, varNamenNieuw, tryValuesNieuw);
+				if (domainTryValuesOK)
+					return true;
 			}
 			return false;
 		}
@@ -143,48 +294,192 @@ public class Algebra
 		}
 	}
 	
-	
-	
-	/*Bepaalt of twee expressies gelijkwaardig zijn.
-	 *Dit gebeurt door voor de aanwezige variabelen een tiental waarden
-	 *in te vullen. Gaat alleen goed voor expressies met minder dan 7
-	 *variabelen. Bij meer variabelen wordt de terugkeerwaarde false.
-	 *Bovendien gaat het fout indien beide expressies een domein hebben
-	 *waar deze tien testwaarden niet in voorkomen. In dat geval is de
-	 *terugkeerwaarde true.
+	/**
+	 * Wordt gebruikt in isGelijkwaardig() om een optelling te kunnen maken 
+	 * om varNamen te kunnen opvragen van twee expressie die met elkaar vergeleken 
+	 * gaan worden.
+	 * 
+	 * @param e1
+	 * @param e2
+	 * @return
 	 */
+	public static boolean isGeldigeOptelling(Expressie e1, Expressie e2)
+	{
+		boolean b = true;
 	
-	public static boolean isGelijkwaardig(Expressie e1, Expressie e2)
-	{	String[] vars = geefVarNamen((new Optelling(e1,e2)));
-		String[] varsNieuw = null;
-		if(vars.length>0) varsNieuw = new String[vars.length-1];
-		boolean complex = false;
-		int teller = 0;
-		for(int i=0 ; i<vars.length ; i++)
-		{	if(!complex && vars[i].equals("i")) 
-			{	complex = true;
-			}
-			else 
-			{	teller++;
-				if(teller-1<varsNieuw.length)varsNieuw[teller-1] = vars[i];
-			}
-		}
-		double[] tryIntValues = {tryValuesStart+0.101*tryValuesWidthfactor, 
-				tryValuesStart+1.102*tryValuesWidthfactor, 
-				tryValuesStart+2.103*tryValuesWidthfactor, 
-				tryValuesStart+3.104*tryValuesWidthfactor, 
-				tryValuesStart+4.105*tryValuesWidthfactor};
-		double[] tryIntValuesBeperkt = {tryValuesStart+0.101*tryValuesWidthfactor, 
-				tryValuesStart+2.102*tryValuesWidthfactor, 
-				tryValuesStart+4.103*tryValuesWidthfactor};
-		if(vars.length>3)tryIntValues = tryIntValuesBeperkt;
-		if(complex) return checkGelijkwaardigComplex(e1,e2,varsNieuw,tryIntValues);
-		if(!domainTryValuesOK(e1,e2,vars,null)) return checkGelijkwaardigComplex(e1,e2,vars,tryIntValues);
-		return checkGelijkwaardig(e1,e2,vars,tryIntValues);
+		if ((e1 instanceof VectorExpr || e2 instanceof VectorExpr) // een van beide vector
+			&& !isVectorOptelling(e1, e2)) // en geen vectoroptelling
+			b = false; // dan geen geldige optelling
+		else if ((e1 instanceof Matrix || e2 instanceof Matrix) // een van beide matrix
+			&& !isMatrixOptelling(e1, e2))
+			b = false;
+		
+		return b;
 	}
 	
+	public static boolean isVectorOptelling(Expressie e1, Expressie e2)
+	{
+		boolean b = false;
+		
+		if (isVector(e1) && isVector(e2))
+			b = true;
+		
+		return b;
+	}
 	
+	public static boolean isMatrixOptelling(Expressie e1, Expressie e2)
+	{
+		boolean b = false;
+		
+		if (isMatrix(e1) && isMatrix(e2))
+			b = true;
+		
+		return b;
+	}
 	
+	public static boolean isMatrixVergelijking(Vergelijking v)
+	{
+		boolean b = false;
+		
+		if (isMatrix(v.kind1) && isMatrix(v.kind2))
+			b = true;
+		
+		return b;
+	}
+	
+	/**
+	 * Retourneert true als de expressie een vector is,
+	 * d.w.z. VectorExpr of een andere expressie waarvan de uitkomst een vector is,
+	 * bijv. een optelling van twee vectoren.
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static boolean isVector(Expressie e)
+	{
+		boolean isVector = false;
+		
+		if (e instanceof VectorExpr)
+			isVector = true;
+		else if (e instanceof Optelling && isVector(e.kind1) && isVector(e.kind2)) // optelling van 2 vectoren is een vector
+			isVector = true;
+		else if (e instanceof Aftrekking && isVector(e.kind1) && isVector(e.kind2)) // aftrekking van 2 vectoren is een vector
+			isVector = true;
+		else if (e instanceof Vermenigvuldiging && 
+			((isVector(e.kind1) && isMatrix(e.kind2)) || (isMatrix(e.kind1) && isVector(e.kind2)))) // vermenigvuldiging van matrix en vector is een vector
+			isVector = true;
+		else if (e instanceof Vermenigvuldiging && (isVector(e.kind1) ^ isVector(e.kind2))) // vermenigvuldiging van vector en niet-vector (scalar) is een vector
+			isVector = true;
+		
+		return isVector;
+	}
+	
+	/**
+	 * Retourneert true als de expressie een vector is,
+	 * d.w.z. VectorExpr of een andere expressie waarvan de uitkomst een vector is,
+	 * bijv. een optelling van twee vectoren.
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static boolean isVariabelenVector(Expressie e)
+	{
+		boolean isVariabelenVector = false;
+		
+		if (isVector(e) && ((VectorExpr) e).isVariabelenVector())
+			isVariabelenVector = true;
+		
+		return isVariabelenVector;
+	}
+	
+	/**
+	 * Retourneert true als de expressie een matrix is,
+	 * d.w.z. Matrix of een andere expressie waarvan de uitkomst een matrix is,
+	 * bijv. een optelling van twee matrices.
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static boolean isMatrix(Expressie e)
+	{
+		boolean isMatrix = false;
+		
+		if (e instanceof Matrix)
+			isMatrix = true;
+		else if (e instanceof Optelling && isMatrix(e.kind1) && isMatrix(e.kind2)) // optelling van 2 matrices is een matrix
+			isMatrix = true;
+		else if (e instanceof Aftrekking && isMatrix(e.kind1) && isMatrix(e.kind2)) // aftrekking van 2 matrices is een matrix
+			isMatrix = true;
+		else if (e instanceof Vermenigvuldiging && isMatrix(e.kind1) && isMatrix(e.kind2)) // vermenigvuldiging van 2 matrices is een matrix
+			isMatrix = true;
+		else if (e instanceof Vermenigvuldiging && (isMatrix(e.kind1) ^ isMatrix(e.kind2))) // vermenigvuldiging van matrix en niet-matrix (scalar) is een matrix
+			isMatrix = true;
+		
+		return isMatrix;
+	}
+	
+	/**
+	 * Bepaalt of twee expressies gelijkwaardig zijn.
+	 * Dit gebeurt door voor de aanwezige variabelen een tiental waarden
+	 * in te vullen. Gaat alleen goed voor expressies met minder dan 7
+	 * variabelen. Bij meer variabelen wordt de terugkeerwaarde false.
+	 * Bovendien gaat het fout indien beide expressies een domein hebben
+	 * waar deze tien testwaarden niet in voorkomen. In dat geval is de
+	 * terugkeerwaarde true.
+	 *
+	 * @param e1
+	 * @param e2
+	 * @return
+	 */
+	public static boolean isGelijkwaardig(Expressie e1, Expressie e2)
+	{
+		String[] vars = new String[0];
+		if (isGeldigeOptelling(e1, e2)) // als vector of matrix dan niet altijd geldige optelling
+			vars = geefVarNamen((new Optelling(e1, e2)));
+		else
+		{
+			System.out.println("Algebra.isGelijkwaardig(" + e1 + ", " + e2 + "): GEEN GELDIGE optelling om varNamen te bepalen");
+			return false;
+		}
+		
+		String[] varsNieuw = null;
+		if (vars.length > 0)
+			varsNieuw = new String[vars.length - 1];
+		
+		boolean complex = false;
+		int teller = 0;
+		for (int i = 0; i < vars.length; i++)
+		{
+			if (!complex && vars[i].equals("i"))
+			{
+				complex = true;
+			}
+			else
+			{
+				teller++;
+				if (teller - 1 < varsNieuw.length)
+					varsNieuw[teller - 1] = vars[i];
+			}
+		}
+		double[] tryIntValues = {
+			tryValuesStart + 0.101 * tryValuesWidthfactor, 
+			tryValuesStart + 1.102 * tryValuesWidthfactor, 
+			tryValuesStart + 2.103 * tryValuesWidthfactor, 
+			tryValuesStart + 3.104 * tryValuesWidthfactor, 
+			tryValuesStart + 4.105 * tryValuesWidthfactor};
+		double[] tryIntValuesBeperkt = {
+			tryValuesStart + 0.101 * tryValuesWidthfactor, 
+			tryValuesStart + 2.102 * tryValuesWidthfactor, 
+			tryValuesStart + 4.103 * tryValuesWidthfactor};
+		if (vars.length > 3)
+			tryIntValues = tryIntValuesBeperkt;
+		if (complex)
+			return checkGelijkwaardigComplex(e1, e2, varsNieuw, tryIntValues);
+		if (!isVector(e1) && !isVector(e2) && !isMatrix(e1) && !isMatrix(e2) 
+			&& !domainTryValuesOK(e1, e2, vars, null)) // voor vectoren en matrices even geen complexe gelijkwaardigheid
+			return checkGelijkwaardigComplex(e1, e2, vars, tryIntValues);
+		return checkGelijkwaardig(e1, e2, vars, tryIntValues);
+	}
 		
 	/*public static boolean isGelijkwaardig(Expressie e1, Expressie e2)
 	{	double d = 5.1; //verschuiving
@@ -542,6 +837,7 @@ public class Algebra
 			else return gelijkGevormd(e1.kind1, e2.kind1)&& gelijkGevormd(e1.kind2, e2.kind2) && gelijkGevormd(e1.kind3, e2.kind3) && gelijkGevormd(e1.kind4, e2.kind4);
 		}
 		return false;*/
+		
 		return zijnGelijk(e1,e2,true);
 	}
 	
@@ -557,11 +853,128 @@ public class Algebra
 	
 	public static boolean zijnGelijk(Expressie e1, Expressie e2)
 	{
-		return zijnGelijk(e1,e2,false);
+		boolean zijnGelijk = false;
+		
+		if (isVector(e1) && isVector(e2))
+		{
+			VectorExpr vector1, vector2;
+			if (e1 instanceof VectorExpr)
+				vector1 = (VectorExpr) e1;
+			else
+				vector1 = e1.geefVector();
+				
+			if (e2 instanceof VectorExpr)
+				vector2 = (VectorExpr) e2;
+			else
+				vector2 = e2.geefVector();
+			
+			if (vector1 == null || vector2 == null) // er is iets mis, ongeldige vector-expressie
+				zijnGelijk = false;
+			else
+				zijnGelijk = zijnGelijkVectoren(vector1, vector2);
+		}
+		else if (isMatrix(e1) && isMatrix(e2))
+		{
+			Matrix matrix1, matrix2;
+			if (e1 instanceof Matrix)
+				matrix1 = (Matrix) e1;
+			else
+				matrix1 = e1.geefMatrix();
+				
+			if (e2 instanceof Matrix)
+				matrix2 = (Matrix) e2;
+			else
+				matrix2 = e2.geefMatrix();
+			
+			if (matrix1 == null || matrix2 == null) // er is iets mis, ongeldige matrix-expressie
+				zijnGelijk = false;
+			else
+				zijnGelijk = zijnGelijkMatrices(matrix1, matrix2);			
+		}
+		else
+			zijnGelijk = zijnGelijk(e1, e2, false);
+
+		return zijnGelijk;
 	}
 	
+	/**
+	 * Als elk van de kinderen van de vectoren paarsgewijs gelijk zijn, dan true,
+	 * anders false.
+	 * 
+	 * @param vector1
+	 * @param vector2
+	 * @return
+	 */
+	private static boolean zijnGelijkVectoren(VectorExpr vector1, VectorExpr vector2)
+	{
+		boolean zijnGelijk = true;
+		
+		ArrayList<Expressie> kinderen1 = vector1.geefKinderen();
+		ArrayList<Expressie> kinderen2 = vector2.geefKinderen();
+		
+		if (kinderen1.size() != kinderen2.size())
+			zijnGelijk = false;
+		else
+		{
+			for (int i = 0; i < kinderen1.size(); i++)
+			{
+				if (!zijnGelijk(kinderen1.get(i), kinderen2.get(i)))
+				{
+					zijnGelijk = false;
+					break;
+				}
+			}
+		}
+
+		return zijnGelijk;
+	}
+
+	/**
+	 * Als elk van de kinderen van de matrices paarsgewijs gelijk zijn, dan true,
+	 * anders false.
+	 * 
+	 * @param matrix1
+	 * @param matrix2
+	 * @return
+	 */
+	private static boolean zijnGelijkMatrices(Matrix matrix1, Matrix matrix2)
+	{
+		boolean zijnGelijk = true;
+		
+		ArrayList<ArrayList<Expressie>> kinderen1 = matrix1.geefKinderen();
+		ArrayList<ArrayList<Expressie>> kinderen2 = matrix2.geefKinderen();
+		
+		int[] dimensie1 = matrix1.geefDimensie();
+		int[] dimensie2 = matrix2.geefDimensie();
+		
+		if (!isGelijkeDimensies(dimensie1, dimensie2)) // aantal rijen en kolommen moet gelijk zijn
+			zijnGelijk = false;
+		else
+		{
+			for (int i = 0; i < dimensie1[0]; i++) // rijen
+			{
+				if (!zijnGelijk)
+					break;
+				
+				for (int j = 0; j < dimensie1[1]; j++) // kolommen
+				{
+					if (!zijnGelijk(kinderen1.get(i).get(j), kinderen2.get(i).get(j)))
+					{
+						zijnGelijk = false;
+						break;
+					}
+				}
+			}
+		}
+
+		return zijnGelijk;
+	}
+
 	public static boolean zijnGelijk(Expressie e1, Expressie e2, boolean vorm)
-	{	if(e1==null || e2==null) return false;
+	{
+//		System.out.println("Algebra.zijnGelijk(): e1 = " + e1 + ", e2 = " + e2 + ", vorm = " + vorm);
+		
+		if(e1==null || e2==null) return false;
 	
 		if( vorm && e2 instanceof BasisExpressie && e2.toString().equals("G")
 				&& !Double.isNaN(e1.geefWaarde())) return true;
@@ -761,7 +1174,7 @@ public class Algebra
 		else if(e1 instanceof Functie || e2 instanceof Functie)
 		{	return false;
 		}*/
-		else if(e1 instanceof FunctieMV && e2 instanceof FunctieMV && ((FunctieMV)e1).geefFunctieNaam().equals(((FunctieMV)e2).geefFunctieNaam()))
+		else if (e1 instanceof FunctieMV && e2 instanceof FunctieMV && ((FunctieMV)e1).geefFunctieNaam().equals(((FunctieMV)e2).geefFunctieNaam()))
 		{	int aantalVar = ((FunctieMV)e1).kinderen.length;
 			boolean kinderenGelijk = true;
 			for(int i=0 ; i<aantalVar ; i++)
@@ -769,22 +1182,31 @@ public class Algebra
 			}
 			return kinderenGelijk;
 		}
-		else if(e1 instanceof FunctieMV || e2 instanceof FunctieMV)
+		else if (e1 instanceof FunctieMV || e2 instanceof FunctieMV)
 		{	return false;
 		}
-		else if(e1 instanceof Aftrekking && e2 instanceof Aftrekking && e1.kind1 instanceof BasisExpressie && e1.kind1.geefWaarde()==0 && e2.kind1 instanceof BasisExpressie && e2.kind1.geefWaarde()==0)
+		else if (e1 instanceof Aftrekking && e2 instanceof Aftrekking && e1.kind1 instanceof BasisExpressie && e1.kind1.geefWaarde()==0 && e2.kind1 instanceof BasisExpressie && e2.kind1.geefWaarde()==0)
 		{	return zijnGelijk(e1.kind2,e2.kind2,vorm);
 		}
 		Vector v1 = geefTermen(e1,new Vector());
 		Vector v2 = geefTermen(e2,new Vector());
-		if(v1.size()==1 && v2.size()==1)
-		{	e1 = (Expressie)v1.elementAt(0);
-			e2 = (Expressie)v2.elementAt(0);
+		
+		if (v1 == null || v2 == null)
+			return false;
+		
+		if (v1.size()==1 && v2.size()==1)
+		{
+			if (((Expressie) v1.elementAt(0)).equals(e1) && ((Expressie) v2.elementAt(0)).equals(e2)) // als ze hetzelfde blijven: breek oneindige loop
+				return false;
+			
+			e1 = (Expressie) v1.elementAt(0);
+			e2 = (Expressie) v2.elementAt(0);
 			v1 = geefFactorenBeperkt(e1,new Vector());
 			v2 = geefFactorenBeperkt(e2,new Vector());
 			
-			if(vorm)
-			{	Vector v3 = new Vector();
+			if (vorm)
+			{
+				Vector v3 = new Vector();
 				Expressie eGetal = new BasisExpressie(1);
 				boolean vervang = false;
 				for(int i=0 ; i<v1.size() ; i++)
@@ -799,22 +1221,32 @@ public class Algebra
 				v1 = v3;
 			}
 			
-			if(v1.size()==1 && v2.size()==1)
-			{	e1 = (Expressie)v1.elementAt(0);
+			if (v1.size()==1 && v2.size()==1)
+			{
+				e1 = (Expressie)v1.elementAt(0);
 				e2 = (Expressie)v2.elementAt(0);
 				//System.out.println(e1.toStringStrikt());
 				//System.out.println(e2.toStringStrikt());
-				if((isBreukPlusGetal(e1) || isBreukPlusGetal(e2)) && !e1.toStringStrikt().equals(e2.toStringStrikt())) return false;
-				else if(e1.toStringStrikt().length()>0 && e2.toStringStrikt().length()>0 && !e1.toStringStrikt().substring(0,1).equals(e2.toStringStrikt().substring(0,1))) return false;
-				else if(e1.toStringStrikt().length()>1 && e2.toStringStrikt().length()>1 && !e1.toStringStrikt().substring(0,2).equals(e2.toStringStrikt().substring(0,2))) return false;
-				else if(e1.toStringStrikt().length()>3 && e2.toStringStrikt().length()>3 && e1.toStringStrikt().substring(0,3).equals("arc") && !e1.toStringStrikt().substring(0,4).equals(e2.toStringStrikt().substring(0,4))) return false;
+				if ((isBreukPlusGetal(e1) || isBreukPlusGetal(e2)) && !e1.toStringStrikt().equals(e2.toStringStrikt()))
+					return false;
+				else if (e1.toStringStrikt().length() > 0 && e2.toStringStrikt().length() > 0
+					&& !e1.toStringStrikt().substring(0, 1).equals(e2.toStringStrikt().substring(0, 1)))
+					return false;
+				else if (e1.toStringStrikt().length() > 1 && e2.toStringStrikt().length() > 1
+					&& !e1.toStringStrikt().substring(0, 2).equals(e2.toStringStrikt().substring(0, 2)))
+					return false;
+				else if (e1.toStringStrikt().length() > 3 && e2.toStringStrikt().length() > 3
+					&& e1.toStringStrikt().substring(0, 3).equals("arc")
+					&& !e1.toStringStrikt().substring(0, 4).equals(e2.toStringStrikt().substring(0, 4)))
+					return false;
+				
 				return zijnGelijk(e1,e2,vorm);
 			}
-			else return zijnGelijk(v1,v2,vorm);
+			else
+				return zijnGelijk(v1,v2,vorm);
 		}
-		else return zijnGelijk(v1,v2,vorm);
-		
-	
+		else
+			return zijnGelijk(v1,v2,vorm);
 	}
 	
 	public static boolean zijnGelijk(Vector v1, Vector v2, boolean vorm)
@@ -861,13 +1293,15 @@ public class Algebra
 		return zijnGelijk;
 	}
 	
-	/*Controleert de gelijkwaardigheid van de twee lineaire vergelijkingen
-	 *eLinks1 = eRechts1 en eLinks2 = eRechts2
+	/**
+	 * Controleert de gelijkwaardigheid van de twee lineaire vergelijkingen
+	 * eLinks1 = eRechts1 en eLinks2 = eRechts2
 	 *
-	 *(wordt niet gebruikt. In feite overbodig geworden)
+	 * (wordt niet gebruikt. In feite overbodig geworden)
 	 */
 	public static boolean isGelijkwaardigeLinVergelijking(Expressie eLinks1,Expressie eRechts1,Expressie eLinks2,Expressie eRechts2)
-	{	Expressie e1 = new Aftrekking(eLinks1,eRechts1);
+	{
+		Expressie e1 = new Aftrekking(eLinks1,eRechts1);
 		Expressie e2 = new Aftrekking(eLinks2,eRechts2);
 		if(Math.abs(e1.geefWaarde(0))< 0.000000001 && Math.abs(e2.geefWaarde(0))<0.000000001
 		   || Math.abs(e1.geefWaarde(1))<0.000000001 && Math.abs(e2.geefWaarde(1))<0.000000001)return true;
@@ -876,35 +1310,44 @@ public class Algebra
 		if(Math.abs(factorA - factorB)>0.000000001)return false;
 		return true;
 	}
-	/*Controleert of de vergelijking eLinks1 = eRechts1 gelijkwaardig is met
-	 *het koppel eLinks2 = eRechts2 of eLinks3 = eRechts3
+	
+	/**
+	 * Controleert of de vergelijking eLinks1 = eRechts1 gelijkwaardig is met
+	 * het koppel eLinks2 = eRechts2 of eLinks3 = eRechts3
 	 */
 	public static boolean zijnGelijkwaardigeVergelijkingen1Naar2(Expressie eLinks1,Expressie eRechts1,Expressie eLinks2,Expressie eRechts2,Expressie eLinks3,Expressie eRechts3)
-	{	Expressie e1 = new Aftrekking(eLinks1 , eRechts1);
+	{
+		Expressie e1 = new Aftrekking(eLinks1 , eRechts1);
 		Expressie e2 = new Aftrekking(eLinks2 , eRechts2);
 		Expressie e3 = new Aftrekking(eLinks3 , eRechts3);
 		e2 = new Vermenigvuldiging(e2,e3);
 		return 	zijnEvenredigePolynomen(e1,e2);
 	}
-	/*Controleert of het koppel vergelijkingen 
-	 *eLinks1 = eRechts1 of eLinks2 = eRechts2  gelijkwaardig is met
-	 *de vergelijking eLinks3 = eRechts3
+	
+	/**
+	 * Controleert of het koppel vergelijkingen 
+	 *	eLinks1 = eRechts1 of eLinks2 = eRechts2  gelijkwaardig is met
+	 *	de vergelijking eLinks3 = eRechts3
 	 */
 	public static boolean zijnGelijkwaardigeVergelijkingen2Naar1(Expressie eLinks1,Expressie eRechts1,Expressie eLinks2,Expressie eRechts2,Expressie eLinks3,Expressie eRechts3)
-	{	Expressie e1 = new Aftrekking(eLinks1 , eRechts1);
+	{
+		Expressie e1 = new Aftrekking(eLinks1 , eRechts1);
 		Expressie e2 = new Aftrekking(eLinks2 , eRechts2);
 		Expressie e3 = new Aftrekking(eLinks3 , eRechts3);
 		e1 = new Vermenigvuldiging(e1,e2);
 		return 	zijnEvenredigePolynomen(e1,e3);
 	}
-	/*Controleert of het koppel vergelijkingen 
-	 *eLinks1 = eRechts1 of eLinks2 = eRechts2  gelijkwaardig is met
-	 *eLinks3 = eRechts3 of eLinks4 = eRechts4
+	
+	/**
+	 * Controleert of het koppel vergelijkingen 
+	 *	eLinks1 = eRechts1 of eLinks2 = eRechts2  gelijkwaardig is met
+	 *	eLinks3 = eRechts3 of eLinks4 = eRechts4
 	 *
-	 *niet gebruikt
+	 *	niet gebruikt
 	 */
 	public static boolean zijnGelijkwaardigeVergelijkingen2Naar2(Expressie eLinks1,Expressie eRechts1,Expressie eLinks2,Expressie eRechts2,Expressie eLinks3,Expressie eRechts3,Expressie eLinks4,Expressie eRechts4)
-	{	Expressie e1 = new Aftrekking(eLinks1 , eRechts1);
+	{
+		Expressie e1 = new Aftrekking(eLinks1 , eRechts1);
 		Expressie e2 = new Aftrekking(eLinks2 , eRechts2);
 		Expressie e3 = new Aftrekking(eLinks3 , eRechts3);
 		Expressie e4 = new Aftrekking(eLinks4 , eRechts4);
@@ -912,50 +1355,63 @@ public class Algebra
 		e3 = new Vermenigvuldiging(e3,e4);
 		return 	zijnEvenredigePolynomen(e1,e3);
 	}
-	/*Controleert de gelijkwaardigheid van de twee vergelijkingen
-	 *eLinks1 = eRechts1 en eLinks2 = eRechts2
+	
+	/**
+	 * Controleert de gelijkwaardigheid van de twee vergelijkingen
+	 *	eLinks1 = eRechts1 en eLinks2 = eRechts2
 	 */	
 	public static boolean zijnGelijkwaardigeVergelijkingen(Expressie eLinks1,Expressie eRechts1,Expressie eLinks2,Expressie eRechts2)
-	{	Expressie e1 = new Aftrekking(eLinks1 , eRechts1);
+	{
+		Expressie e1 = new Aftrekking(eLinks1 , eRechts1);
 		Expressie e2 = new Aftrekking(eLinks2 , eRechts2);
 		return 	zijnEvenredigePolynomen(e1,e2);																	
 	}
+	
 	public static boolean zijnGelijkwaardigeVergelijkingen(VergelijkingMeerv vergmeerv1, VergelijkingMeerv vergmeerv2)
-	{	if(vergmeerv1==null || vergmeerv2==null)return false;
-		if(vergmeerv1.geefAantal()==1 && vergmeerv2.geefAantal()==1)
-		{	Vergelijking verg1 = vergmeerv1.geefVergelijking(0);
+	{
+		if (vergmeerv1 == null || vergmeerv2 == null)
+			return false;
+		if (vergmeerv1.geefAantal() == 1 && vergmeerv2.geefAantal() == 1)
+		{
+			Vergelijking verg1 = vergmeerv1.geefVergelijking(0);
 			Vergelijking verg2 = vergmeerv2.geefVergelijking(0);
 			return zijnGelijkwaardigeVergelijkingen(verg1.kind1, verg1.kind2, verg2.kind1, verg2.kind2);
 		}
 		else if(vergmeerv1.geefAantal()==2 && vergmeerv2.geefAantal()==2)
-		{	Vergelijking verg11 = vergmeerv1.geefVergelijking(0);
+		{
+			Vergelijking verg11 = vergmeerv1.geefVergelijking(0);
 			Vergelijking verg12 = vergmeerv1.geefVergelijking(1);
 			Vergelijking verg21 = vergmeerv2.geefVergelijking(0);
 			Vergelijking verg22 = vergmeerv2.geefVergelijking(1);
 			return zijnGelijkwaardigeVergelijkingen2Naar2(verg11.kind1, verg11.kind2, verg12.kind1, verg12.kind2, verg21.kind1, verg21.kind2, verg22.kind1, verg22.kind2);
 		}
 		else if(vergmeerv1.geefAantal()==1 && vergmeerv2.geefAantal()==2)
-		{	Vergelijking verg1 = vergmeerv1.geefVergelijking(0);
+		{
+			Vergelijking verg1 = vergmeerv1.geefVergelijking(0);
 			Vergelijking verg21 = vergmeerv2.geefVergelijking(0);
 			Vergelijking verg22 = vergmeerv2.geefVergelijking(1);
 			return zijnGelijkwaardigeVergelijkingen1Naar2(verg1.kind1, verg1.kind2, verg21.kind1, verg21.kind2, verg22.kind1, verg22.kind2);
 		}
 		else if(vergmeerv1.geefAantal()==2 && vergmeerv2.geefAantal()==1)
-		{	Vergelijking verg11 = vergmeerv1.geefVergelijking(0);
+		{
+			Vergelijking verg11 = vergmeerv1.geefVergelijking(0);
 			Vergelijking verg12 = vergmeerv1.geefVergelijking(1);
 			Vergelijking verg2 = vergmeerv2.geefVergelijking(0);
 			return zijnGelijkwaardigeVergelijkingen2Naar1(verg11.kind1, verg11.kind2, verg12.kind1, verg12.kind2, verg2.kind1, verg2.kind2);
 		}
 		return false;
 	}
-	/*Bepaalt of twee polynoom expressies evenredig zijn. e1 = k*e2
-	 *Dit gebeurde door de standaardvorm te maken en de coefficienten
-	 *te vergelijken (daardoor slecht ��n variabele magoelijk).
-	 *Nu wordt: zijnEvenredig aangeroepen. Hierdoor werkt het 
-	 *ook op expressies met meer variabelen 
+	
+	/**
+	 * Bepaalt of twee polynoom expressies evenredig zijn. e1 = k*e2
+	 *	Dit gebeurde door de standaardvorm te maken en de coefficienten
+	 *	te vergelijken (daardoor slecht ��n variabele magoelijk).
+	 *	Nu wordt: zijnEvenredig aangeroepen. Hierdoor werkt het 
+	 *	ook op expressies met meer variabelen 
 	 */
 	public static boolean zijnEvenredigePolynomen(Expressie e1, Expressie e2)
-	{	return zijnEvenredig(e1,e2);
+	{
+		return zijnEvenredig(e1,e2);
 		/*e1 = benaderWortels(e1);
 		e2 = benaderWortels(e2);
 		e1 = verwijderHaakjes(e1);
@@ -984,14 +1440,18 @@ public class Algebra
 		}
 		return false;*/
 	}
-	/*Bepaalt of de oplossing van vergelijking e1 = 0 ��n van de oplossingen is
-	 *van e2 = 0.
-	 *Werkt alleen als e1 lineair en e2 kwadratisch, beide polynomen met 
-	 *��n variabele. Geeft exception bij expressies van meer variabelen.
+	
+	/**
+	 * Bepaalt of de oplossing van vergelijking e1 = 0 
+	 * één van de oplossingen is van e2 = 0.
+	 * Werkt alleen als e1 lineair en e2 kwadratisch, beide polynomen met 
+	 * één variabele. Geeft exception bij expressies van meer variabelen.
 	 */ 
 	public static boolean isDeeloplossingVan(Expressie e1,Expressie e2)
-	{	String[] varNamen = geefVarNamen(new Optelling(e1,e2));
-		if(varNamen.length>1)return false;
+	{
+		String[] varNamen = geefVarNamen(new Optelling(e1,e2));
+		if (varNamen.length>1)
+			return false;
 		
 		e1 = benaderWortels(e1);
 		e2 = benaderWortels(e2);
@@ -1003,27 +1463,32 @@ public class Algebra
 		double[] coeff2 = geefCoefficienten(e2);
 		int graad1 = coeff1.length-1;
 		int graad2 = coeff2.length-1;
-		if(coeff1.length!=2 || coeff2.length!=3)return false;
-		if(coeff2[1]*coeff2[1]-4*coeff2[0]*coeff2[2]<0)return false;
+		if (coeff1.length != 2 || coeff2.length != 3)
+			return false;
+		if (coeff2[1] * coeff2[1] - 4 * coeff2[0] * coeff2[2] < 0)
+			return false;
 		
 		double oplossing1 = -coeff1[0]/coeff1[1];
 		double oplossing2a = (-coeff2[1]+Math.sqrt(coeff2[1]*coeff2[1]-4*coeff2[0]*coeff2[2]))/(2*coeff2[2]);
 		double oplossing2b = (-coeff2[1]-Math.sqrt(coeff2[1]*coeff2[1]-4*coeff2[0]*coeff2[2]))/(2*coeff2[2]);
 		
 		if(Math.abs(oplossing1-oplossing2a)<0.00001 || Math.abs(oplossing1-oplossing2b)<0.00001)
-		{	return true;
+		{
+			return true;
 		}
 		else return false;
 	}
-	/*Zet de vergelijking e1 = e2 in het paar 
-	 *sqrt(e1)=sqrt(e2) , sqrt(e1)=-sqrt(e2)
-	 *Geeft teru een array e van expressies, waarbij:
-	 *e[0]=sqrt(e1), e[1]=sqrt(e2) en e[2]=-sqrt(e2)
-	 *of e[0]=sqrt(e2), e[1]=sqrt(e1) en e[2]=-sqrt(e1)
-	 *indien e1 of e2 constant zijn <0, dan return null
+	
+	/**
+	 * Zet de vergelijking e1 = e2 in het paar sqrt(e1)=sqrt(e2) ,
+	 * sqrt(e1)=-sqrt(e2) Geeft teru een array e van expressies, waarbij:
+	 * e[0]=sqrt(e1), e[1]=sqrt(e2) en e[2]=-sqrt(e2) of e[0]=sqrt(e2),
+	 * e[1]=sqrt(e1) en e[2]=-sqrt(e1) indien e1 of e2 constant zijn <0, dan
+	 * return null
 	 */
 	public static Expressie[] geefWortels(Expressie e1, Expressie e2)
-	{	Expressie[] e = new Expressie[3];
+	{
+		Expressie[] e = new Expressie[3];
 		Expressie e1Wortel = geefWortel(e1);
 		Expressie e2Wortel = geefWortel(e2);
 		if(!Double.isNaN(e1Wortel.geefWaarde()))
@@ -1106,19 +1571,21 @@ public class Algebra
 		
 		return e;*/
 	}
-	/*Probeert de vergelijking e1 = e2 te splitsen. 
-	 *Lukt alleen als e1 van de vorm e3*e4 is en e2 een waarde heeft van 0
-	 *(anders return null).
-	 *Geeft in dat geval terug een array van Expressies e, met
-	 *e[0] = e3 en e[1] = e4
-	 *Indien e3 = e4, dan:
-	 *e[0] = e3 en e[1] = null
-	 */	
+	
+	/**
+	 * Probeert de vergelijking e1 = e2 te splitsen. Lukt alleen als e1 van de
+	 * vorm e3*e4 is en e2 een waarde heeft van 0 (anders return null). Geeft in
+	 * dat geval terug een array van Expressies e, met e[0] = e3 en e[1] = e4
+	 * Indien e3 = e4, dan: e[0] = e3 en e[1] = null
+	 */
 	public static Expressie[] geefSplitsing(Expressie e1, Expressie e2)
-	{	Expressie[] e = new Expressie[2];
-		if(e2.geefWaarde()==0)
-		{	if(e1 instanceof Vermenigvuldiging && Double.isNaN(e1.kind1.geefWaarde()) && Double.isNaN(e1.kind2.geefWaarde()))
-			{	e[0] = e1.kind1;
+	{
+		Expressie[] e = new Expressie[2];
+		if (e2.geefWaarde()==0)
+		{	
+			if (e1 instanceof Vermenigvuldiging && Double.isNaN(e1.kind1.geefWaarde()) && Double.isNaN(e1.kind2.geefWaarde()))
+			{
+				e[0] = e1.kind1;
 				e[1] = e1.kind2;
 			}
 			else if(e1 instanceof Aftrekking && e1.kind1.geefWaarde()==0 && e1.kind2 instanceof Vermenigvuldiging && Double.isNaN(e1.kind2.kind1.geefWaarde()) && Double.isNaN(e1.kind2.kind2.geefWaarde()))
@@ -1135,7 +1602,8 @@ public class Algebra
 			}
 		}
 		else if(e1.geefWaarde()==0)
-		{	if(e2 instanceof Vermenigvuldiging && Double.isNaN(e2.kind1.geefWaarde()) && Double.isNaN(e2.kind2.geefWaarde()))
+		{
+			if(e2 instanceof Vermenigvuldiging && Double.isNaN(e2.kind1.geefWaarde()) && Double.isNaN(e2.kind2.geefWaarde()))
 			{	e[0] = e2.kind1;
 				e[1] = e2.kind2;
 			}
@@ -1152,13 +1620,18 @@ public class Algebra
 				e[1] = e2.kind2.kind1;
 			}
 		}
-		else return null;
-		if(e[1]!=null && isGelijkwaardig(e[0],e[1])) e[1] = null;
+		else
+			return null;
+		
+		if (e[1] != null && isGelijkwaardig(e[0], e[1]))
+			e[1] = null;
 		return e;
 	}
-	/*Bepaald van een 2e graads vergelijking e1 = e2 of er oplossingen zijn
-	 *indien niet 2e graads, dan return true
-	 */	
+	
+	/**
+	 * Bepaalt van een 2e graads vergelijking e1 = e2 of er oplossingen zijn
+	 * indien niet 2e graads, dan return true
+	 */
 	public static boolean heeftOplossingen(Expressie e1, Expressie e2)
 	{	Expressie e = new Aftrekking(e1 , e2);
 		double[] coeff = geefCoefficienten(herleid(verwijderHaakjes(e)));
@@ -1198,31 +1671,37 @@ public class Algebra
 	}
 	
 	public static double[] geefCoefficienten(Vergelijking v)
-	{	Expressie e1 = v.kind1;
+	{
+		Expressie e1 = v.kind1;
 		Expressie e2 = v.kind2;
 		Expressie e = new Aftrekking(e1 , e2);
-		return geefCoefficienten(herleid(verwijderHaakjes(e)));
-		
+		return geefCoefficienten(herleid(verwijderHaakjes(e)));		
 	}
 	
-	/*Geeft de coefficienten van een polynoom van ��n variabele.
-	 *coefficienten worden teruggegeven in een array met doubles
-	 */	
+	/**
+	 * Geeft de coefficienten van een polynoom van één variabele. coefficienten
+	 * worden teruggegeven in een array met doubles
+	 */
 	public static double[] geefCoefficienten(Expressie e)
 	{	Expressie[] exp = geefCoefficientenExpressies(e);
-		if(exp==null)return null;
+		if (exp==null)
+			return null;
 		double[] coeff = new double[exp.length];
-		for(int i=0 ; i<exp.length ; i++)
-		{	coeff[i] = exp[i].geefWaarde();
+		for (int i=0; i < exp.length; i++)
+		{
+			coeff[i] = exp[i].geefWaarde();
 		}
 		return coeff;
 	}
-	/* Geeft de coefficienten van een polynoom in ��n variabele.
-	 *De coefficienten worden teruggegeven als een array van (getals)expressies.
+	
+	/**
+	 * Geeft de coefficienten van een polynoom in één variabele. De
+	 * coefficienten worden teruggegeven als een array van (getals)expressies.
 	 */
 	public static Expressie[] geefCoefficientenExpressies(Expressie e)
 	{	String[] varNamen = geefVarNamen(e);
-		if(varNamen.length>1 || varNamen.length<1)return null;
+		if (varNamen.length>1 || varNamen.length<1)
+			return null;
 		String varNaam = varNamen[0];
 		Vector v = geefTermen(e, new Vector());
 		sorteerTermen(v);
@@ -1264,14 +1743,27 @@ public class Algebra
 		return exp;
 		
 	}
-	/*Geeft de variabele namen van een expressie
-	 *Geeft een vector met Strings terug.
+	
+	/**
+	 * Geeft de variabele namen van een expressie Geeft een vector met Strings
+	 * terug.
 	 */
 	public static Vector geefVarN(Expressie e)
-	{	Vector v;
-		if(e instanceof BasisExpressie)
-		{	Vector v0 = new Vector();
-			if(e.geefVarNaam()!=null)v0.addElement(e.geefVarNaam());
+	{
+		Vector v;
+		if (e instanceof VectorExpr)
+		{
+			return ((VectorExpr) e).geefVarNamen();
+		}
+		else if (e instanceof Matrix)
+		{
+			return ((Matrix) e).geefVarNamen();
+		}
+		else if (e instanceof BasisExpressie)
+		{
+			Vector v0 = new Vector();
+			if (e.geefVarNaam()!=null)
+				v0.addElement(e.geefVarNaam());
 			return v0;
 		}
 		
@@ -1317,8 +1809,10 @@ public class Algebra
 		}
 		return v;
 	}
-	/*Geeft de variabele namen van een expressie
-	 *Geeft een array met Strings terug.
+	
+	/**
+	 * Geeft de variabele namen van een expressie Geeft een array met Strings
+	 * terug.
 	 */
 	public static String[] geefVarNamen(Expressie e)
 	{	Vector varn = Algebra.geefVarN(e);
@@ -1336,7 +1830,9 @@ public class Algebra
 	    }
 	    return false;
 	}
-	/*Geeft de termen van een expressie en stopt ze in een meegegeven vector.
+	
+	/**
+	 * Geeft de termen van een expressie en stopt ze in een meegegeven vector.
 	 */
 	public static Vector geefTermen(Expressie e, Vector v)
 	{	if((e instanceof Optelling || e instanceof Aftrekking)
@@ -1372,7 +1868,9 @@ public class Algebra
 		}
 		return v;
 	}
-	/*Maakt een somexpressie van de expressies in de meegegeven vector
+	
+	/**
+	 * Maakt een somexpressie van de expressies in de meegegeven vector
 	 */
 	public static Expressie maakTermenExpressie(Vector v)
 	{	Expressie e = null;
@@ -1389,12 +1887,15 @@ public class Algebra
 		}
 		return e;
 	}
-	/*Geeft de factoren van de expressie en stopt ze in een meegegeven vector.
-	 *Bij gebroken expressies worden een factor f in de noemen als 1/f 
-	 *toegevoegd aan de vector
+	
+	/**
+	 * Geeft de factoren van de expressie en stopt ze in een meegegeven vector.
+	 * Bij gebroken expressies worden een factor f in de noemen als 1/f
+	 * toegevoegd aan de vector
 	 */
 	public static Vector geefFactoren(Expressie e, Vector v)
-	{	if(e instanceof Aftrekking && e.kind1.geefWaarde()==0)
+	{
+		if(e instanceof Aftrekking && e.kind1.geefWaarde()==0)
 		{	v = Algebra.geefFactoren(e.kind2,v);
 			v.addElement(new BasisExpressie(-1));
 		}
@@ -1438,7 +1939,8 @@ public class Algebra
 		return v;
 	}
 	
-	/*toevoeging voor "Herleiden" 
+	/**
+	 * toevoeging voor "Herleiden"
 	 *
 	 */
 	public static int geefAantalFactorenTermen(Expressie e)
@@ -1452,8 +1954,9 @@ public class Algebra
 		return aantal;
 	} 
 	
-	/*toevoeging voor "Herleiden" 
-	 *Geeft het aantal factoren in alle termen samen. Machten worden als ��n factor geteld.
+	/**
+	 * toevoeging voor "Herleiden" Geeft het aantal factoren in alle termen
+	 * samen. Machten worden als ��n factor geteld.
 	 */
 	public static Vector geefFactorenBeperkt(Expressie e, Vector v)
 	{	if(e instanceof Aftrekking && e.kind1.geefWaarde()==0)
@@ -1482,7 +1985,9 @@ public class Algebra
 		}
 		return v;
 	}
-	/*toevoeging voor "Herleiden" 
+	
+	/**
+	 * toevoeging voor "Herleiden"
 	 *
 	 */
 	public static int geefAantalOperatoren(Expressie e)
@@ -1492,7 +1997,9 @@ public class Algebra
 		if(e.kind1!=null || e.kind2!=null)aantal++;
 		return aantal;
 	}
-	/*toevoeging voor "Herleiden" 
+	
+	/**
+	 * toevoeging voor "Herleiden"
 	 *
 	 */
 	public static int geefAantalBreukPlusGetal(Expressie e)
@@ -1510,7 +2017,9 @@ public class Algebra
 					)aantal++;
 		return aantal;
 	}
-	/*toevoeging voor "Herleiden" 
+	
+	/**
+	 * toevoeging voor "Herleiden"
 	 *
 	 */
 	public static Vector geefMachten(Expressie e, Vector v)
@@ -1580,22 +2089,26 @@ public class Algebra
 		}
 		else return false;
 	}
+	
 	public static Expressie bijBreukPlusGetalGeefBreuk(Expressie e)
-	{	if(e instanceof Optelling
-				   && e.kind1 instanceof BasisExpressie
-				   && !Double.isNaN(e.kind1.geefWaarde())
-				   && e.kind2 instanceof Deling
-				   && e.kind2.kind1 instanceof BasisExpressie
-				   && !Double.isNaN(e.kind2.kind1.geefWaarde())
-				   && e.kind2.kind2 instanceof BasisExpressie
-				   && !Double.isNaN(e.kind2.kind2.geefWaarde())
-					)
-		{	return new Deling(new BasisExpressie(e.kind1.geefWaarde() * e.kind2.kind2.geefWaarde() + e.kind2.kind1.geefWaarde()),e.kind2.kind2);
+	{
+		if (e instanceof Optelling
+			&& e.kind1 instanceof BasisExpressie
+			&& !Double.isNaN(e.kind1.geefWaarde())
+			&& e.kind2 instanceof Deling
+			&& e.kind2.kind1 instanceof BasisExpressie
+			&& !Double.isNaN(e.kind2.kind1.geefWaarde())
+			&& e.kind2.kind2 instanceof BasisExpressie
+			&& !Double.isNaN(e.kind2.kind2.geefWaarde()))
+		{
+			return new Deling(new BasisExpressie(e.kind1.geefWaarde() * e.kind2.kind2.geefWaarde() + e.kind2.kind1.geefWaarde()),e.kind2.kind2);
 		}
-		else return null;
+		else
+			return null;
 	}
 	
-	/*toevoeging voor "Herleiden" 
+	/**
+	 * toevoeging voor "Herleiden"
 	 *
 	 */
 	public static int geefAantalMachten(Expressie e)
@@ -1606,8 +2119,9 @@ public class Algebra
 		return aantal;
 	}
 	
-	/*Maakt een produkt expressie met behulp van de expressies in de vector die 
-	 *meegegeven worden.
+	/**
+	 * Maakt een produkt expressie met behulp van de expressies in de vector die
+	 * meegegeven worden.
 	 */
 	public static Expressie maakFactorenExpressie(Vector v)
 	{	Expressie eGetal = new BasisExpressie(1);
@@ -1759,7 +2273,9 @@ public class Algebra
 		
 		return exp;
 	}
-	/*Vermenigvuldigt een expressie termsgewijs met een factor(expressie)
+	
+	/**
+	 * Vermenigvuldigt een expressie termsgewijs met een factor(expressie)
 	 */
 	public static Expressie vermenigvuldig(Expressie e, Expressie factor)
 	{	Vector v = geefTermen(e, new Vector());
@@ -1771,62 +2287,111 @@ public class Algebra
 		}
 		return Algebra.maakTermenExpressie(v);
 	}
-	/*Herleid een expressie: Gelijksoortige termen bij elkaar en binnen de
-	 *termen de gelijksoortige factoren bij elkaar.
+	
+	/**
+	 * Herleidt een expressie: Gelijksoortige termen bij elkaar en binnen de
+	 * termen de gelijksoortige factoren bij elkaar.
 	 */
 	public static Expressie herleid(Expressie e)
-	{	if(e instanceof Wortel)return new Wortel(herleid(e.kind1));
-		if(e instanceof Macht && Double.isNaN(e.kind2.geefWaarde()))return new Macht(herleid(e.kind1),herleid(e.kind2));
-		if(e instanceof Log)return new Log(herleid(e.kind1));
-		if(e instanceof Ln)return new Ln(herleid(e.kind1));
-		if(e instanceof Sinus)return new Sinus(herleid(e.kind1));
-		if(e instanceof Cosinus)return new Cosinus(herleid(e.kind1));
-		if(e instanceof Tangens)return new Tangens(herleid(e.kind1));
-		if(e instanceof ArcSinus)return new ArcSinus(herleid(e.kind1));
-		if(e instanceof ArcCosinus)return new ArcCosinus(herleid(e.kind1));
-		if(e instanceof ArcCosinus)return new ArcCosinus(herleid(e.kind1));
-		if(e instanceof NdeWortel)return new NdeWortel(herleid(e.kind1),herleid(e.kind2));
-		if(e instanceof NdeLog)return new NdeLog(herleid(e.kind1),herleid(e.kind2));
-		if(e instanceof DecRound)return new DecRound(herleid(e.kind1),herleid(e.kind2));
-		if(e instanceof AantalSign)return new AantalSign(herleid(e.kind1));
-		if(e instanceof SigRound)return new SigRound(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3));
-		if(e instanceof SigRoundStandard)return new SigRoundStandard(herleid(e.kind1),herleid(e.kind2));
-		if(e instanceof DecRoundStrict)return new DecRoundStrict(herleid(e.kind1),herleid(e.kind2));
-		if(e instanceof Integraal)return new Integraal(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3),herleid(e.kind4));
-        if(e instanceof Prv)return new Prv(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3),herleid(e.kind4));
-        if(e instanceof Sigma)return new Sigma(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3),herleid(e.kind4));
-        if(e instanceof Abs)return new Abs(herleid(e.kind1));
-        if(e instanceof Conjug)return new Conjug(herleid(e.kind1));
-        if(e instanceof Faculteit)return new Faculteit(herleid(e.kind1));
-        if(e instanceof Bin)return new Bin(herleid(e.kind1),herleid(e.kind2));
-        if(e instanceof Diff)return new Diff(herleid(e.kind1),herleid(e.kind2));
-        if(e instanceof DiffPartial)return new DiffPartial(herleid(e.kind1),herleid(e.kind2));
-        if(e instanceof Primitieve)return new Primitieve(herleid(e.kind1),herleid(e.kind2));
-        if(e instanceof Limiet)return new Limiet(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3),herleid(e.kind4));
-        if(e instanceof GCD)return new GCD(herleid(e.kind1),herleid(e.kind2));
-        if(e instanceof Max)return new Max(herleid(e.kind1),herleid(e.kind2));
-        if(e instanceof Min)return new Min(herleid(e.kind1),herleid(e.kind2));
-        if(e instanceof NormalCDF)return new NormalCDF(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3),herleid(e.kind4));
-        if(e instanceof InvNorm)return new InvNorm(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3));
-        if(e instanceof BinomCDF)return new BinomCDF(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3));
-        if(e instanceof BinomPDF)return new BinomPDF(herleid(e.kind1),herleid(e.kind2),herleid(e.kind3));
-        if(e instanceof PoissonCDF)return new PoissonCDF(herleid(e.kind1),herleid(e.kind2));
-        if(e instanceof PoissonPDF)return new PoissonPDF(herleid(e.kind1),herleid(e.kind2));
-        //if(e instanceof Functie)
-        //{	String functieNaam = ((Functie)e).geefFunctieNaam();
-        //	return new Functie(functieNaam, herleid(e.kind1));
-        //}
-        if(e instanceof FunctieMV)
-        {	String functieNaam = ((FunctieMV)e).geefFunctieNaam();
-        	Expressie[] es = new Expressie[((FunctieMV)e).kinderen.length];
-        	for(int i=0 ; i<es.length ; i++)
-        	{	es[i] = herleid(((FunctieMV)e).kinderen[i]);
-        	}
-        	return new FunctieMV(functieNaam, es);
-        }
-		if(e instanceof E)return e;
-		if(e instanceof PI)return e;
-		Vector v = Algebra.geefTermen(e,new Vector());
+	{
+		if (e instanceof Wortel)
+			return new Wortel(herleid(e.kind1));
+		if (e instanceof Macht && Double.isNaN(e.kind2.geefWaarde()))
+			return new Macht(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof Log)
+			return new Log(herleid(e.kind1));
+		if (e instanceof Ln)
+			return new Ln(herleid(e.kind1));
+		if (e instanceof Sinus)
+			return new Sinus(herleid(e.kind1));
+		if (e instanceof Cosinus)
+			return new Cosinus(herleid(e.kind1));
+		if (e instanceof Tangens)
+			return new Tangens(herleid(e.kind1));
+		if (e instanceof ArcSinus)
+			return new ArcSinus(herleid(e.kind1));
+		if (e instanceof ArcCosinus)
+			return new ArcCosinus(herleid(e.kind1));
+		if (e instanceof ArcCosinus)
+			return new ArcCosinus(herleid(e.kind1));
+		if (e instanceof NdeWortel)
+			return new NdeWortel(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof NdeLog)
+			return new NdeLog(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof DecRound)
+			return new DecRound(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof AantalSign)
+			return new AantalSign(herleid(e.kind1));
+		if (e instanceof SigRound)
+			return new SigRound(herleid(e.kind1), herleid(e.kind2), herleid(e.kind3));
+		if (e instanceof SigRoundStandard)
+			return new SigRoundStandard(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof DecRoundStrict)
+			return new DecRoundStrict(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof Integraal)
+			return new Integraal(herleid(e.kind1), herleid(e.kind2), herleid(e.kind3), herleid(e.kind4));
+		if (e instanceof Prv)
+			return new Prv(herleid(e.kind1), herleid(e.kind2), herleid(e.kind3), herleid(e.kind4));
+		if (e instanceof Sigma)
+			return new Sigma(herleid(e.kind1), herleid(e.kind2), herleid(e.kind3), herleid(e.kind4));
+		if (e instanceof Abs)
+			return new Abs(herleid(e.kind1));
+		if (e instanceof Conjug)
+			return new Conjug(herleid(e.kind1));
+		if (e instanceof Faculteit)
+			return new Faculteit(herleid(e.kind1));
+		if (e instanceof Bin)
+			return new Bin(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof Diff)
+			return new Diff(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof DiffPartial)
+			return new DiffPartial(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof Primitieve)
+			return new Primitieve(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof Limiet)
+			return new Limiet(herleid(e.kind1), herleid(e.kind2), herleid(e.kind3), herleid(e.kind4));
+		if (e instanceof GCD)
+			return new GCD(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof Max)
+			return new Max(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof Min)
+			return new Min(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof NormalCDF)
+			return new NormalCDF(herleid(e.kind1), herleid(e.kind2), herleid(e.kind3), herleid(e.kind4));
+		if (e instanceof InvNorm)
+			return new InvNorm(herleid(e.kind1), herleid(e.kind2), herleid(e.kind3));
+		if (e instanceof BinomCDF)
+			return new BinomCDF(herleid(e.kind1), herleid(e.kind2), herleid(e.kind3));
+		if (e instanceof BinomPDF)
+			return new BinomPDF(herleid(e.kind1), herleid(e.kind2), herleid(e.kind3));
+		if (e instanceof PoissonCDF)
+			return new PoissonCDF(herleid(e.kind1), herleid(e.kind2));
+		if (e instanceof PoissonPDF)
+			return new PoissonPDF(herleid(e.kind1), herleid(e.kind2));
+		// if(e instanceof Functie)
+		// { String functieNaam = ((Functie)e).geefFunctieNaam();
+		// return new Functie(functieNaam, herleid(e.kind1));
+		// }
+		if (e instanceof FunctieMV)
+		{
+			String functieNaam = ((FunctieMV) e).geefFunctieNaam();
+			Expressie[] es = new Expressie[((FunctieMV) e).kinderen.length];
+			for (int i = 0; i < es.length; i++)
+			{
+				es[i] = herleid(((FunctieMV) e).kinderen[i]);
+			}
+			return new FunctieMV(functieNaam, es);
+		}
+		if (e instanceof E)
+			return e;
+		if (e instanceof PI)
+			return e;
+		if (e instanceof VectorExpr) // TODO herleid kinderen en new VectorExpr(herleid(list)) 
+			return e;
+		if (e instanceof Matrix) // TODO herleid kinderen en new Matrix(herleid(list))
+			return e;
+
+		Vector v = Algebra.geefTermen(e, new Vector());
 		v = sorteerTermen(v);
 		return Algebra.maakTermenExpressie(v);
 	}
@@ -1835,17 +2400,25 @@ public class Algebra
 	{
 		return herleidMild(e,true);
 	}
-	/*Herleid een expressie: Herleid zaken als 1*... , +0 enz.
+	
+	/**
+	 * Herleid een expressie: Herleid zaken als 1*... , +0 enz.
 	 */
 	public static Expressie herleidMild(Expressie e, boolean breukenGemengd)
-	{	if(e instanceof AantalSign)return new BasisExpressie(e.geefWaarde());
+	{
+		if (e instanceof AantalSign)
+			return new BasisExpressie(e.geefWaarde());
 	
 	//System.out.println("herleidMild: "+e.toString());
 		
-		if(e.kind1!=null)e.kind1 = herleidMild(e.kind1, breukenGemengd);
-		if(e.kind2!=null)e.kind2 = herleidMild(e.kind2, breukenGemengd);
-		if(e.kind3!=null)e.kind3 = herleidMild(e.kind3, breukenGemengd);
-		if(e.kind4!=null)e.kind4 = herleidMild(e.kind4, breukenGemengd);
+		if (e.kind1 != null)
+			e.kind1 = herleidMild(e.kind1, breukenGemengd);
+		if (e.kind2 != null)
+			e.kind2 = herleidMild(e.kind2, breukenGemengd);
+		if (e.kind3 != null)
+			e.kind3 = herleidMild(e.kind3, breukenGemengd);
+		if (e.kind4 != null)
+			e.kind4 = herleidMild(e.kind4, breukenGemengd);
 		
 		/*boolean rn = e.kind1!=null && e.kind1.toString().indexOf("rns$h")>-1
 				|| e.kind2!=null && e.kind2.toString().indexOf("rns$h")>-1
@@ -1863,38 +2436,64 @@ public class Algebra
 		}
 		
 		if(e instanceof Vermenigvuldiging)
-		{	if(e.kind1.geefWaarde()==1) return e.kind2;
-		 	else if(e.kind1.geefWaarde()==0 || e.kind2.geefWaarde()==0) return new BasisExpressie(0);
-			else if(e.kind2.geefWaarde()==1) return e.kind1;
-			else if(e.kind1.geefWaarde()==-1) return new Aftrekking(new BasisExpressie(0),e.kind2);
-			else if(e.kind2.geefWaarde()==-1) return new Aftrekking(new BasisExpressie(0),e.kind1);
-			else if(e.kind1 instanceof Aftrekking && e.kind1.kind1.geefWaarde()==0) return new Aftrekking(new BasisExpressie(0),new Vermenigvuldiging(e.kind1.kind2,e.kind2));
-			else if(e.kind2 instanceof Aftrekking && e.kind2.kind1.geefWaarde()==0) return new Aftrekking(new BasisExpressie(0),new Vermenigvuldiging(e.kind1,e.kind2.kind2));
+		{
+			if (e.kind1.geefWaarde() == 1)
+				return e.kind2;
+			else if (e.kind1.geefWaarde() == 0 || e.kind2.geefWaarde() == 0)
+				return new BasisExpressie(0);
+			else if (e.kind2.geefWaarde() == 1)
+				return e.kind1;
+			else if (e.kind1.geefWaarde() == -1)
+				return new Aftrekking(new BasisExpressie(0), e.kind2);
+			else if (e.kind2.geefWaarde() == -1)
+				return new Aftrekking(new BasisExpressie(0), e.kind1);
+			else if (e.kind1 instanceof Aftrekking && e.kind1.kind1.geefWaarde() == 0)
+				return new Aftrekking(new BasisExpressie(0), new Vermenigvuldiging(e.kind1.kind2, e.kind2));
+			else if (e.kind2 instanceof Aftrekking && e.kind2.kind1.geefWaarde() == 0)
+				return new Aftrekking(new BasisExpressie(0), new Vermenigvuldiging(e.kind1, e.kind2.kind2));
 		}
 		else if(e instanceof Optelling)
-		{	if(e.kind1.geefWaarde()==0)return e.kind2;
-			else if(e.kind2.geefWaarde()==0)return e.kind1;
-			else if(e.kind2 instanceof Aftrekking && e.kind2.kind1.geefWaarde()==0)return new Aftrekking(e.kind1, herleidMild(e.kind2.kind2, breukenGemengd));
+		{
+			if (e.kind1.geefWaarde() == 0)
+				return e.kind2;
+			else if (e.kind2.geefWaarde() == 0)
+				return e.kind1;
+			else if (e.kind2 instanceof Aftrekking && e.kind2.kind1.geefWaarde() == 0)
+				return new Aftrekking(e.kind1, herleidMild(e.kind2.kind2, breukenGemengd));
 		}
 		else if(e instanceof Aftrekking)
-		{	if(e.kind2.geefWaarde()==0)return e.kind1;
-			else if(e.kind1.geefWaarde()==0 && e.kind2 instanceof Aftrekking && e.kind2.kind1.geefWaarde()==0)return herleidMild(e.kind2.kind2, breukenGemengd);
-			else if(e.kind2 instanceof Aftrekking && e.kind2.kind1.geefWaarde()==0)return new Optelling(e.kind1, herleidMild(e.kind2.kind2, breukenGemengd));
+		{
+			if (e.kind2.geefWaarde() == 0)
+				return e.kind1;
+			else if (e.kind1.geefWaarde() == 0 && e.kind2 instanceof Aftrekking && e.kind2.kind1.geefWaarde() == 0)
+				return herleidMild(e.kind2.kind2, breukenGemengd);
+			else if (e.kind2 instanceof Aftrekking && e.kind2.kind1.geefWaarde() == 0)
+				return new Optelling(e.kind1, herleidMild(e.kind2.kind2, breukenGemengd));
 		}
 		else if(e instanceof Macht)
-		{	if(isGelijkDouble(e.kind2.geefWaarde(),1)) return e.kind1;
-			if(isGelijkDouble(e.kind2.geefWaarde(),0)) return new BasisExpressie(1);
+		{
+			if (isGelijkDouble(e.kind2.geefWaarde(), 1))
+				return e.kind1;
+			if (isGelijkDouble(e.kind2.geefWaarde(), 0))
+				return new BasisExpressie(1);
 		}
 		else if(e instanceof NdeWortel)
-		{	if(isGelijkDouble(e.kind2.geefWaarde(),1)) return e.kind1;
-			if(isGelijkDouble(e.kind2.geefWaarde(),2)) return new Wortel(e.kind1);
+		{
+			if (isGelijkDouble(e.kind2.geefWaarde(), 1))
+				return e.kind1;
+			if (isGelijkDouble(e.kind2.geefWaarde(), 2))
+				return new Wortel(e.kind1);
 		}
 		else if(e instanceof Deling)
-		{	if(isGelijkDouble(e.kind2.geefWaarde(),1)) return e.kind1;
+		{
+			if (isGelijkDouble(e.kind2.geefWaarde(), 1))
+				return e.kind1;
 		}
 		else if(e instanceof Diff)
-		{	Expressie diff = ((Diff) e).evalDiff();
-			if(diff!=null)return herleidMild(diff,breukenGemengd);
+		{
+			Expressie diff = ((Diff) e).evalDiff();
+			if (diff != null)
+				return herleidMild(diff, breukenGemengd);
 			return Expressie.evalWithCAS(e);
 		}
 		else if(e instanceof DiffPartial)
@@ -1908,7 +2507,9 @@ public class Algebra
 		}
 		return e;
 	}
-	/* Bepaalt of een expressie zonder haakjes is geschreven
+	
+	/**
+	 * Bepaalt of een expressie zonder haakjes is geschreven
 	 */
 	public static boolean expanded(Expressie e)
 	{	Vector v = Algebra.geefTermen(e,new Vector());
@@ -1926,8 +2527,8 @@ public class Algebra
 		return true;
 	}
 	
-	
-	/*Werkt alle haakjes weg en stopt alle termen (ongesorteerd) in een vector.
+	/**
+	 * Werkt alle haakjes weg en stopt alle termen (ongesorteerd) in een vector.
 	 */
 	public static Vector expand(Expressie e, Vector v)
 	{	
@@ -2006,9 +2607,10 @@ public class Algebra
 		
 		return v;
 	}
-	/*Werkt de haakjes weg.
-	 *Doet dat per term. Herleid ook elke term.
-	 *Kan daarna eventueel als geheel herleid worden met herleid();
+	
+	/**
+	 * Werkt de haakjes weg. Doet dat per term. Herleid ook elke term. Kan
+	 * daarna eventueel als geheel herleid worden met herleid();
 	 */
 	public static Expressie verwijderHaakjes(Expressie e)
 	{	Vector v = geefTermen(e, new Vector());
@@ -2023,9 +2625,11 @@ public class Algebra
 		}
 		return Algebra.maakTermenExpressie(w);
 	}
-	/*Geeft de (indien mogelijk herleide)wortel van een expressie
-	 *Herleiding vind plaats als de exponenten van de variabele factoren even zijn
-	 *en bij een getalsexpressie indien het kwadraat van een rationaal getal is.
+	
+	/**
+	 * Geeft de (indien mogelijk herleide)wortel van een expressie Herleiding
+	 * vind plaats als de exponenten van de variabele factoren even zijn en bij
+	 * een getalsexpressie indien het kwadraat van een rationaal getal is.
 	 */
 	public static Expressie geefWortel(Expressie e)
 	{	String[] varNamen = geefVarNamen(e);
@@ -2148,10 +2752,11 @@ public class Algebra
 		
 	
 	}
-	/*Ontbind een 2e graads expressie.met 1 variabele.
-	 *Lukt alleen als e=0 rationale oplossingen heeft
-	 *expressies met meer variabelen en/of van een andere graad
-	 *worden ontbonden met ontbindExtra(e)
+	
+	/**
+	 * Ontbindt een 2e graads expressie met 1 variabele. Lukt alleen als e=0
+	 * rationale oplossingen heeft expressies met meer variabelen en/of van een
+	 * andere graad worden ontbonden met ontbindExtra(e)
 	 */
 	public static Expressie ontbindExtra(Expressie e)
 	{	String[] varnamen = geefVarNamen(e);
@@ -2355,8 +2960,10 @@ public class Algebra
 			return ee;
 		}
 	}
-	/*Brengt factoren buiten haakjes van een willekeurige expressie evt met 
-	 *meer variabelen. Brengt ook onder ��n noemer indien nodig.
+	
+	/**
+	 * Brengt factoren buiten haakjes van een willekeurige expressie evt met
+	 * meer variabelen. Brengt ook onder ��n noemer indien nodig.
 	 */
 	public static Expressie ontbind(Expressie e)
 	{	//Voor alle termen wordt bekeken uit welke bouwstenen ze zijn opgebouwd.
@@ -2679,11 +3286,13 @@ public class Algebra
 		}
 		return maakFactorenExpressie(expVector);
 	}
-	/*Sorteert de expressies in de meegegeven vector en voegt samen waar 
-	 *mogelijk. Het resultaat in een nieuwe vector met expressies.
+	
+	/**
+	 * Sorteert de expressies in de meegegeven vector en voegt samen waar
+	 * mogelijk. Het resultaat in een nieuwe vector met expressies.
 	 */
 	public static Vector sorteerTermen(Vector w)
-	{	System.out.println(""+w);
+	{	//System.out.println(""+w);
 		String[] varNamen = geefVarNamen(maakTermenExpressie(w));
 		Vector t = new Vector();
 		Vector v = new Vector();
@@ -2876,8 +3485,10 @@ public class Algebra
 		}
 		return t;
 	}
-	/*Benadert een wortelexpressie met een BasisExpressie van een double.
-	 */	
+	
+	/**
+	 * Benadert een wortelexpressie met een BasisExpressie van een double.
+	 */
 	public static Expressie benaderWortels(Expressie e)
 	{	if(e instanceof Wortel && !Double.isNaN(e.geefWaarde()))
 		{	double w = e.geefWaarde();
@@ -2889,16 +3500,22 @@ public class Algebra
 		}
 		return e;
 	}
-	/*Vereenvoudigt de breuk x/y
+	
+	/**
+	 * Vereenvoudigt de breuk x/y
 	 */
 	public static PointLong vereenvoudigBreuk(PointLong p)
-    {	if(p.x==0)return p;
+	{
+		if (p.x == 0)
+			return p;
         long ggd = ggd(p.x, p.y);
         p.x = p.x / ggd;
         p.y = p.y / ggd;
         return new PointLong(p.x, p.y);
     }
-	/*Bepaalt de ggd van de twee gegeven getallen
+	
+	/**
+	 * Bepaalt de ggd van de twee gegeven getallen
 	 */
 	public static long ggd(long m, long n)
     {   long hlp;
@@ -2915,280 +3532,348 @@ public class Algebra
         if(hlp == 0) return n;
         else return ggd(n, hlp);
     }
-	/*Evalueert een expressie tot een breuk indien dat mogelijk is.
-	 *Anders is de terugkeerwaarde null.
-	 */
 	
 	public static boolean withinLongRange(long num)
 	{
-		if(num<-100000000000000000L || num>100000000000000000L)return false;
+		if (num < -100000000000000000L || num > 100000000000000000L)
+			return false;
 		return true;
 	}
+	
 	public static PointLong eval(Expressie e)
-	{	if(e instanceof E) return null;
-		if(e instanceof PI) return null;
-		if(e instanceof Bin)return eval(new BasisExpressie(e.geefWaarde()));
-		if(e instanceof Faculteit)return eval(new BasisExpressie(e.geefWaarde()));
-		if(e instanceof GCD)return eval(new BasisExpressie(e.geefWaarde()));
-		if(e instanceof Min)return eval(new BasisExpressie(e.geefWaarde()));
-		if(e instanceof Max)return eval(new BasisExpressie(e.geefWaarde()));
-		if(e instanceof Abs)return eval(new BasisExpressie(e.geefWaarde()));
-		if(e instanceof BasisExpressie && !Double.isNaN(e.geefWaarde()))
-		{	
-			if(Math.rint(e.geefWaarde())-e.geefWaarde()!=0)
-			{	/**/
-				long x=0;
-				long y=0;
+	{
+		if (e instanceof E)
+			return null;
+		if (e instanceof PI)
+			return null;
+		if (e instanceof Bin)
+			return eval(new BasisExpressie(e.geefWaarde()));
+		if (e instanceof Faculteit)
+			return eval(new BasisExpressie(e.geefWaarde()));
+		if (e instanceof GCD)
+			return eval(new BasisExpressie(e.geefWaarde()));
+		if (e instanceof Min)
+			return eval(new BasisExpressie(e.geefWaarde()));
+		if (e instanceof Max)
+			return eval(new BasisExpressie(e.geefWaarde()));
+		if (e instanceof Abs)
+			return eval(new BasisExpressie(e.geefWaarde()));
+		if (e instanceof BasisExpressie && !Double.isNaN(e.geefWaarde()))
+		{
+			if (Math.rint(e.geefWaarde()) - e.geefWaarde() != 0)
+			{ /**/
+				long x = 0;
+				long y = 0;
 				boolean isBreuk = false;
-				for(int i=0 ; i<7 ; i++)
-				{	double w = e.geefWaarde()*Math.pow(10,i);
-					if(Math.rint(w)-w==0)
-					{	isBreuk = true;
-						x = (long)w;
-						y = (long)Math.pow(10,i);
+				for (int i = 0; i < 7; i++)
+				{
+					double w = e.geefWaarde() * Math.pow(10, i);
+					if (Math.rint(w) - w == 0)
+					{
+						isBreuk = true;
+						x = (long) w;
+						y = (long) Math.pow(10, i);
 						break;
 					}
-					//else if(i==6)
-					//{	isBreuk = true;
-					//	x = (long)Math.rint(w);
-					//	y = (long)Math.pow(10,i);
-					//}
+					// else if(i==6)
+					// { isBreuk = true;
+					// x = (long)Math.rint(w);
+					// y = (long)Math.pow(10,i);
+					// }
 				}
-				if(isBreuk)
-				{	PointLong p = new PointLong(x,y);
-					//if(x==9223372036854775807L  || y==9223372036854775807L) return null;
-					if(!withinLongRange(x)  || !withinLongRange(y)) return null;
+				if (isBreuk)
+				{
+					PointLong p = new PointLong(x, y);
+					// if(x==9223372036854775807L || y==9223372036854775807L)
+					// return null;
+					if (!withinLongRange(x) || !withinLongRange(y))
+						return null;
 					return vereenvoudigBreuk(p);
 				}
-				
+
 				return null;
 			}
-			else if(!withinLongRange((long)e.geefWaarde())) return null;
-			else return new PointLong((long)e.geefWaarde(),1);
+			else if (!withinLongRange((long) e.geefWaarde()))
+				return null;
+			else
+				return new PointLong((long) e.geefWaarde(), 1);
 		}
-		else
-		if(e instanceof Optelling)
-		{	PointLong p1 = eval(e.kind1);
+		else if (e instanceof Optelling)
+		{
+			PointLong p1 = eval(e.kind1);
 			PointLong p2 = eval(e.kind2);
-			if(p1==null || p2==null)return null;
+			if (p1 == null || p2 == null)
+				return null;
 			long x1 = p1.x;
 			long y1 = p1.y;
 			long x2 = p2.x;
 			long y2 = p2.y;
-			long x = x1*y2+x2*y1;
-			long y = y1*y2;
-			if(y<0)
-			{	y=-y;
-				x=-x;
+			long x = x1 * y2 + x2 * y1;
+			long y = y1 * y2;
+			if (y < 0)
+			{
+				y = -y;
+				x = -x;
 			}
-			PointLong p = new PointLong(x,y);
-			//if(x==9223372036854775807L  || y==9223372036854775807L) return null;
-			if(!withinLongRange(x)  || !withinLongRange(y)) return null;
+			PointLong p = new PointLong(x, y);
+			// if(x==9223372036854775807L || y==9223372036854775807L) return
+			// null;
+			if (!withinLongRange(x) || !withinLongRange(y))
+				return null;
 			return vereenvoudigBreuk(p);
 		}
-		else if(e instanceof Aftrekking)
-		{	PointLong p1 = eval(e.kind1);
+		else if (e instanceof Aftrekking)
+		{
+			PointLong p1 = eval(e.kind1);
 			PointLong p2 = eval(e.kind2);
-			if(p1==null || p2==null)return null;
+			if (p1 == null || p2 == null)
+				return null;
 			long x1 = p1.x;
 			long y1 = p1.y;
 			long x2 = p2.x;
 			long y2 = p2.y;
-			long x = x1*y2-x2*y1;
-			long y = y1*y2;
-			if(y<0)
-			{	y=-y;
-				x=-x;
+			long x = x1 * y2 - x2 * y1;
+			long y = y1 * y2;
+			if (y < 0)
+			{
+				y = -y;
+				x = -x;
 			}
-			PointLong p = new PointLong(x,y);
-			//if(x==9223372036854775807L  || y==9223372036854775807L) return null;
-			if(!withinLongRange(x)  || !withinLongRange(y)) return null;
+			PointLong p = new PointLong(x, y);
+			// if(x==9223372036854775807L || y==9223372036854775807L) return
+			// null;
+			if (!withinLongRange(x) || !withinLongRange(y))
+				return null;
 			return vereenvoudigBreuk(p);
 		}
-		else if(e instanceof Vermenigvuldiging)
-		{	PointLong p1 = eval(e.kind1);
+		else if (e instanceof Vermenigvuldiging)
+		{
+			PointLong p1 = eval(e.kind1);
 			PointLong p2 = eval(e.kind2);
-			if(p1==null || p2==null)return null;
+			if (p1 == null || p2 == null)
+				return null;
 			long x1 = p1.x;
 			long y1 = p1.y;
 			long x2 = p2.x;
 			long y2 = p2.y;
-			long x = x1*x2;
-			long y = y1*y2;
-			if(y<0)
-			{	y=-y;
-				x=-x;
+			long x = x1 * x2;
+			long y = y1 * y2;
+			if (y < 0)
+			{
+				y = -y;
+				x = -x;
 			}
-			PointLong p = new PointLong(x,y);
-			//if(x==9223372036854775807L  || y==9223372036854775807L) return null;
-			if(!withinLongRange(x)  || !withinLongRange(y)) return null;
+			PointLong p = new PointLong(x, y);
+			// if(x==9223372036854775807L || y==9223372036854775807L) return
+			// null;
+			if (!withinLongRange(x) || !withinLongRange(y))
+				return null;
 			return vereenvoudigBreuk(p);
 		}
-		else if(e instanceof Deling)
-		{	PointLong p1 = eval(e.kind1);
+		else if (e instanceof Deling)
+		{
+			PointLong p1 = eval(e.kind1);
 			PointLong p2 = eval(e.kind2);
-			if(p1==null || p2==null)return null;
+			if (p1 == null || p2 == null)
+				return null;
 			long x1 = p1.x;
 			long y1 = p1.y;
 			long x2 = p2.x;
 			long y2 = p2.y;
-			long x = x1*y2;
-			long y = y1*x2;
-			if(y<0)
-			{	y=-y;
-				x=-x;
+			long x = x1 * y2;
+			long y = y1 * x2;
+			if (y < 0)
+			{
+				y = -y;
+				x = -x;
 			}
-			PointLong p = new PointLong(x,y);
-			//if(x==9223372036854775807L  || y==9223372036854775807L) return null;
-			if(!withinLongRange(x)  || !withinLongRange(y)) return null;
+			PointLong p = new PointLong(x, y);
+			// if(x==9223372036854775807L || y==9223372036854775807L) return
+			// null;
+			if (!withinLongRange(x) || !withinLongRange(y))
+				return null;
 			return vereenvoudigBreuk(p);
 		}
-		else if(e instanceof Macht)
-		{	PointLong p1 = eval(e.kind1);
+		else if (e instanceof Macht)
+		{
+			PointLong p1 = eval(e.kind1);
 			PointLong p2 = eval(e.kind2);
-			if(p1==null || p2==null)return null;
+			if (p1 == null || p2 == null)
+				return null;
 			long x1 = p1.x;
 			long y1 = p1.y;
 			long x2 = p2.x;
 			long y2 = p2.y;
-			if(y2!=1)return null;
-			long x = (long)Math.pow(x1,x2);
-			long y = (long)Math.pow(y1,x2);
-			if(x2<0)
-			{	x = (long)Math.pow(y1,-x2);//1; lelijke bug!!!!
-				y = (long)Math.pow(x1,-x2);
+			if (y2 != 1)
+				return null;
+			long x = (long) Math.pow(x1, x2);
+			long y = (long) Math.pow(y1, x2);
+			if (x2 < 0)
+			{
+				x = (long) Math.pow(y1, -x2);// 1; lelijke bug!!!!
+				y = (long) Math.pow(x1, -x2);
 			}
-			if(y<0)
-			{	y=-y;
-				x=-x;
+			if (y < 0)
+			{
+				y = -y;
+				x = -x;
 			}
-			PointLong p = new PointLong(x,y);
-			//if(x==9223372036854775807L  || y==9223372036854775807L) return null;
-			if(!withinLongRange(x)  || !withinLongRange(y)) return null;
+			PointLong p = new PointLong(x, y);
+			// if(x==9223372036854775807L || y==9223372036854775807L) return
+			// null;
+			if (!withinLongRange(x) || !withinLongRange(y))
+				return null;
 			return vereenvoudigBreuk(p);
 		}
-		else if(e instanceof Wortel)
-		{	PointLong p1 = eval(e.kind1);
-			if(p1==null)return null;
+		else if (e instanceof Wortel)
+		{
+			PointLong p1 = eval(e.kind1);
+			if (p1 == null)
+				return null;
 			p1 = vereenvoudigBreuk(p1);
 			long x1 = p1.x;
 			long y1 = p1.y;
 			boolean tellerIsKwadraat = false;
 			boolean noemerIsKwadraat = false;
-			double wx1 = Math.rint(Math.sqrt((double)x1));
-			double wy1 = Math.rint(Math.sqrt((double)y1));
-			if(isGelijkDouble(wx1*wx1,(double)x1)) tellerIsKwadraat = true;
-			if(isGelijkDouble(wy1*wy1,(double)y1)) noemerIsKwadraat = true;
-			
-			if(tellerIsKwadraat && noemerIsKwadraat)
-			{	PointLong p = new PointLong((long)wx1,(long)wy1);
-				//if((long)wx1==9223372036854775807L  || (long)wy1==9223372036854775807L) return null;
-				if(!withinLongRange((long)wx1)  || !withinLongRange((long)wy1)) return null;
+			double wx1 = Math.rint(Math.sqrt((double) x1));
+			double wy1 = Math.rint(Math.sqrt((double) y1));
+			if (isGelijkDouble(wx1 * wx1, (double) x1))
+				tellerIsKwadraat = true;
+			if (isGelijkDouble(wy1 * wy1, (double) y1))
+				noemerIsKwadraat = true;
+
+			if (tellerIsKwadraat && noemerIsKwadraat)
+			{
+				PointLong p = new PointLong((long) wx1, (long) wy1);
+				// if((long)wx1==9223372036854775807L ||
+				// (long)wy1==9223372036854775807L) return null;
+				if (!withinLongRange((long) wx1) || !withinLongRange((long) wy1))
+					return null;
 				return p;
 			}
-			else return null;
+			else
+				return null;
 		}
-		else if(e instanceof NdeWortel)
-		{	PointLong p1 = eval(e.kind1);
+		else if (e instanceof NdeWortel)
+		{
+			PointLong p1 = eval(e.kind1);
 			PointLong p2 = eval(e.kind2);
-			if(p1==null)return null;
+			if (p1 == null)
+				return null;
 			p1 = vereenvoudigBreuk(p1);
 			p2 = vereenvoudigBreuk(p2);
-			if(p2.y!=1 || p2.x==0)return null;
+			if (p2.y != 1 || p2.x == 0)
+				return null;
 			long x1 = p1.x;
 			long y1 = p1.y;
 			long x2 = p2.x;
 			boolean tellerIsNdeMacht = false;
 			boolean noemerIsNdeMacht = false;
-			
-			double wx1 = Math.rint(Math.pow((double)x1,1.0/x2));
-			double wy1 = Math.rint(Math.pow((double)y1,1.0/x2));
-			if(isGelijkDouble(Math.pow((double)wx1,x2),(double)x1)) tellerIsNdeMacht = true;
-			if(isGelijkDouble(Math.pow((double)wy1,x2),(double)y1)) noemerIsNdeMacht = true;
-			if(tellerIsNdeMacht && noemerIsNdeMacht)
-			{	PointLong p = new PointLong((long)wx1,(long)wy1);
-				//if((long)wx1==9223372036854775807L  || (long)wy1==9223372036854775807L) return null;
-				if(!withinLongRange((long)wx1)  || !withinLongRange((long)wy1)) return null;
+
+			double wx1 = Math.rint(Math.pow((double) x1, 1.0 / x2));
+			double wy1 = Math.rint(Math.pow((double) y1, 1.0 / x2));
+			if (isGelijkDouble(Math.pow((double) wx1, x2), (double) x1))
+				tellerIsNdeMacht = true;
+			if (isGelijkDouble(Math.pow((double) wy1, x2), (double) y1))
+				noemerIsNdeMacht = true;
+			if (tellerIsNdeMacht && noemerIsNdeMacht)
+			{
+				PointLong p = new PointLong((long) wx1, (long) wy1);
+				// if((long)wx1==9223372036854775807L ||
+				// (long)wy1==9223372036854775807L) return null;
+				if (!withinLongRange((long) wx1) || !withinLongRange((long) wy1))
+					return null;
 				return p;
 			}
-			else return null;
+			else
+				return null;
 		}
-		else if(e instanceof NdeLog)
-		{	PointLong p1 = eval(e.kind1);
+		else if (e instanceof NdeLog)
+		{
+			PointLong p1 = eval(e.kind1);
 			PointLong p2 = eval(e.kind2);
-			if(p1==null)return null;
-			if(p2==null)return null;
+			if (p1 == null)
+				return null;
+			if (p2 == null)
+				return null;
 			p1 = vereenvoudigBreuk(p1);
 			p2 = vereenvoudigBreuk(p2);
-			if(p2.x==0 || p2.x==1 && p2.y==1)return null;
+			if (p2.x == 0 || p2.x == 1 && p2.y == 1)
+				return null;
 			long x1 = p1.x;
 			long y1 = p1.y;
 			long x2 = p2.x;
 			long y2 = p2.y;
 			boolean tellerIsNdeLog = false;
 			boolean noemerIsNdeLog = false;
-			
-			double wx1 = Math.rint(Math.log((double)x1)/Math.log((double)x2/(double)y2));
-			double wy1 = Math.rint(Math.log((double)y1)/Math.log((double)x2/(double)y2));
-			if(isGelijkDouble(Math.pow((double)x2/(double)y2,(double)wx1),(double)x1)) tellerIsNdeLog = true;
-			if(isGelijkDouble(Math.pow((double)x2/(double)y2,(double)wy1),(double)y1)) noemerIsNdeLog = true;
-			
-			if(tellerIsNdeLog && noemerIsNdeLog)
-			{	PointLong p = new PointLong((long)wx1-(long)wy1,1);
-				//if((long)wx1==9223372036854775807L  || (long)wy1==9223372036854775807L) return null;
-				if(!withinLongRange((long)wx1)  || !withinLongRange((long)wy1)) return null;
+
+			double wx1 = Math.rint(Math.log((double) x1) / Math.log((double) x2 / (double) y2));
+			double wy1 = Math.rint(Math.log((double) y1) / Math.log((double) x2 / (double) y2));
+			if (isGelijkDouble(Math.pow((double) x2 / (double) y2, (double) wx1), (double) x1))
+				tellerIsNdeLog = true;
+			if (isGelijkDouble(Math.pow((double) x2 / (double) y2, (double) wy1), (double) y1))
+				noemerIsNdeLog = true;
+
+			if (tellerIsNdeLog && noemerIsNdeLog)
+			{
+				PointLong p = new PointLong((long) wx1 - (long) wy1, 1);
+				// if((long)wx1==9223372036854775807L ||
+				// (long)wy1==9223372036854775807L) return null;
+				if (!withinLongRange((long) wx1) || !withinLongRange((long) wy1))
+					return null;
 				return p;
 			}
-			else return null;
+			else
+				return null;
 		}
-		else if(e instanceof Abs)
+		else if (e instanceof Abs)
 		{
-			if(Expressie.hoekGraden)
+			if (Expressie.hoekGraden)
 			{
-				
+
 			}
 		}
-		else if(e instanceof Sinus)
+		else if (e instanceof Sinus)
 		{
-			if(Expressie.hoekGraden)
+			if (Expressie.hoekGraden)
 			{
-				
+
 			}
 		}
 		/*
-		
-		double waarde = e.geefWaarde();
-		for(int i=1 ; i<1000 ; i++)
-		{	double mogelijkeTeller = i*waarde;
-			if(Math.rint(mogelijkeTeller)-mogelijkeTeller==0)
-			{	long x1 = (long)mogelijkeTeller;
-				long y1 = i;
-				PointLong p = new PointLong(x1,y1);
-				return p;
-			}
-		}*/
+		 * 
+		 * double waarde = e.geefWaarde(); for(int i=1 ; i<1000 ; i++) { double
+		 * mogelijkeTeller = i*waarde;
+		 * if(Math.rint(mogelijkeTeller)-mogelijkeTeller==0) { long x1 =
+		 * (long)mogelijkeTeller; long y1 = i; PointLong p = new
+		 * PointLong(x1,y1); return p; } }
+		 */
 		return null;
-	}
-	
+	}	
 	
 	public static Expressie evalueerGetalsExpressie(Expressie exp)
 	{
 		return evalueerGetalsExpressie(exp, true);
 		
 	}
-	/*getalsexpressie wordt eerst geevalueerd tot een breuk en vervolgens wordt
-	 *een expressie gebouwd die die breuk correct weergeeft.
-	 *Indien een getalsexpressie niet door een breuk kan worden weergegeven,
-	 *dan wordt de beginexpressie zelf teruggegeven
+	
+	/**
+	 * De getalsexpressie wordt eerst geevalueerd tot een breuk en vervolgens wordt
+	 * een expressie gebouwd die die breuk correct weergeeft. Indien een
+	 * getalsexpressie niet door een breuk kan worden weergegeven, dan wordt de
+	 * beginexpressie zelf teruggegeven
 	 */
 	public static Expressie evalueerGetalsExpressie(Expressie exp, boolean breukenGemengd)
-	{	if(exp instanceof DecRound)
-		{    return new BasisExpressie(exp.geefWaarde());
+	{
+		if (exp instanceof DecRound)
+		{
+			return new BasisExpressie(exp.geefWaarde());
 		}
-		if(exp instanceof AantalSign)
-		{	return new BasisExpressie(exp.geefWaarde());
+		if (exp instanceof AantalSign)
+		{
+			return new BasisExpressie(exp.geefWaarde());
 		}
-		if(exp instanceof SigRound)
+		if (exp instanceof SigRound)
 		{   int macht = (int)exp.kind2.geefWaarde();
 			int signf = (int)exp.kind3.geefWaarde(); 
 			if(exp.kind1.geefWaarde()<0){   
@@ -3257,8 +3942,6 @@ public class Algebra
 		}
 		//if(isWortelBenadering(exp))return new BasisExpressie(exp.geefWaarde());
 		
-		
-		
 		long teller = p.x;
 		long noemer = p.y;
 		
@@ -3290,6 +3973,356 @@ public class Algebra
 		{	exp = new Aftrekking(new BasisExpressie(0),new BasisExpressie(1));
 		}
 		return exp;
+	}
+
+	/**
+	 * Geef de dimensie van de gegeven expressie. Als de gegeven
+	 * expressie geen vector-resultaat heeft dan wordt [-1, -1] geretourneerd.
+	 * 
+	 * @param expressie
+	 * @return
+	 */
+	public static int[] geefVectorDimensie(Expressie expressie)
+	{
+		int[] dimensie = {-1, -1};
+		
+		if (isVector(expressie))
+		{
+			dimensie = expressie.geefVector().geefDimensie();
+		}
+		
+		return dimensie;
+	}
+
+	/**
+	 * Retourneert true als de gegeven vergelijking een vectorvoorstelling is met 
+	 * vergelijking1 vector met variabelen en
+	 * vergelijking2 een optelling van vector1 en som van scalar * vectori,
+	 * met aantal elementen in som is aantal variabelen - 1.
+	 * Anders false.
+	 * 
+	 * @param vergelijking
+	 * @return
+	 */
+	public static boolean isJuistFormaatVectorVoorstelling(VergelijkingMeerv vergelijking)
+	{
+		boolean isJuistFormaat = false;
+		if (vergelijking == null || vergelijking.geefVergelijking(0) == null)
+			isJuistFormaat = false;
+		else if (isVariabelenVector(vergelijking.geefVergelijking(0).kind1)
+			&& isSomVectoren(vergelijking.geefVergelijking(0).kind2))
+		{
+			isJuistFormaat = true;
+		}
+		
+//		System.out.println("Algebra.isJuistFormaatVectorVoorstelling(): " + isJuistFormaat);
+		
+		return isJuistFormaat;
+	}
+
+	/**
+	 * Retourneert true als de gegeven expressie een som is van vectoren.
+	 * 
+	 * @param expr
+	 * @return
+	 */
+	private static boolean isSomVectoren(Expressie expr)
+	{
+		boolean b = true;
+		
+		if (expr == null || !(expr instanceof Optelling) || !(expr.kind1 instanceof VectorExpr || isSomVectoren(expr.kind1))) // de eerste term in de optelling moet een vector zijn of een optelling (van vectoren) 
+			b = false;
+		else if (!(isVariabeleMaalVector(expr.kind2) || isSomVariabeleMaalVector(expr.kind2))) // de tweede term in de optelling moet een scalar * vector zijn of een som van scalar * vector.
+			b = false;
+		
+		return b;
+	}
+
+	/**
+	 * Retourneert true als de gegeven expr een som is van een variabele maal vector.
+	 * 
+	 * @param expr
+	 * @return
+	 */
+	private static boolean isSomVariabeleMaalVector(Expressie expr)
+	{
+		boolean b = true;
+		
+		if (expr == null || !(expr instanceof Optelling))
+			b = false;
+		else if (expr.kind1 == null || expr.kind1 == null)
+			b = false;
+		else if (!isVariabeleMaalVector(expr.kind1) || !isSomVariabeleMaalVector(expr.kind1))
+			b = false;
+		else if (!isVariabeleMaalVector(expr.kind2) || !isSomVariabeleMaalVector(expr.kind2))
+			b = false;
+		
+		return b;
+	}
+
+	/**
+	 * Retourneert true als de gegeven vergelijking een vectorvoorstelling is die voldoet
+	 * aan de oplossingsvergelijking (bijv. y = ax + b of z = 2x - 3y + 1) en
+	 * aan de gegeven juiste vorm.
+	 * Anders false.
+	 * 
+	 * @param vergelijking
+	 * @param oplossing
+	 * @param juisteVormen 
+	 * @return
+	 */
+	public static boolean isJuisteVectorvoorstelling(VergelijkingMeerv vergelijking, VergelijkingMeerv oplossing, VergelijkingMeerv juisteVormen)
+	{
+		boolean isJuist = false;
+		
+		if (isJuistFormaatVectorVoorstelling(vergelijking)
+			&& isJuisteOplossingInJuisteVorm(vergelijking, oplossing, juisteVormen))
+			isJuist = true;
+		
+		return isJuist;
+	}
+
+	/**
+	 * Retourneer true als de gegeven vectorvergelijking een correcte representatie is
+	 * van de lijn gegeven door oplossing.
+	 * Vectorvoorstelling bijv. vector(x, y) = vector(i1, i2) + labda * vector (j1, j2)
+	 * en oplossing y = ax + b 
+	 *  
+	 * @param vergelijking De vectorvergelijking
+	 * @param oplossing Bijv. y = ax + b of z = 2x - 3y + 1
+	 * @return
+	 */
+	private static boolean isJuisteOplossingInJuisteVorm(VergelijkingMeerv vergelijking, VergelijkingMeerv oplossing, VergelijkingMeerv juisteVormen)
+	{
+		boolean isJuist = false;
+		
+		// variabelenvector
+		ArrayList<Expressie> variabelen = ((VectorExpr) vergelijking.geefVergelijking(0).geefExpLinks()).geefKinderen();
+		ArrayList<Vergelijking> vgln = new ArrayList<Vergelijking>();
+
+		ArrayList<VectorExpr> vectoren = geefVectoren((Optelling) vergelijking.geefVergelijking(0).geefExpRechts());
+		ArrayList<VectorExpr> vectorenJuisteVorm = geefVectoren((Optelling) juisteVormen.geefVergelijking(0).geefExpRechts());
+		
+		if (vectoren.size() != vectorenJuisteVorm.size()) // het aantal vectoren in de vectorvergelijking moet hetzelfde zijn als het aantal zoals aangegeven in de 'juiste vorm'
+			return false;
+		
+		// parameters labda, mu e.d., mogelijk null
+		// Deze hoeven niet hetzelfde te zijn als in de 'juiste vorm', als ze maar verschillend zijn
+		// en anders dan de variabelen.
+		ArrayList<Expressie> parameters = geefParameters((Optelling) vergelijking.geefVergelijking(0).geefExpRechts());
+		
+
+		for (int i = 0; i < variabelen.size(); i++) // rijindex in vector
+		{
+			Expressie expressie = null;
+			
+			for (int j = 0; j < vectoren.size(); j++) // aantal vectoren in vectorvergelijking
+			{
+				if (j == 0)
+				{
+					if (parameters.get(0) != null)
+						expressie = new Vermenigvuldiging(parameters.get(0), vectoren.get(0));
+					else
+						expressie = vectoren.get(0).geefKinderen().get(i);
+				}
+				else
+				{
+					if (parameters.get(j) != null)
+						expressie = new Optelling(expressie, new Vermenigvuldiging(parameters.get(j), vectoren.get(j).geefKinderen().get(i)));
+					else
+						expressie = new Optelling(expressie, vectoren.get(j).geefKinderen().get(i));
+				}
+			}
+
+			Vergelijking vgl = new Vergelijking(variabelen.get(i), expressie);
+			
+			vgln.add(vgl);
+		}
+
+		Expressie[] subst = new Expressie[vgln.size()];
+		String[] vars = new String[vgln.size()];
+		
+		for (int i = 0; i < vgln.size(); i++)
+		{
+			subst[i] = vgln.get(i).geefExpRechts();
+			vars[i] = vgln.get(i).geefExpLinks().geefVarNaam();
+		}
+		
+		isJuist = oplossing.geefVergelijking(0).isOplossing(subst, vars);
+		
+		return isJuist;
+	}
+
+	/**
+	 * Geef een array van de parameters in de vectoroptelling.
+	 * Bijv. vectoroptelling: (1, 1, 0) + labda * (3, 2, 0) + mu * (1, 0, 2)
+	 * geeft parameters {null, labda, mu}.
+	 * 
+	 * @param vectorOptelling
+	 * @return
+	 */
+	private static ArrayList<Expressie> geefParameters(Optelling vectorOptelling)
+	{
+		ArrayList<Expressie> parameters = new ArrayList<Expressie>();
+		
+		geefParameters(parameters, vectorOptelling.kind1);
+		geefParameters(parameters, vectorOptelling.kind2);
+		
+		return parameters;
+	}
+
+	/**
+	 * Voeg de eerstvolgende parameter in de gegeven vectorOptelling toe aan parameters. 
+	 * Bijv. als vectoroptelling is labda * vector1 + mu * vector2,
+	 * dan wordt labda toegevoegd aan parameters.
+	 * 
+	 * @param parameters
+	 * @param vectorOptelling
+	 */
+	private static void geefParameters(ArrayList<Expressie> parameters, Expressie vectorOptelling)
+	{
+		if (vectorOptelling instanceof Optelling)
+		{
+			geefParameters(parameters, vectorOptelling.kind1);
+			geefParameters(parameters, vectorOptelling.kind2);
+		}
+		else if (vectorOptelling instanceof Vermenigvuldiging)
+		{
+			// dan moet een van beide kinderen een parameter zijn
+			if (!vectorOptelling.kind1.isWaarde())
+				parameters.add(vectorOptelling.kind1);
+			else if (!vectorOptelling.kind2.isWaarde())
+				parameters.add(vectorOptelling.kind2);
+		}
+		else if (vectorOptelling instanceof VectorExpr)
+			parameters.add(null); // geen parameter
+		
+	}
+
+	/**
+	 * Geef een array van de vectoren in de vectoroptelling.
+	 * Bijv. vectoroptelling: (1, 1, 0) + labda * (3, 2, 0) + mu * (1, 0, 2)
+	 * geeft vectoren {(1, 1, 0), (3, 2, 0), (1, 0, 3)}.
+	 * 
+	 * @param vectorOptelling
+	 * @return
+	 */
+	private static ArrayList<VectorExpr> geefVectoren(Optelling vectorOptelling)
+	{
+		ArrayList<VectorExpr> vectoren = new ArrayList<VectorExpr>();
+		
+		geefVectoren(vectoren, vectorOptelling.kind1);
+		geefVectoren(vectoren, vectorOptelling.kind2);
+		
+		return vectoren;
+	}
+
+	/**
+	 * Voeg de eerstvolgende vector in de gegeven vectorOptelling toe aan vectoren. 
+	 * Bijv. als vectoroptelling is labda * vector1 + mu * vector2,
+	 * dan wordt vector1 toegevoegd aan vectoren.
+	 * 
+	 * @param vectoren
+	 * @param vectorOptelling
+	 */
+	private static void geefVectoren(ArrayList<VectorExpr> vectoren, Expressie vectorOptelling)
+	{
+		if (vectorOptelling instanceof Optelling)
+		{
+			geefVectoren(vectoren, vectorOptelling.kind1);
+			geefVectoren(vectoren, vectorOptelling.kind2);
+		}
+		else if (vectorOptelling instanceof Vermenigvuldiging)
+		{
+			// dan moet een van beide kinderen een vector zijn
+			if (vectorOptelling.kind1 instanceof VectorExpr)
+				vectoren.add((VectorExpr) vectorOptelling.kind1);
+			else if (vectorOptelling.kind2 instanceof VectorExpr)
+				vectoren.add((VectorExpr) vectorOptelling.kind2);
+		}
+		else if (vectorOptelling instanceof VectorExpr)
+			vectoren.add((VectorExpr) vectorOptelling); // geen parameter
+	}
+
+	/**
+	 * Retourneert true als de gegeven expressie een vermenigvuldiging is
+	 * van een scalar (waarde) en een vector.
+	 * 
+	 * @param expressie
+	 * @return
+	 */
+	public static boolean isScalarMaalVector(Expressie expressie)
+	{
+		boolean isScalarMaalVector = false;
+		
+		if (expressie instanceof Vermenigvuldiging
+			&& (expressie.kind1.toString().equals("G") || expressie.kind1.toString().equals("Q")) // factor
+			&& isVector(expressie.kind2)) // maal vector
+		{
+			isScalarMaalVector = true;
+		}
+		
+		return isScalarMaalVector;
+	}
+
+	/**
+	 * Retourneert true als de gegeven expressie een vermenigvuldiging is
+	 * van een variabele en een vector.
+	 * 
+	 * @param expressie
+	 * @return
+	 */
+	public static boolean isVariabeleMaalVector(Expressie expressie)
+	{
+		boolean isVariabeleMaalVector = false;
+		
+		if (expressie instanceof Vermenigvuldiging
+			&& !expressie.kind1.isWaarde() // variabele
+			&& isVector(expressie.kind2)) // maal vector
+		{
+			isVariabeleMaalVector = true;
+		}
+		
+		return isVariabeleMaalVector;
+	}
+
+	/**
+	 * Retourneert true als vector1 een scalar maal vector2 is.
+	 * Vooralsnog alleen tweedimensionaal.
+	 * 
+	 * @param vector1
+	 * @param expressie Vermenigvuldiging van scalar met vector2
+	 * @return
+	 */
+	public static boolean isJuisteScalarMaalVector(Expressie vector1, Expressie expressie)
+	{
+		boolean isJuist = false;
+		
+		if (vector1 instanceof VectorExpr && expressie.kind2 instanceof VectorExpr)
+		{
+			ArrayList<Expressie> kinderen1 = ((VectorExpr) vector1).geefKinderen();
+			ArrayList<Expressie> kinderen2 = ((VectorExpr) expressie.kind2).geefKinderen();
+			// richtingscoefficient vector 1
+			double rico1 = 0;
+			// richtingscoefficient vector 2
+			double rico2 = 0;
+			
+			if (kinderen1.get(0).geefWaarde() != 0 && kinderen2.get(0).geefWaarde() != 0)
+			{
+				rico1 = kinderen1.get(1).geefWaarde() / kinderen1.get(0).geefWaarde();
+				rico2 = kinderen2.get(1).geefWaarde() / kinderen2.get(0).geefWaarde();
+			}
+			else if (kinderen1.get(1).geefWaarde() != 0 && kinderen2.get(1).geefWaarde() != 0)
+			{
+				rico1 = kinderen1.get(0).geefWaarde() / kinderen1.get(1).geefWaarde();
+				rico2 = kinderen2.get(0).geefWaarde() / kinderen2.get(1).geefWaarde();
+			}
+			
+			if (rico1 == rico2)
+				isJuist = true;
+		}
+		
+		return isJuist;
 	}
 }
 

@@ -70,6 +70,27 @@ public class Expressie
 	{	return null;
 	}
 	
+	public VectorExpr geefVector()
+	{
+		return null;
+	}
+	
+	public Matrix geefMatrix()
+	{
+		return null;
+	}
+	
+	/**
+	 * Voor vectoren en matrices, aantal rijen en kolommen.
+	 * 
+	 * @return
+	 */
+	public int[] geefDimensie()
+	{
+		int[] dimensie = {-1, -1}; 
+		return dimensie;
+	}
+	
 	public double geefWaarde()
 	{	return Double.NaN;
 	}

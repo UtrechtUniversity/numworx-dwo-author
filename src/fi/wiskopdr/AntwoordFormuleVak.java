@@ -1397,37 +1397,47 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	
 	public void setAttempt(boolean start)
 	{
-		if(formuleVak.toString().equals("$f@"))return;
-		
+		if (formuleVak.toString().equals("$f@"))
+			return;
+
 		String goedFout = "";
-		if(huidigIC == goedIC && huidigIC.isVisible())goedFout = "goed";
-		if(huidigIC == halfIC && huidigIC.isVisible())goedFout = "half";
-		if(huidigIC == foutIC && huidigIC.isVisible())goedFout = "fout";
-		
+		if (huidigIC == goedIC && huidigIC.isVisible())
+			goedFout = "goed";
+		if (huidigIC == halfIC && huidigIC.isVisible())
+			goedFout = "half";
+		if (huidigIC == foutIC && huidigIC.isVisible())
+			goedFout = "fout";
+
 		String formule = "";
 		String string = formuleVak.toString();
-		if(start) string = formuleVakken[0].toString();
+		if (start)
+			string = formuleVakken[0].toString();
 		String attemptFormuleString = FormuleParser.schoon(FormuleParser.formuleString(string));
 		attemptFormuleString = StringUtils.replaceStr(attemptFormuleString, "(0-", "(-");
 		formule = FormuleParser.pel(attemptFormuleString);
-		
+
 		String fbTekst = "";
-		if(feedbackTekst.isVisible() && feedbackTekst.getParent()!=null)fbTekst = feedbackTekst.getText();
-		
+		if (feedbackTekst.isVisible() && feedbackTekst.getParent() != null)
+			fbTekst = feedbackTekst.getText();
+
 		String s = formule;
 		s = s + "   ;   ";
-		if(start) s = s + "start";
-		else s = s + goedFout;
+		if (start)
+			s = s + "start";
+		else
+			s = s + goedFout;
 		s = s + "   ;   ";
 		s = s + "score = " + score;
 		s = s + "   ;   ";
 		s = s + new Date().toString();
 		s = s + "   ;   ";
-		if(start) s = s + "Regelnummer = " + 0;
-		else s = s + "Regelnummer = " + stapNr;
+		if (start)
+			s = s + "Regelnummer = " + 0;
+		else
+			s = s + "Regelnummer = " + stapNr;
 		s = s + "   ;   ";
 		s = s + fbTekst;
-		
+
 		attempts.addElement(s);
 	}
 	
@@ -2075,163 +2085,252 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	
 	public void checkAntwoord(boolean show)	
 	{	
-		ingevuld  = false;	
+		ingevuld = false;
 		syntaxFout = false;
-		if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))removeSoft(mwFeedbackPanel);
-		else removeSoft(feedbackTekst);
+		if ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
+			removeSoft(mwFeedbackPanel);
+		else
+			removeSoft(feedbackTekst);
 		Expressie antwoord = formuleVak.geefExpressie(functieMVDefSet);
-		
+//		System.out.println("AntwoordFormuleVak.checkAntwoord(): antwoord = " + antwoord);
+
 		boolean exactOnaf = false;
-		String[] exactOnafStrings = {"+-","--","*-","/-","(0-"};
-		for(int i=0 ; i<exactOnafStrings.length ; i++)
-		{	exactOnaf = exactOnaf || formuleVak.toString().contains(exactOnafStrings[i]);
-		}
+		String[] exactOnafStrings = { "+-", "--", "*-", "/-", "(0-" };
 		
+		for (int i = 0; i < exactOnafStrings.length; i++)
+		{
+			exactOnaf = exactOnaf || formuleVak.toString().contains(exactOnafStrings[i]);
+		}
+
 		Expressie antwoordNonSub = antwoord;
-		
+
 		updateGebruikersSubstituties();
-		if(gebruikersSubstituties!=null && antwoord!=null) 
-		{	for(int i=0 ; i<gebruikersSubstituties.length  ; i++)
-			{	antwoord = antwoord.substitueer(gebruikersSubstituties[i].geefExpRechts(),gebruikersSubstituties[i].geefExpLinks().geefVarNaam());
+		if (gebruikersSubstituties != null && antwoord != null)
+		{
+			for (int i = 0; i < gebruikersSubstituties.length; i++)
+			{
+				antwoord = antwoord.substitueer(gebruikersSubstituties[i].geefExpRechts(),
+					gebruikersSubstituties[i].geefExpLinks().geefVarNaam());
 			}
 		}
-		if(antwoordSubstituties!=null && antwoord!=null) 
-		{	for(int i=0 ; i<antwoordSubstituties.length  ; i++)
-			{	antwoord = antwoord.substitueer(antwoordSubstituties[i].geefExpRechts(),antwoordSubstituties[i].geefExpLinks().geefVarNaam());
+		if (antwoordSubstituties != null && antwoord != null)
+		{
+			for (int i = 0; i < antwoordSubstituties.length; i++)
+			{
+				antwoord = antwoord.substitueer(antwoordSubstituties[i].geefExpRechts(),
+					antwoordSubstituties[i].geefExpLinks().geefVarNaam());
 			}
 		}
-		
-		if(antwoord==null) 
-		{	String antwoordString = formuleVak.toString();
-			if(antwoordString.charAt(antwoordString.length()-2)=='=' || antwoordString.charAt(antwoordString.length()-2)=='\u2248')
-			{	int isIndex = antwoordString.length()-2;
-				antwoordString = antwoordString.substring(0,isIndex)+"@";
-				//antwoord = FormuleParser.geefExpressie(antwoordString);
+
+		if (antwoord == null)
+		{
+			String antwoordString = formuleVak.toString();
+			if (antwoordString.charAt(antwoordString.length() - 2) == '='
+				|| antwoordString.charAt(antwoordString.length() - 2) == '\u2248')
+			{
+				int isIndex = antwoordString.length() - 2;
+				antwoordString = antwoordString.substring(0, isIndex) + "@";
+				// antwoord = FormuleParser.geefExpressie(antwoordString);
 				antwoord = FormuleParser.geefExpressie(antwoordString, functieMVDefSet);
 			}
 		}
-		if(antwoord!=null)
-		{	ingevuld  = true;
-			
+		if (antwoord != null)
+		{
+			ingevuld = true;
+
 		}
-		else if(formuleVak.toString().length()>3)
-		{	syntaxFout = true;
+		else if (formuleVak.toString().length() > 3)
+		{
+			syntaxFout = true;
 			return;
 		}
-		else return;
-		
-		if(substitutie!=null && antwoord!=null) 
-		{	antwoord = antwoord.substitueer(substitutie,"u");
+		else
+			return;
+
+		if (substitutie != null && antwoord != null)
+		{
+			antwoord = antwoord.substitueer(substitutie, "u");
 		}
-		
+
 		String diffVar = "x";
 		String diffVar2 = antwoord.geefVarNaam();
-		if(diffVar2 != null && !diffVar2.equals(""))
-		{	diffVar = diffVar2;
+		if (diffVar2 != null && !diffVar2.equals(""))
+		{
+			diffVar = diffVar2;
 		}
 		antwoord = antwoord.vervangDifferentialen(diffVar);
-			
+
 		Expressie antwoordEvalCAS = null;
 		boolean casNodig = false;
-		if(antwoord!=null) 
-			casNodig = antwoord.toString().indexOf("$i")>-1 || antwoord.toString().indexOf("$d")>-1 || antwoord.toString().indexOf("$T")>-1  || antwoord.toString().indexOf("$S")>-1  || antwoord.toString().indexOf("$P")>-1;
-		// 
-		if(casNodig)
-		{	antwoordEvalCAS = Expressie.evalWithCAS(antwoord);
-			
+		if (antwoord != null)
+			casNodig = antwoord.toString().indexOf("$i") > -1 || antwoord.toString().indexOf("$d") > -1
+				|| antwoord.toString().indexOf("$T") > -1 || antwoord.toString().indexOf("$S") > -1
+				|| antwoord.toString().indexOf("$P") > -1;
+		//
+		if (casNodig)
+		{
+			antwoordEvalCAS = Expressie.evalWithCAS(antwoord);
+
 		}
 		isGelijkwaardig = false;
 		isSignificant = false;
-		
-		if(hasFeedback) 
-		{	int aantalAnswerModels = answerModels.length;
-			for(int h=0 ; h< aantalAnswerModels; h++)
-			{	setAnswerModel(h);
+
+		if (hasFeedback)
+		{
+			int aantalAnswerModels = answerModels.length;
+			for (int h = 0; h < aantalAnswerModels; h++)
+			{
+				setAnswerModel(h);
 				pastGelijkwaardig = false;
 				boolean pastHerleid = false;
 				pastExact = false;
 				boolean pastSignificant = false;
-				
-				if(casCheck)
-				{	checkStatementViaCas();	
-					if(casResult)
-					{	pastGelijkwaardig = true;
+
+				if (casCheck)
+				{
+					checkStatementViaCas();
+					if (casResult)
+					{
+						pastGelijkwaardig = true;
 						pastHerleid = true;
 						pastExact = true;
 						pastSignificant = true;
 					}
 				}
 				else
-				{	for(int i=0 ; i<juisteAntwoorden.length ; i++)
-					{	if(casNodig)pastGelijkwaardig = pastGelijkwaardig || AntwoordChecker.checkGelijkwaardig(antwoordEvalCAS,juisteAntwoorden[i], absPrecisions[i]);
-						else pastGelijkwaardig = pastGelijkwaardig || AntwoordChecker.checkGelijkwaardig(antwoord,juisteAntwoorden[i], absPrecisions[i]);
-						
-						pastSignificant = pastSignificant ||  AntwoordChecker.checkSignificant(antwoord,juisteAntwoorden[i]);
-					
-						if(Algebra.isBreukPlusGetal(juisteAntwoorden[i]))pastExact = pastExact || AntwoordChecker.checkExactBreukPlusGetal(formuleVak.toString(),juisteAntwoorden[i]);
-						else if(hasSubKnop)pastExact = pastExact || AntwoordChecker.checkExact(antwoordNonSub,juisteAntwoorden[i]);
-                        else pastExact = pastExact || AntwoordChecker.checkExact(antwoord,juisteAntwoorden[i]);
+				{
+					for (int i = 0; i < juisteAntwoorden.length; i++)
+					{
+						if (casNodig)
+							pastGelijkwaardig = pastGelijkwaardig || AntwoordChecker.checkGelijkwaardig(antwoordEvalCAS,
+								juisteAntwoorden[i], absPrecisions[i]);
+						else
+							pastGelijkwaardig = pastGelijkwaardig
+								|| AntwoordChecker.checkGelijkwaardig(antwoord, juisteAntwoorden[i], absPrecisions[i]);
+
+						pastSignificant = pastSignificant
+							|| AntwoordChecker.checkSignificant(antwoord, juisteAntwoorden[i]);
+
+						if (Algebra.isBreukPlusGetal(juisteAntwoorden[i]))
+							pastExact = pastExact
+								|| AntwoordChecker.checkExactBreukPlusGetal(formuleVak.toString(), juisteAntwoorden[i]);
+						else if (hasSubKnop)
+							pastExact = pastExact || AntwoordChecker.checkExact(antwoordNonSub, juisteAntwoorden[i]);
+						else
+							pastExact = pastExact || AntwoordChecker.checkExact(antwoord, juisteAntwoorden[i]);
 					}
-					for(int i=0 ; juisteVormen!=null && i<juisteVormen.length ; i++)
-					{	pastHerleid = pastHerleid || AntwoordChecker.checkHerleiding(antwoord, juisteVormen[i], soortHerleiding);	
+					for (int i = 0; juisteVormen != null && i < juisteVormen.length; i++)
+					{
+						if (Algebra.isScalarMaalVector(juisteVormen[i])) // als de gewenste vorm een veelvoud van een vector is (t.b.v. normaalvector)
+						{
+							pastHerleid = pastHerleid || Algebra.isJuisteScalarMaalVector(antwoord, juisteVormen[i]);
+							if (pastHerleid) // de gegeven vector is een goede normaalvector
+							{
+								isGelijkwaardig = true;
+								pastGelijkwaardig = true;
+								pastExact = true;
+								pastSignificant = true;
+							}
+						}
+						else 
+							pastHerleid = pastHerleid
+								|| AntwoordChecker.checkHerleiding(antwoord, juisteVormen[i], soortHerleiding);
 					}
-					if(!gelijkwaardigP)pastGelijkwaardig = true;
-					if(!herleidingP)pastHerleid = true;
-					if(!exactP)pastExact = true;
-					if(!significantP)pastSignificant = true;
+					if (!gelijkwaardigP)
+						pastGelijkwaardig = true;
+					if (!herleidingP)
+						pastHerleid = true;
+					if (!exactP)
+						pastExact = true;
+					if (!significantP)
+						pastSignificant = true;
 				}
-				
+
 				boolean answerModelFits = pastGelijkwaardig && pastHerleid && pastExact && pastSignificant;
-				if(juisteAntwoorden[0]!=null && juisteAntwoorden[0].toString().equals("else"))answerModelFits = true;
-				if(answerModelFits) 
-				{	if(!feedback.trim().equals("") && show)setFeedback(feedback,true);
-					else if(getParent()==null && feedbackTekst.getParent()!=null)
-					{	produceAction("feedbackWeg");
+				if (juisteAntwoorden[0] != null && juisteAntwoorden[0].toString().equals("else"))
+					answerModelFits = true;
+				if (answerModelFits)
+				{
+					if (!feedback.trim().equals("") && show)
+						setFeedback(feedback, true);
+					else if (getParent() == null && feedbackTekst.getParent() != null)
+					{
+						produceAction("feedbackWeg");
 					}
-					if(answerModels!=null)
-			        {
-			        	boolean[][] logMisconceptions = null;
-			        	if(answerModels[h].containsKey("logMisconceptions"))
-			        	{	logMisconceptions = (boolean[][])answerModels[h].get("logMisconceptions");
-			        		for( int j=0 ; j<logMisconceptions.length && j<measuredMisconceptions.length ; j++)
-			        		{	for( int k=0 ; k<logMisconceptions[j].length && k<measuredMisconceptions[j].length; k++)
-			            		{	if(logMisconceptions[j][k])
-			        				measuredMisconceptions[j][k] = 1;
-			            		}
-			        		}
-			        	}
-			        }
+					if (answerModels != null)
+					{
+						boolean[][] logMisconceptions = null;
+						if (answerModels[h].containsKey("logMisconceptions"))
+						{
+							logMisconceptions = (boolean[][]) answerModels[h].get("logMisconceptions");
+							for (int j = 0; j < logMisconceptions.length && j < measuredMisconceptions.length; j++)
+							{
+								for (int k = 0; k < logMisconceptions[j].length
+									&& k < measuredMisconceptions[j].length; k++)
+								{
+									if (logMisconceptions[j][k])
+										measuredMisconceptions[j][k] = 1;
+								}
+							}
+						}
+					}
 					break;
 				}
 			}
 		}
-		else if(casCheck)
-		{	checkStatementViaCas();
+		else if (casCheck)
+		{
+			checkStatementViaCas();
 		}
-		else 
-		{	
-			//System.out.println(formuleVak.toString());
-			//System.out.println(FormuleParser.formuleString(formuleVak.toString()));
-			//System.out.println(FormuleParser.schoon(FormuleParser.formuleString(formuleVak.toString())));
-			//System.out.println(FormuleParser.pel(FormuleParser.schoon(FormuleParser.formuleString(formuleVak.toString()))));
-			
-			isHerleid = false;	
-			for(int i=0 ; i<juisteAntwoorden.length ; i++)
-			{	if(casNodig)isGelijkwaardig = isGelijkwaardig || AntwoordChecker.checkGelijkwaardig(antwoordEvalCAS,juisteAntwoorden[i],absPrecisions[i]);
-				else isGelijkwaardig = isGelijkwaardig || AntwoordChecker.checkGelijkwaardig(antwoord,juisteAntwoorden[i],absPrecisions[i]);
-				if(soortHerleiding!=0)isHerleid = AntwoordChecker.checkHerleiding(antwoord,juisteAntwoorden[0], soortHerleiding);
-				
-				if(significant)isSignificant = isSignificant || AntwoordChecker.checkSignificant(antwoord,juisteAntwoorden[i]);				
-				
-				if(Algebra.isBreukPlusGetal(juisteAntwoorden[i]))isExact = AntwoordChecker.checkExactBreukPlusGetal(formuleVak.toString(),juisteAntwoorden[i]);
-				else if(hasSubKnopExtra)isExact = AntwoordChecker.checkExact(antwoordNonSub,juisteAntwoorden[i]);
-				else isExact = !exactOnaf && AntwoordChecker.checkExact(antwoord,juisteAntwoorden[i]);
-				
-				if(isExact)break;
+		else
+		{
+			// System.out.println(formuleVak.toString());
+			// System.out.println(FormuleParser.formuleString(formuleVak.toString()));
+			// System.out.println(FormuleParser.schoon(FormuleParser.formuleString(formuleVak.toString())));
+			// System.out.println(FormuleParser.pel(FormuleParser.schoon(FormuleParser.formuleString(formuleVak.toString()))));
+
+			isHerleid = false;
+			for (int i = 0; i < juisteAntwoorden.length; i++)
+			{
+				if (casNodig)
+					isGelijkwaardig = isGelijkwaardig
+						|| AntwoordChecker.checkGelijkwaardig(antwoordEvalCAS, juisteAntwoorden[i], absPrecisions[i]);
+				else
+					isGelijkwaardig = isGelijkwaardig
+						|| AntwoordChecker.checkGelijkwaardig(antwoord, juisteAntwoorden[i], absPrecisions[i]);
+				if (soortHerleiding != 0)
+					isHerleid = AntwoordChecker.checkHerleiding(antwoord, juisteAntwoorden[0], soortHerleiding);
+
+				if (significant)
+					isSignificant = isSignificant || AntwoordChecker.checkSignificant(antwoord, juisteAntwoorden[i]);
+
+				if (Algebra.isBreukPlusGetal(juisteAntwoorden[i]))
+					isExact = AntwoordChecker.checkExactBreukPlusGetal(formuleVak.toString(), juisteAntwoorden[i]);
+				else if (hasSubKnopExtra)
+					isExact = AntwoordChecker.checkExact(antwoordNonSub, juisteAntwoorden[i]);
+				else
+					isExact = !exactOnaf && AntwoordChecker.checkExact(antwoord, juisteAntwoorden[i]);
+
+				if (isExact)
+					break;
 			}
-			for(int i=0 ; soortHerleiding==0 && i<juisteVormen.length ; i++)
-			{	isHerleid = isHerleid || AntwoordChecker.checkHerleiding(antwoord,juisteVormen[i], soortHerleiding);
-				if(isHerleid)break;
+			for (int i = 0; soortHerleiding == 0 && i < juisteVormen.length; i++)
+			{
+				if (Algebra.isScalarMaalVector(juisteVormen[i])) // als de gewenste vorm een veelvoud van een vector is (normaalvector)
+				{
+					isHerleid = isHerleid || Algebra.isJuisteScalarMaalVector(antwoord, juisteVormen[i]);
+					if (isHerleid) // de gegeven vector is een goede normaalvector
+					{
+						isGelijkwaardig = true;
+						pastGelijkwaardig = true;
+						pastExact = true;
+					}
+				}
+				else 
+					isHerleid = isHerleid || AntwoordChecker.checkHerleiding(antwoord, juisteVormen[i], soortHerleiding);
+				
+				if (isHerleid)
+					break;
 			}
 		}
 		repaint();
@@ -2694,9 +2793,12 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 			}
 			
 			if(mode==0 || mode==1) 
-			{	kijkNa();
-				if(!formuleVak.toString().equals("$f@"))zetNagekeken(true);
-				if(fout) errorCount++;
+			{
+				kijkNa();
+				if (!formuleVak.toString().equals("$f@"))
+					zetNagekeken(true);
+				if (fout)
+					errorCount++;
 				attemptsCount++;
 				setAttempt();
 			}

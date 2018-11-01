@@ -1,10 +1,7 @@
 package fi.wiskopdr.formuleobjects;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.StringTokenizer;
-import java.util.Vector;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.WiskOpdr;
 import fi.beans.stringutils.*;
@@ -177,76 +174,113 @@ public class FormuleParser
 	
 
 	public static String formuleString(String s)
-	{	s = "(" + s.substring(2,s.length()-1) + ")";
+	{
+		String in = s;
 		
+		s = "(" + s.substring(2,s.length()-1) + ")";
 		
 		int n = s.indexOf("$n");
-		while(n>-1)
-		{	int index$ = n-1;
+		while (n>-1)
+		{
+			int index$ = n - 1;
 			int niv = 0;
-			while(!(s.charAt(index$)=='$' && niv==0))
-			{	if(s.charAt(index$)=='$')niv--;
-				else if(s.charAt(index$)=='@')niv++;
+			while (!(s.charAt(index$) == '$' && niv == 0))
+			{
+				if (s.charAt(index$) == '$')
+					niv--;
+				else if (s.charAt(index$) == '@')
+					niv++;
 				index$--;
 			}
-			int indexAt = n+2;
+			int indexAt = n + 2;
 			niv = 0;
-			while(!(s.charAt(indexAt)=='@' && niv==0))
-			{	if(s.charAt(indexAt)=='$')niv++;
-				else if(s.charAt(indexAt)=='@')niv--;
+			while (!(s.charAt(indexAt) == '@' && niv == 0))
+			{
+				if (s.charAt(indexAt) == '$')
+					niv++;
+				else if (s.charAt(indexAt) == '@')
+					niv--;
 				indexAt++;
 			}
 			int k = s.indexOf("$k");
-			int indexAtk = k+2;
-			if(k>n && k<indexAt)
-			{	 ;
+			int indexAtk = k + 2;
+			if (k > n && k < indexAt)
+			{
 				niv = 0;
-				while(!(s.charAt(indexAtk)=='@' && niv==0))
-				{	if(s.charAt(indexAtk)=='$')niv++;
-					else if(s.charAt(indexAtk)=='@')niv--;
+				while (!(s.charAt(indexAtk) == '@' && niv == 0))
+				{
+					if (s.charAt(indexAtk) == '$')
+						niv++;
+					else if (s.charAt(indexAtk) == '@')
+						niv--;
 					indexAtk++;
 				}
 			}
-			
+
 			int l = s.indexOf("$l");
-			int indexAtl = l+2;
-			if(l>k && l<indexAtk)
-			{	indexAtl = l+2;
+			int indexAtl = l + 2;
+			if (l > k && l < indexAtk)
+			{
+				indexAtl = l + 2;
 				niv = 0;
-				while(!(s.charAt(indexAtl)=='@' && niv==0))
-				{	if(s.charAt(indexAtl)=='$')niv++;
-					else if(s.charAt(indexAtl)=='@')niv--;
+				while (!(s.charAt(indexAtl) == '@' && niv == 0))
+				{
+					if (s.charAt(indexAtl) == '$')
+						niv++;
+					else if (s.charAt(indexAtl) == '@')
+						niv--;
 					indexAtl++;
 				}
 			}
 			
-			if(s.charAt(index$+1)=='b')
+			if (s.charAt(index$+1)=='b')
 			{
-				
-				if(Character.isDigit(s.charAt(index$-1))||Character.isWhitespace(s.charAt(index$-1)))
+				if (Character.isDigit(s.charAt(index$-1))||Character.isWhitespace(s.charAt(index$-1)))
 				{ // special case getal$b .. @ -> (getal + $b ... )@
 					int digit = index$-1;while(Character.isDigit(s.charAt(digit-1))||Character.isWhitespace(s.charAt(digit-1))) digit--;
 					s = s.substring(0,digit) + "(" + s.substring(digit, n) + ")/(" + s.substring(n+2,indexAt) + "))" + s.substring(indexAt+1);
-				} else
+				}
+				else
 					s = s.substring(0,n) + ")/(" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
 			}
-			else if(s.charAt(index$+1)=='o')s = s.substring(0,n) + ")+(" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-			else if(s.charAt(index$+1)=='a')s = s.substring(0,n) + ")-(" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-			else if(s.charAt(index$+1)=='v')s = s.substring(0,n) + ")*(" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-			else if(s.charAt(index$+1)=='p')s = s.substring(0,n) + ")^(" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-			else if(s.charAt(index$+1)=='W')s = s.substring(0,n) + ")|(" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-			else if(s.charAt(index$+1)=='L')s = s.substring(0,n) + ")~(" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-            else if(s.charAt(index$+1)=='i')s = s.substring(0,n) + "_" + s.substring(n+2,k) + "_" + s.substring(k+2,l) + "_" + s.substring(l+2,indexAtl) + ")" + s.substring(indexAt+1);
-            else if(s.charAt(index$+1)=='q')s = s.substring(0,n) + "_" + s.substring(n+2,k) + "_" + s.substring(k+2,l) + "_" + s.substring(l+2,indexAtl) + ")" + s.substring(indexAt+1);
-            else if(s.charAt(index$+1)=='y')s = s.substring(0,n) + "_" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-            else if(s.charAt(index$+1)=='d')s = s.substring(0,n) + "_" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-            else if(s.charAt(index$+1)=='D')s = s.substring(0,n) + "_" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-            else if(s.charAt(index$+1)=='P')s = s.substring(0,n) + "_" + s.substring(n+2,indexAt) + ")" + s.substring(indexAt+1);
-            else if(s.charAt(index$+1)=='T')s = s.substring(0,n) + "_" + s.substring(n+2,k) +  "_" + s.substring(k+2,l) + "_" + s.substring(l+2,indexAtl) + ")" + s.substring(indexAt+1);
-            else if(s.charAt(index$+1)=='S')s = s.substring(0,n) + "_" + s.substring(n+2,k) +  "_" + s.substring(k+2,l) + "_" + s.substring(l+2,indexAtl) + ")" + s.substring(indexAt+1);
+			else if (s.charAt(index$ + 1) == 'o')
+				s = s.substring(0, n) + ")+(" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'a')
+				s = s.substring(0, n) + ")-(" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'v')
+				s = s.substring(0, n) + ")*(" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'p')
+				s = s.substring(0, n) + ")^(" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'W')
+				s = s.substring(0, n) + ")|(" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'L')
+				s = s.substring(0, n) + ")~(" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'i')
+				s = s.substring(0, n) + "_" + s.substring(n + 2, k) + "_" + s.substring(k + 2, l) + "_"
+					+ s.substring(l + 2, indexAtl) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'q')
+				s = s.substring(0, n) + "_" + s.substring(n + 2, k) + "_" + s.substring(k + 2, l) + "_"
+					+ s.substring(l + 2, indexAtl) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'y')
+				s = s.substring(0, n) + "_" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'd')
+				s = s.substring(0, n) + "_" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'D')
+				s = s.substring(0, n) + "_" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'P')
+				s = s.substring(0, n) + "_" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'T')
+				s = s.substring(0, n) + "_" + s.substring(n + 2, k) + "_" + s.substring(k + 2, l) + "_"
+					+ s.substring(l + 2, indexAtl) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'S')
+				s = s.substring(0, n) + "_" + s.substring(n + 2, k) + "_" + s.substring(k + 2, l) + "_"
+					+ s.substring(l + 2, indexAtl) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'Y')
+				s = s.substring(0, n) + "(" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
+			else if (s.charAt(index$ + 1) == 'M')
+				s = s.substring(0, n) + "(" + s.substring(n + 2, indexAt) + ")" + s.substring(indexAt + 1);
             
 			n = s.indexOf("$n");
-            
 		}
 		
 		n = s.indexOf("$w");
@@ -266,9 +300,26 @@ public class FormuleParser
         }
 		n = s.indexOf("$y");
 		while(n>-1)
-		{	s = s.substring(0,n) + "(bin(" + s.substring(n+2);
+		{
+			s = s.substring(0,n) + "(bin(" + s.substring(n+2);
 			n = s.indexOf("$y");
-			
+		}
+		n = s.indexOf("$Y");
+		while (n>-1)
+		{
+			s = s.substring(0,n) + "vector(" + s.substring(n+2);
+			n = s.indexOf("$Y");
+		}
+		n = s.indexOf("$M"); // matrix
+		while (n > -1)
+		{
+			s = s.substring(0,n) + "matrix(" + s.substring(n+2);
+			n = s.indexOf("$M");
+		}
+		n = s.indexOf("$k"); // kolommen in rij van matrix
+		while (n > -1)
+		{	s = s.substring(0,n) + "(" + s.substring(n+2);
+			n = s.indexOf("$k");
 		}
 		n = s.indexOf("$d");
 		while(n>-1)
@@ -377,11 +428,16 @@ public class FormuleParser
 			n = s.indexOf("\u00B7");
 		}
 		n = s.indexOf("\u00d7");
-		while(n>-1)
-		{	s = s.substring(0,n) + "*" + s.substring(n+1);
+		
+		while (n>-1)
+		{
+			s = s.substring(0,n) + "*" + s.substring(n+1);
 			n = s.indexOf("\u00d7");
 		}
-		return s;	
+		
+		//System.out.println("FormuleParser.formuleString(" + in + ") = " + s);
+		
+		return s;
 	}
 	
 	public static String vervangFunctieScheidingstekens(String s, String functie)
@@ -412,7 +468,10 @@ public class FormuleParser
 	}
 	
 	public static String schoon(String s, boolean woordformule)
-	{	
+	{
+		String in = s;
+		// in: (2*vector((x)((1((1)/(2)))x)))
+		
 		s = vervangFunctieScheidingstekens(s,"normalcdf");
 		s = vervangFunctieScheidingstekens(s,"invNorm");
 		s = vervangFunctieScheidingstekens(s,"invnorm");
@@ -605,7 +664,9 @@ public class FormuleParser
 				"l*o*g*",
 				"l*o*g",
 				"l*n*",
-				"l*n"
+				"l*n",
+				"v*e*c*t*o*r*",
+				"m*a*t*r*i*x*"
 				};
 		//String[] fMetMaalFunctie = Functie.getFunctieDefSet().geefFunctieNamenSubst();
 		String[] fMetMaalFunctie = FunctieMV.getFunctieMVDefSet().geefFunctieMVNamenSubst();
@@ -617,13 +678,16 @@ public class FormuleParser
 		{	fMetMaal[i+fMetMaalBasis.length] = fMetMaalFunctie[i];
 		}
 		//String[] fMetMaal = fMetMaalBasis;
-		for(int i=0 ; i<fMetMaal.length ; i++)
-		{	int fLength = fMetMaal[i].length();
-			String fZonderMaal = StringUtils.replaceStr(fMetMaal[i],"*", "");
+		for (int i = 0; i < fMetMaal.length; i++)
+		{
+			int fLength = fMetMaal[i].length();
+			String fZonderMaal = StringUtils.replaceStr(fMetMaal[i], "*", "");
 			index = 0;
-			while(index >-1)
-			{	index = s.indexOf(fMetMaal[i]);
-				if(index >-1)s = s.substring(0,index) + fZonderMaal + s.substring(index+fLength);
+			while (index > -1)
+			{
+				index = s.indexOf(fMetMaal[i]);
+				if (index > -1)
+					s = s.substring(0, index) + fZonderMaal + s.substring(index + fLength); // bijv. (s*q*r*t*(5)) -> (sqrt(5))
 			}
 		}
 		
@@ -646,45 +710,69 @@ public class FormuleParser
 		}
 		
 		String[] gfs = {"sin","cos","tan","log","ln"};
-		for(int j=0 ; j<gfs.length ; j++)
+		for (int j = 0; j < gfs.length; j++)
 		{
 			index = 0;
-			while(index >-1)
-			{	int lf = gfs[j].length()+2;
-				index = s.indexOf(gfs[j]+"^(", index);
-				if(index==-1) break;
-				boolean scheidingGepaseerd = false;			
+			while (index > -1)
+			{
+				int lf = gfs[j].length() + 2;
+				index = s.indexOf(gfs[j] + "^(", index);
+				if (index == -1)
+					break;
+				boolean scheidingGepaseerd = false;
 				int niv = 1;
-				for(int i=index+lf ; i<s.length() ; i++)
-				{	
-					if(s.charAt(i)=='(')
-					{	niv++;
+				for (int i = index + lf; i < s.length(); i++)
+				{
+					if (s.charAt(i) == '(')
+					{
+						niv++;
 					}
-					else if(s.charAt(i)==')')
-					{	niv--;
+					else if (s.charAt(i) == ')')
+					{
+						niv--;
 					}
-					if(niv==0 && s.charAt(i)==')' && scheidingGepaseerd)
-					{	s = s.substring(0,index) + "(" + s.substring(index,i+1) + ")" + s.substring(i+1);
-						//System.out.println("correctie");
+					if (niv == 0 && s.charAt(i) == ')' && scheidingGepaseerd)
+					{
+						s = s.substring(0, index) + "(" + s.substring(index, i + 1) + ")" + s.substring(i + 1);
+						// System.out.println("correctie");
 						break;
 					}
-					if(!scheidingGepaseerd)scheidingGepaseerd = (s.length()>i+3 && niv==0 && s.substring(i, i+3).equals(")*("));
+					if (!scheidingGepaseerd)
+						scheidingGepaseerd = (s.length() > i + 3 && niv == 0 && s.substring(i, i + 3).equals(")*("));
 				}
-				if(index>-1)index = index+lf;
+				if (index > -1)
+					index = index + lf;
 			}/**/	
 		}
-		return s;	
+		
+		//System.out.println("FormuleParser.schoon(" + in + ", woordformule = " + woordformule + ") = " + s);
+
+		return s; // uit: (2*vector((x)*(((1+((1)/(2))))*x)))
 	}
 	
+	/**
+	 * Pel de omsluitende haken eraf.
+	 * 
+	 * @param s
+	 * @return
+	 */
 	public static String pel(String s)
-	{	boolean pelbaar = true;
-		while(pelbaar)
-		{	if(s.length()>0 && s.charAt(0)=='(' && s.charAt(s.length()-1)==')')
-			{	pelbaar = true;
+	{
+		String in = s;
+		
+		boolean pelbaar = true;
+		
+		while (pelbaar)
+		{
+			if (s.length() > 0 && s.charAt(0)=='(' && s.charAt(s.length()-1)==')')
+			{
+				pelbaar = true;
 			}
-			else pelbaar = false;
-			if(pelbaar)
-			{	int niv = 0;
+			else
+				pelbaar = false;
+			if (pelbaar)
+			{
+				int niv = 0;
 				int minNiv = 0;
 				for(int i=0 ; i<s.length()-1 ; i++)
 				{	if(s.charAt(i)=='(')
@@ -700,8 +788,12 @@ public class FormuleParser
 					}
 				}
 			}
-			if(pelbaar)s = s.substring(1,s.length()-1);
+			if (pelbaar)
+				s = s.substring(1,s.length()-1);
 		}
+		
+//		System.out.println("FormuleParser.pel(" + in + ") = " + s);
+		
 		return s;
 	}
 	
@@ -762,792 +854,1232 @@ public class FormuleParser
 	{	return parse(s,false);
 	}
 	
+	/**
+	 * Bijv. (sqrt(5)) -> Wortel(5)
+	 * @param s
+	 * @param woordformule
+	 * @return
+	 */
 	public static Expressie parse(String s, boolean woordformule)
-	{	
+	{
+		//System.out.println("FormuleParser.parse(" + s + ", woordformule = " + woordformule + ")");
+		
 		Expressie exp = null;
-		//verwijder overbodige haakjes
+		// verwijder overbodige haakjes
 		try
 		{
-		boolean pelbaar = true;
-		while(pelbaar)
-		{	if(s.length()>0 && s.charAt(0)=='(' && s.charAt(s.length()-1)==')')
-			{	pelbaar = true;
-			}
-			else pelbaar = false;
-			if(pelbaar)
-			{	int niv = 0;
-				int minNiv = 0;
-				for(int i=0 ; i<s.length()-1 ; i++)
-				{	if(s.charAt(i)=='(')
-					{	niv++;
-						
+			boolean pelbaar = true;
+			while (pelbaar)
+			{
+				if (s.length() > 0 && s.charAt(0) == '(' && s.charAt(s.length() - 1) == ')')
+				{
+					pelbaar = true;
+				}
+				else
+					pelbaar = false;
+				if (pelbaar)
+				{
+					int niv = 0;
+					int minNiv = 0;
+					for (int i = 0; i < s.length() - 1; i++)
+					{
+						if (s.charAt(i) == '(')
+						{
+							niv++;
+
+						}
+						else if (s.charAt(i) == ')')
+						{
+							niv--;
+							if (niv < 1)
+							{
+								pelbaar = false;
+								break;
+							}
+						}
 					}
-					else if(s.charAt(i)==')')
-					{	niv--;
-						if(niv<1)
-						{	pelbaar = false;
+				}
+				if (pelbaar)
+					s = s.substring(1, s.length() - 1);
+			}
+			if (s.length() > 0 && s.charAt(0) == '-')
+				s = '0' + s;
+			if (s.length() > 0 && s.charAt(0) == '+')
+				s = s.substring(1);
+
+			if (woordformule || FormuleParser.woordFormule)
+			{
+				boolean startMetLetter = true;
+				startMetLetter = Character.isLetter(s.charAt(0));
+				boolean basisString = true;
+				for (int i = 1; i < s.length(); i++)
+				{
+					basisString = startMetLetter && (Character.isLetter(s.charAt(i)) || Character.isDigit(s.charAt(i)));
+					if (!basisString)
+						break;
+				}
+
+				if (basisString)
+				{
+					if (s.length() == 1 && s.charAt(0) == 'e')
+						exp = new E();
+					else if (s.length() == 1 && s.charAt(0) == '\u03C0')
+						exp = new PI();
+					else
+						exp = new BasisExpressie(s);
+					return exp;
+				}
+			}
+			else if (FormuleParser.tweeHoofdletterVariabele)
+			{
+				boolean upperCasePair = s.length() == 2 && Character.isUpperCase(s.charAt(0))
+					&& Character.isUpperCase(s.charAt(1));
+				if (upperCasePair)
+					return new BasisExpressie(s);
+				else if (s.length() == 1 && Character.isLetter(s.charAt(0)))
+				{
+					if (s.charAt(0) == 'e')
+						exp = new E();
+					else if (s.charAt(0) == '\u03C0')
+						exp = new PI();
+					else
+						exp = new BasisExpressie(s);
+					return exp;
+				}
+			}
+			else
+			{
+				// is het een letter?
+				if (s.length() == 1 && Character.isLetter(s.charAt(0)))
+				{
+					if (s.charAt(0) == 'e')
+						exp = new E();
+					else if (s.charAt(0) == '\u03C0')
+						exp = new PI();
+
+					// else if(s.charAt(0) == 'd' && diffOperatoren)
+					// { exp = new Differentiaal(null);
+					// System.out.println("differentiaal gemaakt");
+					// }
+					else
+						exp = new BasisExpressie(s);
+					return exp;
+				}
+			}
+			// is het een getal?
+			boolean isGetal = true;
+			try
+			{
+				Double d = Double.valueOf(s);
+			}
+			catch (NumberFormatException nfe)
+			{
+				isGetal = false;
+			}
+			if (isGetal)
+			{
+				exp = new BasisExpressie(Double.valueOf(s).doubleValue());
+				if ("MW".equals(WiskOpdr.deployVariant) || significantie)
+					exp = new BasisExpressie(s);
+				return exp;
+			}
+			// is + of - oneidig?
+			if (s.equals("\u221e"))
+			{
+				double d = Double.POSITIVE_INFINITY;
+				exp = new BasisExpressie(s);
+			}
+
+			if (s.equals("-\u221e"))
+			{
+				double d = Double.NEGATIVE_INFINITY;
+				exp = new BasisExpressie(s);
+			}
+
+			if (diffOperatoren && s.charAt(0) == 'd' && (s.charAt(1) == '*')) // (als
+																				// charAt(1)
+																				// i
+																				// is,
+																				// dan
+																				// heb
+																				// je
+																				// een
+																				// diff)
+			{ // begin met een d, en dan ofwel een haakje openen die hoort bij
+				// het haakje sluiten
+				// helemaal achteraan, of één teken, of een
+				// subscript-constructie.
+				if (s.length() == 3)
+				{
+					return new Differentiaal(parse(s.substring(2, s.length())));
+				}
+				boolean isDifferentiaal = true;
+				if (s.charAt(2) == '(')
+				{
+					int niv = 1;
+					for (int i = 3; i < s.length(); i++)
+					{
+						if (s.charAt(i) == '(')
+							niv++;
+						else if (s.charAt(i) == ')')
+							niv--;
+						if (niv == 0 && i < s.length() - 1)
+						{
+							isDifferentiaal = false;
 							break;
 						}
 					}
 				}
-			}
-			if(pelbaar)s = s.substring(1,s.length()-1);
-		}
-		if(s.length()>0 && s.charAt(0)=='-')s = '0' + s;
-		if(s.length()>0 && s.charAt(0)=='+')s = s.substring(1);
-		
-		if(woordformule || FormuleParser.woordFormule)
-		{	boolean startMetLetter = true;
-			startMetLetter = Character.isLetter(s.charAt(0));
-			boolean basisString = true;
-			for(int i=1 ; i<s.length() ; i++)
-			{	basisString = startMetLetter && (Character.isLetter(s.charAt(i)) || Character.isDigit(s.charAt(i)));
-				if(!basisString) break;
-			}
-			
-			if(basisString)
-			{	if(s.length()==1 && s.charAt(0)=='e')exp = new E();
-				else if(s.length()==1 && s.charAt(0)=='\u03C0')exp = new PI();
-				else exp = new BasisExpressie(s);
-				return exp;
-			}
-		}
-		else if(FormuleParser.tweeHoofdletterVariabele)
-		{
-			boolean upperCasePair = s.length()==2 && Character.isUpperCase(s.charAt(0))&& Character.isUpperCase(s.charAt(1));
-			if(upperCasePair) return new BasisExpressie(s);
-			else if(s.length()==1 && Character.isLetter(s.charAt(0)))
-			{	if(s.charAt(0)=='e')exp = new E();
-				else if(s.charAt(0)=='\u03C0')exp = new PI();
-				else exp = new BasisExpressie(s);
-				return exp;
-			}
-		}
-		else
-		{
-			//is het een letter?		
-			if(s.length()==1 && Character.isLetter(s.charAt(0)))
-			{	if(s.charAt(0)=='e')exp = new E();
-				else if(s.charAt(0)=='\u03C0')exp = new PI();
-				
-//				else if(s.charAt(0) == 'd' && diffOperatoren)
-//				{	exp = new Differentiaal(null);
-//					System.out.println("differentiaal gemaakt");
-//				}
-				else exp = new BasisExpressie(s);
-				return exp;
-			}
-		}
-		//is het een getal?
-		boolean isGetal = true;
-		try
-		{	Double d = Double.valueOf(s);
-		}
-		catch(NumberFormatException nfe)
-		{	isGetal = false;
-		}
-		if(isGetal)
-		{	exp = new BasisExpressie(Double.valueOf(s).doubleValue());
-			if("MW".equals(WiskOpdr.deployVariant) || significantie) exp = new BasisExpressie(s);
-			return exp;
-		}
-		// is + of - oneidig?
-		if(s.equals("\u221e")) 
-		{	double d = Double.POSITIVE_INFINITY;
-			exp = new BasisExpressie(s);
-		}
-		
-		if(s.equals("-\u221e")) 
-		{	double d = Double.NEGATIVE_INFINITY;
-			exp = new BasisExpressie(s);
-		}
-		
-		if(diffOperatoren && s.charAt(0) == 'd' && (s.charAt(1) == '*')) //(als charAt(1) i is, dan heb je een diff)
-		{	//begin met een d, en dan ofwel een haakje openen die hoort bij het haakje sluiten
-			//helemaal achteraan, of één teken, of een subscript-constructie.
-			if(s.length() == 3)
-			{	return new Differentiaal(parse(s.substring(2, s.length())));
-			}
-			boolean isDifferentiaal = true;
-			if(s.charAt(2) == '(')
-			{
-				int niv = 1;
-				for(int i = 3; i < s.length(); i++)
+				else if (s.length() > 4 && s.charAt(3) == '$' && s.charAt(4) == 's')// subscript
 				{
-					if(s.charAt(i) == '(')
-						niv++;
-					else if(s.charAt(i) == ')')
-						niv--;
-					if(niv == 0 && i < s.length() - 1)
-					{	isDifferentiaal = false;
-						break;
-					}
-				}
-			}
-			else if(s.length() > 4 && s.charAt(3) == '$' && s.charAt(4) == 's')//subscript
-			{
-				int niv = 1;
-				for(int i = 4; i < s.length(); i++)
-				{
-					if(s.charAt(i) == '$')
-						niv++;
-					else if(s.charAt(i) == '@')
-						niv--;
-					if(niv == 0 && i < s.length() - 1)
+					int niv = 1;
+					for (int i = 4; i < s.length(); i++)
 					{
-						isDifferentiaal = false;
-						break;
+						if (s.charAt(i) == '$')
+							niv++;
+						else if (s.charAt(i) == '@')
+							niv--;
+						if (niv == 0 && i < s.length() - 1)
+						{
+							isDifferentiaal = false;
+							break;
+						}
 					}
 				}
+				else
+					isDifferentiaal = false;
+
+				if (isDifferentiaal)
+				{
+					Expressie e1 = parse(s.substring(2, s.length()));
+					// System.out.println("geeft differentiaal met kind " +
+					// e1.toString());
+					return new Differentiaal(e1);
+				}
+
 			}
-			else
-				isDifferentiaal = false;
-			
-			
-			if(isDifferentiaal)	
+
+			int niv = 0;
+			for (int i = s.length() - 1; i > -1; i--)
 			{
-				Expressie e1 = parse(s.substring(2, s.length()));
-				//System.out.println("geeft differentiaal met kind " + e1.toString());
-				return new Differentiaal(e1);
+				if (s.charAt(i) == ')')
+				{
+					niv++;
+				}
+				else if (s.charAt(i) == '(')
+				{
+					niv--;
+				}
+				else if (s.charAt(i) == '+' && niv == 0)
+				{
+					Expressie e1 = parse(s.substring(0, i));
+					Expressie e2 = parse(s.substring(i + 1));
+					if (e1 == null || e2 == null)
+						return null;
+					return new Optelling(e1, e2);
+
+				}
+				// else return exp;
 			}
-			
-		}
-		
-		int niv = 0;
-		for(int i=s.length()-1 ; i>-1 ; i--)
-		{	if(s.charAt(i)==')')
-			{	niv++;
-			}
-			else if(s.charAt(i)=='(')
-			{	niv--;
-			}
-			else if(s.charAt(i)=='+' && niv==0)
-			{	Expressie e1 = parse(s.substring(0,i));
-				Expressie e2 = parse(s.substring(i+1));
-				if(e1==null || e2==null)return null;
-				return new Optelling(e1,e2);
-				
-			}
-			//else return exp;
-		}
-		
-		niv = 0;
-		for(int i=s.length()-1 ; i>-1 ; i--)
-		{	if(s.charAt(i)==')')
-			{	niv++;
-			}
-			else if(s.charAt(i)=='(')
-			{	niv--;
-			}
-			else if(s.charAt(i)=='-' && niv==0)
-			{	//Expressie e1 = new BasisExpressie(0);
-				//if(i!=0)
-				Expressie e1 = parse(s.substring(0,i));
-				Expressie e2 = parse(s.substring(i+1));
-				if(e1==null || e2==null)return null;
-				return new Aftrekking(e1,e2);
-				
-			}
-			//else return exp;
-		}
-		
-		
-			
-		
-		String[] maalFnct = {
-				"*sin",
-				"*cos",
-				"*tan",
-				"*arcsin",
-				"*arccos",
-				"*arctan",
-				"*log",
-				"*ln"
-				};
-		for(int j=0 ; j<maalFnct.length ; j++)
-		{	int maalFnctLength = maalFnct[j].length();
+
 			niv = 0;
-			if(s.length()>maalFnctLength)
-			{	for(int i=s.length()-1 ; i>-1 ; i--)
-				{	if(s.charAt(i)==')')
-					{	niv++;
+			for (int i = s.length() - 1; i > -1; i--)
+			{
+				if (s.charAt(i) == ')')
+				{
+					niv++;
+				}
+				else if (s.charAt(i) == '(')
+				{
+					niv--;
+				}
+				else if (s.charAt(i) == '-' && niv == 0)
+				{ // Expressie e1 = new BasisExpressie(0);
+					// if(i!=0)
+					Expressie e1 = parse(s.substring(0, i));
+					Expressie e2 = parse(s.substring(i + 1));
+					if (e1 == null || e2 == null)
+						return null;
+					return new Aftrekking(e1, e2);
+
+				}
+				// else return exp;
+			}
+
+			String[] maalFnct =
+				{ "*sin", "*cos", "*tan", "*arcsin", "*arccos", "*arctan", "*log", "*ln" };
+			for (int j = 0; j < maalFnct.length; j++)
+			{
+				int maalFnctLength = maalFnct[j].length();
+				niv = 0;
+				if (s.length() > maalFnctLength)
+				{
+					for (int i = s.length() - 1; i > -1; i--)
+					{
+						if (s.charAt(i) == ')')
+						{
+							niv++;
+						}
+						else if (s.charAt(i) == '(')
+						{
+							niv--;
+						}
+						else if (i < s.length() - maalFnctLength
+							&& s.substring(i, i + maalFnctLength).equals(maalFnct[j]) && niv == 0)
+						{
+							Expressie e1 = parse(s.substring(0, i));
+							Expressie e2 = parse(s.substring(i + 1));
+							if (e1 == null || e2 == null)
+								return null;
+							return new Vermenigvuldiging(e1, e2);
+						}
 					}
-					else if(s.charAt(i)=='(')
-					{	niv--;
+				}
+			}
+
+			niv = 0;
+			if (s.length() > 4 && s.substring(0, 4).equals("sin^"))
+			{
+				for (int i = 4; i < s.length(); i++)
+				{
+					if (s.charAt(i) == '(')
+					{
+						niv++;
 					}
-					else if(i<s.length()-maalFnctLength && s.substring(i,i+maalFnctLength).equals(maalFnct[j]) && niv==0)
-					{	Expressie e1 = parse(s.substring(0,i));
-						Expressie e2 = parse(s.substring(i+1));
-						if(e1==null || e2==null)return null;
-						return new Vermenigvuldiging(e1,e2);
+					else if (s.charAt(i) == ')')
+					{
+						niv--;
 					}
+					else if (s.substring(i, i + 1).equals("*") && niv == 0)
+					{
+						Expressie e1 = parse(s.substring(4, i));
+						Expressie e2 = parse(s.substring(i + 1));
+						if (e1 == null || e2 == null)
+							return null;
+						return new Macht(new Sinus(e2), e1);
+					}
+
 				}
+				return null;
 			}
-		}
-		
-		
-		niv = 0;
-		if(s.length()>4 && s.substring(0,4).equals("sin^"))
-		{	for(int i=4 ; i<s.length() ; i++)
-			{	if(s.charAt(i)=='(')
-				{	niv++;
+
+			niv = 0;
+			if (s.length() > 4 && s.substring(0, 4).equals("cos^"))
+			{
+				for (int i = 4; i < s.length(); i++)
+				{
+					if (s.charAt(i) == '(')
+					{
+						niv++;
+					}
+					else if (s.charAt(i) == ')')
+					{
+						niv--;
+					}
+					else if (s.substring(i, i + 1).equals("*") && niv == 0)
+					{
+						Expressie e1 = parse(s.substring(4, i));
+						Expressie e2 = parse(s.substring(i + 1));
+						if (e1 == null || e2 == null)
+							return null;
+						return new Macht(new Cosinus(e2), e1);
+					}
+
 				}
-				else if(s.charAt(i)==')')
-				{	niv--;
-				}
-				else if(s.substring(i,i+1).equals("*") && niv==0)
-				{	
-					Expressie e1 = parse(s.substring(4,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new Macht(new Sinus(e2),e1);
-				}
-				
+				return null;
 			}
-			return null;
-		}
-		
-		niv = 0;
-		if(s.length()>4 && s.substring(0,4).equals("cos^"))
-		{	for(int i=4 ; i<s.length() ; i++)
-			{	if(s.charAt(i)=='(')
-				{	niv++;
+
+			niv = 0;
+			if (s.length() > 4 && s.substring(0, 4).equals("tan^"))
+			{
+				for (int i = 4; i < s.length(); i++)
+				{
+					if (s.charAt(i) == '(')
+					{
+						niv++;
+					}
+					else if (s.charAt(i) == ')')
+					{
+						niv--;
+					}
+					else if (s.substring(i, i + 1).equals("*") && niv == 0)
+					{
+						Expressie e1 = parse(s.substring(4, i));
+						Expressie e2 = parse(s.substring(i + 1));
+						if (e1 == null || e2 == null)
+							return null;
+						return new Macht(new Tangens(e2), e1);
+					}
+
 				}
-				else if(s.charAt(i)==')')
-				{	niv--;
-				}
-				else if(s.substring(i,i+1).equals("*") && niv==0)
-				{	
-					Expressie e1 = parse(s.substring(4,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new Macht(new Cosinus(e2),e1);
-				}
-				
+				return null;
 			}
-			return null;
-		}
-		
-		niv = 0;
-		if(s.length()>4 && s.substring(0,4).equals("tan^"))
-		{	for(int i=4 ; i<s.length() ; i++)
-			{	if(s.charAt(i)=='(')
-				{	niv++;
+
+			niv = 0;
+			if (s.length() > 4 && s.substring(0, 4).equals("log^"))
+			{
+				for (int i = 4; i < s.length(); i++)
+				{
+					if (s.charAt(i) == '(')
+					{
+						niv++;
+					}
+					else if (s.charAt(i) == ')')
+					{
+						niv--;
+					}
+					else if (s.substring(i, i + 1).equals("*") && niv == 0)
+					{
+						Expressie e1 = parse(s.substring(4, i));
+						Expressie e2 = parse(s.substring(i + 1));
+						if (e1 == null || e2 == null)
+							return null;
+						return new Macht(new Log(e2), e1);
+					}
+
 				}
-				else if(s.charAt(i)==')')
-				{	niv--;
-				}
-				else if(s.substring(i,i+1).equals("*") && niv==0)
-				{	
-					Expressie e1 = parse(s.substring(4,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new Macht(new Tangens(e2),e1);
-				}
-				
+				return null;
 			}
-			return null;
-		}
-		
-		niv = 0;
-		if(s.length()>4 && s.substring(0,4).equals("log^"))
-		{	for(int i=4 ; i<s.length() ; i++)
-			{	if(s.charAt(i)=='(')
-				{	niv++;
+
+			niv = 0;
+			if (s.length() > 3 && s.substring(0, 3).equals("ln^"))
+			{
+				for (int i = 3; i < s.length(); i++)
+				{
+					if (s.charAt(i) == '(')
+					{
+						niv++;
+					}
+					else if (s.charAt(i) == ')')
+					{
+						niv--;
+					}
+					else if (s.substring(i, i + 1).equals("*") && niv == 0)
+					{
+						Expressie e1 = parse(s.substring(3, i));
+						Expressie e2 = parse(s.substring(i + 1));
+						if (e1 == null || e2 == null)
+							return null;
+						return new Macht(new Ln(e2), e1);
+					}
+
 				}
-				else if(s.charAt(i)==')')
-				{	niv--;
-				}
-				else if(s.substring(i,i+1).equals("*") && niv==0)
-				{	
-					Expressie e1 = parse(s.substring(4,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new Macht(new Log(e2),e1);
-				}
-				
+				return null;
 			}
-			return null;
-		}
-		
-		niv = 0;
-		if(s.length()>3 && s.substring(0,3).equals("ln^"))
-		{	for(int i=3 ; i<s.length() ; i++)
-			{	if(s.charAt(i)=='(')
-				{	niv++;
-				}
-				else if(s.charAt(i)==')')
-				{	niv--;
-				}
-				else if(s.substring(i,i+1).equals("*") && niv==0)
-				{	
-					Expressie e1 = parse(s.substring(3,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new Macht(new Ln(e2),e1);
-				}
-				
+
+			// System.out.println("expressieString: "+s);
+
+			if (s.length() > 6 && s.substring(0, 6).equals("arcsin") && s.charAt(6) != '(')
+			{
+				Expressie e = parse(s.substring(6));
+				if (e == null)
+					return null;
+				return new ArcSinus(e);
 			}
-			return null;
-		}
-		
-		//System.out.println("expressieString: "+s);
-		
-		if(s.length()>6 && s.substring(0,6).equals("arcsin") && s.charAt(6) != '(')
-		{	Expressie e = parse(s.substring(6));
-			if(e==null)return null;
-			return new ArcSinus(e);
-		}
-		
-		if(s.length()>6 && s.substring(0,6).equals("arccos") && s.charAt(6) != '(')
-		{	Expressie e = parse(s.substring(6));
-			if(e==null)return null;
-			return new ArcCosinus(e);
-		}
-		
-		if(s.length()>6 && s.substring(0,6).equals("arctan") && s.charAt(6) != '(')
-		{	Expressie e = parse(s.substring(6));
-			if(e==null)return null;
-			return new ArcTangens(e);
-		}
-		
-		if(s.length()>3 && s.substring(0,3).equals("sin") && s.charAt(3) != '(')
-		{	Expressie e = parse(s.substring(3));
-			if(e==null)return null;
-			return new Sinus(e);
-		}
-		
-		if(s.length()>3 && s.substring(0,3).equals("cos") && s.charAt(3) != '(')
-		{	Expressie e = parse(s.substring(3));
-			if(e==null)return null;
-			return new Cosinus(e);
-		}
-		
-		if(s.length()>3 && s.substring(0,3).equals("tan") && s.charAt(3) != '(')
-		{	Expressie e = parse(s.substring(3));
-			if(e==null)return null;
-			return new Tangens(e);
-		}
-		
-		if(s.length()>3 && s.substring(0,3).equals("log") && s.charAt(3) != '(')
-		{	Expressie e = parse(s.substring(3));
-			if(e==null)return null;
-			return new Log(e);
-		}
-		
-		//boolean lnMetAbs = false;
-		//if(s.length()>5 && s.substring(0,5).equals("lnabs"))
-		//{	lnMetAbs=true;
-		//}
-		
-		if(s.length()>2 && s.substring(0,2).equals("ln") && s.charAt(2) != '(' )//&& !lnMetAbs)
-		{	Expressie e = parse(s.substring(2));
-			if(e==null)return null;
-			return new Ln(e);
-		}
-		
-		
-		
-		 niv = 0;
-			for(int i=s.length()-1 ; i>-1 ; i--)
-			{	if(s.charAt(i)==')')
-				{	niv++;
+
+			if (s.length() > 6 && s.substring(0, 6).equals("arccos") && s.charAt(6) != '(')
+			{
+				Expressie e = parse(s.substring(6));
+				if (e == null)
+					return null;
+				return new ArcCosinus(e);
+			}
+
+			if (s.length() > 6 && s.substring(0, 6).equals("arctan") && s.charAt(6) != '(')
+			{
+				Expressie e = parse(s.substring(6));
+				if (e == null)
+					return null;
+				return new ArcTangens(e);
+			}
+
+			if (s.length() > 3 && s.substring(0, 3).equals("sin") && s.charAt(3) != '(')
+			{
+				Expressie e = parse(s.substring(3));
+				if (e == null)
+					return null;
+				return new Sinus(e);
+			}
+
+			if (s.length() > 3 && s.substring(0, 3).equals("cos") && s.charAt(3) != '(')
+			{
+				Expressie e = parse(s.substring(3));
+				if (e == null)
+					return null;
+				return new Cosinus(e);
+			}
+
+			if (s.length() > 3 && s.substring(0, 3).equals("tan") && s.charAt(3) != '(')
+			{
+				Expressie e = parse(s.substring(3));
+				if (e == null)
+					return null;
+				return new Tangens(e);
+			}
+
+			if (s.length() > 3 && s.substring(0, 3).equals("log") && s.charAt(3) != '(')
+			{
+				Expressie e = parse(s.substring(3));
+				if (e == null)
+					return null;
+				return new Log(e);
+			}
+
+			// boolean lnMetAbs = false;
+			// if(s.length()>5 && s.substring(0,5).equals("lnabs"))
+			// { lnMetAbs=true;
+			// }
+
+			if (s.length() > 2 && s.substring(0, 2).equals("ln") && s.charAt(2) != '(')// &&
+																						// !lnMetAbs)
+			{
+				Expressie e = parse(s.substring(2));
+				if (e == null)
+					return null;
+				return new Ln(e);
+			}
+
+			niv = 0;
+			for (int i = s.length() - 1; i > -1; i--)
+			{
+				if (s.charAt(i) == ')')
+				{
+					niv++;
 				}
-				else if(s.charAt(i)=='(')
-				{	niv--;
+				else if (s.charAt(i) == '(')
+				{
+					niv--;
 				}
-				else if(s.charAt(i)=='*' && niv==0)
-				{	Expressie e1 = parse(s.substring(0,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					if(diffOperatoren && e1 instanceof Deling && e1.kind2 instanceof Differentiaal 
-							&& e1.kind1.toString().equals("d"))//geval: d/dx (f(x))
+				else if (s.charAt(i) == '*' && niv == 0)
+				{
+					Expressie e1 = parse(s.substring(0, i));
+					Expressie e2 = parse(s.substring(i + 1));
+					if (e1 == null || e2 == null)
+						return null;
+					if (diffOperatoren && e1 instanceof Deling && e1.kind2 instanceof Differentiaal
+						&& e1.kind1.toString().equals("d"))// geval: d/dx (f(x))
 						return new Diff(e2, e1.kind2.kind1);
-					else if(diffOperatoren && e1 instanceof Vermenigvuldiging &&
-							e1.kind2.toString().equals("d"))//geval: iets*dx
-					{	return new Vermenigvuldiging(e1.kind1, new Differentiaal(e2));
+					else if (diffOperatoren && e1 instanceof Vermenigvuldiging && e1.kind2.toString().equals("d"))// geval:
+																													// iets*dx
+					{
+						return new Vermenigvuldiging(e1.kind1, new Differentiaal(e2));
 					}
-						
-					else	
-						return new Vermenigvuldiging(e1,e2);
-					
+
+					else
+						return new Vermenigvuldiging(e1, e2);
+
 				}
-				
+
 			}
-		
-		 niv = 0;
-			for(int i=s.length()-1 ; i>-1 ; i--)
-			{	if(s.charAt(i)==')')
-				{	niv++;
+
+			niv = 0;
+			for (int i = s.length() - 1; i > -1; i--)
+			{
+				if (s.charAt(i) == ')')
+				{
+					niv++;
 				}
-				else if(s.charAt(i)=='(')
-				{	niv--;
+				else if (s.charAt(i) == '(')
+				{
+					niv--;
 				}
-				else if(s.charAt(i)=='/' && niv==0)
-				{	
-					Expressie e1 = parse(s.substring(0,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)
-					{	return null;
+				else if (s.charAt(i) == '/' && niv == 0)
+				{
+					Expressie e1 = parse(s.substring(0, i));
+					Expressie e2 = parse(s.substring(i + 1));
+					if (e1 == null || e2 == null)
+					{
+						return null;
 					}
-					if(diffOperatoren && e1 instanceof Differentiaal && e2 instanceof Differentiaal)
-					{	return new Diff(e1.kind1, e2.kind1); 
+					if (diffOperatoren && e1 instanceof Differentiaal && e2 instanceof Differentiaal)
+					{
+						return new Diff(e1.kind1, e2.kind1);
 					}
 					else
-						return new Deling(e1,e2);
-					
+						return new Deling(e1, e2);
+
 				}
 			}
-		
-		niv = 0;
-			/*for(int i=s.length()-1 ; i>-1 ; i--)
-			{	if(s.charAt(i)==')')
-				{	niv++;
+
+			niv = 0;
+			/*
+			 * for(int i=s.length()-1 ; i>-1 ; i--) { if(s.charAt(i)==')') {
+			 * niv++; } else if(s.charAt(i)=='(') { niv--; } else
+			 * if(s.charAt(i)=='^' && niv==0) { Expressie e1 =
+			 * parse(s.substring(0,i)); Expressie e2 = parse(s.substring(i+1));
+			 * if(e1==null || e2==null)return null; return new Macht(e1,e2);
+			 * 
+			 * } }
+			 */
+			for (int i = 0; i < s.length(); i++)
+			{
+				if (s.charAt(i) == ')')
+				{
+					niv++;
 				}
-				else if(s.charAt(i)=='(')
-				{	niv--;
+				else if (s.charAt(i) == '(')
+				{
+					niv--;
 				}
-				else if(s.charAt(i)=='^' && niv==0)
-				{	Expressie e1 = parse(s.substring(0,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new Macht(e1,e2);
-					
-				}
-			}*/
-			for(int i=0 ; i<s.length() ; i++)
-			{	if(s.charAt(i)==')')
-				{	niv++;
-				}
-				else if(s.charAt(i)=='(')
-				{	niv--;
-				}
-				else if(s.charAt(i)=='^' && niv==0)
-				{	Expressie e1 = parse(s.substring(0,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new Macht(e1,e2);
-					
-				}
-			}
-			
-		niv = 0;
-			for(int i=s.length()-1 ; i>-1 ; i--)
-			{	if(s.charAt(i)==')')
-				{	niv++;
-				}
-				else if(s.charAt(i)=='(')
-				{	niv--;
-				}
-				else if(s.charAt(i)=='|' && niv==0)
-				{	Expressie e1 = parse(s.substring(0,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new NdeWortel(e1,e2);
-					
+				else if (s.charAt(i) == '^' && niv == 0)
+				{
+					Expressie e1 = parse(s.substring(0, i));
+					Expressie e2 = parse(s.substring(i + 1));
+					if (e1 == null || e2 == null)
+						return null;
+					return new Macht(e1, e2);
+
 				}
 			}
-			
-		niv = 0;
-			for(int i=s.length()-1 ; i>-1 ; i--)
-			{	if(s.charAt(i)==')')
-				{	niv++;
+
+			niv = 0;
+			for (int i = s.length() - 1; i > -1; i--)
+			{
+				if (s.charAt(i) == ')')
+				{
+					niv++;
 				}
-				else if(s.charAt(i)=='(')
-				{	niv--;
+				else if (s.charAt(i) == '(')
+				{
+					niv--;
 				}
-				else if(s.charAt(i)=='~' && niv==0)
-				{	Expressie e1 = parse(s.substring(0,i));
-					Expressie e2 = parse(s.substring(i+1));
-					if(e1==null || e2==null)return null;
-					return new NdeLog(e1,e2);
-					
+				else if (s.charAt(i) == '|' && niv == 0)
+				{
+					Expressie e1 = parse(s.substring(0, i));
+					Expressie e2 = parse(s.substring(i + 1));
+					if (e1 == null || e2 == null)
+						return null;
+					return new NdeWortel(e1, e2);
+
 				}
 			}
-            niv = 0;
-            for(int i=s.length()-1 ; i>-1 ; i--)
-            {   if(s.charAt(i)==')')
-                {   niv++;
-                }
-                else if(s.charAt(i)=='(')
-                {   niv--;
-                }
-                else if(s.charAt(i)=='?' && niv==0)
-                {   Expressie e1 = parse(s.substring(0,i));
-                    Expressie e2 = parse(s.substring(i+1));
-                    if(e1==null || e2==null)return null;
-                    return new BasisExpressie(s.substring(0,i) + "?" + s.substring(i+1));
-                }
-            }
-        
-       
-            /*String[] functieNamen = Functie.getFunctieDefSet().geefFunctieNamen();
-            String[] functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieNamen();
-	        for(int i = 0 ; i<functieNamen.length ; i++)
-	        {	String functieNaam = functieNamen[i];
-	        	if(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='(')
-	    		{	Expressie e = parse(s.substring(functieNaam.length(),s.length()));
-	    			if(e==null)return null;
-	    			return new Functie(functieNaam,e);
-	    		}
-	        }*/	
-	        
-	        String[] functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieMVNamen();
-	        for(int i = 0 ; i<functieNamen.length ; i++)
-	        {	String functieNaam = functieNamen[i];
-	        //System.out.println("parseString:"+s);
-	        //System.out.println("functieNaam:"+functieNaam);
-	        //System.out.println("fit:"+(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='('));
-	        	if(s.length()>functieNaam.length() && s.substring(0,functieNaam.length()).equals(functieNaam) && s.charAt(functieNaam.length())=='(')
-	    		{	//Expressie e = parse(s.substring(functieNaam.length(),s.length()));
-	        		int aantalVar = FunctieMV.getFunctieMVDefSet().geefFunctieMVVariabele(functieNaam).length;
-	        		String string = s.substring(functieNaam.length()+1,s.length()-1);
-	        		//System.out.println("splitString:"+string);
-	        		Expressie[] expressies = splitExpressieParameters(string,'_',aantalVar);
-	        		//System.out.println("parseFunctie:"+expressies.toString());
-	    			boolean parseOK = true;
-	    			for(int j=0 ; j<expressies.length ; j++)
-	    				parseOK = parseOK && expressies[j] !=null;
-	        		if(parseOK==false)
-	        			return null;
-	    			return new FunctieMV(functieNaam,expressies);
-	    		}
-	        }
-		
-		//is het een wortel
-		if(s.length()>4 && s.substring(0,4).equals("sqrt"))
-		{	Expressie e = parse(s.substring(4,s.length()));
-			if(e==null)return null;
-			return new Wortel(e);
+
+			niv = 0;
+			for (int i = s.length() - 1; i > -1; i--)
+			{
+				if (s.charAt(i) == ')')
+				{
+					niv++;
+				}
+				else if (s.charAt(i) == '(')
+				{
+					niv--;
+				}
+				else if (s.charAt(i) == '~' && niv == 0)
+				{
+					Expressie e1 = parse(s.substring(0, i));
+					Expressie e2 = parse(s.substring(i + 1));
+					if (e1 == null || e2 == null)
+						return null;
+					return new NdeLog(e1, e2);
+
+				}
+			}
+			niv = 0;
+			for (int i = s.length() - 1; i > -1; i--)
+			{
+				if (s.charAt(i) == ')')
+				{
+					niv++;
+				}
+				else if (s.charAt(i) == '(')
+				{
+					niv--;
+				}
+				else if (s.charAt(i) == '?' && niv == 0)
+				{
+					Expressie e1 = parse(s.substring(0, i));
+					Expressie e2 = parse(s.substring(i + 1));
+					if (e1 == null || e2 == null)
+						return null;
+					return new BasisExpressie(s.substring(0, i) + "?" + s.substring(i + 1));
+				}
+			}
+
+			/*
+			 * String[] functieNamen =
+			 * Functie.getFunctieDefSet().geefFunctieNamen(); String[]
+			 * functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieNamen();
+			 * for(int i = 0 ; i<functieNamen.length ; i++) { String functieNaam
+			 * = functieNamen[i]; if(s.length()>functieNaam.length() &&
+			 * s.substring(0,functieNaam.length()).equals(functieNaam) &&
+			 * s.charAt(functieNaam.length())=='(') { Expressie e =
+			 * parse(s.substring(functieNaam.length(),s.length()));
+			 * if(e==null)return null; return new Functie(functieNaam,e); } }
+			 */
+
+			String[] functieNamen = FunctieMV.getFunctieMVDefSet().geefFunctieMVNamen();
+			for (int i = 0; i < functieNamen.length; i++)
+			{
+				String functieNaam = functieNamen[i];
+				// System.out.println("parseString:"+s);
+				// System.out.println("functieNaam:"+functieNaam);
+				// System.out.println("fit:"+(s.length()>functieNaam.length() &&
+				// s.substring(0,functieNaam.length()).equals(functieNaam) &&
+				// s.charAt(functieNaam.length())=='('));
+				if (s.length() > functieNaam.length() && s.substring(0, functieNaam.length()).equals(functieNaam)
+					&& s.charAt(functieNaam.length()) == '(')
+				{ // Expressie e =
+					// parse(s.substring(functieNaam.length(),s.length()));
+					int aantalVar = FunctieMV.getFunctieMVDefSet().geefFunctieMVVariabele(functieNaam).length;
+					String string = s.substring(functieNaam.length() + 1, s.length() - 1);
+					// System.out.println("splitString:"+string);
+					Expressie[] expressies = splitExpressieParameters(string, '_', aantalVar);
+					// System.out.println("parseFunctie:"+expressies.toString());
+					boolean parseOK = true;
+					for (int j = 0; j < expressies.length; j++)
+						parseOK = parseOK && expressies[j] != null;
+					if (parseOK == false)
+						return null;
+					return new FunctieMV(functieNaam, expressies);
+				}
+			}
+
+			// is het een wortel
+			if (s.length() > 4 && s.substring(0, 4).equals("sqrt"))
+			{
+				Expressie e = parse(s.substring(4, s.length()));
+				if (e == null)
+					return null;
+				return new Wortel(e);
+			}
+			else if (s.length() > 6 && s.substring(0, 6).equals("conjug"))
+			{
+				Expressie e = parse(s.substring(6, s.length()));
+				if (e == null)
+					return null;
+				return new Conjug(e);
+			}
+			else if (s.length() > 8 && s.substring(0, 8).equals("binomcdf"))
+			{
+				String string = s.substring(9, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 3);
+				if (expressies == null)
+					return null;
+				return new BinomCDF(expressies[0], expressies[1], expressies[2]);
+			}
+			else if (s.length() > 8 && s.substring(0, 8).equals("binompdf"))
+			{
+				String string = s.substring(9, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 3);
+				if (expressies == null)
+					return null;
+				return new BinomPDF(expressies[0], expressies[1], expressies[2]);
+			}
+			else if (s.length() > 10 && s.substring(0, 10).equals("poissoncdf"))
+			{
+				String string = s.substring(11, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new PoissonCDF(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 10 && s.substring(0, 10).equals("poissonpdf"))
+			{
+				String string = s.substring(11, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new PoissonPDF(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("bin"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new Bin(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 6 && s.substring(0, 6).equals("difpar"))
+			{
+				String string = s.substring(7, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new DiffPartial(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 13 && s.substring(0, 13).equals("differentiaal"))
+			{
+				Expressie e = parse(s.substring(13, s.length()));
+				if (e == null)
+					return null;
+				return new Differentiaal(e);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("dif"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new Diff(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("prm"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new Primitieve(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("lim"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 4);
+				if (expressies == null)
+					return null;
+				return new Limiet(expressies[0], expressies[1], expressies[2], expressies[3]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("sig"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 4);
+				if (expressies == null)
+					return null;
+				return new Sigma(expressies[0], expressies[1], expressies[2], expressies[3]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("rnd"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new DecRound(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 4 && s.substring(0, 4).equals("sgf("))
+			{
+				Expressie e = parse(s.substring(4, s.length() - 1));
+				if (e == null)
+					return null;
+				return new AantalSign(new BasisExpressie(s.substring(4, s.length() - 1)));
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("rns"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_');
+				if (expressies == null)
+					return null;
+				if (expressies.length == 2)
+					return new SigRoundStandard(expressies[0], expressies[1]);
+				if (expressies.length == 3)
+					return new SigRound(expressies[0], expressies[1], expressies[2]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("rnq"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new DecRoundStrict(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("int"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 4);
+				if (expressies == null)
+					return null;
+				return new Integraal(expressies[0], expressies[1], expressies[2], expressies[3]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("gcd"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new GCD(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("min"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new Min(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 3 && s.substring(0, 3).equals("max"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 2);
+				if (expressies == null)
+					return null;
+				return new Max(expressies[0], expressies[1]);
+			}
+			else if (s.length() > 9 && s.substring(0, 9).equals("normalcdf"))
+			{
+				String string = s.substring(10, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 4);
+				if (expressies == null)
+					return null;
+				return new NormalCDF(expressies[0], expressies[1], expressies[2], expressies[3]);
+			}
+			else if (s.length() > 7 && s.substring(0, 7).equals("invNorm"))
+			{
+				String string = s.substring(8, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 3);
+				if (expressies == null)
+					return null;
+				return new InvNorm(expressies[0], expressies[1], expressies[2]);
+			}
+
+			else if (s.length() > 3 && s.substring(0, 3).equals("prv"))
+			{
+				String string = s.substring(4, s.length() - 1);
+				Expressie[] expressies = splitExpressieParameters(string, '_', 4);
+				if (expressies == null)
+					return null;
+				return new Prv(expressies[0], expressies[1], expressies[2], expressies[3]);
+			}
+			// is het een arcsinus
+			else if (s.length() > 7 && s.substring(0, 7).equals("arcsin("))
+			{
+				Expressie e = parse(s.substring(6, s.length()));
+				if (e == null)
+					return null;
+				return new ArcSinus(e);
+			}
+			// is het een arccosinus
+			else if (s.length() > 7 && s.substring(0, 7).equals("arccos("))
+			{
+				Expressie e = parse(s.substring(6, s.length()));
+				if (e == null)
+					return null;
+				return new ArcCosinus(e);
+			}
+			// is het een arctangens
+			else if (s.length() > 7 && s.substring(0, 7).equals("arctan("))
+			{
+				Expressie e = parse(s.substring(6, s.length()));
+				if (e == null)
+					return null;
+				return new ArcTangens(e);
+			}
+			// is het een sinus
+			else if (s.length() > 4 && s.substring(0, 4).equals("sin("))
+			{
+				Expressie e = parse(s.substring(3, s.length()));
+				if (e == null)
+					return null;
+				return new Sinus(e);
+			}
+			// is het een cosinus
+			else if (s.length() > 4 && s.substring(0, 4).equals("cos("))
+			{
+				Expressie e = parse(s.substring(3, s.length()));
+				if (e == null)
+					return null;
+				return new Cosinus(e);
+			}
+			// is het een tangens
+			else if (s.length() > 4 && s.substring(0, 4).equals("tan("))
+			{
+				Expressie e = parse(s.substring(3, s.length()));
+				if (e == null)
+					return null;
+				return new Tangens(e);
+			}
+			// is het een log
+			else if (s.length() > 4 && s.substring(0, 4).equals("log("))
+			{
+				Expressie e = parse(s.substring(3, s.length()));
+				if (e == null)
+					return null;
+				return new Log(e);
+			}
+			// is het een ln
+			else if (s.length() > 3 && s.substring(0, 3).equals("ln("))
+			{
+				Expressie e = parse(s.substring(2, s.length()));
+				if (e == null)
+					return null;
+				return new Ln(e);
+			}
+
+			// else if(s.length()>5 && s.substring(0,5).equals("lnabs"))
+			// { Expressie e = parse(s.substring(2,s.length()));
+			// if(e==null)return null;
+			// return new Ln(e);
+			// }
+			/**/
+
+			else if (s.length() > 3 && s.substring(0, 3).equals("abs"))
+			{
+				Expressie e = parse(s.substring(3, s.length()));
+				if (e == null)
+					return null;
+				return new Abs(e);
+			}
+			// is het een ln
+			else if (s.length() > 0 && s.charAt(s.length() - 1) == ('!'))
+			{
+				Expressie e = parse(s.substring(0, s.length() - 1));
+				if (e == null)
+					return null;
+				// System.out.println(e.toString());
+				return new Faculteit(e);
+			} /**/
+			else if (s.length() > 7 && s.substring(0, 7).equals("vector("))
+			{
+				ArrayList<Expressie> list = parseVectorKinderen(s.substring(7, s.length() - 1));
+				if (list == null)
+					return null;
+				return new VectorExpr(list);
+			}
+			else if (s.length() > 7 && s.substring(0, 7).equals("matrix("))
+			{
+				ArrayList<ArrayList<Expressie>> list = parseMatrixKinderen(s.substring(7, s.length() - 1));
+				if (list == null)
+					return null;
+				return new Matrix(list);
+			}
 		}
-		else if(s.length()>6 && s.substring(0,6).equals("conjug"))
-        {   Expressie e = parse(s.substring(6,s.length()));
-            if(e==null)return null;
-            return new Conjug(e);
-        }
-		else if(s.length()>8 && s.substring(0,8).equals("binomcdf"))
-		{	String string = s.substring(9,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',3);
-			if(expressies==null) return null;
-			return new BinomCDF(expressies[0],expressies[1],expressies[2]);
+		catch (Exception e)
+		{
 		}
-		else if(s.length()>8 && s.substring(0,8).equals("binompdf"))
-		{	String string = s.substring(9,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',3);
-			if(expressies==null) return null;
-			return new BinomPDF(expressies[0],expressies[1],expressies[2]);
-		}
-		else if(s.length()>10 && s.substring(0,10).equals("poissoncdf"))
-		{	String string = s.substring(11,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new PoissonCDF(expressies[0],expressies[1]);
-		}
-		else if(s.length()>10 && s.substring(0,10).equals("poissonpdf"))
-		{	String string = s.substring(11,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new PoissonPDF(expressies[0],expressies[1]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("bin"))
-		{	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_', 2);
-			if(expressies==null) return null;
-			return new Bin(expressies[0],expressies[1]);
-		}
-		else if(s.length()>6 && s.substring(0,6).equals("difpar"))
-		{	String string = s.substring(7,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new DiffPartial(expressies[0],expressies[1]);
-		}
-		else if(s.length()>13 && s.substring(0,13).equals("differentiaal"))
-		{	Expressie e = parse(s.substring(13,s.length()));
-            if(e==null)return null;
-            return new Differentiaal(e);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("dif"))
-		{	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new Diff(expressies[0],expressies[1]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("prm"))
-		{	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new Primitieve(expressies[0],expressies[1]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("lim"))
-		{	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',4);
-			if(expressies==null) return null;
-			return new Limiet(expressies[0],expressies[1],expressies[2],expressies[3]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("sig"))
-        {	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',4);
-			if(expressies==null) return null;
-			return new Sigma(expressies[0],expressies[1],expressies[2],expressies[3]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("rnd"))
-		{	
-			String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new DecRound(expressies[0],expressies[1]);
-		}
-		else if(s.length()>4 && s.substring(0,4).equals("sgf("))
-		{	Expressie e = parse(s.substring(4,s.length()-1));
-			if(e==null)return null;
-			return new AantalSign(new BasisExpressie(s.substring(4,s.length()-1)));
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("rns"))
-		{	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_');
-			if(expressies==null) return null;
-			if(expressies.length==2)
-				return new SigRoundStandard(expressies[0],expressies[1]);
-			if(expressies.length==3)
-				return new SigRound(expressies[0],expressies[1],expressies[2]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("rnq"))
-		{	
-			String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new DecRoundStrict(expressies[0],expressies[1]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("int"))
-		{	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',4);
-			if(expressies==null) return null;
-			return new Integraal(expressies[0],expressies[1],expressies[2],expressies[3]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("gcd"))
-		{	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new GCD(expressies[0],expressies[1]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("min"))
-		{	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new Min(expressies[0],expressies[1]);
-		}
-		else if(s.length()>3 && s.substring(0,3).equals("max"))
-		{	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',2);
-			if(expressies==null) return null;
-			return new Max(expressies[0],expressies[1]);
-		}
-		else if(s.length()>9 && s.substring(0,9).equals("normalcdf"))
-		{	String string = s.substring(10,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',4);
-			if(expressies==null) return null;
-			return new NormalCDF(expressies[0],expressies[1],expressies[2],expressies[3]);
-		}
-		else if(s.length()>7 && s.substring(0,7).equals("invNorm"))
-		{	String string = s.substring(8,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',3);
-			if(expressies==null) return null;
-			return new InvNorm(expressies[0],expressies[1],expressies[2]);
-		}
-		
-		else if(s.length()>3 && s.substring(0,3).equals("prv"))
-        {	String string = s.substring(4,s.length()-1);
-			Expressie[] expressies = splitExpressieParameters(string,'_',4);
-			if(expressies==null) return null;
-			return new Prv(expressies[0],expressies[1],expressies[2],expressies[3]);
-		}
-		
-//		is het een arcsinus
-		else if(s.length()>7 && s.substring(0,7).equals("arcsin("))
-		{	Expressie e = parse(s.substring(6,s.length()));
-			if(e==null)return null;
-			return new ArcSinus(e);
-		}
-		//is het een arccosinus
-		else if(s.length()>7 && s.substring(0,7).equals("arccos("))
-		{	Expressie e = parse(s.substring(6,s.length()));
-			if(e==null)return null;
-			return new ArcCosinus(e);
-		}
-		//is het een arctangens
-		else if(s.length()>7 && s.substring(0,7).equals("arctan("))
-		{	Expressie e = parse(s.substring(6,s.length()));
-			if(e==null)return null;
-			return new ArcTangens(e);
-		}
-		//is het een sinus
-		else if(s.length()>4 && s.substring(0,4).equals("sin("))
-		{	Expressie e = parse(s.substring(3,s.length()));
-			if(e==null)return null;
-			return new Sinus(e);
-		}
-		//is het een cosinus
-		else if(s.length()>4 && s.substring(0,4).equals("cos("))
-		{	Expressie e = parse(s.substring(3,s.length()));
-			if(e==null)return null;
-			return new Cosinus(e);
-		}
-		//is het een tangens
-		else if(s.length()>4 && s.substring(0,4).equals("tan("))
-		{	Expressie e = parse(s.substring(3,s.length()));
-			if(e==null)return null;
-			return new Tangens(e);
-		}
-		//is het een log
-		else if(s.length()>4 && s.substring(0,4).equals("log("))
-		{	Expressie e = parse(s.substring(3,s.length()));
-			if(e==null)return null;
-			return new Log(e);
-		}
-		//is het een ln
-		else if(s.length()>3 && s.substring(0,3).equals("ln("))
-		{	Expressie e = parse(s.substring(2,s.length()));
-			if(e==null)return null;
-			return new Ln(e);
-		}
-		
-		//else if(s.length()>5 && s.substring(0,5).equals("lnabs"))
-		//{	Expressie e = parse(s.substring(2,s.length()));
-		//	if(e==null)return null;
-		//	return new Ln(e);
-		//}
-		/**/
-		
-		else if(s.length()>3 && s.substring(0,3).equals("abs"))
-		{	Expressie e = parse(s.substring(3,s.length()));
-			if(e==null)return null;
-			return new Abs(e);
-		}
-		
-		//is het een ln
-		else if(s.length()>0 && s.charAt(s.length()-1)==('!'))
-		{	Expressie e = parse(s.substring(0,s.length()-1));
-			if(e==null)return null;
-			//System.out.println(e.toString());
-			return new Faculteit(e);
-		}/**/
-		
-		}
-		catch(Exception e)
-		{}
+
 		return exp;
-		
 	}
 	
+	/**
+	 * Haal de vector kinderen uit de gegeven string.
+	 * @param s
+	 * @return
+	 */
+	private static ArrayList<Expressie> parseVectorKinderen(String s)
+	{
+//		System.out.println("FormuleParser.parseVectorKinderen(" + s + ")");
+		
+		ArrayList<Expressie> kinderen = new ArrayList<Expressie>();
+		
+		ArrayList result = geefVectorKind(s); 
+		Expressie kind = (Expressie) result.get(0);
+		s = (String) result.get(1); // string zonder kind
+		
+		while (kind != null && kind.toString() != "")
+		{
+			kinderen.add(kind);
+
+			if (!s.equals(""))
+			{
+				result = geefVectorKind(s);
+				kind = (Expressie) result.get(0);
+				s = (String) result.get(1); // string zonder kind
+			}
+			else
+				break;
+		}
+		
+		return kinderen;
+	}
+
+	/**
+	 * Haal de matrix-rij kinderen uit de gegeven string.
+	 * @param s de matrix-rij
+	 * @return
+	 */
+	private static ArrayList<Expressie> parseMatrixRijKinderen(String s)
+	{
+//		System.out.println("FormuleParser.parseMatrixRijKinderen(" + s + ")");
+		
+		ArrayList<Expressie> kinderen = new ArrayList<Expressie>();
+		
+		ArrayList result = geefMatrixRijKind(s); 
+		Expressie kind = (Expressie) result.get(0);
+		s = (String) result.get(1); // string zonder kind
+		
+		while (kind != null && kind.toString() != "")
+		{
+			kinderen.add(kind);
+
+			if (!s.equals(""))
+			{
+				result = geefMatrixRijKind(s);
+				kind = (Expressie) result.get(0);
+				s = (String) result.get(1); // string zonder kind
+			}
+			else
+				break;
+		}
+		
+		return kinderen;
+	}
+
+	/**
+	 * Haal de matrix kinderen uit de gegeven string.
+	 * @param s
+	 * @return
+	 */
+	private static ArrayList<ArrayList<Expressie>> parseMatrixKinderen(String s)
+	{
+		//System.out.println("FormuleParser.parseMatrixKinderen(" + s + ")");
+		
+		ArrayList<ArrayList<Expressie>> kinderen = new ArrayList<ArrayList<Expressie>>();
+		
+		ArrayList result = geefMatrixRij(s); 
+		ArrayList<Expressie> rij = (ArrayList<Expressie>) result.get(0);
+		s = (String) result.get(1); // string zonder rij
+		
+		while (rij != null && rij.toString() != "")
+		{
+			kinderen.add(rij);
+
+			if (!s.equals(""))
+			{
+				result = geefMatrixRij(s);
+				rij = (ArrayList<Expressie>) result.get(0);
+				s = (String) result.get(1); // string zonder rij
+			}
+			else
+				break;
+		}
+		
+		return kinderen;
+	}
+
+	/**
+	 * Kinderen zijn te onderscheiden doordat ze omsloten zijn door haken '(' en ')',
+	 * haken gescheiden met '*'.
+	 * Retourneert in een arraylist de kindexpressie 
+	 * en de string zonder het kind t.b.v. verder parsen.
+	 *  
+	 * @param s
+	 * @return
+	 */
+	private static ArrayList<Object> geefVectorKind(String s)
+	{
+		ArrayList<Object> result = new ArrayList<Object>();
+		
+		int beginIndex = s.indexOf("(");
+		int endIndex = getIndexSluithaak(s, beginIndex);
+		String kindString = s.substring(beginIndex + 1, endIndex);
+		s = s.substring(s.indexOf(kindString) + kindString.length() + 1); // + 1 voor sluithaak ')'
+		// vectorkind-scheidingsteken '*'
+		int asterixIndex = s.indexOf("*"); 
+		if (asterixIndex > -1)
+			s = s.substring(asterixIndex + 1); // +1 voor '('
+		
+		Expressie kind = parse(kindString); // in kindString staat geen formule ("1+1"), parse maakt er een Expressie van (Optelling)
+		result.add(kind); // het geparste kind
+		result.add(s); // string zonder kind
+		
+		return result;
+	}
+
+	/**
+	 * Kinderen zijn te onderscheiden doordat ze omsloten zijn door haken '(' en ')',
+	 * haken gescheiden met '*'.
+	 * Retourneert in een arraylist de kindexpressie 
+	 * en de string zonder het kind t.b.v. verder parsen.
+	 *  
+	 * @param s
+	 * @return
+	 */
+	private static ArrayList<Object> geefMatrixRijKind(String s)
+	{
+		ArrayList<Object> result = new ArrayList<Object>();
+		
+		int beginIndex = s.indexOf("(");
+		int endIndex = getIndexSluithaak(s, beginIndex);
+		String kindString = s.substring(beginIndex + 1, endIndex);
+		s = s.substring(s.indexOf(kindString) + kindString.length() + 1); // + 1 voor sluithaak ')'
+		// vectorkind-scheidingsteken '*'
+		int asterixIndex = s.indexOf("*"); 
+		if (asterixIndex > -1)
+			s = s.substring(asterixIndex + 1); // +1 voor '('
+		
+		if ("".equals(kindString))
+			kindString = "0"; // als niets is ingevuld, dan vullen we 0 in
+		Expressie kind = parse(kindString); // in kindString staat geen formule ("1+1"), parse maakt er een Expressie van (Optelling)
+		result.add(kind); // het geparste kind
+		result.add(s); // string zonder kind
+		
+		return result;
+	}
+
+	/**
+	 * Kinderen binnen rijen zijn te onderscheiden doordat ze omsloten zijn door 
+	 * haken '(' en ')', haken gescheiden met '*'. 
+	 * Rijen zijn omsloten door haken en gescheiden met '*'. 
+	 * Retourneert in een arraylist de rij-arraylist 
+	 * en de string zonder de rij t.b.v. verder parsen.
+	 *  
+	 * @param s
+	 * @return
+	 */
+	private static ArrayList<Object> geefMatrixRij(String s)
+	{
+		ArrayList<Object> result = new ArrayList<Object>();
+		
+		int beginIndex = s.indexOf("(");
+		int endIndex = getIndexSluithaak(s, beginIndex);
+		String rijString = s.substring(beginIndex + 1, endIndex);
+		s = s.substring(s.indexOf(rijString) + rijString.length() + 1); // + 1 voor sluithaak ')'
+		// vectorkind-scheidingsteken '*'
+		int asterixIndex = s.indexOf("*"); 
+		if (asterixIndex > -1)
+			s = s.substring(asterixIndex + 1); // +1 voor '('
+		
+		ArrayList<Expressie> rij = parseMatrixRijKinderen(rijString);
+		result.add(rij); // rij-arraylist
+		result.add(s); // string zonder rij
+		
+		return result;
+	}
+
+	/**
+	 * Retourneert de index van de sluithaak die hoort bij de
+	 * openingshaak met de gegeven beginIndex in de string.
+	 * 
+	 * @param s
+	 * @param beginIndex
+	 * @return
+	 */
+	private static int getIndexSluithaak(String s, int beginIndex)
+	{
+		int endIndex = -1;
+		// houdt bij of er na beginIndex haakjes worden geopend die nog niet gesloten zijn
+		int haakjesGeopendCount = 0;
+		int i = beginIndex + 1;
+		
+		while (i < s.length())
+		{
+			if (s.charAt(i) == ')')
+			{
+				if (haakjesGeopendCount == 0)
+				{
+					// sluithaak gevonden
+					endIndex = i;
+					break;
+				}
+				else
+					haakjesGeopendCount--;
+			}
+			else
+			{
+				if (s.charAt(i) == '(')
+					haakjesGeopendCount++;
+			}
+
+			i++;
+		}
+		
+		return endIndex;
+	}
+
 	public static Expressie geefExpressie(String codeString)
-	{	return parse(schoon(formuleString(codeString)));
+	{
+//		System.out.println("FormuleParser.geefExpressie(" + codeString + ")");
+		
+		return parse(schoon(formuleString(codeString)));
 	}
 	
 	public static Expressie geefExpressie(String codeString, FunctieMVDefSet fds) //FunctieDefSet
-	{	//Functie.setFunctieDefSet(fds);
+	{	
+//		System.out.println("----- FormuleParser.geefExpressie(" + codeString + ")");
+		
 		FunctieMV.setFunctieMVDefSet(fds);
 		Expressie e = parse(schoon(formuleString(codeString)));
-		//Functie.setFunctieDefSet(null);
+
+//		System.out.println("----- FormuleParser.geefExpressie(" + codeString + ") = " + e);
+		
 		FunctieMV.setFunctieMVDefSet(null);
 		return e;
 	}

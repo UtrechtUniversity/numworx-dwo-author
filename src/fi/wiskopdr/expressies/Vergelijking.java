@@ -252,9 +252,12 @@ public class Vergelijking
 	}
 	
 	public boolean isOplossing(Expressie subst, String var, String vergTeken)
-	{	boolean grensKlopt = isOplossing(subst, var);
-		if(vergTeken.equals("=") && vergelijkingsTeken.equals("=")) return grensKlopt;
-        if(vergTeken.equals("\u2248") && vergelijkingsTeken.equals("\u2248")) return grensKlopt;
+	{
+		boolean grensKlopt = isOplossing(subst, var);
+		if (vergTeken.equals("=") && vergelijkingsTeken.equals("="))
+			return grensKlopt;
+		if (vergTeken.equals("\u2248") && vergelijkingsTeken.equals("\u2248"))
+			return grensKlopt;
 		boolean verTekenKlopt = vergTeken.equals(vergelijkingsTeken) || vergTeken.equals(geefInvVergTeken(vergelijkingsTeken));
 		boolean juisteKant = false;
 		if((vergTeken.equals("\u2264") || vergTeken.equals("<")) && (vergelijkingsTeken.equals("\u2264") || vergelijkingsTeken.equals("<")))
@@ -344,15 +347,19 @@ public class Vergelijking
 	}
 	
 	public Vector geefVarN()
-	{	Vector v;
+	{
+		Vector v;
 		Vector v1 = Algebra.geefVarN(kind1);
 		Vector v2 = Algebra.geefVarN(kind2);
 		int lengte = v1.size();
-		for(int i=0 ; i<v2.size() ; i++)
-		{	boolean anders = true;
-			for(int j=0 ; j<lengte ; j++)
-			{	if(((String)v1.elementAt(j)).equals(((String)v2.elementAt(i))))
-				{	anders = false;
+		for (int i = 0; i < v2.size(); i++)
+		{
+			boolean anders = true;
+			for (int j = 0; j < lengte; j++)
+			{
+				if (((String) v1.elementAt(j)).equals(((String) v2.elementAt(i))))
+				{
+					anders = false;
 				}
 			}
 			if(anders)v1.addElement(v2.elementAt(i));
@@ -371,66 +378,89 @@ public class Vergelijking
 	}
 	
 	public String geefVarNaam()
-	{	String s1 = kind1.geefVarNaam();
+	{
+		String s1 = kind1.geefVarNaam();
 		String s2 = kind2.geefVarNaam();
-		if(s1!=null && s2!=null && (s1.equals("") || s2.equals("")))return "";
-		else if(s1!=null && s2!=null && !s1.equals(s2))return "";
-		else if(s1!=null && s2!=null && s1.equals(s2))return s1;
-		else if(s1!=null && s2==null)return s1;
-		else if(s1==null && s2!=null)return s2;
-		else return null;
+		if (s1 != null && s2 != null && (s1.equals("") || s2.equals("")))
+			return "";
+		else if (s1 != null && s2 != null && !s1.equals(s2))
+			return "";
+		else if (s1 != null && s2 != null && s1.equals(s2))
+			return s1;
+		else if (s1 != null && s2 == null)
+			return s1;
+		else if (s1 == null && s2 != null)
+			return s2;
+		else
+			return null;
 	}
 	
 	public boolean isEindOplossing(String var)
-	{	return(kind1.isVar() && kind1.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind2, var) 
+	{
+		boolean isEind = kind1.isVar() && kind1.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind2, var) 
 			|| kind2.isVar() && kind2.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind1, var)
 			|| kind1.isVar() && kind1.geefVarNaam().equals("D?(D)") && !(kind2.isVar() && kind2.geefVarNaam().equals("D?(D)")) && !Algebra.bevatVarNaam(kind2, var)
-			|| kind1.isVar() && kind1.geefVarNaam().equals("Q?(Q)") && !(kind2.isVar() && kind2.geefVarNaam().equals("Q?(Q)")) && !Algebra.bevatVarNaam(kind2, var));
+			|| kind1.isVar() && kind1.geefVarNaam().equals("Q?(Q)") && !(kind2.isVar() && kind2.geefVarNaam().equals("Q?(Q)")) && !Algebra.bevatVarNaam(kind2, var); 
+		
+		return isEind;
 	}
 	
 	public boolean isEindOplossingExact(Expressie subst,String var)
-	{	return(kind1.isVar() && kind1.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind2, var) && Algebra.zijnGelijk(subst, kind2) 
+	{
+		return (kind1.isVar() && kind1.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind2, var) && Algebra.zijnGelijk(subst, kind2) 
 			|| kind2.isVar() && kind2.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind1, var) && Algebra.zijnGelijk(subst, kind1)
 			|| kind1.isVar() && kind1.geefVarNaam().equals("D?(D)") && !(kind2.isVar() && kind2.geefVarNaam().equals("D?(D)")) && !Algebra.bevatVarNaam(kind2, var)
 			|| kind1.isVar() && kind1.geefVarNaam().equals("Q?(Q)") && !(kind2.isVar() && kind2.geefVarNaam().equals("Q?(Q)")) && !Algebra.bevatVarNaam(kind2, var));
 	}
 	
 	public boolean isEindOplossingExact(Expressie subst[],String var)
-	{	for(int i=0 ; i<subst.length ; i++)
-		{	boolean b =(kind1.isVar() && kind1.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind2, var) && Algebra.zijnGelijk(subst[i], kind2) 
+	{
+		for (int i = 0; i < subst.length; i++)
+		{
+			boolean b = (kind1.isVar() && kind1.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind2, var) && Algebra.zijnGelijk(subst[i], kind2) 
 				|| kind2.isVar() && kind2.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind1, var) && Algebra.zijnGelijk(subst[i], kind1)
 				|| kind1.isVar() && kind1.geefVarNaam().equals("D?(D)") && !(kind2.isVar() && kind2.geefVarNaam().equals("D?(D)")) && !Algebra.bevatVarNaam(kind2, var)
 				|| kind1.isVar() && kind1.geefVarNaam().equals("Q?(Q)") && !(kind2.isVar() && kind2.geefVarNaam().equals("Q?(Q)")) && !Algebra.bevatVarNaam(kind2, var));
-			if(b)return b;
+			
+			if (b)
+				return b;
 		}
+		
 		return false;
 	}
 	
 	public boolean isEindOplossingSignificant(Expressie subst[],String var)
-	{	for(int i=0 ; i<subst.length ; i++)
-		{	boolean b =(kind1.isVar() && kind1.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind2, var) && Algebra.isGelijkwaardig(subst[i], kind2) && Algebra.aantalSignificantGelijk(subst[i], kind2) 
+	{
+		for (int i = 0; i < subst.length; i++)
+		{
+			boolean b = (kind1.isVar() && kind1.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind2, var) && Algebra.isGelijkwaardig(subst[i], kind2) && Algebra.aantalSignificantGelijk(subst[i], kind2) 
 				|| kind2.isVar() && kind2.geefVarNaam().equals(var) && !Algebra.bevatVarNaam(kind1, var) && Algebra.isGelijkwaardig(subst[i], kind1) && Algebra.aantalSignificantGelijk(subst[i], kind1)
 				|| kind1.isVar() && kind1.geefVarNaam().equals("D?(D)") && !(kind2.isVar() && kind2.geefVarNaam().equals("D?(D)")) && !Algebra.bevatVarNaam(kind2, var)
 				|| kind1.isVar() && kind1.geefVarNaam().equals("Q?(Q)") && !(kind2.isVar() && kind2.geefVarNaam().equals("Q?(Q)")) && !Algebra.bevatVarNaam(kind2, var));
-			if(b)return b;
+			if (b)
+				return b;
 		}
+		
 		return false;
 	}
 	
 	public boolean isStelselEindOplossing(String var, String[] vars)
 	{
-		if(kind1.isVar() && kind1.geefVarNaam().equals(vars))
+		if (kind1.isVar() && kind1.geefVarNaam().equals(vars))
 		{
-			for(int i = 0; i < vars.length; i++)
-			{	if(Algebra.bevatVarNaam(kind2, var))
+			for (int i = 0; i < vars.length; i++)
+			{
+				if (Algebra.bevatVarNaam(kind2, var))
 					return false;
 			}
 			return true;
 		}
-		if(kind2.isVar() && kind2.geefVarNaam().equals(vars))
+		
+		if (kind2.isVar() && kind2.geefVarNaam().equals(vars))
 		{
-			for(int i = 0; i < vars.length; i++)
-			{	if(Algebra.bevatVarNaam(kind1, var))
+			for (int i = 0; i < vars.length; i++)
+			{
+				if (Algebra.bevatVarNaam(kind1, var))
 					return false;
 			}
 			return true;
@@ -453,36 +483,50 @@ public class Vergelijking
 	}*/
 	
 	public Expressie geefEindOplossing(String var)
-	{	if(isEindOplossing(var))
-		{	if(kind1.isVar() && kind1.geefVarNaam().equals(var))return kind2;
-			else if(kind2.isVar() && kind2.geefVarNaam().equals(var))return kind1;
-			else if(kind1.isVar() && kind1.geefVarNaam().equals("D?(D)"))return new Optelling(kind2, new BasisExpressie(0.1234567));
-			else if(kind1.isVar() && kind1.geefVarNaam().equals("Q?(Q)"))return new Optelling(kind2, new BasisExpressie(0.2345678));
-			else return null;
+	{
+		if (isEindOplossing(var))
+		{
+			if (kind1.isVar() && kind1.geefVarNaam().equals(var))
+				return kind2;
+			else if (kind2.isVar() && kind2.geefVarNaam().equals(var))
+				return kind1;
+			else if (kind1.isVar() && kind1.geefVarNaam().equals("D?(D)"))
+				return new Optelling(kind2, new BasisExpressie(0.1234567));
+			else if (kind1.isVar() && kind1.geefVarNaam().equals("Q?(Q)"))
+				return new Optelling(kind2, new BasisExpressie(0.2345678));
+			else
+				return null;
 		}
 		//if(kind1.isVar() && kind1.geefVarNaam().equals("D?(D)"))return new Optelling(kind2, new BasisExpressie(0.1234567));
-	
-		else return null;
+		else
+			return null;
 	}
 	
 	public Expressie[] geefEindOplossingen(String var)
-	{	if(eindoplossingen!=null) return eindoplossingen;
+	{
+		if (eindoplossingen != null)
+			return eindoplossingen;
 		else
-		{	Expressie[] e = new Expressie[1];
+		{
+			Expressie[] e = new Expressie[1];
 			e[0] = geefEindOplossing(var);
 			return e;
 		}
 	}
 	
 	public String geefVergelijkingVar()
-	{	String var = ""	;	
-		if(kind1.isVar()) var = kind1.geefVarNaam();
-		else if(kind2.isVar()) var = kind2.geefVarNaam();
+	{
+		String var = ""	;	
+		if (kind1.isVar())
+			var = kind1.geefVarNaam();
+		else if (kind2.isVar())
+			var = kind2.geefVarNaam();
 		return var;
 	}
 	
 	public Vergelijking substitueer(Expressie subst, String var)
-	{	Expressie e1 = kind1.substitueer(subst, var);
+	{
+		Expressie e1 = kind1.substitueer(subst, var);
 		Expressie e2 = kind2.substitueer(subst, var);
 		return new Vergelijking(e1,e2,vergelijkingsTeken);
 	}
@@ -517,51 +561,61 @@ public class Vergelijking
 	
 	
 	public String toString()
-	{	String s = "";
-		if(vergelijkingsTeken.equals("~"))
-		{	String s1 = kind2.kind2.kind1.toString();
+	{
+		String s = "";
+		if (vergelijkingsTeken.equals("~"))
+		{
+			String s1 = kind2.kind2.kind1.toString();
 			String s2 = kind2.kind2.kind2.toString();
 			int comb = (int)kind2.kind1.geefWaarde();
 			s = s1 + tekenParen[comb][0] + kind1.toString() + tekenParen[comb][1] + s2;
 		}
-		else if(Algebra.isGelijkDouble(kind2.geefWaarde(), 0.1234567)) 
-		{	s = WiskOpdr.rb.getString("geenOplossingen");
+		else if (Algebra.isGelijkDouble(kind2.geefWaarde(), 0.1234567)) 
+		{
+			s = WiskOpdr.rb.getString("geenOplossingen");
 		}
-		else if(Algebra.isGelijkDouble(kind2.geefWaarde(), 0.7654321)) 
-        {   s = WiskOpdr.rb.getString("allesOplossing");
+		else if (Algebra.isGelijkDouble(kind2.geefWaarde(), 0.7654321)) 
+        {
+			s = WiskOpdr.rb.getString("allesOplossing");
         }
-		else  s = kind1.toString() +""+  vergelijkingsTeken  +""+ kind2.toString();
+		else
+			s = kind1.toString() + "" + vergelijkingsTeken + "" + kind2.toString();
 		return s;
 	}
 	
 	public String toStringStrikt()
-	{	String s = "";
-		if(vergelijkingsTeken.equals("~"))
-		{	String s1 = kind2.kind2.kind1.toString();
+	{
+		String s = "";
+		if (vergelijkingsTeken.equals("~"))
+		{
+			String s1 = kind2.kind2.kind1.toString();
 			String s2 = kind2.kind2.kind2.toString();
 			int comb = (int)kind2.kind1.geefWaarde();
 			s = s1 + tekenParen[comb][0] + kind1.toString() + tekenParen[comb][1] + s2;
 		}
-		else if(Algebra.isGelijkDouble(kind2.geefWaarde(), 0.1234567)) 
-		{	s = WiskOpdr.rb.getString("geenOplossingen");
+		else if (Algebra.isGelijkDouble(kind2.geefWaarde(), 0.1234567)) 
+		{
+			s = WiskOpdr.rb.getString("geenOplossingen");
 		}
-		else if(Algebra.isGelijkDouble(kind2.geefWaarde(), 0.7654321)) 
-        {   s = WiskOpdr.rb.getString("allesOplossing");
+		else if (Algebra.isGelijkDouble(kind2.geefWaarde(), 0.7654321)) 
+        {
+			s = WiskOpdr.rb.getString("allesOplossing");
         }
-		else  s = kind1.toStringStrikt() +""+  vergelijkingsTeken  +""+ kind2.toStringStrikt();
+		else
+			s = kind1.toStringStrikt() + "" + vergelijkingsTeken + "" + kind2.toStringStrikt();
 		return s;
 	}
 
-	public Object visit(AbstractConverter instance) {
-		if("~".equals( vergelijkingsTeken))
+	public Object visit(AbstractConverter instance)
+	{
+		if ("~".equals( vergelijkingsTeken))
 		{
 			Object s1 = kind2.kind2.kind1.visit(instance);
 			Object s2 = kind2.kind2.kind2.visit(instance);
 			int comb = (int)kind2.kind1.geefWaarde();
 			return instance.vergelijking(s1,tekenParen[comb][0], kind1.visit(instance), tekenParen[comb][1], s2 );
 		}
-		return instance.vergelijking( kind1.visit(instance), vergelijkingsTeken , kind2.visit(instance));
+		
+		return instance.vergelijking( kind1.visit(instance), vergelijkingsTeken, kind2.visit(instance));
 	}
-	
-	
 }

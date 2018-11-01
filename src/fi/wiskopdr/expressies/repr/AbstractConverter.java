@@ -1,6 +1,7 @@
 package fi.wiskopdr.expressies.repr;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.expressies.Optelling;
@@ -102,6 +103,8 @@ public abstract class AbstractConverter {
 	public abstract Object wortel(Object kind1);
 
 	public abstract Object aantalsign(Object visit);
+	public abstract Object vectorExpr(ArrayList<Object> kinderen);
+	public abstract Object matrix(ArrayList<ArrayList<Object>> kinderen);
 
 	public Object vergelijking(Object visit, String vergelijkingsTeken, Object visit2) {
 		return visit + vergelijkingsTeken + visit2;

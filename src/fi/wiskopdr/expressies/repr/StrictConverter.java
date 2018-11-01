@@ -1,5 +1,7 @@
 package fi.wiskopdr.expressies.repr;
 
+import java.util.ArrayList;
+
 import fi.beans.stringutils.StringUtils;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.expressies.Algebra;
@@ -345,6 +347,20 @@ public class StrictConverter extends AbstractConverter {
 		}
 		builder.setLength(builder.length()-string.length());
 		return builder;
+	}
+
+	@Override
+	public Object vectorExpr(ArrayList<Object> kinderen)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object matrix(ArrayList<ArrayList<Object>> kinderen)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

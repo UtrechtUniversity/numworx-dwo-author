@@ -28,9 +28,8 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
 	//private FormuleButton[][] buttons;
 	private String[][] buttonCodes = 
 	{	
-		{"wortel","macht","kwadraat","breuk","haakjes","ndewortel","integraal","prv","ndelog","abs","subscript","bin"},
-		//{"diff","limiet0","limiet1","limiet2","\u221e","primitieve","\u2190", "\u2192","\u3008","\u3009","[","]"},
-		{"diff","limiet0","limiet1","limiet2","\u221e","primitieve","conjug", "stelsel","sigma","\u3008","\u3009","diff_partial"}, 
+		{"wortel","macht","kwadraat","breuk","haakjes","ndewortel","integraal","prv","ndelog","abs","subscript","bin","vector", "vectornotatie"},
+		{"diff","limiet0","limiet1","limiet2","\u221e","primitieve","conjug", "stelsel","sigma","\u3008","\u3009","diff_partial","matrix"}, 
 		{"x","y","(",")","1","2","3","/","back"},
 		{"a","b","k","e","pi","4","5","6","maal","del"},
 		{"p","q","t","<",">","7","8","9","min","enter"},
@@ -39,13 +38,13 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
 	};
 	
 	private double[][] buttonWidths = 
-	{	
-		{1  ,1  ,1  ,1  ,1  ,1  ,1  ,1  ,1.3  ,1  ,1  ,1},
-		{1	,1	,1	,1	,1	,1	,1	,1	,1.15	,1.15	,1	,1},
-		{2  ,1  ,1  ,1  ,1  ,1  ,1  ,1	,3.3      },
-		{1	,1	,1  ,1  ,1  ,1  ,1  ,1  ,1  ,3.3      },
-		{1	,1	,1  ,1  ,1  ,1  ,1  ,1  ,1  ,3.3      },
-		{1.5  ,1.5  ,1  ,1  ,1  ,1  ,1  ,1  ,3.3      },
+	{
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1.3, 1, 1, 1, 1, 1 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1.3, 1.2, 1.2, 1.3, 1.4 },
+		{ 2, 1, 1, 1, 1, 1, 1, 1, 5.3 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 5.3 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 5.3 },
+		{ 1.5, 1.5, 1, 1, 1, 1, 1, 1, 5.3 },
 			
 	};
 	
@@ -211,59 +210,79 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
 	}
 	
 	private void maakTablet()
-	{	cleanTablet();
-		
+	{
+		cleanTablet();
+
 		int buttonX = 15;
 		int buttonY = 48;
 		int inset = 2;
-		for(int i=0 ; i<buttonCodes.length ; i++)
-		{	if(i==0) buttonY = 48;
-			for(int j=0 ; j<buttonCodes[i].length ; j++)
-			{ 	
-				
+		for (int i = 0; i < buttonCodes.length; i++) // rij
+		{
+			if (i == 0)
+				buttonY = 48;
+
+			for (int j = 0; j < buttonCodes[i].length; j++) // kolom
+			{
 				FormuleButton fb = new FormuleButton(buttonCodes[i][j]);
 				fb.addActionListener(this);
 				fb.setBorder(BorderFactory.createLineBorder(Color.lightGray));
-				//fb.setFocusable(false);
-				if(j==0) buttonX = 15;
-				int buttonWidth = (int)(buttonWidths[i][j]*eenheid + inset*(buttonWidths[i][j]-1));
-				if(i==0)
-				{	JLabel fLabel = new JLabel("F"+(j+1));
-					if(j<9)fLabel = new JLabel("  F"+(j+1));
+				// fb.setFocusable(false);
+				if (j == 0)
+					buttonX = 15;
+				
+				int buttonWidth = (int) (buttonWidths[i][j] * eenheid + inset * (buttonWidths[i][j] - 1));
+				
+				if (i == 0)
+				{
+					JLabel fLabel = new JLabel("F" + (j + 1));
+					if (j < 9)
+						fLabel = new JLabel("  F" + (j + 1));
+					else if (j > 11)
+						fLabel = new JLabel(" ");
 					fLabel.setAlignmentX(JLabel.CENTER);
-					fLabel.setBounds(buttonX, buttonY-20, buttonWidth, eenheid);
-					
+					fLabel.setBounds(buttonX, buttonY - 20, buttonWidth, eenheid);
+
 					fLabel.setForeground(Color.gray);
-					fLabel.setFont(new Font("SansSerif",Font.PLAIN,11));
+					fLabel.setFont(new Font("SansSerif", Font.PLAIN, 11));
 					add(fLabel);
 				}
+				
 				fb.setBounds(buttonX, buttonY, buttonWidth, eenheid);
 				String code = buttonCodes[i][j];
-				if(Character.isDigit(code.charAt(0)) || code.equals("plus") || code.equals("min") || code.equals("maal") || code.equals("/") || code.equals(".") || code.equals("="))
-				{	fb.bgColor = new Color(230,230,230);
-				}
-				if(code.equals("ab..") || code.equals("\u03b1\u03b2.."))
-				{	fb.bgColor = new Color(255,150,150);
-				}
-				if(code.equals("x")) 
-				{	fb.setFont(new Font("TimesRoman", Font.ITALIC + Font.BOLD, 16));
-					if(WiskOpdr.mac) fb.setFont(new Font("SansSerif", Font.ITALIC + Font.BOLD , 13));
 				
+				if (Character.isDigit(code.charAt(0)) || code.equals("plus") || code.equals("min")
+					|| code.equals("maal") || code.equals("/") || code.equals(".") || code.equals("="))
+				{
+					fb.bgColor = new Color(230, 230, 230);
+				}
+				if (code.equals("ab..") || code.equals("\u03b1\u03b2..")) // alpha beta
+				{
+					fb.bgColor = new Color(255, 150, 150);
+				}
+				if (code.equals("x"))
+				{
+					fb.setFont(new Font("TimesRoman", Font.ITALIC + Font.BOLD, 16));
+					if (WiskOpdr.mac)
+						fb.setFont(new Font("SansSerif", Font.ITALIC + Font.BOLD, 13));
+
+				}
+
+				if (code.equals("a") || code.equals("t") || code.equals("y") || code.equals("b") || code.equals("k")
+					|| code.equals("p") || code.equals("q"))
+				{
+					fb.setFont(new Font("TimesRoman", Font.ITALIC, 16));
+					if (WiskOpdr.mac)
+						fb.setFont(new Font("SanSerif", Font.ITALIC, 13));
 				}
 				
-				if(code.equals("a") || code.equals("t") || code.equals("y") || code.equals("b") || code.equals("k")|| code.equals("p") || code.equals("q")) 
-				{	fb.setFont(new Font("TimesRoman", Font.ITALIC, 16));
-					if(WiskOpdr.mac) fb.setFont(new Font("SanSerif", Font.ITALIC, 13));
-				}
 				buttonX += buttonWidth + inset;
 				add(fb);
-				
 			}
 			buttonY = buttonY + eenheid + inset;
 		}
-		setSize(buttonX+inset+15, buttonY+2*inset+15);
-		closeButton.setBounds(getSize().width-28, 8, 13,12);
-		add(closeButton,0);
+		setSize(buttonX + inset + 15, buttonY + 2 * inset + 15);
+		closeButton.setBounds(getSize().width - 28, 8, 13, 12);
+		add(closeButton, 0);
 	}
 	
 	private void maakTabletMW()
@@ -336,8 +355,12 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
 				if(j==0) buttonX = 20;
 				int buttonWidth = (int)(buttonWidthsGR[i][j]*eenheid + inset*(buttonWidthsGR[i][j]-1));
 				if(i==0)
-				{	JLabel fLabel = new JLabel("F"+(j+1));
-					if(j<9)fLabel = new JLabel("  F"+(j+1));
+				{
+					JLabel fLabel = new JLabel("F"+(j+1));
+					if (j<9)
+						fLabel = new JLabel("  F"+(j+1));
+					else if (j > 11)
+						fLabel = new JLabel(" ");
 					fLabel.setAlignmentX(JLabel.CENTER);
 					fLabel.setBounds(buttonX, buttonY-20, buttonWidth, eenheid);
 					
@@ -595,7 +618,7 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
 		{	maakTabletAbc();
 			return;
 		}
-		if(code.equals("\u03b1\u03b2..")) 
+		if(code.equals("\u03b1\u03b2..")) // kleine alpha, kleine beta
 		{	if("GR".equals(WiskOpdr.deployVariant))
 			{	maakTabletAlphaGR();
 				backgroundImageMW  = Toolkit.getDefaultToolkit().getImage((new NWButtonUI()).getClass().getResource("resources/meerpalletgr-alpha.png"));
@@ -651,6 +674,9 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
         else if (code.equals("sigma")) formuleVakHouder.geefFormuleVak().zetSigmaVak();
         else if (code.equals("conjug")) formuleVakHouder.geefFormuleVak().zetConjugVak();
         else if(code.equals("stelsel")) formuleVakHouder.geefFormuleVak().zetStelselVak();
+        else if(code.equals("vector")) formuleVakHouder.geefFormuleVak().zetVectorVak();
+        else if(code.equals("vectornotatie")) formuleVakHouder.geefFormuleVak().zetVectorNotatieVak();
+        else if(code.equals("matrix")) formuleVakHouder.geefFormuleVak().zetMatrixVak();
 		
 				
 		else if (code.equals("del"))formuleVakHouder.geefFormuleVak().delete();

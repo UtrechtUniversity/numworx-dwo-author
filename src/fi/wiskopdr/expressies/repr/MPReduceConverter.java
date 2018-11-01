@@ -1,6 +1,7 @@
 package fi.wiskopdr.expressies.repr;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import fi.wiskopdr.expressies.Expressie;
 
@@ -267,6 +268,20 @@ public class MPReduceConverter extends AbstractConverter {
 		if ("\u2264".equals(vergelijkingsTeken))
 			vergelijkingsTeken = "<=";
 		return "trigsimp("  + super.vergelijking(visit, vergelijkingsTeken, visit2) + ")";
+	}
+
+	@Override
+	public Object vectorExpr(ArrayList<Object> kinderen)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object matrix(ArrayList<ArrayList<Object>> kinderen)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

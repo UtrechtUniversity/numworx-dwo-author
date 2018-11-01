@@ -114,23 +114,30 @@ public class AntwoordChecker
 		return herleiding;
 	}
 	
-	public static boolean checkGelijkwaardig(Expressie antwoord, Expressie juisteAntwoord, double precision)	
-	{	if(precision==0)return checkGelijkwaardig(antwoord, juisteAntwoord);
-		if(antwoord==null || juisteAntwoord==null) return false;
+	public static boolean checkGelijkwaardig(Expressie antwoord, Expressie juisteAntwoord, double precision)
+	{
+		if (precision == 0)
+			return checkGelijkwaardig(antwoord, juisteAntwoord);
+		if (antwoord == null || juisteAntwoord == null)
+			return false;
 		Algebra.setAbsPrecision(precision);
-		boolean	isGelijkwaardig = Algebra.isGelijkwaardig(antwoord,juisteAntwoord);
+		boolean isGelijkwaardig = Algebra.isGelijkwaardig(antwoord, juisteAntwoord);
 		Algebra.setDefaultAbsPrecision();
 		return isGelijkwaardig;
 	}
 	
 	public static boolean checkGelijkwaardig(Expressie antwoord, Expressie juisteAntwoord)	
-	{	if(antwoord==null || juisteAntwoord==null) return false;
-		boolean	isGelijkwaardig = Algebra.isGelijkwaardig(antwoord,juisteAntwoord);
+	{
+		if (antwoord == null || juisteAntwoord == null)
+			return false;
+		boolean isGelijkwaardig = Algebra.isGelijkwaardig(antwoord, juisteAntwoord);
 		return isGelijkwaardig;
 	}
 	
 	public static boolean checkHerleiding(Expressie antwoord, Expressie juisteAntwoord, int soortHerleiding)	
-	{	if(antwoord==null || juisteAntwoord==null) return false;		
+	{
+		if (antwoord == null || juisteAntwoord == null)
+			return false;
 		boolean isHerleid = false;
 		
 		if(soortHerleiding==HERLEIDING_VEELTERM_ZH) isHerleid = isHerleidingZH(antwoord,juisteAntwoord);
@@ -145,27 +152,35 @@ public class AntwoordChecker
 	}	
 	
 	public static boolean checkExact(Expressie antwoord, Expressie juisteAntwoord)	
-	{	if(antwoord==null || juisteAntwoord==null) return false;
-		//boolean isExact = antwoord.toString().equals(juisteAntwoord.toString());
-		boolean isExact = Algebra.zijnGelijk(antwoord,juisteAntwoord);
+	{
+		if (antwoord == null || juisteAntwoord == null)
+			return false;
+		// boolean isExact =
+		// antwoord.toString().equals(juisteAntwoord.toString());
+		boolean isExact = Algebra.zijnGelijk(antwoord, juisteAntwoord);
 		return isExact;
 	}
 	
 	public static boolean checkSignificant(Expressie antwoord, Expressie juisteAntwoord)	
-	{	if(antwoord==null || juisteAntwoord==null) return false;
-		//boolean isExact = antwoord.toString().equals(juisteAntwoord.toString());
-		
-		boolean  aantalSignificantGelijk = Algebra.aantalSignificantGelijk(antwoord,juisteAntwoord);
-		boolean	isGelijkwaardig = Algebra.isGelijkwaardig(antwoord,juisteAntwoord);
+	{
+		if (antwoord == null || juisteAntwoord == null)
+			return false;
+		// boolean isExact =
+		// antwoord.toString().equals(juisteAntwoord.toString());
+
+		boolean aantalSignificantGelijk = Algebra.aantalSignificantGelijk(antwoord, juisteAntwoord);
+		boolean isGelijkwaardig = Algebra.isGelijkwaardig(antwoord, juisteAntwoord);
 		return isGelijkwaardig && aantalSignificantGelijk;
 	}
 	
 	// ondervangt het probleem dat er geen onderscheid gemaakt kan worden tussen 1 1/2 en 1+1/2
 	public static boolean checkExactBreukPlusGetal(String antwoord, Expressie juisteAntwoord)	
-	{	if(antwoord==null || juisteAntwoord==null) return false;
-		boolean zonderPlus = antwoord.indexOf('+')<0;
-		//System.out.println(antwoord);
-		boolean isExact = Algebra.zijnGelijk(FormuleParser.geefExpressie(antwoord),juisteAntwoord);
+	{
+		if (antwoord == null || juisteAntwoord == null)
+			return false;
+		boolean zonderPlus = antwoord.indexOf('+') < 0;
+		// System.out.println(antwoord);
+		boolean isExact = Algebra.zijnGelijk(FormuleParser.geefExpressie(antwoord), juisteAntwoord);
 		return isExact && zonderPlus;
 	}
 }

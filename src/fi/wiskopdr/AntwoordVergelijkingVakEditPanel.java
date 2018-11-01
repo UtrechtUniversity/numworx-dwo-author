@@ -1493,7 +1493,6 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         	if(vm!=null)
         	{
         		Vergelijking v = vm.geefVergelijking(0);
-        		vergStringCas = v.geefExpLinks().toStringCAS() + "==" + v.geefExpRechts().toStringCAS();
         		vmAntw = // Expressie.solveWithCAS(vergStringCas, solveTF.getText());
         				Expressie.solve(v, solveTF.getText());
         		String def = "";

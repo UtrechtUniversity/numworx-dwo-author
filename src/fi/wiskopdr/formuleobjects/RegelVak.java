@@ -65,22 +65,30 @@ public class RegelVak extends FormuleElement
 	}
 	
 	public void vulVak(String s)
-	{	kind1.removeAll();
-		if(kind2!=null)kind2.removeAll();
-		if(kind3!=null)kind3.removeAll();
-		if(kind4!=null)kind4.removeAll();
+	{
+		kind1.removeAll();
+		if (kind2 != null)
+			kind2.removeAll();
+		if (kind3 != null)
+			kind3.removeAll();
+		if (kind4 != null)
+			kind4.removeAll();
 		FormuleRegel formuleRegel = kind1;
-		while(s.length()>0)
-		{	char ch0 = s.charAt(0);
-			if(ch0=='@')
-			{	break;
+		while (s.length() > 0)
+		{
+			char ch0 = s.charAt(0);
+			if (ch0 == '@')
+			{
+				break;
 			}
-			else if(ch0=='$')
-			{	int niv = 1;
+			else if (ch0 == '$')
+			{
+				int niv = 1;
 				int eind = 0;
 				String sz = s.substring(2);
-				while(niv>0 )
-				{	int eindB = sz.indexOf("$");
+				while (niv > 0)
+				{
+					int eindB = sz.indexOf("$");
 					int eindE = sz.indexOf("@");
 					if(eindB < eindE && eindB!=-1)
 					{	eind = eindB;
@@ -240,6 +248,30 @@ public class RegelVak extends FormuleElement
 					sv.setFGColor(fgColor);
 					formuleRegel.add(sv);
 					sv.vulVak(s.substring(2, eind));
+					s = s.substring(eind);
+				}
+				else if (ch1 == 'Y')
+				{
+					VectorVak vectorvak = new VectorVak(formuleVak);
+					vectorvak.setFGColor(fgColor);
+					formuleRegel.add(vectorvak);
+					vectorvak.vulVak(s.substring(2, eind));
+					s = s.substring(eind);
+				}
+				else if (ch1 == 'z')
+				{
+					VectorNotatieVak vectornotatievak = new VectorNotatieVak(formuleVak);
+					vectornotatievak.setFGColor(fgColor);
+					formuleRegel.add(vectornotatievak);
+					vectornotatievak.vulVak(s.substring(2, eind));
+					s = s.substring(eind);
+				}
+				else if (ch1 == 'M')
+				{
+					MatrixVak matrixvak = new MatrixVak(formuleVak);
+					matrixvak.setFGColor(fgColor);
+					formuleRegel.add(matrixvak);
+					matrixvak.vulVak(s.substring(2, eind));
 					s = s.substring(eind);
 				}
                 else if(ch1=='s')

@@ -20,7 +20,14 @@ public class Abs extends Expressie
 	}
 	
 	public double geefWaarde()
-	{	return Math.abs(kind1.geefWaarde());
+	{
+		double waarde;
+		if (Algebra.isVector(kind1))
+			waarde = geefLengte().geefWaarde();
+		else
+			waarde = Math.abs(kind1.geefWaarde());
+			
+		return waarde;
 	}
 	
 	public double geefWaarde(double subst)
@@ -85,4 +92,21 @@ public class Abs extends Expressie
     public String toStringCAS()
     {   return "Abs" + "[" + kind1.toStringCAS() + "]";
     }
+    
+	/**
+	 * Geef de lengte (norm) van het vectorkind.
+	 * 
+	 * @return
+	 */
+	private Expressie geefLengte()
+	{
+		Expressie lengte = null;
+		
+		if (Algebra.isVector(kind1))
+		{
+			lengte = kind1.geefVector().geefLengte();
+		}
+		
+		return lengte;
+	}
 }

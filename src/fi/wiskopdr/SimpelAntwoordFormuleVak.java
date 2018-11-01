@@ -959,6 +959,14 @@ public class SimpelAntwoordFormuleVak extends JPanel implements InteractiePanel,
 		return null;
 	}
 	
-	
+	/**
+	 * Voor gebruik buiten opdracht om; in Statistiek compute variable.
+	 * 
+	 * @param s
+	 */
+	public void zetJuisteAntwoord(String s)
+	{
+		antwoordFormuleVak.zetJuisteAntwoord(s);
+	}
 	
 }

@@ -9,22 +9,140 @@ public class Aftrekking extends Expressie
 {	
 	
 	public Aftrekking(Expressie e1,Expressie e2 )
-	{	kind1 = e1;
+	{
+		kind1 = e1;
 		kind2 = e2;
 		isVeelterm = true;
 		isProdukt = false;
 		isBasis = false;
 	}
 	
+	/**
+	 * Als de optelling als uitkomst een vector heeft,
+	 * geef de dimensie van deze vector [rijen, kolommen].
+	 * 
+	 */
+	public int[] geefDimensie()
+	{
+		int[] dimensie = {-1, -1};
+		
+		int[] dimensieKind1 = Algebra.geefVectorDimensie(kind1);
+		int[] dimensieKind2 = Algebra.geefVectorDimensie(kind2);
+		
+		if (dimensieKind1 == dimensieKind2)
+		{
+			dimensie = dimensieKind1;
+		}
+	
+		return dimensie;
+	}
+	
 	public Expressie geefDiff(BasisExpressie basisExp)
-	{	if(kind1!=null)
-		{	return new Aftrekking(kind1.geefDiff(basisExp), kind2.geefDiff(basisExp));
+	{
+		if (kind1!=null)
+		{
+			return new Aftrekking(kind1.geefDiff(basisExp), kind2.geefDiff(basisExp));
 		}
 		return null;	
 	}
 
+	/**
+	 * Als de aftrekking als uitkomst een vector heeft, geef deze vector.
+	 * 
+	 * @return
+	 */
+	public VectorExpr geefVector()
+	{
+		VectorExpr vector = null;
+		ArrayList<Expressie> kinderen1, kinderen2;
+		
+		if (kind1 instanceof VectorExpr)
+		{
+			kinderen1 = ((VectorExpr) kind1).geefKinderen();
+		}
+		else
+		{
+			kinderen1 = kind1.geefVector().geefKinderen();
+		}
+		if (kind2 instanceof VectorExpr)
+		{
+			kinderen2 = ((VectorExpr) kind2).geefKinderen();
+		}
+		else
+		{
+			kinderen2 = kind2.geefVector().geefKinderen();
+		}
+		if (kinderen1.size() == kinderen2.size()) // zelfde dimensie
+		{
+			ArrayList<Expressie> list = new ArrayList<Expressie>();
+			
+			for (int i = 0; i < kinderen1.size(); i++)
+			{
+				Expressie kind = new Aftrekking(kinderen1.get(i), kinderen2.get(i));
+				list.add(kind);
+			}
+			vector = new VectorExpr(list);
+		}
+		
+		return vector;
+	}
+	
+	/**
+	 * Als de aftrekking als uitkomst een matrix heeft, geef deze matrix.
+	 * 
+	 * @return
+	 */
+	public Matrix geefMatrix()
+	{
+		Matrix matrix = null;
+		ArrayList<ArrayList<Expressie>> matrixKinderen1, matrixKinderen2;
+		Expressie scalar;
+		
+		if (kind1 instanceof Matrix)
+		{
+			matrixKinderen1 = ((Matrix) kind1).geefKinderen();
+		}
+		else
+		{
+			matrixKinderen1 = kind1.geefMatrix().geefKinderen();
+		}
+		
+		if (kind2 instanceof Matrix)
+		{
+			matrixKinderen2 = ((Matrix) kind2).geefKinderen();
+		}
+		else
+		{
+			matrixKinderen2 = kind2.geefMatrix().geefKinderen();
+		}
+		
+		ArrayList<ArrayList<Expressie>> list = new ArrayList<ArrayList<Expressie>>();
+		
+		if ((matrixKinderen1.size() == matrixKinderen2.size())
+			&& (matrixKinderen1.get(0).size() == matrixKinderen2.get(0).size())) // zelfde dimensies
+		{
+			for (int i = 0; i < matrixKinderen1.size(); i++) // rijen
+			{
+				ArrayList<Expressie> rij = new ArrayList<Expressie>();
+				
+				for (int j = 0; j < matrixKinderen1.get(0).size(); j++) // kolommen
+				{
+					// vermenigvuldig alle kinderen met de scalar
+					Expressie kind = new Aftrekking(matrixKinderen1.get(i).get(j), matrixKinderen2.get(i).get(j));
+					rij.add(kind);				
+				}
+				list.add(rij);
+			}
+			
+			matrix = new Matrix(list);
+		}
+		
+		return matrix;
+	}
+	
 	public double geefWaarde()
-	{	return kind1.geefWaarde()-kind2.geefWaarde();
+	{
+		return kind1.geefWaarde()-kind2.geefWaarde();
 	}
 	
 	public Complex geefWaardeComplex()

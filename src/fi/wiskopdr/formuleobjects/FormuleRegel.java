@@ -159,10 +159,14 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 	}
 	
 	public void insert(String s)
-	{	if(s==null)return;
-		while(s.length()>0)
-		{	char ch0 = s.charAt(0);
-			if(ch0=='@')
+	{
+		if (s==null)
+			return;
+		
+		while (s.length()>0)
+		{
+			char ch0 = s.charAt(0);
+			if (ch0=='@')
 			{	break;
 			}
 			else if(ch0=='$')
@@ -318,11 +322,31 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 					insert(sv);
 					s = s.substring(eind);
 				}
-				
-				
+				else if(ch1=='Y')
+				{
+					VectorVak vectorvak = new VectorVak(formuleVak);
+					vectorvak.vulVak(s.substring(2, eind));
+					insert(vectorvak);
+					s = s.substring(eind);
+				}
+				else if(ch1=='z')
+				{
+					VectorNotatieVak vectornotatievak = new VectorNotatieVak(formuleVak);
+					vectornotatievak.vulVak(s.substring(2, eind));
+					insert(vectornotatievak);
+					s = s.substring(eind);
+				}
+				else if(ch1=='M')
+				{
+					MatrixVak matrixvak = new MatrixVak(formuleVak);
+					matrixvak.vulVak(s.substring(2, eind));
+					insert(matrixvak);
+					s = s.substring(eind);
+				}
 			}
 			else
-			{	FormuleTeken formuleTeken = new FormuleTeken(s.charAt(0));
+			{
+				FormuleTeken formuleTeken = new FormuleTeken(s.charAt(0));
 				if(reactieVergelijking)
 					formuleTeken.zetFunctieTeken(true);
 				insert(formuleTeken);
@@ -615,7 +639,8 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 			ashoogte = fm.getAscent()/2;
 		}
 		
-		if(getParent()instanceof FormuleElement)((FormuleElement)getParent()).zetMaat();
+		if (getParent() instanceof FormuleElement)
+			((FormuleElement) getParent()).zetMaat();
 	}
 	
 	public void zetReactieVergelijking(boolean b)
@@ -1052,6 +1077,110 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 		
 	}
 	
+	public void zetVectorVak()
+	{
+		FormuleElement[] selectieRij = new FormuleElement[100];
+		int aantalElementen = 0;
+		for (int i = 0; i < getComponentCount(); i++)
+		{
+			if (((FormuleElement) getComponent(i)).isSelected())
+			{
+				selectieRij[aantalElementen] = ((FormuleElement) getComponent(i));
+				aantalElementen++;
+			}
+		}
+		if (!caretVisible)
+		{
+			deleteSelection();
+		}
+		
+		VectorVak vectorvak = new VectorVak(formuleVak);
+		vectorvak.setFGColor(fgColor);
+		add(vectorvak, caretPos);
+		formuleVak.changed();
+		int x = 0;
+		for (int i = 0; i < aantalElementen; i++)
+		{
+			vectorvak.geefKind1().insert(selectieRij[i]);
+		}
+		vectorvak.geefKind1().zetMaat();
+
+		caretVisible = false;
+		hasFocus = false;
+		vectorvak.geefKind1().requestFocus();
+		formuleVak.zetActieveRegel(vectorvak.geefKind1());
+		zetMaat();
+	}
+	
+	public void zetVectorNotatieVak()
+	{
+		FormuleElement[] selectieRij = new FormuleElement[100];
+		int aantalElementen = 0;
+		for (int i = 0; i < getComponentCount(); i++)
+		{
+			if (((FormuleElement) getComponent(i)).isSelected())
+			{
+				selectieRij[aantalElementen] = ((FormuleElement) getComponent(i));
+				aantalElementen++;
+			}
+		}
+		if (!caretVisible)
+		{
+			deleteSelection();
+		}
+		VectorNotatieVak wv = new VectorNotatieVak(formuleVak);
+		wv.setFGColor(fgColor);
+		add(wv, caretPos);
+		formuleVak.changed();
+		int x = 0;
+		for (int i = 0; i < aantalElementen; i++)
+		{
+			wv.geefKind1().insert(selectieRij[i]);
+		}
+		wv.geefKind1().zetMaat();
+
+		caretVisible = false;
+		hasFocus = false;
+		wv.geefKind1().requestFocus();
+		formuleVak.zetActieveRegel(wv.geefKind1());
+		zetMaat();
+	}
+	
+	public void zetMatrixVak()
+	{
+		FormuleElement[] selectieRij = new FormuleElement[100];
+		int aantalElementen = 0;
+		for (int i = 0; i < getComponentCount(); i++)
+		{
+			if (((FormuleElement) getComponent(i)).isSelected())
+			{
+				selectieRij[aantalElementen] = ((FormuleElement) getComponent(i));
+				aantalElementen++;
+			}
+		}
+		if (!caretVisible)
+		{
+			deleteSelection();
+		}
+		
+		MatrixVak matrixvak = new MatrixVak(formuleVak);
+		matrixvak.setFGColor(fgColor);
+		add(matrixvak, caretPos);
+		formuleVak.changed();
+		int x = 0;
+		for (int i = 0; i < aantalElementen; i++)
+		{
+			matrixvak.geefKind1().insert(selectieRij[i]); // kind1 van matrix is cel (0, 0)
+		}
+		matrixvak.geefKind1().zetMaat();
+
+		caretVisible = false;
+		hasFocus = false;
+		matrixvak.geefKind1().requestFocus();
+		formuleVak.zetActieveRegel(matrixvak.geefKind1());
+		zetMaat();
+	}
+	
 	public void zetBreukVak()
 	{	FormuleElement[] selectieRij = new FormuleElement[100];
 		int aantalElementen = 0;
@@ -1457,42 +1586,57 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 	
 	
 	public void delete()
-	{	boolean selectionExited = deleteSelection();
-		if(!selectionExited)
-		{	if(caretPos<getComponentCount() )
-			{	remove(caretPos);
+	{
+		boolean selectionExited = deleteSelection();
+		if (!selectionExited)
+		{
+			if (caretPos < getComponentCount())
+			{
+				remove(caretPos);
 				zetMaat();
 			}
-			else if(getComponentCount()==0 )
-			{	deleteThis();
+			else if (getComponentCount() == 0)
+			{
+				deleteThis();
 			}
-			else if(getParent() instanceof StelselVak)
+			else if (getParent() instanceof StelselVak)
 				((StelselVak) getParent()).deleteKind();
+			else if (getParent() instanceof VectorVak)
+				((VectorVak) getParent()).deleteKind();
 		}
 		formuleVak.addState();
 	}
 	
 	public void backspace()
-	{	boolean selectionExited = deleteSelection();
-		if(!selectionExited)
-		{	if(caretPos>0)
-			{	caretPos--;
-				caretX -= getComponent(caretPos) .getSize().width;
+	{
+		boolean selectionExited = deleteSelection();
+		if (!selectionExited)
+		{
+			if (caretPos > 0)
+			{
+				caretPos--;
+				caretX -= getComponent(caretPos).getSize().width;
 				remove(caretPos);
 				zetMaat();
 			}
-			else if(getParent() instanceof StelselVak)
+			else if (getParent() instanceof StelselVak)
 			{
 				((StelselVak) getParent()).deleteKind();
 			}
-			else if(getComponentCount()==0 || caretPos==0 
-					&& (getParent() instanceof WortelVak 
-							|| getParent() instanceof HaakjesVak 
-							|| getParent() instanceof NdeWortelVak
-							|| getParent() instanceof NdeLogVak))
-			{	deleteThis();
+			else if (getParent() instanceof VectorVak)
+			{
+				((VectorVak) getParent()).deleteKind();
 			}
-			
+			else if (getParent() instanceof MatrixVak)
+			{
+				((MatrixVak) getParent()).delete();
+			}
+			else if (getComponentCount() == 0
+				|| caretPos == 0 && (getParent() instanceof WortelVak || getParent() instanceof HaakjesVak
+					|| getParent() instanceof NdeWortelVak || getParent() instanceof NdeLogVak))
+			{
+				deleteThis();
+			}
 
 		}
 		formuleVak.addState();
@@ -1604,29 +1748,51 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 					caretVisible = false;
                 }
 				else if (kc == KeyEvent.VK_LEFT)
-                {   if (caretPos > 0 && getComponent(caretPos-1)instanceof FormuleTeken)
-                    {   caretPos--;
+                {   
+					if (e.isControlDown() && getParent() instanceof MatrixVak && ((MatrixVak) getParent()).aantalKolommen > 2) // matrix heeft minimaal 2 kolommen
+					{
+						((MatrixVak) getParent()).deleteKolom();
+						formuleVak.changed();
+					}
+					else if (caretPos > 0 && getComponent(caretPos-1)instanceof FormuleTeken)
+                    {
+						caretPos--;
                         caretX -= getComponent(caretPos) .getSize().width;
 						deSelect();
                     }
+	                else if (getParent() instanceof MatrixVak) // alleen als de meest linkerpositie is bereikt
+	                {
+	                	((MatrixVak) getParent()).focusKindLinks();
+	                }
 					else if(!(caretPos > 0))
-					{	if(getParent() instanceof FormuleElement)
-						{	((FormuleElement)getParent()).neemFocus("links",this);
+					{	
+						if(getParent() instanceof FormuleElement)
+						{
+							((FormuleElement)getParent()).neemFocus("links",this);
 						}
 					}
 					else
-					{	((FormuleElement)getComponent(caretPos-1)).neemFocus("links");
+					{
+						((FormuleElement)getComponent(caretPos-1)).neemFocus("links");
 					}
                 }
 				else if (e.isShiftDown() && kc == KeyEvent.VK_RIGHT)
-                {   if (caretPos < getComponentCount())
-                    {   caretPos++;
+                {
+					if (e.isControlDown() && getParent() instanceof MatrixVak)
+					{
+						((MatrixVak) getParent()).maakNieuweKolom();
+						formuleVak.changed();
+					}
+					else if (caretPos < getComponentCount())
+                    {   
+						caretPos++;
                         caretX += getComponent(caretPos-1).getSize().width;
                         boolean b = ((FormuleElement)getComponent(caretPos-1)).isSelected();
                         ((FormuleElement)getComponent(caretPos-1)).setSelected(!b);
 					}
 					else if (!(caretPos < getComponentCount()))
-					{	if(getParent() instanceof FormuleElement)
+					{	
+						if(getParent() instanceof FormuleElement)
 						{	((FormuleElement)getParent()).neemFocus("rechts",this);
 							boolean b = ((FormuleElement)getParent()).isSelected();
 							((FormuleElement)getParent()).setSelected(!b);
@@ -1635,18 +1801,27 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
                 	caretVisible = false;
                 }
                 else if (kc == KeyEvent.VK_RIGHT)
-                {   if (caretPos < getComponentCount()&& getComponent(caretPos)instanceof FormuleTeken)
-                    {   caretPos++;
+                {
+                	if (caretPos < getComponentCount()&& getComponent(caretPos)instanceof FormuleTeken)
+                    {
+                		caretPos++;
                         caretX += getComponent(caretPos-1).getSize().width;
 						deSelect();
 					}
+                    else if (getParent() instanceof MatrixVak) // alleen als de meest rechterpositie is bereikt
+                    {
+                    	((MatrixVak) getParent()).focusKindRechts();
+                    }
 					else if (!(caretPos < getComponentCount()))
-					{	if(getParent() instanceof FormuleElement)
-						{	((FormuleElement)getParent()).neemFocus("rechts",this);
+					{	
+						if(getParent() instanceof FormuleElement)
+						{
+							((FormuleElement)getParent()).neemFocus("rechts",this);
 						}
 					}
 					else
-					{	((FormuleElement)getComponent(caretPos)).neemFocus("rechts");
+					{	
+						((FormuleElement)getComponent(caretPos)).neemFocus("rechts");
 					}
                 }
                 else if (kc == KeyEvent.VK_DOWN && getParent() instanceof BinVak)
@@ -1697,6 +1872,34 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
                 {
                 	((StelselVak)getParent()).focusKindOmlaag();
                 }
+                else if (kc == KeyEvent.VK_UP && getParent() instanceof VectorVak)
+                {
+                	((VectorVak) getParent()).focusKindOmhoog();
+                }
+                else if (kc == KeyEvent.VK_DOWN && getParent() instanceof VectorVak)
+                {
+                	((VectorVak) getParent()).focusKindOmlaag();
+                }
+                else if (kc == KeyEvent.VK_UP && getParent() instanceof MatrixVak)
+                {
+                	if (e.isControlDown() && ((MatrixVak) getParent()).aantalRijen > 2) // matrix heeft minimaal 2 rijen
+                	{
+						((MatrixVak) getParent()).deleteRij();
+						formuleVak.changed();
+                	}
+                	else
+                		((MatrixVak) getParent()).focusKindOmhoog();
+                }
+                else if (kc == KeyEvent.VK_DOWN && getParent() instanceof MatrixVak)
+                {
+                	if (e.isControlDown())
+                	{
+						((MatrixVak) getParent()).maakNieuweRij();
+						formuleVak.changed();
+                	}
+                	else
+                		((MatrixVak) getParent()).focusKindOmlaag();
+                }
                 else if (kc == KeyEvent.VK_DOWN && getParent() instanceof DiffVak)
                 {   ((DiffVak)getParent()).kind2.neemFocus("rechts");
                 }
@@ -1709,9 +1912,6 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 				else if (kc == KeyEvent.VK_UP && getParent() instanceof DiffPartialVak)
                 {   ((DiffPartialVak)getParent()).kind1.neemFocus("rechts");
                 }
-				
-                		
-                
                 else if (kc == KeyEvent.VK_HOME)
                 {   caretPos = 0;
                     caretX = correctieCursief;
@@ -1735,30 +1935,35 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 	}
     public void keyReleased(KeyEvent e) {}
     public void keyTyped(KeyEvent e)
-    {	int pc = e.getKeyChar();
+    {
+    	int pc = e.getKeyChar();
     	if (pc == KeyEvent.VK_TAB) 
-    	{	return;
+    	{
+    		return;
 		}
     	if (editable)
-		{   // kc initialized by keyPressed
-                int kt = e.getKeyChar();
-                formuleVak.changed();
-                if (kt == KeyEvent.VK_ENTER)
-                {	if(getParent() instanceof StelselVak)
-                		((StelselVak)getParent()).focusKindOmlaag();
-                	formuleVak.finish();
-					//formuleVak.requestFocus();
-				}
-                
-				else if ((kc != KeyEvent.VK_ESCAPE) &&
+		{ 
+    		// kc initialized by keyPressed
+			int kt = e.getKeyChar();
+			formuleVak.changed();
+			if (kt == KeyEvent.VK_ENTER)
+			{
+				if (getParent() instanceof StelselVak)
+					((StelselVak) getParent()).focusKindOmlaag();
+//				else if (getParent() instanceof VectorVak)
+//					((VectorVak) getParent()).focusKindOmlaag();
+				
+				formuleVak.finish();
+				// formuleVak.requestFocus();
+			}
+			else if ((kc != KeyEvent.VK_ESCAPE) &&
                     (kc != KeyEvent.VK_BACK_SPACE) &&
                     (kc != KeyEvent.VK_ENTER)
                     && (kc != KeyEvent.VK_SHIFT)
                     && (kc != KeyEvent.VK_DELETE)
                     && !e.isControlDown()
                    )
-                {	
-				    
+            {	
 				    if(!caretVisible)
 					{	deleteSelection();
 					}
@@ -1900,9 +2105,9 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 							}
 						}
 					}/**/
-					
-                } // all typed keys except Esc, Backspace, Enter
-            zetMaat();   
+			} // all typed keys except Esc, Backspace, Enter
+            
+			zetMaat();   
             repaint();
 		}
 	}

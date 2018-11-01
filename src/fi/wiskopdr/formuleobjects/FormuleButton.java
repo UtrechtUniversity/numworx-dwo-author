@@ -79,37 +79,56 @@ public class FormuleButton extends JButton implements MouseListener
 	{
 		this(s,0);
 	}
+	
+	/**
+	 * 
+	 * @param s
+	 * @param soort
+	 */
 	public FormuleButton(String s, int soort)
-	{	code = s;
+	{
+		code = s;
 		this.soort = soort;
 		addMouseListener(this);
 		setFont(defaultfont);
 		fm = this.getFontMetrics(defaultfont);
-		UIManager.put("ToolTip.background", new ColorUIResource(new Color(255,255,230)));
-		//setToolTipText(s);
+		UIManager.put("ToolTip.background", new ColorUIResource(new Color(255, 255, 230)));
+		// setToolTipText(s);
 		setBorder(null);
-		if(images==null)
-		{	images = new Hashtable();
-			WiskOpdr.loadImages(images,imageNames);
+		if (images == null)
+		{
+			images = new Hashtable();
+			WiskOpdr.loadImages(images, imageNames);
 		}
-		if(soort==BEWERKINGSKNOP)bgColor = new Color(255,150,150);
-		if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
-		{	
+		if (soort == BEWERKINGSKNOP)
+			bgColor = new Color(255, 150, 150);
+		if ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
+		{
 			NWButtonUI ui = NWButtonUI.getInstance("mw_formbutton_skin_gray.png");
-			if(soort==EDITORKNOP) ui = NWButtonUI.getInstance("mw_formbutton_skin_gray.png");
-			if(soort==BEWERKINGSKNOP) ui = NWButtonUI.getInstance("mw_formbutton_skin_rood.png");
-			if("MW".equals(WiskOpdr.deployVariant)&&soort==NAVIGATIEKNOP) ui = NWButtonUI.getInstance("mw_formbutton_skin_orange.png");
-			else if("GR".equals(WiskOpdr.deployVariant)&&soort==NAVIGATIEKNOP) ui = NWButtonUI.getInstance("gr_formbutton_skin_graf.gif");
-			if(soort==TABLETKNOP) ui = NWButtonUI.getInstance("mw_formbutton_skin_tablet.png");
-			if("GR".equals(WiskOpdr.deployVariant)&&soort==TABLETKNOP) ui = NWButtonUI.getInstance("mw_formbutton_skin_gray.png");
-			if(soort==MEERKNOP) ui = NWButtonUI.getInstance("mw_formbutton_skin_white.png");
+			if (soort == EDITORKNOP)
+				ui = NWButtonUI.getInstance("mw_formbutton_skin_gray.png");
+			if (soort == BEWERKINGSKNOP)
+				ui = NWButtonUI.getInstance("mw_formbutton_skin_rood.png");
+			if ("MW".equals(WiskOpdr.deployVariant) && soort == NAVIGATIEKNOP)
+				ui = NWButtonUI.getInstance("mw_formbutton_skin_orange.png");
+			else if ("GR".equals(WiskOpdr.deployVariant) && soort == NAVIGATIEKNOP)
+				ui = NWButtonUI.getInstance("gr_formbutton_skin_graf.gif");
+			if (soort == TABLETKNOP)
+				ui = NWButtonUI.getInstance("mw_formbutton_skin_tablet.png");
+			if ("GR".equals(WiskOpdr.deployVariant) && soort == TABLETKNOP)
+				ui = NWButtonUI.getInstance("mw_formbutton_skin_gray.png");
+			if (soort == MEERKNOP)
+				ui = NWButtonUI.getInstance("mw_formbutton_skin_white.png");
 			setUI(ui);
 			NWButtonUI.setIcon(code, this);
-			if(code.equals("\u2227"))setToolTipText(" "+WiskOpdr.rb.getString("enLabel")+" ");
-			if(code.equals("\u2228"))setToolTipText(" "+WiskOpdr.rb.getString("ofLabel")+" ");
-			if(code.equals("\u2205"))setToolTipText(" "+WiskOpdr.rb.getString("geenOplossingen")+" ");
+			if (code.equals("\u2227"))
+				setToolTipText(" " + WiskOpdr.rb.getString("enLabel") + " ");
+			if (code.equals("\u2228"))
+				setToolTipText(" " + WiskOpdr.rb.getString("ofLabel") + " ");
+			if (code.equals("\u2205"))
+				setToolTipText(" " + WiskOpdr.rb.getString("geenOplossingen") + " ");
 		}
-		
+
 	}
 	
 	public void setPopupButtonImage(final Image image)
@@ -380,8 +399,81 @@ public class FormuleButton extends JButton implements MouseListener
             g.drawRect(8,3,4,5);
             g.drawRect(8,12,4,5);
             g.setColor(Color.black);
-			
-			
+		}
+		else if(code.equals("vector"))
+		{
+			// drie invulvakjes
+			g.setColor(Color.white);
+			g.fillRect(9, 4, 2, 3);
+			g.fillRect(9, 9, 2, 3);
+			g.fillRect(9, 14, 2, 3);
+			g.setColor(Color.gray);
+			g.drawRect(9, 4, 2, 3);
+			g.drawRect(9, 9, 2, 3);
+			g.drawRect(9, 14, 2, 3);
+
+			// rechte haak links
+			g.setColor(Color.black);
+			g.drawLine(3, 3, 5, 3);
+			g.drawLine(3, 17, 5, 17);
+			g.drawLine(3, 3, 3, 17);
+			// rechte haak rechts
+			g.drawLine(14, 3, 16, 3);
+			g.drawLine(14, 17, 16, 17);
+			g.drawLine(16, 3, 16, 17);
+		}
+		else if(code.equals("vectornotatie"))
+		{
+			g.setColor(Color.white);
+            g.fillRect(6, 9, 6, 9);
+            g.setColor(Color.gray);
+            g.drawRect(6, 9, 6, 9);
+            g.setColor(Color.black);
+            // pijl boven vak
+            g.drawLine(6, 4, 12, 4);
+            g.drawLine(9, 2, 12, 4);
+            g.drawLine(9, 6, 12, 4);
+		}
+		else if(code.equals("matrix"))
+		{
+			// 2 x 3 invulvakjes
+			// kolom 1
+			g.setColor(Color.white);
+			g.fillRect(7, 4, 2, 3);
+			g.fillRect(7, 9, 2, 3);
+			g.fillRect(7, 14, 2, 3);
+			g.setColor(Color.gray);
+			g.drawRect(7, 4, 2, 3);
+			g.drawRect(7, 9, 2, 3);
+			g.drawRect(7, 14, 2, 3);
+			// kolom 2
+			g.setColor(Color.white);
+			g.fillRect(12, 4, 2, 3);
+			g.fillRect(12, 9, 2, 3);
+			g.fillRect(12, 14, 2, 3);
+			g.setColor(Color.gray);
+			g.drawRect(12, 4, 2, 3);
+			g.drawRect(12, 9, 2, 3);
+			g.drawRect(12, 14, 2, 3);
+			// kolom 3
+			g.setColor(Color.white);
+			g.fillRect(17, 4, 2, 3);
+			g.fillRect(17, 9, 2, 3);
+			g.fillRect(17, 14, 2, 3);
+			g.setColor(Color.gray);
+			g.drawRect(17, 4, 2, 3);
+			g.drawRect(17, 9, 2, 3);
+			g.drawRect(17, 14, 2, 3);
+
+			// rechte haak links
+			g.setColor(Color.black);
+			g.drawLine(3, 3, 5, 3);
+			g.drawLine(3, 17, 5, 17);
+			g.drawLine(3, 3, 3, 17);
+			// rechte haak rechts
+			g.drawLine(21, 3, 23, 3);
+			g.drawLine(21, 17, 23, 17);
+			g.drawLine(23, 3, 23, 17);
 		}
 		else if(code.equals("haakjes"))
 		{	g.drawString("(",3,15);
@@ -402,13 +494,13 @@ public class FormuleButton extends JButton implements MouseListener
             
 		}
 		else if(code.equals("conjug"))
-		{	g.setColor(Color.white);
+		{
+			g.setColor(Color.white);
             g.fillRect(7,6,4,10);
             g.setColor(Color.gray);
             g.drawRect(7,6,4,10);
             g.setColor(Color.black);
             g.drawLine(7,3,11,3);
-            
 		}
 		else if(code.equals("ndewortel"))
 		{	g.drawLine(3,2*h/4+3,h/4,h-3);
@@ -437,14 +529,13 @@ public class FormuleButton extends JButton implements MouseListener
         
 			g.drawString("d",7,10);
 			g.drawString("dx",5,18);
-			
 		}
 		else if(code.equals("diff_partial"))
-        {   g.setFont(new Font("SansSerif", Font.PLAIN, 9));
+        {
+			g.setFont(new Font("SansSerif", Font.PLAIN, 9));
         
-            g.drawString("\u2202",7,10);
-            g.drawString("\u2202x",5,18);
-            
+            g.drawString("\u2202", 8, 10);
+            g.drawString("\u2202x", 6, 18);
         }
 		else if(code.equals("limiet0"))
 		{	g.setFont(new Font("SansSerif", Font.PLAIN, 10));
@@ -687,12 +778,14 @@ public class FormuleButton extends JButton implements MouseListener
 			g.drawLine(b/5,h/5,4*b/5,4*h/5);
 		}
 		else if(code.equals("\u3008"))
-		{   g.drawLine(12,5,7,10);
-            g.drawLine(7,10,12,15);
+		{
+			g.drawLine(13, 5, 8, 10);
+            g.drawLine(8, 10, 13, 15);
 		}
 		else if(code.equals("\u3009"))
-        {   g.drawLine(8,5,13,10);
-            g.drawLine(13,10,8,15);
+        {  
+			g.drawLine(9, 5, 14, 10);
+            g.drawLine(14, 10, 9, 15);
         }
 		else if(code.equals("sigma"))
         {   g.drawString("\u03A3",5,15);
