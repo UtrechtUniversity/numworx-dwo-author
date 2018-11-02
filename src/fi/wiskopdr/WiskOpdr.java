@@ -145,7 +145,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 	public static String abo_type; // free,demo,premium,standard
 	public static boolean isPremium() {
-	  return "premium".equals(abo_type);
+	  return "premium".equals(abo_type) || abo_type == null; // premium in Applicatie
 	}
 	
 	public static String[][] objectives = null;

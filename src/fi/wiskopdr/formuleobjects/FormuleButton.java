@@ -413,7 +413,7 @@ public class FormuleButton extends JButton implements MouseListener
 			g.drawRect(9, 14, 2, 3);
 
 			// rechte haak links
-			g.setColor(Color.black);
+			g.setColor(WiskOpdr.isPremium()?Color.black:Color.gray);
 			g.drawLine(3, 3, 5, 3);
 			g.drawLine(3, 17, 5, 17);
 			g.drawLine(3, 3, 3, 17);
@@ -428,7 +428,7 @@ public class FormuleButton extends JButton implements MouseListener
             g.fillRect(6, 9, 6, 9);
             g.setColor(Color.gray);
             g.drawRect(6, 9, 6, 9);
-            g.setColor(Color.black);
+            g.setColor(WiskOpdr.isPremium()?Color.black:Color.gray);
             // pijl boven vak
             g.drawLine(6, 4, 12, 4);
             g.drawLine(9, 2, 12, 4);
@@ -466,7 +466,7 @@ public class FormuleButton extends JButton implements MouseListener
 			g.drawRect(17, 14, 2, 3);
 
 			// rechte haak links
-			g.setColor(Color.black);
+			g.setColor(WiskOpdr.isPremium()?Color.black:Color.gray);
 			g.drawLine(3, 3, 5, 3);
 			g.drawLine(3, 17, 5, 17);
 			g.drawLine(3, 3, 3, 17);

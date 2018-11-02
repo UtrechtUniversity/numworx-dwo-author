@@ -274,7 +274,9 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
 					if (WiskOpdr.mac)
 						fb.setFont(new Font("SanSerif", Font.ITALIC, 13));
 				}
-				
+				if (code.equals("vector")||code.equals("matrix")||code.equals("vectornotatie")) {
+				  fb.setFocusable(WiskOpdr.isPremium());
+				}
 				buttonX += buttonWidth + inset;
 				add(fb);
 			}
@@ -674,9 +676,9 @@ public class Tablet extends JPanel implements MouseListener, MouseMotionListener
         else if (code.equals("sigma")) formuleVakHouder.geefFormuleVak().zetSigmaVak();
         else if (code.equals("conjug")) formuleVakHouder.geefFormuleVak().zetConjugVak();
         else if(code.equals("stelsel")) formuleVakHouder.geefFormuleVak().zetStelselVak();
-        else if(code.equals("vector")) formuleVakHouder.geefFormuleVak().zetVectorVak();
-        else if(code.equals("vectornotatie")) formuleVakHouder.geefFormuleVak().zetVectorNotatieVak();
-        else if(code.equals("matrix")) formuleVakHouder.geefFormuleVak().zetMatrixVak();
+        else if(code.equals("vector")) {if (WiskOpdr.isPremium()) formuleVakHouder.geefFormuleVak().zetVectorVak();}
+        else if(code.equals("vectornotatie")) {if (WiskOpdr.isPremium()) formuleVakHouder.geefFormuleVak().zetVectorNotatieVak();}
+        else if(code.equals("matrix")) {if (WiskOpdr.isPremium()) formuleVakHouder.geefFormuleVak().zetMatrixVak();}
 		
 				
 		else if (code.equals("del"))formuleVakHouder.geefFormuleVak().delete();
