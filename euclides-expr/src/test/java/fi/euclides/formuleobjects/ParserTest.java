@@ -21,6 +21,7 @@ import fi.wiskopdr.formuleobjects.PrimitieveVak;
 import fi.wiskopdr.formuleobjects.PrvVak;
 import fi.wiskopdr.formuleobjects.RegelVak;
 import fi.wiskopdr.formuleobjects.SigmaVak;
+import fi.wiskopdr.formuleobjects.VectorVak;
 import fi.wiskopdr.formuleobjects.WortelVak;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMInteger;
@@ -65,6 +66,7 @@ public class ParserTest extends TestCase {
 		test2(new PowerVak(vak));
 		test2(new NdeWortelVak(vak));
 		test2(new NdeLogVak(vak));
+		test2(new VectorVak(vak));
 	}
 	
 	public void testIntegraalVak() throws Exception {

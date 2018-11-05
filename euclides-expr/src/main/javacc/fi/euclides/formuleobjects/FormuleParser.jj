@@ -194,6 +194,9 @@ TOKEN : /* VAKKEN */
 | < DEFINT: "$i" >
 | < PRV : "$q" >
 | < LIM : "$T" >
+| < VECTORNOTATIE : "$z" >
+| < VECTOR: "$Y" >
+| < MATRIX: "$M" >
 }
 TOKEN:
 {
@@ -285,6 +288,7 @@ OMObject assign() :
    expr = halflogic() {  return expr; }
 | < Y > < EQ > expr = sum() { return binop(RELATION1_EQ, new OMVariable("y"), expr); } 
 | < X > < EQ > expr = sum() { return binop(RELATION1_EQ, new OMVariable("x"), expr); }
+| < VECTORNOTATIE> var = <VARIABLE> <AT> <EQ> expr = expr() { return assign(var, expr); }
 }
  
 OMObject expr() :
@@ -492,10 +496,20 @@ OMApplication bracket() :
     return list;
  }
 }
+
+
+Token variable() :
+{ Token tok; }
+{ 
+	tok = < VARIABLE > { return tok; }
+|   < VECTORNOTATIE> tok = <VARIABLE> <AT> { return tok; }
+}
+
+
 OMObject element() :{ OMObject expr, expr2 = null, expr3; OMApplication oma; Token tok, breuk; }{  tok = < CONSTANT > {  return new OMInteger(tok.toString()); }
 | tok = < RATIONAL > {  return rational(tok); }
 
-| tok = < VARIABLE > {  expr =  new OMVariable(tok.toString()); }
+| tok = variable() {  expr =  new OMVariable(tok.toString()); }
   (     oma = arglist() { oma.setElementAt(expr,0); expr = oma; }
   )? { return expr; }
 | tok = < X > {  return new OMVariable(tok.toString()); }

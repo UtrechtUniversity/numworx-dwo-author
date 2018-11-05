@@ -15,6 +15,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import nl.tue.win.riaca.openmath.lang.OMApplication;
+import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.tue.win.riaca.openmath.lang.OMSymbol;
 
 public class TokenTest {
 
@@ -178,6 +180,19 @@ public class TokenTest {
 		assertEquals("rename", source, toString(tokens));
 	}
 
+	@Test
+	public void testParseVectorNotatie() throws Exception {
+		String source = "$zP@=point($zAB@,1)";
+		FormuleParser p = new FormuleParser(source);
+		OMObject o = p.assign();
+		System.out.println(o);
+		OMApplication oma = (OMApplication) o;
+		OMSymbol symbol = (OMSymbol) oma.firstElement();
+		assertEquals("assignment", symbol.getName());
+		
+	}
+	
+	
 	private List<Token> insertSpecials(List<Token> tokens) {
 		List<Token> result = new LinkedList<Token>();
 		tokens.forEach(t -> collect(result,t));
