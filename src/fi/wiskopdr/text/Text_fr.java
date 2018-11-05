@@ -27,6 +27,7 @@ public class Text_fr extends java.util.ListResourceBundle
                                 { "ofLabel" , "ou" },
                                 { "enLabel" , "et" },
                                 { "subLabel" , "Substituez:" },
+                
                 { "meerLabel" , "plus" },
                                 
                 { "klaarKnopLabel" , "Vérifiez" },
