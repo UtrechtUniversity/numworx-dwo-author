@@ -22,7 +22,7 @@ public class Parser2Test extends TestCase {
 	public void testDivMul() throws Exception {
 		FormuleParser p = new FormuleParser("x/y*x");
 		OMObject o = p.expr();
-		Expressie e = fi.wiskopdr.FormuleParser.parse("x/y*x");
+		Expressie e = fi.wiskopdr.formuleobjects.FormuleParser.parse("x/y*x");
 		// compare e met o
 		System.out.println(e.toStringCAS());
 		System.out.println(o);	

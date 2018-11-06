@@ -21,6 +21,7 @@ import fi.wiskopdr.formuleobjects.PrimitieveVak;
 import fi.wiskopdr.formuleobjects.PrvVak;
 import fi.wiskopdr.formuleobjects.RegelVak;
 import fi.wiskopdr.formuleobjects.SigmaVak;
+import fi.wiskopdr.formuleobjects.VectorNotatieVak;
 import fi.wiskopdr.formuleobjects.VectorVak;
 import fi.wiskopdr.formuleobjects.WortelVak;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
@@ -58,6 +59,8 @@ public class ParserTest extends TestCase {
 		test1(new ConjugVak(vak));
 		test1(new HaakjesVak(vak));
 		test1(new AbsVak(vak));
+		test1(new VectorNotatieVak(vak));
+		;
 	}
 	public void testDuoVak() throws Exception {
 		test2(new AftrekVak(vak));
@@ -66,7 +69,6 @@ public class ParserTest extends TestCase {
 		test2(new PowerVak(vak));
 		test2(new NdeWortelVak(vak));
 		test2(new NdeLogVak(vak));
-		test2(new VectorVak(vak));
 	}
 	
 	public void testIntegraalVak() throws Exception {
@@ -131,7 +133,7 @@ public class ParserTest extends TestCase {
 	}
 
 	private void test1(RegelVak fe) throws Exception {
-		fe.vulVak("1"); parse(fe);
+		fe.vulVak("p"); parse(fe);
 	}
 
 	private void parse(FormuleElement elem) throws Exception {
@@ -243,6 +245,15 @@ public class ParserTest extends TestCase {
 		FormuleParser p = new FormuleParser("m=suchthat(1..2, x-> x > 2)");
 		OMObject result = p.parse();
 		assertNotNull(result);
+		System.out.println(result);
+		assertEquals("OMA", result.getType());
+	}
+	
+	public void testVectorVak() throws Exception {
+		VectorVak fe = new VectorVak(vak);
+		fe.vulVak("$n1@$n2@");
+		FormuleParser p = new FormuleParser("a=" + fe.toString());
+		OMObject result = p.parse();
 		System.out.println(result);
 		assertEquals("OMA", result.getType());
 	}
