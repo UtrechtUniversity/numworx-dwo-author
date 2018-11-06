@@ -26,6 +26,7 @@ import org.json.simple.parser.ParseException;
 
 import cbookeditor.CBookEditor;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.formuleobjects.FormuleParser;
 
 public class Main {
 
@@ -38,6 +39,7 @@ public class Main {
 // Alleen met cbookeditor
 		WiskOpdr.applet = new WiskOpdr();
 		WiskOpdr.dwo_env = "test";
+		//FormuleParser.zetWoordFormule(true);
 
 		appcontext = new AppContext();
 		final CBookService service = new ServiceImpl();
