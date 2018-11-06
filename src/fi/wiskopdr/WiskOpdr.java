@@ -584,6 +584,17 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			if (onsState.containsKey("orScores"))
 				scores = OpdrNavStruct.toIntArrayArray(onsState.get("orScores"));
 			bezocht = OpdrNavStruct.toBooleanArrayArray(onsState.get("bezocht"));
+// situatie: bezocht = [[true,true]] en scores = null;			
+			if(bezocht != null && scores == null) {
+			  scores = new int[bezocht.length][];
+			}
+			  for (int i = 0; scores != null && bezocht != null && i < Math.min(scores.length, bezocht.length); i++) {
+			    if ( bezocht[i] != null && scores[i] == null) {
+			      scores[i] = new int[bezocht[i].length];
+			    }
+			  }
+			
+			
 		}
 		if (scores == null || scores.length == 0 || scores[0].length == 0)
 			return null;
