@@ -41,7 +41,7 @@
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
-						<phase>process-classes</phase>
+						<phase>${extras.process}</phase>
 						<configuration>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<includeScope>compile</includeScope>
@@ -147,7 +147,7 @@
 						<goals>
 							<goal>run</goal>
 						</goals>
-						<phase>package</phase>
+						<phase>${extras.phase}</phase>
 						<configuration>
 							<target>
 								<jar destfile="${project.build.directory}/${project.build.finalName}.jar"
@@ -169,7 +169,7 @@
         <executions>
           <execution>
             <id>attach-artifacts</id>
-            <phase>package</phase>
+            <phase>${extras.phase}</phase>
             <goals>
               <goal>attach-artifact</goal>
             </goals>
@@ -207,7 +207,7 @@
                         <executions>
                             <execution>
                                 <id>normalize-jars</id>
-                                <phase>package</phase>
+                                <phase>${extras.phase}</phase>
                                 <goals>
                                     <goal>pack</goal>
                                 </goals>
@@ -217,7 +217,7 @@
                             </execution>
                             <execution>
                                 <id>pack-jars</id>
-                                <phase>verify</phase>
+                                <phase>${extras.verify}</phase>
                                 <goals>
                                     <goal>pack</goal>
                                 </goals>
@@ -251,13 +251,14 @@
                         <version>1.4</version>
                         <executions>
                             <execution>
-                                <phase>package</phase>
+                                <phase>${extras.phase}</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
                             </execution>
                             <execution>
                                 <id>verify</id>
+                                <phase>${extras.verify}</phase>
                                 <goals>
                                     <goal>verify</goal>
                                 </goals>
@@ -279,6 +280,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.test.skip>true</maven.test.skip>
 		<geogebraVersion>4.0.29-r2017</geogebraVersion>
+		<extras.phase>package</extras.phase>
+		<extras.verify>verify</extras.verify>
+		<extras.process>process-classes</extras.process>
 	</properties>
 	<dependencies>
 		<!-- #fi.verknippen #fi.mozarch #fi.tegels #fi.geomalgebra #fi.stroomdiagrammen 
@@ -480,4 +484,16 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<profiles>
+		<profile>
+			<id>devel</id>
+			<properties>
+				<proguard.skip>true</proguard.skip>
+				<extras.phase>none</extras.phase>
+				<extras.verify>none</extras.verify>
+				<extras.process>none</extras.process>
+			</properties>
+		</profile>
+	
+	</profiles>
 </project>
