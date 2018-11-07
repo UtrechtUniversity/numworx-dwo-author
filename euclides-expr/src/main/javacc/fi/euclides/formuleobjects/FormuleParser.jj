@@ -23,6 +23,9 @@ public class FormuleParser implements OMConstants{
 	private static OMSymbol ARITH1_SUM = new OMSymbol("arith1", "sum");
     private static OMSymbol WISKOPDR_PRV = new OMSymbol("wiskopdr", "prv");
     private static OMSymbol LINALG3_VECTOR = new OMSymbol("linalg3", "vector");
+    private static OMSymbol LINALG2_MATRIX = new OMSymbol("linalg2", "matrix");
+    private static OMSymbol LINALG2_MATRIXROW = new OMSymbol("linalg2", "matrixrow");
+    
     
   private static OMApplication binop(OMObject symbol, OMObject a, OMObject b)
   {
@@ -467,11 +470,29 @@ OMApplication arglist() :
 
 OMApplication vectorlist() :
 {
-	OMApplication vectorlist = new OMApplication(); vectorlist.addElement(null);
+	OMApplication vectorlist = new OMApplication(); vectorlist.addElement(LINALG3_VECTOR);
 	OMObject expr;
 }
 {
 	( <N> expr = expr() <AT> { vectorlist.addElement(expr); } )* { return vectorlist; }
+} 
+
+OMApplication matrixrow() :
+{
+	OMApplication matrixrow = new OMApplication(); matrixrow.addElement(LINALG2_MATRIXROW);
+	OMObject expr;
+}
+{
+	( <K> expr = expr() <AT> { matrixrow.addElement(expr); } )* { return matrixrow; }
+} 
+
+OMApplication matrix() :
+{
+	OMApplication matrix = new OMApplication(); matrix.addElement(LINALG2_MATRIX);
+	OMObject expr;
+}
+{
+	( <N> expr = matrixrow() <AT> { matrix.addElement(expr); } )* { return matrix; }
 } 
 
 
@@ -592,5 +613,6 @@ Token variable() :
 | < LIM > expr = sum() < N > (tok=< X >) < K > expr2=sum() < L > breuk = < CONSTANT > <AT><AT><AT><AT> {
 	return limit(expr, tok, expr2, breuk);
 	}
-| < VECTOR> oma = vectorlist() < AT> { oma.setElementAt(LINALG3_VECTOR, 0);return oma; }
+| < VECTOR > oma = vectorlist() < AT > { return oma; }
+| < MATRIX > oma = matrix() < AT > { return oma; }
 }

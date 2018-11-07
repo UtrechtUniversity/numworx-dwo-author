@@ -14,6 +14,7 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.formuleobjects.HaakjesVak;
 import fi.wiskopdr.formuleobjects.IntegraalVak;
 import fi.wiskopdr.formuleobjects.LimietVak;
+import fi.wiskopdr.formuleobjects.MatrixVak;
 import fi.wiskopdr.formuleobjects.NdeLogVak;
 import fi.wiskopdr.formuleobjects.NdeWortelVak;
 import fi.wiskopdr.formuleobjects.PowerVak;
@@ -256,5 +257,14 @@ public class ParserTest extends TestCase {
 		OMObject result = p.parse();
 		System.out.println(result);
 		assertEquals("OMA", result.getType());
+	}
+	
+	public void testMatrixVak() throws Exception {
+	  MatrixVak fe = new MatrixVak(vak);
+	  fe.vulVak("$n$k1@$k2@@$n$k3@$k4@@");
+      FormuleParser p = new FormuleParser("a=" + fe.toString());
+      OMObject result = p.parse();
+      System.out.println(result);
+      assertEquals("OMA", result.getType());	  
 	}
 }
