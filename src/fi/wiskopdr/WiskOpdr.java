@@ -1625,6 +1625,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 * Hier vraag de DWO het editComponent op (voor het bewerken van een activiteit).
 	 */
 	public ScormEditComponentIF getEditComponent(Hashtable launchData) {
+        abo_type = getParameter("abo_type"); // Zie WiskOpdr.isPremium();	  
 		ScormEditComponent sec = new ScormEditComponent(launchData, this);
 		launchDataChanged = false;
 		return sec;
