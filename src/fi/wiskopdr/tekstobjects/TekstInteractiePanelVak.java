@@ -1965,7 +1965,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		zetMaat();
 		
 		setReviewMode(/*WiskOpdr.applet.reviewMode() ||*/ WiskOpdr.applet.toetsLockedMode());
-		if(reviewMode && !(interactiePanel instanceof TekstVakPanel)) {
+		if(reviewMode && !(interactiePanel instanceof TekstVakPanel) && WiskOpdr.isPremium()) {
 	        if(reviewInteractiePanel==null) 
 	        {	reviewInteractiePanel = new ReviewInteractiePanel(this);
 	        	reviewInteractiePanel.setBounds(0,0,getWidth(), getHeight());
