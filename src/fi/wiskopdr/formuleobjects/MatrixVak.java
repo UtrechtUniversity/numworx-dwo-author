@@ -6,7 +6,8 @@ import java.util.Vector;
 
 public class MatrixVak extends RegelVak
 {
-	Vector<Vector<FormuleRegel>> kinderen;
+	public static final String NOTATIE = "$M";
+  Vector<Vector<FormuleRegel>> kinderen;
 	int aantalRijen;
 	int aantalKolommen;
 
@@ -645,7 +646,7 @@ public class MatrixVak extends RegelVak
 
 	public String toString()
 	{
-		String string = "$M";
+		String string = NOTATIE;
 		if (kinderen.size() > 0)
 		{
 			for (int i = 0; i < kinderen.size(); i++) // rijen

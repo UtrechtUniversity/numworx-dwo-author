@@ -553,5 +553,9 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 		}
 	}
 
+  public static boolean detectPremium(String tekst) {
+    return tekst.contains(VectorNotatieVak.NOTATIE) || tekst.contains(MatrixVak.NOTATIE) || tekst.contains(VectorVak.NOTATIE);
+  }
+
 }
 

@@ -645,7 +645,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		return randomVarEditor.getText();
 	}
 
-	public String getEditState() {
+	@SuppressWarnings({"rawtypes", "unchecked"})
+  public String getEditState() {
 		String titel = null;
 		String tekst = null;
 		String tekst2 = null;
@@ -753,6 +754,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titel = titelEditor.getText();
 		tekst = tekstEditor.getText();
 		tekst2 = tekstEditor2.getText();
+		premium = FormuleVak.detectPremium(tekst)||FormuleVak.detectPremium(titel)||FormuleVak.detectPremium(tekst2);
+		
 		randVarString = randomVarEditor.getText();
 		
 		//VariableCollection vc = new VariableCollection();
@@ -784,27 +787,30 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
         for (int i = 0; i < v.size(); i++) {
             InteractiePanelContainerIF ip = (InteractiePanelContainerIF) v.elementAt(i);
             interactiePanelLaunchData[i + 5] = ip.getEditState();
+            Hashtable editState = interactiePanelLaunchData[i + 5];
             scoreMax += ip.getScoreMax();
-            
             //System.out.println("LaunchData ip Panels: "+ interactiePanelLaunchData[i + 5].toString());
             
-            if(((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).containsKey("logID")) {
-            	String logID = (String)((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).get("logID");
+            Hashtable launchState = (Hashtable)editState.get("interactiePanelLaunchState");
+            if ( Boolean.TRUE.equals(launchState.get("premium")))
+                premium = true;
+            if(launchState.containsKey("logID")) {
+            	String logID = (String)launchState.get("logID");
             	if(logID.startsWith("DWOTEMP_") && ip instanceof TekstInteractiePanelVak) {
-            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logID", "");
-            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logOption", false);
-            		TekstInteractiePanelVak ipp = new TekstInteractiePanelVak(((TekstInteractiePanelVak)ip).getTekstVak(),interactiePanelLaunchData[i + 5]);
+            		launchState.put("logID", "");
+            		launchState.put("logOption", false);
+            		TekstInteractiePanelVak ipp = new TekstInteractiePanelVak(((TekstInteractiePanelVak)ip).getTekstVak(),editState);
             		TekstVakPanel.addTemplatePage(logID,ipp.toCompleteString());
-            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logID", logID);
-            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logOption", true);
+            		launchState.put("logID", logID);
+            		launchState.put("logOption", true);
             	}
             	if(logID.startsWith("DWOCOMP_") && ip instanceof TekstInteractiePanelVak) {
-            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logID", "");
-            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logOption", false);
-            		TekstInteractiePanelVak ipp = new TekstInteractiePanelVak(((TekstInteractiePanelVak)ip).getTekstVak(),interactiePanelLaunchData[i + 5]);
+            		launchState.put("logID", "");
+            		launchState.put("logOption", false);
+            		TekstInteractiePanelVak ipp = new TekstInteractiePanelVak(((TekstInteractiePanelVak)ip).getTekstVak(),editState);
             		TekstVakPanel.addTemplateComponent(logID,ipp.toCompleteString());
-            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logID", logID);
-            		((Hashtable)interactiePanelLaunchData[i + 5].get("interactiePanelLaunchState")).put("logOption", true);
+            		launchState.put("logID", logID);
+            		launchState.put("logOption", true);
             	}
             }
             
@@ -831,7 +837,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		h.put("scoreMax", new Integer(scoreMax));
 		if (scoreMaxObjectives != null)
 			h.put("scoreMaxObjectives", scoreMaxObjectives);
-		
+		if (premium)
+		    h.put("premium", Boolean.TRUE);
 		//System.out.println("tekst: "+tekst);
 		//System.out.println("interactiePanelLaunchData: "+interactiePanelLaunchData[5].toString());
 
@@ -1293,6 +1300,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 
 	// ActionProducer
 	private ActionListener actionListener = null;
+  boolean premium;
 
 	public void addActionListener(ActionListener l) {
 		actionListener = AWTEventMulticaster.add(actionListener, l);

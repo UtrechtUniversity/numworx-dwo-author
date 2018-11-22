@@ -1,11 +1,10 @@
 package fi.wiskopdr.formuleobjects;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Vector;
 
 public class VectorNotatieVak extends RegelVak
 {
+    public static final String NOTATIE = "$z";
 	public VectorNotatieVak(FormuleVak fv)
 	{
 		formuleVak = fv;
@@ -75,7 +74,7 @@ public class VectorNotatieVak extends RegelVak
 
 	public String toString()
 	{
-		return "$z" + kind1.toString() + "@";
+		return NOTATIE + kind1.toString() + "@";
 	}
 
 	@Override
@@ -84,7 +83,7 @@ public class VectorNotatieVak extends RegelVak
 		/* geen idee welke van de twee de meest gesupporte is */
 		// return "<menclose notation='top' >" + kind1.toMathML() +
 		// "</menclose>";
-		return "<mover>" + kind1.toMathML() + "<mo>\u00AF</mo></mover>"; // UNICODE
-																			// MACRON
+		return "<mover>" + kind1.toMathML() + "<mo>⟶</mo></mover>"; // UNICODE
+																	 // LONG RIGHT ARROW
 	}
 }

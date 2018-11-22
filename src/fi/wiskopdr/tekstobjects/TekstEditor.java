@@ -1292,27 +1292,36 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		}
 	}
 	
-	public Hashtable getEditState()
+	@SuppressWarnings("rawtypes")
+    public Hashtable getEditState()
 	{	String tekst = "";
 		Hashtable[] interactiePanelLaunchData = null;
-	
+		boolean premium;
 		//tekst = getText();
 		tekst = getCompleteText();
-		
+		premium = FormuleVak.detectPremium(tekst);
 		Vector v = geefInteractiePanels();
 		interactiePanelLaunchData = new Hashtable[v.size()];
 	    for(int i=0 ; i<v.size() ; i++)
 		{	interactiePanelLaunchData [i] = ((InteractiePanelContainerIF)v.elementAt(i)).getEditState();
+		    Hashtable launchData = interactiePanelLaunchData[i];
+            Object interactiePremium = launchData.get("premium");
+		    if (Boolean.TRUE.equals(interactiePremium))
+		        premium = true;
 		}
 	   
-		Hashtable h = new Hashtable();
+		Hashtable<String,Object> h = new Hashtable<>();
 		h.put("tekst", tekst);
 		h.put("interactiePanelLaunchData", interactiePanelLaunchData);
+		if(premium)
+		  h.put("premium", Boolean.TRUE);
 	
 		return h;
 	}
 	
-	/*public Hashtable getCompleteEditState()
+	
+
+  /*public Hashtable getCompleteEditState()
 	{	String tekst = "";
 	
 		tekst = getCompleteText();

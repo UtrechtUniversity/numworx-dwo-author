@@ -13,6 +13,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import org.apache.commons.codec.StringDecoder;
+
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.scorm.*;
 import fi.beans.wnwidgets.NWButtonUI;
@@ -533,7 +535,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		boolean opnieuwMogelijk = false;
 		boolean gekoppeldeOpdrachten = false;
 		Hashtable instellingen = new Hashtable();
-
+		boolean premium = false;
+		
 		aantalActiviteiten = this.aantalActiviteiten;
 		mode = this.mode;
 		opnieuwMogelijk = this.opnieuwMogelijk;
@@ -555,23 +558,31 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		if(TekstVakPanel.templateComponentsKeys != null)
 			instellingen.put("TekstVakPanelTemplateComponentsKeys", TekstVakPanel.templateComponentsKeys);
 
-		Hashtable h = new Hashtable();
+		Hashtable<String,String> h = new Hashtable<>();
 		h.put("aantalActiviteiten", new String("" + aantalActiviteiten));
 
 		opdrEditContainer.closeLinks();
+		
 		opdrachten[activiteitNr][opdrachtNr] = opdrEditContainer.getEditState();
 		for (int i = 0; i < aantalActiviteiten; i++) {
 			h.put("activiteit_" + (i + 1), s(activiteitNamen[i]));
 			h.put("aantalOpdrachten_" + (i + 1), new String("" + aantalOpdrachten[i]));
 			for (int j = 0; j < aantalOpdrachten[i]; j++) {
 				h.put("opdracht_" + (i + 1) + "_" + (j + 1), opdrachten[i][j]);
+// dit is vreselijk inefficient, maar "gets the job done!"
+				if (!premium) {
+				    Map opdr = (Map) StringCodeObject.decodeStringToObject(opdrachten[i][j]);
+				    if(opdr != null) premium = Boolean.TRUE.equals(opdr.get("premium"));
+				}
 			}
 		}
 		h.put("mode", new String("" + mode));
 		h.put("opnieuwMogelijk", new String("" + opnieuwMogelijk));
 		h.put("gekoppeldeOpdrachten", new String("" + gekoppeldeOpdrachten));
 		h.put("instellingen", StringCodeObject.encodeObjectToString(instellingen));
-
+		if(premium) {
+		  h.put("premium", Boolean.TRUE.toString());
+		}
 		if(this.useLocation)
 		{
 			h.put("cmi.location", String.valueOf(opdrachtNr));
@@ -580,7 +591,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		return h;
 	}
 	
-	private Object s(String string) {
+	private String s(String string) {
 		return String.valueOf(string);
 	}
 

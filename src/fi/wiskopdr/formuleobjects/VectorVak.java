@@ -6,7 +6,8 @@ import java.util.Vector;
 
 public class VectorVak extends RegelVak
 {
-	Vector<FormuleRegel> kinderen;
+	public static final String NOTATIE = "$Y";
+  Vector<FormuleRegel> kinderen;
 
 	public VectorVak(FormuleVak fv)
 	{
@@ -268,7 +269,7 @@ public class VectorVak extends RegelVak
 
 	public String toString()
 	{
-		String string = "$Y";
+		String string = NOTATIE;
 		if (kinderen.size() > 0)
 		{
 			for (int i = 0; i < kinderen.size(); i++)

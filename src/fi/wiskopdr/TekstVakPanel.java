@@ -1900,12 +1900,16 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			for (int i = 0; i < WiskOpdr.objectives.length; i++)
 				scoreMaxObjectives[i] = new int[WiskOpdr.objectives[i].length];
 		}
-
+		boolean premium = false;
 		Vector v = geefInteractiePanels();
 		interactiePanelLaunchData = new Hashtable[v.size()];
 		for (int i = 0; i < v.size(); i++)
 		{
 			interactiePanelLaunchData[i] = ((InteractiePanelContainerIF) v.elementAt(i)).getEditState();
+			if (!premium) {
+			  Map launchState = (Map)interactiePanelLaunchData[i].get("interactiePanelLaunchState");
+			  premium = Boolean.TRUE.equals(launchState.get("premium"));
+			}
 			scoreMax += ((InteractiePanelContainerIF) v.elementAt(i)).getScoreMax();
 			int[][] ob = ((InteractiePanelContainerIF) v.elementAt(i)).getScoreMaxObjectives();
 
@@ -1926,6 +1930,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			for (int j = 0; j < aantalKolommen; j++)
 			{
 				teksten[i][j] = tekstVakken[i][j].toString();
+				premium = premium || FormuleVak.detectPremium(teksten[i][j]);
 			}
 		}
 		breedtes = this.breedtes;
@@ -2037,6 +2042,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 //		{	if(uitklapHoogtes.length>i)System.out.println("uitklapH: rij "+i +"="+uitklapHoogtes[i]);
 //			//System.out.println("Hoogtes: rij "+i +"="+(int)hoogtes[i]);
 //		}
+		
+		if (premium) {
+		  h.put("premium", Boolean.TRUE);
+		}
 		
 		return h;
 	}
