@@ -836,7 +836,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "Basis", "Basis" },
 				{ "Uitgebreid", "Uitgebreid" },
 		
-				
+				{ "needsPremium", "Voor deze activiteit is een premium abonnement nodig." }
 				
 				
 		};

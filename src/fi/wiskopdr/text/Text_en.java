@@ -791,6 +791,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "Basis", "Basic" },
 				{ "Uitgebreid", "Extended" },
 				
+				{ "needsPremium", "For this activity you need a premium subscription."},
 		};
 }
 

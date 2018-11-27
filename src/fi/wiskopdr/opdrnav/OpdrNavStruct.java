@@ -457,6 +457,13 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		orPopup.add(newPageMenuItem);
 	}
 
+	public boolean needPremium() {
+	  boolean need = "true".equals(getData("premium"));
+      return need;
+	}
+	
+	
+	
 	/**
 	 * Hiermee worden de data opgevraagd, ofwel uit de hashtable launchData,
 	 * ofwel via getParameter van het applet

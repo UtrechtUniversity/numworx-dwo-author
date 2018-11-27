@@ -143,9 +143,10 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static boolean isExperimental() {
 		return "test".equals(dwo_env);
 	}
-	public static String abo_type; // free,demo,premium,standard
+	public static String abo_type; // free,demo,premium,standard (null)
 	public static boolean isPremium() {
-	  return "premium".equals(abo_type) || abo_type == null; // premium in Applicatie
+	  boolean is = "premium".equals(abo_type) || abo_type == null;
+      return is; // premium in Applicatie
 	}
 	
 	public static String[][] objectives = null;
@@ -998,7 +999,13 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		ons = new OpdrNavStruct(this, myOpdrContainer, 0, 0, getSize().width, getSize().height, api, null);
 		ons.setBackground(getBackground());
 		ons.addActionListener(this);
-		getContentPane().add(ons);
+		if( ons.needPremium() && ! isPremium()) {
+		  LOG.severe("Needs premium school");
+		  needsPremium = new JLabel(rb.getString("needsPremium"));
+		  needsPremium.setSize(needsPremium.getPreferredSize());
+		  getContentPane().add(needsPremium);
+		} else
+		  getContentPane().add(ons);
 	}
 
 	/**
@@ -1276,6 +1283,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 
 	private boolean doJSON = false;
+
+  private JLabel needsPremium;
 
 	public void setJSONState(String s) {
 		try {
@@ -1661,6 +1670,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 				ons.revalidate();
 			} else {
 				getContentPane().remove(ons);
+				if(needsPremium != null) getContentPane().remove(needsPremium);
 				if (ons != null)
 					ons.stop();
 				getContentPane().add(scormEditComponent.getComponent());
