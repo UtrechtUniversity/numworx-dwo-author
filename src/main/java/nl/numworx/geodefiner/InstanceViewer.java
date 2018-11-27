@@ -16,6 +16,7 @@ import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -844,6 +845,8 @@ final public class InstanceViewer extends AWTViewer implements Observer {
     @Override
     public void setTrack(Track track) {
         this.track = track;
+        if (track == null) super.setTrack((Iterable)null);
+        else super.setTrack(this);
     }
 
     @Override
