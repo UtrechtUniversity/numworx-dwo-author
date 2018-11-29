@@ -458,11 +458,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.github.lookfirst</groupId>
-			<artifactId>sardine</artifactId>
-			<version>5.1</version>
-		</dependency>
-		<dependency>
 			<groupId>nl.numworx.geodefiner</groupId>
 			<artifactId>geodefiner</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
