@@ -1,12 +1,8 @@
 package fi.wiskopdr.expressies;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.*;
 import java.util.*;
 import java.util.List;
@@ -42,7 +38,7 @@ public class Expressie
 	public static DecimalFormat df3;
 	public static FontMetrics fm;
 	
-	private static Hashtable casEvalStrings = new Hashtable();
+	private static Hashtable<String, Object> casEvalStrings = new Hashtable<>();
 	
 	static boolean hoekGraden;
 	
@@ -163,7 +159,7 @@ public class Expressie
 			return evalWithReduce(e);
 		if(isCasIdeas())
 			return evalWithIdeas(e.toStringStrikt());
-		return evalWithCAS(e.toStringCAS());
+		return null;//evalWithCAS(e.toStringCAS());
 	}
 	
 	public static boolean isCasLocal() {
@@ -248,77 +244,77 @@ public class Expressie
 		return Double.parseDouble(result.getExpr());
 	}
 	
-	/**
-	 * Evalueer expressie mbv Mathematica.
-	 * Wordt twee keer gebruikt
-	 * @param evalCommand Mathematica input
-	 * @return result
-	 * @deprecated niet altijd mathematica aanwezig.
-	 */
-	public static Expressie evalWithCAS(String evalCommand)
-	{	
-       	Expressie e = null;
-       	String s = "";
-       	
-    	if(casEvalStrings.containsKey(evalCommand)) s = (String)casEvalStrings.get(evalCommand);
-    	else
-    	{	//System.out.println(evalCommand);
-       	
-	        try
-	        {   WiskOpdr.phrasebook.eval("ClearAll[x]");
-	            s = WiskOpdr.phrasebook.eval("InputForm[" + evalCommand + "]");
-	            //s = WiskOpdr.phrasebook.eval(evalCommand);
-	            
-	            //System.out.println(s);
-	        }
-	        catch(Exception ex)
-	        {}
-	        casEvalStrings.put(evalCommand, s);
-    	}
-       	/*
-		evalCommand = StringUtils.replaceStr(evalCommand,"+","%2B");
-		evalCommand = StringUtils.replaceStr(evalCommand,"/","%2F");
-	
-		String s = "";
-		try
-		{   URLConnection con;
-	        URL u = new URL("http://www.fi.uu.nl/servlet/mathshell/mathshell?input=InputForm[" + evalCommand + "]&native=on");
-	        con = u.openConnection();
-	        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-	        if (in != null) 
-	        {   s = "";
-	            String tmp = "";
-	            while ((tmp = in.readLine()) != null) {
-	                s += tmp;
-	            }
-	            in.close();
-	            System.out.println(s);
-	            int index1 = s.indexOf("<pre>");
-	            int index2 = s.indexOf("</pre>");
-	            s = s.substring(index1+5, index2).trim();
-	            System.out.println(s);
-	            
-	        }
-	    }
-		catch(Exception ex)
-		{}*/
-		
-		s = s.substring(0,s.length()-1);
-		s = s.replace('[','(');
-		s = s.replace(']',')');
-		s = StringUtils.replaceStr(s,"Pi","\u03C0");
-		s = StringUtils.replaceStr(s,"E","e");
-		s = StringUtils.replaceStr(s,"Log","ln");
-		s = StringUtils.replaceStr(s,"Sin","sin");
-		s = StringUtils.replaceStr(s,"Cos","cos");
-		s = StringUtils.replaceStr(s,"Tan","tan");
-		s = StringUtils.replaceStr(s,"Arc","arc");
-		s = StringUtils.replaceStr(s,"Sqrt","sqrt");
-		
-		System.out.println("$f"+s+"@");
-		e = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f"+s+"@")));
-		return e;
-	}
+//	/**
+//	 * Evalueer expressie mbv Mathematica.
+//	 * Wordt twee keer gebruikt
+//	 * @param evalCommand Mathematica input
+//	 * @return result
+//	 * @deprecated niet altijd mathematica aanwezig.
+//	 */
+//	private static Expressie evalWithCAS(String evalCommand)
+//	{	
+//       	Expressie e = null;
+//       	String s = "";
+//       	
+//    	if(casEvalStrings.containsKey(evalCommand)) s = (String)casEvalStrings.get(evalCommand);
+//    	else
+//    	{	//System.out.println(evalCommand);
+//       	
+//	        try
+//	        {   WiskOpdr.phrasebook.eval("ClearAll[x]");
+//	            s = WiskOpdr.phrasebook.eval("InputForm[" + evalCommand + "]");
+//	            //s = WiskOpdr.phrasebook.eval(evalCommand);
+//	            
+//	            //System.out.println(s);
+//	        }
+//	        catch(Exception ex)
+//	        {}
+//	        casEvalStrings.put(evalCommand, s);
+//    	}
+//       	/*
+//		evalCommand = StringUtils.replaceStr(evalCommand,"+","%2B");
+//		evalCommand = StringUtils.replaceStr(evalCommand,"/","%2F");
+//	
+//		String s = "";
+//		try
+//		{   URLConnection con;
+//	        URL u = new URL("http://www.fi.uu.nl/servlet/mathshell/mathshell?input=InputForm[" + evalCommand + "]&native=on");
+//	        con = u.openConnection();
+//	        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//	        if (in != null) 
+//	        {   s = "";
+//	            String tmp = "";
+//	            while ((tmp = in.readLine()) != null) {
+//	                s += tmp;
+//	            }
+//	            in.close();
+//	            System.out.println(s);
+//	            int index1 = s.indexOf("<pre>");
+//	            int index2 = s.indexOf("</pre>");
+//	            s = s.substring(index1+5, index2).trim();
+//	            System.out.println(s);
+//	            
+//	        }
+//	    }
+//		catch(Exception ex)
+//		{}*/
+//		
+//		s = s.substring(0,s.length()-1);
+//		s = s.replace('[','(');
+//		s = s.replace(']',')');
+//		s = StringUtils.replaceStr(s,"Pi","\u03C0");
+//		s = StringUtils.replaceStr(s,"E","e");
+//		s = StringUtils.replaceStr(s,"Log","ln");
+//		s = StringUtils.replaceStr(s,"Sin","sin");
+//		s = StringUtils.replaceStr(s,"Cos","cos");
+//		s = StringUtils.replaceStr(s,"Tan","tan");
+//		s = StringUtils.replaceStr(s,"Arc","arc");
+//		s = StringUtils.replaceStr(s,"Sqrt","sqrt");
+//		
+//		System.out.println("$f"+s+"@");
+//		e = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f"+s+"@")));
+//		return e;
+//	}
 	
 	public static VergelijkingMeerv solve(Vergelijking vgl) {
 		return solve(vgl, vgl.geefVarNaam());
@@ -329,7 +325,7 @@ public class Expressie
 			return solveWithReduce(vgl, arg);
 		if(isCasIdeas())
 			return solveWithIdeas(vgl.toStringStrikt(), arg);
-		return solveWithCAS(vgl.geefExpLinks().toStringCAS() + "==" + vgl.geefExpRechts().toStringCAS(), arg);
+		return null;//solveWithCAS(vgl.geefExpLinks().toStringCAS() + "==" + vgl.geefExpRechts().toStringCAS(), arg);
 		
 	}
 	
@@ -360,56 +356,56 @@ public class Expressie
 				return null;
 			}			
 	}
-	private static VergelijkingMeerv solveWithCAS(String evalCommand, String arg)
-	{	
-       	VergelijkingMeerv v = null;
-       	String s = "";
-       	
-    	if(casEvalStrings.containsKey(evalCommand)) s = (String)casEvalStrings.get(evalCommand);
-    	else
-    	{	//System.out.println(evalCommand);
-       	
-	        try
-	        {   //System.out.println(s);
-	        	s = WiskOpdr.phrasebook.eval("InputForm[" + arg+"/."+"Solve[" + evalCommand + "," + arg + "]" + "]");
-	            //System.out.println(s);
-	        }
-	        catch(Exception ex)
-	        {ex.printStackTrace();}
-	        //casEvalStrings.put(evalCommand, s);
-    	}
-    	
-    	String[] oplossingen = StringUtils.split(s.substring(1,s.length()-2), ",");
-    	
-    	for(int i=0 ; i<oplossingen.length ; i++)
-		{	s = oplossingen[i];
-			s = s.replace('[','(');
-			s = s.replace(']',')');
-			s = StringUtils.replaceStr(s,"Pi","\u03C0");
-			s = StringUtils.replaceStr(s,"E","e");
-			s = StringUtils.replaceStr(s,"I","i");
-			s = StringUtils.replaceStr(s,"Log","ln");
-			s = StringUtils.replaceStr(s,"Sin","sin");
-			s = StringUtils.replaceStr(s,"Cos","cos");
-			s = StringUtils.replaceStr(s,"Tan","tan");
-			s = StringUtils.replaceStr(s,"Arc","arc");
-			s = StringUtils.replaceStr(s,"Sqrt","sqrt");
-			oplossingen[i] = s;
-			//System.out.println(oplossingen[i]);
-		}
-		Expressie[] es = new Expressie[oplossingen.length];
-		
-		Vergelijking[] vs = new Vergelijking[oplossingen.length];
-		for(int i=0 ; i<es.length ; i++)
-		{	
-			es[i] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f"+oplossingen[i].trim()+"@")));
-			//System.out.println(oplossingen[i]);
-			//System.out.println(es[i].toString());
-			vs[i] = new Vergelijking(new BasisExpressie(arg),es[i]);
-		}
-		v = new VergelijkingMeerv(vs);
-		return v;
-	}
+//	private static VergelijkingMeerv solveWithCAS(String evalCommand, String arg)
+//	{	
+//       	VergelijkingMeerv v = null;
+//       	String s = "";
+//       	
+//    	if(casEvalStrings.containsKey(evalCommand)) s = (String)casEvalStrings.get(evalCommand);
+//    	else
+//    	{	//System.out.println(evalCommand);
+//       	
+//	        try
+//	        {   //System.out.println(s);
+//	        	s = WiskOpdr.phrasebook.eval("InputForm[" + arg+"/."+"Solve[" + evalCommand + "," + arg + "]" + "]");
+//	            //System.out.println(s);
+//	        }
+//	        catch(Exception ex)
+//	        {ex.printStackTrace();}
+//	        //casEvalStrings.put(evalCommand, s);
+//    	}
+//    	
+//    	String[] oplossingen = StringUtils.split(s.substring(1,s.length()-2), ",");
+//    	
+//    	for(int i=0 ; i<oplossingen.length ; i++)
+//		{	s = oplossingen[i];
+//			s = s.replace('[','(');
+//			s = s.replace(']',')');
+//			s = StringUtils.replaceStr(s,"Pi","\u03C0");
+//			s = StringUtils.replaceStr(s,"E","e");
+//			s = StringUtils.replaceStr(s,"I","i");
+//			s = StringUtils.replaceStr(s,"Log","ln");
+//			s = StringUtils.replaceStr(s,"Sin","sin");
+//			s = StringUtils.replaceStr(s,"Cos","cos");
+//			s = StringUtils.replaceStr(s,"Tan","tan");
+//			s = StringUtils.replaceStr(s,"Arc","arc");
+//			s = StringUtils.replaceStr(s,"Sqrt","sqrt");
+//			oplossingen[i] = s;
+//			//System.out.println(oplossingen[i]);
+//		}
+//		Expressie[] es = new Expressie[oplossingen.length];
+//		
+//		Vergelijking[] vs = new Vergelijking[oplossingen.length];
+//		for(int i=0 ; i<es.length ; i++)
+//		{	
+//			es[i] = FormuleParser.parse(FormuleParser.schoon(FormuleParser.formuleString("$f"+oplossingen[i].trim()+"@")));
+//			//System.out.println(oplossingen[i]);
+//			//System.out.println(es[i].toString());
+//			vs[i] = new Vergelijking(new BasisExpressie(arg),es[i]);
+//		}
+//		v = new VergelijkingMeerv(vs);
+//		return v;
+//	}
 
 	public Object visit(AbstractConverter converter) {
 		return converter.expressie(this);
@@ -423,5 +419,23 @@ public class Expressie
 	public Expressie vervangDiffs(Expressie subst, String var) {
 		return null;
 	}
+
+	public static Expressie decideWithCas(VergelijkingMeerv v) {
+	  return decideWithIdeas(v.toStringStrikt());
+    }
+
+  private static Expressie decideWithIdeas(String decideCommand) {
+    Expressie expr = (Expressie) casEvalStrings.get(decideCommand);
+    if (expr != null)
+        return expr;
+//    throw new RestartException(decideCommand, new Restart(IdeasIF.DECIDE));   
+    RuleIF rule = WiskOpdr.ideas.interpret(IdeasIF.DECIDE, decideCommand);
+    if (rule.isException())
+      return null;
+
+    expr = FormuleParser.geefExpressie("$f" + rule.getExpr() + "@");
+    casEvalStrings.put(decideCommand, expr);
+    return expr;
+  }
 	
 }

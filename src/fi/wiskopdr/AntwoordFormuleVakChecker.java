@@ -716,10 +716,15 @@ public class AntwoordFormuleVakChecker
 				j=index1;
 			}	
 		}
-		Expressie e = Expressie.evalWithCAS(checkString);
-		String casResultString = "False";
-		if(e!=null) casResultString = e.toString();
-		casResult = "True".equals(casResultString);
+        VergelijkingMeerv v = FormuleParser.parseVergelijking("$f" + checkString +"@");
+        Expressie e = Expressie.decideWithCas(v);
+        casResult = e != null && e.geefWaarde() == 1.0;
+
+		
+//		Expressie e = Expressie.evalWithCAS(checkString);
+//		String casResultString = "False";
+//		if(e!=null) casResultString = e.toString();
+//		casResult = "True".equals(casResultString);
 		
 	}
 	

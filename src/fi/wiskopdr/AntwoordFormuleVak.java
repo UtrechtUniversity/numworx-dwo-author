@@ -1991,29 +1991,29 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
         }
 	}
 
-/**
- * TODO Alternatief met doCas switch Mathematica, Reduce of Ideas.
- * @deprecated Mathematica
- */
-	private void checkCasStatement()	
-	{
-		String checkString = casString;
-		for(int j=checkString.length()-1 ; j>-1; j--)
-		{	if(checkString.charAt(j)=='}')
-			{	int index1 = checkString.substring(0,j).lastIndexOf("{");
-				String parseString = checkString.substring(index1+1,j);
-				if(parseString.equals("ANS"))
-				{	parseString = (formuleVak.geefExpressie()).toStringCAS();
-				}
-				checkString = checkString.substring(0,index1)+parseString+checkString.substring(j+1);
-				j=index1;
-			}	
-		}
-		Expressie e = Expressie.evalWithCAS(checkString);
-		String casResultString = "False";
-		if(e!=null) casResultString = e.toString();
-		casResult = "True".equals(casResultString);	
-	}
+///**
+// * TODO Alternatief met doCas switch Mathematica, Reduce of Ideas.
+// * @deprecated Mathematica
+// */
+//	private void checkCasStatement()	
+//	{
+//		String checkString = casString;
+//		for(int j=checkString.length()-1 ; j>-1; j--)
+//		{	if(checkString.charAt(j)=='}')
+//			{	int index1 = checkString.substring(0,j).lastIndexOf("{");
+//				String parseString = checkString.substring(index1+1,j);
+//				if(parseString.equals("ANS"))
+//				{	parseString = (formuleVak.geefExpressie()).toStringCAS();
+//				}
+//				checkString = checkString.substring(0,index1)+parseString+checkString.substring(j+1);
+//				j=index1;
+//			}	
+//		}
+//		Expressie e = Expressie.evalWithCAS(checkString);
+//		String casResultString = "False";
+//		if(e!=null) casResultString = e.toString();
+//		casResult = "True".equals(casResultString);	
+//	}
 	
 	private void checkReduceStatement() {
 
@@ -2036,21 +2036,21 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 // String is Mathematica invoer
 			//checkCasStatement();
 // Converteer VergelijkingMeerv naar Mathematica
-			casResult = checkStatementVergelijkingMeervCAS();
+			casResult = false;//checkStatementVergelijkingMeervCAS();
 		}
 	}
 
-	private boolean checkStatementVergelijkingMeervCAS() {
-		VergelijkingMeerv check = getVergelijkingMeerv();
-		if(check == null) {
-			return false;
-		}
-		String checkString = check.visit(MathematicaConverter.getInstance()).toString();
-		Expressie e = Expressie.evalWithCAS(checkString);
-		String casResultString = "False";
-		if(e!=null) casResultString = e.toString();
-		return "True".equals(casResultString);	
-	}
+//	private boolean checkStatementVergelijkingMeervCAS() {
+//		VergelijkingMeerv check = getVergelijkingMeerv();
+//		if(check == null) {
+//			return false;
+//		}
+//		String checkString = check.visit(MathematicaConverter.getInstance()).toString();
+//		Expressie e = Expressie.evalWithCAS(checkString);
+//		String casResultString = "False";
+//		if(e!=null) casResultString = e.toString();
+//		return "True".equals(casResultString);	
+//	}
 
 	private VergelijkingMeerv getVergelijkingMeerv() {
 		String ans = "$h" + toString().substring(2); // $h ans @

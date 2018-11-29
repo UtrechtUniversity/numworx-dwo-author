@@ -103,14 +103,14 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		}
 	}
 	
-	static AbstractPageManager getPageManager() {
-		if(true) return new AbstractPageManager();
-		String student = WiskOpdr.getLearner_id();
-		String unit    = WiskOpdr.getUnit_id();
-		String user    = student;
-		String passwd  = WiskOpdr.getOAuthToken();
-		return new PageManager(getResourceRoot(), unit, user, passwd);
-	}
+//	static AbstractPageManager getPageManager() {
+//		return new AbstractPageManager();
+//		String student = WiskOpdr.getLearner_id();
+//		String unit    = WiskOpdr.getUnit_id();
+//		String user    = student;
+//		String passwd  = WiskOpdr.getOAuthToken();
+//		return new PageManager(getResourceRoot(), unit, user, passwd);
+//	}
 	
 	
 	public static ResourceManagerClient.ResourceManagerFactory getFactory(final ResourceManagerClient client) {

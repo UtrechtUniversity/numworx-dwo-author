@@ -189,6 +189,7 @@ public interface IdeasIF {
 	public String EVAL = "eval";
 	public String NUMERIC = "numeric";
 	public String SOLVE = "solve";
+    public String DECIDE = "decide";
 	/**
 	 *  Interface to a CAS. Not quite IDEAS.
 	 * @param how 	command	

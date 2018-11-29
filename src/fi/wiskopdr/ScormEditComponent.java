@@ -47,15 +47,15 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
 			{	e.printStackTrace();
 			}
         }
-	    if(WiskOpdr.phrasebook == null)
-	    {   try 
-		    {  	
-	    		WiskOpdr.phrasebook =  new MathematicaLink(applet);   
-		    } 
-		    catch (Exception e) 
-		    {	e.printStackTrace();
-			}
-	    }
+//	    if(WiskOpdr.phrasebook == null)
+//	    {   try 
+//		    {  	
+//	    		WiskOpdr.phrasebook =  new MathematicaLink(applet);   
+//		    } 
+//		    catch (Exception e) 
+//		    {	e.printStackTrace();
+//			}
+//	    }
 	    if(WiskOpdr.lookAndFeel==null) WiskOpdr.lookAndFeel = UIManager.getLookAndFeel();
 	       
 		onsEdit = new OpdrNavStructEdit(new fi.wiskopdr.opdrnav.MyOpdrEditContainer(),0,0,790, 520, launchData);

@@ -113,7 +113,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	
 	public static Image GOEDKRUL, FOUTKRUIS, HALFKRUL;
 
-	public static MathematicaLink phrasebook;
+//	public static MathematicaLink phrasebook; deleted at 20181129
 	public static IdeasIF ideas;
 
 	public static Font tekstFont = new Font("SansSerif", Font.PLAIN, 12);
@@ -943,11 +943,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			maakOpdrNavStruct();
 		}
 
-		try {
-			phrasebook = new MathematicaLink(this); // doCAS?
-		} catch (MalformedURLException e) {
-			LOG.log(Level.WARNING, "MathematicaLink", e);
-		} // echte applet
+//		try {
+//			phrasebook = new MathematicaLink(this); // doCAS?
+//		} catch (MalformedURLException e) {
+//			LOG.log(Level.WARNING, "MathematicaLink", e);
+//		} // echte applet
 
 		addComponentListener(this);
 	}
