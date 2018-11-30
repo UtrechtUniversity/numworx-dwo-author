@@ -1906,7 +1906,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		for (int i = 0; i < v.size(); i++)
 		{
 			interactiePanelLaunchData[i] = ((InteractiePanelContainerIF) v.elementAt(i)).getEditState();
-			if (!premium) {
+			if (!premium && interactiePanelLaunchData[i]!=null) {
 			  Map launchState = (Map)interactiePanelLaunchData[i].get("interactiePanelLaunchState");
 			  premium = Boolean.TRUE.equals(launchState.get("premium"));
 			}
