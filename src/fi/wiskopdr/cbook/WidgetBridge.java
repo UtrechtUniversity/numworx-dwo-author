@@ -84,7 +84,7 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		String passwd  = WiskOpdr.getOAuthToken();
 		URL root = getResourceRoot();		
 
-		rm = new fi.wiskopdr.cbook.rm.WebManager(root, widget, unit, instance, student, user, passwd);
+		rm = null;//new fi.wiskopdr.cbook.rm.WebManager(root, widget, unit, instance, student, user, passwd);
 		rmmap.put(key, rm);
 		return rm;
 

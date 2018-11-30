@@ -1,24 +1,14 @@
 package fi.wiskopdr;
 
-import java.applet.Applet;
-import java.awt.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.util.Hashtable;
 
-import netscape.javascript.JSObject;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
 
-import fi.beans.appletutil.*;
-import fi.beans.openmath.MathematicaLink;
-import fi.beans.scorm.*;
-import fi.beans.base64code.*;
-import fi.beans.ideas.IdeasClient;
-import fi.wiskopdr.cbook.WidgetBridge;
-import fi.wiskopdr.opdrnav.*;
-import fi.wiskopdr.tekstobjects.Link;
+import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.LinkIF;
-import fi.wiskopdr.tekstobjects.LinkRegel;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 	
 

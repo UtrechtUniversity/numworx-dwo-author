@@ -1,7 +1,6 @@
 package fi.wiskopdr.opdrnav;
 
 import java.awt.*;
-import java.applet.Applet;
 import java.text.MessageFormat;
 import java.util.*;
 import java.awt.datatransfer.Clipboard;
@@ -13,21 +12,10 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import org.apache.commons.codec.StringDecoder;
-
 import fi.beans.base64code.StringCodeObject;
-import fi.beans.scorm.*;
-import fi.beans.wnwidgets.NWButtonUI;
-import fi.beans.wnwidgets.OpnieuwPanel;
-import fi.beans.wnwidgets.ImageButton;
 import fi.wiskopdr.*;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.*;
-import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
-import fi.wiskopdr.tekstobjects.TekstImageVak;
-import fi.wiskopdr.tekstobjects.TekstVak;
-
-import javax.swing.*;
 
 public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, ActionListener, ItemListener, TabletOwner, ClipboardOwner {
 	
