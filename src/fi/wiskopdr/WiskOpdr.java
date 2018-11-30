@@ -53,7 +53,6 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.ideas.IdeasClient;
 import fi.beans.ideas.IdeasIF;
-import fi.beans.openmath.MathematicaLink;
 import fi.beans.scorm.JSScormAPI;
 import fi.beans.scorm.Parameter;
 import fi.beans.scorm.PartialScoreIF;

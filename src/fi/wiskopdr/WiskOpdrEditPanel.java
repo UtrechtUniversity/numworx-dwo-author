@@ -1,17 +1,11 @@
 package fi.wiskopdr;
 
 import java.awt.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 import javax.swing.*;
 
-import fi.beans.appletutil.*;
-import fi.beans.openmath.MathematicaLink;
-import fi.beans.scorm.*;
 import fi.beans.base64code.*;
-import fi.beans.ideas.IdeasClient;
 import fi.wiskopdr.opdrnav.*;
 import fi.wiskopdr.tekstobjects.ShareAction;
 import fi.wiskopdr.tekstobjects.TekstImageVak;

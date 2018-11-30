@@ -13,13 +13,9 @@ import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.rm.ResourceManager;
 
-import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
-import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.wiskopdr.WiskOpdr;
-import fi.wiskopdr.cbook.rm.AbstractPageManager;
-import fi.wiskopdr.cbook.rm.PageManager;
 import fi.wiskopdr.tekstobjects.LinkIF;
 import fi.wiskopdr.tekstobjects.LinkRegel;
 
