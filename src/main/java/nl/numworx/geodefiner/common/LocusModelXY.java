@@ -81,7 +81,6 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 		this.output .addAll( LocusModelF.varsOf(fx) );
 		this.fy = fy;
 		this.output. addAll( LocusModelF.varsOf(fy));
-		for(Destroyable i: output) i.addObserver(this);
 		OMVariable fvar, xvar;
 		xvar = new OMVariable("x");
 		fvar = new OMVariable("%fx");
@@ -110,6 +109,7 @@ public class LocusModelXY extends Observable implements LocusModel, Observer, Na
 			public boolean isDefined() {
 				return super.isDefined() && !getCy().isNaN() &&!getCx().isNaN();
 			} };
+			for(Destroyable i: output) i.addObserver(this);
 	}
 
 	@Override
