@@ -25,7 +25,7 @@ public abstract class MP extends Destroyable implements Observer, OpObject<MP> {
 		abstract Punt interpolate(Numbers x);
 
 		protected void add(Numbers cc, Punt pp) {
-			punten.addElement(new Pair(cc,pp));			
+			punten.addElement(new Pair<Numbers, Punt>(cc,pp));			
 		}
 		
 		protected void addDest(Numbers x) {
@@ -106,7 +106,7 @@ public abstract class MP extends Destroyable implements Observer, OpObject<MP> {
 	private static final double MAXLEN = 1.0E3;
 	private static final double MINLEN = 3.0;
 
-	public final Vector<Pair> punten = new Vector<Pair>();
+	public final Vector<Pair<Numbers,Punt>> punten = new Vector<Pair<Numbers,Punt>>();
 	protected Punt start = new VrijPunt();
 	protected Punt stop = new VrijPunt();
 	protected Segment s = new Segment(start,stop);
@@ -124,21 +124,25 @@ public abstract class MP extends Destroyable implements Observer, OpObject<MP> {
 		return result;
 	}
 
+	public Punt interpolate(Numbers x) {
+	  return strategy.interpolate(x);
+	}
+	
 	public void visitSegments(SegmentVisitor v) {
 		if(punten.isEmpty())
 			return;
-		Enumeration<Pair> e = new Vector(punten).elements();
+		Enumeration<Pair<Numbers, Punt>> e = new Vector<Pair<Numbers, Punt>>(punten).elements();
 		if (!e.hasMoreElements())
 			return; // oops
 		dest.deleteObserver(this);
-		Pair pair = (Pair) e.nextElement();
-		Punt p = (Punt)pair.getB();
-		Numbers org = (Numbers)pair.getA();
+		Pair<Numbers, Punt> pair = e.nextElement();
+		Punt p = pair.getB();
+		Numbers org = pair.getA();
 		copyTo(p, start);
 		while(e.hasMoreElements()) {
 			pair = e.nextElement();
-			p = (Punt)pair.getB();
-			Numbers next = (Numbers)pair.getA();
+			p = pair.getB();
+			Numbers next = pair.getA();
 			copyTo(p,stop);
 			if(p.isDefined() && start.isDefined() )
 			{	
