@@ -2,6 +2,7 @@ package nl.numworx.geodefiner.common.math;
 
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
+import fi.euclides.model.math.Exact;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelTester;
 
@@ -29,6 +30,28 @@ class Equals extends LabelTester {
 		Numbers test = eq.test;
 		setState(l, test, marge);
 		return true;
+	}
+
+	@Override
+	protected boolean setState(Label l, Numbers d, double eps) {
+		if(l!=null)
+			l.value=d;
+		else 
+			return ((Numbers.abs(d).doubleValue())<=eps);
+
+		if(l.getState() > Label.EXACT)  // keep state if: NAGEKEKEN, BEWEZEN, OPGAVE, VOLDOENDE
+			return true;
+		if(d.equals(Numbers.ZERO))
+		{
+			l.setState(Label.EXACT);
+			return true;
+		}		
+		boolean test = ((Numbers.abs(d).doubleValue())<=eps);
+		if(!test)
+			l.setState(Label.FALSE);
+		else
+			l.setState(Label.INEXACT);
+		return test;
 	}
 
 	@Override
