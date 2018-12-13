@@ -16,7 +16,7 @@ public class Main {
     
     final JFrame f = new JFrame("Login uu-dev");
     SamlLoginPanel.debug = true;
-    SAMLLoginIF browser = new SamlLoginPanel("https://uu-dev.dwo.nl/dwo/saml/login.jsp");
+    SAMLLoginIF browser = new SamlLoginPanel("https://entree.dwo.nl/dwo/saml/login.jsp");
     browser
       .getPromise()
       .then( p -> {
