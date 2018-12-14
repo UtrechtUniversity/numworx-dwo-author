@@ -23,7 +23,7 @@ import fi.euclides.util.DComparator;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
-public class Model extends Observable implements Observer, NameMapper {
+public class Model extends Observable implements Observer, NameMapper, TrailBuilder {
 	public static final String SELECT = "SELECT";
 	public static final String DELAY  = "DELAY";
 	private Vector<Destroyable> lijnen = new Vector<Destroyable>();
@@ -230,22 +230,29 @@ public class Model extends Observable implements Observer, NameMapper {
 		return p;
 	}
 	
+	public void startTrail(Destroyable o) {
+      if(!trail.containsKey(o))
+      {
+          Destroyable copy = tb.trail(o);
+          if(copy != null && o.isDefined())
+          {
+              Vector<Destroyable> v = new Vector<Destroyable>();
+              if(o.isVisible()) v.addElement(copy);
+              trail.put(o, v);
+          }
+      }
+	}
+	public void stopTrail(Destroyable o) {
+	  trail.remove(o);
+	}
+	
 	public void toggleTrail() {
 		if(select.size() == 1) {
 			Destroyable o = (Destroyable) select.firstElement();
 			if(!trail.containsKey(o))
-			{
-				Destroyable copy = o.trail();
-				if(copy != null && o.isDefined())
-				{
-					Vector<Destroyable> v = new Vector<Destroyable>();
-					v.addElement(copy);
-					trail.put(o, v);
-				}
-			}
+				startTrail(o);
 			else 
-				trail.remove(o);
-			
+				stopTrail(o);	
 		}
 	}
 
@@ -346,6 +353,7 @@ public class Model extends Observable implements Observer, NameMapper {
 	
 	public void destroyAll() {
 		delay.clear();
+		trail.clear();
 		clearSelection();
 		while(!lijnen.isEmpty()) { lijnen.lastElement().destroy(); }
 		while(!punten.isEmpty()) { punten.lastElement().destroy(); }
@@ -372,7 +380,7 @@ public class Model extends Observable implements Observer, NameMapper {
 		{
 			if(arg == DELAY) {
 				Destroyable p = (Destroyable)observable;
-				if(p.isDefined())
+				if(p.isDefined()&& p.isVisible())
 					trail.get(p).addElement(p.trail());
 			} else
 				addDelay(observable, this);
@@ -626,6 +634,7 @@ public class Model extends Observable implements Observer, NameMapper {
 	}
 	private Contains tester = new Contains();
 	public boolean addAlways = true;
+    private TrailBuilder tb = this;
  	/**
 	 * @param d
 	 * @param vector
@@ -1068,4 +1077,14 @@ public class Model extends Observable implements Observer, NameMapper {
 	public Segment buildSegment(Punt p, Punt q) {
 		return twoPuntBuilder(new Segment(), true, new Punt[] { p, q  });
 	}
+
+  @Override
+  public Destroyable trail(Destroyable d) {
+    return d.trail();
+  }
+  
+  public void setTrailBuilder(TrailBuilder tb) {
+    if (tb == null) tb = this;
+    this.tb = tb;
+  }
 }
