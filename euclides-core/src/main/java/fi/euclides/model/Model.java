@@ -381,7 +381,7 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 			if(arg == DELAY) {
 				Destroyable p = (Destroyable)observable;
 				if(p.isDefined()&& p.isVisible())
-					trail.get(p).addElement(p.trail());
+					trail.get(p).addElement(tb.trail(p));
 			} else
 				addDelay(observable, this);
 		}
