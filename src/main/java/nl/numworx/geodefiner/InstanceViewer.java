@@ -44,6 +44,7 @@ import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.SegmentVisitor;
 import fi.euclides.model.Track;
+import fi.euclides.model.TrailBuilder;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.Expression;
@@ -68,7 +69,7 @@ import nl.numworx.geodefiner.common.Tips;
 import nl.numworx.geodefiner.ui.AxesModel;
 
 @Singleton
-final public class InstanceViewer extends AWTViewer implements Observer {
+final public class InstanceViewer extends AWTViewer implements Observer, TrailBuilder {
 
 	private HitTester tiptest;
 	final JLabel statusLabel = new JLabel();
@@ -407,6 +408,7 @@ final public class InstanceViewer extends AWTViewer implements Observer {
 			this.expression = expression;
 			this.randomizer = r;
 			getModel().addObserver(this);
+			getModel().setTrailBuilder(this);
 			hitTester = (new HitTester3(content.getFontMetrics(content.getFont())));
 			nameMapper = new NamingModel(this, cache);
 			hilighter = new HighLighter(hitTester.copy(), this);
@@ -690,7 +692,12 @@ final public class InstanceViewer extends AWTViewer implements Observer {
 				pointSize = ps.floatValue();
 			} else
 				pointSize = DEFAULT_POINTSIZE;
-			super.visitPunt(punt);
+			if (trail) {
+			  selectColor(punt);
+	          float p2 = pointSize/2f;
+	          fillCircle(punt.getXd()-p2, punt.getYd()-p2 , pointSize);
+	        } else 
+	          super.visitPunt(punt);
 		}
 
 		final Color grayish = new Color(0.125f,0.125f,0.125f,0.125f);
@@ -853,4 +860,13 @@ final public class InstanceViewer extends AWTViewer implements Observer {
     public Track getTrack() {
       return this.track;
     }
-	}
+
+    @Override
+    public Destroyable trail(Destroyable d) {
+      Destroyable copy = d.trail();
+      DefaultAdapter adapter = DefaultAdapter.getDefault(copy);
+      adapter.put(Float.class, d.adapt(Float.class)); // point size
+      adapter.put(Stroke.class, d.adapt(Stroke.class)); //line width/style
+      return copy;
+    }
+}

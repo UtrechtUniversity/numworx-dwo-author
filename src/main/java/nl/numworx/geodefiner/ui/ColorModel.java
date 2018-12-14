@@ -26,8 +26,8 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 
 	private static final OMObject EUCLIDES_VISIBLE = new OMSymbol("euclides", "visible");
 	Destroyable item;
-	Color color = Color.black;
-	boolean visible;
+	Color color = Color.black, trailColor = Color.LIGHT_GRAY;
+	boolean visible, trail;
 	Label visibility = new Label();
 	Tracker tracker;
 	Integer zOrder;
@@ -58,7 +58,9 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 				Destroyable v = expr.interpret(oma, visibility, tracker.getMapper());
 				v.setVisible(false);
 				tracker.getModel().add(v);
-			
+				if(trail) {
+				  tracker.getModel().startTrail(item);
+				}
 			} catch (Exception e) {
 			} catch (TokenMgrError tme) {
 				tme.printStackTrace();
@@ -82,6 +84,9 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		{
 			map.put("visibility", getVisibility());
 		}
+		if(trail) {
+		  map.put("trail", Boolean.TRUE);
+		}
 		return map;
 	}
 
@@ -90,6 +95,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 			color = new Color( map.getInt("color"), true);
 		visible = map.getBoolean("visible", visible);
 		visibility.setString(map.getString("visibility"));
+		trail = map.getBoolean("trail", false);
 	}
 
 	public UIEditor editor() {
