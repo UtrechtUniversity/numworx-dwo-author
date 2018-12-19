@@ -471,6 +471,11 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 			if(tracking || trail)
 			{
 				//hilighter.hilight(object, g);
+			    if (trail) {
+			      Color c = a.adapt(Color.class);
+			      if (c != null) { g.setColor(c); } else { g.setColor(Color.LIGHT_GRAY); }
+			    }
+			  
 				return;
 			}
 			Color c = a.adapt(Color.class);
@@ -769,11 +774,15 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 
 		public void visitMP(MP l) {
 			selectColor(l);
-			trail = true;
-			PathVisitor v = new PathVisitor();
-			l.visitSegments(v);
-			v.destroy();
-			trail = false;
+			boolean old = tracking;
+			try {
+			  tracking = true;
+			  PathVisitor v = new PathVisitor();
+			  l.visitSegments(v);
+			  v.destroy();
+			} finally {
+			  tracking = old;
+			}
 		}
 
 		
@@ -864,9 +873,20 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
     @Override
     public Destroyable trail(Destroyable d) {
       Destroyable copy = d.trail();
+      if (copy == null) return copy;
       DefaultAdapter adapter = DefaultAdapter.getDefault(copy);
       adapter.put(Float.class, d.adapt(Float.class)); // point size
       adapter.put(Stroke.class, d.adapt(Stroke.class)); //line width/style
+// Color, maak 80% transparant.
+      Color c = d.adapt(Color.class);
+      if (c != null ) {
+        int a = Math.max(c.getAlpha()/8,10);
+        int r = Math.max(1,c.getRed());
+        int g = Math.max(1,c.getGreen());
+        int b = Math.max(1,c.getBlue());
+        c = new Color(r,g,b,a).brighter();
+        adapter.put(c);
+      }
       return copy;
     }
 }
