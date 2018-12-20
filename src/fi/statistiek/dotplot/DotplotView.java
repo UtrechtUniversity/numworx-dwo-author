@@ -779,6 +779,14 @@ public class DotplotView extends JPanel implements Observer
 		{
 			b = false;
 		}
+		else if (getYType() != null && getYType().isNumber()) // scatterplot
+		{
+			String valueStringY = (String) this.model.getStatTableModel().getValueAt(row, this.model.getColumnYIndex());
+			if (valueStringY.equals(ColumnType.WILDCARD))
+			{
+				b = false;
+			}
+		}
 		
 		return b;
 	}
@@ -1204,9 +1212,9 @@ public class DotplotView extends JPanel implements Observer
 	private void drawPoint(Graphics2D g, int rowIndex)
 	{
 		// Determine painting location
-		int x = this.determineXCoord(rowIndex);
-		int y = this.determineYCoord(rowIndex);
-		int splitClass = this.getSplitClass(rowIndex);
+		int x = this.determineXCoord(indicesDotsInView[rowIndex]);
+		int y = this.determineYCoord(indicesDotsInView[rowIndex]);
+		int splitClass = this.getSplitClass(indicesDotsInView[rowIndex]);
 
 		if (x < 0 || y < 0 || splitClass < 0)
 		{
@@ -1226,28 +1234,6 @@ public class DotplotView extends JPanel implements Observer
 				}
 			}
 			drawPointAtLocation(g, x, y, rowIndex);
-		}
-	}
-
-	private void drawPoint(Graphics2D g, int rowIndex, Color c)
-	{
-		// Determine painting location
-		int x = this.determineXCoord(rowIndex);
-		int y = this.determineYCoord(rowIndex);
-		int splitClass = this.getSplitClass(rowIndex);
-
-		if (x < 0 || y < 0 || splitClass < 0)
-		{
-			return;
-		}
-		else
-		{
-			if (this.model.columnSplitIndexValid())
-			{
-				y += (splitClass) * (this.scrollPane.getHeight() - 5);
-			}
-			c = getColor(splitClass);
-			drawPointAtLocation(g, x, y, rowIndex, c);
 		}
 	}
 
@@ -1279,31 +1265,6 @@ public class DotplotView extends JPanel implements Observer
 
 		// paint the point
 		Color c = this.determineColor(indicesDotsInView[rowIndex]);
-		g.setColor(c);
-		// set transparent
-		g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 150));
-		g.fillOval(x - this.dotRadius, y - this.dotRadius, 2 * this.dotRadius,
-			2 * this.dotRadius);
-
-		this.objectLocations.set(rowIndex, new Point(x, y));
-	}
-
-	private void drawPointAtLocation(Graphics2D g, int x, int y, int rowIndex,
-		Color c)
-	{
-//		System.out.println("DotplotView.drawPointAtLocation(g, " + x + ", " + y + ", " + rowIndex + c.toString() + ")");
-		
-		// highlight point if the object is selected
-		g.setColor(Color.BLACK);
-		if (this.model.getStatTableModel().isRowSelected(rowIndex))
-		{
-			g.fillOval(x - this.dotRadius - 2, y - this.dotRadius - 2,
-				2 * this.dotRadius + 4, 2 * this.dotRadius + 4);
-			g.drawOval(x - this.dotRadius - 2, y - this.dotRadius - 2,
-				2 * this.dotRadius + 4, 2 * this.dotRadius + 4);
-		}
-
-		// paint the point
 		g.setColor(c);
 		// set transparent
 		g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 150));
