@@ -4,16 +4,12 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.ImageObserver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -21,7 +17,38 @@ import static javafx.concurrent.Worker.State.FAILED;
 
 //@SuppressWarnings("restriction")
 public class SimpleSwingBrowser {
-	static {
+	final class TitleHandler implements ChangeListener<String> {
+    @Override
+    public void changed(ObservableValue<? extends String> observable, String oldValue,
+    		final String newValue) {
+        if (frame != null) {
+        	SwingUtilities.invokeLater(new Runnable() {
+        		@Override
+        		public void run() {
+        			SimpleSwingBrowser.this.setTitle(newValue);
+        		}
+        	});
+        }
+    }
+  }
+
+  final class ExceptionHandler implements ChangeListener<Throwable> {
+    public void changed(ObservableValue<? extends Throwable> o, Throwable old, final Throwable value) {
+    	if (engine.getLoadWorker().getState() == FAILED) {
+    		SwingUtilities.invokeLater(new Runnable() {
+    			@Override
+    			public void run() {
+    				JOptionPane.showMessageDialog(jfxPanel,
+    						(value != null) ? engine.getLocation() + "\n" + value.getMessage()
+    								: engine.getLocation() + "\nUnexpected error.",
+    						"Loading error...", JOptionPane.ERROR_MESSAGE);
+    			}
+    		});
+    	}
+    }
+  }
+
+  static {
 		Platform.setImplicitExit(false);
 	}
 
@@ -115,18 +142,7 @@ public class SimpleSwingBrowser {
 				WebView view = new WebView();
 				engine = view.getEngine();
 
-				engine.titleProperty().addListener(new ChangeListener<String>() {
-					@Override
-					public void changed(ObservableValue<? extends String> observable, String oldValue,
-							final String newValue) {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								SimpleSwingBrowser.this.setTitle(newValue);
-							}
-						});
-					}
-				});
+				engine.titleProperty().addListener(new TitleHandler());
 
 //				engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
 //					@Override
@@ -165,22 +181,7 @@ public class SimpleSwingBrowser {
 //					}
 //				});
 
-				engine.getLoadWorker().exceptionProperty().addListener(new ChangeListener<Throwable>() {
-
-					public void changed(ObservableValue<? extends Throwable> o, Throwable old, final Throwable value) {
-						if (engine.getLoadWorker().getState() == FAILED) {
-							SwingUtilities.invokeLater(new Runnable() {
-								@Override
-								public void run() {
-									JOptionPane.showMessageDialog(jfxPanel,
-											(value != null) ? engine.getLocation() + "\n" + value.getMessage()
-													: engine.getLocation() + "\nUnexpected error.",
-											"Loading error...", JOptionPane.ERROR_MESSAGE);
-								}
-							});
-						}
-					}
-				});
+				engine.getLoadWorker().exceptionProperty().addListener(new ExceptionHandler());
 
 				jfxPanel.setScene(new Scene(view));
 			}
