@@ -405,7 +405,7 @@ public class Algebra
 		boolean isMatrix = false;
 		
 		if (e instanceof Matrix)
-			isMatrix = true;
+		    isMatrix = true;
 		else if (e instanceof Optelling && isMatrix(e.kind1) && isMatrix(e.kind2)) // optelling van 2 matrices is een matrix
 			isMatrix = true;
 		else if (e instanceof Aftrekking && isMatrix(e.kind1) && isMatrix(e.kind2)) // aftrekking van 2 matrices is een matrix
@@ -414,6 +414,10 @@ public class Algebra
 			isMatrix = true;
 		else if (e instanceof Vermenigvuldiging && (isMatrix(e.kind1) ^ isMatrix(e.kind2))) // vermenigvuldiging van matrix en niet-matrix (scalar) is een matrix
 			isMatrix = true;
+        else if (e instanceof Macht && isMatrix(e.kind1) && (e.kind2.geefWaarde() == -1)) // matrix tot de macht -1 is de inverse matrix
+            isMatrix = true;
+        else if (e instanceof Macht && isMatrix(e.kind1) && ("T".equals(e.kind2.toString()))) // matrix tot de macht T is de getransponeerde matrix
+            isMatrix = true;
 		
 		return isMatrix;
 	}
