@@ -36,10 +36,11 @@ import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.expressies.FunctieMV;
 import fi.wiskopdr.expressies.Vergelijking;
 import fi.wiskopdr.expressies.VergelijkingMeerv;
+import fi.wiskopdr.expressies.Matrix.BerekendeMatrix;
+import fi.wiskopdr.expressies.VectorExpr.BerekendeVectorExpr;
 import fi.wiskopdr.expressies.FunctieMVDefSet;
 import fi.wiskopdr.expressies.repr.MPReduce;
 import fi.wiskopdr.expressies.repr.MPReduceConverter;
-import fi.wiskopdr.expressies.repr.MathematicaConverter;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 import fi.wiskopdr.formuleobjects.FormuleParser;
@@ -2724,42 +2725,93 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	}
 	
 	public void bereken()
-	{	maakStap();
+	{
+		maakStap();
 		
-		if(stapNr==0)return;
+		if (stapNr==0)
+			return;
+		
 		Expressie exp = formuleVakken[stapNr-1].geefExpressie();
-		if(exp==null) 
-		{	String expString = formuleVakken[stapNr-1].toString();
-			if(expString.charAt(expString.length()-2)=='=' || expString.charAt(expString.length()-2)=='\u2248')
-			{	int isIndex = expString.length()-2;
+		
+		if (exp==null) 
+		{
+			String expString = formuleVakken[stapNr-1].toString();
+			if (expString.charAt(expString.length()-2)=='=' || expString.charAt(expString.length()-2)=='\u2248')
+			{
+				int isIndex = expString.length()-2;
 				expString = expString.substring(0,isIndex)+"@";
 				//exp = FormuleParser.geefExpressie(expString);
 				exp = FormuleParser.geefExpressie(expString,functieMVDefSet);
 			}
 		}
-		if(exp==null ||  Double.isNaN(exp.geefWaarde()) || exp instanceof BasisExpressie)
-		{	stapTerug();
+		if (exp == null 
+			|| (Double.isNaN(exp.geefWaarde()) && !(Algebra.isVector(exp) || Algebra.isMatrix(exp)))
+			|| exp instanceof BasisExpressie)
+		{
+			stapTerug();
 			zetGoedFout(GEEN,-1);
 		}
-		if(exp!=null && !Double.isNaN(exp.geefWaarde()) && !(exp instanceof BasisExpressie))
-		{	double d = exp.geefWaarde();
-			Expressie expAfgerond = new DecRound(exp, new BasisExpressie(aantalDecRm));
-			double dAfgerond = expAfgerond.geefWaarde();
-			boolean isAfronding = !Algebra.isGelijkDouble(d, dAfgerond, 0.00000000000000001);
-			String s1 = formuleVakken[stapNr-1].toString();
-			s1 = s1.substring(2,s1.length()-1);
-			String s2 = Expressie.df3.format(dAfgerond);
+
+		if (exp != null && !(exp instanceof BasisExpressie))
+		{
+			String formule;
+			
+			if (Algebra.isVector(exp))
 			{
-				String s = Double.toString(dAfgerond);
-				String[] delen = StringUtils.split(s,"E");
-				if(delen.length>1) s2 = delen[0] + "*10$m" + delen[1] + "@";
-				else s2 = delen[0];
+                BerekendeVectorExpr berekendeVector = exp.geefVector().berekenVector(aantalDecRm);
+                formule = berekendeVector.toString();
+                
+                if (berekendeVector.isAfgerond())
+                {
+                    if (!hasPrefix)
+                    {
+                        String vorige = formuleVakken[stapNr - 1].toString();
+                        if (vorige.charAt(vorige.length() - 2) == '=')
+                            formuleVakken[stapNr - 1].vulVak(vorige.substring(0, vorige.length() - 2) + "\u2248@");
+                  }
+                }
+
+				formuleVakken[stapNr].vulVak("$f" + formule + "@");
 			}
-			formuleVakken[stapNr].vulVak("$f" + s2 + "@");
-			String string = formuleVakken[stapNr-1].toString();
-			if(isAfronding && prefix==null && (string.charAt(string.length()-2))=='=')formuleVakken[stapNr-1].vulVak(string.substring(0,string.length()-2) + "\u2248@");
-			
-			
+			else if (Algebra.isMatrix(exp))
+			{
+			    BerekendeMatrix berekendeMatrix = exp.geefMatrix().berekenMatrix(aantalDecRm);
+                formule = berekendeMatrix.toString();
+
+                if (berekendeMatrix.isAfgerond())
+                {
+                    if (!hasPrefix)
+                    {
+                        String vorige = formuleVakken[stapNr - 1].toString();
+                        if (vorige.charAt(vorige.length() - 2) == '=')
+                            formuleVakken[stapNr - 1].vulVak(vorige.substring(0, vorige.length() - 2) + "\u2248@");
+                    }
+                }
+                
+				formuleVakken[stapNr].vulVak("$f" + formule + "@");
+			}
+			else if (!Double.isNaN(exp.geefWaarde()))
+			{
+				double d = exp.geefWaarde();
+				Expressie expAfgerond = new DecRound(exp, new BasisExpressie(aantalDecRm));
+				double dAfgerond = expAfgerond.geefWaarde();
+				boolean isAfronding = !Algebra.isGelijkDouble(d, dAfgerond, 0.00000000000000001);
+//				s1 = formuleVakken[stapNr - 1].toString(); // met s1 gebeurt niks...?
+//				s1 = s1.substring(2, s1.length() - 1);
+				formule = Expressie.df3.format(dAfgerond);
+
+				String s = Double.toString(dAfgerond);
+				String[] delen = StringUtils.split(s, "E");
+				if (delen.length > 1)
+					formule = delen[0] + "*10$m" + delen[1] + "@";
+				else
+					formule = delen[0];
+
+				formuleVakken[stapNr].vulVak("$f" + formule + "@");
+				String string = formuleVakken[stapNr - 1].toString();
+				if (isAfronding && prefix == null && (string.charAt(string.length() - 2)) == '=')
+					formuleVakken[stapNr - 1].vulVak(string.substring(0, string.length() - 2) + "\u2248@");
+			}
 		}
 	}
 	

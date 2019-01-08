@@ -3,6 +3,7 @@ package fi.wiskopdr.expressies;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import fi.wiskopdr.expressies.VectorExpr.BerekendeVectorExpr;
 import fi.wiskopdr.expressies.repr.AbstractConverter;
 
 /**
@@ -509,4 +510,258 @@ public class Matrix extends Expressie
 	{
 		return this;
 	}
+
+	/**
+	 * Bereken de kinderen van de matrix (als in rekenmachine).
+	 * 
+	 * @return
+	 */
+	public Matrix berekenMatrix()
+	{
+		ArrayList<ArrayList<Expressie>> list = new ArrayList<ArrayList<Expressie>>();
+		
+		for (int i = 0; i < geefAantalRijen(); i++) // loop over de rijen
+		{
+			ArrayList<Expressie> rij = new ArrayList<Expressie>();
+			for (int j = 0; j < geefAantalKolommen(); j++) // loop over kolommen
+			{
+				Expressie expr = berekenExpressie(geefKinderen().get(i).get(j));
+				
+				rij.add(expr);
+			}
+			
+			list.add(rij);
+		}
+		
+		return new Matrix(list);
+	}
+	
+	/*
+	 * Bereken de gegeven expressie (als in rekenmachine).
+	 */
+	static Expressie berekenExpressie(Expressie expr)
+	{
+		Expressie berekend = null;
+		int aantalDecRm = 10;
+		double E_MAX = 1.0E7;
+		double E_MIN = 1.0E-3;
+		double MARGE = 0.00000000000000001;
+		
+		if (expr != null && !(expr instanceof BasisExpressie))
+		{
+			if (Algebra.isVector(expr))
+			{
+				berekend = expr.geefVector().berekenVector();
+			}
+			else if (Algebra.isMatrix(expr))
+			{
+				berekend = expr.geefMatrix().berekenMatrix();
+			}
+			else
+			{
+				double waarde = expr.geefWaarde();
+				double afgerond = new DecRound(new BasisExpressie(waarde), new BasisExpressie(aantalDecRm)).geefWaarde();
+				boolean isAfgerond = !Algebra.isGelijkDouble(waarde, afgerond, MARGE);
+				
+				if (!Double.isNaN(waarde))
+				{
+					double abs = Math.abs(afgerond);
+					if ( abs < E_MIN || abs >= E_MAX) 
+					{
+						String formule = Expressie.dfe.format(afgerond);						
+						formule  = formule.replace("E", "*10$m") + "@";
+						berekend = new BasisExpressie(formule);
+					} 
+					else 
+					{
+						berekend = new BasisExpressie(Expressie.df.format(afgerond));
+					}
+				}
+			}
+		}
+		else
+			berekend = expr;
+		
+		return berekend;
+	}
+
+    /**
+     * Bereken de kinderen van de matrix (als in rekenmachine).
+     * @param aantalDecRm 
+     * 
+     * @return
+     */
+    public BerekendeMatrix berekenMatrix(int aantalDecRm)
+    {
+        BerekendeMatrix berekendeMatrix = new BerekendeMatrix(null, false); // initialiseer
+        Matrix matrix;
+        ArrayList<ArrayList<Expressie>> list = new ArrayList<ArrayList<Expressie>>();
+        
+        for (int i = 0; i < geefAantalRijen(); i++) // loop over de rijen
+        {
+            ArrayList<Expressie> rij = new ArrayList<Expressie>();
+            for (int j = 0; j < geefAantalKolommen(); j++) // loop over kolommen
+            {
+                BerekendeExpressie expr = berekenExpressie(geefKinderen().get(i).get(j), aantalDecRm);
+                
+                if (expr.isAfgerond())
+                    berekendeMatrix.setIsAfgerond(true);
+                
+                rij.add(expr.getExpressie());
+            }
+            
+            list.add(rij);
+        }
+        
+        matrix = new Matrix(list);
+        berekendeMatrix.setMatrix(matrix);
+        
+        return berekendeMatrix;
+    }
+    
+    /**
+     * Bereken de gegeven expressie (als in rekenmachine).
+     */
+    static BerekendeExpressie berekenExpressie(Expressie expr, int aantalDecRm)
+    {
+        Matrix matrix = new Matrix(new ArrayList<ArrayList<Expressie>>());
+        BerekendeExpressie berekendeExpressie = matrix.new BerekendeExpressie(null, false);
+        double E_MAX = 1.0E7;
+        double E_MIN = 1.0E-3;
+        double MARGE = 0.00000000000000001;
+        
+        if (expr != null && !(expr instanceof BasisExpressie))
+        {
+            if (Algebra.isVector(expr))
+            {
+                BerekendeVectorExpr berekendeVector = expr.geefVector().berekenVector(aantalDecRm);
+                berekendeExpressie.setExpressie(berekendeVector.getVector());
+                if (berekendeVector.isAfgerond())
+                    berekendeExpressie.setIsAfgerond(true);
+            }
+            else if (Algebra.isMatrix(expr))
+            {
+                BerekendeMatrix berekendeMatrix = expr.geefMatrix().berekenMatrix(aantalDecRm);
+                berekendeExpressie.setExpressie(berekendeMatrix.getMatrix());
+                if (berekendeMatrix.isAfgerond())
+                    berekendeExpressie.setIsAfgerond(true);
+            }
+            else
+            {
+                double waarde = expr.geefWaarde();
+                double afgerond = new DecRound(new BasisExpressie(waarde), new BasisExpressie(aantalDecRm)).geefWaarde();
+                boolean isAfgerond = !Algebra.isGelijkDouble(waarde, afgerond, MARGE);
+                
+                if (!Double.isNaN(waarde))
+                {
+                    double abs = Math.abs(afgerond);
+                    if ( abs < E_MIN || abs >= E_MAX) 
+                    {
+                        String formule = Expressie.dfe.format(afgerond);                        
+                        formule  = formule.replace("E", "*10$m") + "@";
+                        berekendeExpressie.setExpressie(new BasisExpressie(formule));
+                    } 
+                    else 
+                    {
+                        berekendeExpressie.setExpressie(new BasisExpressie(Expressie.df.format(afgerond)));
+                    }
+                    
+                    if (isAfgerond)
+                    {
+                        berekendeExpressie.setIsAfgerond(true);
+                    }
+                }
+            }
+        }
+        else
+            berekendeExpressie.setExpressie(expr);
+        
+        return berekendeExpressie;
+    }
+    
+    /**
+     * Klasse voor een al dan niet afgeronde berekende expressie (als in rekenmachine).
+     * 
+     * @author borku102
+     *
+     */
+    public class BerekendeExpressie
+    {
+        Expressie expressie;
+        boolean isAfgerond;
+        
+        BerekendeExpressie(Expressie expressie, boolean isAfgerond)
+        {
+            this.expressie = expressie;
+            this.isAfgerond = isAfgerond;           
+        }
+        
+        Expressie getExpressie()
+        {
+            return expressie;
+        }
+        
+        boolean isAfgerond()
+        {
+            return isAfgerond;
+        }
+        
+        void setExpressie(Expressie expr)
+        {
+            this.expressie = expr;
+        }
+        
+        private void setIsAfgerond(boolean b)
+        {
+            this.isAfgerond = b;
+        }
+    }
+    
+    /**
+     * Klasse voor een al dan niet afgeronde berekende matrix (als in rekenmachine).
+     * 
+     * @author borku102
+     *
+     */
+    public class BerekendeMatrix
+    {
+        Matrix matrix;
+        boolean isAfgerond;
+        
+        BerekendeMatrix(Matrix matrix, boolean isAfgerond)
+        {
+            this.matrix = matrix;
+            this.isAfgerond = isAfgerond;
+        }
+        
+        public Matrix getMatrix()
+        {
+            return matrix;
+        }
+        
+        public boolean isAfgerond()
+        {
+            return isAfgerond;
+        }
+        
+        private void setMatrix(Matrix m)
+        {
+            this.matrix = m;
+        }
+        
+        private void setIsAfgerond(boolean b)
+        {
+            this.isAfgerond = b;
+        }
+
+        /* 
+         * Geef de matrix-string.
+         * 
+         */
+        @Override
+        public String toString()
+        {
+            return matrix.toString();
+        }
+    }
 }
