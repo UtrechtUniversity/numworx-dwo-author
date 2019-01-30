@@ -183,6 +183,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	private Point[] doelPosities;
 	private TekstVakPanel[] sleepObjecten;
+	private InteractiePanel[] sleepDoelen;
 
 	private JPanel klikPanel;
 	private Expressie antwoordExpressie;
@@ -2529,6 +2530,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		return doelPosities;
 	}
 
+	public InteractiePanel[] geefSleepDoelen()
+	{
+		return sleepDoelen;
+	}
+
 	public void zetSleepSnap(boolean sleepSnap)
 	{
 		this.sleepSnap = sleepSnap;
@@ -4329,6 +4335,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if(isInklapbaar() && ingeklapt)
 			klapUitAction();
 		zetMaat();	
+	}
+
+	public void zetSleepDoelen(InteractiePanel[] sleepDoelen)
+	{
+		this.sleepDoelen = sleepDoelen;
 	}
 
 }
