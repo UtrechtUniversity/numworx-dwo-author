@@ -203,7 +203,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		relocateCB.setVisible(false);
 		add(relocateCB);
 		
-		viewCB = new JCheckBox(WiskOpdr.rb.getString("viewCBLabel"));//("Springt terug");
+		viewCB = new JCheckBox(WiskOpdr.rb.getString("viewCBLabel"));//("View");
 		viewCB.setBounds(580,170,280,20);
 		viewCB.setOpaque(false);
 		viewCB.setFont(font);
@@ -296,10 +296,6 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
         verzamelDoelCB.setSelected(verzamelDoel);
         
         checkVastCB.setEnabled(!verzamelDoel);
-		snapToTargetCB.setEnabled(!verzamelDoel);
-		acceptedMargeLabel.setEnabled(!verzamelDoel);
-		acceptedMargeTF.setEnabled(!verzamelDoel);
-		relocateCB.setEnabled(!verzamelDoel);
 		
 		knopImageButton.setPopupButtonImage(knopImage);
     	iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
@@ -453,15 +449,14 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 			if(!snapToTargetCB.isSelected())relocateCB.setSelected(false);
 		}
 		else if(e.getSource()==verzamelDoelCB)
-		{	boolean b = verzamelDoelCB.isSelected();
+		{
+			boolean b = verzamelDoelCB.isSelected();
 			checkVastCB.setEnabled(!b);
-			snapToTargetCB.setEnabled(!b);
-			acceptedMargeLabel.setEnabled(!b);
-			acceptedMargeTF.setEnabled(!b);
-			relocateCB.setEnabled(!b);
-			if(b)checkVastCB.setSelected(!b);
-			if(b)checkFormuleCB.setSelected(b);
 			
+			if (b)
+				checkVastCB.setSelected(!b);
+			if (b)
+				checkFormuleCB.setSelected(b);
 		}
 		else if(e.getSource()==knopImageButton)
 	    {   editImage();
