@@ -263,6 +263,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 	        else {
 	            ipListSleep[i].addActionListener(this);
 	            ((TekstVakPanel)ipListSleep[i]).zetSleepDoelPosities(doelPosities);
+	            ((TekstVakPanel)ipListSleep[i]).zetSleepDoelen(ipListDoel); // gebruiken voor snap to target als sleepdoel groter dan sleepobject
 	            ((TekstVakPanel)ipListSleep[i]).zetSleepdoelMarge(acceptedMarge);
 	            ((TekstVakPanel)ipListSleep[i]).zetSleepSnap(snapToTarget);
 	            ((TekstVakPanel)ipListSleep[i]).setRelocate(relocate);
@@ -696,8 +697,8 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         		{	answer = answer + e.toString();
         		}
 	        }
-			//System.out.println(answer);
-        }
+			
+        } // checkformule
         else
         {
         	for(int i=0 ; i<aantalSleepObjects ; i++)
@@ -709,8 +710,10 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         		((TekstVakPanel)ipListSleep[i]).wisGoedFoutSleep();
 	        }
         	boolean stapJuist = true;
-	        for(int i=0 ; i<aantalDoelObjects ; i++)
-	        {	if(ipListDoel[i]==null) {
+	        for (int i = 0; i < aantalDoelObjects; i++)
+	        {
+	        	if (ipListDoel[i]==null)
+	        	{
 		    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle doelobjecten zijn aanwezig.\nDoelobject met ID="+(-(i+1))+" kan niet gevonden worden.");
 		    		break;
 		    	}
@@ -721,9 +724,9 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 		        int dx = Math.abs(posities[i].x - doelPosities[i].x);
 	        	int dy = Math.abs(posities[i].y - doelPosities[i].y);
 	        	
-	        	//if(dx*dx + dy*dy > acceptedMarge*acceptedMarge) 
-	        	if(dx > acceptedMarge || dy > acceptedMarge) 
-	        	{	stapJuist = false;
+	        	if (!isBinnenMarge((TekstVakPanel) ipListSleep[i], ipListDoel[i]))
+	        	{
+	        		stapJuist = false;
 	        		juist = juist && stapJuist;
 	        		if(!view) break;
 	        	}
@@ -784,7 +787,40 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
         if(show)produceAction("changed");
     }
     
-    public void kijkNa(int stapNr)
+    /**
+     * True als het gegeven sleepObject binnen de marge van het gegeven sleepDoel valt,
+     * anders false.
+     * 
+     * @param sleepObject
+     * @param sleepDoel
+     * @return
+     */
+    private boolean isBinnenMarge(TekstVakPanel sleepObject, InteractiePanel sleepDoel)
+	{
+		boolean isBinnenMarge = false;
+		int sleepObjectX = sleepObject.geefLocatie().x;
+		int sleepObjectY = sleepObject.geefLocatie().y;
+		int sleepObjectBreedte = sleepObject.getWidth();
+		int sleepObjectHoogte = sleepObject.getHeight();
+
+		TekstVakPanel sleepDoelVak = (TekstVakPanel) sleepDoel;
+		int sleepDoelX = sleepDoelVak.geefLocatie().x;
+		int sleepDoelY = sleepDoelVak.geefLocatie().y;
+		int sleepDoelBreedte = sleepDoelVak.getWidth();
+		int sleepDoelHoogte = sleepDoelVak.getHeight();
+		
+		if (sleepObjectX > sleepDoelX - acceptedMarge // check x-coordinaat
+			&& sleepObjectX < (sleepDoelX + sleepDoelBreedte - sleepObjectBreedte + acceptedMarge)
+			&& sleepObjectY > sleepDoelY - acceptedMarge // check y-coordinaat
+			&& sleepObjectY < sleepDoelY + sleepDoelHoogte - sleepObjectHoogte + acceptedMarge)
+		{
+			isBinnenMarge = true;
+		}
+		
+		return isBinnenMarge;
+	}
+
+	public void kijkNa(int stapNr)
     { 	kijkNa();
     }
     
