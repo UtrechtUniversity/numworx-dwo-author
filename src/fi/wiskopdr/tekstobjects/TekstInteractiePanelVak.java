@@ -2712,36 +2712,53 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		setCursor(Cursor.getDefaultCursor());
 		
 		eersteKeer = true;
-		if(e.getSource()==afdekPanel && draggingToSelect || e.getSource()==resizePanel && draggingToSelect)
+		if (e.getSource()==afdekPanel && draggingToSelect || e.getSource()==resizePanel && draggingToSelect)
 		{	draggingToSelect = false;
 			repaint();
 			return;
 		}
-		if(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isIpSleepbaar())
-		{	Point[] doelPosities = ((TekstVakPanel)interactiePanel).geefSleepDoelPosities();
+		
+		if (interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isIpSleepbaar())
+		{
+			// sleepobject
+			
+			Point[] doelPosities = ((TekstVakPanel)interactiePanel).geefSleepDoelPosities();
+			InteractiePanel[] sleepDoelen = ((TekstVakPanel)interactiePanel).geefSleepDoelen();
 			int marge = ((TekstVakPanel)interactiePanel).geefSleepdoelMarge();
 			boolean snap = ((TekstVakPanel)interactiePanel).geefSleepSnap();
-			if(doelPosities != null) 
-			{	boolean snapped = false;
-				for(int i=0 ; i<doelPosities.length ; i++)
+			if (doelPosities != null) 
+			{
+				boolean snapped = false;
+				for (int i = 0; i < doelPosities.length; i++)
 				{	
-					if(doelPosities[i]==null) {
+					if (doelPosities[i] == null)
+					{
 			    		JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle doelobjecten zijn aanwezig.\nDoelobject met ID="+(-(i+1))+" kan niet gevonden worden.");
 			    		break;
 			    	}
+					
 					int dx = Math.abs(getLocation().x - doelPosities[i].x);
 					int dy = Math.abs(getLocation().y - doelPosities[i].y);
-					//if(snap && dx*dx+dy*dy < marge*marge)
-					if(snap && dx < marge && dy < marge) 
-					{	setLocation(doelPosities[i].x, doelPosities[i].y);
+
+					boolean in = isBinnen(sleepDoelen[i]);
+					if (!in && isBinnenMarge(sleepDoelen[i])) // check of erbuiten valt maar binnen de marge
+					{
+						setLocation(findLocationWithin(sleepDoelen[i]));
 						((TekstVakPanel)interactiePanel).zetLocatie(getLocation().x, getLocation().y);
 						repaint();
 						snapped = true;
 						break;
 					}
+					else if (in)
+					{
+						snapped = true;
+						break;
+					}
 				}
-				if(!snapped && ((TekstVakPanel)interactiePanel).getRelocate())
-				{	Point p = ((TekstVakPanel)interactiePanel).getStartSleep();
+				
+				if (!snapped && ((TekstVakPanel)interactiePanel).getRelocate())
+				{
+					Point p = ((TekstVakPanel)interactiePanel).getStartSleep();
 					setLocation(p.x, p.y);
 					((TekstVakPanel)interactiePanel).zetLocatie(getLocation().x, getLocation().y);
 					repaint();
@@ -2749,7 +2766,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 		}
 		// inhoud die op 'volle breedte' is ingesteld wordt aangepast
-		if(editMode && interactiePanel instanceof TekstVakPanel)
+		if (editMode && interactiePanel instanceof TekstVakPanel)
 			setEditState(getEditState());
 		
 		sleepModus = false;
@@ -2799,10 +2816,119 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			editInteractiePanelDialog.addActionListener(this);
 			editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			showDialog(true);
-
 		}
 	}
-	public void mouseEntered(MouseEvent e){
+	
+	/**
+	 * Bepaal de locatie zodat this (sleepobject) binnen het gegeven sleepdoel valt.
+	 *  
+	 * @param sleepDoel
+	 * @return
+	 */
+	private Point findLocationWithin(InteractiePanel sleepDoel)
+	{
+		Point p = null;
+		int pointX = -1;
+		int pointY = -1;
+		
+		int marge = ((TekstVakPanel) interactiePanel).geefSleepdoelMarge();
+		int sleepObjectX = getLocation().x;
+		int sleepObjectY = getLocation().y;
+		int sleepObjectBreedte = getWidth();
+		int sleepObjectHoogte = getHeight();
+
+		TekstVakPanel sleepDoelVak = (TekstVakPanel) sleepDoel;
+		int sleepDoelX = sleepDoelVak.geefLocatie().x;
+		int sleepDoelY = sleepDoelVak.geefLocatie().y;
+		int sleepDoelBreedte = sleepDoelVak.getWidth();
+		int sleepDoelHoogte = sleepDoelVak.getHeight();
+
+		// check x coordinate
+		if (sleepObjectX < sleepDoelX)
+			pointX = Math.min(sleepObjectX + marge, sleepDoelX); // nooit groter dan sleepDoelX
+		else if (sleepObjectX + sleepObjectBreedte > sleepDoelX + sleepDoelBreedte)
+			pointX = Math.max(sleepObjectX - marge, sleepDoelX); // nooit kleiner dan sleepDoelX
+		else
+			pointX = sleepObjectX;
+		
+		// check y coordinate
+		if (sleepObjectY < sleepDoelY)
+			pointY = Math.min(sleepObjectY + marge, sleepDoelY); // nooit groter dan sleepObjectY
+		else if (sleepObjectY + sleepObjectHoogte > sleepDoelY + sleepDoelHoogte)
+			pointY = Math.max(sleepObjectY - marge, sleepDoelY); // nooit kleiner dan sleepDoelY
+		else
+			pointY = sleepObjectY;
+		
+		p = new Point(pointX, pointY);
+		
+		return p;
+	}
+
+	/**
+	 * True als this (sleepobject) binnen de marge van het gegeven sleepdoel valt.
+	 * 
+	 * @param sleepDoel
+	 * @return
+	 */
+	private boolean isBinnenMarge(InteractiePanel sleepDoel)
+	{
+		boolean isBinnenMarge = false;
+		int marge = ((TekstVakPanel) interactiePanel).geefSleepdoelMarge();
+		int sleepObjectX = getLocation().x;
+		int sleepObjectY = getLocation().y;
+		int sleepObjectBreedte = getWidth();
+		int sleepObjectHoogte = getHeight();
+
+		TekstVakPanel sleepDoelVak = (TekstVakPanel) sleepDoel;
+		int sleepDoelX = sleepDoelVak.geefLocatie().x;
+		int sleepDoelY = sleepDoelVak.geefLocatie().y;
+		int sleepDoelBreedte = sleepDoelVak.getWidth();
+		int sleepDoelHoogte = sleepDoelVak.getHeight();
+		
+		if (sleepObjectX > sleepDoelX - marge // check x-coordinaat
+			&& sleepObjectX < (sleepDoelX + sleepDoelBreedte - sleepObjectBreedte + marge)
+			&& sleepObjectY > sleepDoelY - marge // check y-coordinaat
+			&& sleepObjectY < sleepDoelY + sleepDoelHoogte - sleepObjectHoogte + marge)
+		{
+			isBinnenMarge = true;
+		}
+		
+		return isBinnenMarge;
+	}
+
+	/**
+	 * True als this (sleepobject) binnen het gegeven sleepdoel valt.
+	 * 
+	 * @param sleepDoel
+	 * @return
+	 */
+	private boolean isBinnen(InteractiePanel sleepDoel)
+	{
+		boolean isBinnen = false;
+		int sleepObjectX = getLocation().x;
+		int sleepObjectY = getLocation().y;
+		int sleepObjectBreedte = getWidth();
+		int sleepObjectHoogte = getHeight();
+
+		TekstVakPanel sleepDoelVak = (TekstVakPanel) sleepDoel;
+		int sleepDoelX = sleepDoelVak.geefLocatie().x;
+		int sleepDoelY = sleepDoelVak.geefLocatie().y;
+		int sleepDoelBreedte = sleepDoelVak.getWidth();
+		int sleepDoelHoogte = sleepDoelVak.getHeight();
+		
+		if (sleepObjectX > sleepDoelX // check x-coordinaat
+			&& sleepObjectX < (sleepDoelX + sleepDoelBreedte - sleepObjectBreedte)
+			&& sleepObjectY > sleepDoelY // check y-coordinaat
+			&& sleepObjectY < sleepDoelY + sleepDoelHoogte - sleepObjectHoogte)
+		{
+			isBinnen = true;
+		}
+
+		return isBinnen;
+	}
+
+	public void mouseEntered(MouseEvent e)
+	{
 		if(selectable && e.getSource()==afdekPanel && e.isShiftDown()  && getBasisTekstVak().crossWidgetViewActief())
 		{	//System.out.println("potentialSource != null "+(potentialSource!=null));
 			//System.out.println("potentialSource != this "+(potentialSource != this));
