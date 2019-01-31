@@ -40,6 +40,9 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
 		adapter.put(color);
 		item.setVisible(visible);
+        if(trail && tracker != null) {
+          tracker.getModel().startTrail(item);
+        }
 		if (visibility.getString() != null && tracker != null) {
 			try {
 				String formula = visibility.getString();
@@ -58,9 +61,6 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 				Destroyable v = expr.interpret(oma, visibility, tracker.getMapper());
 				v.setVisible(false);
 				tracker.getModel().add(v);
-				if(trail) {
-				  tracker.getModel().startTrail(item);
-				}
 			} catch (Exception e) {
 			} catch (TokenMgrError tme) {
 				tme.printStackTrace();
