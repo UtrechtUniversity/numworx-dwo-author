@@ -1712,6 +1712,7 @@ System.out.println("kladjeVeld sized");
 				"equation.8",
 				"equation.9",
 				"equation.10",
+				"text.strokecode"
 				};
 		return commands;
 	}

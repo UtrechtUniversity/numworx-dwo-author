@@ -44,6 +44,7 @@ public class Text_nl extends java.util.ListResourceBundle
             { "CBA_action.check.n", "actie: check n"},
             { "CBA_action.closePopup", "actie: sluit popup"},
             { "CBA_action.popup", "actie: popup"},
+            { "CBA_text.strokecode", "strokecodes"},
             
 		};
 }
