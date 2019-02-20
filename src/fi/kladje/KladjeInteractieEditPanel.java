@@ -322,12 +322,12 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		tekstTekenenBox.setSelected(tekstTekenen);
 		boolean formuleOptie = false;
 		if (b.containsKey("formuleOptie"))
-			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue();
+			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue() && Kladje.isPremium;
 		formuleOptieBox.setSelected(formuleOptie);
-		fiButton.setVisible(formuleOptie);
+		fiButton.setVisible(formuleOptie );
 		boolean ivmOptie = false;
 		if (b.containsKey("ivmOptie"))
-			ivmOptie = ((Boolean) b.get("ivmOptie")).booleanValue();
+			ivmOptie = ((Boolean) b.get("ivmOptie")).booleanValue()&& Kladje.isPremium;
 		ivmOptieBox.setSelected(ivmOptie);
 		
 		boolean roteren = true;
