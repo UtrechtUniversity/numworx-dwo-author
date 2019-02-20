@@ -173,6 +173,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		formuleOptieBox.setBackground(Color.white);
 		formuleOptieBox.setBounds(currentX, currentY, 120, height);
 		add(formuleOptieBox);
+		formuleOptieBox.setVisible(Kladje.isPremium);
 		formuleOptieBox.addActionListener(this);
 		
 		fiButton = new FormuleInstellingenButton("settings");
@@ -240,7 +241,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		ivmOptieBox.setBounds(currentX, currentY, width, height);
 		add(ivmOptieBox);
 		ivmOptieBox.addActionListener(this);
-		//ivmOptieBox.setVisible(Kladje.isExperimental);
+		ivmOptieBox.setVisible(Kladje.isPremium);
 		
 		componentsCreated = true;
 	}	
@@ -381,7 +382,10 @@ System.out.println("kliep getEditState");
 		h.put("klipHoogte", new Integer(klipHoogte));
 		
 		if(formuleOptieBox.isSelected() && fiButton.getInstellingen()!=null)
+		{
 			h.put("formuleInstellingen", fiButton.getInstellingen());
+			h.put("premium", Boolean.TRUE); // De formule optiebox = premium.
+		}
 		
 		return h;
 		
