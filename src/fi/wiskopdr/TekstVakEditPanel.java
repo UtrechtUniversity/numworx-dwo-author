@@ -200,7 +200,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private int defaultIpHeight = 450;
 	private int defaultIpWidth = 680; //hier stond 270
 	private int defaultOpWidth = 280;
-	private int defaultOpHeight= 680;
+	private int defaultOpHeight= 700;
 	
 	private JCheckBox logCB;
 	private JTextField logIDField;
@@ -220,6 +220,12 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JComboBox layerChoice;
 	private int layerNr;
 	private boolean layerVisible;
+	
+	private JCheckBox responsiveCB;
+	private JLabel responsiveTFLabel;
+	private boolean responsive;
+	private JTextField responsiveToggleWidthTF;
+	private int responsiveToggleWidth;
 	
 	public TekstVakEditPanel(XWidgetManager manager)
 	{	
@@ -318,6 +324,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		//stylesCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_manageStyles"), 10,555,150,20, manageStyles, layoutOptionsPanel);
 		templateModeEditCB= maakCheckBox("Template mode (edit)", 10,590,150,20, templateModeEdit, layoutOptionsPanel);
 		templateModeFillCB= maakCheckBox("Template mode (fill)", 10,615,150,20, templateModeFill, layoutOptionsPanel);
+		responsiveCB = maakCheckBox("Responsive", 10,640,150,20, responsive, layoutOptionsPanel);
 		
 		vulHoogteCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_vulHoogte"), 10,390,225,20, vulHoogte, layoutOptionsPanel);
 		callOutCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_callOut"), 10,505,225,20, callOut, layoutOptionsPanel);
@@ -755,6 +762,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		layerChoice.setVisible(TekstVakPanel.layerNames!=null);
 		layoutOptionsPanel.add(layerChoice);
 		
+		responsiveToggleWidthTF = new JTextField("");
+		responsiveToggleWidthTF.setBounds(170,640,30,20);
+		responsiveToggleWidthTF.setFont(ifFont);
+		responsiveToggleWidthTF.addActionListener(this);
+		responsiveToggleWidthTF.addFocusListener(this);
+		responsiveToggleWidthTF.setVisible(false);
+        layoutOptionsPanel.add(responsiveToggleWidthTF);
+		
 		//JSONTextField = new JTextField();
 		//JSONTextField.setBounds(10,500,240,20);
 		//interactionOptionsPanel.add(JSONTextField);
@@ -899,6 +914,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
 		int layerNr = 0;
+		boolean responsive = false;
+		int responsiveToggleWidth = 800;
 		
 		int locationX = Integer.parseInt(locationXTF.getText());
 		int locationY = Integer.parseInt(locationYTF.getText());
@@ -972,6 +989,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		templateModeEdit = this.templateModeEdit;
 		templateModeFill = this.templateModeFill;
 		layerNr = this.layerNr;
+		responsive = this.responsive;
+        responsiveToggleWidth = this.responsiveToggleWidth;
 			
 		Hashtable h = null;
 		 
@@ -1068,6 +1087,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		h.put("templateModeEdit", new Boolean(templateModeEdit));
 		h.put("templateModeFill", new Boolean(templateModeFill));
 		h.put("layerNr", new Integer(layerNr));
+		h.put("responsive", new Boolean(responsive));
+        h.put("responsiveToggleWidth", new Integer(responsiveToggleWidth));
 		return h;
 	}
 	
@@ -1210,6 +1231,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		int locationX = 0;
 		int locationY = 0;
 		int layerNr = 0;
+		boolean responsive = false;
+        int responsiveToggleWidth = 800;
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -1336,7 +1359,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("locationX")) locationX = ((Integer)h.get("locationX")).intValue();
         if(h.containsKey("locationY")) locationY = ((Integer)h.get("locationY")).intValue();
         if(h.containsKey("layerNr")) layerNr = ((Integer)h.get("layerNr")).intValue();
-		
+        if(h.containsKey("responsive")) responsive = ((Boolean)h.get("responsive")).booleanValue();
+        if (h.containsKey("responsiveToggleWidth")) responsiveToggleWidth = ((Integer) h.get("responsiveToggleWidth")).intValue();
         //System.out.println("logOption: "+logOption);
 
 		this.randZichtbaar = randZichtbaar;
@@ -1395,6 +1419,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.templateModeEdit = templateModeEdit;
 		this.templateModeFill = templateModeFill;
 		this.layerNr = layerNr;
+		this.responsive = responsive;
+        this.responsiveToggleWidth = responsiveToggleWidth;
 		
 		if(isLink)
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
@@ -1552,6 +1578,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     	
     	if(layerNr<layerChoice.getItemCount())
     		layerChoice.setSelectedIndex(layerNr);
+    	
+    	responsiveCB.setSelected(responsive);
+    	responsiveToggleWidthTF.setVisible(responsive);
+    	responsiveToggleWidthTF.setText(""+responsiveToggleWidth);
 	}
 	
 	
@@ -1672,6 +1702,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		{	randomVar = randomTF.getText();
 			tekstVakPanel.setEditState(getEditState());
 		}
+        if(e.getSource().equals(responsiveToggleWidthTF))
+        {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
+            tekstVakPanel.setEditState(getEditState());
+        }
     }
     
 	public void actionPerformed(ActionEvent e)
@@ -2300,7 +2334,15 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		{	layerNr = layerChoice.getSelectedIndex();
 			tekstVakPanel.setEditState(getEditState());
 		}
-
+	    if(e.getSource().equals(responsiveCB))
+        {   responsive = responsiveCB.isSelected();
+            responsiveToggleWidthTF.setVisible(responsive);
+            tekstVakPanel.setEditState(getEditState());
+        }
+	    if(e.getSource().equals(responsiveToggleWidthTF))
+        {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
+            tekstVakPanel.setEditState(getEditState());
+        }
 	}
 	
 	private void setStyleAction(Map h)

@@ -272,6 +272,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private int layerNr;
 	private boolean thisLayerVisible = true;
 	
+	private boolean responsive;
+	private int responsiveToggleWidth;
+	
 	public TekstVakPanel()
 	{
 		this(1, 1);
@@ -765,6 +768,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean backButton = false;
 		boolean hintButton = false;
 		int layerNr = 0;
+		boolean responsive = false;
+		int responsiveToggleWidth = 800;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) 
@@ -963,6 +968,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	hintButton = ((Boolean)h.get("hintButton")).booleanValue();
         if (h.containsKey("layerNr"))
         	layerNr = ((Integer) h.get("layerNr")).intValue();
+        if(h.containsKey("responsive"))
+          responsive = ((Boolean)h.get("responsive")).booleanValue();
+        if (h.containsKey("responsiveToggleWidth"))
+          responsiveToggleWidth = ((Integer) h.get("responsiveToggleWidth")).intValue();
         
 		this.zichtbaarNaNakijken = zichtbaarNaNakijken;
 		this.balansVergCom = balansVergCom;
@@ -1044,6 +1053,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.backButton = backButton;
 	    this.hintButton = hintButton;
 	    this.layerNr = layerNr;
+	    this.responsive = responsive;
+	    this.responsiveToggleWidth = responsiveToggleWidth;
 	    
 		if (isLink) {
 			if(!linkUrl.equals("")) {
@@ -1819,6 +1830,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
 		int layerNr = 0;
+		boolean responsive = false;
+        int responsiveToggleWidth = 800;
 
 		styleString = this.styleString;
 		randZichtbaar = this.randZichtbaar;
@@ -1894,6 +1907,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		templateModeEdit = this.templateModeEdit;
 		templateModeFill = this.templateModeFill;
 		layerNr = this.layerNr;
+		responsive = this.responsive;
+		responsiveToggleWidth = this.responsiveToggleWidth;
 
 		if (WiskOpdr.objectives != null)
 		{
@@ -2038,6 +2053,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("templateModeEdit", new Boolean(templateModeEdit));
 		h.put("templateModeFill", new Boolean(templateModeFill));
 		h.put("layerNr", new Integer(layerNr));
+		h.put("responsive", new Boolean(responsive));
+        h.put("responsiveToggleWidth", new Integer(responsiveToggleWidth));
 		
 //		for (int i = 0; i < aantalRijen && inklapbaar; i++)
 //		{	if(uitklapHoogtes.length>i)System.out.println("uitklapH: rij "+i +"="+uitklapHoogtes[i]);
@@ -2642,6 +2659,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean templateModeEdit = false;
 		boolean templateModeFill = false;
 		int layerNr = 0;
+		boolean responsive = false;
+        int responsiveToggleWidth = 800;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
@@ -2830,6 +2849,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         	templateModeFill = ((Boolean) h.get("templateModeFill")).booleanValue();
         if (h.containsKey("layerNr"))
 			layerNr = ((Integer) h.get("layerNr")).intValue();
+        if(h.containsKey("responsive"))
+          responsive = ((Boolean)h.get("responsive")).booleanValue();
+        if (h.containsKey("responsiveToggleWidth"))
+          responsiveToggleWidth = ((Integer) h.get("responsiveToggleWidth")).intValue();
         
        	this.styleString = styleString;
         this.randZichtbaar = randZichtbaar;
@@ -2927,6 +2950,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.templateModeEdit = templateModeEdit;
 	    this.templateModeFill = templateModeFill;
 	    this.layerNr = layerNr;
+	    this.responsive = responsive;
+        this.responsiveToggleWidth = responsiveToggleWidth;
 
 		tekstVakken = new TekstVak[aantalRijen][aantalKolommen];
 		removeAll();
