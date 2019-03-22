@@ -6,7 +6,7 @@
   	<dependency>
   		<groupId>fi.euclides</groupId>
   		<artifactId>euclides-util</artifactId>
-  		<version>0.0.4</version>
+  		<version>0.0.5-SNAPSHOT</version>
   		<optional>true</optional>
   	</dependency>
   	<dependency>
@@ -35,7 +35,7 @@
   </build>
   <parent>
   	<groupId>fi.euclides</groupId>
-  	<version>0.0.4</version>
+  	<version>0.0.5-SNAPSHOT</version>
   	<artifactId>euclides-parent</artifactId>
   	<relativePath>..</relativePath>
   </parent>
