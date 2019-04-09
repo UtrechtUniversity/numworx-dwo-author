@@ -140,6 +140,7 @@ public class Text_en extends java.util.ListResourceBundle
 		//	....
             {  "CBA_input", "input" },
             {  "CBA_equation.twoGraphs", "two graphs" },
+            {  "CBA_equation.graph", "graph" },
             {  "CBA_double.parameter", "parameter value" },
             {  "CBA_double.trace", "trace value" },
             {  "CBA_expression.1", "function 1" },

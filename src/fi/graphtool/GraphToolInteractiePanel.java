@@ -5840,6 +5840,14 @@ MouseListener, MouseMotionListener, CBookAware {
 		 		System.out.println("expression:: "+formuleString);
 		 		getFormuleComponent().zetFunctie(index, formuleString);
 			}
+			if(command.equals("equation.graph"))
+			{
+				String vergelijkingString = (String)event.getMessage();
+				if(!vergelijkingString.substring(0,2).equals("$f")) vergelijkingString = "$f"+vergelijkingString+"@";
+				System.out.println("vergelijkingString: "+vergelijkingString);
+				getFormuleComponent().zetVergelijkingAlsFunctie(0, vergelijkingString);
+				
+			}
 			if(command.equals("equation.twoGraphs"))
 			{
 				String vergelijkingString = (String)event.getMessage();
@@ -5937,6 +5945,7 @@ MouseListener, MouseMotionListener, CBookAware {
 					"expression.4",
 					"expression.5",
 					"equation.twoGraphs", 
+					"equation.graph",
 					"double.parameter", 
 					"double.trace",
 					"draw_functions"};

@@ -1123,6 +1123,29 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 		parseFormule(1, false);
 	}
 	
+	public void zetVergelijkingAlsFunctie(int regelNr, String vergelijkingString)
+	{
+		//zetFunctieBeginAanpasbaar(false, false);
+		//zetFormeleFuncties(false, false);
+		VergelijkingMeerv v = FormuleParser.parseVergelijking(vergelijkingString);
+		if(v==null) { //misschien is het een expressie
+			vergelijkingString = "$fy=" + vergelijkingString.substring(2);
+		}
+		//String functieString0 = "$f"+v.geefVergelijking(0).geefExpLinks().toString()+"@";
+		if(!functieBeginAanpasbaar) {
+			v = FormuleParser.parseVergelijking(vergelijkingString);
+			String functieString = "$f"+v.geefVergelijking(0).geefExpRechts().toString()+"@";
+			formuleVakken[0].formuleVak.vulVak(functieString);
+			checkboxen[0].setSelected(true);
+			parseFormule(0, false);
+		}
+		else {
+			formuleVakken[0].formuleVak.vulVak(vergelijkingString);
+			checkboxen[0].setSelected(true);
+			parseFormule(0, false);
+		}
+	}
+	
 	public void zetFunctie(int regelNr, String functieString)
 	{
 		if(functieBeginAanpasbaar)

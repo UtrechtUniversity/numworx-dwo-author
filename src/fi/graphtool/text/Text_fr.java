@@ -132,7 +132,17 @@ public class Text_fr extends java.util.ListResourceBundle
         //	{	"button1Label" , "text1_en" },
 		//	{ 	"button2Label" , "text2_en" },
 		//	....
-		
+            {  "CBA_input", "input" },
+            {  "CBA_equation.twoGraphs", "two graphs" },
+            {  "CBA_equation.graph", "graph" },
+            {  "CBA_double.parameter", "parameter value" },
+            {  "CBA_double.trace", "trace value" },
+            {  "CBA_expression.1", "function 1" },
+            {  "CBA_expression.2", "function 2" },
+            {  "CBA_expression.3", "function 3" },
+            {  "CBA_expression.4", "function 4" },
+            {  "CBA_expression.5", "function 5" },
+
 		};
 }
 
