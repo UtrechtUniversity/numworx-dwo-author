@@ -112,11 +112,11 @@ public class SVGStrategy implements Strategy {
           width = st.nextToken();
           height = st.nextToken();
           if(result.width <= 0) {
-            result.width = Integer.parseInt(width);
+            result.width = Math.round(Float.parseFloat(width));
             parent.namemap.put(name + "/w", result.width);
           }
           if(result.height <= 0) {
-            result.height = Integer.parseInt(height);
+            result.height = Math.round(Float.parseFloat(height));
             parent.namemap.put(name + "/h", result.height);
           }
         }
