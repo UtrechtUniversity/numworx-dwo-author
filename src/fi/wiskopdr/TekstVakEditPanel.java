@@ -223,8 +223,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	
 	private JCheckBox responsiveCB;
 	private JLabel responsiveTFLabel;
-	private boolean responsive;
 	private JTextField responsiveToggleWidthTF;
+	
+	private boolean responsive;
+	private String responsiveCode = "w2";
+    private int responsiveConstant = 0;
 	private int responsiveToggleWidth;
 	
 	public TekstVakEditPanel(XWidgetManager manager)
@@ -915,6 +918,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean templateModeFill = false;
 		int layerNr = 0;
 		boolean responsive = false;
+		String responsiveCode;
+        int responsiveConstant;
 		int responsiveToggleWidth = 800;
 		
 		int locationX = Integer.parseInt(locationXTF.getText());
@@ -990,6 +995,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		templateModeFill = this.templateModeFill;
 		layerNr = this.layerNr;
 		responsive = this.responsive;
+		responsiveCode = this.responsiveCode;
+        responsiveConstant = this.responsiveConstant;
         responsiveToggleWidth = this.responsiveToggleWidth;
 			
 		Hashtable h = null;
@@ -1088,7 +1095,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		h.put("templateModeFill", new Boolean(templateModeFill));
 		h.put("layerNr", new Integer(layerNr));
 		h.put("responsive", new Boolean(responsive));
-        h.put("responsiveToggleWidth", new Integer(responsiveToggleWidth));
+		if(responsive) {
+          h.put("responsiveCode", responsiveCode);
+          h.put("responsiveConstant", new Integer(responsiveConstant));
+          h.put("responsiveToggleWidth", new Integer(responsiveToggleWidth));
+        }
 		return h;
 	}
 	
@@ -1232,6 +1243,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		int locationY = 0;
 		int layerNr = 0;
 		boolean responsive = false;
+		String responsiveCode = "w2";
+        int responsiveConstant = 0;
         int responsiveToggleWidth = 800;
 		
 		String[][][] randomteksten = new String[1][][];
@@ -1360,7 +1373,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         if(h.containsKey("locationY")) locationY = ((Integer)h.get("locationY")).intValue();
         if(h.containsKey("layerNr")) layerNr = ((Integer)h.get("layerNr")).intValue();
         if(h.containsKey("responsive")) responsive = ((Boolean)h.get("responsive")).booleanValue();
-        if (h.containsKey("responsiveToggleWidth")) responsiveToggleWidth = ((Integer) h.get("responsiveToggleWidth")).intValue();
+        if(responsive && h.containsKey("responsiveCode")) 
+          responsiveCode = (String)h.get("responsiveCode");
+        if (responsive && h.containsKey("responsiveConstant"))
+          responsiveConstant = ((Integer) h.get("responsiveConstant")).intValue();
+        if (responsive && h.containsKey("responsiveToggleWidth"))
+          responsiveToggleWidth = ((Integer) h.get("responsiveToggleWidth")).intValue();
+        
         //System.out.println("logOption: "+logOption);
 
 		this.randZichtbaar = randZichtbaar;
@@ -1420,6 +1439,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.templateModeFill = templateModeFill;
 		this.layerNr = layerNr;
 		this.responsive = responsive;
+		this.responsiveCode = responsiveCode;
+	    this.responsiveConstant = responsiveConstant;
         this.responsiveToggleWidth = responsiveToggleWidth;
 		
 		if(isLink)
