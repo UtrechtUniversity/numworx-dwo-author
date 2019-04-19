@@ -23,6 +23,12 @@ public class SelectHandler extends EventHandler {
 	static class LineMover extends Punt {
 		private Destroyable pl;
 		private Punt[] ps;
+
+		public LineMover(Numbers x, Numbers y, Destroyable l, Punt[] movers) {
+		    super(x,y);
+		    pl = l;
+		    ps = movers;
+		}
 		public LineMover(Numbers x, Numbers y, Destroyable l) {
 			super(x,y);
 			pl = l;
@@ -280,7 +286,24 @@ public class SelectHandler extends EventHandler {
 
     @Override
     public void visitBoog(Boog b) {
+      Punt[] movers;
       if (click) super.visitBoog(b);
+      else if (track == null && null != (movers=freeBoog(b))) track = new Track(new LineMover(lastx, lasty, b, movers));
+    }
+
+    private Punt[] freeBoog(Boog b) {
+      Destroyable depend[] = b.getDepend();
+      Punt[] p ;
+      if (depend instanceof Punt[]) { // arc(P1,P2,P3)
+        p = (Punt[]) depend;
+      } else
+      if (depend[0] instanceof Punt && depend[1] instanceof Punt ) { //arc(P1, P2, angle);
+        p = new Punt[] { (Punt) depend[0], (Punt) depend[1] };
+      } else  {
+        p = new Punt[] { (Punt) depend[0] };
+      }
+      if (freePunt(p)) return p;
+      return null;
     }
 
   }
