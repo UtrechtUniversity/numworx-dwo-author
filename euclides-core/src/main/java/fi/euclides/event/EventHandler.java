@@ -6,6 +6,7 @@ import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Locus;
 import fi.euclides.model.MP;
 import fi.euclides.model.Triangle;
+import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
@@ -124,7 +125,8 @@ public abstract class EventHandler {
 		testHits(x.doubleValue(),y.doubleValue(), context);
 		Track track = context.getTrack();
 		if(track!= null) 
-			track.setXY(x, y);
+		{	track.setXY(x, y);
+		}
 	}
 	
 	public void pointerPressed(Numbers x, Numbers y, TrackerContext context)

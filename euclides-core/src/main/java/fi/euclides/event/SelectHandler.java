@@ -3,6 +3,7 @@ package fi.euclides.event;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Messages;
 import fi.euclides.model.MP;
+import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Cirkel3;
@@ -131,6 +132,9 @@ public class SelectHandler extends EventHandler {
 		  getSelectContext(context).lasty = y;
 		}
 		super.pointerDragged(x, y,context);
+		if (context.getTrack() != null) {
+          tracker.adapt(AbstractViewer.class).dragging();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -139,6 +143,7 @@ public class SelectHandler extends EventHandler {
 	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
 	  getSelectContext(context).track = null;
 	  context.setTrack(null);
+      tracker.adapt(AbstractViewer.class).dragging();
 	}
 
 

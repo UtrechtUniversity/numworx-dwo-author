@@ -157,6 +157,11 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 		trail = false;
 	}
 
+	public void dragging() {
+	  setChanged();
+	  notifyObservers(track==null ? Collections.EMPTY_SET : track);
+	}
+	
 	public void visitTriangle(Triangle t) {
 		visitMP(t);	
 	}
