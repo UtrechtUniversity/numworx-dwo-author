@@ -28,6 +28,7 @@ import fi.euclides.event.Tracker;
 import fi.euclides.event.TrackerContext;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
+import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
@@ -179,6 +180,13 @@ public abstract class Instance /*implements Observer*/ {
       return super.freePuntenLine(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
     }
 
+    @Override
+    protected Punt[] freeBoog(Boog b) {
+      if (Boolean.TRUE.equals(b.adapt(Boolean.class)))
+        return null;
+      return super.freeBoog(b);
+    }
+    
     private void saveGravity() {
       Snapper snap = getTracker().adapt(Snapper.class);
       gravity = snap.isGravity();
