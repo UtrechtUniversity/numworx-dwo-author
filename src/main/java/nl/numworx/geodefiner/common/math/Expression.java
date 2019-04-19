@@ -144,6 +144,7 @@ public class Expression extends fi.euclides.openmath.Expression {
 		install(new AantalSign());
 		install(CHECKED);
 		install(new Exists());
+		install(new Dragging(tracker));
 		GCD gcd = new GCD();
 		symbolmap.put("arith1.gcd", gcd);
 
