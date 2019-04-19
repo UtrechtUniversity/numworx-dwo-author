@@ -296,7 +296,18 @@ public class SelectHandler extends EventHandler {
       else if (track == null && null != (movers=freeBoog(b))) track = new Track(new LineMover(lastx, lasty, b, movers));
     }
 
-    private Punt[] freeBoog(Boog b) {
+
+  }
+
+	/* Empty...
+	 * @see euclides.event.EventHandler#clear()
+	 */
+	@Override
+	void clear(TrackerContext context) {
+	}
+
+
+    protected Punt[] freeBoog(Boog b) {
       Destroyable depend[] = b.getDepend();
       Punt[] p ;
       if (depend instanceof Punt[]) { // arc(P1,P2,P3)
@@ -311,14 +322,6 @@ public class SelectHandler extends EventHandler {
       return null;
     }
 
-  }
-
-	/* Empty...
-	 * @see euclides.event.EventHandler#clear()
-	 */
-	@Override
-	void clear(TrackerContext context) {
-	}
 
 
 }
