@@ -796,7 +796,7 @@ class GrafiekVeld extends JComponent{
 					//hier: waardes schuifparameters invullen! Even een nieuwe expressie maken en die verder gebruiken voor paint.
 					Expressie ingevuldeExpressie = gtip.functies[j];
 					if(gtip.schuifParameters != null)
-					{	for(int i = 0; i < gtip.schuifParameters.length; i++)
+					{	for(int i = 0; i < gtip.schuifParameters.length && gtip.schuifParameters[i]!=null; i++)
 						{	SchuifParameter p = gtip.schuifParameters[i];
 							ingevuldeExpressie = ingevuldeExpressie.substitueer(p.geefWaarde(), p.geefVarNaam());
 						}

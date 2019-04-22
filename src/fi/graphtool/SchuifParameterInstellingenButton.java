@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,6 +24,7 @@ public class SchuifParameterInstellingenButton extends JButton implements Action
 	private DialogFacade frame;
 	private GraphToolInteractieEditPanel graphToolInteractieEditPanel;
 	private JTextField naamTF, onderGrensTF, bovenGrensTF, beginStandTF, stapGrootteTF, lengteTF;
+	private JCheckBox hideSliderCB;
 	
 	private Font theFont = new Font("SansSerif", Font.PLAIN, 12);
 	
@@ -108,6 +110,10 @@ public class SchuifParameterInstellingenButton extends JButton implements Action
 		try{stapGrootte = Double.parseDouble(stapGrootteTF.getText());}
 		catch(Exception e){}
 		param.zetStapGrootte(stapGrootte);
+		
+		boolean hideSlider = param.geefHideSlider();
+		hideSlider = hideSliderCB.isSelected();
+		param.zetHideSlider(hideSlider);
 	}
 	
 	public void makeGUI(){
@@ -115,7 +121,7 @@ public class SchuifParameterInstellingenButton extends JButton implements Action
 		bottomPanel = new JPanel();
         
 		optiesPanel.setLayout(null);
-		optiesPanel.setPreferredSize(new Dimension(200, 180));
+		optiesPanel.setPreferredSize(new Dimension(200, 210));
 		int currentY = 20;
 		int offset = 5;
 		int height = 20;
@@ -203,6 +209,13 @@ public class SchuifParameterInstellingenButton extends JButton implements Action
 		lengteTF.setHorizontalAlignment(JTextField.RIGHT);
 		lengteTF.setBounds(4 * offset + 80, currentY, 50, height);
 		optiesPanel.add(lengteTF);
+		
+		currentY += height + offset;
+		hideSliderCB = new JCheckBox("Hide Slider");
+		hideSliderCB.setBounds(2 * offset, currentY, 180, height);
+		hideSliderCB.setSelected(param.geefHideSlider());
+		hideSliderCB.setFont(theFont);
+		optiesPanel.add(hideSliderCB);
 		
 		okButton = new JButton("Ok");
         okButton.addActionListener(this);

@@ -1517,7 +1517,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		docentFormuleComponent.zetFormeleFuncties(formeleFuncties, true);
 		zetOpdrachtKeuze(typeOpdracht, true);
 		if(interactiePanel.schuifParameters != null)
-			for(int i = 0; i < interactiePanel.schuifParameters.length; i++)
+			for(int i = 0; i < interactiePanel.schuifParameters.length && interactiePanel.schuifParameters[i]!=null; i++)
 			{
 				schuifParamListElements.addElement(interactiePanel.schuifParameters[i].geefNaam());
 			}

@@ -10,6 +10,7 @@ public class SchuifParameter implements ActionListener{
 	private double onderGrensWaarde, bovenGrensWaarde, stapGrootte;
 	private Slider slider;
 	private int lengte;
+	private boolean hideSlider;
 	private int x, y;
 	
 	public SchuifParameter(int aantalPix, String naam)
@@ -68,6 +69,16 @@ public class SchuifParameter implements ActionListener{
 		if("".equals(naamNieuw))
 			naamNieuw = naam;
 		return naamNieuw;
+	}
+	
+	public boolean geefHideSlider() 
+	{
+		return hideSlider;
+	}
+	
+	public void zetHideSlider(boolean b) 
+	{
+		hideSlider = b;
 	}
 	
 	public void zetLocatie(int x, int y)

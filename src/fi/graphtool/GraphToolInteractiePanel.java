@@ -767,7 +767,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		veldh = gv.getHeight();
 		
 		if(schuifParameters != null)
-		{	for(int i = 0; i < schuifParameters.length; i++)
+		{	for(int i = 0; i < schuifParameters.length && schuifParameters[i]!=null; i++)
 			{	if(schuifParameters[i].getX() < 0 || schuifParameters[i].getX() > veldb - schuifParameters[i].geefLengte()
 					|| schuifParameters[i].getY() < 0 || schuifParameters[i].getY() > this.getHeight() - 4 * offset)
 // It is now possible to drag the schuifparameters outside the graph (into the components)
@@ -1576,7 +1576,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	
 	public SchuifParameter geefSchuifParameter(String naam)
 	{
-		for(int i = 0; i < schuifParameters.length ; i++)
+		for(int i = 0; i < schuifParameters.length && schuifParameters[i]!=null ; i++)
 		{	if(naam.equals(schuifParameters[i].geefNaam()))
 				return schuifParameters[i];
 		}
@@ -2008,7 +2008,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		}
 		if(paramWaarden != null)
 		{	//this.schuifParameters = new SchuifParameter[paramNamen.length];
-			for(int i = 0; i < schuifParameters.length; i++)
+			for(int i = 0; i < schuifParameters.length && schuifParameters[i]!=null; i++)
 			{	//schuifParameters[i] = new SchuifParameter(paramLengtes[i], paramNamen[i]);
 				schuifParameters[i].zetWaarde(paramWaarden[i], false);
 			}
@@ -2298,14 +2298,16 @@ MouseListener, MouseMotionListener, CBookAware {
 		int[] paramLengtes = new int[schuifParameters.length];
 		int[] paramX = new int[schuifParameters.length];
 		int[] paramY = new int[schuifParameters.length];
+		boolean[] paramHideSlider = new boolean[schuifParameters.length];
 		
-		for(int i = 0; i < schuifParameters.length; i++)
+		for(int i = 0; i < schuifParameters.length && schuifParameters[i]!=null; i++)
 		{	paramNamen[i] = schuifParameters[i].geefNaam();
 			paramWaarden[i] = schuifParameters[i].geefWaarde();
 			paramOnderGrensWaarden[i] = schuifParameters[i].geefOnderGrens();
 			paramBovenGrensWaarden[i] = schuifParameters[i].geefBovenGrens();
 			paramStapGroottes[i] = schuifParameters[i].geefStapGrootte();
 			paramLengtes[i] = schuifParameters[i].geefLengte();
+			paramHideSlider[i] = schuifParameters[i].geefHideSlider();
 			paramX[i] = schuifParameters[i].getX();
 			paramY[i] = schuifParameters[i].getY();
 		}
@@ -2504,6 +2506,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	    h.put("paramBovenGrensWaarden", paramBovenGrensWaarden);
 	    h.put("paramStapGroottes", paramStapGroottes);
 	    h.put("paramLengtes", paramLengtes);
+	    h.put("paramHideSlider", paramHideSlider);
 	    h.put("paramX", paramX);
 	    h.put("paramY", paramY);
 	    h.put("activeIndex", new Integer(activeIndex));
@@ -2708,6 +2711,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		double[] paramBovenGrensWaarden = null;
 		double[] paramStapGroottes = null;
 		int[] paramLengtes = null;
+		boolean[] paramHideSlider = null;
 		int[] paramX = null;
 		int[] paramY = null;
 		
@@ -2834,6 +2838,8 @@ MouseListener, MouseMotionListener, CBookAware {
     		paramStapGroottes = ((double[])h.get("paramStapGroottes"));
     	if(h.containsKey("paramLengtes"))
     		paramLengtes = ((int[])h.get("paramLengtes"));
+    	if(h.containsKey("paramHideSlider"))
+    		paramHideSlider = ((boolean[])h.get("paramHideSlider"));
     	if(h.containsKey("paramX"))
     		paramX = ((int[])h.get("paramX"));
     	if(h.containsKey("paramY"))
@@ -2996,6 +3002,8 @@ MouseListener, MouseMotionListener, CBookAware {
 				schuifParameters[i].zetStapGrootte(paramStapGroottes[i]);
 				schuifParameters[i].zetWaarde(paramWaarden[i], false);
 				schuifParameters[i].zetLocatie(paramX[i], paramY[i]);
+				if(paramHideSlider!=null)
+					schuifParameters[i].zetHideSlider(paramHideSlider[i]);
 			}
 		}
 		
@@ -3293,7 +3301,7 @@ MouseListener, MouseMotionListener, CBookAware {
 				
 				rp.setIndex(rp.getIndex() % 100);
 			}
-    	}
+    		}
 		
 		zetZoomOptie(zoomOptie);
 		zetTraceOptie(traceOptie);
@@ -3334,9 +3342,11 @@ MouseListener, MouseMotionListener, CBookAware {
 			
 		setActiveIndex(activeIndex, true);
 		if(schuifParameters != null)
-			for (int i = 0; i < schuifParameters.length; i++)
-			{	add(schuifParameters[i].geefSlider(), 0);
-				schuifParameters[i].geefSlider().addActionListener(this);
+			for (int i = 0; i < schuifParameters.length && schuifParameters[i]!=null; i++)
+			{	if(!schuifParameters[i].geefHideSlider()) {
+					add(schuifParameters[i].geefSlider(), 0);
+					schuifParameters[i].geefSlider().addActionListener(this);
+				}
 			}
 		
 	}
@@ -3386,6 +3396,7 @@ MouseListener, MouseMotionListener, CBookAware {
 		double[] paramBovenGrensWaarden = null;
 		double[] paramStapGroottes = null;
 		int[] paramLengtes = null;
+		boolean[] paramHideSlider = null;
 		int[] paramX = null;
 		int[] paramY = null;
 		
@@ -3513,6 +3524,8 @@ MouseListener, MouseMotionListener, CBookAware {
     		paramStapGroottes = ((double[])h.get("paramStapGroottes"));
     	if(h.containsKey("paramLengtes"))
     		paramLengtes = ((int[])h.get("paramLengtes"));
+    	if(h.containsKey("paramHideSlider"))
+    		paramHideSlider = ((boolean[])h.get("paramHideSlider"));
     	if(h.containsKey("paramX"))
     		paramX = ((int[])h.get("paramX"));
     	if(h.containsKey("paramY"))
@@ -3674,6 +3687,8 @@ MouseListener, MouseMotionListener, CBookAware {
 				schuifParameters[i].zetStapGrootte(paramStapGroottes[i]);
 				schuifParameters[i].zetWaarde(paramWaarden[i], false);
 				schuifParameters[i].zetLocatie(paramX[i], paramY[i]);
+				if(paramHideSlider!=null)
+					schuifParameters[i].zetHideSlider(paramHideSlider[i]);
 			}
 		}
 		
@@ -3896,7 +3911,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			
 		setActiveIndex(activeIndex, true);
 		if(schuifParameters != null)
-			for (int i = 0; i < schuifParameters.length; i++)
+			for (int i = 0; i < schuifParameters.length && schuifParameters[i]!=null; i++)
 			{	add(schuifParameters[i].geefSlider(), 0);
 				schuifParameters[i].geefSlider().addActionListener(this);
 				schuifParameters[i].geefSlider().addMouseListener(this);
@@ -4894,7 +4909,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	{	requestFocus();
 	
 		if(schuifParameters != null)
-		{	for(int i = 0; i < schuifParameters.length; i++)
+		{	for(int i = 0; i < schuifParameters.length && schuifParameters[i]!=null; i++)
 			{	if(e.getSource() == schuifParameters[i].geefSlider() && !schuifParameters[i].geefSlider().isRaak())
 				{	//if(schuifParameters[i].geefSlider().getRaak())
 					//{
@@ -5074,7 +5089,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	public void mouseDragged(MouseEvent e)
 	{	if(schuifParameters != null)
 		{
-			for(int i = 0; i < schuifParameters.length; i++)
+			for(int i = 0; i < schuifParameters.length && schuifParameters[i]!=null; i++)
 			{
 				if(e.getSource() == schuifParameters[i].geefSlider() && !schuifParameters[i].geefSlider().isRaak() && sliderSlepend)
 				{	//System.out.println("goede schuifParameter gevonden: " + i);
@@ -5608,7 +5623,7 @@ MouseListener, MouseMotionListener, CBookAware {
 			}
 		}
 		if(schuifParameters != null)
-		{	for(int i = 0; i < schuifParameters.length; i++)
+		{	for(int i = 0; i < schuifParameters.length && schuifParameters[i]!=null; i++)
 			{	if(e.getSource() == schuifParameters[i].geefSlider())
 				{	schuifParameters[i].zetWaarde(schuifParameters[i].geefDoubleStand(), true);
 					for(int j = 0; j < formuleComponent.getAantalRegels(); j++)
