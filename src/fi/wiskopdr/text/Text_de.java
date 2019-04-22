@@ -716,6 +716,7 @@ public class Text_de extends java.util.ListResourceBundle
 				{"CBA_action.deselect", "Action: deselect"},
 				{"CBA_action.check", "Action: check"},
 				{"CBA_action.click", "Action: click"},
+				{"CBA_action.popup", "Action: popup"},
 				
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},

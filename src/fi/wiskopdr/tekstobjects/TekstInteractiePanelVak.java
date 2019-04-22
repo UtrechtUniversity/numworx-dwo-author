@@ -2403,6 +2403,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			{	if(height>600)width += 20;
 				height = Math.min(600, height);
 				((TekstVakPanel)interactiePanel).setPopupUsed(true);
+				((TekstVakPanel)interactiePanel).popupOpened();
 			}
 			popupFrame.setSize(width,height);
 			

@@ -785,6 +785,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_action.deselect", "Actie: deselecteer"},
 				{"CBA_action.check", "Actie: kijk na"},
 				{"CBA_action.click", "Actie: klik"},
+				{"CBA_action.popup", "Actie: popup"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},
