@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Groep;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
@@ -386,6 +388,30 @@ public abstract class Instance /*implements Observer*/ {
 					} catch (IOException e) {
 						// should not happen!
 					}
+				} else if (positions.containsKey(name) && punt instanceof Groep) {
+					Groep groep = (Groep) punt;
+					ObjectList n = positions.getObjectList(name);
+					NumberIO in = new NumberIO(n);
+					Enumeration<Destroyable> e = groep.elements();
+					while (e.hasMoreElements()) {
+						Destroyable destroyable = e.nextElement();
+						if (destroyable instanceof Punt) {
+							fp  = destroyable.adapt(FreePoint.class);
+							if (fp == null) continue;
+							boolean b = fp.isFree();
+							try {
+								fp.setFree(true);
+								Numbers x = in.readNumber(); Numbers y = in.readNumber();
+								fp.moveTo(x, y);
+							} catch (IOException e1) {
+								
+							} finally {
+								fp.setFree(b);
+							}
+							
+						}
+						
+					}
 				}
 			}
 		}
@@ -454,6 +480,25 @@ public abstract class Instance /*implements Observer*/ {
 					values.put(name, io.toList());
 				} catch (IOException e) {
 				}}
+			}
+			if (next instanceof Groep) {
+				Groep groep = (Groep) next;
+				NumberIO io = new NumberIO();
+				Enumeration<Destroyable> e = groep.elements();
+				try {
+					while (e.hasMoreElements()) {
+						Destroyable destroyable = e.nextElement();
+						FreePoint fp = destroyable.adapt(FreePoint.class);						
+						if (fp != null) {
+							fp.getX().writeNumber(io);
+							fp.getY().writeNumber(io);
+						}
+					}
+					positions.put(name, io.toList());
+				} catch (IOException e1) {
+					logger.log(Level.WARNING, "save groups position", e1);
+				}
+				
 			}
 			
 		}
