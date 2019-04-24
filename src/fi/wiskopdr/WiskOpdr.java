@@ -175,11 +175,25 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	
 	static public class StudentCategory {
 		public String category;
-		public String[] objectives;
+		public String description;
+		public StudentObjective[] objectives;
 	}
+	
+  static public class StudentObjective {
+
+    public StudentObjective(String objective, String description) {
+      this.objective = objective;
+      this.description = description;
+    }
+
+    public String objective;
+    public String description;
+    public StudentObjective[] subObjectives; // and so on.... NOT USED YET
+  }
 	
 	static public class StudentModel {
 		public String title;
+		public String description;
 		public String id;
 		public StudentCategory[] categories;
 		public String toString() {
@@ -220,6 +234,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		JSONObject map = (JSONObject) object;
 		JSONObject model = (JSONObject) map.get("modelStructure");
 		result.title = getTitle(model);
+		result.description = getDescription(model);
 		result.id = getId(map); // FIXME 
 		result.categories = readCategories(model.get("categories"));		
 		return result;
@@ -256,21 +271,24 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	protected static String getTitle(JSONObject map) {
 		return (String) ((Map) ((Map) map.get("info")).get("title")).get(language.toString());
 	}
+    protected static String getDescription(JSONObject map) {
+      return (String) ((Map) ((Map) map.get("info")).get("description")).get(language.toString());
+  }
 
-	private static String[] readObjectives(Object object) {
-		if (object == null) return new String[0];
+	private static StudentObjective[] readObjectives(Object object) {
+		if (object == null) return new StudentObjective[0];
 		JSONArray array = (JSONArray) object;
 		int size = array.size();
-		String[] result = new String[size];
+		StudentObjective[] result = new StudentObjective[size];
 		for (int i = 0; i < size; i++) {
 			result[i] = readObjective(array.get(i));
 		}
 		return result;
 	}
 
-	private static String readObjective(Object object) {
+	private static StudentObjective readObjective(Object object) {
 		JSONObject map = (JSONObject) object;
-		return getTitle(map);
+		return new StudentObjective ( getTitle(map), getDescription(map) );
 	}
 
 	private static URL defaultCodeBase; // allow code injection?
