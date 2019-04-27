@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.Observable;
 
 public class Groep extends Destroyable {
@@ -23,6 +24,8 @@ public class Groep extends Destroyable {
 	}
  	
 	private Vector<Destroyable> items = new Vector<Destroyable>();
+
+    private boolean free;
 	
 	public static String TYPE = "G";
 
@@ -82,6 +85,8 @@ public class Groep extends Destroyable {
 
 	public void addElement(Destroyable obj) {
 		obj.setVisible(isVisible());
+		if (obj instanceof FreePoint )
+		  ((FreePoint) obj).setFree(free);
 		items.addElement(obj);
 	}
 
@@ -107,5 +112,14 @@ public class Groep extends Destroyable {
 	public Destroyable prototype(int index) {
 		return prototype();
 	}
+
+  public void setFree(boolean b) {
+    this.free = b;
+    for(Destroyable x : items) {
+      if (x instanceof FreePoint) {
+        ((FreePoint) x).setFree(b);
+      }
+    }
+  }
 
 }
