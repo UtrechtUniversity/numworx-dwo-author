@@ -11,6 +11,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
 import nl.numworx.geodefiner.common.PointType;
+import fi.euclides.model.Destroyable;
+import fi.euclides.model.Groep;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.Messages;
 
@@ -31,7 +33,11 @@ class PointPane<T extends PointModel> extends ColorPane<T> {
 		sizeField.setColumns(5);
 		sizeField.setMaximumSize(sizeField.getPreferredSize());
 		rigid = new JCheckBox(Messages.getString("rigid"));
-		rigid.setEnabled(model.item instanceof FreePoint);
+		Destroyable item = model.item;
+		if (item instanceof Groep) {
+		  item = ((Groep)item).prototype();
+		}
+        rigid.setEnabled(item instanceof FreePoint);
 		rigid.setSelected(!model.rigid);			
 		Box panel = Box.createHorizontalBox();
 		panel.add( new JLabel(Messages.getString("PointPane.1"))); panel.add(sizeField);panel.add(new JLabel("px"));panel.add(Box.createGlue());
