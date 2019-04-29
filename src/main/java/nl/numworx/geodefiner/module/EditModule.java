@@ -8,15 +8,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JToolBar;
 
-import org.openjdk.tools.javadoc.internal.doclets.toolkit.util.VisibleMemberMap.GetterSetter;
-
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.swing.AWTViewer;
-import nl.numworx.geodefiner.CommandPanel;
 import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.Instance;
 import nl.numworx.geodefiner.InstanceViewer;
