@@ -568,7 +568,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				boolean logOption = false;
 				String logID = "";
 				String logIDLabel = "";
-				boolean[][] logObjectives = null; 
+				boolean[][] logObjectives = null;
+				String[] smObjectives = null;
 				boolean hasObjectives = false;
 				double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
@@ -621,6 +622,10 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         				logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
         			} catch(Exception ex){
         			}
+                    try {
+                        smObjectives = (String[]) interactiePanelLaunchState.get("smObjectives");
+                    } catch(Exception ex) {}
+                
         		if(interactiePanelLaunchState.containsKey("hasObjectives"))
         			hasObjectives = ((Boolean)interactiePanelLaunchState.get("hasObjectives")).booleanValue();
         		else
@@ -722,7 +727,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	            logIDField.setText(logID);
 	            logIDLabelField.setText(logIDLabel);
 	            
-	            logObjectivesButton.setChoices(logObjectives);
+	            logObjectivesButton.setChoices(logObjectives); // this order!
+	            logObjectivesButton.setObjectives(smObjectives);
 	           	            
 	            aantalDecRmField.setVisible(rmKnop);
 	            aantalDecRmField.setText(""+aantalDecRm);
@@ -885,6 +891,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			logID = logIDField.getText();
 			logIDLabel = logIDLabelField.getText();
 			logObjectives = logObjectivesButton.getChoices();
+			String[] smObjectives = logObjectivesButton.getObjectives();
 			
 			puntenGelijkwaardig = this.puntenGelijkwaardig;
 			puntenHerleiding = this.puntenHerleiding;
@@ -960,6 +967,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	        if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+	        	interactiePanelLaunchState.put("smObjectives", smObjectives);
 	        }
 	        interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
             interactiePanelLaunchState.put("antwoordFuncStrings",antwoordFuncStrings);

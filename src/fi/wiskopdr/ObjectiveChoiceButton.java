@@ -7,6 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JTable;
 
 import fi.wiskopdr.domainmodel.StudentModel;
+import fi.wiskopdr.domainmodel.StudentModelChoicePanel;
 import fi.wiskopdr.domainmodel.StudentObjective;
 
 import java.awt.BorderLayout;
@@ -15,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -120,17 +122,20 @@ public class ObjectiveChoiceButton extends JButton implements ActionListener
     public boolean[][] getChoices(){   
       return strategy.getChoices();
     }
-    public List<String> getObjectives() {
-      return strategy.getObjectives();
+    public String[] getObjectives() {
+      return strategy.getObjectives().toArray(new String[0]);
     }
 
     public void setChoices (boolean[][] choices)
     {
       strategy.setChoices(choices);
     }
-    public void setObjectives(List<String> obj) {
-      strategy.setObjectives(obj);
+
+    public void setObjectives(String[] obj) {
+      if (obj != null)
+        strategy.setObjectives(Arrays.asList(obj));
     }
+
     private void makeChoices() {
       strategy.makeChoices();
     }
@@ -170,6 +175,9 @@ public class ObjectiveChoiceButton extends JButton implements ActionListener
 		this.categorieString = categorieString;
 		this.studentModel = studentModel;
 		addActionListener(this);
+		if (studentModel != null) {
+		  strategy = new StudentModelChoicePanel(studentModel);
+		}
 	}
 	
 	
