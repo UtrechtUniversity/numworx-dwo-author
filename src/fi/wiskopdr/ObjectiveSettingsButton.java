@@ -6,7 +6,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import fi.wiskopdr.WiskOpdr.StudentModel;
+import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.opdrnav.PlusMinKnop;
 
 public class ObjectiveSettingsButton extends JButton implements ActionListener
@@ -355,5 +355,9 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 				System.out.println("import canceled");
 			}
 		}
-	}   
+	}
+
+  public StudentModel getStudentModel() {
+    return studentModel;
+  }   
 }

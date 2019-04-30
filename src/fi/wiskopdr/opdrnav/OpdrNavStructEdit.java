@@ -14,6 +14,7 @@ import javax.swing.*;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.wiskopdr.*;
+import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.*;
 
@@ -330,6 +331,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		boolean hasObjectives = false;
 		String[][] objectives = null;
 		String[] categorieString = null;
+		StudentModel studentModel = null;
 		boolean hasMisconceptions = false;
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
