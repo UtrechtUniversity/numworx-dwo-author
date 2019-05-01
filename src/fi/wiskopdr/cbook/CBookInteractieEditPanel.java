@@ -108,7 +108,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 			top.add(logid);
 		}
 // objectives:
-	    logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+	    logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         if(logObjectivesButton.isVisible())
         	top.add(logObjectivesButton);
@@ -137,7 +137,9 @@ public class CBookInteractieEditPanel extends JPanel implements
 		}
 		
 		boolean[][] logObjectives = OpdrNavStruct.toBooleanArrayArray(b.get(CBookInteractiePanel.LOG_OBJECTIVES));
+		String[] smObjectives = OpdrNavStruct.toStringArray(b.get(fi.wiskopdr.domainmodel.Constants.OBJECTIVES));
         logObjectivesButton.setChoices(logObjectives);
+        logObjectivesButton.setObjectives(smObjectives);
 
 		
 	}
@@ -160,6 +162,9 @@ public class CBookInteractieEditPanel extends JPanel implements
 		if(logObjectivesButton.isVisible())
 		{
 			launchData.put(CBookInteractiePanel.LOG_OBJECTIVES, logObjectivesButton.getChoices());
+			try {
+              launchData.put(fi.wiskopdr.domainmodel.Constants.OBJECTIVES, logObjectivesButton.getObjectives());
+            } catch (Exception e) {}
 		}
 		
 		return launchData;

@@ -11,6 +11,7 @@ import fi.beans.base64code.*;
 import fi.beans.ideas.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
 import fi.beans.stringutils.StringUtils;
@@ -298,7 +299,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         casAntwCB = makeCheckBox(700,160,270,20,WiskOpdr.rb.getString("eigenOpdrCBLabel"),false,true);
         boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
-        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
@@ -609,6 +610,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				String logID = "";
 				String logIDLabel = "";
 				boolean[][] logObjectives = null;
+				String[] smObjectives = null;
                 boolean tipOpBalk = true;
                 boolean hulpOpBalk = false;
                 boolean stapOpBalk = false;
@@ -681,6 +683,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				if(interactiePanelLaunchState.containsKey("casAntw")) casAntw = ((Boolean)interactiePanelLaunchState.get("casAntw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
+				if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
 				
                 this.vorm = vorm;
                 this.exact = exact;
@@ -776,6 +779,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 	            logIDField.setText(logID);
 	            logIDLabelField.setText(logIDLabel);
 	            logObjectivesButton.setChoices(logObjectives);
+	            logObjectivesButton.setObjectives(smObjectives);
                 
                 uitwCB.setSelected(uitw);
                 casAntwCB.setSelected(casAntw);
@@ -881,6 +885,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			String logID = "";
 			String logIDLabel = "";
 			boolean[][] logObjectives = null;
+			String[] smObjectives = null;
             double eqTestValueMin = 0;
 			double eqTestValueMax = 5;
 			boolean uitw = false;
@@ -999,6 +1004,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			logID = logIDField.getText();
 			logIDLabel = logIDLabelField.getText();
 			logObjectives = logObjectivesButton.getChoices();
+			smObjectives = logObjectivesButton.getObjectives();
 			
 			uitw = uitwCB.isSelected();
 			casAntw = casAntwCB.isSelected();
@@ -1068,6 +1074,9 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+	        	try {
+                  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+	        	} catch(Exception e) {}
 	        }
 			
         return interactiePanelLaunchState;

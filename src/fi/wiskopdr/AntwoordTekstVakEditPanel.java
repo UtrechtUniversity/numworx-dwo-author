@@ -9,6 +9,7 @@ import javax.swing.*;
 import fi.beans.base64code.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -157,7 +158,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
         logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
         
 		
-		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
@@ -281,6 +282,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		boolean formuleToolBijFocus = false;
 		boolean boxMetRand = true;
 		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
         
 		
 		
@@ -299,7 +301,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
-		
+		if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
 		this.puntenGelijkwaardig = puntenGelijkwaardig;
 		this.answerModels = answerModels;
 		
@@ -338,6 +340,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
         logIDField.setText(logID);
         logIDLabelField.setText(logIDLabel);
         logObjectivesButton.setChoices(logObjectives);
+        logObjectivesButton.setObjectives(smObjectives);
        
         formuleModeCB.setSelected(formuleMode);
         formuleToolBijFocusCB.setVisible(formuleMode);
@@ -362,6 +365,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		String logID = "";
 		String logIDLabel = "";
 		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
 		
 		boolean formuleMode = false;
 		boolean formuleToolBijFocus = false;
@@ -382,6 +386,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		logID = logIDField.getText();
 		logIDLabel = logIDLabelField.getText();
 		logObjectives = logObjectivesButton.getChoices();
+		smObjectives = logObjectivesButton.getObjectives();
 		formuleMode = formuleModeCB.isSelected();
 		formuleToolBijFocus = formuleToolBijFocusCB.isSelected();
 		boxMetRand = boxMetRandCB.isSelected();
@@ -411,6 +416,9 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		if(logObjectives!=null)
         {	interactiePanelLaunchState.put("logObjectives",logObjectives);
         	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+            try {
+              interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+            } catch(Exception e) {}
         }
 		
 		

@@ -16,6 +16,7 @@ import java.awt.Point;
 import javax.swing.*;
 
 import fi.wiskopdr.tekstobjects.*;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.formuleobjects.*;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
@@ -118,7 +119,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		logIDField.setVisible(false);
 		add(logIDField);
 		
-		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
@@ -164,6 +165,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		boolean teltMee = true;
 		boolean view = false;
 		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
 		String knopImageString = "";
 		
 	    if(h.containsKey("aantalValueObjects")) aantalValueObjects = ((Integer)h.get("aantalValueObjects")).intValue();
@@ -177,6 +179,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
 		if(h.containsKey("view")) view = ((Boolean)h.get("view")).booleanValue();
 		if(h.containsKey("logObjectives")) logObjectives = (boolean[][])h.get("logObjectives");
+		if(h.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) h.get(Constants.OBJECTIVES);
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		
 	    this.aantalValueObjects = aantalValueObjects;
@@ -196,6 +199,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
         logObjectivesButton.setChoices(logObjectives);
+        logObjectivesButton.setObjectives(smObjectives);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
         
@@ -223,6 +227,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		boolean logOption = false;
 		String logID = "";
 		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		boolean view = false;
@@ -237,6 +242,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 	    logOption = logCB.isSelected();
 		logID = logIDField.getText();
 		logObjectives = logObjectivesButton.getChoices();
+		smObjectives = logObjectivesButton.getObjectives();
 		check = checkCB.isSelected();
 		teltMee = teltMeeCB.isSelected();
 		view = viewCB.isSelected();
@@ -265,6 +271,9 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		if(logObjectives!=null)
 		{	h.put("logObjectives",logObjectives);
     		h.put("scoreMaxObjectives",scoreMaxObjectives);
+            try {
+              h.put(Constants.OBJECTIVES, smObjectives);
+            } catch(Exception e) {}
 		}
 		h.put("knopImageString", knopImageString);
 		

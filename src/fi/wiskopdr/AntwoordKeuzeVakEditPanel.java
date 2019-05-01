@@ -9,6 +9,7 @@ import javax.swing.*;
 import fi.beans.base64code.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -133,7 +134,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
         logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
         checkExternalCB = makeCheckBox(250,120,200,20,WiskOpdr.rb.getString("checkExternalCBLabel"),false,true);
         
-        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
@@ -340,6 +341,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				String logID = "";
 				String logIDLabel = "";
 				boolean[][] logObjectives = null;
+				String[] smObjectives = null;
 				boolean checkExternal = false;
 				
 				
@@ -355,6 +357,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				if(interactiePanelLaunchState.containsKey("logID")) logID = (String)interactiePanelLaunchState.get("logID");
 				if(interactiePanelLaunchState.containsKey("logIDLabel")) logIDLabel = (String)interactiePanelLaunchState.get("logIDLabel");
 				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
+				if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
 				if(interactiePanelLaunchState.containsKey("checkExternal")) checkExternal = ((Boolean)interactiePanelLaunchState.get("checkExternal")).booleanValue();
 				
 				aantalKeuzes = keuzeMogelijkheden.length;
@@ -419,6 +422,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
                 logIDField.setText(logID);
                 logIDLabelField.setText(logIDLabel);
                 logObjectivesButton.setChoices(logObjectives);
+                logObjectivesButton.setObjectives(smObjectives);
                 
 				setFeedbackOption(hasFeedback);
 				feedbackCB.setSelected(hasFeedback);
@@ -446,6 +450,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			String logID = "";
 			String logIDLabel = "";
 			boolean[][] logObjectives = null;
+			String[] smObjectives = null;
 			boolean checkExternal = false;
 			
 			keuzeMogelijkheden = new String[aantalKeuzes];
@@ -467,6 +472,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			logID = logIDField.getText();	
 			logIDLabel = logIDLabelField.getText();
 			logObjectives = logObjectivesButton.getChoices();
+			smObjectives = logObjectivesButton.getObjectives();
 			
 			if(logObjectives!=null)
 			{	scoreMaxObjectives = new int[logObjectives.length][];
@@ -493,6 +499,9 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+                try {
+                  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+                } catch(Exception e) {}
 	        }
 			interactiePanelLaunchState.put("checkExternal",checkExternal);
 			

@@ -11,6 +11,7 @@ import fi.beans.ideas.*;
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.expressies.*;
@@ -182,7 +183,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         logIDField = makeTextField(520,5,60,20,"0",false);
         boxMetRandCB = makeCheckBox(500,155,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
-        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
@@ -405,6 +406,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 boolean logOption = false;
 				String logID = "";
 				boolean[][] logObjectives = null;
+				String[] smObjectives = null;
 				Hashtable changedTexts = new Hashtable();
                 double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
@@ -438,7 +440,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 				if(interactiePanelLaunchState.containsKey("casAntw")) casAntw = ((Boolean)interactiePanelLaunchState.get("casAntw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
-				
+				if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
                 this.puntenCorrect = puntenCorrect;
                 this.puntenBeginstoffen = puntenBeginstoffen;
                 this.puntenProducten = puntenProducten;
@@ -500,6 +502,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 	            //logObjectivesButton.setVisible(logOption);
 	            logIDField.setText(logID);
 	            logObjectivesButton.setChoices(logObjectives);
+	            logObjectivesButton.setObjectives(smObjectives);
                 
                 boxMetRandCB.setSelected(boxMetRand);
 	            //startLabel.setVisible(uitw);
@@ -548,6 +551,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             boolean logOption = false;
 			String logID = "";
 			boolean[][] logObjectives = null;
+			String[] smObjectives = null;
             double eqTestValueMin = 0;
 			double eqTestValueMax = 5;
 			boolean uitw = false;
@@ -632,6 +636,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             logOption = logCB.isSelected();
 			logID = logIDField.getText();
 			logObjectives = logObjectivesButton.getChoices();
+			smObjectives = logObjectivesButton.getObjectives();
 			
 			boxMetRand = boxMetRandCB.isSelected();
 			
@@ -678,6 +683,9 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 			if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+                try {
+                  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+                } catch(Exception e) {}
 	        }
 			
         return interactiePanelLaunchState;

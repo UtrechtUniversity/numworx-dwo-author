@@ -157,7 +157,7 @@ public class ObjectiveChoiceButton extends JButton implements ActionListener
 	private Component scrollPane;
 	private String labelString;
 	
-	public ObjectiveChoiceButton(String[][] objectives, String[] categorieString) {	
+	private ObjectiveChoiceButton(String[][] objectives, String[] categorieString) {	
 		this(WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString, WiskOpdr.studentModel);
 	}
 
