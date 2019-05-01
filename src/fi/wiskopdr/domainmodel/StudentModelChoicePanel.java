@@ -31,9 +31,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
@@ -285,6 +283,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     }}
  // new style 
     if (ids != null) {
+      @SuppressWarnings("unchecked")
       Enumeration<DefaultMutableTreeNode> all = root.depthFirstEnumeration();
       while (all.hasMoreElements()) {
         DefaultMutableTreeNode node = all.nextElement();
