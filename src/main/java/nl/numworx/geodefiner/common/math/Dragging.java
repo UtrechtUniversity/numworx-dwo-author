@@ -23,6 +23,7 @@ import fi.euclides.model.Visitor;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelTester;
 import fi.euclides.util.Observable;
+import nl.numworx.geodefiner.common.index.Indexed;
 
 public class Dragging extends LabelTester {
 
@@ -120,9 +121,14 @@ public class Dragging extends LabelTester {
           t.visit(new Collector(set));
         }
         for( Label l: checks) {
-          Destroyable d = l.getDepend()[0];
+          Destroyable d0;
+          Destroyable d = d0 = l.getDepend()[0];
+          while (d instanceof Indexed) {
+            d = ((Indexed) d).getDelegate();
+          }
           Numbers value = (set.contains(d)) ? Numbers.ZERO : Numbers.ONE;
-          if (setState(l,value,0.0)) l.setString(string + " " + s(d)); else l.setString("");
+          if (setState(l,value,0.0))
+            l.setString(string + " " + s(d0)); else l.setString("");
         }
       }
       

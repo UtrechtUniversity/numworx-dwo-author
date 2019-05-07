@@ -6,9 +6,12 @@ import java.util.Map;
 import fi.euclides.event.NameMapper;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Label;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
+import fi.euclides.model.math.Numbers;
 import fi.euclides.util.DefaultAdapter;
+import nl.numworx.geodefiner.common.index.Indexed;
 
 public class NamingModel implements NameMapper {
 
@@ -63,13 +66,24 @@ public class NamingModel implements NameMapper {
 			// when?
 			return "null";
 		}
+		if (d instanceof Indexed) {
+		    Destroyable[] depend = d.getDepend();
+		    return toString(depend[0]) + "_" + toValue(depend[1]);
+		}
 		String s = d.adapt(String.class);
 		if(s == null)
 			return "%" + getModel().toString(d);
 		return s;
 	}
 
-	public void clear() {
+	private String toValue(Destroyable destroyable) {
+    if (destroyable instanceof Label) {
+      return Numbers.toString(((Label) destroyable).value);
+    }
+    return toString(destroyable);
+  }
+
+  public void clear() {
 		cache.clear();
 	}
 }

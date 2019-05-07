@@ -59,4 +59,8 @@ class CirkelIndex extends Cirkel implements Indexed<Cirkel> {
 		return delegate.adapt(clz);
 	}
 
+	public Destroyable[] getDepend() {
+      return selector.getDepend();
+  }
+
 }

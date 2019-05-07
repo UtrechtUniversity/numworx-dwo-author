@@ -5,7 +5,7 @@ import fi.euclides.model.Groep;
 import fi.euclides.model.Label;
 import fi.euclides.util.Observable;
 
-interface Indexed<T extends Destroyable> {
+public interface Indexed<T extends Destroyable> {
 	T asDestroyable();
 	void setDelegate(T d);
 	void destroy();
