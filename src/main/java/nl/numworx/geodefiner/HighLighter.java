@@ -19,22 +19,36 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
+import fi.euclides.model.algo.FreePoint;
+import nl.numworx.geodefiner.common.Instance.Selector;
 
 class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 
 	final HitTester hits;
 	final InstanceViewer viewer;
 	final ThreadLocal<Graphics2D> g = new ThreadLocal<>();
+	final Selector selector;
 	boolean hilight, out;
 	int x, y;
 	
-	HighLighter(HitTester h, InstanceViewer v) {
+	HighLighter(HitTester h, InstanceViewer v, Selector s) {
 		hits = h;
+		selector = s;
 		h.setVisitor(this);
 		viewer = v;
 		hilight = true;
 	}
 
+	boolean selectable(Destroyable d) {
+		if (selector.isHasTools()) return true; // toolbox!
+		Boolean r = d.adapt(Boolean.class);
+		if (r != null) return !r.booleanValue();
+		FreePoint f = d.adapt(FreePoint.class);
+		if (f != null) return f.isFree();
+		return false;
+	}
+	
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
@@ -80,7 +94,7 @@ class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 	}
 
 	public void hilight(Destroyable d, Graphics2D g) {
-		if(hilight && !out && d.isDefined()) {
+		if(hilight && !out && d.isDefined() && selectable(d)) {
 			this.g.set(g);
 			d.visit(hits);
 			hits.done();

@@ -81,4 +81,8 @@ public abstract class Modules {
 	Map<String,String> expressions() {
 	  return new LinkedHashMap<String, String>();
 	}
+
+	@Provides static Instance.Selector selector(Instance instance) {
+		return instance.selector;
+	}
   }

@@ -60,6 +60,7 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.common.CheckObject;
+import nl.numworx.geodefiner.common.Instance.Selector;
 import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.NamingModel;
@@ -402,7 +403,7 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 			return nameMapper;
 		}
 
-		@Inject InstanceViewer(NamingModel nm, nl.numworx.geodefiner.common.math.Expression expression, Randomizer r, Set<LabelDelegate> set) {
+		@Inject InstanceViewer(NamingModel nm, nl.numworx.geodefiner.common.math.Expression expression, Randomizer r, Set<LabelDelegate> set, Selector selector) {
 			super(nm.getModel());
 			this.nameMapper = nm;
 			this.expression = expression;
@@ -411,7 +412,7 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 			getModel().setTrailBuilder(this);
 			hitTester = (new HitTester3(content.getFontMetrics(content.getFont())));
 			nameMapper = new NamingModel(this, cache);
-			hilighter = new HighLighter(hitTester.copy(), this);
+			hilighter = new HighLighter(hitTester.copy(), this, selector);
 			tiptest = hitTester.copy();
 			for(LabelDelegate ld: set) ld.setTracker(this);
 			expression.setAllTracker(this);
