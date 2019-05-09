@@ -58,7 +58,15 @@ public abstract class Instance /*implements Observer*/ {
       boolean gravity;
       boolean hasTools;
 
-    public void destroyContext(TrackerContext context) {
+    /**
+	 * @return the hasTools
+	 */
+	public boolean isHasTools() {
+		return hasTools;
+	}
+
+
+	public void destroyContext(TrackerContext context) {
       DefaultAdapter.getDefault(context).put(InSelectContext.class, null);
     }
       
