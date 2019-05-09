@@ -268,6 +268,7 @@ public class Expression implements OMConstants {
 			if(func instanceof OMBinding)
 			{
 				OMBinding binding = (OMBinding) func;
+                binding = (OMBinding) binding.copy();
 				o = binding.getBody();
 				for(int i = 1; i < oma.getLength(); i++)
 				{
