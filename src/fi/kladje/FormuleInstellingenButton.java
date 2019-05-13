@@ -23,6 +23,9 @@ public class FormuleInstellingenButton extends JButton implements ActionListener
 	private ArrayList<int[]> rectangleData;
 	private int rectangleCount = 10;
 	
+	private boolean calculator = true;
+	private JCheckBox calculatorCB;
+	
 	public FormuleInstellingenButton(String text)
 	{
 		super(text);
@@ -36,6 +39,10 @@ public class FormuleInstellingenButton extends JButton implements ActionListener
 				rectangleDataFields[i][j] = new JTextField();
 			}
         }
+		
+		calculatorCB = new JCheckBox("calculator");
+		calculatorCB.setSelected(calculator);
+        
 	}
 	
 	public void setInstellingen(Hashtable h)
@@ -48,6 +55,9 @@ public class FormuleInstellingenButton extends JButton implements ActionListener
 				rectangleDataFields[i][j].setText(""+rectangleData.get(i)[j]);
 			}
         }
+		if(h.containsKey("calculator"))
+			calculator = ((Boolean)h.get("calculator")).booleanValue();
+		calculatorCB.setSelected(calculator);
 	}
 	
 	public Hashtable getInstellingen()
@@ -111,6 +121,9 @@ public class FormuleInstellingenButton extends JButton implements ActionListener
 	        
 	        paramPanel.add(boxv);
 	        
+	        paramPanel.add(calculatorCB);
+	        
+	        
 	        JPanel bottomPanel = new JPanel();
 	        okButton = new JButton("Ok");
 	        okButton.addActionListener(this);
@@ -154,6 +167,7 @@ public class FormuleInstellingenButton extends JButton implements ActionListener
 					break;
 	        }
 			currentInstellingen.put("rectangleData", rectangleData);
+			currentInstellingen.put("calculator", new Boolean(calculatorCB.isSelected()));
             frame.setVisible(false);
             frame.dispose();
         }
