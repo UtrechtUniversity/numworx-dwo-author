@@ -47,8 +47,6 @@ import org.json.fimple.JSONArray;
 import org.json.fimple.JSONObject;
 import org.json.fimple.JSONValue;
 import org.json.fimple.parser.JSONParser;
-import org.json.fimple.parser.ParseException;
-
 import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.ideas.IdeasClient;
@@ -64,8 +62,7 @@ import fi.beans.scorm.WNScormAPI;
 import fi.beans.wnwidgets.NWButtonUI;
 import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.copyright.FIButton;
-import fi.wiskopdr.expressies.Functie;
-import fi.wiskopdr.formuleobjects.FormuleParser;
+import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.opdrnav.MyOpdrContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
@@ -150,7 +147,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	
 	public static String[][] objectives = null;
 	public static String[] categorieString = null;
-	public StudentModel studentModel;
+	public static StudentModel studentModel;
 	private StudentModel studentModels[];
 	public static String[][] misconceptions = null;
 	public static String[] mccCategorieString = null;
@@ -173,32 +170,14 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 	
 	
-	static public class StudentCategory {
-		public String category;
-		public String[] objectives;
-	}
 	
-	static public class StudentModel {
-		public String title;
-		public String id;
-		public StudentCategory[] categories;
-		public String toString() {
-			return String.valueOf(title);
-		}
-
-		public int getMaxObjectives() {
-			int max = 0;
-			for(StudentCategory c: categories)
-				max = Math.max(max, c.objectives.length);
-			return max;
-		}
-	}
+ 	
 	
 	private StudentModel[] getStudentModelsInit() {
 		int size = studentModelsJSON.size();
 		StudentModel[] result = new StudentModel[size+1];
 		for(int i = 0; i < size; i++) {
-			StudentModel model = readModel(studentModelsJSON.get(i));
+			StudentModel model = StudentModel.readModel(studentModelsJSON.get(i));
 			result[i+1] = model;
 		}
 		
@@ -215,65 +194,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	
 	
 	
-	private static StudentModel readModel(Object object) {
-		StudentModel result = new StudentModel();
-		JSONObject map = (JSONObject) object;
-		JSONObject model = (JSONObject) map.get("modelStructure");
-		result.title = getTitle(model);
-		result.id = getId(map); // FIXME 
-		result.categories = readCategories(model.get("categories"));		
-		return result;
-	}
-
-	private static String getId(JSONObject map) {
-		Object id = map.get("id");
-		if(id instanceof Map) {
-			return (String) ((Map) id).get("idString");
-		}
-		return null;
-	}
 
 
-	private static StudentCategory[] readCategories(Object object) {
-		if(object == null) return new StudentCategory[0];
-		JSONArray array = (JSONArray) object;
-		int size = array.size();
-		StudentCategory[] categories = new StudentCategory[size];
-		for(int i = 0; i < size; i++)  {
-			categories[i] = readStudentCategory(array.get(i));
-		}
-		return categories;
-	}
 
-	private static StudentCategory readStudentCategory(Object object) {
-		JSONObject map = (JSONObject) object;
-		StudentCategory result = new StudentCategory();
-		result.category = getTitle(map);
-		result.objectives = readObjectives(map.get("objectives"));
-		return result;
-	}
 
-	protected static String getTitle(JSONObject map) {
-		return (String) ((Map) ((Map) map.get("info")).get("title")).get(language.toString());
-	}
-
-	private static String[] readObjectives(Object object) {
-		if (object == null) return new String[0];
-		JSONArray array = (JSONArray) object;
-		int size = array.size();
-		String[] result = new String[size];
-		for (int i = 0; i < size; i++) {
-			result[i] = readObjective(array.get(i));
-		}
-		return result;
-	}
-
-	private static String readObjective(Object object) {
-		JSONObject map = (JSONObject) object;
-		return getTitle(map);
-	}
-
-	private static URL defaultCodeBase; // allow code injection?
+  private static URL defaultCodeBase; // allow code injection?
 	private static boolean COMPLETED = false;
 	public static String defaultEditModeState = null;
 			
@@ -1634,7 +1559,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 */
 	public ScormEditComponentIF getEditComponent(Hashtable launchData) {
         abo_type = getParameter("abo_type"); // Zie WiskOpdr.isPremium();	  
-		ScormEditComponent sec = new ScormEditComponent(launchData, this);
+        dwo_env = getParameter("dwo_env"); // Zie Wiskopdr.isExperimental();
+        ScormEditComponent sec = new ScormEditComponent(launchData, this);
 		launchDataChanged = false;
 		return sec;
 	}
@@ -1885,4 +1811,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 		return NO_SUCH_PAGE;
 	}
+
+  public static void setStudentModel(StudentModel studentModel2) {
+    studentModel = studentModel2;
+  }
 }

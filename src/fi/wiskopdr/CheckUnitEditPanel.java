@@ -15,6 +15,7 @@ import java.awt.Image;
 
 import javax.swing.*;
 
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.beans.iconan.Iconan;
@@ -146,7 +147,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		teltMeeCB.setSelected(true);
 		add(teltMeeCB);
 		
-		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
@@ -227,7 +228,8 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		boolean multiSelections = false;
 		boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null; 
+		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		boolean checkFormule = false;
@@ -246,6 +248,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		if(h.containsKey("checkFormule")) checkFormule = ((Boolean)h.get("checkFormule")).booleanValue();
 		if(h.containsKey("formuleStrings")) formuleStrings = (String[])h.get("formuleStrings");
 		if(h.containsKey("logObjectives")) logObjectives = (boolean[][])h.get("logObjectives");
+		if(h.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) h.get(Constants.OBJECTIVES);
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		if(h.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])h.get("logMisconceptions");
 		
@@ -280,6 +283,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
         logObjectivesButton.setChoices(logObjectives);
+        logObjectivesButton.setObjectives(smObjectives);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
         checkFormuleCB.setSelected(checkFormule);
@@ -308,6 +312,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		boolean logOption = false;
 		String logID = "";
 		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		boolean checkFormule = false;
@@ -327,6 +332,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 	    logOption = logCB.isSelected();
 		logID = logIDField.getText();
 		logObjectives = logObjectivesButton.getChoices();
+		smObjectives = logObjectivesButton.getObjectives();
 		check = checkCB.isSelected();
 		teltMee = teltMeeCB.isSelected();
 		checkFormule = checkFormuleCB.isSelected();
@@ -363,6 +369,9 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		if(logObjectives!=null)
 	    {	h.put("logObjectives",logObjectives);
 	    	h.put("scoreMaxObjectives",scoreMaxObjectives);
+            try {
+              h.put(Constants.OBJECTIVES, smObjectives);
+            } catch(Exception e) {}
 	    }
 		if(logMisconceptions!=null)
         {	h.put("logMisconceptions",logMisconceptions);

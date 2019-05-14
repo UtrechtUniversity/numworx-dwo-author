@@ -12,6 +12,7 @@ import fi.beans.ideas.*;
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.expressies.*;
@@ -234,7 +235,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
         oplossingenRegelZichtbaarCB = makeCheckBox(500,100,200,20,WiskOpdr.rb.getString("oplossingenRegelZichtbaar"), true, true);
         formuleToolBijFocusCB = makeCheckBox(500,120,200,20,WiskOpdr.rb.getString("formuleToolCBLabel"), false, true);
         
-        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
@@ -430,6 +431,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
                 boolean logOption = false;
 				String logID = "";
 				boolean[][] logObjectives = null;
+				String[] smObjectives = null;
                 double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
 				boolean casAntw = false;
@@ -465,6 +467,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 				if(interactiePanelLaunchState.containsKey("casAntw")) casAntw = ((Boolean)interactiePanelLaunchState.get("casAntw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
+				if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
 				if(interactiePanelLaunchState.containsKey("rekenVakZichtbaar")) rekenVakZichtbaar = ((Boolean)interactiePanelLaunchState.get("rekenVakZichtbaar")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("oplossingenRegelZichtbaar")) oplossingenRegelZichtbaar = ((Boolean)interactiePanelLaunchState.get("oplossingenRegelZichtbaar")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
@@ -522,6 +525,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 	            //logObjectivesButton.setVisible(logOption);
 	            logIDField.setText(logID);
 	            logObjectivesButton.setChoices(logObjectives);
+	            logObjectivesButton.setObjectives(smObjectives);
                 
               //  casAntwCB.setSelected(casAntw);
                 boxMetRandCB.setSelected(boxMetRand);
@@ -588,6 +592,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
             boolean logOption = false;
 			String logID = "";
 			boolean[][] logObjectives = null;
+			String[] smObjectives = null;
             double eqTestValueMin = 0;
 			double eqTestValueMax = 5;
 			boolean boxMetRand = true;
@@ -673,6 +678,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
             logOption = logCB.isSelected();
 			logID = logIDField.getText();
 			logObjectives = logObjectivesButton.getChoices();
+			smObjectives = logObjectivesButton.getObjectives();
 			
 			//casAntw = casAntwCB.isSelected();
 			boxMetRand = boxMetRandCB.isSelected();
@@ -727,6 +733,9 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 			if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+                try {
+                  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+                } catch(Exception e) {}
 	        }
 			
 			

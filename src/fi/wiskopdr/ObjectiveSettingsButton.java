@@ -6,7 +6,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import fi.wiskopdr.WiskOpdr.StudentModel;
+import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.opdrnav.PlusMinKnop;
 
 public class ObjectiveSettingsButton extends JButton implements ActionListener
@@ -334,12 +334,15 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 				aantalRijenKnop.setEnabled(false);
 				for(int i = 0;i < aantalKolommen; i++) {
 					categoryTextFields[i].setText(studentModel.categories[i].category);
+					categoryTextFields[i].setToolTipText(studentModel.categories[i].description);
 					categoryTextFields[i].setEnabled(false);
 					
 					for (int j = 0; j < aantalRijen; j ++) {
 						int n = studentModel.categories[i].objectives.length;
-						String s = n <= j ? "" : studentModel.categories[i].objectives[j];
+						String s = n <= j ? "" : studentModel.categories[i].objectives[j].objective;
 						objectiveTextFields[i][j].setText(s);
+						s = n <= j ? "" : studentModel.categories[i].objectives[j].description;
+						objectiveTextFields[i][j].setToolTipText(s);
 						objectiveTextFields[i][j].setEnabled(false);
 					}
 				}
@@ -352,5 +355,9 @@ public class ObjectiveSettingsButton extends JButton implements ActionListener
 				System.out.println("import canceled");
 			}
 		}
-	}   
+	}
+
+  public StudentModel getStudentModel() {
+    return studentModel;
+  }   
 }

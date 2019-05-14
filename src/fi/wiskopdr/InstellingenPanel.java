@@ -998,7 +998,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			objectivesButton.setCategories(categorieString);
 			pilotObjectivesCB.setSelected(pilotObjectives);
 			if(WiskOpdr.isExperimental() && WiskOpdr.isPremium())
-				objectivesButton.setStudentModelID(studentModelId);
+			{
+			  objectivesButton.setStudentModelID(studentModelId);
+			  WiskOpdr.setStudentModel(objectivesButton.getStudentModel());
+			}
 		}
 		misconceptionsCB.setSelected(hasMisconceptions);
 		misconceptionsButton.setVisible(hasMisconceptions);
@@ -1062,6 +1065,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(objectivesCB.isSelected())
 		{	WiskOpdr.setObjectives(objectivesButton.getObjectives());
 			WiskOpdr.setCategories(objectivesButton.getCategories());
+			WiskOpdr.setStudentModel(objectivesButton.getStudentModel());
 		}
 		if(misconceptionsCB.isSelected())
 		{	WiskOpdr.setMisconceptions(misconceptionsButton.getObjectives());

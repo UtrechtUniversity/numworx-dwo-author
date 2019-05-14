@@ -14,6 +14,7 @@ import fi.beans.ideas.IdeasIF;
 import fi.beans.ideas.RuleIF;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -255,7 +256,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         uitwCB = makeCheckBox(530,75,270,20,WiskOpdr.rb.getString("uitwCBLabel"),false,false);
         boxMetRandCB = makeCheckBox(500,105,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
-        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
@@ -568,7 +569,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				boolean logOption = false;
 				String logID = "";
 				String logIDLabel = "";
-				boolean[][] logObjectives = null; 
+				boolean[][] logObjectives = null;
+				String[] smObjectives = null;
 				boolean hasObjectives = false;
 				double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
@@ -621,6 +623,10 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         				logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
         			} catch(Exception ex){
         			}
+                    try {
+                        smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
+                    } catch(Exception ex) {}
+                
         		if(interactiePanelLaunchState.containsKey("hasObjectives"))
         			hasObjectives = ((Boolean)interactiePanelLaunchState.get("hasObjectives")).booleanValue();
         		else
@@ -722,7 +728,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	            logIDField.setText(logID);
 	            logIDLabelField.setText(logIDLabel);
 	            
-	            logObjectivesButton.setChoices(logObjectives);
+	            logObjectivesButton.setChoices(logObjectives); // this order!
+	            logObjectivesButton.setObjectives(smObjectives);
 	           	            
 	            aantalDecRmField.setVisible(rmKnop);
 	            aantalDecRmField.setText(""+aantalDecRm);
@@ -885,6 +892,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			logID = logIDField.getText();
 			logIDLabel = logIDLabelField.getText();
 			logObjectives = logObjectivesButton.getChoices();
+			String[] smObjectives = logObjectivesButton.getObjectives();
 			
 			puntenGelijkwaardig = this.puntenGelijkwaardig;
 			puntenHerleiding = this.puntenHerleiding;
@@ -960,6 +968,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	        if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+	        	interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
 	        }
 	        interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
             interactiePanelLaunchState.put("antwoordFuncStrings",antwoordFuncStrings);
