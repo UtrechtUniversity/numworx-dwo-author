@@ -968,7 +968,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	        if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
-	        	interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+	        	try {
+	        	  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+	        	} catch(Exception e) {}
 	        }
 	        interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
             interactiePanelLaunchState.put("antwoordFuncStrings",antwoordFuncStrings);

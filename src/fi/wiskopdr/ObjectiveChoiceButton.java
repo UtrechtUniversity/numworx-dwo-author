@@ -123,7 +123,11 @@ public class ObjectiveChoiceButton extends JButton implements ActionListener
       return strategy.getChoices();
     }
     public String[] getObjectives() {
-      return strategy.getObjectives().toArray(new String[0]);
+      List<String> obj = strategy.getObjectives();
+      if (obj != null) // can be null!
+        return obj.toArray(new String[0]);
+      else
+        return null;
     }
 
     public void setChoices (boolean[][] choices)
