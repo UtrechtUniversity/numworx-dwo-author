@@ -6,7 +6,7 @@ import fi.euclides.model.math.Numbers;
 
 class LabelIndex extends Label implements Indexed<Label> {
 	
-	private ListSelector selector;
+	private Selector selector;
 	private Label delegate;
 	
 	public Label getDelegate() {
@@ -18,7 +18,7 @@ class LabelIndex extends Label implements Indexed<Label> {
 		changed();
 	}
 
-	LabelIndex(ListSelector selector) {
+	LabelIndex(Selector selector) {
 		super();
 		this.selector = selector;
 	}

@@ -4,11 +4,11 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Groep;
 
 class GroepIndex extends Groep implements Indexed<Groep> {
-		private ListSelector selector;
+		private Selector selector;
 		private Groep delegate;
 		private boolean defined;
 		
-		GroepIndex(ListSelector listSelector) {
+		GroepIndex(Selector listSelector) {
 			selector = listSelector;
 		}
 

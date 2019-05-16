@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import nl.numworx.geodefiner.common.index.LabelSelector;
+import nl.numworx.geodefiner.common.index.ListSelector;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
@@ -104,12 +106,12 @@ public class GroupOf extends Groep {
 		@Override
 		void recalc() {
 			clear();
-			Enumeration<Destroyable> depend = grp.elements();
+			int size = grp.size();
 			OMObject oma = formula.getBody();
 			name = ((OMVariable) formula.getVariableAt(0)).getName();
-			while(depend.hasMoreElements()) {
-			Destroyable destroyable = depend.nextElement();
-				argument = destroyable;
+			for(int i = 1; i <= size; i++)
+			{
+				argument = new ListSelector(grp, i).get();
 				Destroyable v = expression.interpret(oma, new Label(), this);
 				addElement(v);
 				setChanged();
@@ -133,10 +135,11 @@ public class GroupOf extends Groep {
 		void recalc() {
 			clear();
 			Destroyable[] depend = list.getDepend();
+			int size = depend.length;
 			OMObject oma = formula.getBody();
 			name = ((OMVariable) formula.getVariableAt(0)).getName();
-			for (Destroyable destroyable : depend) {
-				argument = destroyable;
+			for (int i = 1; i <= size; i++) {
+				argument = new LabelSelector(list, i).get();
 				Destroyable v = expression.interpret(oma, new Label(), this);
 				addElement(v);
 				setChanged();

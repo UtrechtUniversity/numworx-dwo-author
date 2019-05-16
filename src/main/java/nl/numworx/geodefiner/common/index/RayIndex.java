@@ -1,16 +1,13 @@
 package nl.numworx.geodefiner.common.index;
 
 import fi.euclides.model.Destroyable;
-import fi.euclides.model.Groep;
-import fi.euclides.model.Label;
-import fi.euclides.model.Punt;
 import fi.euclides.model.Ray;
 
 class RayIndex extends Ray implements Indexed<Ray> {
 
 	private Ray delegate;
 	private boolean defined;
-	private ListSelector selector;
+	private Selector selector;
 	
 	
 	public Ray getDelegate() {
@@ -29,7 +26,7 @@ class RayIndex extends Ray implements Indexed<Ray> {
 		this.defined = defined;
 	}
 
-	RayIndex(ListSelector listSelector) {
+	RayIndex(Selector listSelector) {
 		selector = listSelector;
 	}
 

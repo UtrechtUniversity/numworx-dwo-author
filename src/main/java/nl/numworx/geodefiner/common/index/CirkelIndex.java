@@ -2,16 +2,14 @@ package nl.numworx.geodefiner.common.index;
 
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
-import fi.euclides.model.Groep;
-import fi.euclides.model.Label;
 import fi.euclides.model.VrijPunt;
 
 class CirkelIndex extends Cirkel implements Indexed<Cirkel> {
 
 	private Cirkel delegate;
-	private ListSelector selector;
+	private Selector selector;
 	
-	CirkelIndex(ListSelector listSelector) {
+	CirkelIndex(Selector listSelector) {
 		super(new VrijPunt(), new VrijPunt());
 		selector = listSelector;
 	}

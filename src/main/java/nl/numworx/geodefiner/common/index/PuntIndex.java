@@ -7,7 +7,7 @@ import fi.euclides.model.math.Numbers;
 class PuntIndex extends Punt implements Indexed<Punt> {
 
 	private Punt delegate;
-	private ListSelector selector;
+	private Selector selector;
 	
 	public Punt getDelegate() {
 		return delegate;
@@ -17,7 +17,7 @@ class PuntIndex extends Punt implements Indexed<Punt> {
 		this.delegate = delegate;
 	}
 
-	public PuntIndex(ListSelector listSelector) {
+	public PuntIndex(Selector listSelector) {
 		selector = listSelector;
 	}
 

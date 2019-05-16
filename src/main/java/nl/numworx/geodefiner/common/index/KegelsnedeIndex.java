@@ -6,11 +6,11 @@ import fi.euclides.model.SegmentVisitor;
 
 class KegelsnedeIndex extends Kegelsnede2 implements Indexed<Kegelsnede2> {
 
-	private ListSelector selector;
+	private Selector selector;
 	private Kegelsnede2 delegate;
 	private boolean defined;
 	
-	public KegelsnedeIndex(ListSelector listSelector) {
+	public KegelsnedeIndex(Selector listSelector) {
 		selector = listSelector;
 	}
 

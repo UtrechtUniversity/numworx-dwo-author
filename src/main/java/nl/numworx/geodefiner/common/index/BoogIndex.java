@@ -6,10 +6,10 @@ import fi.euclides.model.Destroyable;
 class BoogIndex extends Boog implements Indexed<Boog> {
 
 	private Boog delegate;
-	private ListSelector selector;
+	private Selector selector;
 	private boolean defined;
 	
-	BoogIndex(ListSelector listSelector) {
+	BoogIndex(Selector listSelector) {
 		selector = listSelector;
 	}
 

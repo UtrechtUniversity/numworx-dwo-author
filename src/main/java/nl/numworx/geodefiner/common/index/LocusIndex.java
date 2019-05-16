@@ -6,11 +6,11 @@ import fi.euclides.model.SegmentVisitor;
 
 class LocusIndex extends Locus implements Indexed<Locus> {
 
-	private ListSelector selector;
+	private Selector selector;
 	private Locus delegate;
 	private boolean defined;
 	
-	LocusIndex(ListSelector listSelector) {
+	LocusIndex(Selector listSelector) {
 		selector = listSelector;
 	}
 

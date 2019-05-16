@@ -10,9 +10,9 @@ class LijnIndex extends PuntenLijn implements Indexed<Lijn> {
 
 	private Lijn delegate;
 	private boolean defined;
-	private ListSelector selector;
+	private Selector selector;
 	
-	LijnIndex(ListSelector s) {
+	LijnIndex(Selector s) {
 		super(new VrijPunt(), new VrijPunt());
 		selector = s;
 	}

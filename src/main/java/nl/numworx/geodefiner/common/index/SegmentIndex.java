@@ -1,8 +1,6 @@
 package nl.numworx.geodefiner.common.index;
 
 import fi.euclides.model.Destroyable;
-import fi.euclides.model.Groep;
-import fi.euclides.model.Label;
 import fi.euclides.model.Segment;
 import fi.euclides.model.VrijPunt;
 
@@ -13,12 +11,12 @@ class SegmentIndex extends Segment implements Indexed<Segment> {
 		return this;
 	}
 
-	private ListSelector selector;
+	private Selector selector;
 	private Segment delegate;
 	private boolean defined;
 	
 
-	SegmentIndex(ListSelector selector) {
+	SegmentIndex(Selector selector) {
 		super(new VrijPunt(), new VrijPunt());
 		this.selector = selector;
 	}

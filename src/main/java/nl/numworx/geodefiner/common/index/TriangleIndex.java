@@ -7,7 +7,7 @@ import fi.euclides.model.Triangle;
 class TriangleIndex extends Triangle implements Indexed<Triangle> {
 
 	private Triangle delegate;
-	private ListSelector selector;
+	private Selector selector;
 	private boolean defined;
 	
 	public boolean isDefined() {
@@ -18,7 +18,7 @@ class TriangleIndex extends Triangle implements Indexed<Triangle> {
 		this.defined = defined;
 	}
 
-	TriangleIndex(ListSelector listSelector) {
+	TriangleIndex(Selector listSelector) {
 		selector = listSelector;
 	}
 

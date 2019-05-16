@@ -5,7 +5,7 @@ import fi.euclides.model.math.Numbers;
 
 public class FreePointIndex extends PuntIndex implements FreePoint {
 
-  public FreePointIndex(ListSelector listSelector) {
+  public FreePointIndex(Selector listSelector) {
     super(listSelector);
   }
 

@@ -12,10 +12,10 @@ import nl.numworx.geodefiner.common.CheckObject;
 class GeneralDestroyable extends Destroyable implements Indexed<Destroyable> {
 
 	Destroyable delegate;
-	ListSelector selector;
+	Selector selector;
 	boolean defined;
 
-	GeneralDestroyable(ListSelector selector) {
+	GeneralDestroyable(Selector selector) {
 		this.selector = selector;
 	}
 
