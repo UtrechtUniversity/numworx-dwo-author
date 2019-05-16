@@ -3,7 +3,6 @@ package fi.euclides.model;
 import java.io.IOException;
 
 import fi.euclides.model.Locus;
-import fi.euclides.model.algo.Algorithm;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Adaptee;
 import fi.euclides.util.Adapter;
