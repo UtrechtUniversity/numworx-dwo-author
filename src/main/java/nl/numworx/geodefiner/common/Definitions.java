@@ -371,6 +371,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 				}
 				if(MAP.isSame(f)) {
 					Groep groep = groupOf(depend);
+					DefaultAdapter.getDefault(groep).put(State.INITIAL);
 					model.add(groep);
 					installConfig(new CELL(text, groep, var), config);
 					return;

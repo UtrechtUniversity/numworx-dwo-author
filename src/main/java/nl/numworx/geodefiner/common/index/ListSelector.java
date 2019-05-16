@@ -13,6 +13,7 @@ import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
+import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
@@ -61,7 +62,10 @@ public class ListSelector implements Visitor, Observer {
 
 	@Override
 	public void visitPunt(Punt p) {
-		indexed =  new PuntIndex(this);
+	    if (p instanceof FreePoint || p.adapt(FreePoint.class) != null)
+	      indexed  = new FreePointIndex(this);
+	    else
+	      indexed =  new PuntIndex(this);
 	}
 
 	@Override
@@ -141,7 +145,7 @@ public class ListSelector implements Visitor, Observer {
 				indexed.notifyObservers();
 				return;
 			}
-			if(observable != grp || observable != index) return;
+			if(observable != grp && observable != index) return;
 			if(grp != null) grp.deleteObserver(this);
 			if(index != null) index.deleteObserver(this);
 			if(indexed.getDelegate() != null) indexed.getDelegate().deleteObserver(this);
