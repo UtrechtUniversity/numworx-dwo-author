@@ -2,16 +2,13 @@ package fi.ivmdrawgwt.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.*;
 
 import fi.ivmdrawgwt.client.text.Text;
 import nl.uu.fi.dwo.interaction.client.InteractionStub;
@@ -21,15 +18,15 @@ import nl.uu.fi.dwo.interaction.client.Stub;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub {
+	Logger logger = Logger.getLogger("feedbackDebug");
 
 	static final String upgradeMessage = "Your browser does not support the HTML5 Canvas. Please upgrade your browser to view this demo.";
 	static final Text rb = GWT.create(Text.class);
-
 		
 	DockLayoutPanel dlp;
 
-	int breedte = 700;
-	int hoogte = 550;
+	static int breedte = 700;
+	static int hoogte = 550;
 	
 	int bottomHeight = 32;
 	int topHeight = 52;
@@ -39,7 +36,6 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	int pushSize = 24;
 	int buttonWidth = 40;
 	int buttonHeight = 22;
-	
 
 	IVMdrawGWTClientBundle ivmDrawGWTClientBundle;
 	static IVMdrawCssResource ivmDrawCss;
@@ -48,9 +44,10 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	LayoutPanel topPanel;
 	
 	IVMdrawGWTField ivmDrawGWTField;
+	IVMfeedbackGWTField ivmFeedbackGWTField;
+
 
 	public void onModuleLoad() {
-
 		ivmDrawGWTClientBundle = GWT.create(IVMdrawGWTClientBundle.class);
 		ivmDrawCss = ivmDrawGWTClientBundle.getKladjeGWTCSS();
 		ivmDrawCss.ensureInjected();
@@ -58,6 +55,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		dlp = new DockLayoutPanel(Style.Unit.PX);
 		dlp.addStyleName(ivmDrawCss.dock());
 		dlp.setPixelSize(breedte,hoogte);
+
 
 		RootLayoutPanel.get().add(dlp);
 		RootLayoutPanel.get().addStyleName(ivmDrawCss.root());
@@ -72,7 +70,6 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	
 	@Override
 	public void init(int width, int height, Map<String, Object> launchData,	Map<String, Number> values) {
-		
 		this.breedte = width;
 		this.hoogte = height;
 		
@@ -92,7 +89,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		
 		int veldhoogte = hoogte - bottomHeight;
 		
-		ivmDrawGWTField = new IVMdrawGWTField(breedte,veldhoogte, this); 
+		ivmDrawGWTField = new IVMdrawGWTField(breedte,veldhoogte, this);
 
 		Canvas ivmDrawGWTCanvas = ivmDrawGWTField.getCanvas();
 		if (ivmDrawGWTCanvas == null) {
@@ -101,7 +98,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	    }
 		
 		ivmDrawGWTCanvas.addStyleName(ivmDrawCss.canvas());
-		ivmDrawGWTField.initContext2d();		
+		ivmDrawGWTField.initContext2d();
 		
 		dlp.add(ivmDrawGWTCanvas);
 

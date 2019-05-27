@@ -2,6 +2,8 @@ package fi.ivmdrawgwt.client;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
@@ -21,11 +23,11 @@ import com.google.gwt.event.dom.client.TouchMoveHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
 
-
-
+//import javax.sound.sampled.Line;
 
 
 public class IVMdrawGWTField {
+	Logger logger = Logger.getLogger("SiardDebugLogger");
 
 	final int GAUSSIAN = 0;
 	final int AVERAGE = 1;
@@ -36,16 +38,17 @@ public class IVMdrawGWTField {
 	IVMdrawGWT owner;
 	public Canvas ivmDrawGWTCanvas, backgroundCanvas;//, strokeContainerCanvas
 	public Context2d gIm, backgroundgIm, strokeContainergIm;
-	
+
 	int breedte, hoogte;
 	
 	ArrayList<Point> formulaStrokePoints = new ArrayList<Point>();
-	
+
 	private boolean writing;
 	private boolean moving;
 	int startX, startY;
 	boolean mouseDown;
-	
+
+	ArrayList<Point> allDrawnPoints = new ArrayList<>();
 	private IVMStrokeContainer currentStrokeContainer;
 	private IVMStrokeContainer jarStrokeContainer;
 	private Stroke lastStroke;
@@ -89,15 +92,13 @@ public class IVMdrawGWTField {
 	}
 	
 	public void paint()	{
-			paint(gIm);
+		paint(gIm);
 	}
 	
 	public void paint(Context2d g) {
-
 		g.clearRect(0, 0, breedte, hoogte);
 		g.setStrokeStyle(CssColor.make(80, 80, 80));
-		
-		
+
 		jarStrokeContainer.draw(g);
 		
 		g.setLineWidth(1.0d);
@@ -116,10 +117,16 @@ public class IVMdrawGWTField {
 				g.lineTo(p2.x, p2.y);
 				p1 = p2;
 			}
+
 			g.stroke();
 		}
 	}
-	
+
+
+	/**
+	 * Build the jar by using three ArrayList. A drawn jar will always have a bottom and a left
+	 * and right side. These strokes will be stored in their corresponding ArrayList.
+	 */
 	private void processIVM() {
 		jarStrokeContainer.clear();
 		ArrayList<DoublePoint> pointsLeft = new ArrayList<DoublePoint>();
@@ -127,11 +134,13 @@ public class IVMdrawGWTField {
 		ArrayList<DoublePoint> pointsBottom = new ArrayList<DoublePoint>();
 		double vaasX = 500;
 		double volumeUnit = 20*lastStroke.getParsePointsbox().height;
-		
+
 		ArrayList<DoublePoint> points = new ArrayList<DoublePoint>();
+
 		for(int j = 0 ; j < lastStroke.getParsePoints().size() ; j++) {
 			points.add(new DoublePoint(lastStroke.getParsePoints().get(j).x, lastStroke.getParsePoints().get(j).y));
 		}
+
 		points = smooth(points, smoothType);
 		double vaasY = lastStroke.getParsePoints().get(0).y;
 		
@@ -145,6 +154,7 @@ public class IVMdrawGWTField {
 			pointsBottom.add(pointsLeft.get(0));
 			pointsBottom.add(pointsRight.get(0));
 		}
+
 		ArrayList<DoublePoint> smoothedPointsLeft = smooth(pointsLeft, smoothType);
 		ArrayList<DoublePoint> smoothedPointsRight = smooth(pointsRight, smoothType);
 		
@@ -247,10 +257,13 @@ public class IVMdrawGWTField {
 	public void mouseMoveTouchMoveAction(int eventX, int eventY, boolean shiftPressed) {
 //		eventX = (int)(eventX/scale -translation.x);
 //		eventY = (int)(eventY/scale -translation.y);
-		
+
 		if (!mouseDown)
 			return;
-		
+
+		this.allDrawnPoints.add(new Point(eventX, eventY));
+
+
 		if(formulaStrokePoints.size()>0) {
 				int dx = (int)(formulaStrokePoints.get(formulaStrokePoints.size()-1).x) - eventX;
 				int dy = (int)(formulaStrokePoints.get(formulaStrokePoints.size()-1).y) - eventY;
@@ -262,10 +275,29 @@ public class IVMdrawGWTField {
 	}
 	
 	public void mouseUpTouchEndAction(int eventX, int eventY) {
+		LineData inputPoints = new LineData(this.allDrawnPoints);
+		String feedback;
+
+		if (inputPoints.validInput()) {
+			Matrix mPoints = new Matrix(inputPoints.getXs(), inputPoints.getYs());
+			Classifier classifier = new Classifier(mPoints, 2, true);
+			feedback = classifier.getFeedback();
+		} else {
+			feedback = Feedback.decreasingLine();
+		}
+
+		this.owner.ivmFeedbackGWTField.mouseUpEvent(feedback);
+		this.allDrawnPoints.clear();
+
 		currentStrokeContainer.clear();
 		lastStroke = new Stroke(formulaStrokePoints);
 		currentStrokeContainer.addStroke(lastStroke);
 		formulaStrokePoints.clear();
+
+		if (!inputPoints.validInput()) {
+			return;
+		}
+
 		processIVM();
 		paint();
 	}
@@ -286,13 +318,14 @@ public class IVMdrawGWTField {
 			
 			mouseDownTouchStartAction(eventX, eventY);
 		}
-		
+
+
 		public void onMouseMove(MouseMoveEvent e)	
 		{
 			e.preventDefault();
 			// prevent scrolling
 			e.stopPropagation();
-			
+
 			if (!mouseDown)
 				return;
 
@@ -358,7 +391,7 @@ public class IVMdrawGWTField {
 		}
 		public void onTouchMove(TouchMoveEvent e)
 		{
-			
+
 			e.preventDefault();
 			e.stopPropagation();
 			
