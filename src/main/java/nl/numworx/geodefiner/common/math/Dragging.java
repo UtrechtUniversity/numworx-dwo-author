@@ -118,7 +118,7 @@ public class Dragging extends LabelTester {
         Set<Destroyable> set = new HashSet<>();
         for (TrackerContext item : iter) {
           Track t = item.getTrack();
-          t.visit(new Collector(set));
+          if (t != null) t.visit(new Collector(set));
         }
         for( Label l: checks) {
           Destroyable d0;
