@@ -38,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.cbook.cbookif.CBookWidgetIF;
+import org.cbook.cbookif.Constants;
 
 //import fi.algebrapijlenopdr.AlgebraPijlenOpdr;
 import fi.beans.iconan.Iconan;
@@ -439,26 +440,31 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		}
     	else if(soortInteractiePanel == 0)
 		{	interactieEditPanel = (new AntwoordFormuleVak()).getEditPanel();
+			getCrossWidgetId(); // in case of logging.
 			breedteTF.setText("300");
 	        hoogteTF.setText("250");
 		}
 		else if(soortInteractiePanel == 1)
 		{	interactieEditPanel = (new AntwoordVergelijkingVak()).getEditPanel();
+			getCrossWidgetId();
 			breedteTF.setText("300");
 			hoogteTF.setText("250");
 		}
 		else if(soortInteractiePanel == 2)
 		{	interactieEditPanel = (new SimpelAntwoordFormuleVak()).getEditPanel();
+			getCrossWidgetId(); // in case of logging.
 			breedteTF.setText("50");
 			hoogteTF.setText(""+h);
 		}
 		else if(soortInteractiePanel == 3)
 		{	interactieEditPanel = (new SimpelAntwoordVergelijkingVak()).getEditPanel();
+			getCrossWidgetId(); // in case of logging.
 			breedteTF.setText("50");
 			hoogteTF.setText(""+h);
 		}
 		else if(soortInteractiePanel == 4)
 		{	interactieEditPanel = (new TekstEditor(true,true,true)).getEditPanel();
+			getCrossWidgetId(); // in case of logging.
 			breedteTF.setText("300");
 			hoogteTF.setText("250");
 			if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(300);
@@ -502,6 +508,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		}
 		else if(soortInteractiePanel == 13)
 		{	interactieEditPanel = (new AntwoordTekstVak()).getEditPanel();
+			getCrossWidgetId(); // in case of logging.
 			breedteTF.setText("50");
 			hoogteTF.setText(""+h);
 			//if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(50);
@@ -511,6 +518,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		{	interactieEditPanel = (new AntwoordKeuzeVak()).getEditPanel();
 			breedteTF.setText("110");
 			hoogteTF.setText("24");
+			getCrossWidgetId(); // in case of logging.
 			if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(110);
 	    	if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(24);
 		}
@@ -709,6 +717,11 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         h.put("popup", new Boolean(popup));
         h.put("setNr", new Integer(setNr));
         h.put("popupImageString", popupImageString);
+// if Logging, enable xwid for LA transport
+        if(Boolean.TRUE.equals(interactiePanelLaunchState.get(Constants.LOGGING)))
+        {
+        	getCrossWidgetId();
+        }
         if(crossWidgetId != null)
         	h.put("crossWidgetId", crossWidgetId);
         if(subscriptions != null) 
