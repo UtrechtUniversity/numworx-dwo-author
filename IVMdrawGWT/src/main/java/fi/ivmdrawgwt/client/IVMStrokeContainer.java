@@ -1,9 +1,15 @@
 package fi.ivmdrawgwt.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
+
+import nl.uu.fi.dwo.interaction.client.JSONUtilities;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 
 
@@ -44,6 +50,22 @@ public class IVMStrokeContainer {
 		}
 	}
 	
+	public int getStrokeCount() {
+		return strokes.size();
+	}
+	
+	public Stroke getStroke(int nr) {
+		if(nr>-1 && strokes.size() > nr)
+			return strokes.get(nr);
+		return null;
+	}
+	
+	public Stroke getLastStroke() {
+		if(strokes.size() > 0)
+			return strokes.get(strokes.size()-1);
+		return null;
+	}
+	
 	public void clear() {
 		strokes.clear();
 	}
@@ -52,4 +74,34 @@ public class IVMStrokeContainer {
 		isJar = b;
 	}
 	
+	public HashMap<String,Object> getState() {
+		HashMap<String, Object> h = new HashMap<String, Object>();
+		
+		ArrayList<Map<String,Object>> strokeList = new ArrayList<Map<String,Object>>();
+		ArrayList<Object> wmStrokeIndicesList = new ArrayList<Object>();
+		ArrayList<String> wmStrokeTekenList = new ArrayList<String>();
+		for (int i = 0; i < strokes.size(); i++) {
+			strokeList.add(strokes.get(i).getState());
+		}
+		h.put("strokeList", strokeList);
+		return h;
+	}
+	
+	public void setState(Map<String,Object> map) {
+		if(map == null || map.isEmpty())
+			return;
+		
+		//logger.info(map.toString());
+		ObjectMap launchState = JSONUtilities.wrapMap(map);
+		List<Map<String,Object>> strokeList = new ArrayList<Map<String,Object>>();
+		
+		if (launchState.containsKey("strokeList"))
+			strokeList = launchState.getMapList("strokeList");
+		
+		for (int i = 0; i < strokeList.size(); i++)	{	
+			Stroke stroke = Stroke.setState(strokeList.get(i));
+			if(stroke!=null)
+				strokes.add(stroke);
+		}
+	}	
 }

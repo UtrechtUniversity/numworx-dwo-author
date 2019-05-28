@@ -18,6 +18,9 @@ import nl.uu.fi.dwo.interaction.client.Stub;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub {
+	public HorizontalPanel mainPanel = new HorizontalPanel();
+	public Label label = new Label("hello world!");
+	
 	Logger logger = Logger.getLogger("feedbackDebug");
 
 	static final String upgradeMessage = "Your browser does not support the HTML5 Canvas. Please upgrade your browser to view this demo.";
@@ -45,6 +48,8 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	
 	IVMdrawGWTField ivmDrawGWTField;
 	IVMfeedbackGWTField ivmFeedbackGWTField;
+	
+	OpdrNavIF comRoot;
 
 
 	public void onModuleLoad() {
@@ -62,7 +67,38 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		Stub.publish(this);
 	}
 	
-	
+	public IVMdrawGWT(HashMap<String, Object> map, String[] randomVarNamen, HashMap<String, Number> randomVarWaarden) {
+		ObjectMap h = JSONUtilities.wrapMap(map);
+
+		//this.randomVarNamen = randomVarNamen;
+		//this.randomVarWaarden = randomVarWaarden;
+		Map<String,Object> launchState = new HashMap<String,Object>();
+		
+		if (h.containsKey("breedte"))
+			breedte = h.getInt("breedte");
+		if (h.containsKey("hoogte"))
+			hoogte = h.getInt("hoogte");
+		if (h.containsKey("interactiePanelLaunchState"))
+			launchState = h.getMap("interactiePanelLaunchState");
+
+		ivmDrawGWTClientBundle = GWT.create(IVMdrawGWTClientBundle.class);
+		ivmDrawCss = ivmDrawGWTClientBundle.getKladjeGWTCSS();
+		ivmDrawCss.ensureInjected();
+
+		dlp = new DockLayoutPanel(Style.Unit.PX);
+		dlp.addStyleName(ivmDrawCss.dock());
+		dlp.setPixelSize(breedte-200,hoogte);
+		
+		mainPanel.add(dlp);
+		mainPanel.add(label);
+
+		
+
+//		RootPanel.get().add(mainPanel);
+		ivmFeedbackGWTField = new IVMfeedbackGWTField(this);
+
+		init(breedte, hoogte, launchState, randomVarWaarden);
+		}
 
 	public IVMdrawGWT() {
 		initWidget(new Label("IVMdraw"));
@@ -70,6 +106,8 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	
 	@Override
 	public void init(int width, int height, Map<String, Object> launchData,	Map<String, Number> values) {
+		//initWidget(new Label("IVMdraw"));
+		
 		this.breedte = width;
 		this.hoogte = height;
 		
@@ -103,7 +141,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		dlp.add(ivmDrawGWTCanvas);
 
 		
-		ivmDrawGWTField.setState(launchData, true);
+		ivmDrawGWTField.setState(launchData);
 
 		//makeBottom();
 		
@@ -113,17 +151,20 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		ivmDrawGWTField.paint();
 
 	}
+	
+	public Widget asWidget() {
+		return mainPanel; 
+	}
 
 	@Override
 	public HashMap<String, Object> getState() {
-		// TODO Auto-generated method stub
-		return null;
+		return ivmDrawGWTField.getState();
 	}
 
 	@Override
 	public void setState(HashMap<String, Object> h) {
-		// TODO Auto-generated method stub
-
+		if(h == null||h.isEmpty()) return;
+		ivmDrawGWTField.setState(h);
 	}
 
 	@Override
@@ -158,39 +199,34 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 	@Override
 	public void setCommunicationRoot(OpdrNavIF comRoot) {
-		// TODO Auto-generated method stub
+		this.comRoot = comRoot;
 
 	}
 
 	@Override
 	public void zetVolledigeBreedte(int breedte) {
-		// TODO Auto-generated method stub
-
+		this.breedte = breedte;
 	}
 
 	@Override
 	public int getAsHoogte() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
-	public int getHeight() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getHeight() 
+	{
+		return hoogte;
 	}
 
-	@Override
-	public int getWidth() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getWidth() 
+	{
+		return breedte;
 	}
 
 	@Override
 	public void setAsHoogte(int ashoogte) {
 		// TODO Auto-generated method stub
-
+		
 	}
-
 	
 }

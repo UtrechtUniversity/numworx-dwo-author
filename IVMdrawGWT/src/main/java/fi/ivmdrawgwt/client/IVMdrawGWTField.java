@@ -1,6 +1,7 @@
 package fi.ivmdrawgwt.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,9 @@ import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchMoveHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
+
+import nl.uu.fi.dwo.interaction.client.JSONUtilities;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 //import javax.sound.sampled.Line;
 
@@ -87,8 +91,34 @@ public class IVMdrawGWTField {
 		backgroundgIm = backgroundCanvas.getContext2d();
 	}
 	
-	public void setState(Map<String, Object> map, boolean init) {
+	public void setState(Map<String, Object> map) {
+		if(map == null || map.isEmpty())
+			return;
+		ObjectMap launchState = JSONUtilities.wrapMap(map);
 		
+		Map<String,Object> ivmStrokeContainer = new HashMap<String,Object>();
+		
+		if (launchState.containsKey("ivmStrokeContainer"))
+			ivmStrokeContainer = launchState.getMap("ivmStrokeContainer");
+		currentStrokeContainer = new IVMStrokeContainer();
+		try {
+			currentStrokeContainer.setState(ivmStrokeContainer);
+		}
+		catch(Exception e) {
+		}
+		lastStroke = currentStrokeContainer.getLastStroke();
+		processIVM();
+		paint();
+	}
+	
+	public HashMap<String,Object> getState() {
+		HashMap<String,Object> h = new HashMap<String,Object>();
+		
+		Map<String,Object> ivmStrokeContainer = new HashMap <String,Object>();
+		ivmStrokeContainer = currentStrokeContainer.getState();
+		h.put("ivmStrokeContainer", ivmStrokeContainer);
+		
+		return h;
 	}
 	
 	public void paint()	{
@@ -128,6 +158,8 @@ public class IVMdrawGWTField {
 	 * and right side. These strokes will be stored in their corresponding ArrayList.
 	 */
 	private void processIVM() {
+		if(lastStroke==null)
+			return;
 		jarStrokeContainer.clear();
 		ArrayList<DoublePoint> pointsLeft = new ArrayList<DoublePoint>();
 		ArrayList<DoublePoint> pointsRight = new ArrayList<DoublePoint>();

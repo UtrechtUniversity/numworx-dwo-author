@@ -9,10 +9,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class IVMfeedbackGWTField {
-    IVMdrawGWTDebug owner;
+    IVMdrawGWT owner;
     Logger logger = Logger.getLogger("feedbackDebug");
 
-    public IVMfeedbackGWTField(IVMdrawGWTDebug owner) {
+    public IVMfeedbackGWTField(IVMdrawGWT owner) {
         this.owner = owner;
 
 //        MouseHandler mouseHandler = new MouseHandler();

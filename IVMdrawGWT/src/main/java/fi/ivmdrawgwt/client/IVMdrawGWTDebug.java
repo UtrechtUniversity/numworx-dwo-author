@@ -9,8 +9,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
 
 public class IVMdrawGWTDebug extends IVMdrawGWT {
-	public HorizontalPanel mainPanel = new HorizontalPanel();
-	public Label label = new Label("hello world!");
+	
 
 	@Override
 	public void onModuleLoad() {
