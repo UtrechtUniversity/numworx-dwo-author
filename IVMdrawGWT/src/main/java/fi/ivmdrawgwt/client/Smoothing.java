@@ -2,18 +2,16 @@ package fi.ivmdrawgwt.client;
 
 import fi.ivmdrawgwt.client.Matrix;
 
+//import javax.sound.sampled.LineEvent;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * TODO: Hoe implementatie van weighted least squares.
  * Provides data smoothing functionality for matrices.
  */
 public class Smoothing {
-
     private static Logger logger = Logger.getLogger("meuk");
-
 
     /**
      * Calculates the coefficients for the least square solution of the given order.
@@ -22,7 +20,7 @@ public class Smoothing {
      * @param order
      * @return
      */
-    public static Matrix leastSquaresParams(double[] xs, double[] ys, int order) {
+    public static Matrix leastSquaresParams(double[] xs, double[] ys, int order, double[] weights) {
         double[][] vandermonde  = new double[xs.length][order+1];
 
         for (int i = 0; i < xs.length; i++) {
@@ -40,44 +38,45 @@ public class Smoothing {
         }
 
         Matrix bM = new Matrix(b);
+        Matrix wM = getWeightMatrix(weights);
 
         /* Standard least square matrix definition. */
-        return aM.transpose().dot(aM).invert().dot(aM.transpose()).dot(bM);
+        return (aM.transpose().dot(wM).dot(aM)).invert().dot(aM.transpose()).dot(wM).dot(bM);
     }
 
 
-    private static double minValue(double[] values) {
-        double minValue = Double.MAX_VALUE;
+    public static Matrix leastSquaresParams(double[] xs, double[] ys, int order) {
+        double[] gauss = complGaussianWindow(xs.length, xs.length/2, 2.0, 100);
 
-        for (int i = 0; i < values.length; i++) {
-            if (values[i] < minValue) {
-                minValue = values[i];
-            }
-        }
-
-        return minValue;
+        return leastSquaresParams(xs, ys, order, gauss);
     }
 
-    private static double maxValue(double[] values) {
-        double maxValue = Double.MIN_VALUE;
 
-        for (int i = 0; i < values.length; i++) {
-            if (values[i] > maxValue) {
-                maxValue = values[i];
-            }
+    public static Matrix getWeightMatrix(double[] weights) {
+        double[][] wMatrix = new double[weights.length][weights.length];
+
+        for (int i = 0; i < weights.length; i++) {
+            wMatrix[i][i] = weights[i];
         }
 
-        return maxValue;
+        return new Matrix(wMatrix);
+    }
+
+
+    public static double[] complGaussianWindow(int n, int mu, double std, int scale) {
+        double[] values = new double[n];
+
+        for (int i = 0; i < n; i++) {
+            values[i] = scale * (1 - (1 / Math.sqrt(2 * Math.PI * std)) * Math.pow(Math.E, - ((i - mu)*(i - mu)) / (2 * std)));
+        }
+
+        return values;
     }
 
 
     /**
      * Uses the given parameters to smooth a dataset by fitting the least square solution.
      * TODO: original implementation uses linspace between xmin and xmax instead of given x values
-     * @param params
-     * @param xs
-     * @param ys
-     * @param pointAmount
      * @return
      */
     public static Matrix poly1d(double[] params, double[] xs, int pointAmount) {
@@ -105,8 +104,6 @@ public class Smoothing {
         double[] params = leastSquaresParams(xs, ys, order).transpose().values()[0]; // Stores the params in single array.
         Matrix fittedPoints = poly1d(params, xs, pointAmount);
 
-//        logger.log(Level.SEVERE, "" + xs.length + ", " + pointAmount);
-
         return fittedPoints;
     }
 
@@ -121,6 +118,4 @@ public class Smoothing {
 
         return leastSquares(transpose.values()[0], transpose.values()[1], order);
     }
-
-
 }

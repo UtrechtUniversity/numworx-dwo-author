@@ -58,6 +58,7 @@ public class Feedback {
 
     }
 
+
     public static String feedback(int degree, boolean convex, boolean correct) {
         String feedback = "";
 
@@ -69,27 +70,27 @@ public class Feedback {
                 feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas steeds";
 
                 if (convex) {
-                    feedback += " af. ";
-                } else {
                     feedback += " toe. ";
+                } else {
+                    feedback += " af. ";
                 }
                 break;
             case 3:
                 feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas eerst";
 
                 if (convex) {
-                    feedback += " af en vervolgens langzaam toe. ";
-                } else {
                     feedback += " toe en vervolgens langzaam af. ";
+                } else {
+                    feedback += " af en vervolgens langzaam toe. ";
                 }
                 break;
             case 4:
                 feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas ";
 
                 if (convex) {
-                    feedback += "eerst af, dan toe en daarna weer af. ";
-                } else {
                     feedback += "eerst toe, dan af en daarna weer toe. ";
+                } else {
+                    feedback += "eerst af, dan toe en daarna weer af. ";
                 }
                 break;
         }
@@ -109,8 +110,5 @@ public class Feedback {
                           "Dat is niet correct!";
 
         return feedback;
-
-
-
     }
 }

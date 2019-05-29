@@ -16,17 +16,21 @@ public class Matrix {
         return this.transpose().values[0];
     }
 
+
     public double[] yValues() {
         return this.transpose().values[1];
     }
+
 
     public double[][] values() {
         return this.values;
     }
 
+
     public int xLength() {
         return this.xDimension;
     }
+
 
     public int yLength() {
         return this.yDimension;
@@ -48,6 +52,7 @@ public class Matrix {
         }
     }
 
+
     /**
      * Contstructor for a 2D double array of size m X n.
      * @param newValues
@@ -58,6 +63,7 @@ public class Matrix {
 
         this.values = newValues;
     }
+
 
     /**
      * Return the transpose of this matrix.
@@ -74,6 +80,7 @@ public class Matrix {
 
         return new Matrix(newValues);
     }
+
 
     /**
      * Multiply this matrix with a given matrix.
@@ -93,6 +100,7 @@ public class Matrix {
 
         return new Matrix(newValues);
     }
+
 
     /**
      * Return the innverse of this matrix.
@@ -137,6 +145,7 @@ public class Matrix {
 
         return new Matrix(x);
     }
+
 
     /**
      * Source: https://www.sanfoundry.com/java-program-find-inverse-matrix/

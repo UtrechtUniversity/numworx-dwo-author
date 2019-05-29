@@ -6,21 +6,26 @@ import java.util.logging.Logger;
 
 
 /**
- * TODO: Misschien ipv Matrix van correct points opslaan gewoon enkel de degree en convexity opslaan.
  * Provides functionality to classify a drawn line (repr. by Matrix) as either correct or incorrect.
  */
 public class Classifier {
-    private Logger logger = Logger.getLogger("Classifier");
+    private static Logger logger = Logger.getLogger("Classifier");
+
 
     private Matrix inputPoints;
     private Matrix fittedPoints;
+
     private double[] lsParams;
+    private double[] MSEs;
 
     private int inputDegree;
     private int correctDegree;
 
     private boolean inputConvexity;
     private boolean correctConvexity;
+
+    public Matrix unclearPoints1;
+    public Matrix unclearPoints2;
 
 
     Classifier(Matrix inputPoints, int correctDegree, boolean correctConvexity) {
@@ -40,9 +45,6 @@ public class Classifier {
 
     public boolean classify() {
         boolean correctClassified = false;
-
-//        boolean inputConvexity = convexOrConcave(input);
-
         boolean classifiedDegree = this.classifyDegree();
         boolean classifiedConvex = this.classifyConvexity();
 
@@ -50,11 +52,22 @@ public class Classifier {
             correctClassified = true;
         }
 
-        // TODO: hier feedback callen
-        String feedback = Feedback.feedback(inputDegree, inputConvexity, correctClassified);
-
         return correctClassified;
+    }
 
+
+    public boolean unclear() {
+        for (int i = 0; i < this.MSEs.length; i++) {
+            logger.log(Level.SEVERE, (i + 1) + ": " + this.MSEs[i]);
+        }
+
+        int degree1 = 2;
+        int degree2 = 3;
+
+        this.unclearPoints1 = Smoothing.leastSquares(this.inputPoints, degree1);
+        this.unclearPoints2 = Smoothing.leastSquares(this.inputPoints, degree2);
+
+        return true;
     }
 
     public String getFeedback() {
@@ -68,14 +81,12 @@ public class Classifier {
 
         for (int d = 0; d < upToDegree; d++) {
             Matrix fittedPoints = Smoothing.leastSquares(this.inputPoints, d + 1);
-
             errors[d] = meanSquaredError(this.inputPoints.yValues(), fittedPoints.yValues());
         }
 
-//        logger.log(Level.SEVERE, this.inputPoints.toString());
-//        logger.log(Level.SEVERE, "Errors: " + Arrays.toString(errors));
+        this.MSEs = errors;
 
-        if (errors[0] < 50) {
+        if (errors[0] < 100) {
             logger.log(Level.SEVERE, "Degree: " + 1);
 
             return 1;
@@ -89,7 +100,6 @@ public class Classifier {
     private static int indexOfLargestDiff(double[] values) {
         double largestDiff = 0.0;
         int location = 0;
-
         double previousValue = values[0];
 
         for (int i = 1; i < values.length; i++) {
@@ -109,6 +119,7 @@ public class Classifier {
 
     private static double meanSquaredError(double[] inputYs, double[] fittedYs) {
         double error = 0.0;
+        logger.log(Level.SEVERE, "in: " + inputYs.length + " fit: " + fittedYs.length);
 
         for (int i = 0; i < inputYs.length; i++) {
             error += Math.pow(inputYs[i] - fittedYs[i], 2);
@@ -118,11 +129,9 @@ public class Classifier {
     }
 
 
-
     private boolean classifyDegree() {
         return this.inputDegree == this.correctDegree;
     }
-
 
 
     private boolean classifyConvexity() {
@@ -131,7 +140,6 @@ public class Classifier {
 
 
     public boolean convexOrConcave() {
-//        Matrix secondDeriv = Derivatives.gradientDerivative(this.fittedPoints, 2);
         double[] xs = this.inputPoints.xValues();
         double[] firstDerivParams = Derivatives.paramDerivative(this.lsParams, xs);
         double[] secondDerivParams = Derivatives.paramDerivative(firstDerivParams, xs);
@@ -140,14 +148,11 @@ public class Classifier {
 
         if (secondDeriv.yValues()[0] < 0.0) {
             this.logger.log(Level.SEVERE, "Convex: True");
-            return true;
+            return false;
         }
 
         logger.log(Level.SEVERE, "Convex: False");
 
-
-        return false;
+        return true;
     }
-
-
 }

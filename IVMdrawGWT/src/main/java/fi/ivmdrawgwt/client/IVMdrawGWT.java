@@ -18,9 +18,10 @@ import nl.uu.fi.dwo.interaction.client.Stub;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub {
-	public HorizontalPanel mainPanel = new HorizontalPanel();
-	public Label label = new Label("hello world!");
-	
+    public LayoutPanel mainPanel = new LayoutPanel();
+    public Label label = new Label("Teken een grafiek!");
+    public PopupPanel popUp = new PopupPanel();
+
 	Logger logger = Logger.getLogger("feedbackDebug");
 
 	static final String upgradeMessage = "Your browser does not support the HTML5 Canvas. Please upgrade your browser to view this demo.";

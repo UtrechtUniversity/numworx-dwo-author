@@ -9,7 +9,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
 
 public class IVMdrawGWTDebug extends IVMdrawGWT {
-	
 
 	@Override
 	public void onModuleLoad() {
@@ -21,13 +20,19 @@ public class IVMdrawGWTDebug extends IVMdrawGWT {
 		dlp.addStyleName(ivmDrawCss.dock());
 		dlp.setPixelSize(breedte , hoogte);
 
-		mainPanel.add(dlp);
-		mainPanel.add(label);
+		super.mainPanel.add(dlp);
+		super.mainPanel.add(super.label);
 
-		RootLayoutPanel.get().add(mainPanel);
+		super.mainPanel.setWidgetLeftWidth(dlp, 0, Style.Unit.PCT, 50, Style.Unit.PCT);
+		super.mainPanel.setWidgetRightWidth(super.label, 40, Style.Unit.PCT, 20, Style.Unit.PCT);
+		super.mainPanel.setWidgetTopHeight(super.label, 5, Style.Unit.PCT, 50, Style.Unit.PCT);
+
+		super.label.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
+		super.label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
+
+		RootLayoutPanel.get().add(super.mainPanel);
 		RootLayoutPanel.get().addStyleName(ivmDrawCss.root());
 
-//		RootPanel.get().add(mainPanel);
 		ivmFeedbackGWTField = new IVMfeedbackGWTField(this);
 
 		Map<String, Object> launchdata = new HashMap<>();
@@ -35,7 +40,4 @@ public class IVMdrawGWTDebug extends IVMdrawGWT {
 
 		init(breedte, hoogte, launchdata, random );
 	}
-
-
-
 }

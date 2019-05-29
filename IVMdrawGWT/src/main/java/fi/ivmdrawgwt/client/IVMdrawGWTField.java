@@ -10,6 +10,7 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -39,7 +40,8 @@ public class IVMdrawGWTField {
 	
 	int smoothType = AVERAGE;
 	
-	IVMdrawGWT owner;
+	public IVMdrawGWT owner;
+
 	public Canvas ivmDrawGWTCanvas, backgroundCanvas;//, strokeContainerCanvas
 	public Context2d gIm, backgroundgIm, strokeContainergIm;
 
@@ -305,20 +307,80 @@ public class IVMdrawGWTField {
 		paint();
 		
 	}
-	
-	public void mouseUpTouchEndAction(int eventX, int eventY) {
-		LineData inputPoints = new LineData(this.allDrawnPoints);
+
+
+	public void addPopUpCanvas(LineData option, IVMdrawGWT owner, int widthMargin, int optionNr) {
+		Canvas canvas = Canvas.createIfSupported();
+		Context2d context = canvas.getContext2d();
+
+		canvas.setWidth(200 + "px");
+		canvas.setHeight(200 + "px");
+		canvas.setCoordinateSpaceHeight(100);
+		canvas.setCoordinateSpaceWidth(100);
+
+		if (optionNr == 1) {
+			// call function 1
+			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi"));
+
+		} else {
+			// call function 2
+			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi2"));
+		}
+
+		owner.mainPanel.add(canvas);
+		owner.mainPanel.setWidgetLeftWidth(canvas, widthMargin, Style.Unit.EM, 30, Style.Unit.EM);
+		owner.mainPanel.setWidgetTopHeight(canvas, 8, Style.Unit.EM, 30, Style.Unit.EM);
+
+		option.drawnInContext(context, 100, 100);
+	}
+
+
+	public void createPopUpWindow(Classifier classifier) {
+		IVMdrawGWT owner = this.owner;
+
+		owner.mainPanel.add(owner.popUp);
+		owner.mainPanel.setWidgetTopHeight(owner.popUp, 5, Style.Unit.EM, 20, Style.Unit.EM);
+		owner.mainPanel.setWidgetLeftWidth(owner.popUp, 5, Style.Unit.EM, 45, Style.Unit.EM);
+		owner.popUp.setVisible(true);
+
+		addPopUpCanvas(new LineData(classifier.unclearPoints1), owner, 9, 1);
+		addPopUpCanvas(new LineData(classifier.unclearPoints2), owner, 30, 2);
+	}
+
+
+	public void handleClassification(LineData inputPoints) {
 		String feedback;
+		String color = "white";
 
 		if (inputPoints.validInput()) {
 			Matrix mPoints = new Matrix(inputPoints.getXs(), inputPoints.getYs());
 			Classifier classifier = new Classifier(mPoints, 2, true);
+
+			if (classifier.unclear()) {
+//				this.createPopUpWindow(classifier);
+			}
+
 			feedback = classifier.getFeedback();
+
+			if (classifier.classify()) {
+				color = "#33cc33";
+			} else {
+				color = "white";
+			}
+
 		} else {
 			feedback = Feedback.decreasingLine();
 		}
 
 		this.owner.ivmFeedbackGWTField.mouseUpEvent(feedback);
+		this.owner.ivmFeedbackGWTField.owner.label.getElement().getStyle().setBackgroundColor(color);
+	}
+
+
+	public void mouseUpTouchEndAction(int eventX, int eventY) {
+		LineData inputPoints = new LineData(this.allDrawnPoints);
+		handleClassification(inputPoints);
+
 		this.allDrawnPoints.clear();
 
 		currentStrokeContainer.clear();

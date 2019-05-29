@@ -26,18 +26,12 @@ public class Derivatives {
     }
 
 
-    /**
-     * TODO: misschien moet ik eerst zorgen dat points 500 elementen al heeft zodat stapgrootte altijd gelijk is.
-     * @param points
-     * @return
-     */
     private static Matrix centralPointDerivative(Matrix points) {
         double[] newXs = new double[points.xLength() - 2];
         double[] newYs = new double[points.yLength() - 2];
 
         double[] givenXs = points.xValues();
         double[] givenYs = points.yValues();
-
 
         for (int i = 1; i < points.yLength()-2; i++) {
             newYs[i - 1] = (givenYs[i+1] - givenYs[i-1]) / (2);
@@ -49,7 +43,4 @@ public class Derivatives {
 
         return new Matrix(newXs, newYs);
     }
-
-
-
 }
