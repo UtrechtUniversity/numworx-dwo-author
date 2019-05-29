@@ -51,6 +51,8 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	IVMfeedbackGWTField ivmFeedbackGWTField;
 	
 	OpdrNavIF comRoot;
+	
+	int vaasNummer = -1;
 
 
 	public void onModuleLoad() {
@@ -60,8 +62,10 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 		dlp = new DockLayoutPanel(Style.Unit.PX);
 		dlp.addStyleName(ivmDrawCss.dock());
-		dlp.setPixelSize(breedte,hoogte);
-
+		dlp.setPixelSize(breedte-200,hoogte);
+		
+		mainPanel.add(dlp);
+		mainPanel.add(label);
 
 		RootLayoutPanel.get().add(dlp);
 		RootLayoutPanel.get().addStyleName(ivmDrawCss.root());
@@ -115,9 +119,12 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		dlp.setSize("" + breedte + "px", "" + hoogte + "px");
 
 		ObjectMap launchState = JSONUtilities.wrapMap(launchData);
+		if(launchState.containsKey("vaasNummer"))
+			vaasNummer = launchState.getInt("vaasNummer");
 		
 		bottomPanel = new LayoutPanel();
 		bottomPanel.addStyleName(ivmDrawCss.bottom());
+		bottomPanel.add(new Label("Vaasnummer = "+vaasNummer));
 		
 		dlp.addSouth(bottomPanel, bottomHeight);
 		
