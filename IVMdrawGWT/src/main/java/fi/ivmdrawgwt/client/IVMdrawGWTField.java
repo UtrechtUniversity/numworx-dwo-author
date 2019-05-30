@@ -45,6 +45,9 @@ public class IVMdrawGWTField {
 	public Canvas ivmDrawGWTCanvas, backgroundCanvas;//, strokeContainerCanvas
 	public Context2d gIm, backgroundgIm, strokeContainergIm;
 
+	public int correctVaasNummer;
+
+
 	int breedte, hoogte;
 	
 	ArrayList<Point> formulaStrokePoints = new ArrayList<Point>();
@@ -53,6 +56,7 @@ public class IVMdrawGWTField {
 	private boolean moving;
 	int startX, startY;
 	boolean mouseDown;
+
 
 	ArrayList<Point> allDrawnPoints = new ArrayList<>();
 	private IVMStrokeContainer currentStrokeContainer;
@@ -320,11 +324,11 @@ public class IVMdrawGWTField {
 
 		if (optionNr == 1) {
 			// call function 1
-			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi"));
+//			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi"));
 
 		} else {
 			// call function 2
-			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi2"));
+//			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi2"));
 		}
 
 		owner.mainPanel.add(canvas);
@@ -353,14 +357,21 @@ public class IVMdrawGWTField {
 		String color = "white";
 
 		if (inputPoints.validInput()) {
+//			logger.log(Level.SEVERE, inputPoints.toString());
+
 			Matrix mPoints = new Matrix(inputPoints.getXs(), inputPoints.getYs());
-			Classifier classifier = new Classifier(mPoints, 2, true);
+			Classifier classifier = new Classifier(mPoints, this.correctVaasNummer);
+
+
 
 			if (classifier.unclear()) {
 //				this.createPopUpWindow(classifier);
 			}
 
 			feedback = classifier.getFeedback();
+
+			logger.log(Level.SEVERE, "Classified as: " + classifier.classify());
+
 
 			if (classifier.classify()) {
 				color = "#33cc33";
@@ -369,8 +380,14 @@ public class IVMdrawGWTField {
 			}
 
 		} else {
-			feedback = Feedback.decreasingLine();
+			if (LineData.maxDecreasingSequence(inputPoints.getYs()) > 20) {
+				feedback = Feedback.decreasingLine();
+			} else {
+				feedback = Feedback.decreasingXs();
+			}
+
 		}
+
 
 		this.owner.ivmFeedbackGWTField.mouseUpEvent(feedback);
 		this.owner.ivmFeedbackGWTField.owner.label.getElement().getStyle().setBackgroundColor(color);

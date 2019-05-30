@@ -111,4 +111,12 @@ public class Feedback {
 
         return feedback;
     }
+
+
+    public static String decreasingXs() {
+        String feedback = "Bij jouw grafiek ";
+
+        return feedback;
+    }
+
 }

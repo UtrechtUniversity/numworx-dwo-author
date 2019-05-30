@@ -16,6 +16,7 @@ public class LineData {
     private double ysInput[];
     private int size;
 
+
     /**
      * Constructor to create the LineData object via ArrayList of Point objects
      * @param points: ArrayList<Point>
@@ -100,20 +101,33 @@ public class LineData {
      * @return boolean true of input is valid, false otherwise
      */
     public boolean validInput() {
-        double prevX = xsInput[0];
-        double prevY = ysInput[0];
+//        logger.log(Level.SEVERE, "maxSeq xs: " + maxDecreasingSequence(xsInput));
+//        logger.log(Level.SEVERE, "maxSeq ys: " + maxDecreasingSequence(ysInput));
 
-        for (int i = 1; i < this.size; i++) {
-            if (this.xsInput[i] < prevX || this.ysInput[i] < prevY) {
-                return false;
-            }
-            prevX = xsInput[i];
-            prevY = ysInput[i];
-        }
-
-        return true;
+        return (maxDecreasingSequence(xsInput) < 20) && (maxDecreasingSequence(ysInput) < 20);
     }
 
+    public static int maxDecreasingSequence(double[] values) {
+        double prevVal = values[0];
+        int maxSequence = 0;
+        int curSequence = 0;
+
+
+        for (int i = 1; i < values.length; i++) {
+            if (values[i] < prevVal) {
+                curSequence++;
+            } else {
+                if (curSequence > maxSequence) {
+                    maxSequence = curSequence;
+                }
+                curSequence = 0;
+            }
+
+            prevVal = values[i];
+        }
+
+        return maxSequence;
+    }
 
     private void switchToCanvasCoordinates() {
         double[] ysCopy = new double[this.ysInput.length];
@@ -142,7 +156,7 @@ public class LineData {
             double newX = (xsInput[i] - xAdjust) * scaleX;
             double newY = (ysInput[i] - yAdjust) * scaleY;
 
-            logger.log(Level.SEVERE, "" + newX + " , " + newY);
+//            logger.log(Level.SEVERE, "" + newX + " , " + newY);
             context.lineTo(newX, newY);
 
         }

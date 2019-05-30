@@ -1,5 +1,6 @@
 package fi.ivmdrawgwt.client;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -16,6 +17,7 @@ import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.OpdrNavIF;
 import nl.uu.fi.dwo.interaction.client.Stub;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+
 
 public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub {
     public LayoutPanel mainPanel = new LayoutPanel();
@@ -51,9 +53,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	IVMfeedbackGWTField ivmFeedbackGWTField;
 	
 	OpdrNavIF comRoot;
-	
 	int vaasNummer = -1;
-
 
 	public void onModuleLoad() {
 		ivmDrawGWTClientBundle = GWT.create(IVMdrawGWTClientBundle.class);
@@ -62,14 +62,32 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 		dlp = new DockLayoutPanel(Style.Unit.PX);
 		dlp.addStyleName(ivmDrawCss.dock());
-		dlp.setPixelSize(breedte-200,hoogte);
-		
+		dlp.setPixelSize(breedte,hoogte);
+
+		label.getElement().getStyle().setFontSize(2, Style.Unit.EM);
+
 		mainPanel.add(dlp);
 		mainPanel.add(label);
 
-		RootLayoutPanel.get().add(dlp);
+		mainPanel.setWidgetLeftWidth(dlp, 0, Style.Unit.EM, 50, Style.Unit.EM);
+		mainPanel.setWidgetRightWidth(label, 68, Style.Unit.EM, 30, Style.Unit.EM);
+		mainPanel.setWidgetTopHeight(label, 0, Style.Unit.EM, 42, Style.Unit.EM);
+
+		label.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
+		label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
+
+		RootLayoutPanel.get().add(mainPanel);
 		RootLayoutPanel.get().addStyleName(ivmDrawCss.root());
+
+		ivmFeedbackGWTField = new IVMfeedbackGWTField(this);
+
 		Stub.publish(this);
+
+		Map<String, Object> launchdata = new HashMap<>();
+		Map<String, Number> random = Collections.emptyMap();
+
+		init(breedte, hoogte, launchdata, random );
+
 	}
 	
 	public IVMdrawGWT(HashMap<String, Object> map, String[] randomVarNamen, HashMap<String, Number> randomVarWaarden) {
@@ -119,9 +137,12 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		dlp.setSize("" + breedte + "px", "" + hoogte + "px");
 
 		ObjectMap launchState = JSONUtilities.wrapMap(launchData);
-		if(launchState.containsKey("vaasNummer"))
+		if(launchState.containsKey("vaasNummer")) {
 			vaasNummer = launchState.getInt("vaasNummer");
-		
+			this.ivmDrawGWTField.correctVaasNummer = vaasNummer;
+		}
+
+
 		bottomPanel = new LayoutPanel();
 		bottomPanel.addStyleName(ivmDrawCss.bottom());
 		bottomPanel.add(new Label("Vaasnummer = "+vaasNummer));
@@ -131,8 +152,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		topPanel = new LayoutPanel();
 		topPanel.addStyleName(ivmDrawCss.top());
 		//dlp.addNorth(topPanel, topHeight);
-		
-		
+
 		int veldhoogte = hoogte - bottomHeight;
 		
 		ivmDrawGWTField = new IVMdrawGWTField(breedte,veldhoogte, this);

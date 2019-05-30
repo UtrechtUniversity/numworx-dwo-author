@@ -28,10 +28,14 @@ public class Classifier {
     public Matrix unclearPoints2;
 
 
-    Classifier(Matrix inputPoints, int correctDegree, boolean correctConvexity) {
+    Classifier(Matrix inputPoints, int correctVaasNummer) {
         this.inputPoints = inputPoints;
-        this.correctDegree = correctDegree;
-        this.correctConvexity = correctConvexity;
+        this.setAnswerValues(correctVaasNummer);
+
+        logger.log(Level.SEVERE, "vaasnr: " + correctVaasNummer);
+
+//        this.correctDegree = correctDegree;
+//        this.correctConvexity = correctConvexity;
 
         this.inputDegree = this.findDegree();
         this.lsParams = Smoothing.leastSquaresParams(this.inputPoints.xValues(),
@@ -42,6 +46,39 @@ public class Classifier {
         this.inputConvexity = this.convexOrConcave();
     }
 
+
+
+    public void setAnswerValues(int correctVaasNummer) {
+        switch (correctVaasNummer) {
+            case 1:
+                this.correctConvexity = false;
+                this.correctDegree = 3;
+                break;
+            case 2:
+                this.correctConvexity = false;
+                this.correctDegree = 2;
+                break;
+            case 3:
+                this.correctConvexity = false;
+                this.correctDegree = 1;
+                break;
+            case 4:
+                this.correctConvexity = true;
+                this.correctDegree = 3;
+                break;
+            case 5:
+                this.correctConvexity = true;
+                this.correctDegree = 2;
+                break;
+            default:
+                this.correctConvexity = false;
+                this.correctDegree = 4;
+                break;
+        }
+
+
+
+    }
 
     public boolean classify() {
         boolean correctClassified = false;
@@ -58,7 +95,7 @@ public class Classifier {
 
     public boolean unclear() {
         for (int i = 0; i < this.MSEs.length; i++) {
-            logger.log(Level.SEVERE, (i + 1) + ": " + this.MSEs[i]);
+//            logger.log(Level.SEVERE, (i + 1) + ": " + this.MSEs[i]);
         }
 
         int degree1 = 2;
@@ -119,7 +156,7 @@ public class Classifier {
 
     private static double meanSquaredError(double[] inputYs, double[] fittedYs) {
         double error = 0.0;
-        logger.log(Level.SEVERE, "in: " + inputYs.length + " fit: " + fittedYs.length);
+//        logger.log(Level.SEVERE, "in: " + inputYs.length + " fit: " + fittedYs.length);
 
         for (int i = 0; i < inputYs.length; i++) {
             error += Math.pow(inputYs[i] - fittedYs[i], 2);
@@ -147,11 +184,11 @@ public class Classifier {
         Matrix secondDeriv = Smoothing.poly1d(secondDerivParams, xs, xs.length);
 
         if (secondDeriv.yValues()[0] < 0.0) {
-            this.logger.log(Level.SEVERE, "Convex: True");
+            this.logger.log(Level.SEVERE, "Convex: false");
             return false;
         }
 
-        logger.log(Level.SEVERE, "Convex: False");
+        logger.log(Level.SEVERE, "Convex: true");
 
         return true;
     }
