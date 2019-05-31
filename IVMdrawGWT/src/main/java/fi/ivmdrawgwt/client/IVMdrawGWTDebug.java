@@ -23,9 +23,9 @@ public class IVMdrawGWTDebug extends IVMdrawGWT {
 		super.mainPanel.add(dlp);
 		super.mainPanel.add(super.label);
 
-		super.mainPanel.setWidgetLeftWidth(dlp, 0, Style.Unit.PCT, 50, Style.Unit.PCT);
-		super.mainPanel.setWidgetRightWidth(super.label, 40, Style.Unit.PCT, 20, Style.Unit.PCT);
-		super.mainPanel.setWidgetTopHeight(super.label, 5, Style.Unit.PCT, 50, Style.Unit.PCT);
+//		super.mainPanel.setWidgetLeftWidth(dlp, 0, Style.Unit.PCT, 50, Style.Unit.PCT);
+//		super.mainPanel.setWidgetRightWidth(super.label, 40, Style.Unit.PCT, 20, Style.Unit.PCT);
+//		super.mainPanel.setWidgetTopHeight(super.label, 5, Style.Unit.PCT, 50, Style.Unit.PCT);
 
 		super.label.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
 		super.label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);

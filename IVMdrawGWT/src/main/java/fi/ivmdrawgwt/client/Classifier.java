@@ -71,8 +71,8 @@ public class Classifier {
                 this.correctDegree = 2;
                 break;
             default:
-                this.correctConvexity = false;
-                this.correctDegree = 4;
+                this.correctConvexity = true;
+                this.correctDegree = 1;
                 break;
         }
 

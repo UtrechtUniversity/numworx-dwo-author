@@ -20,7 +20,8 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 
 public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub {
-    public LayoutPanel mainPanel = new LayoutPanel();
+//    public LayoutPanel mainPanel = new LayoutPanel();
+	public HorizontalPanel mainPanel = new HorizontalPanel();
     public Label label = new Label("Teken een grafiek!");
     public PopupPanel popUp = new PopupPanel();
 
@@ -65,15 +66,15 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		dlp.setPixelSize(breedte,hoogte);
 
 		label.getElement().getStyle().setFontSize(2, Style.Unit.EM);
+		label.getElement().getStyle().setHeight(21.5, Style.Unit.EM);
 
 		mainPanel.add(dlp);
 		mainPanel.add(label);
 
-		mainPanel.setWidgetLeftWidth(dlp, 0, Style.Unit.EM, 50, Style.Unit.EM);
-		mainPanel.setWidgetRightWidth(label, 68, Style.Unit.EM, 30, Style.Unit.EM);
-		mainPanel.setWidgetTopHeight(label, 0, Style.Unit.EM, 42, Style.Unit.EM);
+		mainPanel.setCellWidth(label, "250");
+		mainPanel.setBorderWidth(1);
+		mainPanel.setSpacing(5);
 
-		label.getElement().getStyle().setBorderStyle(Style.BorderStyle.SOLID);
 		label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
 
 		RootLayoutPanel.get().add(mainPanel);

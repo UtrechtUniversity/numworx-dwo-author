@@ -313,43 +313,43 @@ public class IVMdrawGWTField {
 	}
 
 
-	public void addPopUpCanvas(LineData option, IVMdrawGWT owner, int widthMargin, int optionNr) {
-		Canvas canvas = Canvas.createIfSupported();
-		Context2d context = canvas.getContext2d();
-
-		canvas.setWidth(200 + "px");
-		canvas.setHeight(200 + "px");
-		canvas.setCoordinateSpaceHeight(100);
-		canvas.setCoordinateSpaceWidth(100);
-
-		if (optionNr == 1) {
-			// call function 1
-//			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi"));
-
-		} else {
-			// call function 2
-//			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi2"));
-		}
-
-		owner.mainPanel.add(canvas);
-		owner.mainPanel.setWidgetLeftWidth(canvas, widthMargin, Style.Unit.EM, 30, Style.Unit.EM);
-		owner.mainPanel.setWidgetTopHeight(canvas, 8, Style.Unit.EM, 30, Style.Unit.EM);
-
-		option.drawnInContext(context, 100, 100);
-	}
-
-
-	public void createPopUpWindow(Classifier classifier) {
-		IVMdrawGWT owner = this.owner;
-
-		owner.mainPanel.add(owner.popUp);
-		owner.mainPanel.setWidgetTopHeight(owner.popUp, 5, Style.Unit.EM, 20, Style.Unit.EM);
-		owner.mainPanel.setWidgetLeftWidth(owner.popUp, 5, Style.Unit.EM, 45, Style.Unit.EM);
-		owner.popUp.setVisible(true);
-
-		addPopUpCanvas(new LineData(classifier.unclearPoints1), owner, 9, 1);
-		addPopUpCanvas(new LineData(classifier.unclearPoints2), owner, 30, 2);
-	}
+//	public void addPopUpCanvas(LineData option, IVMdrawGWT owner, int widthMargin, int optionNr) {
+//		Canvas canvas = Canvas.createIfSupported();
+//		Context2d context = canvas.getContext2d();
+//
+//		canvas.setWidth(200 + "px");
+//		canvas.setHeight(200 + "px");
+//		canvas.setCoordinateSpaceHeight(100);
+//		canvas.setCoordinateSpaceWidth(100);
+//
+//		if (optionNr == 1) {
+//			// call function 1
+////			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi"));
+//
+//		} else {
+//			// call function 2
+////			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi2"));
+//		}
+//
+//		owner.mainPanel.add(canvas);
+//		owner.mainPanel.setWidgetLeftWidth(canvas, widthMargin, Style.Unit.EM, 30, Style.Unit.EM);
+//		owner.mainPanel.setWidgetTopHeight(canvas, 8, Style.Unit.EM, 30, Style.Unit.EM);
+//
+//		option.drawnInContext(context, 100, 100);
+//	}
+//
+//
+//	public void createPopUpWindow(Classifier classifier) {
+//		IVMdrawGWT owner = this.owner;
+//
+//		owner.mainPanel.add(owner.popUp);
+//		owner.mainPanel.setWidgetTopHeight(owner.popUp, 5, Style.Unit.EM, 20, Style.Unit.EM);
+//		owner.mainPanel.setWidgetLeftWidth(owner.popUp, 5, Style.Unit.EM, 45, Style.Unit.EM);
+//		owner.popUp.setVisible(true);
+//
+//		addPopUpCanvas(new LineData(classifier.unclearPoints1), owner, 9, 1);
+//		addPopUpCanvas(new LineData(classifier.unclearPoints2), owner, 30, 2);
+//	}
 
 
 	public void handleClassification(LineData inputPoints) {
@@ -390,7 +390,9 @@ public class IVMdrawGWTField {
 
 
 		this.owner.ivmFeedbackGWTField.mouseUpEvent(feedback);
-		this.owner.ivmFeedbackGWTField.owner.label.getElement().getStyle().setBackgroundColor(color);
+//		this.owner.ivmFeedbackGWTField.owner.label.getElement().getStyle().setBackgroundColor(color);
+//		this.owner.label.getElement().getStyle().setBackgroundColor(color);
+		this.owner.label.getElement().getStyle().setBackgroundColor(color);
 	}
 
 
