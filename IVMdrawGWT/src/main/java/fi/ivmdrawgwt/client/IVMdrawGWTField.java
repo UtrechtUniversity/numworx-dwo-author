@@ -2,6 +2,7 @@ package fi.ivmdrawgwt.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,6 +64,7 @@ public class IVMdrawGWTField {
 	private IVMStrokeContainer jarStrokeContainer;
 	private Stroke lastStroke;
 	
+	private ArrayList<IVMStrokeContainer> strokeContainerHistory = new ArrayList<IVMStrokeContainer>();
 	
 	public IVMdrawGWTField(int w, int h, IVMdrawGWT owner) {
 		this.owner = owner;
@@ -112,6 +114,17 @@ public class IVMdrawGWTField {
 		}
 		catch(Exception e) {
 		}
+		
+		List<Map<String,Object>> strokeContainerList = new ArrayList<Map<String,Object>>();
+		if (launchState.containsKey("strokeContainerList"))
+			strokeContainerList = launchState.getMapList("strokeContainerList");
+		for (int sCnt = 0; sCnt < strokeContainerList.size(); sCnt++)
+		{	
+			IVMStrokeContainer sc = new IVMStrokeContainer();
+			sc.setState(strokeContainerList.get(sCnt));
+			strokeContainerHistory.add(sc);
+		}
+		
 		lastStroke = currentStrokeContainer.getLastStroke();
 		processIVM();
 		paint();
@@ -123,6 +136,14 @@ public class IVMdrawGWTField {
 		Map<String,Object> ivmStrokeContainer = new HashMap <String,Object>();
 		ivmStrokeContainer = currentStrokeContainer.getState();
 		h.put("ivmStrokeContainer", ivmStrokeContainer);
+		
+		List<Map<String,Object>> strokeContainerList = new ArrayList<Map<String,Object>>();
+		for (int i = 0; i < strokeContainerHistory.size(); i++)
+		{	IVMStrokeContainer sc = strokeContainerHistory.get(i);
+			if(sc != currentStrokeContainer)
+				strokeContainerList.add(sc.getState());
+		}
+		h.put("strokeContainerList", strokeContainerList);
 		
 		return h;
 	}
@@ -402,10 +423,11 @@ public class IVMdrawGWTField {
 
 		this.allDrawnPoints.clear();
 
-		currentStrokeContainer.clear();
+		currentStrokeContainer = new IVMStrokeContainer(); //.clear();
 		lastStroke = new Stroke(formulaStrokePoints);
 		currentStrokeContainer.addStroke(lastStroke);
 		formulaStrokePoints.clear();
+		strokeContainerHistory.add(currentStrokeContainer);
 
 		if (!inputPoints.validInput()) {
 			return;
