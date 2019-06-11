@@ -160,30 +160,32 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		linkRegel.setLink(new Link(linkTekst, urls, width, height, embedded, grensScores));
 		linkRegel.setUnderlined(true);
 		
-		if(embedded) 
+		if(embedded && !tekstVak.editable) 
 		{	setSize(width, height);
 			super.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 			super.setOpaque(true);
 			super.setBackground(Color.LIGHT_GRAY);
 			linkRegel.setLocation(1,1);
-// embedded browser!			
-			remove(linkRegel);
-			final Link link = linkRegel.getLink();
-			final SimpleSwingBrowser ssb = new SimpleSwingBrowser();
-			JFXPanel panel = ssb.getBrowserPanel();
-			//Container panel = ssb.getContentPane();
-			add(panel);
-			panel.invalidate();
-			panel.setBounds(0, 0, width, height); // o i d
-			panel.setPreferredSize(getSize());
-			panel.validate(); panel.doLayout();
-			SwingUtilities.invokeLater(
-			new Runnable() {
-				public void run() {
-					ssb.loadURL(link.getUrlString()[0]);
-				}
-			});
-			
+// embedded browser!	
+			if(!tekstVak.editable) 
+			{
+      			remove(linkRegel);
+      			final Link link = linkRegel.getLink();
+      			final SimpleSwingBrowser ssb = new SimpleSwingBrowser();
+      			JFXPanel panel = ssb.getBrowserPanel();
+      			//Container panel = ssb.getContentPane();
+      			add(panel);
+      			panel.invalidate();
+      			panel.setBounds(0, 0, width, height); // o i d
+      			panel.setPreferredSize(getSize());
+      			panel.validate(); panel.doLayout();
+      			SwingUtilities.invokeLater(
+      			new Runnable() {
+      				public void run() {
+      					ssb.loadURL(link.getUrlString()[0]);
+      				}
+      			});
+			}
 			/*remove(linkRegel);
 			/*remove(linkRegel);
 			add(js);

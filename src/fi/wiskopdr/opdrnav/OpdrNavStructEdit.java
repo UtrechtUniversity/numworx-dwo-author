@@ -93,6 +93,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	
 	private JLabel sizeLabel;
 	
+	public static HelpBrowser helpBrowser;
+	private static String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
+	
 	/**
 	 * Maakt nieuwe Opdrachtnavigatie-editor op basis van de aangeleverde launchData
 	 */
@@ -101,6 +104,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		setBounds(x, y, b, h);
 		setBackground(WiskOpdr.bgcolor);
 		instance = this; // FIXME hoe kom ik hierachter?
+		helpBrowser = new HelpBrowser(instance);
 		
 		this.opdrEditContainer = opdrEditContainer;
 
@@ -141,6 +145,11 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		opdrEditContainer.zetMode(mode);
 
 		add(opdrEditContainer);
+		
+		HelpButton helpButton = new HelpButton(HELP_URL1);
+        helpButton.setBounds(360,27,20,20);
+        this.setLayer(helpButton, JLayeredPane.POPUP_LAYER.intValue());
+        this.add(helpButton);
 
 		orPosX = orSize * 2 + 17 + margeLinks;
 		orPosY = h - (2 * orSize);
@@ -307,7 +316,6 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			if(activiteitNr == 0 && i < aantalOpdrachten[0] && i >= 0)
 			kiesOpdracht(activiteitNr, i);
 		} catch(RuntimeException _) {}
-		
 		
 		
 	}

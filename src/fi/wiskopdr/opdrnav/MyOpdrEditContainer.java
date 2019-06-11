@@ -119,7 +119,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelEditor.setFont(new Font(WiskOpdr.tekstFont.getName(), Font.BOLD, 16));
 		add(titelEditor);
 
-		tekstLabel = makeLabel(10, 95, scheidingX - 15, 20, WiskOpdr.rb.getString("opdrachtTekstLabel"), true);
+		tekstLabel = makeLabel(10, 95, scheidingX - 15, 20, WiskOpdr.rb.getString("opdrachtTekstLabel"), false);
 
 		BasisTekstVak basisVak = new BasisTekstVak();
 		tekstEditor = new TekstEditor(true, true, basisVak);
@@ -425,6 +425,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		randomVarEditor.zetTekst(randVarString);
 
 		titelCB.setSelected(hasTitle);
+		if(!hasTitle)
+		  titelCB.setVisible(false);
 
 		tekstEditor.setBounds(10, hasTitle ? 75 : 25, scheidingX - 15, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? 35 : 0));
 		tekstEditor2.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 260 + (hasAntwoordVak ? 0 : 130));
@@ -626,9 +628,11 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		antwoordvak.setResizable(true);
 		zetAntwoordVakUsed(hasAntwoordVak);
 		nieuweVersieCB.setSelected(!hasAntwoordVak);
-		if (hasAntwoordVak)
+		nieuweVersieCB.setVisible(hasAntwoordVak);
+		if (hasAntwoordVak) {
 			hideAntwoordVak();
-
+			
+		}
 		titelEditor.deleteStates();
 		tekstEditor.deleteStates();
 		tekstEditor2.deleteStates();
