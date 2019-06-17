@@ -266,6 +266,8 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"statSimIpLabel" , "[test] Statistics Simulations"},
 				{"stelselVakLabel", "[test] Stelsel-antwoordvak"},
 	            {"javaLogoIpLabel", "JavaLogo"},
+	            {"symboolIpLabel", "Symbol"},
+                {"samengesteldeStappenIpLabel", "Composite steps"},
 
 	            //CheckButtonEditor
                 {"CB_kijkNaOptieLabel", "Check" },
@@ -729,6 +731,12 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"SYM_linksboven", "Left up"},
 				{"SYM_geenRichting", "No direction"},
 				
+				{"Steps_statistics", "Domain reasoner statistics"},
+                {"Steps_action", " Action"},
+                {"Steps_nrOfSteps", "Number of different steps"},
+                {"Steps_name", "Step name"},
+                {"Steps_content", "Step content"},
+                
 				// opdr nav struct
 				{"ONS_timeisup", "The time is up"},
 				{"ONS_timeready", "Ready in time"},

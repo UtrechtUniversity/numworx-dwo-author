@@ -100,6 +100,7 @@ import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleElement;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.opdrnav.XWidgetManager;
+import fi.wiskopdr.samengesteldestappen.SamengesteldeStappenPanel;
 import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
 import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
 import fi.wiskopdr.symbolen.SymboolPanel;
@@ -399,7 +400,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"Heks",
 		"GeoDefiner",
 		"JavaLogoWeb3d",
-		"IVM Draw"
+		"IVM Draw",
+		WiskOpdr.rb.getString("samengesteldeStappenIpLabel")
 	};
 	
 	
@@ -408,7 +410,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{0,1,2,3,4,13,14,12,16,25,33,49,52,53},
 		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59},
 		{45},
-		{9, 55}, 
+		{9, 55, 60}, 
 		{10,39},
 		{-2},
 		{-2},
@@ -1240,6 +1242,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				interactiePanel.addActionListener(this);
 			}
 		}
+		else if(soortInteractiePanel == 60)
+        {
+            if(interactiePanel == null || !(interactiePanel instanceof SamengesteldeStappenPanel))
+            {
+                interactiePanel = new SamengesteldeStappenPanel();
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+            }
+        }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if(soortInteractiePanel == interactiePanelSets[1][i])
@@ -1833,6 +1844,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				interactiePanel.addActionListener(this);
 			}
 		}
+		else if(soortInteractiePanel == 60)
+        {
+            if(interactiePanel == null || !(interactiePanel instanceof SamengesteldeStappenPanel))
+            {
+                interactiePanel = new SamengesteldeStappenPanel();
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+            }
+        }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if(soortInteractiePanel == interactiePanelSets[1][i])
@@ -2177,6 +2197,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    if(launchData.containsKey("interactiePanelLaunchState")) interactiePanelLaunchState = (Hashtable)launchData.get("interactiePanelLaunchState");
 	    if(interactiePanelLaunchState.containsKey("scoreMax")) scoreMax = ((Integer)interactiePanelLaunchState.get("scoreMax")).intValue();
 	    return scoreMax;
+	}
+	
+	public int getScoreMaxComponentsChanged()
+	{
+	  int scoreMax = 0;
+	  if(interactiePanel!=null)
+        scoreMax = interactiePanel.getScoreMax();
+      else
+          scoreMax = 0;
+      return scoreMax;
 	}
 	
 	public int[][] getScoreMaxObjectives()

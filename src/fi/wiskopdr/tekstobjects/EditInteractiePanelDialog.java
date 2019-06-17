@@ -73,6 +73,7 @@ import fi.wiskopdr.formuleobjects.FormuleButton;
 //import fi.tekenveelvlakopdr.TekenVeelvlakOpdr;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.opdrnav.XWidgetManager;
+import fi.wiskopdr.samengesteldestappen.SamengesteldeStappenPanel;
 import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
 import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
 import fi.wiskopdr.symbolen.SymboolPanel;
@@ -573,6 +574,14 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			if(interactieEditPanel != null)interactieEditPanel.zetBreedte(100);
 			if(interactieEditPanel != null)interactieEditPanel.zetHoogte(100);
 			
+		}
+		else if(soortInteractiePanel == 60)
+		{
+		  interactieEditPanel = (new SamengesteldeStappenPanel()).getEditPanel();
+		  breedteTF.setText("400");
+		  hoogteTF.setText("300");
+		  if(interactieEditPanel != null) interactieEditPanel.zetBreedte(400);
+		  if(interactieEditPanel != null) interactieEditPanel.zetHoogte(57);
 		}
 		else if(soortInteractiePanel == 45)//GraphTool
 		{  		if(soortInteractiePanel == TekstInteractiePanelVak.interactiePanelSets[1][30])

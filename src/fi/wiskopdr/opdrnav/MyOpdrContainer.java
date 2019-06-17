@@ -942,9 +942,18 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		return totalMeasuredMisconceptions;
 	}
 
-	public int getScoreMax()
+	public int getScoreMaxComponentsChanged()
 	{
-		return scoreMax;
+		scoreMax = 0;
+        for (int i = 0; i < aantalInteractiePanelCs; i++)
+        {
+            if (interactiePanelCs[i] != null && (i != 0 || hasAntwoordVak) && interactiePanelCs[i] instanceof TekstInteractiePanelVak)
+            {
+                scoreMax += ((TekstInteractiePanelVak) interactiePanelCs[i]).getScoreMaxComponentsChanged();
+
+            }
+        }
+        return scoreMax;
 	}
 
 	public boolean isFout()

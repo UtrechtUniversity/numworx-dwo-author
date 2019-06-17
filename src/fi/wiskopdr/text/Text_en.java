@@ -287,6 +287,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{"stelselVakLabel", "[test] System of equations"},
 	            {"javaLogoIpLabel", "JavaLogo"},
 	            {"symboolIpLabel", "Symbol"},
+	            {"samengesteldeStappenIpLabel", "Composite steps"},
+                
 
 	            //CheckButtonEditor
                 {"CB_kijkNaOptieLabel", "Check" },
@@ -771,6 +773,12 @@ public class Text_en extends java.util.ListResourceBundle
 				{"SYM_linksonder", "Left down"},
 				{"SYM_linksboven", "Left up"},
 				{"SYM_geenRichting", "No direction"},
+				
+				{"Steps_statistics", "Domain reasoner statistics"},
+                {"Steps_action", " Action"},
+                {"Steps_nrOfSteps", "Number of different steps"},
+                {"Steps_name", "Step name"},
+                {"Steps_content", "Step content"},
 				
 				// opdr nav struct
 				{"ONS_timeisup", "The time is up"},

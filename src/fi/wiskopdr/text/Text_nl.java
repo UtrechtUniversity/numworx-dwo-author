@@ -304,6 +304,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"stelselVakLabel", "Stelsel-antwoordvak"},
                 {"javaLogoIpLabel", "JavaLogo"},
                 {"symboolIpLabel", "Symbool"},
+                {"samengesteldeStappenIpLabel", "Samengestelde stappen"},
                 
                 //CheckButtonEditor
                 {"CB_kijkNaOptieLabel", "Kijk na" },
@@ -816,6 +817,12 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"SYM_linksonder", "Linksonder"},
 				{"SYM_linksboven", "Linksboven"},
 				{"SYM_geenRichting", "Geen richting"},
+				
+				{"Steps_statistics", "Domain reasoner statistiek"},
+				{"Steps_action", " Actie"},
+				{"Steps_nrOfSteps", "Aantal verschillende stappen"},
+				{"Steps_name", "Stapnaam"},
+				{"Steps_content", "Stapinhoud"},
 				
 				// opdr nav struct
 				{"ONS_timeisup", "De tijd is om"},

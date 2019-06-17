@@ -645,11 +645,12 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			or[i].setVisible(false);
 			this.setLayer(or[i], JLayeredPane.PALETTE_LAYER.intValue());
 			add(or[i]);
-			for (int j = 0; j < aantalOpdrachten[i]; j++)
-			{
-				if (scoresMax[i][j] == 0)
-					or[i].zetNoScore(j + 1, true);
-			}
+			zetNoScore(i);
+//			for (int j = 0; j < aantalOpdrachten[i]; j++)
+//			{
+//				if (scoresMax[i][j] == 0)
+//					or[i].zetNoScore(j + 1, true);
+//			}
 		}
 		or[activiteitNr].setVisible(bolletjesZichtbaar || lessonMode.equals("review"));
 		if (aantalActiviteiten == 1 && aantalOpdrachten[0] == 1)
@@ -2960,6 +2961,33 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		return voortgangPerc;
 		
 	}
+	
+	public void bepaalScoresMaxComponentsChanged()
+	{
+	  scoresMax[activiteitNr][opdrachtNr] = opdrContainer.getScoreMaxComponentsChanged();
+	  scoreMax = 0;
+	  for(int i = 0; i < aantalActiviteiten; i++)
+	    for(int j = 0; j < aantalOpdrachten[i]; j++)
+	      scoreMax += scoresMax[i][j];
+	  
+	}
+	
+	public void zetNoScore(int i)
+	{
+	  for (int j = 0; j < aantalOpdrachten[i]; j++)
+	    {
+	        zetNoScore(i, j);
+	    }
+	}
+	
+	public void zetNoScore(int i, int j)
+	{
+	  if(scoresMax[i][j] == 0)
+	    or[i].zetNoScore(j + 1, true);
+	  else
+	    or[i].zetNoScore(j + 1, false);
+	}
+	
 		
 	
 	public void actionPerformed(ActionEvent e)
@@ -3273,7 +3301,14 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				return;
 			}
 			
-			if (!(e.getActionCommand().equals("checked") || e.getActionCommand().equals("changed")))
+			if(e.getActionCommand().equals("componentsChanged")) //tbv stappenvak
+			{
+			  bepaalScoresMaxComponentsChanged();
+			  zetNoScore(activiteitNr, opdrachtNr);
+			}
+			
+			if (!(e.getActionCommand().equals("checked") || e.getActionCommand().equals("changed") || 
+			    e.getActionCommand().equals("componentsChanged")))
 				return;
 			
 			int score = opdrContainer.getScore();
