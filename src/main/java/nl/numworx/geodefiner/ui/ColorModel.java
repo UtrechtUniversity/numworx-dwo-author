@@ -13,12 +13,9 @@ import nl.tue.win.riaca.openmath.lang.OMVariable;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
-import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
-import fi.euclides.model.Punt;
-import fi.euclides.model.algo.FreePoint;
 import fi.euclides.openmath.Expression;
 import fi.euclides.util.DefaultAdapter;
 
