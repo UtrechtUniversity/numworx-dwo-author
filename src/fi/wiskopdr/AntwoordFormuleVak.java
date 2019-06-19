@@ -1241,6 +1241,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		if(s.length()>5 && s.substring(0,6).equals("$fCAS{"))
 		{	casCheck = true;
 			casString = s.substring(6,s.length()-2);
+			juisteAntwoorden = new Expressie[1]; // NOT NULL
 			return;
 		}
 		else casCheck = false;
@@ -2248,6 +2249,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 				}
 
 				boolean answerModelFits = pastGelijkwaardig && pastHerleid && pastExact && pastSignificant;
+// FIXME bij casCheck GEEN juisteAntwoorden[] 
 				if (juisteAntwoorden[0] != null && juisteAntwoorden[0].toString().equals("else"))
 					answerModelFits = true;
 				if (answerModelFits)
