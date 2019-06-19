@@ -19,7 +19,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 	//private String url="http://";
     private int height = 400;
     private int width = 400;
-    private boolean embedded = false;
+    private LinkType embedded = LinkType.FALSE;
      	
     private TextField linkTekstField;
     private TextField urlField;
@@ -38,7 +38,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     private int[] grensScores = null;
 	
     private JCheckBox voorwaardelijkBox;
-    private JCheckBox embeddedCB;
+    private JComboBox<LinkType> embeddedCB;
     private VoorwaardelijkeLinkButton voorwaardelijkButton;
 
     
@@ -209,7 +209,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     public static Link addLink(Component owner) {
         String[] httpString = new String[] {"http://", "http://","http://", "http://",
         		"http://", "http://","http://", "http://","http://", "http://"};
-    	AddLinkDialog asd = new AddLinkDialog(owner, "Link gegevens", "link", httpString, 400, 400, false, null);
+    	AddLinkDialog asd = new AddLinkDialog(owner, "Link gegevens", "link", httpString, 400, 400, LinkType.FALSE, null);
         asd.show();
         if (asd.isConfirmed()) {
             Link link = new Link(asd.getLinkTekst(), asd.getUrlString(), asd.getWidth(), asd.getHeight(), asd.getEmbedded(), asd.getGrensScores());
@@ -260,7 +260,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 	        int[] grensScores = link.getGrensScores();
 	        int height = link.getHeight();
 	        int width = link.getWidth();
-	        boolean embedded = link.getEmbedded();
+	        LinkType embedded = link.getEmbedded();
 	        //dit hieronder lijkt me niet verstandig; even kijken
 	        //welke foutmeldingen ik nu krijg.
 	        //if(urls==null) 
@@ -330,7 +330,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
             catch(Exception ex){}
             try {height = Integer.parseInt(heightField.getText());}
             catch(Exception ex){}
-            try {embedded = embeddedCB.isSelected();}
+            try {embedded = embeddedCB.getItemAt(embeddedCB.getSelectedIndex());}
             catch(Exception ex){}
             confirmed = true;
             this.setVisible(false);
@@ -425,7 +425,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     public int getHeight() {
         return height;
     }
-    public boolean getEmbedded() {
+    public LinkType getEmbedded() {
         return embedded;
     }
 
@@ -433,7 +433,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     
     //Nieuw en uitproberend!!
     
-    public AddLinkDialog(Component owner, String windowTitle, String linkTekst, String[] urls, int width, int height, boolean embedded, int[] grensScores) {
+    public AddLinkDialog(Component owner, String windowTitle, String linkTekst, String[] urls, int width, int height, LinkType embedded, int[] grensScores) {
         super((owner instanceof Frame) ? (Frame) owner : new Frame(),
                 windowTitle, true);
         this.setLayout(null);
@@ -458,11 +458,11 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     	//		urls[i] = "http://";
     	//}
 
-        Label l;
+        JLabel l;
         FontMetrics fm;
 
         /* schoolName label */
-        l = new Label(WiskOpdr.rb.getString("LEP_linkTekst"));//"Tekst"
+        l = new JLabel(WiskOpdr.rb.getString("LEP_linkTekst"));//"Tekst"
         l.setForeground(Color.black);
         l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
@@ -478,7 +478,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         this.add(linkTekstField);
         
         /* schoolName label */
-        l = new Label(WiskOpdr.rb.getString("LEP_url"));//"URL"
+        l = new JLabel(WiskOpdr.rb.getString("LEP_url"));//"URL"
         l.setForeground(Color.black);
         l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
@@ -495,10 +495,10 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         else
         	urlField.setText("http://");
         urlField.setBounds(150, 58, 300, 20);
-        this.add(urlField);
+        this.add(urlField,0);
         
         /* schoolLogin label */
-        l = new Label(WiskOpdr.rb.getString("LEP_vensterBreedte"));//"breedte van het window"
+        l = new JLabel(WiskOpdr.rb.getString("LEP_vensterBreedte"));//"breedte van het window"
         l.setForeground(Color.black);
         l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
@@ -511,10 +511,10 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         /* schoolLogin field */
         widthField = new TextField(""+width);
         widthField.setBounds(150, 88, 150, 20);
-        this.add(widthField);
+        this.add(widthField,0);
         
         /* studentPasswd label */
-        l = new Label(WiskOpdr.rb.getString("LEP_vensterHoogte"));//"Hoogte van het window"
+        l = new JLabel(WiskOpdr.rb.getString("LEP_vensterHoogte"));//"Hoogte van het window"
         l.setForeground(Color.black);
         l.setFont(font);
         fm = l.getFontMetrics(l.getFont());
@@ -527,7 +527,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         /* studentPasswd field */
         heightField = new TextField(""+height);
         heightField.setBounds(150, 118, 150, 20);
-        this.add(heightField);
+        this.add(heightField,0);
         
         voorwaardelijkBox = new JCheckBox("Voorwaardelijke link (work in progress)");//nog aanpassen!
         voorwaardelijkBox.setBounds(10, 150, 300, 20);
@@ -546,12 +546,15 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         	voorwaardelijkButton.setGrensScores(grensScores);
         }
         
-        embeddedCB = new JCheckBox("embedded");
+        embeddedCB = new JComboBox<>(LinkType.values());
         embeddedCB.setBounds(150, 150, 300, 20);
-        embeddedCB.setSelected(embedded);
+        embeddedCB.setSelectedItem(embedded);
         embeddedCB.setOpaque(false);
         add(embeddedCB,0);
         embeddedCB.addActionListener(this);
+        l = new JLabel("embedding");
+        l.setBounds(10,150,300,20);
+        add(l);
         
         //Hierdoor merkt niemand iets van aanbouw voorwaardelijke link 
         //Als de voorwaardelijke checkbox verdwijnt: stuk na else behouden.

@@ -801,6 +801,12 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "Uitgebreid", "Extended" },
 				
 				{ "needsPremium", "For this activity you need a premium subscription."},
+
+				{ "LinkType_FALSE", "default (new window)" },
+                { "LinkType_TRUE", "embedded" },
+                { "LinkType_PLAYER", "own window"},
+                { "LinkType_CLIENT", "parent window"},
+                { "LinkType_TOP", "top window"},
 		};
 }
 

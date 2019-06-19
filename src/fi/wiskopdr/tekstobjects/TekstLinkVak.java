@@ -71,7 +71,7 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		
 		if("GR".equals(WiskOpdr.deployVariant))linkRegel.setFont(new Font("Arial",Font.PLAIN,13));
 		else linkRegel.setFont(f);
-		if(linkRegel.getLink()!=null && linkRegel.getLink().getEmbedded())
+		if(linkRegel.getLink()!=null && linkRegel.getLink().getEmbedded() == LinkType.TRUE)
 			setSize(linkRegel.getLink().getWidth(), linkRegel.getLink().getHeight());
 		else
 			setSize(linkRegel.getSize().width, linkRegel.getSize().height);
@@ -150,17 +150,17 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		int heightEnd = s.indexOf("@",heightStart);
 		int height = Integer.parseInt(s.substring(heightStart,heightEnd));
 		
-		boolean embedded = false;
+		LinkType embedded = LinkType.FALSE;
 		if(s.indexOf("$E")>=0)
 		{	int embeddedStart = s.indexOf("$E")+2;
 			int embeddedEind = s.indexOf("@",embeddedStart);
-			embedded = Boolean.parseBoolean(s.substring(embeddedStart,embeddedEind));
+			embedded = LinkType.parse(s.substring(embeddedStart,embeddedEind));
 		}
 		//linkRegel.setLink(new Link(linkTekst,url,width,height));
 		linkRegel.setLink(new Link(linkTekst, urls, width, height, embedded, grensScores));
 		linkRegel.setUnderlined(true);
 		
-		if(embedded && !tekstVak.editable) 
+		if(embedded == LinkType.TRUE && !tekstVak.editable) 
 		{	setSize(width, height);
 			super.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 			super.setOpaque(true);
@@ -227,7 +227,7 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 	
 	public void zetMaat()
 	{	
-		if(linkRegel.getLink()!=null && linkRegel.getLink().getEmbedded())
+		if(linkRegel.getLink()!=null && linkRegel.getLink().getEmbedded()==LinkType.TRUE)
 		{	setSize(linkRegel.getLink().getWidth(), linkRegel.getLink().getHeight());
 			super.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 			super.setOpaque(true);
@@ -267,7 +267,7 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 	{	return linkRegel.getLink().getHeight();
 	}
 	
-	public boolean getEmbedded()
+	public LinkType getEmbedded()
 	{	return linkRegel.getLink().getEmbedded();
 	}
 	

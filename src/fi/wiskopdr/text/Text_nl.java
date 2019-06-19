@@ -844,8 +844,13 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "Basis", "Basis" },
 				{ "Uitgebreid", "Uitgebreid" },
 		
-				{ "needsPremium", "Voor deze activiteit is een premium abonnement nodig." }
+				{ "needsPremium", "Voor deze activiteit is een premium abonnement nodig." },
 				
+				{ "LinkType_FALSE", "default (nieuw window)" },
+				{ "LinkType_TRUE", "embedded" },
+				{ "LinkType_PLAYER", "eigen window"},
+				{ "LinkType_CLIENT", "applicatie window"},
+				{ "LinkType_TOP", "top window"},
 				
 		};
 }
