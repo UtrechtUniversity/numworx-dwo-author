@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.ItemEvent;
@@ -26,6 +27,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -33,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
+import javax.swing.border.Border;
 
 import dagger.Lazy;
 import nl.numworx.geodefiner.common.FilteredDestroyHandler;
@@ -221,7 +224,15 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 			if(box.isSelected())
 			{
 				int n = boxes.indexOf(box);
-				toolbox.add(actionsMap.get(n).get());
+				JButton b = toolbox.add(actionsMap.get(n).get());
+//				Border border = b.getBorder();
+//				Dimension size = b.getPreferredSize();
+// XXX opvullen tot 40x40, werkt niet op de MAC
+//				Border outsideBorder = BorderFactory.createEmptyBorder(0, 0, 40-size.height, 40-size.width);
+//				if (border != null) 
+//					b.setBorder(BorderFactory.createCompoundBorder(border, outsideBorder));
+//				else
+//					b.setBorder(outsideBorder);
 			}
 				
 		}
