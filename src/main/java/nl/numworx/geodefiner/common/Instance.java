@@ -41,6 +41,7 @@ import fi.euclides.model.MP;
 import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
+import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
 import fi.euclides.model.Visitor;
@@ -187,8 +188,18 @@ public abstract class Instance /*implements Observer*/ {
 
     @Override
     protected boolean freePuntenLine(Lijn l) {
-      return super.freePuntenLine(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
+      return anyFreePuntenLijn(l) && !Boolean.TRUE.equals(l.adapt(Boolean.class));
     }
+
+
+	private boolean anyFreePuntenLijn(Lijn l) {
+		if(l instanceof PuntenLijn)
+		{
+			Punt[] depend = (Punt[])l.getDepend();
+			return freePunt(depend[0]) || freePunt(depend[1]); // any instead of all
+		}
+		return false;
+	}
 
     @Override
     protected Punt[] freeBoog(Boog b) {

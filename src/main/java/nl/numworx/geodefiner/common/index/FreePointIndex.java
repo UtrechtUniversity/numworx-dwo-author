@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.common.index;
 
+import fi.euclides.model.Punt;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 
@@ -34,5 +35,20 @@ public class FreePointIndex extends PuntIndex implements FreePoint {
     if (getDelegate() != null)
       getDelegate().setXY(x, y);
   }
+
+/* (non-Javadoc)
+ * @see fi.euclides.model.Punt#moveTo(fi.euclides.model.math.Numbers, fi.euclides.model.math.Numbers)
+ */
+@Override
+public void moveTo(Numbers x, Numbers y) {
+	Punt delegate = getDelegate();
+	if (delegate != null) 
+	{
+		delegate.moveTo(x, y); // Constraint moves.
+		x = delegate.getX(); // copy to index
+		y = delegate.getY();
+	}
+	super.setXY(x, y);
+}
   
 }
