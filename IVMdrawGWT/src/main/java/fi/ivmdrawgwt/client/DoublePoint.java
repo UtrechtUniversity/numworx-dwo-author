@@ -40,5 +40,10 @@ public class DoublePoint
 		x = cx+(x-cx)*factor;
 		y = cy+(y-cy)*factor;
 	}
-	
+
+
+	@Override
+	public String toString() {
+		return "(" + x + "," + y + ")";
+	}
 }

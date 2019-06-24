@@ -1,6 +1,7 @@
 package fi.ivmdrawgwt.client;
 
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -210,18 +211,6 @@ public class Matrix {
 
     @Override
     public String toString() {
-        String strBuilder = "";
-
-        for (int i = 0; i < this.yDimension; i++) {
-            strBuilder += "[ ";
-
-            for (int j = 0; j < this.xDimension; j++) {
-                strBuilder += this.values[i][j] + " ";
-            }
-
-            strBuilder += "]\n";
-        }
-
-        return strBuilder;
+        return Arrays.deepToString(this.values) + "\n";
     }
 }

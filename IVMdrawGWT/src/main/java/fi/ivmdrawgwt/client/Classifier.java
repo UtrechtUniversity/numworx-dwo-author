@@ -34,9 +34,6 @@ public class Classifier {
 
         logger.log(Level.SEVERE, "vaasnr: " + correctVaasNummer);
 
-//        this.correctDegree = correctDegree;
-//        this.correctConvexity = correctConvexity;
-
         this.inputDegree = this.findDegree();
         this.lsParams = Smoothing.leastSquaresParams(this.inputPoints.xValues(),
                                                      this.inputPoints.yValues(),
@@ -59,7 +56,7 @@ public class Classifier {
                 this.correctDegree = 2;
                 break;
             case 3:
-                this.correctConvexity = false;
+                this.correctConvexity = true;
                 this.correctDegree = 1;
                 break;
             case 4:
@@ -75,9 +72,6 @@ public class Classifier {
                 this.correctDegree = 1;
                 break;
         }
-
-
-
     }
 
     public boolean classify() {
@@ -128,10 +122,15 @@ public class Classifier {
 
             return 1;
         } else {
-            logger.log(Level.SEVERE, "Degree: " + (indexOfLargestDiff(errors) + 1));
-            return indexOfLargestDiff(errors) + 1;
+            int indx = indexOfLargestDiff(errors);
+
+            logger.log(Level.SEVERE, "Degree: " + (indx + 1));
+
+            return indx + 1;
+
         }
     }
+
 
 
     private static int indexOfLargestDiff(double[] values) {
@@ -182,14 +181,34 @@ public class Classifier {
         double[] secondDerivParams = Derivatives.paramDerivative(firstDerivParams, xs);
 
         Matrix secondDeriv = Smoothing.poly1d(secondDerivParams, xs, xs.length);
+//        logger.log(Level.INFO, "Second deriv: " + secondDeriv.toString());
 
-        if (secondDeriv.yValues()[0] < 0.0) {
-            this.logger.log(Level.SEVERE, "Convex: false");
-            return false;
+
+        int amountBelowZero = 0;
+
+        logger.log(Level.INFO, "looplength: " + secondDeriv.xLength() / 10);
+
+        for (int i = 0; i < 10; i++) {
+            if (secondDeriv.yValues()[0] < 0.0) {
+                amountBelowZero += 1;
+            }
         }
 
-        logger.log(Level.SEVERE, "Convex: true");
+        if (amountBelowZero < 5) {
+            this.logger.log(Level.SEVERE, "Convex: false");
+        } else {
+            logger.log(Level.SEVERE, "Convex: true");
+        }
 
-        return true;
+        return (amountBelowZero < 5);
+
+//        if (secondDeriv.yValues()[0] < 0.0) {
+//            this.logger.log(Level.SEVERE, "Convex: false");
+//            return false;
+//        }
+//
+//        logger.log(Level.SEVERE, "Convex: true");
+//
+//        return true;
     }
 }

@@ -83,6 +83,11 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		ivmFeedbackGWTField = new IVMfeedbackGWTField(this);
 
 		Stub.publish(this);
+
+		Map<String, Object> launchdata = new HashMap<>();
+		Map<String, Number> random = Collections.emptyMap();
+
+		init(breedte, hoogte, launchdata, random );
 	}
 	
 	public IVMdrawGWT(HashMap<String, Object> map, String[] randomVarNamen, HashMap<String, Number> randomVarWaarden) {
