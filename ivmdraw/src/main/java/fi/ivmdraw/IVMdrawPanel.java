@@ -1,6 +1,8 @@
 package fi.ivmdraw;
 
 import java.awt.AWTEventMulticaster;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
@@ -16,134 +18,144 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class IVMdrawPanel extends JPanel implements InteractiePanel, CBookAware {
 
-  private ActionListener listener;
-  private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
- 
-  public IVMdrawPanel(IVMdraw applet) {
-    JLabel label = new JLabel("Dit is het interactiepanel");
-    add(label);
-  }
+	private ActionListener listener;
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 
-  public void addActionListener(ActionListener listener) {
-    this.listener = AWTEventMulticaster.add(this.listener, listener);
-  }
+	public IVMdrawPanel(IVMdraw applet) {
+		JLabel label = new JLabel("IVM Draw");
+		add(label);
+	}
 
-  public void destroy() {
+	public void paintComponent(Graphics g) {
+		g.setColor(new Color(200, 200, 200));
+		g.fillRect(0, 0, getSize().width - 1, getSize().height - 1);
+		//super.paintComponent(g);
+	}
 
-  }
+	public void addActionListener(ActionListener listener) {
+		this.listener = AWTEventMulticaster.add(this.listener, listener);
+	}
 
-  public IVMdrawEditPanel getEditPanel() {
-    return new IVMdrawEditPanel(this);
-  }
+	public void destroy() {
 
-  public Hashtable getEditState() {
-    Hashtable editState = new Hashtable();
-    
-    return editState;
-  }
+	}
 
-  public int getIpId() {
-    return 0;
-  }
+	public IVMdrawEditPanel getEditPanel() {
+		return new IVMdrawEditPanel(this);
+	}
 
-  public int getScore() {
-    return 0;
-  }
+	public Hashtable getEditState() {
+		Hashtable editState = new Hashtable();
 
-  public int getScoreMax() {
-    return 0;
-  }
+		return editState;
+	}
 
-  public int[][] getScoreObjectives() {
-    return null;
-  }
+	public int getIpId() {
+		return 0;
+	}
 
-  public Hashtable getState() {
-    Hashtable state = new Hashtable();
-    return state;
-  }
+	public int getScore() {
+		return 0;
+	}
 
-  public boolean isCorrect() {
-    return false;
-  }
+	public int getScoreMax() {
+		return 0;
+	}
 
-  public boolean isFout() {
-    return false;
-  }
+	public int[][] getScoreObjectives() {
+		return null;
+	}
 
-  public void kijkNa() {
-  }
+	public Hashtable getState() {
+		Hashtable state = new Hashtable();
+		return state;
+	}
 
-  public void kijkNa(int n) {
-  }
+	public boolean isCorrect() {
+		return false;
+	}
 
-  public void opnieuw() {
-  }
+	public boolean isFout() {
+		return false;
+	}
 
-  public void setEditState(Hashtable editState) {
+	public void kijkNa() {
+	}
 
-  }
+	public void kijkNa(int n) {
+	}
 
-  public void setState(Hashtable state) {
+	public void opnieuw() {
+	}
 
-  }
+	public void setEditState(Hashtable editState) {
 
-  public void start() {
+	}
 
-  }
+	public void setState(Hashtable state) {
 
-  public void stop() {
+	}
 
-  }
+	public void start() {
 
-  public void wis() {
+	}
 
-  }
+	public void stop() {
 
-  public void zetMaat() {
+	}
 
-  }
+	public void wis() {
 
-  public void zetMode(int mode) {
+	}
 
-  }
+	public void zetMaat() {
 
-  public void zetNagekeken(boolean nagekeken) {
+	}
 
-  }
+	public void zetMode(int mode) {
 
-  public void zetOpdracht(Hashtable editState, String[] names, Hashtable random) {
+	}
 
-  }
+	public void zetNagekeken(boolean nagekeken) {
 
-  @Override
-  public void acceptCBookEvent(CBookEvent event) {
-    
-  }
+	}
 
-  @Override
-  public void addCBookEventListener(CBookEventListener listener, String command) {
-    cbookEventHandler.addCBookEventListener(listener, command);
-  }
+	public void zetOpdracht(Hashtable editState, String[] names, Hashtable random) {
 
-  @Override
-  public String[] getAcceptedCmds() {    
-    return null;
-  }
+	}
 
-  @Override
-  public String getLocalizedCmd(String command) {
-    return command;
-  }
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
 
-  @Override
-  public String[] getSendCmds() {
-    return null;
-  }
+	}
 
-  @Override
-  public void removeCBookEventListener(CBookEventListener listener, String command) {
-    cbookEventHandler.removeCBookEventListener(listener, command);    
-  }
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		return null;
+	}
+
+	@Override
+	public String getLocalizedCmd(String command) {
+		String localizedCmd = IVMdraw.rb.getString(CBA_PREFIX + command);
+		if (localizedCmd == null)
+			return command;
+		return localizedCmd;
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = { "action.correct", "action.false", "text.feedback" };
+		return commands;
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+	}
 
 }
