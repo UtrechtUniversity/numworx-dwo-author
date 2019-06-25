@@ -125,9 +125,14 @@ abstract class AbstractSelector<T extends Destroyable> implements Visitor, Selec
             }
             indexed.changed();
             indexed.notifyObservers();
-        } else if(arg == Destroyable.VISIBLE) {
+        } else if(arg == Destroyable.VISIBLE
+        		&& indexed.getDelegate() != null
+        		) {
             indexed.setVisible(indexed.getDelegate().isVisible());
-        }
+        } 
+//        else if (arg == Destroyable.VISIBLE) {
+//        	System.out.println("NPE avoided");
+//        }
     }
 
     abstract void recalc();
