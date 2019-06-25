@@ -146,10 +146,10 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		add(opdrEditContainer);
 		
-		HelpButton helpButton = new HelpButton(HELP_URL1);
-        helpButton.setBounds(360,27,20,20);
-        this.setLayer(helpButton, JLayeredPane.POPUP_LAYER.intValue());
-        this.add(helpButton);
+//		HelpButton helpButton = new HelpButton(HELP_URL1);
+//        helpButton.setBounds(360,27,20,20);
+//        this.setLayer(helpButton, JLayeredPane.POPUP_LAYER.intValue());
+//        this.add(helpButton);
 
 		orPosX = orSize * 2 + 17 + margeLinks;
 		orPosY = h - (2 * orSize);
