@@ -16,10 +16,12 @@ import nl.uu.fi.dwo.interaction.client.InteractionStub;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.OpdrNavIF;
 import nl.uu.fi.dwo.interaction.client.Stub;
+import nl.uu.fi.dwo.interaction.client.event.CBookEvent;
+import nl.uu.fi.dwo.interaction.client.event.CBookEventListener;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 
-public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub {
+public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub, CBookEventListener {
 //    public LayoutPanel mainPanel = new LayoutPanel();
 	public HorizontalPanel mainPanel = new HorizontalPanel();
     public Label label = new Label("Teken een grafiek!");
@@ -55,6 +57,10 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	
 	OpdrNavIF comRoot;
 	int vaasNummer = -1;
+	boolean feedbackVisible = false;
+	
+	boolean correctGraph = false;
+	
 
 	public void onModuleLoad() {
 		ivmDrawGWTClientBundle = GWT.create(IVMdrawGWTClientBundle.class);
@@ -136,16 +142,11 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		
 		dlp.setSize("" + breedte + "px", "" + hoogte + "px");
 
-		ObjectMap launchState = JSONUtilities.wrapMap(launchData);
-		if(launchState.containsKey("vaasNummer")) {
-			vaasNummer = launchState.getInt("vaasNummer");
-			this.ivmDrawGWTField.correctVaasNummer = vaasNummer;
-		}
-
+		
 
 		bottomPanel = new LayoutPanel();
 		bottomPanel.addStyleName(ivmDrawCss.bottom());
-		bottomPanel.add(new Label("Vaasnummer = "+vaasNummer));
+		
 		
 		dlp.addSouth(bottomPanel, bottomHeight);
 		
@@ -170,6 +171,18 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 		
 		ivmDrawGWTField.setState(launchData);
+		
+		ObjectMap launchState = JSONUtilities.wrapMap(launchData);
+		if(launchState.containsKey("vaasNummer")) 
+			vaasNummer = launchState.getInt("vaasNummer");
+		if(launchState.containsKey("feedbackVisible")) 
+			feedbackVisible = launchState.getBoolean("feedbackVisible");
+			
+		
+		this.ivmDrawGWTField.correctVaasNummer = vaasNummer;
+		label.setVisible(feedbackVisible);
+		
+		bottomPanel.add(new Label("Vaasnummer = "+vaasNummer));
 
 		//makeBottom();
 		
@@ -228,7 +241,21 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	@Override
 	public void setCommunicationRoot(OpdrNavIF comRoot) {
 		this.comRoot = comRoot;
-
+	
+	}
+	
+	public void setChanged() {
+		if(comRoot==null)
+			return;
+		String feedback = label.getText(); //Hier laatste feedback opvragen
+		Map map = new HashMap<String,Object>();
+		map.put("content", feedback);
+		comRoot.fireEvent(new CBookEvent(this,"text.feedback",map));
+		
+		if(correctGraph)
+			comRoot.fireEvent(new CBookEvent(this,"action.correct"));
+		else
+			comRoot.fireEvent(new CBookEvent(this,"action.false"));
 	}
 
 	@Override
@@ -253,6 +280,12 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 	@Override
 	public void setAsHoogte(int ashoogte) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
 		// TODO Auto-generated method stub
 		
 	}

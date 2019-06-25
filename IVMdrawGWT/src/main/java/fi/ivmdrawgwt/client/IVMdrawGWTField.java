@@ -396,8 +396,10 @@ public class IVMdrawGWTField {
 
 			if (classifier.classify()) {
 				color = "#33cc33";
+				this.owner.correctGraph = true;
 			} else {
 				color = "white";
+				this.owner.correctGraph = false;
 			}
 
 		} else {
@@ -435,6 +437,8 @@ public class IVMdrawGWTField {
 
 		processIVM();
 		paint();
+		
+		owner.setChanged();
 	}
 	
 	
