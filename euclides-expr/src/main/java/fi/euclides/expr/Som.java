@@ -129,7 +129,7 @@ public class Som extends LabelValue {
 				return ((LabelValue)d2.getRegistered()).getSymbolicValue(d2);
 			return d2.getString();
 		}
-		return "$"+ super.s(d);
+		return super.s(d);
 	}
 
 }
