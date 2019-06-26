@@ -5,7 +5,9 @@ import java.util.Enumeration;
 import java.util.List;
 
 import nl.numworx.geodefiner.common.index.LabelSelector;
+import nl.numworx.geodefiner.common.index.LabelSelectorIntern;
 import nl.numworx.geodefiner.common.index.ListSelector;
+import nl.numworx.geodefiner.common.index.ListSelectorIntern;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
@@ -111,7 +113,7 @@ public class GroupOf extends Groep {
 			name = ((OMVariable) formula.getVariableAt(0)).getName();
 			for(int i = 1; i <= size; i++)
 			{
-				argument = new ListSelector(grp, i).get();
+				argument = new ListSelectorIntern(grp, i).get();
 				Destroyable v = expression.interpret(oma, new Label(), this);
 				addElement(v);
 				setChanged();
@@ -139,7 +141,7 @@ public class GroupOf extends Groep {
 			OMObject oma = formula.getBody();
 			name = ((OMVariable) formula.getVariableAt(0)).getName();
 			for (int i = 1; i <= size; i++) {
-				argument = new LabelSelector(list, i).get();
+				argument = new LabelSelectorIntern(list, i).get();
 				Destroyable v = expression.interpret(oma, new Label(), this);
 				addElement(v);
 				setChanged();
