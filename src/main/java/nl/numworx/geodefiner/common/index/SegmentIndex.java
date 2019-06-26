@@ -3,6 +3,7 @@ package nl.numworx.geodefiner.common.index;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Segment;
 import fi.euclides.model.VrijPunt;
+import fi.euclides.model.math.Numbers;
 
 class SegmentIndex extends Segment implements Indexed<Segment> {
 
@@ -17,7 +18,7 @@ class SegmentIndex extends Segment implements Indexed<Segment> {
 	
 
 	SegmentIndex(Selector selector) {
-		super(new VrijPunt(), new VrijPunt());
+		super(new VrijPunt(Numbers.NaN, Numbers.NaN), new VrijPunt(Numbers.NaN, Numbers.NaN));
 		this.selector = selector;
 	}
 	
@@ -25,7 +26,10 @@ class SegmentIndex extends Segment implements Indexed<Segment> {
 		return delegate;
 	}
 	public void setDelegate(Segment delegate) {
+		boolean old = this.delegate == delegate;
 		this.delegate = delegate;
+		if (!old && delegate != null)
+			changed();
 	}
 	public boolean isDefined() {
 		return defined;
