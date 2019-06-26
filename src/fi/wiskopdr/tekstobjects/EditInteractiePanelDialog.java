@@ -105,6 +105,14 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     int[] set;
     int setNr;
     
+   // int[] set = {5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59};
+    
+    // Deze extra lijst maakt een selectie uit de set, 
+    // want niet alle widgets zijn HTML5 compliant. 
+    // Bovendien is de volgorde alfabetisch gemaakt
+    int[] widgetSelection = {21,0,1,12,4,31,3,38,8,37,40,36,39,27,26,14,10,28,34,17,33,25,18,19,13,7};
+    
+    
     //bij zwevend TeksVakPanel
     private int locationX;
     private int locationY;
@@ -290,11 +298,19 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			while(iter.hasNext())
 				soortAntwoordVakKeuze.addItem(iter.next());
 		}
-		else
-		{	for(int i=0 ; i<set.length ; i++)
-			{	soortAntwoordVakKeuze.addItem(TekstInteractiePanelVak.interactiePanelDescriptions[set[i]]);
-			}
+		else if(setNr == TekstInteractiePanelVak.AppletsSetNr)
+		{	
+		    for(int i=0 ; i<widgetSelection.length ; i++)
+            {   soortAntwoordVakKeuze.addItem(TekstInteractiePanelVak.interactiePanelDescriptions[set[widgetSelection[i]]]);
+            }
 		}
+		else 
+        {   
+            for(int i=0 ; i<set.length ; i++)
+            { soortAntwoordVakKeuze.addItem(TekstInteractiePanelVak.interactiePanelDescriptions[set[i]]);
+            }
+            
+        }
 	}
     
     public void setBackground(Color c)
@@ -340,14 +356,23 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         subscriptions = launchData.get("subscriptions"); // do not loose
 
        if(soortInteractiePanel != -2) 
-       {   for(int i=0 ; i<set.length ; i++)
-       		{	if(set[i]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
+       {   
+         if(setNr == TekstInteractiePanelVak.AppletsSetNr)
+           for(int i=0 ; i<widgetSelection.length ; i++)
+           {	if(set[widgetSelection[i]]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
 				
-			}
-	       if(interactieEditPanel==null)
-	       {	makeInteractieEditPanel(soortInteractiePanel);
-	       		plaatsEditInteractiePanel();
-	       }
+           }
+         else
+           for(int i=0 ; i<set.length ; i++)
+           {    if(set[i]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
+                
+           }
+         
+	     if(interactieEditPanel==null)
+	     {	makeInteractieEditPanel(soortInteractiePanel);
+	       	plaatsEditInteractiePanel();
+	       	this.huidigSoortInteractiePanel = soortInteractiePanel;
+	     }
 	       
        }
        else 
@@ -689,9 +714,18 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 				soortInteractiePanelClass = selectObj.getClass().getName();
 				if(selectObj instanceof CBookWrap)
 					soortInteractiePanelClass = ((CBookWrap) selectObj).getClassName();
-			} else 			
-				soortInteractiePanel = set[selectNr];
+				
+			} 
+			else if(this.setNr==TekstInteractiePanelVak.AppletsSetNr) {			
+				soortInteractiePanel = set[widgetSelection[selectNr]];
+				System.out.println("wasHere: nr="+soortInteractiePanel);
+			}
+			else
+			    soortInteractiePanel = set[selectNr];
+			  
 		}
+		else 
+		  soortInteractiePanel = this.huidigSoortInteractiePanel;
 		//System.out.println(soortInteractiePanel + " " + soortInteractiePanelClass);
 		
 		
@@ -797,12 +831,17 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			if(o instanceof CBookWidgetIF)
 			{
 				makeInteractieEditPanel( (CBookWidgetIF) o, getCrossWidgetId());
-			} else
-			{
-				
-				if(selectNr >-1 )soortInteractiePanel = set[selectNr];
+			} 
+			else if(setNr == TekstInteractiePanelVak.AppletsSetNr)
+			{	
+				if(selectNr >-1 )soortInteractiePanel = set[widgetSelection[selectNr]];
 				makeInteractieEditPanel(soortInteractiePanel);
 			} 
+			else 
+            {   
+                if(selectNr >-1 )soortInteractiePanel = set[selectNr];
+                makeInteractieEditPanel(soortInteractiePanel);
+            }
 			plaatsEditInteractiePanel();
 			huidigSoortInteractiePanel = soortInteractiePanel;
 			if(oldInteractiePanelLaunchState!=null)
