@@ -272,7 +272,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"checkSleepUnitLabel" , "CheckSleepUnit"},
                 {"vergrotenIpLabel" , "PO Vergroten"},
                 {"vangenIpLabel" , "PO Vangen"},
-                {"verknippenIpLabel" , "PO Verknippen"},
+                {"verknippenIpLabel" , "Verknippen"},
                 {"geomAlgebra2dIpLabel" , "Geom.algebra 2d"},
                 {"geomAlgebra1dIpLabel" , "Geom.algebra 1d"},
                 {"normaleVerdelingIpLabel" , "Normale verdeling"},
