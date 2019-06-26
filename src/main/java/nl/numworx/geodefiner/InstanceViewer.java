@@ -681,8 +681,8 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 					y += fm.getAscent()/2; break;
 				case TOP: x -= stringWidth/2; y -= fm.getDescent()+extra; break;
 				case BOTTOM: x -= stringWidth/2; y += fm.getAscent()+extra; break;
+				case NONE: return;
 				case BASE:
-				case NONE: 
 				}
 			}
 			Rectangle2D.Double rect = 
