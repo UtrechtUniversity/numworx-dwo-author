@@ -20,14 +20,10 @@ import nl.uu.fi.dwo.interaction.client.event.CBookEvent;
 import nl.uu.fi.dwo.interaction.client.event.CBookEventListener;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
-
 public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub, CBookEventListener {
-//    public LayoutPanel mainPanel = new LayoutPanel();
 	public HorizontalPanel mainPanel = new HorizontalPanel();
     public Label label = new Label("Teken een grafiek!");
     public PopupPanel popUp = new PopupPanel();
-
-	Logger logger = Logger.getLogger("feedbackDebug");
 
 	static final String upgradeMessage = "Your browser does not support the HTML5 Canvas. Please upgrade your browser to view this demo.";
 	static final Text rb = GWT.create(Text.class);
@@ -60,7 +56,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	boolean feedbackVisible = false;
 	
 	boolean correctGraph = false;
-	
+
 
 	public void onModuleLoad() {
 		ivmDrawGWTClientBundle = GWT.create(IVMdrawGWTClientBundle.class);
@@ -90,6 +86,10 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 		Stub.publish(this);
 
+//		Map<String, Object> launchdata = new HashMap<>();
+//		Map<String, Number> random = Collections.emptyMap();
+//
+//		init(breedte, hoogte, launchdata, random );
 	}
 	
 	public IVMdrawGWT(HashMap<String, Object> map, String[] randomVarNamen, HashMap<String, Number> randomVarWaarden) {
@@ -138,11 +138,8 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		
 		dlp.setSize("" + breedte + "px", "" + hoogte + "px");
 
-		
-
 		bottomPanel = new LayoutPanel();
 		bottomPanel.addStyleName(ivmDrawCss.bottom());
-		
 		
 		dlp.addSouth(bottomPanel, bottomHeight);
 		

@@ -2,6 +2,12 @@ package fi.ivmdrawgwt.client;
 
 public class Derivatives {
 
+    /**
+     * Determines the derivatives algebraically by using the coefficients and their corresponding exponents.
+     * @param coefficients values representing the coefficients of the polynomial.
+     * @param xs double array representing the xs.
+     * @return coefficients (double[]) of the derivative of the polynomial
+     */
     public static double[] paramDerivative(double[] coefficients, double[] xs) {
         double[] newCoeff = new double[coefficients.length - 1];
 
@@ -13,6 +19,12 @@ public class Derivatives {
     }
 
 
+    /**
+     * Determines the derivative via a numerical approach.
+     * @param points Matrix object containing the input points
+     * @param order order of the derivative (can only be 1 or 2)
+     * @return
+     */
     public static Matrix gradientDerivative(Matrix points, int order) {
         if (order < 1 || order > 2) {
             throw new IllegalArgumentException("Order must be either 1 or 2.");
@@ -26,6 +38,11 @@ public class Derivatives {
     }
 
 
+    /**
+     * Calculate the derivative numerically by using the central point derivative on the given input points.
+     * @param points Matrix containing the input points.
+     * @return Matrix points of the derivative values.
+     */
     private static Matrix centralPointDerivative(Matrix points) {
         double[] newXs = new double[points.xLength() - 2];
         double[] newYs = new double[points.yLength() - 2];

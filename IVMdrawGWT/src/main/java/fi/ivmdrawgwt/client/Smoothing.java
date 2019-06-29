@@ -47,12 +47,10 @@ public class Smoothing {
 
     public static Matrix leastSquaresParams(double[] xs, double[] ys, int order) {
         double[] gauss = complGaussianWindow(xs.length, xs.length/2, 2.0, 100);
-//        logger.log(Level.INFO, "Order: " + order);
 
         gauss[0] = 10000;
 
         if (order != 1) {
-            // NOTE: evt kan dit ook 4 of 5 ofzo worden, later maar ff testen
             gauss[3] = 10000;
         }
         return leastSquaresParams(xs, ys, order, gauss);

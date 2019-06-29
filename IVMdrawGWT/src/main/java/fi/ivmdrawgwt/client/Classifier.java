@@ -1,17 +1,20 @@
+/*
+ * File:    Classifier
+ *
+ * Uses both a Matrix object containing the drawn input and a vase number to determine if the drawn line is correct.
+ * Classification is done by calculating the most likely degree and convexity. These two will be compared
+ * with what is expected from a correct answer.
+ */
+
 package fi.ivmdrawgwt.client;
 
-import java.util.Arrays;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
  * Provides functionality to classify a drawn line (repr. by Matrix) as either correct or incorrect.
  */
 public class Classifier {
-    private static Logger logger = Logger.getLogger("Classifier");
-
-
     private Matrix inputPoints;
     private Matrix fittedPoints;
 
@@ -27,12 +30,14 @@ public class Classifier {
     public Matrix unclearPoints1;
     public Matrix unclearPoints2;
 
-
+    /**
+     * Constructor to create a Classifier object based on a Matrix of inputpoints (drawn line) and the correct vaasnr.
+     * @param inputPoints
+     * @param correctVaasNummer
+     */
     Classifier(Matrix inputPoints, int correctVaasNummer) {
         this.inputPoints = inputPoints;
         this.setAnswerValues(correctVaasNummer);
-
-        logger.log(Level.SEVERE, "vaasnr: " + correctVaasNummer);
 
         this.inputDegree = this.findDegree();
         this.lsParams = Smoothing.leastSquaresParams(this.inputPoints.xValues(),
@@ -44,7 +49,10 @@ public class Classifier {
     }
 
 
-
+    /**
+     * Harcoded solution to pair vasenumber to expected classifier output.
+     * @param correctVaasNummer Integer of the asked vasequestion.
+     */
     public void setAnswerValues(int correctVaasNummer) {
         switch (correctVaasNummer) {
             case 1:
@@ -74,6 +82,11 @@ public class Classifier {
         }
     }
 
+
+    /**
+     * The function that determines of the drawn input line is correct.
+     * @return Boolean (true if correct, false otherwise)
+     */
     public boolean classify() {
         boolean correctClassified = false;
         boolean classifiedDegree = this.classifyDegree();
@@ -87,11 +100,11 @@ public class Classifier {
     }
 
 
+    /**
+     * TODO: Work in progress
+     * @return
+     */
     public boolean unclear() {
-        for (int i = 0; i < this.MSEs.length; i++) {
-//            logger.log(Level.SEVERE, (i + 1) + ": " + this.MSEs[i]);
-        }
-
         int degree1 = 2;
         int degree2 = 3;
 
@@ -101,11 +114,19 @@ public class Classifier {
         return true;
     }
 
+    /**
+     * return feedback based on te drawn line and correct answer.
+     * @return String representing the feedback.
+     */
     public String getFeedback() {
         return Feedback.feedback(this.inputDegree, this.inputConvexity, this.classify());
     }
 
 
+    /**
+     * Find the degree by comparing MSE values of each possible degree.
+     * @return
+     */
     public int findDegree() {
         int upToDegree = 4;
         double[] errors = new double[upToDegree];
@@ -118,21 +139,20 @@ public class Classifier {
         this.MSEs = errors;
 
         if (errors[0] < 100) {
-            logger.log(Level.SEVERE, "Degree: " + 1);
-
             return 1;
         } else {
             int indx = indexOfLargestDiff(errors);
 
-            logger.log(Level.SEVERE, "Degree: " + (indx + 1));
-
             return indx + 1;
-
         }
     }
 
 
-
+    /**
+     * Helper function to find the largest consecutive difference in a given array.
+     * @param values (double array)
+     * @return position where the largest value change occurs.
+     */
     private static int indexOfLargestDiff(double[] values) {
         double largestDiff = 0.0;
         int location = 0;
@@ -153,9 +173,15 @@ public class Classifier {
     }
 
 
+    /**
+     * Calculate the mean squared error between input and fitted y-values.
+     * Since x-values are for both are expected to be equal, only y-values are given.
+     * @param inputYs y-values of the input points.
+     * @param fittedYs y-values of the fitted points.
+     * @return MSE value
+     */
     private static double meanSquaredError(double[] inputYs, double[] fittedYs) {
         double error = 0.0;
-//        logger.log(Level.SEVERE, "in: " + inputYs.length + " fit: " + fittedYs.length);
 
         for (int i = 0; i < inputYs.length; i++) {
             error += Math.pow(inputYs[i] - fittedYs[i], 2);
@@ -165,28 +191,36 @@ public class Classifier {
     }
 
 
+    /**
+     * Check if the degree is correct.
+     * @return Boolean (true if correct, false otherwise)
+     */
     private boolean classifyDegree() {
         return this.inputDegree == this.correctDegree;
     }
 
 
+    /**
+     * Check if the convexity is correct.
+     * @return Boolean (true if correct, false otherwise)
+     */
     private boolean classifyConvexity() {
         return this.inputConvexity == this.correctConvexity;
     }
 
 
+    /**
+     * Determine whether the drawn line is either convex or concave.
+     * @return Boolean (true if concave, false if convex)
+     */
     public boolean convexOrConcave() {
         double[] xs = this.inputPoints.xValues();
         double[] firstDerivParams = Derivatives.paramDerivative(this.lsParams, xs);
         double[] secondDerivParams = Derivatives.paramDerivative(firstDerivParams, xs);
 
         Matrix secondDeriv = Smoothing.poly1d(secondDerivParams, xs, xs.length);
-//        logger.log(Level.INFO, "Second deriv: " + secondDeriv.toString());
-
 
         int amountBelowZero = 0;
-
-        logger.log(Level.INFO, "looplength: " + secondDeriv.xLength() / 10);
 
         for (int i = 0; i < 10; i++) {
             if (secondDeriv.yValues()[0] < 0.0) {
@@ -194,21 +228,6 @@ public class Classifier {
             }
         }
 
-        if (amountBelowZero < 5) {
-            this.logger.log(Level.SEVERE, "Convex: false");
-        } else {
-            logger.log(Level.SEVERE, "Convex: true");
-        }
-
         return (amountBelowZero < 5);
-
-//        if (secondDeriv.yValues()[0] < 0.0) {
-//            this.logger.log(Level.SEVERE, "Convex: false");
-//            return false;
-//        }
-//
-//        logger.log(Level.SEVERE, "Convex: true");
-//
-//        return true;
     }
 }

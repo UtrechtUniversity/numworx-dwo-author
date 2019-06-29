@@ -1,3 +1,10 @@
+/*
+ * File:		IVMdrawGWTField
+ *
+ *
+ *
+ */
+
 package fi.ivmdrawgwt.client;
 
 import java.util.ArrayList;
@@ -33,8 +40,6 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 
 public class IVMdrawGWTField {
-	Logger logger = Logger.getLogger("SiardDebugLogger");
-
 	final int GAUSSIAN = 0;
 	final int AVERAGE = 1;
 	final int AVERAGE2 = 2;
@@ -154,8 +159,19 @@ public class IVMdrawGWTField {
 	
 	public void paint(Context2d g) {
 		g.clearRect(0, 0, breedte, hoogte);
-		g.setStrokeStyle(CssColor.make(80, 80, 80));
 
+		/* Draws the labels for the coordinate system */
+		g.beginPath();
+		g.moveTo(20, 20);
+		g.lineTo(20, 480);
+		g.lineTo(310, 480);
+		g.setFont("15px arial");
+		g.fillText("Hoogte water", 7, 12);
+		g.fillText("Hoeveelheid water", 200, 495);
+		g.stroke();
+		g.closePath();
+
+		g.setStrokeStyle(CssColor.make(80, 80, 80));
 		jarStrokeContainer.draw(g);
 		
 		g.setLineWidth(1.0d);
@@ -334,64 +350,15 @@ public class IVMdrawGWTField {
 	}
 
 
-//	public void addPopUpCanvas(LineData option, IVMdrawGWT owner, int widthMargin, int optionNr) {
-//		Canvas canvas = Canvas.createIfSupported();
-//		Context2d context = canvas.getContext2d();
-//
-//		canvas.setWidth(200 + "px");
-//		canvas.setHeight(200 + "px");
-//		canvas.setCoordinateSpaceHeight(100);
-//		canvas.setCoordinateSpaceWidth(100);
-//
-//		if (optionNr == 1) {
-//			// call function 1
-////			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi"));
-//
-//		} else {
-//			// call function 2
-////			canvas.addMouseDownHandler((a) ->logger.log(Level.SEVERE, "drawn boi2"));
-//		}
-//
-//		owner.mainPanel.add(canvas);
-//		owner.mainPanel.setWidgetLeftWidth(canvas, widthMargin, Style.Unit.EM, 30, Style.Unit.EM);
-//		owner.mainPanel.setWidgetTopHeight(canvas, 8, Style.Unit.EM, 30, Style.Unit.EM);
-//
-//		option.drawnInContext(context, 100, 100);
-//	}
-//
-//
-//	public void createPopUpWindow(Classifier classifier) {
-//		IVMdrawGWT owner = this.owner;
-//
-//		owner.mainPanel.add(owner.popUp);
-//		owner.mainPanel.setWidgetTopHeight(owner.popUp, 5, Style.Unit.EM, 20, Style.Unit.EM);
-//		owner.mainPanel.setWidgetLeftWidth(owner.popUp, 5, Style.Unit.EM, 45, Style.Unit.EM);
-//		owner.popUp.setVisible(true);
-//
-//		addPopUpCanvas(new LineData(classifier.unclearPoints1), owner, 9, 1);
-//		addPopUpCanvas(new LineData(classifier.unclearPoints2), owner, 30, 2);
-//	}
-
-
 	public void handleClassification(LineData inputPoints) {
 		String feedback;
 		String color = "white";
 
 		if (inputPoints.validInput()) {
-//			logger.log(Level.SEVERE, inputPoints.toString());
-
 			Matrix mPoints = new Matrix(inputPoints.getXs(), inputPoints.getYs());
 			Classifier classifier = new Classifier(mPoints, this.correctVaasNummer);
 
-
-
-			if (classifier.unclear()) {
-//				this.createPopUpWindow(classifier);
-			}
-
 			feedback = classifier.getFeedback();
-
-			logger.log(Level.SEVERE, "Classified as: " + classifier.classify());
 
 
 			if (classifier.classify()) {
@@ -411,10 +378,7 @@ public class IVMdrawGWTField {
 
 		}
 
-
 		this.owner.ivmFeedbackGWTField.mouseUpEvent(feedback);
-//		this.owner.ivmFeedbackGWTField.owner.label.getElement().getStyle().setBackgroundColor(color);
-//		this.owner.label.getElement().getStyle().setBackgroundColor(color);
 		this.owner.label.getElement().getStyle().setBackgroundColor(color);
 	}
 
