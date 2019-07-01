@@ -1,5 +1,5 @@
 /*
- * File:    Classifier
+ * File:    Classifier.java
  *
  * Uses both a Matrix object containing the drawn input and a vase number to determine if the drawn line is correct.
  * Classification is done by calculating the most likely degree and convexity. These two will be compared
@@ -7,8 +7,6 @@
  */
 
 package fi.ivmdrawgwt.client;
-
-import java.util.logging.Level;
 
 
 /**
@@ -99,20 +97,6 @@ public class Classifier {
         return correctClassified;
     }
 
-
-    /**
-     * TODO: Work in progress
-     * @return
-     */
-    public boolean unclear() {
-        int degree1 = 2;
-        int degree2 = 3;
-
-        this.unclearPoints1 = Smoothing.leastSquares(this.inputPoints, degree1);
-        this.unclearPoints2 = Smoothing.leastSquares(this.inputPoints, degree2);
-
-        return true;
-    }
 
     /**
      * return feedback based on te drawn line and correct answer.

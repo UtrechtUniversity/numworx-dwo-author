@@ -15,8 +15,6 @@ public class IVMfeedbackGWTField {
     public IVMfeedbackGWTField(IVMdrawGWT owner) {
         this.owner = owner;
 
-//        MouseHandler mouseHandler = new MouseHandler();
-//        owner.label.addMouseUpHandler(mouseHandler);
     }
 
 
@@ -24,13 +22,4 @@ public class IVMfeedbackGWTField {
         this.owner.label.setText(msg);
     }
 
-
-//    class MouseHandler implements MouseUpHandler {
-//
-//        @Override
-//        public void onMouseUp(MouseUpEvent e) {
-//            logger.log(Level.SEVERE, "Mouse up detected!");
-//            mouseUpEvent();
-//        }
-//    }
 }

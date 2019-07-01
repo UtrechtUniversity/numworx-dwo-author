@@ -1,3 +1,11 @@
+/*
+ * File:    Derivatives.java
+ *
+ * Provides several functions for obtaining derivatives. The derivatives are mainly used for the classification,
+ * which is implemented in Classifier.java.
+ */
+
+
 package fi.ivmdrawgwt.client;
 
 public class Derivatives {

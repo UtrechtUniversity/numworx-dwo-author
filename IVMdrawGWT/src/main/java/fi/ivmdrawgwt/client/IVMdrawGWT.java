@@ -1,3 +1,10 @@
+/*
+ * File:	IVMdrawGWT.java
+ *
+ * This file can be seen as a wrapper for the IVMdrawGWTField file.
+ * It defines the entrypoint for the widget while also allow cross-widget communication.
+ */
+
 package fi.ivmdrawgwt.client;
 
 import java.util.Collections;
@@ -58,6 +65,12 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	boolean correctGraph = false;
 
 
+	/**
+	 * The GWT entry point method, called automatically by loading a module that declares an implementing class as an
+	 * entry point. Source: http://www.gwtproject.org/javadoc/latest/com/google/gwt/core/client/EntryPoint.html
+	 *
+	 * For local testing and debugging, use IVMdrawGWTDebug's onModuleLoad.
+	 */
 	public void onModuleLoad() {
 		ivmDrawGWTClientBundle = GWT.create(IVMdrawGWTClientBundle.class);
 		ivmDrawCss = ivmDrawGWTClientBundle.getKladjeGWTCSS();
@@ -85,13 +98,15 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		ivmFeedbackGWTField = new IVMfeedbackGWTField(this);
 
 		Stub.publish(this);
-
-//		Map<String, Object> launchdata = new HashMap<>();
-//		Map<String, Number> random = Collections.emptyMap();
-//
-//		init(breedte, hoogte, launchdata, random );
 	}
-	
+
+
+	/**
+	 * Constructor for the IVMdrawGWT object.
+	 * @param map Launchdata
+	 * @param randomVarNamen TODO: not sure
+	 * @param randomVarWaarden TODO: not sure
+	 */
 	public IVMdrawGWT(HashMap<String, Object> map, String[] randomVarNamen, HashMap<String, Number> randomVarWaarden) {
 		ObjectMap h = JSONUtilities.wrapMap(map);
 
@@ -117,13 +132,11 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		mainPanel.add(dlp);
 		mainPanel.add(label);
 
-		
-
 //		RootPanel.get().add(mainPanel);
 		ivmFeedbackGWTField = new IVMfeedbackGWTField(this);
 
 		init(breedte, hoogte, launchState, randomVarWaarden);
-		}
+	}
 
 	public IVMdrawGWT() {
 		initWidget(new Label("IVMdraw"));

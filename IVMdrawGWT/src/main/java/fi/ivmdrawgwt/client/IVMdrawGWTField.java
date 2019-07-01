@@ -1,7 +1,9 @@
 /*
  * File:		IVMdrawGWTField
  *
- *
+ * The main logic of the drawable field is implemented in this file.
+ * It provides a drawable canvas, constructs a vase shape based on the input line and classifies the drawn line
+ * as either correct or incorrect.
  *
  */
 
@@ -55,7 +57,7 @@ public class IVMdrawGWTField {
 
 
 	int breedte, hoogte;
-	
+
 	ArrayList<Point> formulaStrokePoints = new ArrayList<Point>();
 
 	private boolean writing;
@@ -70,7 +72,7 @@ public class IVMdrawGWTField {
 	private Stroke lastStroke;
 	
 	private ArrayList<IVMStrokeContainer> strokeContainerHistory = new ArrayList<IVMStrokeContainer>();
-	
+
 	public IVMdrawGWTField(int w, int h, IVMdrawGWT owner) {
 		this.owner = owner;
 		
@@ -94,16 +96,29 @@ public class IVMdrawGWTField {
 		jarStrokeContainer.setIsJar(true);
 		currentStrokeContainer = new IVMStrokeContainer();
 	}
-	
+
+	/**
+	 * Getter function for the canvas.
+	 *
+	 * @return Canvas object
+	 */
 	public Canvas getCanvas() {
 		return ivmDrawGWTCanvas;
 	}
-	
+
+
+	/**
+	 * Initializes the context2d.
+	 */
 	public void initContext2d() {
 		gIm = ivmDrawGWTCanvas.getContext2d();
 		backgroundgIm = backgroundCanvas.getContext2d();
 	}
-	
+
+	/**
+	 * Function used for the 'auteursomgeving'.
+	 * @param map launchdata
+	 */
 	public void setState(Map<String, Object> map) {
 		if(map == null || map.isEmpty())
 			return;
@@ -134,7 +149,11 @@ public class IVMdrawGWTField {
 		processIVM();
 		paint();
 	}
-	
+
+
+	/**
+	 * Function used for the 'auteursomgeving'.
+	 */
 	public HashMap<String,Object> getState() {
 		HashMap<String,Object> h = new HashMap<String,Object>();
 		
@@ -156,7 +175,8 @@ public class IVMdrawGWTField {
 	public void paint()	{
 		paint(gIm);
 	}
-	
+
+
 	public void paint(Context2d g) {
 		g.clearRect(0, 0, breedte, hoogte);
 
@@ -317,8 +337,13 @@ public class IVMdrawGWTField {
 //		strokeContainerCanvas.setCoordinateSpaceWidth(w);
 //		strokeContainerCanvas.setCoordinateSpaceHeight(h);
 	}
-	
-	
+
+
+	/**
+	 * Call functions when mouseDown event occurs.
+	 * @param eventX
+	 * @param eventY
+	 */
 	public void mouseDownTouchStartAction(int eventX, int eventY) {
 		//if(currentStrokeContainer==null)
 			currentStrokeContainer = new IVMStrokeContainer();
@@ -328,7 +353,14 @@ public class IVMdrawGWTField {
 		formulaStrokePoints.add(new Point(eventX, eventY));
 		paint();
 	}
-	
+
+
+	/**
+	 * Call functions when mouseMove event occurs.
+	 * @param eventX
+	 * @param eventY
+	 * @param shiftPressed
+	 */
 	public void mouseMoveTouchMoveAction(int eventX, int eventY, boolean shiftPressed) {
 //		eventX = (int)(eventX/scale -translation.x);
 //		eventY = (int)(eventY/scale -translation.y);
@@ -350,6 +382,13 @@ public class IVMdrawGWTField {
 	}
 
 
+	/**
+	 * Handle the classification by:
+	 * - adjusting the background colour of the feedbackfield.
+	 * - set the correctGraph Boolean
+	 * - communicating the feedback to the user.
+	 * @param inputPoints
+	 */
 	public void handleClassification(LineData inputPoints) {
 		String feedback;
 		String color = "white";
@@ -383,6 +422,11 @@ public class IVMdrawGWTField {
 	}
 
 
+	/**
+	 * Call functions when mouseUp event occurs (i.e. when line is drawn).
+	 * @param eventX
+	 * @param eventY
+	 */
 	public void mouseUpTouchEndAction(int eventX, int eventY) {
 		LineData inputPoints = new LineData(this.allDrawnPoints);
 		handleClassification(inputPoints);
@@ -439,7 +483,11 @@ public class IVMdrawGWTField {
 			mouseMoveTouchMoveAction(eventX, eventY, shiftPressed);
 			
 		} // onMouseMove
-		
+
+		/**
+		 * MouseUp event functionality should be added to mouseUpTouchEndAction()
+		 * @param e
+		 */
 		public void onMouseUp(MouseUpEvent e)	
 		{
 			int eventX = e.getX();

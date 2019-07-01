@@ -1,3 +1,9 @@
+/*
+ * File:    Matrix.java
+ *
+ * Provides basic linear algebra matrix functionality (e.g. transpose, invert, multiply)
+ */
+
 package fi.ivmdrawgwt.client;
 
 

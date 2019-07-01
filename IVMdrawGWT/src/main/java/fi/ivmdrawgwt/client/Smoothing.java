@@ -1,17 +1,15 @@
+/*
+ * File:    Smoothing.java
+ *
+ * Provides data smoothing functionality.
+ *
+ */
+
 package fi.ivmdrawgwt.client;
 
-import fi.ivmdrawgwt.client.Matrix;
-
-//import javax.sound.sampled.LineEvent;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * Provides data smoothing functionality for matrices.
  */
 public class Smoothing {
-    private static Logger logger = Logger.getLogger("meuk");
 
     /**
      * Calculates the coefficients for the least square solution of the given order.
@@ -45,6 +43,13 @@ public class Smoothing {
     }
 
 
+    /**
+     *
+     * @param xs
+     * @param ys
+     * @param order
+     * @return
+     */
     public static Matrix leastSquaresParams(double[] xs, double[] ys, int order) {
         double[] gauss = complGaussianWindow(xs.length, xs.length/2, 2.0, 100);
 
@@ -57,6 +62,11 @@ public class Smoothing {
     }
 
 
+    /**
+     * Get a Matrix containing the given weights on the diagonals.
+     * @param weights value of the weights
+     * @return Matrix containing weights on diagonals.
+     */
     public static Matrix getWeightMatrix(double[] weights) {
         double[][] wMatrix = new double[weights.length][weights.length];
 
@@ -68,6 +78,14 @@ public class Smoothing {
     }
 
 
+    /**
+     * Creates a complemented normal distribution functions which is used as weights for the weighted least squares.
+     * @param n amount of points
+     * @param mu as defined in the PDF of the normal distribution.
+     * @param std as defined in the PDF of the normal distribution.
+     * @param scale outputvalues are multiplied by this scale
+     * @return
+     */
     public static double[] complGaussianWindow(int n, int mu, double std, int scale) {
         double[] values = new double[n];
 
@@ -81,8 +99,7 @@ public class Smoothing {
 
     /**
      * Uses the given parameters to smooth a dataset by fitting the least square solution.
-     * TODO: original implementation uses linspace between xmin and xmax instead of given x values
-     * @return
+     * @return Matrix of new datapoints
      */
     public static Matrix poly1d(double[] params, double[] xs, int pointAmount) {
         double[] newYs = new double[pointAmount];
@@ -99,11 +116,11 @@ public class Smoothing {
 
     /**
      * Calculate the best fit via least square solution of the given order.
-     * @param xs
-     * @param ys
-     * @param order
-     * @param pointAmount
-     * @return
+     * @param xs x values
+     * @param ys y values
+     * @param order order of the polynomial to be fitted
+     * @param pointAmount amount of new points
+     * @return Matrix of fittedpoints
      */
     public static Matrix leastSquares(double[] xs, double[] ys, int order, int pointAmount) {
         double[] params = leastSquaresParams(xs, ys, order).transpose().values()[0]; // Stores the params in single array.

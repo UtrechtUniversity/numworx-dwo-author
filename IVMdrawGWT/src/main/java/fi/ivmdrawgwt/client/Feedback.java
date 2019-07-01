@@ -1,5 +1,5 @@
 /*
- * File:    Feedback
+ * File:    Feedback.java
  *
  * Creates String values that can be communicated to the user.
  */

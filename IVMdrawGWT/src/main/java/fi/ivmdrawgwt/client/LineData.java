@@ -1,21 +1,25 @@
+/*
+ * File:    LineData.java
+ *
+ * Mainly used for preperation of data, checking validity and converting between coordinate
+ * systems.
+ */
+
 package fi.ivmdrawgwt.client;
 
 import com.google.gwt.canvas.dom.client.Context2d;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
- * TODO: Not sure if still required with Matrix class.
+
  */
 public class LineData {
-    public static Logger logger = Logger.getLogger("linedata");
     private double xsInput[];
     private double ysInput[];
     private int size;
-
 
     /**
      * Constructor to create the LineData object via ArrayList of Point objects
@@ -50,6 +54,11 @@ public class LineData {
     }
 
 
+    /**
+     * Get the max value of a given sequence of double values.
+     * @param values
+     * @return double (max value)
+     */
     public static double maxValue(double[] values) {
         double max = Integer.MIN_VALUE;
 
@@ -63,6 +72,11 @@ public class LineData {
     }
 
 
+    /**
+     * Get the min value of a given sequence of double values.
+     * @param values
+     * @return double (min value)
+     */
     public static double minValue(double[] values) {
         double min = Integer.MAX_VALUE;
 
@@ -97,16 +111,17 @@ public class LineData {
 
     /**
      * Checks whether the input Points are valid x and y values are never decreasing.
-     * TODO: Currently still a simple implementation, should be invariant to inputerrors.
      * @return boolean true of input is valid, false otherwise
      */
     public boolean validInput() {
-//        logger.log(Level.SEVERE, "maxSeq xs: " + maxDecreasingSequence(xsInput));
-//        logger.log(Level.SEVERE, "maxSeq ys: " + maxDecreasingSequence(ysInput));
-
         return (maxDecreasingSequence(xsInput) < 20) && (maxDecreasingSequence(ysInput) < 20);
     }
 
+    /**
+     * Find the largest amout of consecutive values that are decreasing.
+     * @param values
+     * @return the amount of decreasing consecutive values
+     */
     public static int maxDecreasingSequence(double[] values) {
         double prevVal = values[0];
         int maxSequence = 0;
@@ -129,6 +144,10 @@ public class LineData {
         return maxSequence;
     }
 
+    /**
+     * Application has origin positioned at the top-left. This convert the values to a coordinate system
+     * with the origin positioned at the bottom-left.
+     */
     private void switchToCanvasCoordinates() {
         double[] ysCopy = new double[this.ysInput.length];
         int ctr = 0;
@@ -138,30 +157,6 @@ public class LineData {
         }
 
         this.ysInput = ysCopy;
-    }
-
-
-    public void drawnInContext(Context2d context, int contextHeight, int contextWidth) {
-        this.switchToCanvasCoordinates();
-
-        double xAdjust = this.minX();
-        double yAdjust = this.minY();
-
-        double scaleX = contextWidth / (this.maxX() - xAdjust);
-        double scaleY = contextHeight / (this.maxY() - yAdjust);
-
-        context.moveTo((xsInput[0] - xAdjust) * scaleX, (ysInput[0] - yAdjust) * scaleY);
-
-        for (int i = 1; i < this.size; i++) {
-            double newX = (xsInput[i] - xAdjust) * scaleX;
-            double newY = (ysInput[i] - yAdjust) * scaleY;
-
-//            logger.log(Level.SEVERE, "" + newX + " , " + newY);
-            context.lineTo(newX, newY);
-
-        }
-
-        context.stroke();
     }
 
 
