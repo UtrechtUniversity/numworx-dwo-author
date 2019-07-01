@@ -40,6 +40,7 @@ class SegmentIndex extends Segment implements Indexed<Segment> {
 
 	@Override
 	public void changed() {
+		if (delegate == null) return;
 		getP1().setXY(delegate.getX1n(), delegate.getY1n());
 		getP2().setXY(delegate.getX2n(), delegate.getY2n());
 		setChanged();
