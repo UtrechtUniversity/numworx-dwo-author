@@ -184,7 +184,7 @@ public abstract class ToolBoxModule implements Tools {
 	}
 	@Provides @Singleton @IntoMap @IntKey(CIRCLE_WITH_RADIUS) static 
 	Action circle_with_radius(AWTViewer viewer) {
-		return new XXXAction("Cirkel met opgegeven straal", "/fixedcircle.png", new CirkelRadiusHandler(Messages.getString("AddCirkelHandler.0")), viewer);
+		return new XXXAction(Messages.getString("Euclides.104"), "/fixedcircle.png", new CirkelRadiusHandler(Messages.getString("AddCirkelHandler.0")), viewer);
 	}
 	
 /* 		actions.set(DISTANCE,new XXXAction(, viewer));

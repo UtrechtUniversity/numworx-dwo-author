@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner;
 
 import java.awt.Component;
+import java.util.Vector;
 
 import javax.inject.Inject;
 import javax.swing.JOptionPane;
@@ -30,6 +31,21 @@ public class TextHandler extends AbstractTextHandler {
 			formule = formule.substring(2, formule.length()-1);
 			Label l;
 			LabelDelegate toc = getTracker().getRegistered(ToC.TYPE);
+			// find label
+			Vector<Destroyable> lijnen = getModel().getLijnen();
+			for(Destroyable item: lijnen) {
+				if (item instanceof Label) {
+					l = (Label) item;
+					if (l.getRegistered() == toc && l.getDepend()[0] == p) {
+	// if match replace text
+						l.setString(formule);
+						l.notifyObservers();
+						return;
+//						l.destroy();
+//						break;
+					}
+				}
+			}
 			if(toc != null) {
 				Destroyable[] depend = toc.createDepend(1);
 				depend[0] = p;
