@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import nl.numworx.geodefiner.common.math.Expression;
+import nl.numworx.geodefiner.common.math.ToC;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Boog;
@@ -207,6 +208,8 @@ public class CheckObjectList extends Groep implements Observer {
 			if(i.getItem() == observable)
 				return i;
 		}
+		if (observable instanceof Label && ((Label) observable).getRegistered() instanceof ToC)
+			return findCO(((Destroyable) observable).getDepend()[0]);
 		return null;
 	}
 

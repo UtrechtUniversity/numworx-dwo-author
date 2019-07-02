@@ -48,7 +48,8 @@ class SegmentIndex extends Segment implements Indexed<Segment> {
 
 	@Override
 	public void destroy() {
-		delegate.deleteObserver(selector);
+		if (delegate != null)
+			delegate.deleteObserver(selector);
 		super.destroy();
 	}
 
