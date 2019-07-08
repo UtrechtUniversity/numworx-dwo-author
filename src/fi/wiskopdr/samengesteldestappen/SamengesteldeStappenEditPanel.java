@@ -96,12 +96,7 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
         
         currentY += cbHeight + offset;
         
-        stapPositieKnop = new PlusMinKnop(currentX,currentY + 12,16,20,PlusMinKnop.VERTIKAAL);
-        stapPositieKnop.setBackground(new Color(210,210,210));
-        stapPositieKnop.addActionListener(this);
-        add(stapPositieKnop,0);
-
-        currentX += 20;
+        //currentX += 20;
         basisKeuzeVeldenPanel = new JPanel();
         basisKeuzeVeldenPanel.setBounds(currentX,currentY,350,400);
         basisKeuzeVeldenPanel.setLayout(new BorderLayout());
@@ -115,6 +110,12 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
         scrollPaneKeuzeVelden = new JScrollPane(keuzeVeldenPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPaneKeuzeVelden.setBorder(BorderFactory.createEmptyBorder());
         basisKeuzeVeldenPanel.add(scrollPaneKeuzeVelden);
+        
+        stapPositieKnop = new PlusMinKnop(0,12,16,20,PlusMinKnop.VERTIKAAL);
+        stapPositieKnop.setBackground(new Color(210,210,210));
+        stapPositieKnop.addActionListener(this);
+        keuzeVeldenPanel.add(stapPositieKnop,0);
+
         
         maakKeuzeVelden();
 			
@@ -174,12 +175,18 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
     }
     
     private void getStepContent()
-    {   if(stepContents==null)return;
+    {   if(stepContents==null)
+          return;
+        else if(keuzeNr >= stepContents.length)
+          return;
         stepContents[keuzeNr] = antwoordvak.getCompleteText().trim(); 
     }
 	
     private void setStepContent()
-    {   if(stepContents==null)return;
+    {   if(stepContents==null)
+          return;
+        else if(keuzeNr >= stepContents.length)
+          return;
         setStepContent(stepContents[keuzeNr]);    
     }
 	
@@ -202,31 +209,34 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
             if(e.getActionCommand().equals("min") && keuzeNr<aantalKeuzes-1) 
             {   
                 resKeuze = keuzeVelden[keuzeNr].getCompleteText();
+                String resStepContent = antwoordvak.getCompleteText().trim();
+                
                 keuzeVelden[keuzeNr].zetTekst(keuzeVelden[keuzeNr + 1].getCompleteText());
                 keuzeVelden[keuzeNr + 1].zetTekst(resKeuze);
+                
+                stepContents[keuzeNr] = stepContents[keuzeNr + 1];
+                stepContents[keuzeNr + 1] = resStepContent;
+                                
                 keuzeVelden[keuzeNr].layoutTekst();
-                keuzeVelden[keuzeNr + 1].layoutTekst();
+                keuzeNr++;//adjust keuzeNr here to avoid that moveStepFocus (fired from layoutTekst) changes too much 
+                keuzeVelden[keuzeNr].layoutTekst();
                 
-                String resStepContent = antwoordvak.getCompleteText().trim(); 
-                stepContents[keuzeNr] = stepContents[keuzeNr+1];
-                stepContents[keuzeNr+1] = resStepContent;
-                
-                keuzeNr++;
                 tabbladTab.setSelected(keuzeNr+1);
                 stapPositieKnop.setLocation(posX, posY + 55);
             }
             if(e.getActionCommand().equals("plus") && keuzeNr>0) 
             {   resKeuze = keuzeVelden[keuzeNr].getCompleteText();
+                String resStepContent = antwoordvak.getCompleteText().trim();
+            
                 keuzeVelden[keuzeNr].zetTekst(keuzeVelden[keuzeNr - 1].getCompleteText());
                 keuzeVelden[keuzeNr - 1].zetTekst(resKeuze);
-                keuzeVelden[keuzeNr].layoutTekst();
-                keuzeVelden[keuzeNr - 1].layoutTekst();
                 
-                String resStepContent = antwoordvak.getCompleteText().trim();
                 stepContents[keuzeNr] = stepContents[keuzeNr-1];
                 stepContents[keuzeNr-1] = resStepContent;
                 
+                keuzeVelden[keuzeNr].layoutTekst();
                 keuzeNr--;
+                keuzeVelden[keuzeNr].layoutTekst();
                 tabbladTab.setSelected(keuzeNr+1);
                 stapPositieKnop.setLocation(posX, posY - 55);
             }
@@ -237,18 +247,23 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
 	
 	public void aantalKeuzeVeldenAction()
 	{
-	  aantalKeuzes = Math.min(20, Integer.parseInt(aantalKeuzesTF.getText()));
+	  int posX = (int) stapPositieKnop.getLocation().getX();
+      int posY = (int) stapPositieKnop.getLocation().getY();
+      int oldKeuzeNr = keuzeNr;
+      aantalKeuzes = Math.min(20, Integer.parseInt(aantalKeuzesTF.getText()));
       if(aantalKeuzes < keuzeNr + 1)
       {  int verschil = keuzeNr + 1 - aantalKeuzes; 
          keuzeNr = aantalKeuzes - 1;
          setStepContent();
-         
-         int posX = (int) stapPositieKnop.getLocation().getX();
-         int posY = (int) stapPositieKnop.getLocation().getY();
          stapPositieKnop.setLocation(posX, posY - verschil * 55);
       }
       maakKeuzeVelden();
       maakFeedbackVelden();
+      if(aantalKeuzes > keuzeNr)
+      {  keuzeNr = oldKeuzeNr;
+         stapPositieKnop.setLocation(posX, posY);
+         tabbladTab.setSelected(keuzeNr+1);
+      }
 	}
 
 	@Override
@@ -299,7 +314,7 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
           for(int i=0 ; i<aantalKeuzes ; i++)
           {
               nrLabels[i] = new JLabel("" + (i+1), SwingConstants.CENTER);
-              nrLabels[i].setBounds(0,i * (veldHeight + offset), 20, 50);
+              nrLabels[i].setBounds(20,i * (veldHeight + offset), 20, 50);
               nrLabels[i].setOpaque(true);
               nrLabels[i].setBackground(new Color(230,230,230));
               nrLabels[i].setBorder(border);
@@ -316,7 +331,7 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
               else
               {
                 keuzeVelden[i] = new TekstEditorForKeuzeVeld(this, i);
-                keuzeVelden[i].setBounds(20,i*(veldHeight + offset),veldWidth,veldHeight);
+                keuzeVelden[i].setBounds(40,i*(veldHeight + offset),veldWidth - 30,veldHeight);
                 keuzeVeldenPanel.add(keuzeVelden[i],0);
               }
               keuzeVelden[i].addMouseListener(this);
@@ -343,6 +358,8 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
       tabbladTab.setSelected(keuzeNr+1);
       add(tabbladTab,0);
       String[] stepContentsNew = new String[aantalKeuzes];
+      for(int i = 0; i < stepContentsNew.length; i++)
+        stepContentsNew[i] = "";
       for(int i = 0; i < Math.min(aantalKeuzes, stepContents.length); i++)
       {
         stepContentsNew[i] = stepContents[i];
