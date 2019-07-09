@@ -1,6 +1,5 @@
 package fi.euclides.model;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -1110,7 +1109,7 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
         tb.toTrail(key, values);
         trail.put(key, values);
       }
-    } catch (EOFException e) {
+    } catch (IOException e) {
     }
   }
 }
