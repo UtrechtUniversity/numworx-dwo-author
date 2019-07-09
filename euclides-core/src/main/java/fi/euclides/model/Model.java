@@ -1,9 +1,12 @@
 package fi.euclides.model;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Set;
+
 import fi.euclides.util.Hashtable;
 
 import java.util.Vector;
@@ -30,7 +33,7 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 	private Vector<Punt> punten = new Vector<Punt>();
 	private Vector<Destroyable> select = new Vector<Destroyable>();
 	
-	private Hashtable<Destroyable, Vector<Destroyable>> trail = new Hashtable<Destroyable, Vector<Destroyable>>();
+	private final Hashtable<Destroyable, Vector<Destroyable>> trail = new Hashtable<Destroyable, Vector<Destroyable>>();
 	private Vector<Pair<Observable, Observer>> delay = new Vector<Pair<Observable, Observer>>();
 	
 	public synchronized void executeDelay() {
@@ -1086,5 +1089,28 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
   public void setTrailBuilder(TrailBuilder tb) {
     if (tb == null) tb = this;
     this.tb = tb;
+  }
+  
+  public void writeTrail(Codec codec) throws IOException {
+    // vector + vectors
+    Set<Destroyable> set = trail.keySet();
+    Vector<Destroyable> keys = tb.fromTrail(set);
+    codec.writeVector(keys);
+    for (Destroyable key : keys) {
+      codec.writeVector(trail.get(key));
+    }
+  }
+  
+  @SuppressWarnings("unchecked")
+  public void readTrail(Codec codec) throws IOException {
+    try {
+      Vector<Destroyable> keys = codec.readVector();
+      for(Destroyable key: keys) {
+        Vector<Destroyable> values = codec.readVector();
+        tb.toTrail(key, values);
+        trail.put(key, values);
+      }
+    } catch (EOFException e) {
+    }
   }
 }

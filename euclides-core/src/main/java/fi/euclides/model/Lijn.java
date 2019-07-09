@@ -3,7 +3,6 @@ package fi.euclides.model;
 import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.algo.PointOnLine;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
