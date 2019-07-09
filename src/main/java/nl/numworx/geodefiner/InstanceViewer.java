@@ -18,6 +18,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collections;
 import java.util.Set;
+import java.util.Vector;
 import java.util.WeakHashMap;
 
 import javax.inject.Inject;
@@ -875,6 +876,11 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
     public Destroyable trail(Destroyable d) {
       Destroyable copy = d.trail();
       if (copy == null) return copy;
+      copyTrailAttributes(d, copy);
+      return copy;
+    }
+
+    public void copyTrailAttributes(Destroyable d, Destroyable copy) {
       DefaultAdapter adapter = DefaultAdapter.getDefault(copy);
       adapter.put(Float.class, d.adapt(Float.class)); // point size
       adapter.put(Stroke.class, d.adapt(Stroke.class)); //line width/style
@@ -888,6 +894,11 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
         c = new Color(r,g,b,a).brighter();
         adapter.put(c);
       }
-      return copy;
     }
+
+    @Override
+    public void toTrail(Destroyable key, Vector<Destroyable> values) {
+      for(Destroyable copy: values) copyTrailAttributes(key, copy);
+    }
+    
 }
