@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.common;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,15 +11,10 @@ import java.util.Vector;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import fi.euclides.event.NameMapper;
 import fi.euclides.event.Tracker;
-import fi.euclides.model.Codec;
 import fi.euclides.model.Destroyable;
-import fi.euclides.model.Lijn;
 import fi.euclides.model.Model;
-import fi.euclides.model.Punt;
-import fi.euclides.model.math.Numbers;
 import fi.euclides.persist.DataInput;
 import fi.euclides.persist.DataOutput;
-import fi.euclides.proof.LabelDelegate;
 
 public class Memento extends fi.euclides.persist.Memento implements DataInput, DataOutput {
 	
@@ -76,6 +72,7 @@ public class Memento extends fi.euclides.persist.Memento implements DataInput, D
 
 	@Override
 	public int readInt() throws IOException {
+	    if (cursor >= olist.size()) throw new EOFException();
 		return olist.getInt(cursor++);
 	}
 
@@ -133,6 +130,8 @@ public class Memento extends fi.euclides.persist.Memento implements DataInput, D
 		m.getPunten().clear();
 		m.getLijnen().clear();
 		super.readModel(tracker);
+		m.readTrail(this); // Optional, throws and catches EOFException
+
 		int f = m.getIndex(); // bepaal hoogste index;
 		if (!m.getLijnen().isEmpty()) f = Math.max(f, m.getLijnen().lastElement().getIndex());
 		if (!m.getPunten().isEmpty()) f = Math.max(f, m.getPunten().lastElement().getIndex());
@@ -140,4 +139,10 @@ public class Memento extends fi.euclides.persist.Memento implements DataInput, D
 		return m;
 	}
 
+  @Override
+  public void writeModel(Model model) throws IOException {
+    super.writeModel(model);
+    model.writeTrail(this);
+  }
+	
 }

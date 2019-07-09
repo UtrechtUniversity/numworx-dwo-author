@@ -343,10 +343,13 @@ public abstract class Instance /*implements Observer*/ {
 		install(configuration);
 	}
 
+	protected boolean hasTrail;
 	protected void install(ObjectMap configuration) {
+	    hasTrail = false;
 		if(configuration != null) {
 			for( String name : configuration.keySet()) {
 				ObjectMap value = configuration.getObjectMap(name);
+				if(!hasTrail &&value.getBoolean("trail", false)) hasTrail = true;
 				Destroyable d = viewer.getMapper().fromString(name);
 				if(d == null) continue;
 				UIModel<?, ?> model = uiModelFactory.build(d);
@@ -526,7 +529,7 @@ public abstract class Instance /*implements Observer*/ {
 		if(launchData != null) {
 		
 		ObjectList toolbox = launchData.getObjectList("toolbox");
-		if(toolbox != null && toolbox.size() > 0) {
+		if(toolbox != null && toolbox.size() > 0 || hasTrail) {
 			List modelState = getModelState();
 			if(modelState != null) map.put("model", modelState);
 		}
@@ -597,7 +600,7 @@ public abstract class Instance /*implements Observer*/ {
 	      }
 	      viewer.getModel().setIndex(max);
 	    }
-		if(list == null && (toolbox == null || toolbox.size() == 0) ) 
+		if(list == null || (toolbox == null || toolbox.size() == 0) && !hasTrail) 
 			return;
 		Memento m = new Memento(viewer);
 		m.prepare(resetItems);
