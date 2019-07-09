@@ -72,7 +72,7 @@ public class Memento extends fi.euclides.persist.Memento implements DataInput, D
 
 	@Override
 	public int readInt() throws IOException {
-	    if (cursor >= olist.size()) throw new EOFException();
+	    if (cursor >= olist.size()) throw new IOException("EOF");
 		return olist.getInt(cursor++);
 	}
 
