@@ -656,7 +656,7 @@ public abstract class Instance /*implements Observer*/ {
 		setValues(this.state.getObjectMap("values"));
 		setPositions(this.state.getObjectMap("positions"));
 		viewer.getModel().executeDelay(); // essentieel.
-		setModelState(this.state.getObjectList("model"), this.state.getObjectList("toolbox"));
+		setModelState(this.state.getObjectList("model"), this.launchData.getObjectList("toolbox"));
 		if(this.state.containsKey("nagekeken"))
 			setNagekeken(this.state.getBoolean("nagekeken"));
 		if(this.state.containsKey("errorCount"))
