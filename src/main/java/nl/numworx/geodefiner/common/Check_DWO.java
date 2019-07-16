@@ -21,8 +21,9 @@ public class Check_DWO extends Observable implements Observer {
 	private Tracker tracker;
 	private int maxScore, score;
 	private boolean status;
-	private boolean check, extern;
+	private boolean check, extern, logOption;
 	private Destroyable target;
+	private String logID;
 	
 	
 	public boolean isCheck() {
@@ -129,6 +130,34 @@ public class Check_DWO extends Observable implements Observer {
 	public void setExtern(boolean extern) {
 		this.extern = extern;
 	}
+
+  /**
+   * @return the logOption
+   */
+  public boolean isLogOption() {
+    return logOption;
+  }
+
+  /**
+   * @param logOption the logOption to set
+   */
+  public void setLogOption(boolean logOption) {
+    this.logOption = logOption;
+  }
+
+  /**
+   * @return the logID
+   */
+  public String getLogID() {
+    return logID;
+  }
+
+  /**
+   * @param logID the logID to set
+   */
+  public void setLogID(String logID) {
+    this.logID = logID;
+  }
 
 
 }

@@ -313,6 +313,8 @@ public abstract class Instance /*implements Observer*/ {
 		{
 			checkDWO = new Check_DWO(viewer);
 			checkDWO.fromMap(launchData.getObjectMap("checkDWO"));
+			checkDWO.setLogID(launchData.getString("logID"));
+			checkDWO.setLogOption(launchData.getBoolean("logOption", false));
 			fetchScore();
 			return checkDWO.isCheck();
 		} else 
