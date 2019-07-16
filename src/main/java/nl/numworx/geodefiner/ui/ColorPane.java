@@ -6,6 +6,8 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+
+import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.ui.color.ColorChooser;
 import fi.euclides.util.Messages;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
@@ -15,7 +17,7 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 	T model;
 	ColorChooser  chooser;
 	FormuleEditor  visibilityEditor;
-	JCheckBox trails;
+	JCheckBox trails, log;
 
 	public String toString() {
 		return "*";
@@ -32,6 +34,7 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		visibilityEditor.setHeader(false);
 		visibilityEditor.setPreferredSize(new Dimension(240,40));
 		trails = new JCheckBox(Messages.getString("Euclides.44"), model.trail);
+		log = new JCheckBox("log", model.log);
 		addComponents();
 	}
 
@@ -39,6 +42,8 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		Box hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("ColorPane.1")));
 		hbox.add(Box.createGlue());
+		if (GeoDefiner.isExperimental) 
+		  hbox.add(log);
 		hbox.add(trails);
 		add(hbox);
 		add(visibilityEditor);
@@ -54,6 +59,7 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		model.color = chooser.getColor();
 		model.visibility.setString ( visibilityEditor.formuleVak.toString()) ;
 		model.trail = trails.isSelected();
+		model.log = log.isSelected();
 		model.install();
 	}
 
