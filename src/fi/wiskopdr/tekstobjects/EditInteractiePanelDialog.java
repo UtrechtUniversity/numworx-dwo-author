@@ -718,7 +718,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			} 
 			else if(this.setNr==TekstInteractiePanelVak.AppletsSetNr) {			
 				soortInteractiePanel = set[widgetSelection[selectNr]];
-				System.out.println("wasHere: nr="+soortInteractiePanel);
+				//System.out.println("wasHere: nr="+soortInteractiePanel);
 			}
 			else
 			    soortInteractiePanel = set[selectNr];

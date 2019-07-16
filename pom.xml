@@ -471,15 +471,15 @@
 		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>fi.euclides</groupId>
-				<artifactId>euclides-core</artifactId>
-				<version>0.0.3-SNAPSHOT</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+<!-- 	<dependencyManagement> -->
+<!-- 		<dependencies> -->
+<!-- 			<dependency> -->
+<!-- 				<groupId>fi.euclides</groupId> -->
+<!-- 				<artifactId>euclides-core</artifactId> -->
+<!-- 				<version>0.0.5-SNAPSHOT</version> -->
+<!-- 			</dependency> -->
+<!-- 		</dependencies> -->
+<!-- 	</dependencyManagement> -->
 	<profiles>
 		<profile>
 			<id>devel</id>
@@ -492,4 +492,16 @@
 		</profile>
 	
 	</profiles>
+  <distributionManagement>
+    <repository>
+      <id>release</id>
+      <name>libs-release</name>
+      <url>https://repos.dwo.nl/artifactory/libs-release-local</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>libs-snapshot</name>
+      <url>https://repos.dwo.nl/artifactory/libs-snapshot-local</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>

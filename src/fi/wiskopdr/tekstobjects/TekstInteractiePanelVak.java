@@ -59,6 +59,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 
+import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.CBookWidgetIF;
@@ -106,7 +107,7 @@ import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
 import fi.wiskopdr.symbolen.SymboolPanel;
 import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 
-public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListener, InteractiePanelContainerIF, MouseListener, MouseMotionListener, KeyListener
+public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListener, InteractiePanelContainerIF, MouseListener, MouseMotionListener, KeyListener, CBookContext
 {
 	
 	private static final Logger LOG = Logger.getLogger(TekstInteractiePanelVak.class.getName());
@@ -1259,6 +1260,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 					//interactiePanel.setBounds(0,0,getSize().width, getSize().height);
 					if(!(interactiePanel instanceof JButton))((Component)interactiePanel).setBackground(getBackground());
 					interactiePanel.addActionListener(this);
+					setContext(interactiePanel);
 					//add((Component)interactiePanel,0);
 					break;
 				}
@@ -1861,6 +1863,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 					interactiePanel.setBounds(0,0,getSize().width, getSize().height);
 					if(!(interactiePanel instanceof JButton))((Component)interactiePanel).setBackground(getBackground());
 					interactiePanel.addActionListener(this);
+					setContext(interactiePanel);
 					//add((Component)interactiePanel,0);
 					break;
 				}
@@ -3106,5 +3109,22 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	public void setPopup(boolean popup) {
 		this.popup = popup;
 	}
+
+  @Override
+  public Object getProperty(String key) {
+    if(WidgetBridge.LESSON_MODE.equals(key))
+      return WiskOpdr.getLessonMode();
+    return null;
+  }
+  
+  private void setContext(Object o ) {
+    if (o instanceof CBookAware) {
+      CBookAware a = (CBookAware) o;
+      try {
+        a.setCBookContext(this); // can generate "No such method"
+      } catch(Throwable t) {
+      }
+    }
+  }
 }
 

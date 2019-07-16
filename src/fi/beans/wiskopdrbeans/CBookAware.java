@@ -1,5 +1,6 @@
 package fi.beans.wiskopdrbeans;
 
+import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEventListener;
 
 /**
@@ -21,4 +22,6 @@ public interface CBookAware extends CBookEventListener {
 	
 	String CBA_PREFIX = "CBA_";
 
+	default void setCBookContext(CBookContext context) {} 
+	
 }
