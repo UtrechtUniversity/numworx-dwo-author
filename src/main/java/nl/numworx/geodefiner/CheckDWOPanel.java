@@ -1,21 +1,15 @@
 package nl.numworx.geodefiner;
 
 import java.awt.Dimension;
-import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyVetoException;
-import java.beans.VetoableChangeListener;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,6 +18,7 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -43,8 +38,9 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 
 	private static final Integer DEFAULT_SCORE = Integer.valueOf(10);
 	private JFormattedTextField score;
-	private JCheckBox checkDWO, extern;
+	private JCheckBox checkDWO, extern, logCB;
 	private FormuleEditor formule;
+	private JTextField logID;
 	private Tracker tracker;
 	
 	@Inject @Named("checkBtn") JButton checkBtn;
@@ -100,7 +96,7 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 		formule.setMaximumSize(new Dimension(Short.MAX_VALUE, 50));
 		formule.formuleVak.addActionListener(this);
 		if(WiskOpdr.objectives!=null)
-			objBtn = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString);
+			objBtn = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
 		add(checkDWO);
 		add(extern);
 		Box hbox = Box.createHorizontalBox();
@@ -109,6 +105,28 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 		add(new JLabel("CheckDWO = "));
 		add(formule);
 		if(objBtn != null) add(objBtn);
+		
+		hbox = Box.createHorizontalBox();
+		logCB = new JCheckBox("Log");
+		logID = new JTextField(15);
+		
+		Dimension max = logID.getPreferredSize();
+		logID.setMaximumSize(max);
+		max.width = logCB.getPreferredSize().width;
+		logCB.setMinimumSize(max);
+		logCB.addActionListener(ev -> {logID.setVisible(logCB.isSelected());
+		                               logID.invalidate();
+		                               this.validate();
+		                              });
+		hbox.add(logCB);
+		hbox.add(logID);
+		hbox.add(Box.createHorizontalGlue());
+		hbox.validate();
+		hbox.setMinimumSize(hbox.getPreferredSize());
+		hbox.setPreferredSize(hbox.getPreferredSize());
+        logID.setVisible(logCB.isSelected());
+		
+		add(hbox);
 		add(Box.createGlue());
 //// track focuslost
 //		VetoableChangeListener verifier = new VetoableChangeListener() {
@@ -138,6 +156,20 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 		}
 	}
 	
+	
+	public boolean isLogOption() {
+	  return logCB.isSelected();
+	}
+	public void setLogOption(boolean b) {
+	  logCB.setSelected(b);
+	  logID.setVisible(b);
+	}
+	public String getLogID() {
+	  return logID.getText();
+	}
+	public void setLogID(String id) {
+	  logID.setText(id);
+	}
 	
 	public void setChoices(boolean[][] choices) {
 		if(objBtn != null)

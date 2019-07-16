@@ -51,6 +51,7 @@ import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.CBookWidgetInstanceIF;
 import org.cbook.cbookif.Constants;
+import org.cbook.cbookif.LessonMode;
 import org.cbook.cbookif.SuccessStatus;
 
 import dagger.Lazy;
@@ -78,10 +79,12 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	private JPanel panel = new JPanel(new BorderLayout());
 	JPanel south = new JPanel(new FlowLayout(FlowLayout.TRAILING, 2, 2));
 	public final JButton checkBtn = new JButton(Messages.getString("kijkNa"));
+	public final JButton logBtn = new JButton(); 
 	JLabel  checkLabel = new JLabel();
 
 	@Inject CBookEventHandler handler;
 	@Inject Provider<KijkNaAction> actionProvider;
+	@Inject Provider<LogAction> logProvider;
 	@Inject void setViewer(InstanceViewer viewer) {
 		this.viewer = viewer;
 	}
@@ -139,18 +142,22 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		panel.add(toolbox, BorderLayout.NORTH);
 		checkBtn.setVisible(false);
 		checkLabel.setVisible(false);
+		logBtn.setVisible(false);
 		getViewer().statusLabel.setVisible(false);
+		south.add(logBtn);
 		south.add(checkBtn);
 		south.add(checkLabel);
 		south.setOpaque(false);
-		if(true ||GeoDefiner.isExperimental) {
+		{
 			JPanel south2 = new JPanel(new BorderLayout());
 			south2.add(south, BorderLayout.LINE_END);
 			south2.add(getViewer().statusLabel, BorderLayout.CENTER);
 			south2.setOpaque(false);
 			panel.add(south2, BorderLayout.SOUTH);
-		} else 
-			panel.add(south, BorderLayout.SOUTH);
+		}
+		if(GeoDefiner.isExperimental) {
+		  
+		}
 	}
 
 	public Instance() {
@@ -259,7 +266,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		this.mode = mode;
 		if(mode == AssessmentMode.ZELFTOETS||mode == AssessmentMode.EINDTOETS) checkBtn.setVisible(false);
 	}
-
+	
+	LessonMode lessonMode = LessonMode.normal;
+	
 	public void stop() {
 		checkObjects.stop();
 		started = false;
@@ -339,6 +348,12 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 				action.addPropertyChangeListener(this);
 			}
 			checkBtn.setVisible(!checkDWO.isExtern());
+			if (checkDWO.isLogOption() && lessonMode == LessonMode.review)
+			{
+			  logBtn.setAction(logProvider.get());
+			  logBtn.setVisible(true);
+			  logBtn.invalidate();
+			}
 			checkLabel.setIcon(action);
 			checkLabel.setVisible(true);
 			checkDWO.addObserver(action);
@@ -348,7 +363,14 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			panel.validate();
 			return true;
 		}
-		checkDWO = new Check_DWO(viewer); // dummy
+		if (checkDWO == null) 
+		  checkDWO = new Check_DWO(viewer); // dummy
+        if (checkDWO.isLogOption() && lessonMode == LessonMode.review)
+        {
+          logBtn.setAction(logProvider.get());
+          logBtn.setVisible(true);
+          logBtn.invalidate();
+        }
 		panel.validate();
 		return false;
 	}
@@ -391,7 +413,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			toolbox.removeAll();
 			toolbox.setVisible(false);
 		}		
-		statusLabel.getParent().setVisible(statusLabel.isVisible()||checkBtn.isVisible()||checkLabel.isVisible());
+		statusLabel.getParent().setVisible(statusLabel.isVisible()||checkBtn.isVisible()||checkLabel.isVisible()||logBtn.isVisible());
 	}
 
 	public ToolboxPanel getToolboxPanel() {

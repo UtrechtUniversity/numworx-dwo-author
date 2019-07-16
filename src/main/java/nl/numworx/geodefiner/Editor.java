@@ -205,6 +205,11 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		int div = split.getDividerLocation();
 		if(div>0)launchdata.put("split", div);
 		launchdata.put("command", command.toString());
+		if (checkDWO.isLogOption()) {
+		  launchdata.put("logOption", Boolean.TRUE);
+		  launchdata.put("logID", checkDWO.getLogID());
+		}
+		
 		return launchdata;
 	}
 
@@ -277,6 +282,12 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 			command.fromString(map.getString("command"));
 		if(map.containsKey("order"))
 			definition.fromList(map.getStringList("order"));
+		if (map.containsKey("logOption")) 
+		  checkDWO.setLogOption(map.getBoolean("logOption"));
+		if (map.containsKey("logID"))
+		  checkDWO.setLogID(map.getString("logID"));
+		
+		
 	}
 
 	public void start() {

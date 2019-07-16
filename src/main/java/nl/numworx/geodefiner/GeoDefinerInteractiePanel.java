@@ -19,6 +19,7 @@ import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.Constants;
+import org.cbook.cbookif.LessonMode;
 import org.cbook.cbookif.SuccessStatus;
 
 import fi.beans.wiskopdrbeans.CBookAware;
@@ -199,6 +200,9 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 	}
 
 	public Object getProperty(String key) {
+	    if (context != null) {
+	      return context.getProperty(key);
+	    }
 		return null;
 	}
 
@@ -273,4 +277,17 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 		
 	}
 
+  private CBookContext context = null;
+
+  @Override
+  public void setCBookContext(CBookContext context) {
+    this.context = context;
+    Object o = context.getProperty("lessonMode");
+    if (o instanceof LessonMode) {
+      instance.lessonMode = (LessonMode) o;
+    }
+  }
+
+	
+	
 }
