@@ -129,6 +129,13 @@ public class HitTester implements Visitor, SegmentVisitor  {
 		this.lasty = lasty;		
 	}
 
+	public double getX() {
+	  return lastx;
+	}
+	public double getY() {
+	  return lasty;
+	}
+	
 	public void visitSegment(Segment s) {
 		double maxX = s.getX1();
 		double minX = s.getX2();
