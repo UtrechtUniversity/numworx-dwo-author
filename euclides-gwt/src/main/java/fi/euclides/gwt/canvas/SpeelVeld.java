@@ -10,7 +10,6 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.TextAlign;
 import com.google.gwt.canvas.dom.client.Context2d.TextBaseline;
 import com.google.gwt.canvas.dom.client.CssColor;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -28,7 +27,6 @@ import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.gwt.DelayMouse;
 import fi.euclides.gwt.GWTMouseHandler;
 import fi.euclides.gwt.GWTMultiTouchHandler;
-import fi.euclides.gwt.GWTTouchHandler;
 import fi.euclides.gwt.ViewerWidget;
 
 public class SpeelVeld extends AbstractViewer implements ViewerWidget {
@@ -309,7 +307,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	
 	Map<Integer, TrackerContext> contexts = new HashMap<>();
 	
-	TrackerContext getCtx(int id) {
+	protected TrackerContext getCtx(int id) {
 	  TrackerContext c = contexts.get(id);
 	  if(c == null) {
 	      c = new SpeelVeldContext(id);
