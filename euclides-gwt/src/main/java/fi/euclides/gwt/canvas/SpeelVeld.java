@@ -83,6 +83,12 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
       this.adapter = adapter;
     }
 
+    @Override
+    public String toString() {
+      // TODO Auto-generated method stub
+      return "Finger" + id;
+    }
+
   }
 
   private final CssColor black = CssColor.make(0,0,0);
