@@ -84,7 +84,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	@Inject CBookEventHandler handler;
 	@Inject Provider<KijkNaAction> actionProvider;
-	@Inject Provider<LogAction> logProvider;
+	@Inject Lazy<LogAction> logProvider;
 	@Inject void setViewer(InstanceViewer viewer) {
 		this.viewer = viewer;
 	}
@@ -285,6 +285,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		{
 			fetchScore();
 			action.feedback();
+		}
+		if (checkDWO.isLogOption() && lessonMode == LessonMode.review) {
+			
+			logProvider.get().setLogState(state);
+			
 		}
 	}
 
