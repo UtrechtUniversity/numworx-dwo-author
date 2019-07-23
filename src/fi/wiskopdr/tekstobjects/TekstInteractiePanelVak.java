@@ -3114,6 +3114,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
   public Object getProperty(String key) {
     if(WidgetBridge.LESSON_MODE.equals(key))
       return WiskOpdr.getLessonMode();
+    if(WidgetBridge.LEARNER_ID.equals(key))
+      return WiskOpdr.getLearner_id();
+    if(WidgetBridge.LEARNER_NAME.equals(key))
+      return WiskOpdr.getLearnerName();
     return null;
   }
   
