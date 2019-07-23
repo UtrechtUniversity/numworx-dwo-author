@@ -33,6 +33,7 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Model;
 import fi.euclides.proof.Const;
 import fi.euclides.proof.LabelValue;
+import fi.euclides.util.DefaultAdapter;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
@@ -286,6 +287,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
     if (o instanceof LessonMode) {
       instance.lessonMode = (LessonMode) o;
     }
+    DefaultAdapter.getDefault(instance.getViewer()).put(CBookContext.class, context);
   }
 
 	
