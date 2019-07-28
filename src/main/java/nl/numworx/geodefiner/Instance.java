@@ -356,6 +356,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			if (checkDWO.isLogOption() && lessonMode == LessonMode.review)
 			{
 			  logBtn.setAction(logProvider.get());
+	          logProvider.get().setLogID(checkDWO.getLogID());
 			  logBtn.setVisible(true);
 			  logBtn.invalidate();
 			}
@@ -372,6 +373,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		  checkDWO = new Check_DWO(viewer); // dummy
         if (checkDWO.isLogOption() && lessonMode == LessonMode.review)
         {
+          logProvider.get().setLogID(checkDWO.getLogID());
           logBtn.setAction(logProvider.get());
           logBtn.setVisible(true);
           logBtn.invalidate();

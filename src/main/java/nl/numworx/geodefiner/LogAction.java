@@ -43,6 +43,8 @@ public class LogAction extends AbstractAction implements ClipboardOwner {
   
   CBookContext context;
   Object message = "nothing";
+
+  private String logID;
   
   @Inject LogAction(Tracker tracker) {
     super("Log");
@@ -84,7 +86,9 @@ public class LogAction extends AbstractAction implements ClipboardOwner {
     
   }
   
-  
+public void setLogID(String id) {
+  this.logID = id;
+}
   
 public void setLogState(Map<String, ?> state) {
 	ObjectMap wrap = JSONUtilities.wrapMap(state);
@@ -112,7 +116,8 @@ public void setLogState(Map<String, ?> state) {
 	d.width = Math.min(400, d.width);
 	pane.setPreferredSize(d);
 	pnl.add(pane,BorderLayout.CENTER);
-	JLabel title = new JLabel( context.getProperty("learner_name").toString());
+	String name = context.getProperty("learner_name").toString();
+    JLabel title = new JLabel( name  + ":" + logID);
 	pnl.add(title, BorderLayout.NORTH);
 	JButton copy = new JButton("copy");
 	pnl.add(copy, BorderLayout.SOUTH);
