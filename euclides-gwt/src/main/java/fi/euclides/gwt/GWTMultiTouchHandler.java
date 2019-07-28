@@ -24,6 +24,49 @@ public class GWTMultiTouchHandler
   final private static Logger LOG = Logger.getLogger("GWTMultiTouchHandler");
   private MouseConsumer viewer;
 
+  private static class CTX implements MouseContext {
+    private final Element e;
+    private final Touch   t;
+    private final long stamp;
+    private CTX(Element e, Touch t, long stamp) {
+      this.e = e;
+      this.t = t;
+      this.stamp = stamp;
+    }
+    @Override
+    public int getID() {
+      return t.getIdentifier();
+    }
+    @Override
+    public int getX() {
+      return t.getRelativeX(e);
+    }
+    @Override
+    public int getY() {
+      return t.getRelativeY(e);
+    }
+    @Override
+    public int getScreenX() {
+      return t.getScreenX();
+    }
+    @Override
+    public int getScreenY() {
+      return t.getScreenY();
+    }
+    @Override
+    public int getClientX() {
+      return t.getClientX();
+    }
+    @Override
+    public int getClientY() {
+      return t.getClientY();
+    }
+    @Override
+    public long getTimestamp() {
+      return stamp;
+    }
+  }
+  
   /**
    * 
    */
@@ -37,6 +80,7 @@ public class GWTMultiTouchHandler
   @Override
   public void onTouchStart(TouchStartEvent event) {
     Element e = event.getRelativeElement();
+    long stamp = System.currentTimeMillis();
     JsArray<Touch> touches = event.getChangedTouches();
     int len = touches.length();
     for (int i = 0; i < len; i++) {
@@ -45,7 +89,7 @@ public class GWTMultiTouchHandler
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
       LOG.finest("touch start " + x + "," + y + "," + id);
-      viewer.processMouseDown(x, y, id);
+      viewer.processMouseDown(new CTX(e, touch, stamp));
     }
     event.preventDefault();
     event.stopPropagation();
@@ -54,6 +98,7 @@ public class GWTMultiTouchHandler
   @Override
   public void onTouchMove(TouchMoveEvent event) {
     Element e = event.getRelativeElement();
+    long stamp = System.currentTimeMillis();
     JsArray<Touch> touches = event.getChangedTouches();
     int len = touches.length();
     for (int i = 0; i < len; i++) {
@@ -62,7 +107,7 @@ public class GWTMultiTouchHandler
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
       LOG.finest("touch move " + x + "," + y + "," + id);
-      viewer.processMouseDrag(x, y, id);
+      viewer.processMouseDrag(new CTX(e, touch, stamp));
     }
     event.preventDefault();
     event.stopPropagation();
@@ -71,6 +116,7 @@ public class GWTMultiTouchHandler
   @Override
   public void onTouchEnd(TouchEndEvent event) {
     Element e = event.getRelativeElement();
+    long stamp = System.currentTimeMillis();
     JsArray<Touch> touches = event.getChangedTouches();
     int len = touches.length();
     for (int i = 0; i < len; i++) {
@@ -79,7 +125,7 @@ public class GWTMultiTouchHandler
       int y = touch.getRelativeY(e);
       int id = touch.getIdentifier();
       LOG.finest("touch end " + x + "," + y + "," + id);
-      viewer.processMouseUp(x, y, id);
+      viewer.processMouseUp(new CTX(e, touch, stamp));
     }
     event.preventDefault();
     event.stopPropagation();
@@ -88,15 +134,12 @@ public class GWTMultiTouchHandler
   @Override
   public void onTouchCancel(TouchCancelEvent event) {
     Element e = event.getRelativeElement();
+    long stamp = System.currentTimeMillis();
     JsArray<Touch> touches = event.getChangedTouches();
     int len = touches.length();
     for (int i = 0; i < len; i++) {
       Touch touch = touches.get(i);
-      int x = touch.getRelativeX(e);
-      int y = touch.getRelativeY(e);
-      int id = touch.getIdentifier();
-      LOG.fine("touch cancel " + x + "," + y + "," + id);
-      viewer.processMouseUp(x, y, id);
+       viewer.processMouseUp(new CTX(e, touch, stamp));
     }
     event.preventDefault();
     event.stopPropagation();

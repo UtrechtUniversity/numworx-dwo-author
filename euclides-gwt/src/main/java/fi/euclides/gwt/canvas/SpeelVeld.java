@@ -23,10 +23,12 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Adapter;
+import fi.euclides.util.DefaultAdapter;
 import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.gwt.DelayMouse;
 import fi.euclides.gwt.GWTMouseHandler;
 import fi.euclides.gwt.GWTMultiTouchHandler;
+import fi.euclides.gwt.MouseContext;
 import fi.euclides.gwt.ViewerWidget;
 
 public class SpeelVeld extends AbstractViewer implements ViewerWidget {
@@ -327,8 +329,30 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		moved = false;
 		paint();
 	}
+		
+  @Override
+  public void processMouseDown(MouseContext ctx) {
+	  DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, ctx);
+	  ViewerWidget.super.processMouseDown(ctx);
+      DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, null);
+  }
 
-	@Override
+  @Override
+  public void processMouseUp(MouseContext ctx) {
+    DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, ctx);
+    ViewerWidget.super.processMouseUp(ctx);
+    DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, null);
+  }
+
+  @Override
+  public void processMouseDrag(MouseContext ctx) {
+    DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, ctx);
+    ViewerWidget.super.processMouseDrag(ctx);
+    DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, null);
+
+  }
+
+  @Override
 	public void setPointerHandler(EventHandler eventHandler) {
 		handler = eventHandler;
 	}

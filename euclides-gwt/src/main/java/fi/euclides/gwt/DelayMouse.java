@@ -91,4 +91,66 @@ public class DelayMouse implements MouseConsumer {
 
   }
 
+  @Override
+  public void processMouseDown(MouseContext ctx) {
+    Context c = new Context(ctx.getX(),ctx.getY());
+    this.ctx.put(ctx.getID(), c);
+    view.processMouseDown(ctx);
+  }
+
+  static class MouseContextDelegate implements MouseContext {
+    private final MouseContext delegate;
+    private final Context ctx;
+    private MouseContextDelegate(MouseContext delegate, Context ctx) {
+      this.delegate = delegate;
+      this.ctx = ctx;
+    }
+    public int getID() {
+      return delegate.getID();
+    }
+    public int getScreenX() {
+      return delegate.getScreenX();
+    }
+    public int getScreenY() {
+      return delegate.getScreenY();
+    }
+    public int getClientX() {
+      return delegate.getClientX();
+    }
+    public int getClientY() {
+      return delegate.getClientY();
+    }
+    public long getTimestamp() {
+      return delegate.getTimestamp();
+    }
+    @Override
+    public int getX() {
+      return ctx.x0;
+    }
+    @Override
+    public int getY() {
+      return ctx.y0;
+    }
+    
+  }
+  
+  @Override
+  public void processMouseUp(MouseContext ctx) {
+    Context c = this.ctx.remove(ctx.getID());
+    //if(c != null) LOG.fine("up, time = " + (System.currentTimeMillis()-c.time));
+    if(!c.moved(ctx.getX(), ctx.getY()))
+    {   
+      ctx = new MouseContextDelegate(ctx, c);
+    }
+    view.processMouseUp(ctx);
+  }
+
+  @Override
+  public void processMouseDrag(MouseContext ctx) {
+    Context c = this.ctx.get(ctx.getID());
+    if (c.moved(ctx.getX(),ctx.getY())) {
+      view.processMouseDrag(ctx);
+    }
+  }
+
 }
