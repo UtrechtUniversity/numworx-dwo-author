@@ -37,6 +37,9 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 
 import fi.wiskopdr.ObjectiveChoices;
+import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.WiskOpdrPanel;
+import fi.wiskopdr.tekstobjects.TekstImageVak;
 
 public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices, TreeSelectionListener {
   private class LeafNodeEditor extends AbstractCellEditor implements TreeCellEditor {
@@ -90,6 +93,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
                  if (stopCellEditing()) {
                      fireEditingStopped();
                      //model.nodeStructureChanged(root);
+                     repaint();
                  }
              }  
          };
@@ -169,6 +173,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   JLabel title;
   JTextArea description;
   final StudentModel studentModel;
+  static final String WISKOPDR_SIG = "H4sIAAAAAA";
 
   public StudentModelChoicePanel(StudentModel studentModel) {
     super(null);
@@ -198,20 +203,29 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     add(rightBox);
     
     title = new JLabel(v.toString());
-    description = new JTextArea(v.getDescription(), 10, 30);
+    String descr = v.getDescription();
+    description = new JTextArea(descr, 10, 30);
     description.setLineWrap(true);
     description.setWrapStyleWord(true);
     description.setEditable(false);
+    scroll = new JScrollPane(description);
+    if (descr.startsWith(WISKOPDR_SIG))
+    {
+      WiskOpdrPanel panel = getWiskOpdrPanel(descr);
+      scroll.setViewportView(panel);
+    }
+    
     
     rightBox.add(title);
     rightBox.add(Box.createVerticalStrut(10));
-    rightBox.add(new JScrollPane(description));
+    rightBox.add(scroll);
     
     tree.addTreeSelectionListener(this);
   }
 
   private boolean[][] choices;
   private List<String> ids;
+  private JScrollPane scroll;
   
   public List<String> getObjectives() {
     return ids;
@@ -305,15 +319,38 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       if (path == null) {
         title.setText("");
         description.setText("");
+        scroll.setViewportView(description);
         return;
       }
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
       Object u = node.getUserObject();
       title.setText(u.toString());
       if (u instanceof Node) {
-        description.setText(((Node) u).getDescription());
-      } else 
+        String descr = ((Node) u).getDescription();
+        if (descr == null) descr = "";
+        if (descr.startsWith(WISKOPDR_SIG)) {
+          WiskOpdrPanel panel = getWiskOpdrPanel(descr);
+          scroll.setViewportView(panel);
+        } else {
+          description.setText(descr);
+          scroll.setViewportView(description);
+        }
+      } else {
         description.setText("");
+        scroll.setViewportView(description);
+      }
     }   
+    repaint();
+  }
+
+  private WiskOpdrPanel getWiskOpdrPanel(String descr) {
+    Object save = TekstImageVak.getImageMap();
+    try {
+      WiskOpdrPanel panel = WiskOpdr.getWiskOpdrPanel(descr, WiskOpdr.language);
+      panel.setBackground(Color.WHITE);
+      return panel;
+    } finally {
+      TekstImageVak.setImageMap(save);
+    }
   }
 }
