@@ -6,6 +6,7 @@ public class Text_nl extends java.util.ListResourceBundle
         static final Object [] [] contents =
         {
         	{ 	"vaas" , "Vaas" },
+        	{ 	"geenVaas" , "Geen vaas" },
         	{	"feedbackVisibleCBLabel", "Feedback zichtbaar"},
         	{	"CBA_action.correct", "Actie: correct antwoord"},
 			{	"CBA_action.false", "Actie: fout antwoord"},

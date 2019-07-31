@@ -23,6 +23,7 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel {
 //		add(label);
 		    
 		vaasKeuze = new JComboBox();
+		vaasKeuze.addItem(IVMdraw.rb.getString("geenVaas"));
 		vaasKeuze.addItem(IVMdraw.rb.getString("vaas") + " 1");
 		vaasKeuze.addItem(IVMdraw.rb.getString("vaas") + " 2");
 		vaasKeuze.addItem(IVMdraw.rb.getString("vaas") + " 3");
@@ -36,7 +37,7 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel {
 
 	public Hashtable getEditState() {
 		Hashtable h = ivmDrawPanel.getEditState();
-		h.put("vaasNummer", new Integer(vaasKeuze.getSelectedIndex()+1));
+		h.put("vaasNummer", new Integer(vaasKeuze.getSelectedIndex()));
 		h.put("feedbackVisible", new Boolean(feedbackVisibleCB.isSelected()));
 		return h;
 		
@@ -48,7 +49,7 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel {
 		if(h.containsKey("vaasNummer")) vaasNummer = ((Integer)h.get("vaasNummer")).intValue();
 		if(h.containsKey("feedbackVisible")) feedbackVisible = ((Boolean)h.get("feedbackVisible")).booleanValue();
 	
-		vaasKeuze.setSelectedIndex(vaasNummer-1);
+		vaasKeuze.setSelectedIndex(vaasNummer);
 		feedbackVisibleCB.setSelected(feedbackVisible);
 	}
 

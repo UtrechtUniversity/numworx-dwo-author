@@ -7,6 +7,7 @@ public class Text_en extends java.util.ListResourceBundle {
 
 	static final Object[][] contents = { 
 			{ "vaas", "Jar" }, 
+			{ "geenVaas" , "No Jar" },
 			{ "feedbackVisibleCBLabel", "Feedback visible" },
 			{ "CBA_action.correct", "Action: correct answer" }, 
 			{ "CBA_action.false", "Action: incorrect answer" },
