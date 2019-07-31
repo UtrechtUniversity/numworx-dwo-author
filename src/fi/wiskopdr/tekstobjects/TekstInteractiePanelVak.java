@@ -401,7 +401,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"Heks",
 		"GeoDefiner",
 		"JavaLogoWeb3d",
-		"IVM Draw",
+		"IVM Draw [test]",
 		"[test] " + WiskOpdr.rb.getString("samengesteldeStappenIpLabel")
 	};
 	
