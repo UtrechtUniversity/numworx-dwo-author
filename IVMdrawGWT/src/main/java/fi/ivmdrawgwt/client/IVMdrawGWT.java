@@ -37,10 +37,10 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		
 	DockLayoutPanel dlp;
 
-	static int breedte = 700;
+	static int breedte = 900;
 	static int hoogte = 550;
 	
-	int bottomHeight = 32;
+	int bottomHeight = 0;
 	int topHeight = 52;
 	int leftOffset = 5;
 	int topOffset = 5;
@@ -59,7 +59,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	IVMfeedbackGWTField ivmFeedbackGWTField;
 	
 	OpdrNavIF comRoot;
-	int vaasNummer = -1;
+	int vaasNummer = 0;
 	boolean feedbackVisible = false;
 	
 	boolean correctGraph = false;
@@ -84,7 +84,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		label.getElement().getStyle().setHeight(21.5, Style.Unit.EM);
 
 		mainPanel.add(dlp);
-		mainPanel.add(label);
+		//mainPanel.add(label);
 
 		mainPanel.setCellWidth(label, "250");
 		mainPanel.setBorderWidth(1);
@@ -112,14 +112,15 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 		//this.randomVarNamen = randomVarNamen;
 		//this.randomVarWaarden = randomVarWaarden;
-		Map<String,Object> launchState = new HashMap<String,Object>();
+		Map<String,Object> launchData = new HashMap<String,Object>();
 		
 		if (h.containsKey("breedte"))
 			breedte = h.getInt("breedte");
 		if (h.containsKey("hoogte"))
 			hoogte = h.getInt("hoogte");
 		if (h.containsKey("interactiePanelLaunchState"))
-			launchState = h.getMap("interactiePanelLaunchState");
+			launchData = h.getMap("interactiePanelLaunchState");
+		
 
 		ivmDrawGWTClientBundle = GWT.create(IVMdrawGWTClientBundle.class);
 		ivmDrawCss = ivmDrawGWTClientBundle.getKladjeGWTCSS();
@@ -127,15 +128,15 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 		dlp = new DockLayoutPanel(Style.Unit.PX);
 		dlp.addStyleName(ivmDrawCss.dock());
-		dlp.setPixelSize(breedte-200,hoogte);
+		dlp.setPixelSize(breedte,hoogte);
 		
 		mainPanel.add(dlp);
-		mainPanel.add(label);
+		//mainPanel.add(label);
 
-//		RootPanel.get().add(mainPanel);
+		RootPanel.get().add(mainPanel);
 		ivmFeedbackGWTField = new IVMfeedbackGWTField(this);
 
-		init(breedte, hoogte, launchState, randomVarWaarden);
+		init(breedte, hoogte, launchData, randomVarWaarden);
 	}
 
 	public IVMdrawGWT() {
@@ -146,15 +147,15 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	public void init(int width, int height, Map<String, Object> launchData,	Map<String, Number> values) {
 		//initWidget(new Label("IVMdraw"));
 		
-		this.breedte = width;
-		this.hoogte = height;
+		breedte = width;
+		hoogte = height;
 		
 		dlp.setSize("" + breedte + "px", "" + hoogte + "px");
 
 		bottomPanel = new LayoutPanel();
 		bottomPanel.addStyleName(ivmDrawCss.bottom());
 		
-		dlp.addSouth(bottomPanel, bottomHeight);
+		//dlp.addSouth(bottomPanel, bottomHeight);
 		
 		topPanel = new LayoutPanel();
 		topPanel.addStyleName(ivmDrawCss.top());
@@ -188,12 +189,12 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		this.ivmDrawGWTField.correctVaasNummer = vaasNummer;
 		label.setVisible(feedbackVisible);
 		
-		bottomPanel.add(new Label("Vaasnummer = "+vaasNummer));
+		//bottomPanel.add(new Label("Vaasnummer = "+vaasNummer));
 
 		//makeBottom();
 		
 		dlp.forceLayout();
-		bottomPanel.forceLayout();
+		//bottomPanel.forceLayout();
 		
 		ivmDrawGWTField.paint();
 

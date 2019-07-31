@@ -181,20 +181,35 @@ public class IVMdrawGWTField {
 		g.clearRect(0, 0, breedte, hoogte);
 
 		/* Draws the labels for the coordinate system */
+		int xAsLengte = correctVaasNummer==0 ? breedte-60 : (breedte-60)/2;
+		int yAsLengte = hoogte-60;
+		
+		g.setLineWidth(1.5d);
 		g.beginPath();
-		g.moveTo(20, 20);
-		g.lineTo(20, 480);
-		g.lineTo(310, 480);
-		g.setFont("15px arial");
-		g.fillText("Hoogte water", 7, 12);
-		g.fillText("Hoeveelheid water", 200, 495);
+		g.moveTo(30, 30);
+		g.lineTo(25, 35);
+		g.moveTo(30, 30);
+		g.lineTo(35, 35);
+		g.moveTo(30, 30);
+		g.lineTo(30, 30 + yAsLengte);
+		g.lineTo(30 + xAsLengte, 30 + yAsLengte);
+		g.lineTo(25 + xAsLengte, 25 + yAsLengte);
+		g.lineTo(30 + xAsLengte, 30 + yAsLengte);
+		g.lineTo(25 + xAsLengte, 35 + yAsLengte);
+		if(correctVaasNummer!=0) {
+			g.setFont("15px arial");
+			g.fillText("Hoogte water", 7, 17);
+			g.fillText("Hoeveelheid water", xAsLengte/2, 50+yAsLengte);
+		}
 		g.stroke();
 		g.closePath();
 
-		g.setStrokeStyle(CssColor.make(80, 80, 80));
-		jarStrokeContainer.draw(g);
+		if(correctVaasNummer!=0) {
+			g.setStrokeStyle(CssColor.make(80, 80, 80));
+			jarStrokeContainer.draw(g);
+		}
 		
-		g.setLineWidth(1.0d);
+		g.setLineWidth(1.5d);
 		currentStrokeContainer.draw(g);
 		if (formulaStrokePoints.size() == 1)
 		{	Point p =  formulaStrokePoints.get(0);
@@ -227,7 +242,7 @@ public class IVMdrawGWTField {
 		ArrayList<DoublePoint> pointsLeft = new ArrayList<DoublePoint>();
 		ArrayList<DoublePoint> pointsRight = new ArrayList<DoublePoint>();
 		ArrayList<DoublePoint> pointsBottom = new ArrayList<DoublePoint>();
-		double vaasX = 500;
+		double vaasX = 3*breedte/4;
 		double volumeUnit = 20*lastStroke.getParsePointsbox().height;
 
 		ArrayList<DoublePoint> points = new ArrayList<DoublePoint>();
