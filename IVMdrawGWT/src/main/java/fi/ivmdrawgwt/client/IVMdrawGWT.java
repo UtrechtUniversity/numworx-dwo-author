@@ -86,11 +86,11 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		mainPanel.add(dlp);
 		//mainPanel.add(label);
 
-		mainPanel.setCellWidth(label, "250");
-		mainPanel.setBorderWidth(1);
-		mainPanel.setSpacing(5);
+		//mainPanel.setCellWidth(label, "250");
+		//mainPanel.setBorderWidth(1);
+		//mainPanel.setSpacing(5);
 
-		label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
+		//label.getElement().getStyle().setTextAlign(Style.TextAlign.CENTER);
 
 		RootLayoutPanel.get().add(mainPanel);
 		RootLayoutPanel.get().addStyleName(ivmDrawCss.root());
