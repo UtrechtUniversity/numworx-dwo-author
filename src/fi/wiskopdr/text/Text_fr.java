@@ -460,6 +460,18 @@ public class Text_fr extends java.util.ListResourceBundle
                 {"TVEP_visible", "Visible"},
                 {"TVEP_styles", "Styles"},
                 {"TVEP_templateMode", "Template mode"},
+                {"TVEP_noStyleChoiceLabel", "No Style"},
+                {"TVEP_styleSettingsLabel", "Settings"},
+                {"TVEP_stylesLabel", "Style:"},
+                {"TVEP_editStylesButton", "Edit"},
+                
+                //Style Manager
+                {"SM_titelLabel", "Manage Styles"},
+                {"SM_addStyleButton", "Save settings as new style"},
+                {"SM_saveStyleButton", "Save style"},
+                {"SM_removeStyleButton", "Remove style"},
+                {"SM_closeButton", "Close"},
+                {"SM_addStyleAction", "Give style name"},
                                 
                                 //GeogebraEditPanel
                                 {"GEP_bewaarOptie" , "Option Sauvegarder"},

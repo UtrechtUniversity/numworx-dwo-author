@@ -200,7 +200,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private int defaultIpHeight = 450;
 	private int defaultIpWidth = 680; //hier stond 270
 	private int defaultOpWidth = 280;
-	private int defaultOpHeight= 700;
+	private int defaultOpHeight= 720;
 	
 	private JCheckBox logCB;
 	private JTextField logIDField;
@@ -300,7 +300,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		cp = new JPanel();
 		cp.setLayout(null);
 		cp.setOpaque(false);
-		cp.setBounds(0,0,1000,740);
+		cp.setBounds(0,0,1000,760);
 		//add(cp);
 		
 		randZichtbaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_randZichtbaar"), 10,28,110,20, randZichtbaar, layoutOptionsPanel);
@@ -387,24 +387,24 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		cp.add(kopFunctieLabel);
 		
 		rondingLabel = new JLabel(WiskOpdr.rb.getString("TVEP_rondingHoeken"));
-		rondingLabel.setBounds(10,125,150,20);
+		rondingLabel.setBounds(10,125,140,20);
 		rondingLabel.setFont(ifFont);
 		layoutOptionsPanel.add(rondingLabel);
 		
 		rondingTF = new JTextField("0");
-		rondingTF.setBounds(170,125,30,20);
+		rondingTF.setBounds(140,125,30,20);
 		rondingTF.setFont(ifFont);
 		rondingTF.addActionListener(this);
 		rondingTF.addFocusListener(this);
 		layoutOptionsPanel.add(rondingTF);
 		
 		hoekLabel = new JLabel(WiskOpdr.rb.getString("TVEP_rotatieHoek"));
-		hoekLabel.setBounds(10,150,150,20);
+		hoekLabel.setBounds(10,150,140,20);
 		hoekLabel.setFont(ifFont);
 		layoutOptionsPanel.add(hoekLabel);
 		
 		hoekTF = new JTextField("0");
-		hoekTF.setBounds(170,150,30,20);
+		hoekTF.setBounds(140,150,30,20);
 		hoekTF.setFont(ifFont);
 		hoekTF.addActionListener(this);
 		hoekTF.addFocusListener(this);
@@ -559,7 +559,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		fontButton = new JButton(WiskOpdr.rb.getString("TVEP_fontType"));
 		fontButton.addActionListener(this);
 		fontButton.setFont(ifFont);
-		fontButton.setBounds(180,100,80,20);
+		fontButton.setBounds(180,100,85,20);
+		fontButton.setMargin(new Insets(0, 0, 0, 0));
 		fontButton.setVisible(false);
 		layoutOptionsPanel.add(fontButton);
 		
@@ -712,7 +713,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		kiesStyleChoice = new JComboBox();
 		kiesStyleChoice.setFont(ifFont);
-		kiesStyleChoice.addItem("No style");
+		kiesStyleChoice.addItem(WiskOpdr.rb.getString("TVEP_noStyleChoiceLabel"));
 		if(TekstVakPanel.styles != null)
 			for (String key : TekstVakPanel.styles.keySet()) 
 			{	kiesStyleChoice.addItem(key);
@@ -731,21 +732,21 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		kiesStyleChoice.addActionListener(styleManager);
 		
-		styleSettingsLabel = new JLabel("Style settings");
+		styleSettingsLabel = new JLabel(WiskOpdr.rb.getString("TVEP_styleSettingsLabel"));
 		styleSettingsLabel.setBounds(0,2,250,25);
 		styleSettingsLabel.setHorizontalAlignment(JLabel.CENTER);
 		styleSettingsLabel.setFont(titelFont);
 		styleSettingsLabel.setVisible(false);
 		layoutOptionsPanel.add(styleSettingsLabel);
 		
-		stylesLabel = new JLabel("Styles:");
-		stylesLabel.setBounds(0,2,50,25);
+		stylesLabel = new JLabel(WiskOpdr.rb.getString("TVEP_stylesLabel"));
+		stylesLabel.setBounds(10,2,50,25);
 		stylesLabel.setFont(titelFont);
 		stylesLabel.setVisible(manageStyles);
 		layoutOptionsPanel.add(stylesLabel);
 		
-		editStylesButton = new JButton("edit");
-		editStylesButton.setBounds(210,4,50,20);
+		editStylesButton = new JButton(WiskOpdr.rb.getString("TVEP_editStylesButton"));
+		editStylesButton.setBounds(210,4,55,20);
 		editStylesButton.setMargin(new Insets(0, 0, 0, 0));
 		editStylesButton.addActionListener(this);
 		editStylesButton.setFont(ifFont);

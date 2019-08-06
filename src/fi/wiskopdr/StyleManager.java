@@ -40,34 +40,34 @@ public class StyleManager extends JPanel implements ActionListener {
 		setLayout(null);
 		setOpaque(true);
 		
-		titelLabel = new JLabel("Manage styles");
+		titelLabel = new JLabel(WiskOpdr.rb.getString("SM_titelLabel"));
 		titelLabel.setBounds(10,5,250,25);
 		titelLabel.setHorizontalAlignment(JLabel.CENTER);
 		titelLabel.setFont(titelFont);
 		add(titelLabel);
 		
-		addStyleButton = new JButton("Save settings as new style");
+		addStyleButton = new JButton(WiskOpdr.rb.getString("SM_addStyleButton"));
 		addStyleButton.addActionListener(this);
 		addStyleButton.setFont(ifFont);
 		addStyleButton.setBounds(10,65,250,20);
 		addStyleButton.setVisible(true);
 		add(addStyleButton);
 		
-		saveStyleButton = new JButton("Save Style");
+		saveStyleButton = new JButton(WiskOpdr.rb.getString("SM_saveStyleButton"));
 		saveStyleButton.addActionListener(this);
 		saveStyleButton.setFont(ifFont);
 		saveStyleButton.setBounds(10,90,120,20);
 		saveStyleButton.setVisible(true);
 		add(saveStyleButton);
 		
-		removeStyleButton = new JButton("Remove Style");
+		removeStyleButton = new JButton(WiskOpdr.rb.getString("SM_removeStyleButton"));
 		removeStyleButton.addActionListener(this);
 		removeStyleButton.setFont(ifFont);
 		removeStyleButton.setBounds(140,90,120,20);
 		removeStyleButton.setVisible(true);
 		add(removeStyleButton);
 		
-		closeButton = new JButton("Close");
+		closeButton = new JButton(WiskOpdr.rb.getString("SM_closeButton"));
 		closeButton.addActionListener(this);
 		//closeButton.setFont(ifFont);
 		closeButton.setBounds(75,120,120,20);
@@ -134,7 +134,7 @@ public class StyleManager extends JPanel implements ActionListener {
 		}
 		
 		private void addStyleAction() {
-			String s = (String)JOptionPane.showInputDialog(null,null,"Give style name",JOptionPane.PLAIN_MESSAGE);
+			String s = (String)JOptionPane.showInputDialog(null,null,WiskOpdr.rb.getString("SM_addStyleAction"),JOptionPane.PLAIN_MESSAGE);
 			if(s!=null && !"".equals(s))
 			{	styleChoice.addItem(s);
 				styleChoice.setSelectedItem(s);
