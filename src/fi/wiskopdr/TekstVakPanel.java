@@ -1421,6 +1421,15 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		//setTableBounds();
 		//zetMaat();
 	}
+	
+	public void setSelected (boolean b) {
+	  for (int i = 0; i < aantalRijen; i++)
+      {   for (int j = 0; j < aantalKolommen; j++)
+          {
+              tekstVakken[i][j].setSelected(b);
+          }
+      }
+	}
 
 	public void initializeTableBounds(int b, int h)
 	{

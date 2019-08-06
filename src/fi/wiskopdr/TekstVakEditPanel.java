@@ -269,7 +269,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		optionsPanel = new JPanel();
 		optionsPanel.setLayout(null);
 		optionsPanel.setBounds(defaultIpWidth+20,20,defaultOpWidth,defaultOpHeight);
-		add(optionsPanel);
+		add(optionsPanel,0);
 		
 		tabbedPane = new JTabbedPane();
 		tabbedPane.setBackground(getBackground());				
