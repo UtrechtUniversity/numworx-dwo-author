@@ -115,19 +115,19 @@ public class FontChooser extends JDialog {
 
     underlineCheckBox.setMnemonic('u');
     underlineCheckBox.setToolTipText("Underline font");
-    p.add(underlineCheckBox);
+    //p.add(underlineCheckBox);
 
     strikethroughCheckBox.setMnemonic('r');
     strikethroughCheckBox.setToolTipText("Strikethrough font");
-    p.add(strikethroughCheckBox);
+    //p.add(strikethroughCheckBox);
 
     subscriptCheckBox.setMnemonic('t');
     subscriptCheckBox.setToolTipText("Subscript font");
-    p.add(subscriptCheckBox);
+    //p.add(subscriptCheckBox);
 
     superscriptCheckBox.setMnemonic('p');
     superscriptCheckBox.setToolTipText("Superscript font");
-    p.add(superscriptCheckBox);
+    //p.add(superscriptCheckBox);
     getContentPane().add(p);
 
     getContentPane().add(Box.createVerticalStrut(5));
@@ -144,7 +144,7 @@ public class FontChooser extends JDialog {
     ToolTipManager.sharedInstance().registerComponent(colorComboBox);
     p.add(colorComboBox);
     p.add(Box.createHorizontalStrut(10));
-    getContentPane().add(p);
+    //getContentPane().add(p);
 
     p = new JPanel(new BorderLayout());
     p.setBorder(new TitledBorder(new EtchedBorder(), "Preview"));
@@ -211,7 +211,12 @@ public class FontChooser extends JDialog {
 	
 	  FontChooser dlg = new FontChooser(owner);
 	  SimpleAttributeSet a = new SimpleAttributeSet();
-	  StyleConstants.setFontFamily(a, oldFont.getName());
+	  String nameF = oldFont.getName();
+	  if(nameF.indexOf('.')>0)
+	    nameF = nameF.substring(0,nameF.indexOf('.'));
+	  StyleConstants.setFontFamily(a, nameF);
+	  System.out.println(oldFont.getName());
+	  System.out.println(nameF);
 	  StyleConstants.setFontSize(a, oldFont.getSize());
 	  StyleConstants.setBold(a,oldFont.getStyle()==Font.BOLD || oldFont.getStyle()==Font.BOLD+Font.ITALIC );
 	  StyleConstants.setItalic(a,oldFont.getStyle()==Font.ITALIC || oldFont.getStyle()==Font.BOLD+Font.ITALIC);
