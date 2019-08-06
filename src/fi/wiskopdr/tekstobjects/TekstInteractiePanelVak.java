@@ -2329,6 +2329,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public void setSelected(boolean b)
 	{	selected = b;
+	    if(!b && interactiePanel instanceof TekstVakPanel)
+	        ((TekstVakPanel)interactiePanel).setSelected(false);
 	}
 	
 	public boolean isSelected()

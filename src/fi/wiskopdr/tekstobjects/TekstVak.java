@@ -903,7 +903,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	
 	public void zetActieveRegel(TekstRegel fr)
 	{	if(actieveRegel!=null)
-		{	actieveRegel.deSelect();
+		{	
+	        actieveRegel.deSelect();
 			actieveRegel.knipper(false);
 		}
 		actieveRegel = fr;
@@ -1138,6 +1139,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		{   setCaretPosition(regels[aantalRegels-1],regels[aantalRegels-1].getComponentCount()-1);
 		}
 		zetTekstFocus();
+		getXWidgetManager().getBasisVak().setSelected(false);
 	}
 	
 	public void mouseClicked(MouseEvent e){;}
@@ -1499,6 +1501,10 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	
 	public void setSelected(boolean b)
   	{	
+	    if(!b)
+          for(int i=0 ; i<aantalRegels; i++)
+          {   if(regels[i]!=null && !regels[i].dragging)regels[i].setSelected(b);
+          }
 	}
 	
 	public void neemFocus(String richting, TekstElement fe)

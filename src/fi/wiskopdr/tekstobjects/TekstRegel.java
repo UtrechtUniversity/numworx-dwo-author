@@ -646,11 +646,17 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 			if(e.getSource()instanceof FormuleRegel)setCaretPosition(e.getX());
 			if(e.getSource()instanceof TekstInteractiePanelVak)setCaretPosition(e.getX());
 		}
-	
+		if(!dragging) {
+		    getTekstVak().getXWidgetManager().getBasisVak().setSelected(false);
+		}
 	}
 	
+	boolean dragging = false;
+	
+	
 	public void mouseDragged(MouseEvent e)
-	{	boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
+	{	dragging = true;
+	    boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
 		if(selectable && templateEditable)
 		{	/*if(e.getX()<0 || e.getX()>getSize().width || e.getY()<0 || e.getY()>getSize().height)
 			{	terug = false;
@@ -668,11 +674,16 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 			if(Math.abs(startx-e.getX())<3 && Math.abs(starty-e.getY())<3)return;
 			if(e.getY()>getSize().height)
 			{	TekstRegel volg = tekstVak.geefVolgendeRegel(this);
-				if(volg==null) return;
+			    
+				if(volg==null) {
+				  dragging = false;
+				  return;
+				}
 				setSelection(startx,this.getSize().width);
 				MouseEvent en = new MouseEvent(volg,e.getID(),e.getWhen(),e.getModifiers(), 0,0,1,false);
 				MouseEvent ed = new MouseEvent(volg,e.getID(),e.getWhen(),e.getModifiers(), e.getX(),e.getY()-getSize().height,1,false);
 				
+				volg.dragging = true;
 				if(eersteKeer)
 				{	volg.mousePressed(en);
 					eersteKeer=false;
@@ -687,6 +698,8 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				MouseEvent en = new MouseEvent(vorig,e.getID(),e.getWhen(),e.getModifiers(), vorig.getWidth(),vorig.getHeight(),1,false);
 				MouseEvent ed = new MouseEvent(vorig,e.getID(),e.getWhen(),e.getModifiers(), e.getX(),e.getY()+vorig.getHeight(),1,false);
 				
+				dragging = false;
+				vorig.dragging = true;
 				if(eersteKeer)
 				{	vorig.mousePressed(en);
 					eersteKeer=false;
@@ -703,7 +716,9 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				else setSelection(startx,e.getX());
                 tekstVak.requestFocus();
 			}
+			
 		}
+		dragging = false;
 	}
 		
 	public void mouseClicked(MouseEvent e)
@@ -724,6 +739,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	
 	public void mouseReleased(MouseEvent e)
 	{	eersteKeer=true;
+	   dragging = false;
 		startx = 0;
 		starty = 0;
 	}
