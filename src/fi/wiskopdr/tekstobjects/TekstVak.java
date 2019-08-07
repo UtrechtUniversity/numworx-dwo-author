@@ -1281,9 +1281,9 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             	produceAction("resize");
             } 
 			else if (kc == KeyEvent.VK_BACK_SPACE)
-            {   if (caretPos > 0 )
-                {   boolean b = deleteSelection();
-            		if(!b)
+            {   boolean b = deleteSelection();  
+                if (caretPos > 0 )
+                {   if(!b)
             		{	addState();
             			tekst.deleteCharAt(caretPos-1);
                 		caretPos--;
