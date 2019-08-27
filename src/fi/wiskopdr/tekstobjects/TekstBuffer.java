@@ -161,7 +161,7 @@ public class TekstBuffer
 	}
 	
 	public void insertImageVak(int pos, TekstImageVak plv) {
-		insert(pos+1, '\n');
+		//insert(pos+1, '\n');
 		int formNr = geefAantalFormules(pos);
 		tekstDeelVakken.insertElementAt(plv,formNr);
 	}

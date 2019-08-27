@@ -265,6 +265,14 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 				repaint();
 				WiskOpdr.setLaunchDataChanged();
 			}
+			if("cancel".equals(e.getActionCommand())) 
+	        {
+	            setSelected(true);
+	            tekstVak.layoutTekst();
+	            tekstVak.deleteSelection();
+	            tekstVak.requestFocus();
+	            
+	        }
 		}
 
 		if(imageDialog!=null)
