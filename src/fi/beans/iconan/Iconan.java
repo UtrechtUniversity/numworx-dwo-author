@@ -65,6 +65,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	int previewWidth = 32, previewHeight = 32;
 	private JPanel previewCanvas = new JPanel(new BorderLayout()); { previewCanvas.setBorder(BorderFactory.createEtchedBorder()); }
 	private Applet applet;
+	private boolean emptyStart = true;
 	
 	class MyListRenderer extends DefaultListCellRenderer implements Icon {
 
@@ -168,6 +169,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 					namemap.put(selected + "/h", new Integer(heightField.getText()));
 				} else {
 					selected = "";
+					al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "cancel"));
+					return;
 				}				
 				al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, selected));
 			}
@@ -175,7 +178,11 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		{
 			if(al != null)
 			{
-				al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
+			  String selected = (String) list.getSelectedValue();
+              if(null == selected || "".equals(selected) || emptyStart)
+				al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "cancel"));
+              else
+                al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
 			}				
 		} else if(e.getSource()==getComponent())
 		{
@@ -929,6 +936,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	}
 
 	public void select(String imagename) {
+	    emptyStart = "EMPTY".equals(imagename);
 		rebuildList();
 		ListModel<String> model = list.getModel();
 		for(int i = 0; i < model.getSize(); i++)
