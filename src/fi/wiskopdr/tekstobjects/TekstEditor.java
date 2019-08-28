@@ -24,6 +24,7 @@ import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.wiskopdr.templatecomponents.TComponentGenerator;
 import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -404,6 +405,14 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 				else {
 					if(componentItemList.get(i).startsWith("separator")) {
 						componentChoice.addSeparator();
+					}
+					else if(componentItemList.get(i).startsWith("STND")) {
+					  String type = componentItemList.get(i).substring(4);
+					  String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
+					  componentItems[teller] = new JMenuItem(new TComponentAction(typeName,type));
+					  componentKeys[teller] = "DWOCOMP_STND"+type;
+                      componentChoice.add(componentItems[teller]);
+					  teller++;
 					}
 					else {
 						componentItems[teller] = new JMenuItem(componentItemList.get(i));
