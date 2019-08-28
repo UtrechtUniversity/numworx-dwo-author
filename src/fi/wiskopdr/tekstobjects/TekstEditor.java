@@ -418,10 +418,12 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		} 
 		
 		String[] cTypes = TComponentGeneratorFactory.getComponentTypeList();
+		String[] cTypeNames = TComponentGeneratorFactory.getComponentTypeNameList();
 		standardComponentItems = new JMenuItem[cTypes.length];
 		for(int i=0 ; i<cTypes.length ; i++) {
-			standardComponentItems[i] = new JMenuItem(cTypes[i]);
-			standardComponentItems[i].addActionListener(this);
+			//standardComponentItems[i] = new JMenuItem(cTypes[i]);new JMenuItem()
+			//standardComponentItems[i].addActionListener(this);
+		  standardComponentItems[i] = new JMenuItem(new TComponentAction(cTypeNames[i], cTypes[i]));
 			standardComponentChoice.add(standardComponentItems[i]);
 		}
 		
@@ -1568,5 +1570,16 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(localizedCmd==null)
 			return cmd;
 		return localizedCmd;
+	}
+	
+	public class TComponentAction extends AbstractAction {
+      public TComponentAction(String text, String desc) {
+          super(text, null);
+          putValue("TCOMP_KEY", desc);
+      }
+      public void actionPerformed(ActionEvent e) {
+          TComponentGeneratorFactory.getComponentGenerator((String)getValue("TCOMP_KEY")).generateComponent( tekstVakActief);
+        
+      }
 	}
 }
