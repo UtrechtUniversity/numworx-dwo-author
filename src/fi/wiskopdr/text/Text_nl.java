@@ -865,6 +865,34 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "LinkType_CLIENT", "applicatie window"},
 				{ "LinkType_TOP", "top window"},
 				
+				{ "TCOMP_list" , "Opsomming"},
+				{ "TCOMP_list_rowCount" , "Aantal items"},
+				{ "TCOMP_list_numberType" , "Type opsommingsteken"},
+				{ "TCOMP_list_chooseType" , "Kies type"},
+				{ "TCOMP_list_tabWidth" , "Inspringing"},
+				{ "TCOMP_list_rowSpace" , "Afstand items"},
+				
+				{ "TCOMP_multip" , "Meerkeuzeopdracht"},
+				{ "TCOMP_multip_rowCount" , "Aantal keuzes"},
+                { "TCOMP_multip_numberType" , "Type opsommingsteken"},
+                { "TCOMP_multip_chooseType" , "Kies type"},
+                { "TCOMP_multip_tabWidth" , "Inspringing"},
+                { "TCOMP_multip_rowSpace" , "Afstand items"},
+				{ "TCOMP_multip_hasPrefix" , "Opsommingsteken"},
+				
+				{ "TCOMP_drag" , "Sleepopdracht"},
+				{ "TCOMP_drag_rowCount" , "Aantal sleepobjecten"},
+				{ "TCOMP_drag_itemWidth" , "Breedte sleepobject"},
+				{ "TCOMP_drag_itemHeight" , "Hoogte sleepobject"},
+				{ "TCOMP_drag_rowSpace" , "Afstand items"},
+				{ "TCOMP_drag_descrWidth" , "Breedte tekst"},
+				
+				{ "TCOMP_edit" , "Bewerk"},
+				{ "TCOMP_addItem" , "Item toevoegen"},
+				{ "TCOMP_removeItem" , "Item verwijderen"},
+				{ "TCOMP_decompose" , "Decompose"},
+				
+				
 		};
 }
 

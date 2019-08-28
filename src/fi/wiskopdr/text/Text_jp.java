@@ -1,5 +1,7 @@
 package fi.wiskopdr.text;
 
+import fi.wiskopdr.tekstobjects.ShareAction;
+
 public class Text_jp extends java.util.ListResourceBundle
 {
         public Object [] [] getContents() { return contents; }
@@ -787,6 +789,55 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"ONS_timeready", "Ready in time"},
 				{"ONS_timesChecked", "{0} times checked"},
 				{"ONS_1timeChecked", "first time checked"},
+				
+				// shareAction
+                { ShareAction.SHARE_KEY, "Shared key" },
+                { ShareAction.SHARE_MAP, "Shared components" },
+// tablet opties
+                { "Tablet keyboard", "Tablet keyboard" },
+                { "Onderbouw-keyboard", "Middle school keyboard" },
+                { "Algebra-keyboard", "Algebra keyboard" },
+                { "Gonio-keyboard", "Gonio keyboard" },
+                { "Statistiek-keyboard", "Statistics keyboard" },
+                { "Meetkunde-keyboard", "Geometry keyboard" },
+                { "Tablet handschriftset", "Tablet handwriting" },
+                { "Basis", "Basic" },
+                { "Uitgebreid", "Extended" },
+                
+                { "needsPremium", "For this activity you need a premium subscription."},
+
+                { "LinkType_FALSE", "default (new window)" },
+                { "LinkType_TRUE", "embedded" },
+                { "LinkType_PLAYER", "own window"},
+                { "LinkType_CLIENT", "parent window"},
+                { "LinkType_TOP", "top window"},
+                
+                { "TCOMP_list" , "List"},
+                { "TCOMP_list_rowCount" , "Number of items"},
+                { "TCOMP_list_numberType" , "Item number type"},
+                { "TCOMP_list_chooseType" , "Choose type"},
+                { "TCOMP_list_tabWidth" , "Tab width"},
+                { "TCOMP_list_rowSpace" , "Space between items"},
+                
+                { "TCOMP_multip" , "Multiple Choice"},
+                { "TCOMP_multip_rowCount" , "Number of items"},
+                { "TCOMP_multip_numberType" , "Item number type"},
+                { "TCOMP_multip_chooseType" , "Choose type"},
+                { "TCOMP_multip_tabWidth" , "Tab width"},
+                { "TCOMP_multip_rowSpace" , "Space between items"},
+                { "TCOMP_multip_hasPrefix" , "Item number"},
+                
+                { "TCOMP_drag" , "Drag and Drop"},
+                { "TCOMP_drag_rowCount" , "Number of drag objects"},
+                { "TCOMP_drag_itemWidth" , "Width drag object"},
+                { "TCOMP_drag_itemHeight" , "Height drag object"},
+                { "TCOMP_drag_rowSpace" , "Distance items"},
+                { "TCOMP_drag_descrWidth" , "Text width"},
+                
+                { "TCOMP_edit" , "Edit"},
+                { "TCOMP_addItem" , "Add item"},
+                { "TCOMP_removeItem" , "Remove item"},
+                { "TCOMP_decompose" , "Decompose"},
 		};
 }
 
