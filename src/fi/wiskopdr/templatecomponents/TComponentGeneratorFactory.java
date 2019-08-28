@@ -47,5 +47,12 @@ public class TComponentGeneratorFactory {
 	   return ComponentTypeNameList;
     }
 	
+	public static String getComponentTypeName(String type) {
+	  for(int i=0 ; i<ComponentTypeList.length ; i++) {
+	    if(ComponentTypeList[i].equals(type))
+	      return ComponentTypeNameList[i];
+	  }
+      return "";
+   }
 	
 }
