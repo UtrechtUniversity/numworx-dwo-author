@@ -63,7 +63,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		mainPanel.setBackground(WiskOpdr.bgcolorEditor);
 		bottomPanel = new JPanel();
 		
-		itemCountLabel = new JLabel("Number of items");
+		itemCountLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_rowCount"));
 		itemCountLabel.setFont(font);
 		
 		itemCountTF = new JTextField();
@@ -71,7 +71,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		itemCountTF.setPreferredSize(new Dimension(30,24));
 		itemCountTF.setMaximumSize(new Dimension(30,24));
 		
-		itemWidthLabel = new JLabel("Item width");
+		itemWidthLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_itemWidth"));
 		itemWidthLabel.setFont(font);
 		
 		itemWidthTF = new JTextField();
@@ -79,7 +79,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		itemWidthTF.setPreferredSize(new Dimension(30,24));
 		itemWidthTF.setMaximumSize(new Dimension(30,24));
 		
-		itemHeightLabel = new JLabel("Item height");
+		itemHeightLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_itemHeight"));
 		itemHeightLabel.setFont(font);
 		
 		itemHeightTF = new JTextField();
@@ -87,7 +87,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		itemHeightTF.setPreferredSize(new Dimension(30,24));
 		itemHeightTF.setMaximumSize(new Dimension(30,24));
 		
-		rowSpaceLabel = new JLabel("Row space");
+		rowSpaceLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_rowSpace"));
 		rowSpaceLabel.setFont(font);
 		
 		rowSpaceTF = new JTextField();
@@ -95,7 +95,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		rowSpaceTF.setPreferredSize(new Dimension(30,24));
 		rowSpaceTF.setMaximumSize(new Dimension(30,24));
 		
-		descrWidthLabel = new JLabel("Description width");
+		descrWidthLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_descrWidth"));
 		descrWidthLabel.setFont(font);
 		
 		descrWidthTF = new JTextField();
@@ -176,7 +176,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 	}
 	
 	public void makeFrame(){
-	   	frame = DialogFacade.newInstance(tekstVak, "Drag and drop", true);
+	   	frame = DialogFacade.newInstance(tekstVak, WiskOpdr.rb.getString("TCOMP_drag"), true);
 	   	//Dimension preferredSize = new Dimension(400,320);
 		//frame.setPreferredSize(preferredSize);
 	    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

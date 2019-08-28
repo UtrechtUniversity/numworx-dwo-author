@@ -58,7 +58,7 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		mainPanel.setBackground(WiskOpdr.bgcolorEditor);
 		bottomPanel = new JPanel();
 		
-		rowCountLabel = new JLabel("Number of rows");
+		rowCountLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_list_rowCount"));
 		rowCountLabel.setFont(font);
 		
 		rowCountTF = new JTextField();
@@ -66,18 +66,18 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		rowCountTF.setPreferredSize(new Dimension(30,24));
 		rowCountTF.setMaximumSize(new Dimension(30,24));
 		
-		listNumberTypeLabel = new JLabel("List number type");
+		listNumberTypeLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_list_numberType"));
 		listNumberTypeLabel.setFont(font);
 		
 		listNumberTypeComboBox = new JComboBox();
 		listNumberTypeComboBox.setFont(font);
-		listNumberTypeComboBox.addItem("Choose type");
+		listNumberTypeComboBox.addItem(WiskOpdr.rb.getString("TCOMP_list_chooseType"));
 		for(int i=0 ; i<ListGenerator.listNumbers.length ; i++) {
 			listNumberTypeComboBox.addItem(ListGenerator.listNumbers[i][0]+" ,"+ListGenerator.listNumbers[i][1]+" ,"+ListGenerator.listNumbers[i][2]+" , ...");
 		}
 		
 		
-		tabWidthLabel = new JLabel("Tab width");
+		tabWidthLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_list_tabWidth"));
 		tabWidthLabel.setFont(font);
 		
 		tabWidthTF = new JTextField();
@@ -85,7 +85,7 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		tabWidthTF.setPreferredSize(new Dimension(30,24));
 		tabWidthTF.setMaximumSize(new Dimension(30,24));
 		
-		rowSpaceLabel = new JLabel("Row space");
+		rowSpaceLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_list_rowSpace"));
 		rowSpaceLabel.setFont(font);
 		
 		rowSpaceTF = new JTextField();
@@ -148,7 +148,7 @@ public class ListEditor implements TComponentEditor, ActionListener {
 	}
 	
 	public void makeFrame(){
-	   	frame = DialogFacade.newInstance(tekstVak, "List", true);
+	   	frame = DialogFacade.newInstance(tekstVak, WiskOpdr.rb.getString("TCOMP_list"), true);
 	   	//Dimension preferredSize = new Dimension(400,320);
 		//frame.setPreferredSize(preferredSize);
 	    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

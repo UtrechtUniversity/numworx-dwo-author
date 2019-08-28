@@ -60,7 +60,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		mainPanel.setBackground(WiskOpdr.bgcolorEditor);
 		bottomPanel = new JPanel();
 		
-		itemCountLabel = new JLabel("Number of items");
+		itemCountLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_rowCount"));
 		itemCountLabel.setFont(font);
 		
 		itemCountTF = new JTextField();
@@ -68,17 +68,17 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		itemCountTF.setPreferredSize(new Dimension(30,24));
 		itemCountTF.setMaximumSize(new Dimension(30,24));
 		
-		listNumberTypeLabel = new JLabel("List number type");
+		listNumberTypeLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_numberType"));
 		listNumberTypeLabel.setFont(font);
 		
 		listNumberTypeComboBox = new JComboBox();
 		listNumberTypeComboBox.setFont(font);
-		listNumberTypeComboBox.addItem("Choose type");
+		listNumberTypeComboBox.addItem(WiskOpdr.rb.getString("TCOMP_multip_chooseType"));
 		for(int i=0 ; i<MultipleChoiceGenerator.listNumbers.length ; i++) {
 			listNumberTypeComboBox.addItem(MultipleChoiceGenerator.listNumbers[i][0]+" ,"+MultipleChoiceGenerator.listNumbers[i][1]+" ,"+MultipleChoiceGenerator.listNumbers[i][2]+" , ...");
 		}
 		
-		tabWidthLabel = new JLabel("Tab width");
+		tabWidthLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_tabWidth"));
 		tabWidthLabel.setFont(font);
 		
 		tabWidthTF = new JTextField();
@@ -86,7 +86,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		tabWidthTF.setPreferredSize(new Dimension(30,24));
 		tabWidthTF.setMaximumSize(new Dimension(30,24));
 		
-		rowSpaceLabel = new JLabel("Row space");
+		rowSpaceLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_rowSpace"));
 		rowSpaceLabel.setFont(font);
 		
 		rowSpaceTF = new JTextField();
@@ -94,7 +94,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		rowSpaceTF.setPreferredSize(new Dimension(30,24));
 		rowSpaceTF.setMaximumSize(new Dimension(30,24));
 		
-		hasPrefixCB = new JCheckBox("Has prefix");
+		hasPrefixCB = new JCheckBox(WiskOpdr.rb.getString("TCOMP_multip_hasPrefix"));
 		hasPrefixCB.setOpaque(false);
 		hasPrefixCB.setSelected(true);
 		hasPrefixCB.setFont(font);
@@ -161,7 +161,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 	}
 	
 	public void makeFrame(){
-	   	frame = DialogFacade.newInstance(tekstVak, "Multiple Choice", true);
+	   	frame = DialogFacade.newInstance(tekstVak, WiskOpdr.rb.getString("TCOMP_multip"), true);
 	   	//Dimension preferredSize = new Dimension(400,320);
 		//frame.setPreferredSize(preferredSize);
 	    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

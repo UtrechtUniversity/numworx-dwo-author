@@ -1,10 +1,19 @@
 package fi.wiskopdr.templatecomponents;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+
+import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class TComponentGeneratorFactory {
 
 	private static String[] ComponentTypeList = {"List", "MultipleChoice", "DragDrop"};
+	private static String[] ComponentTypeNameList = {WiskOpdr.rb.getString("TCOMP_list"), 
+	                                                 WiskOpdr.rb.getString("TCOMP_multip"),
+	                                                 WiskOpdr.rb.getString("TCOMP_drag")};
 	
 	private static ListGenerator listGenerator;
 	private static MultipleChoiceGenerator mcGenerator;
@@ -33,4 +42,10 @@ public class TComponentGeneratorFactory {
 	public static String[] getComponentTypeList() {
 		return ComponentTypeList;
 	}
+	
+	public static String[] getComponentTypeNameList() {
+	   return ComponentTypeNameList;
+    }
+	
+	
 }

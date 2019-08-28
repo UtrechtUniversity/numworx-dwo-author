@@ -13,6 +13,7 @@ import javax.swing.JPopupMenu;
 
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.TekstVakPanel;
+import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
@@ -23,7 +24,10 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 	
 	private JPopupMenu editChoice;
 	private JMenuItem[] editChoiceItems;
-	String[] editChoiceStrings = {"Edit", "Add Item", "Remove Item", "Decompose"};
+	String[] editChoiceStrings = {WiskOpdr.rb.getString("TCOMP_edit"),
+                                  WiskOpdr.rb.getString("TCOMP_addItem"),
+                                  WiskOpdr.rb.getString("TCOMP_removeItem"),
+                                  WiskOpdr.rb.getString("TCOMP_decompose")};
 	
 	public static int initialItemCount = 4;
 	public static int initialListNumberType = 4;
