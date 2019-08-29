@@ -1,15 +1,20 @@
 package fi.euclides.persist;
 
 import fi.euclides.model.Bissectrice;
+import fi.euclides.model.Boog;
+import fi.euclides.model.BoogHoek;
+import fi.euclides.model.BoogRadiusHoek;
 import fi.euclides.model.CarryingLine;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Cirkel3;
 import fi.euclides.model.CirkelLijnSnijpunt;
+import fi.euclides.model.CirkelRadius;
 import fi.euclides.model.CirkelSnijpunt;
 import fi.euclides.model.ConflictLijn;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Dpunt;
+import fi.euclides.model.FocusPunt;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
@@ -19,12 +24,18 @@ import fi.euclides.model.LoodLijn;
 import fi.euclides.model.MP;
 import fi.euclides.model.MiddelPunt;
 import fi.euclides.model.ParallelLijn;
+import fi.euclides.model.Poollijn;
 import fi.euclides.model.Punt;
+import fi.euclides.model.Punt2;
 import fi.euclides.model.PuntOp;
 import fi.euclides.model.PuntenLijn;
+import fi.euclides.model.RaakLijnCirkel;
+import fi.euclides.model.RaakLijnConic;
+import fi.euclides.model.RaaklijnLocus;
 import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.SnijPunt;
+import fi.euclides.model.SnijpuntLijn;
 import fi.euclides.model.SpiegelPunt;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.VrijPunt;
@@ -143,6 +154,20 @@ public class CreateUtil {
 		});
 
 		buildmap.put(MP.PUNTOP, buildmap.get(Lijn.PUNTOP));
+		
+		buildmap.put(CirkelRadius.TYPE, CirkelRadius::new);
+		buildmap.put(Boog.TYPE, Boog::new);
+		buildmap.put(BoogHoek.TYPE, BoogHoek::new);
+		buildmap.put(BoogRadiusHoek.TYPE, BoogRadiusHoek::new);
+		buildmap.put(Poollijn.TYPE, Poollijn::new);
+		buildmap.put(Poollijn.Punt1.TYPE, Poollijn.Punt1::new);
+		buildmap.put(RaakLijnCirkel.TYPE, RaakLijnCirkel::new);
+		buildmap.put(RaakLijnConic.TYPE, RaakLijnConic::new);
+		buildmap.put(RaaklijnLocus.TYPE, RaaklijnLocus::new);
+		buildmap.put(Punt2.TYPE, Punt2::new);
+		buildmap.put(FocusPunt.TYPE, FocusPunt::new);
+		buildmap.put(SnijpuntLijn.TYPE, SnijpuntLijn::new);
+		
 	}
 
 	public static Destroyable create(String q) {	

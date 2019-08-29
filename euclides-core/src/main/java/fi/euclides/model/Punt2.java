@@ -7,6 +7,8 @@ import fi.euclides.util.Observable;
 
 public class Punt2 extends PuntOp<Lijn> {
 
+	public static final String TYPE = "P'";
+
 	public Punt2() {
 		setFree(false);
 	}
@@ -48,7 +50,7 @@ public class Punt2 extends PuntOp<Lijn> {
 	}
 	
 	public String key() {
-		return "P'";
+		return TYPE;
 	}
 
 	public void read(Codec codec) throws IOException {

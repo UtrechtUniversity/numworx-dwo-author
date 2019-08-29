@@ -7,6 +7,7 @@ import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 
 public class RaaklijnLocus extends LijnPuntCombi<MP> implements SegmentVisitor {
+	public static final String TYPE = "lM";
 	private static final Numbers _100 = Numbers.createInteger(100);
 	
 	public RaaklijnLocus() {
@@ -59,7 +60,7 @@ public class RaaklijnLocus extends LijnPuntCombi<MP> implements SegmentVisitor {
 	
 	@Override
 	public String key() {
-		return "lM";
+		return TYPE;
 	}
 
 	public void visitSegment(Segment s) {

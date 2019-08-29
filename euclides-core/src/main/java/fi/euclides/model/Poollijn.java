@@ -11,6 +11,8 @@ public class Poollijn extends Lijn {
 	
 	public static class Punt1 extends Punt2 {
 
+		public static final String TYPE = "P''";
+
 		public Punt1() {
 		}
 
@@ -28,7 +30,7 @@ public class Poollijn extends Lijn {
 		}
 
 		public String key() {
-			return "P''";
+			return TYPE;
 		}
 		
 	}
