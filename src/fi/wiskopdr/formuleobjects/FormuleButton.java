@@ -20,7 +20,8 @@ public class FormuleButton extends JButton implements MouseListener
 	protected String code;
 	private Font defaultfont = new Font("SansSerif", Font.PLAIN, 13);
 	private FontMetrics fm;
-	protected Color bgColor = new Color(200,200,200);	
+	protected Color bgColor = new Color(221,222,225);
+	private boolean opaque = false;
 	protected Color fgColor = Color.black;
 	protected Color bgUseColor = bgColor;
 	protected Color fgUseColor = fgColor;
@@ -188,7 +189,7 @@ public class FormuleButton extends JButton implements MouseListener
 		
 	public void setBackground(Color c)
 	{	bgColor = c;
-		
+		opaque=true;
 	
 		//bgUseColor = c;
 	}
@@ -238,16 +239,16 @@ public class FormuleButton extends JButton implements MouseListener
 		//else g=gr;
 		g.setColor(fgColor);
 		{	g.setColor(bgColor);
-			//g.fillRect(0,0,getSize().width,getSize().height);
+			g.fillRect(0,0,getSize().width,getSize().height);
 			
 			int red = bgColor.getRed();
 			int green = bgColor.getGreen();
 			int blue = bgColor.getBlue();
-			for(int i=0 ; i<10 ; i++)
-			{
-				g.setColor(new Color(red + i*(245-red)/10,green + i*(245-green)/10,blue + i*(245-blue)/10));
-				g.fillRect(0,getHeight()-(i+1)*getHeight()/10, getWidth(),getHeight()/10+1);
-			}
+//			for(int i=0 ; i<10 ; i++)
+//			{
+//				g.setColor(new Color(red + i*(245-red)/10,green + i*(245-green)/10,blue + i*(245-blue)/10));
+//				g.fillRect(0,getHeight()-(i+1)*getHeight()/10, getWidth(),getHeight()/10+1);
+//			}
 			if(!focusable || focus || toggleAan)
 			{	if(actief || toggleAan)g.setColor(bgColor.darker());
 				else g.setColor(bgColor.brighter());
@@ -912,6 +913,14 @@ public class FormuleButton extends JButton implements MouseListener
 			g.drawString(code,(b-w)/2,3*getSize().height/4);
 			
 		}
+	}
+	
+	public void setBounds(boolean v, int x, int y, int w, int h)
+	{
+	  if(v)
+	    super.setBounds(y,x,w,h);
+	  else
+	    super.setBounds(x,y,w,h);
 	}
 	
 	public void mousePressed(MouseEvent e)
