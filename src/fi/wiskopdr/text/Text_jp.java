@@ -63,6 +63,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				{ "insertCopyMenuItem" ,  "コピー（挿入します）"},
 				{ "deelscoresKnopLabel", "Partial scores"},
 				{ "misconceptionsKnopLabel", "Error analysis"},
+				{ "imagesButtonLabel", "Images"},
 								
 				{ "choiceOefenen" , "練習" },
 				{ "choiceOefenenEindloos" , "繰り返し練習します。" },

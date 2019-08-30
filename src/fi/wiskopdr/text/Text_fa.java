@@ -59,6 +59,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				{ "insertCopyMenuItem" ,  "copy (insert)"},
 				{ "deelscoresKnopLabel", "Partial scores"},
 				{ "misconceptionsKnopLabel", "Error analysis"},
+				{ "imagesButtonLabel", "Images"},
 								
 				{ "choiceOefenen" , "تمرين" },
 				{ "choiceOefenenEindloos" , "تمرين نامحدود" },

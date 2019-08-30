@@ -63,6 +63,7 @@ public class Text_es extends java.util.ListResourceBundle
 				{ "insertCopyMenuItem" ,  "copy (insert)"},
 				{ "deelscoresKnopLabel", "Partial scores"},
 				{ "misconceptionsKnopLabel", "Error analysis"},
+				{ "imagesButtonLabel", "Images"},
 								
 				{ "choiceOefenen" , "Práctica" },
 				{ "choiceOefenenEindloos" , "Práctica infinita" },

@@ -51,7 +51,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "voortgang" , "Voortgang: "},
 				{ "deelscores", "Deelscores"},
 				{ "misconceptions", "Foutenanalyse"},
-				{ "optiesButtonLabel" , "Opties" },
+				{ "optiesButtonLabel" , "Instellingen activiteit" },
 				{ "standaardActiviteitNaam" , "Niveau" },
 				{ "standaardOpdrachtNaam" , "Opdracht" },
 				{ "opnieuwPanelTekstMW" , "Je verliest je huidige score als je opnieuw begint.\n\nWeet je zeker dat je opnieuw wilt beginnen?"},
@@ -67,6 +67,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "insertCopyMenuItem" ,  "Kopie (invoegen)"},
 				{ "deelscoresKnopLabel", "Deelscores"},
 				{ "misconceptionsKnopLabel", "Analyse"},
+				{ "imagesButtonLabel", "Afbeeldingen"},
 				
 				{ "choiceOefenen" , "Oefenen" },
 				{ "choiceOefenenEindloos" , "Oefenen eindeloos" },
@@ -76,7 +77,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "opdrachtTitelLabel" , "Titel:" },
 				{ "opdrachtTekstLabel" , "Tekst:" },
-				{ "randVarLabel" , "Variabelen voor random parameters:" },
+				{ "randVarLabel" , "Random parameters:" },
 				{ "startExpLabel" , "Startexpressie:" },
 				{ "startVergLabel" , "Startvergelijking:" },
 				{ "variabelenLabel", "Variabelen (gescheiden door komma's): "},

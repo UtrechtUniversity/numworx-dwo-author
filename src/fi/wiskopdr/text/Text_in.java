@@ -59,6 +59,7 @@ public class Text_in extends java.util.ListResourceBundle
 				{ "insertCopyMenuItem" ,  "copy (insert)"},
 				{ "deelscoresKnopLabel", "Partial scores"},
 				{ "misconceptionsKnopLabel", "Error analysis"},
+				{ "imagesButtonLabel", "Images"},
 								
 				{ "choiceOefenen" , "Latihan" },
 				{ "choiceOefenenEindloos" , "Latihan Tiada Henti" },
