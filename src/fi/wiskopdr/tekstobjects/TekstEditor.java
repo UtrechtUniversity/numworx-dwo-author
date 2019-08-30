@@ -61,7 +61,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
 	private int balkH = 23;
 	private int rand = 10;
-	private int sparing = 3;
+	private int sparing = -1;
 	
 	private FormuleButton resizeButton;
 	private boolean resizeable;
@@ -94,6 +94,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private boolean logOption;
 	private String logID;
 	private Vector<String> attempts = new Vector<String>();
+	
+	private boolean toolbarLeft = false;
 
 	
     public TekstEditor()
@@ -134,11 +136,11 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
     
     
     public TekstEditor(boolean scrollbar, boolean form)
-	{	this(scrollbar, form, new TekstVak());
+	{	this(scrollbar, form, new TekstVak(), false);
 	}
    
 	public TekstEditor(boolean scrollbar, boolean form, boolean beperkt, TekstVak tekstVak)
-	{	this(scrollbar, form, tekstVak);
+	{	this(scrollbar, form, tekstVak, false);
 		studentEditor = beperkt;
 	    if(beperkt)
 	    {  	headerPanel.remove(linkKnop);
@@ -160,10 +162,20 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		this(scrollbar,form, beperkt,new LoggingTekstVak());
 	}
 	
-	public TekstEditor(boolean scrollbar, boolean form, TekstVak tekstVak)
+	public TekstEditor( boolean scrollbar, boolean form, TekstVak tekstVak)
+    {
+	  this(scrollbar,form, new LoggingTekstVak(),false);
+    }
+	
+	public TekstEditor( boolean scrollbar, boolean form, TekstVak tekstVak, boolean toolbarLeft)
 	{	setLayout(null);
 		setBackground(new Color(210,210,210));
 		setOpaque(false);
+		
+		this.toolbarLeft = toolbarLeft;
+		if(toolbarLeft)
+		  balkH = 33;
+	   
 		
 		basisPanel = new JPanel();
 		basisPanel.setLayout(new BorderLayout());
@@ -171,19 +183,19 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		super.add(basisPanel);
 		
 		headerPanel = new JPanel(){
-			public void paintComponent(Graphics g)
-			{
-				if("MW".equals(WiskOpdr.deployVariant))super.paintComponent(g);
-				else
-					for(int i=0 ; i<10 ; i++)
-					{
-						g.setColor(new Color(200+5*i,200+5*i,200+5*i));
-						g.fillRect(0,getHeight()-(i+1)*getHeight()/10, getWidth(),getHeight()/10+1);
-					}
-			}
+//			public void paintComponent(Graphics g)
+//			{
+//				if("MW".equals(WiskOpdr.deployVariant))super.paintComponent(g);
+//				else
+//					for(int i=0 ; i<10 ; i++)
+//					{
+//						g.setColor(new Color(200+5*i,200+5*i,200+5*i));
+//						g.fillRect(0,getHeight()-(i+1)*getHeight()/10, getWidth(),getHeight()/10+1);
+//					}
+//			}
 		};
 		headerPanel.setLayout(null);
-		headerPanel.setBackground(new Color(210,210,210));
+		headerPanel.setBackground(new Color(221,222,225));
 		headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
 		super.add(headerPanel);
 		
@@ -197,72 +209,72 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(scrollbar)scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		else scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBackground(Color.white);
-		scrollPane.setBorder(BorderFactory.createLineBorder(Color.gray));
+		scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));
 		basisPanel.add(scrollPane);
 		
 		//scrollPane.setColumnHeaderView(new JPanel());
 		
 		tabletButton = new FormuleButton("meer");
-		tabletButton.setBounds(142,2,36,20);
+		tabletButton.setBounds(toolbarLeft,142,balkH/2-10,36,20);
 		tabletButton.addActionListener(this);
 		tabletButton.setVisible(false);
 		headerPanel.add(tabletButton);
 		
 		resizeButton = new FormuleButton("resize");
-		resizeButton.setBounds(2,2,16,16);
+		resizeButton.setBounds(toolbarLeft,2,balkH/2-10,16,16);
 		resizeButton.addActionListener(this);
 		headerPanel.add(resizeButton);
 		resizeButton.setVisible(false);
 		
 		formuleKnop = new FormuleButton("formule");
-		formuleKnop.setBounds(12,2,20,20);
+		formuleKnop.setBounds(toolbarLeft,12,balkH/2-10,20,20);
 		formuleKnop.addActionListener(this);
 		if(form)headerPanel.add(formuleKnop);
 		
 		grafiekKnop = new FormuleButton("grafiekcomponent");
-		grafiekKnop.setBounds(38,2,20,20);
+		grafiekKnop.setBounds(toolbarLeft,38,balkH/2-10,20,20);
 		grafiekKnop.addActionListener(this);
 		if(form)headerPanel.add(grafiekKnop);
 		
 		linkKnop = new FormuleButton("link");
-		linkKnop.setBounds(64,2,20,20);
+		linkKnop.setBounds(toolbarLeft,64,balkH/2-10,20,20);
 		linkKnop.addActionListener(this);
 		if(form)headerPanel.add(linkKnop);
 		
 		plaatjeKnop = new FormuleButton("image");
-		plaatjeKnop.setBounds(64+26,2,20,20);
+		plaatjeKnop.setBounds(toolbarLeft,64+26,balkH/2-10,20,20);
 		plaatjeKnop.addActionListener(this);
 		if(form)headerPanel.add(plaatjeKnop);
 		
 		antwoordVakKnop = new FormuleButton("antwoordvak");
-		antwoordVakKnop.setBounds(64+26+26,2,20,20);
+		antwoordVakKnop.setBounds(toolbarLeft,64+26+26,balkH/2-10,20,20);
 		antwoordVakKnop.addActionListener(this);
 		if(form)headerPanel.add(antwoordVakKnop);
 		
 		tekstVakKnop = new FormuleButton("tekstvak");
-		tekstVakKnop.setBounds(64+26+26+26+26+26,2,20,20);
+		tekstVakKnop.setBounds(toolbarLeft,64+26+26+26+26+26,balkH/2-10,20,20);
 		tekstVakKnop.addActionListener(this);
 		if(form)headerPanel.add(tekstVakKnop);
 		
 		rmKnop = new FormuleButton("rmvak");
-		rmKnop.setBounds(38,2,20,20);
+		rmKnop.setBounds(toolbarLeft,38,balkH/2-10,20,20);
 		rmKnop.addActionListener(this);
 		rmKnop.setVisible(false);
 		headerPanel.add(rmKnop);
 		
 		grafiekToolKnop = new FormuleButton("grafiektool");
-		grafiekToolKnop.setBounds(64,2,20,20);
+		grafiekToolKnop.setBounds(toolbarLeft,64,balkH/2-10,20,20);
 		grafiekToolKnop.addActionListener(this);
 		grafiekToolKnop.setVisible(false);
 		headerPanel.add(grafiekToolKnop);
 		
 		geogebraKnop = new FormuleButton("geogebra");
-		geogebraKnop.setBounds(64+26+26+26+26,2,20,20);
+		geogebraKnop.setBounds(toolbarLeft,64+26+26+26+26,balkH/2-10,20,20);
 		geogebraKnop.addActionListener(this);
 		if(form)headerPanel.add(geogebraKnop);
 		
 		crosswidgetKnop = new FormuleButton("crosswidget");
-		crosswidgetKnop.setBounds(64+26+26+26+26+26+26,2,20,20);
+		crosswidgetKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26,balkH/2-10,20,20);
 		crosswidgetKnop.setToggle(true);
 		crosswidgetKnop.addActionListener(this);
 		crosswidgetKnop.setVisible(false);
@@ -270,19 +282,19 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 		
 		standardComponentChoiceKnop = new FormuleButton("S");
-		standardComponentChoiceKnop.setBounds(64+26+26+26+26+26+26+26,2,20,20);
+		standardComponentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,20,20);
 		standardComponentChoiceKnop.addActionListener(this);
 		standardComponentChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(standardComponentChoiceKnop);
 		
 		templateChoiceKnop = new FormuleButton("T");
-		templateChoiceKnop.setBounds(64+26+26+26+26+26+26+26+26,2,20,20);
+		templateChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26,balkH/2-10,20,20);
 		templateChoiceKnop.addActionListener(this);
 		templateChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(templateChoiceKnop);
 		
 		componentChoiceKnop = new FormuleButton("C");
-		componentChoiceKnop.setBounds(64+26+26+26+26+26+26+26+26+26,2,20,20);
+		componentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26+26,balkH/2-10,20,20);
 		componentChoiceKnop.addActionListener(this);
 		componentChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(componentChoiceKnop);
@@ -439,86 +451,86 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			
 		
 		cbookKnop = new FormuleButton("cbook");
-		cbookKnop.setBounds(64+26+26+26+26+26+26+26,2,20,20);
+		cbookKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,20,20);
 		cbookKnop.addActionListener(this);
 		//if(form)headerPanel.add(cbookKnop);
 		
 		cindyKnop = new FormuleButton("cindy");
-		cindyKnop.setBounds(64+26+26+26+26+26+26+26+26,2,20,20);
+		cindyKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26,balkH/2-10,20,20);
 		cindyKnop.addActionListener(this);
 		//if(form)headerPanel.add(cindyKnop);
 		
 		eslateKnop = new FormuleButton("eslate");
-		eslateKnop.setBounds(64+26+26+26+26+26+26+26+26+26,2,20,20);
+		eslateKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26+26,balkH/2-10,20,20);
 		eslateKnop.addActionListener(this);
 		//if(form)headerPanel.add(eslateKnop);
 
 		epsilonKnop = new FormuleButton("epsilonwriter");
-		epsilonKnop.setBounds(64+26+26+26+26+26+26+26+26+26+26,2,20,20);
+		epsilonKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26+26+26,balkH/2-10,20,20);
 		epsilonKnop.addActionListener(this);
 		//if(form)headerPanel.add(epsilonKnop);
 
 		appletKnop = new FormuleButton("interactiecomponent");
-		appletKnop.setBounds(64+26+26+26,2,20,20);
+		appletKnop.setBounds(toolbarLeft,64+26+26+26,balkH/2-10,20,20);
 		appletKnop.addActionListener(this);
 		if(form)headerPanel.add(appletKnop);
 		
 		wortelKnop = new FormuleButton("wortel");
-		wortelKnop.setBounds(12,2,20,20);
+		wortelKnop.setBounds(toolbarLeft,12,balkH/2-10,20,20);
 		wortelKnop.addActionListener(this);
 		wortelKnop.setVisible(false);
 		headerPanel.add(wortelKnop);
 		
 		machtKnop = new FormuleButton("macht");
-		machtKnop.setBounds(38,2,20,20);
+		machtKnop.setBounds(toolbarLeft,38,balkH/2-10,20,20);
 		machtKnop.addActionListener(this);
 		machtKnop.setVisible(false);
 		headerPanel.add(machtKnop);
 		
 		kwadraatKnop = new FormuleButton("kwadraat");
-		kwadraatKnop.setBounds(64,2,20,20);
+		kwadraatKnop.setBounds(toolbarLeft,64,balkH/2-10,20,20);
 		kwadraatKnop.addActionListener(this);
 		kwadraatKnop.setVisible(false);
 		headerPanel.add(kwadraatKnop);
 		
 		breukKnop = new FormuleButton("breuk");
-		breukKnop.setBounds(90,2,20,20);
+		breukKnop.setBounds(toolbarLeft,90,balkH/2-10,20,20);
 		breukKnop.addActionListener(this);
 		breukKnop.setVisible(false);
 		headerPanel.add(breukKnop);
 		
 		haakjesKnop = new FormuleButton("haakjes");
-		haakjesKnop.setBounds(116,2,20,20);
+		haakjesKnop.setBounds(toolbarLeft,116,balkH/2-10,20,20);
 		haakjesKnop.addActionListener(this);
 		haakjesKnop.setVisible(false);
 		headerPanel.add(haakjesKnop);
 		
 		ndewortelKnop = new FormuleButton("ndewortel");
-		ndewortelKnop.setBounds(142,2,20,20);
+		ndewortelKnop.setBounds(toolbarLeft,142,balkH/2-10,20,20);
 		ndewortelKnop.addActionListener(this);
 		ndewortelKnop.setVisible(false);
 		//headerPanel.add(ndewortelKnop);
 		
 		ndelogKnop = new FormuleButton("ndelog");
-		ndelogKnop.setBounds(166,2,25,20);
+		ndelogKnop.setBounds(toolbarLeft,166,balkH/2-10,25,20);
 		ndelogKnop.addActionListener(this);
 		ndelogKnop.setVisible(false);
 		//headerPanel.add(ndelogKnop);
 		
 		integraalKnop = new FormuleButton("integraal");
-		integraalKnop.setBounds(195,2,20,20);
+		integraalKnop.setBounds(toolbarLeft,195,balkH/2-10,20,20);
 		integraalKnop.addActionListener(this);
 		integraalKnop.setVisible(false);
 		//headerPanel.add(integraalKnop);
 		
 		prvKnop = new FormuleButton("prv");
-		prvKnop.setBounds(221,2,20,20);
+		prvKnop.setBounds(toolbarLeft,221,balkH/2-10,20,20);
 		prvKnop.addActionListener(this);
 		prvKnop.setVisible(false);
 		//headerPanel.add(prvKnop);
 		
 		absKnop = new FormuleButton("abs");
-		absKnop.setBounds(247,2,20,20);
+		absKnop.setBounds(toolbarLeft,247,balkH/2-10,20,20);
 		absKnop.addActionListener(this);
 		absKnop.setVisible(false);
 		//headerPanel.add(absKnop);
@@ -527,7 +539,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 		this.tekstVak = tekstVak;
 		tekstVak.setBackground(Color.white);
-		tekstVak.setBounds(0,0, 240,40);
+		tekstVak.setBounds(0,4, 240,40);
 		tekstVak.addActionListener(this);
 		//tekstVak.setBorder(BorderFactory.createLineBorder(Color.lightGray, 1));
 		add(tekstVak);
@@ -615,8 +627,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
     
     public void setBounds(int x, int y, int b, int h)
     {   if(headerAan)
-        {   basisPanel.setBounds(0,balkH+sparing,b,h-balkH-sparing);
-            headerPanel.setBounds(0,0,b,balkH);
+        {   
+            if(toolbarLeft)
+            {   basisPanel.setBounds(balkH+sparing,0,b-balkH-sparing,h);
+                headerPanel.setBounds(0,0,balkH,h);
+            }
+            else
+            {   basisPanel.setBounds(0,balkH+sparing,b,h-balkH-sparing);
+                headerPanel.setBounds(0,0,b,balkH);
+            }
         }
         else
         {   
@@ -626,7 +645,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         basisPanel.doLayout();
         super.setBounds(x,y,b,h);
         resizeButton.setBounds(getSize().width-18,3,15,15);
-        tekstVak.setBounds(0,0,b-10,h-30);
+        tekstVak.setBounds(0,4,b-10,h-30);
         tekstVak.layoutTekst();
         resizeButton.setBounds(getSize().width-18,3,15,15);
         setNewScrollSize();
@@ -634,8 +653,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
     public void setSize(int b, int h)
     {   if(headerAan)
-        {   basisPanel.setSize(b,h-balkH-sparing);
-            headerPanel.setSize(b,balkH);
+        {   
+            if(toolbarLeft)
+            {   basisPanel.setBounds(balkH+sparing,0,b-balkH-sparing,h);
+                headerPanel.setBounds(0,0,balkH,h);
+            }
+            else
+            {   basisPanel.setSize(b,h-balkH-sparing);
+                headerPanel.setSize(b,balkH);
+            }
         }
         else
         {   
@@ -822,6 +848,11 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 	}
 	
+	public void setToolbarLeft(boolean b)
+	{
+	    toolbarLeft = true;
+	}
+	
 	
 
 	public void actionPerformed(ActionEvent e)
@@ -1001,7 +1032,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			}
 			for(int i=0 ; templateItems!=null && i<templateItems.length ; i++)
 			{
-				if(e.getSource()==templateItems[i])
+				if(e.getSource()==templateItems[i] && tekstVakActief instanceof BasisTekstVak )
 					tekstVakActief.insertDups(TekstVakPanel.templatePages.get(templateKeys[i]));
 				//System.out.println("Key-template: "+templateItems[i].getText());
 			}
