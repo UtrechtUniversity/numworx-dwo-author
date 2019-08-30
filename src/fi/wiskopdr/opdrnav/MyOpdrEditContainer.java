@@ -61,6 +61,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private int eindX = 770;
 	private boolean scheidingRaak = false;
 	private boolean eindRaak = false;
+	private int corrToolbar = 33;
 	
 	private JCheckBox nieuweVersieCB;
 	private boolean hasAntwoordVak = true; // nieuwe editor betekent: hasAntwoordVak = false.
@@ -282,11 +283,11 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelCB.setBounds(hasTitle ? 10 : 65, 8, 80, 15);
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
-		tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
+		tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
 		tekstEditor2.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 260 + (hasAntwoordVak ? 0 : h - 450));
 		if (hasTekstVakLayout) {
-			randVarLabel.setBounds(w - 210, h - 86, 200, 20);
-			randomVarEditor.setBounds(w - 220, h - 86, 200, 80);
+			randVarLabel.setBounds(scheidingX+15+corrToolbar - 210, h - 86, 200, 20);
+			randomVarEditor.setBounds(scheidingX+15+corrToolbar - 220, h - 86, 200, 80);
 		} else {
 			randVarLabel.setBounds(scheidingX + 15, 5, eindX - 5 - scheidingX, 20);
 			randomVarEditor.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 70);
@@ -307,7 +308,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	public boolean contains(int x, int y) {
 		if (this.plainEditor)
 			return true;
-		if (y < getSize().height - 90 || x > getSize().width - 220 && y < getSize().height - 10)
+		if (y < getSize().height - 90 || x > randomVarEditor.getX() && y < getSize().height - 10)
 			return true;
 		return false;
 	}
@@ -433,7 +434,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		if(!hasTitle)
 		  titelCB.setVisible(false);
 
-		tekstEditor.setBounds(10, hasTitle ? 75 : 25, scheidingX - 15, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? 35 : 0));
+		tekstEditor.setBounds(10, hasTitle ? 75 : 25, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? 35 : 0));
 		tekstEditor2.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 260 + (hasAntwoordVak ? 0 : 130));
 
 		// voor de oude editorversie
@@ -1254,12 +1255,12 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	}
 
 	public void mousePressed(MouseEvent e) {
-		if (e.getX() > scheidingX - 5 && e.getX() < scheidingX + 5 && e.getY() < getSize().height - 120)
+		if (e.getX() > scheidingX + corrToolbar - 5 && e.getX() < scheidingX + corrToolbar + 5 && e.getY() < getSize().height - 85)
 			scheidingRaak = true;
 		else
 			scheidingRaak = false;
 		
-		if (e.getX() > eindX - 5 && e.getX() < eindX + 5 && e.getY() < getSize().height - 120)
+		if (e.getX() > eindX + corrToolbar - 5 && e.getX() < eindX + corrToolbar + 5 && e.getY() < getSize().height - 120)
 			eindRaak = true;
 		else
 			eindRaak = false;
@@ -1284,11 +1285,11 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 
 	public void mouseDragged(MouseEvent e) {
 		if (scheidingRaak) {
-			scheidingX = e.getX();
+			scheidingX = e.getX() - corrToolbar;
 			setSizesGui();
 			WiskOpdr.setLaunchDataChanged();
 		} else if (eindRaak) {
-			eindX = e.getX();
+			eindX = e.getX() - corrToolbar;
 			setSizesGui();
 			WiskOpdr.setLaunchDataChanged();
 		}
@@ -1299,7 +1300,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	}
 
 	public void kiesCursor(MouseEvent e) {
-		if (e.getX() > scheidingX - 5 && e.getX() < scheidingX + 5 && e.getY() < getSize().height - 120 || e.getX() > eindX - 5 && e.getX() < eindX + 5
+		if (e.getX() > scheidingX + corrToolbar - 5 && e.getX() < scheidingX + corrToolbar + 5 && e.getY() < getSize().height - 120 || e.getX() > eindX + corrToolbar - 5 && e.getX() < eindX + corrToolbar + 5
 				&& e.getY() < getSize().height - 120) {
 			setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
 		} else {
