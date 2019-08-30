@@ -13,7 +13,7 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 	private Color kl;
 	private boolean selected, half;
 	private ActionListener actionListener;
-    private Font f= new Font("SansSerif", Font.PLAIN,11);
+    private Font f= new Font("SansSerif", Font.BOLD,14);
     private Font fGR= new Font("SansSerif", Font.BOLD,12);
 	//private String toolTip;
     private boolean tab = false;
@@ -36,7 +36,7 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
     
 	public NrComponent(int n, int size)
 	{	this.size = size;
-		f = new Font("SansSerif", Font.PLAIN,(size-1)/2-1);
+		f = new Font("SansSerif", Font.BOLD,(size-1)/2);
 		//if("GR".equals(WiskOpdr.deployVariant)) f = new Font("SansSerif", Font.PLAIN,(size-1)/2);
 		
 		setBounds((n-1)*size, 0, size-3, size-1);
@@ -119,6 +119,7 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 			else 
 			{	
 				//g.fillOval(0,0,diam,diam);
+				g.fillRect(0,0,diam,diam);
 				if("GR".equals(WiskOpdr.deployVariant)) {
 					if(selected)g.setColor(kl);
 					else g.setColor(Color.white);
@@ -128,14 +129,14 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 					Color c = g.getColor();
 					for(int i=0 ; i<10 ; i++)
 					{
-						int red = c.getRed();
-						int green = c.getGreen();
-						int blue = c.getBlue();
-						red = red+i*(255-red)/13;
-						green = green+i*(255-green)/13;
-						blue = blue+i*(255-blue)/13;
-						g.setColor(new Color(red,green,blue));
-						g.fillOval(i+i/3,i/3,diam-2*i,diam-2*i);
+//						int red = c.getRed();
+//						int green = c.getGreen();
+//						int blue = c.getBlue();
+//						red = red+i*(255-red)/13;
+//						green = green+i*(255-green)/13;
+//						blue = blue+i*(255-blue)/13;
+//						g.setColor(new Color(red,green,blue));
+//						g.fillOval(i+i/3,i/3,diam-2*i,diam-2*i);
 						
 					}
 				}
@@ -149,7 +150,7 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 			}
 			else {
 				g.setColor(Color.gray);
-				g.drawOval(0,0,diam,diam);
+				//g.drawOval(0,0,diam,diam);
 			}
 			if(selected)
 			{	
@@ -162,11 +163,10 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 				}
 				else {
 					g.setColor(Color.black);
-					g.drawOval(0,0,diam,diam);
-					g.drawOval(1,1,diam-2,diam-2);
-					//g.drawOval(2,2,16,16);
-					g.drawLine(0,diam+2,diam,diam+2);
-					g.drawLine(0,diam+3,diam,diam+3);
+//					g.drawOval(0,0,diam,diam);
+//					g.drawOval(1,1,diam-2,diam-2);
+//					g.drawLine(0,diam+2,diam,diam+2);
+//					g.drawLine(0,diam+3,diam,diam+3);
 				}
 				
 			}
@@ -176,7 +176,7 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 			
 			FontMetrics fm = g.getFontMetrics();
 			int tekstLengte = fm.stringWidth(tekst);
-			g.setColor(Color.black);
+			g.setColor(Color.white);
 			if("GR".equals(WiskOpdr.deployVariant))
 			{	if(selected)g.setColor(Color.white);
 				else if(staat==GOED)g.setColor(kl);
@@ -196,6 +196,10 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 	}
 	public void setSelected(boolean b)
 	{	selected = b;
+	    if(selected)
+	      kl = new Color(38,115,182);
+	    else
+	      kl = new Color(180,195,228);
 		repaint();
 	}
 	public void zetGemaakt(boolean b)
@@ -206,7 +210,7 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 		}
 		else {
 			staat = FOUT;
-			kl = new Color(255,150,150);
+			kl = new Color(180,195,228);
 			if("GR".equals(WiskOpdr.deployVariant))kl = Color.white; //kl = new Color(224,8,29);
 		}
 		repaint();

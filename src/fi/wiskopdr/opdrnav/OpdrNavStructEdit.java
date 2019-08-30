@@ -13,10 +13,12 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import fi.beans.base64code.StringCodeObject;
+import fi.beans.iconan.Iconan;
 import fi.wiskopdr.*;
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.tekstobjects.TekstImageVak;
 
 public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, ActionListener, ItemListener, TabletOwner, ClipboardOwner {
 	
@@ -29,9 +31,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public void setSizeLabel(int size) {
 		String t;
 		if(size < 3000)
-			t=MessageFormat.format("{0}b", (size));
+			t=MessageFormat.format("{0}B", (size));
 		else 
-			t=MessageFormat.format("{0}Kb", (size+512)/1024);
+			t=MessageFormat.format("{0}kB", (size+512)/1024);
 		sizeLabel.setText(t);
 		sizeLabel.setForeground(size < 3000000 ? Color.black : Color.red);
 	}
@@ -92,6 +94,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public boolean useLocation;
 	
 	private JLabel sizeLabel;
+	private JButton imagesButton;
+	private DialogFacade imageDialog;
+	private Iconan iconman;
 	
 	public static HelpBrowser helpBrowser;
 	private static String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
@@ -151,11 +156,11 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 //        this.setLayer(helpButton, JLayeredPane.POPUP_LAYER.intValue());
 //        this.add(helpButton);
 
-		orPosX = orSize * 2 + 17 + margeLinks;
-		orPosY = h - (2 * orSize);
+		orPosX = 10;//orSize * 2 + 17 + margeLinks;
+		orPosY = h - 85;//(2 * orSize);
 		
-		actKeuzePanelX = margeLinks;
-		actKeuzePanelY = orPosY - aantalActiviteiten * 20 - 10;
+		actKeuzePanelX = 490;//margeLinks;
+		actKeuzePanelY = h-30-aantalActiviteiten * 20;//orPosY - aantalActiviteiten * 20 - 10;
 
 		int aantalOpdrMax = aantalOpdrachten[0];
 		for (int i = 1; i < aantalActiviteiten; i++) {
@@ -165,10 +170,11 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		activiteitNr = 0;
 		opdrachtNr = 0;
 
-		actKeuzePanel = new ActKeuzePanel(activiteitNamen, actKeuzePanelX, actKeuzePanelY, 160, aantalActiviteiten * 20);
+		actKeuzePanel = new ActKeuzePanel(activiteitNamen, actKeuzePanelX, actKeuzePanelY, 85, aantalActiviteiten * 20);
 		actKeuzePanel.addActionListener(this);
 		actKeuzePanel.setBackground(getBackground());
-		add(actKeuzePanel, 0);
+		if(aantalActiviteiten >1)
+		  add(actKeuzePanel, 0);
 
 		for (int i = 0; i < aantalActiviteiten; i++) {
 			if (aantalOpdrachten[i] > maxAantalOpdrachten)
@@ -192,7 +198,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		aantalNivKnop = new PlusMinKnop(actKeuzePanelX - 2, actKeuzePanelY + aantalActiviteiten * 20, 16, 20, PlusMinKnop.VERTIKAAL);
 		aantalNivKnop.addActionListener(this);
-		add(aantalNivKnop);
+        if(aantalActiviteiten>1)
+            add(aantalNivKnop);
 
 		aantalOpdrKnop = new PlusMinKnop(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2, 20, 16, PlusMinKnop.HORIZONTAAL);
 		aantalOpdrKnop.addActionListener(this);
@@ -200,9 +207,10 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		nivPositieKnop = new PlusMinKnop(actKeuzePanelX - 20, actKeuzePanelY + aantalActiviteiten * 20 - 20, 12, 16, PlusMinKnop.VERTIKAAL);
 		nivPositieKnop.addActionListener(this);
-		add(nivPositieKnop);
+		if(aantalActiviteiten>1)
+          add(nivPositieKnop);
 
-		opdrPositieKnop = new PlusMinKnop(orPosX, orPosY + 30, 20, 16, PlusMinKnop.HORIZONTAAL);
+		opdrPositieKnop = new PlusMinKnop(orPosX, orPosY + 25, 20, 16, PlusMinKnop.HORIZONTAAL);
 		opdrPositieKnop.addActionListener(this);
 		add(opdrPositieKnop);
 
@@ -239,6 +247,12 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		}
 		//
 		
+		imagesButton = new JButton(WiskOpdr.rb.getString("imagesButtonLabel"));
+		imagesButton.setFont(font);
+		imagesButton.setMargin(new Insets(3, 5, 3, 5));
+		imagesButton.addActionListener(this);
+        add(imagesButton,0);
+		
 		sizeLabel = new JLabel("123,456Mb");
 // styling
 		sizeLabel.setFont(font);//sizeLabel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
@@ -248,7 +262,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		instellingenKnop = new JButton(WiskOpdr.rb.getString("optiesButtonLabel"));
 		instellingenKnop.setFont(font);
 		instellingenKnop.setMargin(new Insets(3, 5, 3, 5));
-		instellingenKnop.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 20, 60, 20);
+		instellingenKnop.setBounds(10, actKeuzePanelY + aantalActiviteiten * 20 - 20, 1600, 20);
 		instellingenKnop.addActionListener(this);
 		add(instellingenKnop,0);
 
@@ -497,10 +511,10 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public void setSize(int b, int h) {
 		super.setSize(b, h);
 		opdrEditContainer.setSize(b, h);
-		orPosY = h - (2 * orSize);
+		orPosY = h - 85;//(2 * orSize);
 		
 		opdrEditContainer.setControlPanelHeight(2 * orSize);
-		actKeuzePanelY = orPosY - aantalActiviteiten * 20 - 15;
+		actKeuzePanelY = h-30- aantalActiviteiten * 20;//orPosY - aantalActiviteiten * 20 - 15;
 
 		int aantalOpdrMax = aantalOpdrachten[0];
 		for (int i = 1; i < aantalActiviteiten; i++) {
@@ -509,19 +523,20 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		for (int i = 0; i < aantalActiviteiten; i++) {
 			if (!"GR".equals(WiskOpdr.deployVariant))
-				or[i].setLocation(orPosX, orPosY + 4);
+				or[i].setLocation(orPosX, orPosY );
 		}
 
 		actKeuzePanel.setLocation(actKeuzePanelX,actKeuzePanelY);
 		aantalNivKnop.setBounds(actKeuzePanelX - 2, actKeuzePanelY + aantalActiviteiten * 20, 16, 20);
 		aantalOpdrKnop.setBounds(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2, 20, 16);
 		nivPositieKnop.setBounds(actKeuzePanelX - 20, actKeuzePanelY + aantalActiviteiten * 20 - 20, 12, 16);
-		opdrPositieKnop.setBounds(orPosX + 25 * opdrachtNr, orPosY + 30, 20, 16);
-		modeChoice.setBounds(actKeuzePanelX + 193, actKeuzePanelY + aantalActiviteiten * 20 - 22, 140, 24);
+		opdrPositieKnop.setBounds(orPosX + 25 * opdrachtNr, orPosY + 25, 20, 16);
+		modeChoice.setBounds(190, h-30, 140, 24);
 		gekoppeldeOpdrCB.setBounds(10, orPosY + 30, 50, 15);
 		gekoppeldeOpdrCB.addItemListener(this);
-		instellingenKnop.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 20, 60, 20);
-		sizeLabel.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 42, 60, 22);
+		instellingenKnop.setBounds(10, h - 30, 160, 24);
+		sizeLabel.setBounds(480, h-30, 60, 24);
+		imagesButton.setBounds(350,h-30,120,24);
 	}
 	
 	/**
@@ -664,7 +679,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		opdrachtNr = opdrNr;
 		or[activiteitNr].setSelected(opdrachtNr + 1);
 
-		opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 30);
+		opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 25);
 		aantalOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2);
 
 		if (globalParam)
@@ -852,7 +867,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 				aantalOpdrachten[activiteitNr]--;
 				if (opdrachtNr > aantalOpdrachten[activiteitNr] - 1)
 					opdrachtNr--;
-				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 30);
+				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 25);
 				opdrEditContainer.setEditState(opdrachten[activiteitNr][opdrachtNr]);
 				remove(or[activiteitNr]);
 				or[activiteitNr] = null;
@@ -874,7 +889,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 				opdrachten[activiteitNr][opdrachtNr] = opdrEditContainer.getEditState();
 				opdrachten[activiteitNr][aantalOpdrachten[activiteitNr] - 1] = opdrachten[activiteitNr][aantalOpdrachten[activiteitNr] - 2];
 				opdrachtNr = aantalOpdrachten[activiteitNr] - 1;
-				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 30);
+				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 25);
 
 				remove(or[activiteitNr]);
 				or[activiteitNr] = null;
@@ -900,7 +915,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 				or[aantalActiviteiten - 1] = null;
 				activiteitNr = 0;
 				opdrachtNr = 0;
-				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 30);
+				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 25);
 
 				opdrEditContainer.setEditState(opdrachten[activiteitNr][opdrachtNr]);
 
@@ -908,8 +923,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 				aantalActiviteiten--;
 				remove(actKeuzePanel);
-				actKeuzePanelY = orPosY - aantalActiviteiten * 20 - 15;
-				actKeuzePanel = new ActKeuzePanel(activiteitNamen, actKeuzePanelX, actKeuzePanelY, 120, aantalActiviteiten * 20, true);
+				//actKeuzePanelY = orPosY - aantalActiviteiten * 20 - 15;
+				actKeuzePanelY = actKeuzePanelY+20;
+				actKeuzePanel = new ActKeuzePanel(activiteitNamen, actKeuzePanelX, actKeuzePanelY, 85, aantalActiviteiten * 20, true);
 				actKeuzePanel.addActionListener(this);
 				actKeuzePanel.setBackground(getBackground());
 				add(actKeuzePanel, 0);
@@ -964,8 +980,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 				add(or[aantalActiviteiten - 1], 0);
 
 				remove(actKeuzePanel);
-				actKeuzePanelY = orPosY - aantalActiviteiten * 20 - 15;
-				actKeuzePanel = new ActKeuzePanel(activiteitNamen, actKeuzePanelX, actKeuzePanelY, 120, aantalActiviteiten * 20, true);
+				//actKeuzePanelY = orPosY - aantalActiviteiten * 20 - 15;
+				actKeuzePanelY = actKeuzePanelY-20;
+				actKeuzePanel = new ActKeuzePanel(activiteitNamen, actKeuzePanelX, actKeuzePanelY, 85, aantalActiviteiten * 20, true);
 				actKeuzePanel.addActionListener(this);
 				actKeuzePanel.setBackground(getBackground());
 				add(actKeuzePanel, 0);
@@ -982,7 +999,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 				opdrachten[activiteitNr][opdrachtNr - 1] = s;
 				opdrachtNr--;
 				or[activiteitNr].setSelected(opdrachtNr + 1);
-				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 30);
+				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 25);
 			}
 			if (e.getActionCommand().equals("plus") && opdrachtNr < aantalOpdrachten[activiteitNr] - 1) {
 				WiskOpdr.setLaunchDataChanged();
@@ -992,7 +1009,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 				opdrachten[activiteitNr][opdrachtNr + 1] = s;
 				opdrachtNr++;
 				or[activiteitNr].setSelected(opdrachtNr + 1);
-				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 30);
+				opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 25);
 			}
 		} else if (e.getSource() == nivPositieKnop) {
 			if (e.getActionCommand().equals("min") && activiteitNr < aantalActiviteiten - 1) {
@@ -1053,6 +1070,21 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 				actKeuzePanel.setItem(activiteitNr);
 				nivPositieKnop.setLocation(actKeuzePanelX - 20, actKeuzePanelY + activiteitNr * 20);
 			}
+		}
+		if(e.getSource()==imagesButton)
+		{
+		  if(imageDialog == null)
+	        {
+	            //Frame f = JOptionPane.getFrameForComponent(this);
+	            imageDialog = DialogFacade.newInstance(this,"title", true);
+	           // imageDialog.setLayout(new BorderLayout());
+	             iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+	            imageDialog.getContentPane().add(iconman);
+	            imageDialog.pack();
+	            iconman.addActionListener(this);
+	        }
+	       
+	        imageDialog.setVisible(true);
 		}
 
 	}

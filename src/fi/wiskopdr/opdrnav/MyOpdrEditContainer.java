@@ -139,8 +139,6 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		add(tekstEditor2);
 		tekstEditor2.setVisible(false);
 
-		randVarLabel = makeLabel(scheidingX + 5, 5, 765 - scheidingX, 20, WiskOpdr.rb.getString("randVarLabel"), true);
-
 		randomVarEditor = new TekstEditor(true, false, true, new TekstVak());
 		randomVarEditor.setHeader(true);
 		randomVarEditor.setBounds(scheidingX + 5, 25, 765 - scheidingX, 100);
@@ -148,6 +146,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		randomVarEditor.addActionListener(this);
 		add(randomVarEditor);
 		
+		randVarLabel = makeLabel(scheidingX + 15, 5, 765 - scheidingX, 20, WiskOpdr.rb.getString("randVarLabel"), true);
+
 		titelCB = makeCheckBox(10, 8, 80, 15, WiskOpdr.rb.getString("opdrachtTitelLabel"), true, true);
 		nieuweVersieCB = makeCheckBox(600, 5, 175, 20, WiskOpdr.rb.getString("editorVersieKnopLabel1"), false, true);
 
@@ -279,13 +279,13 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelCB.setBounds(hasTitle ? 10 : 65, 8, 80, 15);
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
-		tekstEditor.setBounds(10, hasTitle ? 75 : 25, scheidingX - 15, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 545 : 0));
+		tekstEditor.setBounds(10, hasTitle ? 75 : 25, scheidingX - 15, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 480 : 0));
 		tekstEditor2.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 260 + (hasAntwoordVak ? 0 : h - 450));
 		if (hasTekstVakLayout) {
-			randVarLabel.setBounds(w - 430, h - 165, 400, 20);
-			randomVarEditor.setBounds(w - 430, h - 145, 400, 80);
+			randVarLabel.setBounds(w - 210, h - 90, 200, 20);
+			randomVarEditor.setBounds(w - 220, h - 90, 200, 80);
 		} else {
-			randVarLabel.setBounds(scheidingX + 5, 5, eindX - 5 - scheidingX, 20);
+			randVarLabel.setBounds(scheidingX + 15, 5, eindX - 5 - scheidingX, 20);
 			randomVarEditor.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 70);
 		}
 		if (randVarPopupFrame != null && randVarPopupFrame.isVisible()) {
@@ -304,7 +304,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	public boolean contains(int x, int y) {
 		if (this.plainEditor)
 			return true;
-		if (y < getSize().height - 160 || x > getSize().width - 450 && y < getSize().height - 60)
+		if (y < getSize().height - 90 || x > getSize().width - 220 && y < getSize().height - 10)
 			return true;
 		return false;
 	}
