@@ -157,7 +157,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 //        this.add(helpButton);
 
 		orPosX = 10;//orSize * 2 + 17 + margeLinks;
-		orPosY = h - 85;//(2 * orSize);
+		orPosY = h - 80;//(2 * orSize);
 		
 		actKeuzePanelX = 490;//margeLinks;
 		actKeuzePanelY = h-30-aantalActiviteiten * 20;//orPosY - aantalActiviteiten * 20 - 10;
@@ -216,6 +216,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		modeChoice = new JComboBox();
 		modeChoice.setFont(font);
+		//modeChoice.setBackground(new Color(180,195,228));
+		modeChoice.setForeground(new Color(51,74,112));
+		modeChoice.setBackground(new Color(255,255,255));
 		modeChoice.addItem(WiskOpdr.rb.getString("choiceOefenen"));
 		modeChoice.addItem(WiskOpdr.rb.getString("choiceOefenenStraf"));
 		modeChoice.addItem(WiskOpdr.rb.getString("choiceZelfToets"));
@@ -251,11 +254,14 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		imagesButton.setFont(font);
 		imagesButton.setMargin(new Insets(3, 5, 3, 5));
 		imagesButton.addActionListener(this);
+		imagesButton.setBackground(new Color(180,195,228));
+		imagesButton.setForeground(new Color(51,74,112));
         add(imagesButton,0);
 		
 		sizeLabel = new JLabel("123,456Mb");
 // styling
 		sizeLabel.setFont(font);//sizeLabel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+		sizeLabel.setForeground(new Color(51,74,112));
 		sizeLabel.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 42, 100, 22);
 		add(sizeLabel,0);
 		
@@ -264,6 +270,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		instellingenKnop.setMargin(new Insets(3, 5, 3, 5));
 		instellingenKnop.setBounds(10, actKeuzePanelY + aantalActiviteiten * 20 - 20, 1600, 20);
 		instellingenKnop.addActionListener(this);
+		instellingenKnop.setBackground(new Color(180,195,228));
+		instellingenKnop.setForeground(new Color(51,74,112));
 		add(instellingenKnop,0);
 
 		instellingenDialog = DialogFacade.newInstance(this, WiskOpdr.rb.getString("optiesButtonLabel"), true);
@@ -511,7 +519,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public void setSize(int b, int h) {
 		super.setSize(b, h);
 		opdrEditContainer.setSize(b, h);
-		orPosY = h - 85;//(2 * orSize);
+		orPosY = h - 80;//(2 * orSize);
 		
 		opdrEditContainer.setControlPanelHeight(2 * orSize);
 		actKeuzePanelY = h-30- aantalActiviteiten * 20;//orPosY - aantalActiviteiten * 20 - 15;

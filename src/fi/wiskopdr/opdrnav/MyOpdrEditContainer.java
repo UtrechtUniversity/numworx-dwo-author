@@ -122,13 +122,14 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		tekstLabel = makeLabel(10, 95, scheidingX - 15, 20, WiskOpdr.rb.getString("opdrachtTekstLabel"), false);
 
 		BasisTekstVak basisVak = new BasisTekstVak();
-		tekstEditor = new TekstEditor(true, true, basisVak);
+		tekstEditor = new TekstEditor(true, true, basisVak, true);
 		tekstEditor.setBounds(10, 115, scheidingX - 15, 265);
 		tekstEditor.addActionListener(this);
 		tekstEditor.setFont(WiskOpdr.tekstFont);
 		tekstEditor.setCrossWidgetOption(true);
 		tekstEditor.setTemplateOption(true);
 		tekstEditor.setStandardComponentOption(true);
+		tekstEditor.setToolbarLeft(true);
 		add(tekstEditor);
 		tekstEditor.setResizable(true);
 
@@ -147,6 +148,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		add(randomVarEditor);
 		
 		randVarLabel = makeLabel(scheidingX + 15, 5, 765 - scheidingX, 20, WiskOpdr.rb.getString("randVarLabel"), true);
+		randVarLabel.setForeground(new Color(51,74,112));
 
 		titelCB = makeCheckBox(10, 8, 80, 15, WiskOpdr.rb.getString("opdrachtTitelLabel"), true, true);
 		nieuweVersieCB = makeCheckBox(600, 5, 175, 20, WiskOpdr.rb.getString("editorVersieKnopLabel1"), false, true);
@@ -259,12 +261,13 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	}
 
 	public void paintComponent(Graphics g) {
-		g.drawLine(780, 0, 780, 10);
-		g.drawString("800 px", 785, 10);
-		g.drawLine(1004, 0, 1004, 10);
-		g.drawString("1024 px", 1009, 10);
-		g.drawLine(1260, 0, 1260, 10);
-		g.drawString("1280 px", 1265, 10);
+		g.setColor(new Color(51,74,112));
+	    g.drawLine(813, 0, 813, 10);
+		g.drawString("800 px", 818, 10);
+		g.drawLine(1037, 0, 1037, 10);
+		g.drawString("1024 px", 1042, 10);
+		g.drawLine(1293, 0, 1293, 10);
+		g.drawString("1280 px", 1298, 10);
 	}
 
 	public void setControlPanelHeight(int h) {
@@ -279,11 +282,11 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelCB.setBounds(hasTitle ? 10 : 65, 8, 80, 15);
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
-		tekstEditor.setBounds(10, hasTitle ? 75 : 25, scheidingX - 15, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 480 : 0));
+		tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
 		tekstEditor2.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 260 + (hasAntwoordVak ? 0 : h - 450));
 		if (hasTekstVakLayout) {
-			randVarLabel.setBounds(w - 210, h - 90, 200, 20);
-			randomVarEditor.setBounds(w - 220, h - 90, 200, 80);
+			randVarLabel.setBounds(w - 210, h - 86, 200, 20);
+			randomVarEditor.setBounds(w - 220, h - 86, 200, 80);
 		} else {
 			randVarLabel.setBounds(scheidingX + 15, 5, eindX - 5 - scheidingX, 20);
 			randomVarEditor.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 70);
@@ -422,6 +425,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelEditor.zetTekst(titel);
 		tekstEditor.zetTekst(tekst);
 		tekstEditor2.zetTekst(tekst2);
+		if(tekst2==null || "".equals(tekst2.trim()))
+		  remove(tekstEditor2);
 		randomVarEditor.zetTekst(randVarString);
 
 		titelCB.setSelected(hasTitle);

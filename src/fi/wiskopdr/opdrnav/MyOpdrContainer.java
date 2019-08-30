@@ -232,14 +232,14 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		else if (!WiskOpdr.zoefi)
 		{
 			int h = controlPanelHeight / 2;
-			for (int i = 0; i < 11; i++)
-			{
-				g.setColor(new Color(200 + 5 * i, 200 + 5 * i, 200 + 5 * i));
-				g.fillRect(0, getHeight() - 2 * h + h - (i) * h / 10, getWidth(), h / 10 + 1);
-
-			}
+//			for (int i = 0; i < 11; i++)
+//			{
+//				g.setColor(new Color(200 + 5 * i, 200 + 5 * i, 200 + 5 * i));
+//				g.fillRect(0, getHeight() - 2 * h + h - (i) * h / 10, getWidth(), h / 10 + 1);
+//
+//			}
 			g.setColor(Color.lightGray);
-			g.drawRect(0, getHeight() - 2 * h, getWidth() - 1, h);
+			//g.drawRect(0, getHeight() - 2 * h, getWidth() - 1, h);
 		}
 	}
 
