@@ -113,9 +113,20 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		
 		this.opdrEditContainer = opdrEditContainer;
 
+		if (launchData.containsKey("mode"))
+          mode = Integer.parseInt(((String) launchData.get("mode")));
+		if (launchData.containsKey("opnieuwMogelijk") && ((String) launchData.get("opnieuwMogelijk")).equals("true"))
+          opnieuwMogelijk = true;
+		
 		String instellingenString = (String) launchData.get("instellingen");
 		Object ob = StringCodeObject.decodeStringToObject(instellingenString);
 		instellingen = (Hashtable) ob;
+		
+		// voor backward comp. na oefenen eindeloos: knop alles opnieuw toevoegen
+		if(mode==0 && opnieuwMogelijk)
+		  instellingen.put("opnieuw", new Boolean(true));
+		
+		
 		zetInstellingen(instellingen);
 		//System.out.println("templatepages"+ TekstVakPanel.templatePages);
 		
@@ -223,11 +234,11 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		modeChoice.addItem(WiskOpdr.rb.getString("choiceOefenenStraf"));
 		modeChoice.addItem(WiskOpdr.rb.getString("choiceZelfToets"));
 		modeChoice.addItem(WiskOpdr.rb.getString("choiceEindToets"));
-		modeChoice.addItem(WiskOpdr.rb.getString("choiceOefenenEindloos"));
+		//modeChoice.addItem(WiskOpdr.rb.getString("choiceOefenenEindloos"));
 		modeChoice.setBounds(actKeuzePanelX + 193, actKeuzePanelY + aantalActiviteiten * 20 - 22, 140, 24);
 		add(modeChoice, 0);
 		if (opnieuwMogelijk && mode == 0)
-			modeChoice.setSelectedIndex(4);
+			; //modeChoice.setSelectedIndex(4); deprecated. Nu via de alles opnieuwknop
 		else
 			modeChoice.setSelectedIndex(mode);
 		modeChoice.addItemListener(this);
@@ -278,7 +289,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		instellingenPanel = new InstellingenPanel(instellingenDialog, this);
 		instellingenPanel.addActionListener(this);
-		instellingenPanel.setBounds(0, 0, 650, 740);
+		instellingenPanel.setBounds(0, 0, 650, 760);
 		instellingenPanel.zetInstellingen(instellingen);
 
 		instellingenDialog.getContentPane().add(instellingenPanel);
