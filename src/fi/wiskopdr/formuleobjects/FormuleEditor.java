@@ -69,23 +69,23 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 		super.add(basisPanel);
 		
 		headerPanel = new JPanel(){
-			public void paintComponent(Graphics g)
-			{
-				if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
-				{	g.setColor(Color.white);
-					g.fillRect(0,0,getWidth(),getHeight());
-				
-				}
-				else
-					for(int i=0 ; i<10 ; i++)
-					{	g.setColor(new Color(200+5*i,200+5*i,200+5*i));
-						g.fillRect(0,getHeight() - (i+1)*getHeight()/10, getWidth(),getHeight()/10+1);
-					}
-				
-			}
+//			public void paintComponent(Graphics g)
+//			{
+//				if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
+//				{	g.setColor(Color.white);
+//					g.fillRect(0,0,getWidth(),getHeight());
+//				
+//				}
+//				else
+//					for(int i=0 ; i<10 ; i++)
+//					{	g.setColor(new Color(200+5*i,200+5*i,200+5*i));
+//						g.fillRect(0,getHeight() - (i+1)*getHeight()/10, getWidth(),getHeight()/10+1);
+//					}
+//				
+//			}
 		};
 		headerPanel.setLayout(null);
-		headerPanel.setBackground(new Color(210,210,210));
+		headerPanel.setBackground(new Color(221,222,225));
 		headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
 		if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
 		{	setBackground(Color.white);
@@ -524,10 +524,10 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
         repaint();
 	}
     
-    //public void zetMaat()
-    //{   setNewScrollSize();
-    //    repaint();
-    //}
+//    public void zetMaat()
+//    {   setNewScrollSize();
+//        repaint();
+//    }
     
     public void setNewScrollSize()
     {   
