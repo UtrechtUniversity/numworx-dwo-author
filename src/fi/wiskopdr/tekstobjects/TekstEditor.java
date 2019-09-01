@@ -645,7 +645,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         basisPanel.doLayout();
         super.setBounds(x,y,b,h);
         resizeButton.setBounds(getSize().width-18,3,15,15);
-        tekstVak.setBounds(0,4,b-10,h-30);
+        tekstVak.setBounds(0,4,b-10-(toolbarLeft?33:0),h-30);
         tekstVak.layoutTekst();
         resizeButton.setBounds(getSize().width-18,3,15,15);
         setNewScrollSize();
@@ -671,7 +671,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         basisPanel.doLayout();
         super.setSize(b,h);
         resizeButton.setBounds(getSize().width-18,3,15,15);
-        tekstVak.setSize(b-10,h-30);
+        tekstVak.setSize(b-10-(toolbarLeft?33:0),h-30);
         tekstVak.layoutTekst();
         resizeButton.setBounds(getSize().width-18,3,15,15);
         setNewScrollSize();
