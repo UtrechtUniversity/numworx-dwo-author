@@ -221,7 +221,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 	public static void main(String[] args) throws Exception {
 		
-		int width = 800;
+		int width = 830;
 		int height = 600;
 		ScormEditMainFrame mf = new ScormEditMainFrame(new WiskOpdr(), width, height);
 		mf.setTitle("WiskOpdr");
