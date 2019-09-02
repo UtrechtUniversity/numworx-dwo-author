@@ -67,6 +67,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	public static int ID;
 	int id;
 	
+	int minimumHoogte;
+	
 	
 	public TekstVak()
 	{	ID++;
@@ -829,6 +831,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 			hoogte = Math.max(hoogte, tvp.getFirstRowMinHeight(this));
 		}
 		
+		hoogte = Math.max(hoogte, minimumHoogte);
 		if(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).isWidthResizable()) setSize(nieuweBreedte,hoogte);	
 		else setSize(breedte,hoogte);
 		
@@ -1606,6 +1609,11 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	
 	public void updateCrossWidgetView()
 	{	if(crossWidgetViewActief && crossWidgetView!=null) crossWidgetView.repaint();
+	}
+	
+	public void zetMinimumHoogte(int minimumHoogte)
+	{
+	  this.minimumHoogte = minimumHoogte;
 	}
 	
 }

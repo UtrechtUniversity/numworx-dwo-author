@@ -96,6 +96,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private Vector<String> attempts = new Vector<String>();
 	
 	private boolean toolbarLeft = false;
+	private boolean mainEditor;
 
 	
     public TekstEditor()
@@ -196,7 +197,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		};
 		headerPanel.setLayout(null);
 		headerPanel.setBackground(new Color(221,222,225));
-		headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+		headerPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
 		super.add(headerPanel);
 		
 		contentPane = new EditorContentPanel(this);
@@ -206,10 +207,10 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 		
 		this.scrollbar = scrollbar;
-		if(scrollbar)scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		if(scrollbar)scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		else scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBackground(Color.white);
-		scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+		scrollPane.setBorder(BorderFactory.createLineBorder(Color.gray));
 		basisPanel.add(scrollPane);
 		
 		//scrollPane.setColumnHeaderView(new JPanel());
@@ -281,20 +282,20 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(form)headerPanel.add(crosswidgetKnop);
 		
 		
-		standardComponentChoiceKnop = new FormuleButton("S");
-		standardComponentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,20,20);
+		standardComponentChoiceKnop = new FormuleButton("sknop");
+		standardComponentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		standardComponentChoiceKnop.addActionListener(this);
 		standardComponentChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(standardComponentChoiceKnop);
 		
-		templateChoiceKnop = new FormuleButton("T");
-		templateChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26,balkH/2-10,20,20);
+		templateChoiceKnop = new FormuleButton("tknop");
+		templateChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		templateChoiceKnop.addActionListener(this);
 		templateChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(templateChoiceKnop);
 		
-		componentChoiceKnop = new FormuleButton("C");
-		componentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26+26,balkH/2-10,20,20);
+		componentChoiceKnop = new FormuleButton("cknop");
+		componentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		componentChoiceKnop.addActionListener(this);
 		componentChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(componentChoiceKnop);
@@ -538,8 +539,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 		
 		this.tekstVak = tekstVak;
-		tekstVak.setBackground(Color.white);
-		tekstVak.setBounds(0,4, 240,40);
+		
+		tekstVak.setBounds(5,5, 240,40);
 		tekstVak.addActionListener(this);
 		//tekstVak.setBorder(BorderFactory.createLineBorder(Color.lightGray, 1));
 		add(tekstVak);
@@ -547,6 +548,28 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 		tekstVakActief = tekstVak;
 		
+	}
+	
+	public void setMainEditor(int marginX, int marginY, int docWidth, int docHeight)
+	{
+	  mainEditor = true;
+	  
+	  headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+	  scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+	 
+	  
+	  tekstVak.setOpaque(true);
+      tekstVak.setBackground(Color.white);
+      tekstVak.setBorder(BorderFactory.createLineBorder(Color.gray));
+     
+      tekstVak.zetMarge(marginX);
+      tekstVak.zetBovenMarge(marginY);
+      tekstVak.setBounds(5,5, docWidth, docHeight);
+      tekstVak.zetMinimumHoogte(docHeight);
+      tekstVak.layoutTekst();
+      
+      setNewScrollSize();
+      contentPane.setBackground(Color.lightGray);
 	}
 	
 	
@@ -564,12 +587,12 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			templateChoiceKnop.setVisible(b);
 			componentChoiceKnop.setVisible(b);
 		}
+		standardComponentOption = !b;
 	}
 	
 	public void setStandardComponentOption(boolean b)
-	{
-		standardComponentOption = b;
-		standardComponentChoiceKnop.setVisible(b);
+	{   standardComponentOption = !templateOption && b;
+		standardComponentChoiceKnop.setVisible(!templateOption && b);
 	}
     
     public void setHeader(boolean b)
@@ -645,7 +668,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         basisPanel.doLayout();
         super.setBounds(x,y,b,h);
         resizeButton.setBounds(getSize().width-18,3,15,15);
-        tekstVak.setBounds(0,4,b-10-(toolbarLeft?33:0),h-30);
+        if(mainEditor)
+        {
+          //tekstVak.setBounds(5,5,b-10-(toolbarLeft?33:0),h-30);
+        }
+        else
+        {
+          //tekstVak.setBounds(5,5,b-10-(toolbarLeft?33:0),h-30);
+        }
+       
         tekstVak.layoutTekst();
         resizeButton.setBounds(getSize().width-18,3,15,15);
         setNewScrollSize();
@@ -671,8 +702,16 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         basisPanel.doLayout();
         super.setSize(b,h);
         resizeButton.setBounds(getSize().width-18,3,15,15);
-        tekstVak.setSize(b-10-(toolbarLeft?33:0),h-30);
-        tekstVak.layoutTekst();
+        if(mainEditor)
+        {
+          //tekstVak.setSize(b-10-(toolbarLeft?33:0),h-30);
+        }
+        else
+        {
+          //tekstVak.setSize(b-10-(toolbarLeft?33:0),h-30);
+        }
+        //tekstVak.setSize(b-10-(toolbarLeft?33:0),h-30);
+        //tekstVak.layoutTekst();
         resizeButton.setBounds(getSize().width-18,3,15,15);
         setNewScrollSize();
     }
@@ -724,13 +763,19 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	}
 	
 	public void setNewScrollSize()
-	{	int max = 0; //scrollPane.getSize().height-20;
+	{	int maxw = 0;
+	    int maxh = 0; //scrollPane.getSize().height-20;
 		for(int i=0 ; i<contentPane.getComponentCount() ; i++)
 		{	Component c = contentPane.getComponent(i);
 			int h = c.getLocation().y + c.getSize().height + 20;
-			if(h>max) max = h;
+			int w = c.getLocation().x + c.getSize().width + 5;
+			if(h>maxh) maxh = h;
+			if(w>maxw) maxw = w;
 		}
-		contentPane.setPreferredSize(new Dimension(getSize().width, max));
+		if(mainEditor)
+		  contentPane.setPreferredSize(new Dimension(maxw, maxh));
+		else
+		  contentPane.setPreferredSize(new Dimension(getSize().width-(toolbarLeft?55:50), maxh));
 		Rectangle r = tekstVak.geefActieveRegel().getBounds();
 		contentPane.scrollRectToVisible(new Rectangle(r.x, r.y, r.width, r.height+20));//;
 		contentPane.revalidate();
