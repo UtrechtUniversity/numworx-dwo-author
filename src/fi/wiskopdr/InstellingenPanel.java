@@ -82,6 +82,13 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	public VoorwaardelijkeNavigatieButton condButton;
 	public LayersButton layersButton;
 	
+	private JLabel docWidthLabel;
+	private JLabel docHeightLabel;
+	private JTextField docWidthTF;
+    private JTextField docHeightTF;
+    private int docWidth = 1024;
+    private int docHeight = 450;
+    
 	private JLabel margesLabel;
 	private JLabel margeLinksLabel;
 	private JLabel margeRechtsLabel;
@@ -141,6 +148,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(2,2));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		mainPanel.setOpaque(false);
 		JPanel bottomPanel = new JPanel();
 		
@@ -306,8 +314,32 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		//Layout-opties
 		Box boxv3 = Box.createVerticalBox();
 		layoutLabel = maakLabel(WiskOpdr.rb.getString("OPT_layoutLabel"), boxv3);
-		boxh = Box.createHorizontalBox();
 		
+		boxh = Box.createHorizontalBox();
+        docWidthLabel = new JLabel(WiskOpdr.rb.getString("OPT_docWidthLabel"));
+        docWidthLabel.setFont(font);
+        boxh.add(docWidthLabel);
+        boxh.add(Box.createHorizontalStrut(10));
+        
+        docWidthTF = new JTextField(""+docWidth);
+        docWidthTF.setFont(font);
+        boxh.add(docWidthTF);
+        boxh.add(Box.createHorizontalStrut(10));
+        
+        docHeightLabel = new JLabel(WiskOpdr.rb.getString("OPT_docHeightLabel"));
+        docHeightLabel.setFont(font);
+        boxh.add(docHeightLabel);
+        boxh.add(Box.createHorizontalStrut(10));
+        
+        docHeightTF = new JTextField(""+docHeight);
+        docHeightTF.setFont(font);
+        boxh.add(docHeightTF);
+        boxh.add(Box.createHorizontalStrut(10));
+        
+        boxv3.add(boxh);
+        boxv3.add(Box.createVerticalStrut(5));
+
+		boxh = Box.createHorizontalBox();
 		margesLabel = new JLabel(WiskOpdr.rb.getString("OPT_margesLabel"));
 		margesLabel.setFont(font);
 		boxh.add(margesLabel);
@@ -396,19 +428,19 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		navigatieSizeLabel = new JLabel(WiskOpdr.rb.getString("OPT_navigatieFormaat"));
 		navigatieSizeLabel.setFont(font);
-		boxh.add(navigatieSizeLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		//boxh.add(navigatieSizeLabel);
+		//boxh.add(Box.createHorizontalStrut(10));
 		
 		navigatieSizeTF = new JTextField(""+navigatieSize);
 		navigatieSizeTF.setFont(font);
 		navigatieSizeTF.setSize(new Dimension(50,24));
-		boxh.add(navigatieSizeTF);
-		boxh.add(Box.createGlue());
-		boxv3.add(boxh);
+		//boxh.add(navigatieSizeTF);
+		//boxh.add(Box.createGlue());
+		//boxv3.add(boxh);
 		
 		formTimesCB = maakCheckBox(WiskOpdr.rb.getString("OPT_formTimes"), boxv3, true);//"formules in Times Roman"
-		paginaCB = maakCheckBox(WiskOpdr.rb.getString("OPT_paginaIpvOpdracht"), boxv3, false);//"pagina ipv opdracht"
-		abcDeelOpdrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_deelOpdr"), boxv3, false);//"F-toetsen gebruiken of niet"
+		//paginaCB = maakCheckBox(WiskOpdr.rb.getString("OPT_paginaIpvOpdracht"), boxv3, false);//"pagina ipv opdracht"
+		//abcDeelOpdrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_deelOpdr"), boxv3, false);//"F-toetsen gebruiken of niet"
 		fontOverervingCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOvererving"), boxv3, false);//"Font-overerving tekstvakken"
 		fontOverervingFormCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOverervingForm"), boxv3, false);
 		templateEditCB = maakCheckBox(WiskOpdr.rb.getString("OPT_templateEditor"), boxv3, false);
@@ -619,10 +651,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean formTimes = true;
 		int navigatieSize = 12;
 		String fontName = "SansSerif";
-		int margeLinks = 18;
+		int margeLinks = 15;
 		int margeRechts = 15;
 		int margeBoven = "GR".equals(WiskOpdr.deployVariant)?10:15;
 		int margeOnder = 15;
+		int docWidth = 1024;
+        int docHeight = 450;
 		boolean fontOvererving = false;
 		boolean fontOverervingForm = false;
 		boolean fToets = true;
@@ -660,12 +694,14 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		try
 		{	fontSize = Integer.parseInt(fontSizeTF.getText());
-			navigatieSize = Integer.parseInt(navigatieSizeTF.getText());
+			//navigatieSize = Integer.parseInt(navigatieSizeTF.getText());
 			timeLimit = Integer.parseInt(timerTF.getText());
 			margeLinks = Integer.parseInt(margeLinksTF.getText());
 			margeRechts = Integer.parseInt(margeRechtsTF.getText());
 			margeBoven = Integer.parseInt(margeBovenTF.getText());
 			margeOnder = Integer.parseInt(margeOnderTF.getText());
+			docWidth = Integer.parseInt(docWidthTF.getText());
+			docHeight = Integer.parseInt(docHeightTF.getText());
 			//condPerc = Integer.parseInt(condPercTF.getText());
 		}
 		catch(Exception e){}
@@ -680,7 +716,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		bolletjesZichtbaar = bolletjesCB.isSelected();
 		volgendeKnopZichtbaar = volgendeKnopCB.isSelected();
 		vorigeKnopZichtbaar = vorigeKnopCB.isSelected();
-		pagina = paginaCB.isSelected();
+		//pagina = paginaCB.isSelected();
 		formTimes = formTimesCB.isSelected();
 		fontName = (String)fontNameCO.getSelectedItem();
 		fontOvererving = fontOverervingCB.isSelected();
@@ -703,7 +739,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			if(condNavVoorwaarden)
 				navVoorwaarden = condButton.getNavVoorwaarden();
 		}
-		abcDeelOpdr = abcDeelOpdrCB.isSelected();
+		//abcDeelOpdr = abcDeelOpdrCB.isSelected();
 		zelftoetsGeenCorr = zelftoetsGeenCorrCB.isSelected();
 		zelftoetsGeschiedenis = zelftoetsGeschiedenisCB.isSelected();
 		zelftoetsHighScore = zelftoetsHighScoreCB.isSelected();
@@ -755,6 +791,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("margeRechts", new Integer(margeRechts));
 		h.put("margeBoven", new Integer(margeBoven));
 		h.put("margeOnder", new Integer(margeOnder));
+		h.put("docWidth", new Integer(docWidth));
+		h.put("docHeight", new Integer(docHeight));
 		h.put("fToets", new Boolean(fToets));
 		h.put("globalParam", new Boolean(globalParam));
 		h.put("diffOperatoren", new Boolean(diffOperatoren));
@@ -829,6 +867,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		int margeRechts = 15;
 		int margeBoven = "GR".equals(WiskOpdr.deployVariant)?10:15;
 		int margeOnder = 15;
+		int docWidth = 1024;
+		int docHeight = 450;
 		boolean fToets = true;
 		boolean fontOvererving = false;
 		boolean fontOverervingForm = false;
@@ -887,6 +927,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("margeRechts")) margeRechts = ((Integer)h.get("margeRechts")).intValue();
 		if(h.containsKey("margeBoven")) margeBoven = ((Integer)h.get("margeBoven")).intValue();
 		if(h.containsKey("margeOnder")) margeOnder = ((Integer)h.get("margeOnder")).intValue();
+		if(h.containsKey("docWidth")) docWidth = ((Integer)h.get("docWidth")).intValue();
+		if(h.containsKey("docHeight")) docHeight = ((Integer)h.get("docHeight")).intValue();
 		if(h.containsKey("fToets")) fToets = ((Boolean)h.get("fToets")).booleanValue();
 		if(h.containsKey("globalParam")) globalParam = ((Boolean)h.get("globalParam")).booleanValue();
 		if(h.containsKey("diffOperatoren")) diffOperatoren = ((Boolean)h.get("diffOperatoren")).booleanValue();
@@ -931,7 +973,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("layerVisible")) layerVisible = (boolean[])h.get("layerVisible");
 		
 		fontSizeTF.setText(""+fontSize);
-		navigatieSizeTF.setText(""+navigatieSize);
+		//navigatieSizeTF.setText(""+navigatieSize);
 		maalTekenCB.setSelected(maalTeken);
 		woordFormuleCB.setSelected(woordFormule);
 		tweeHLVarCB.setSelected(tweeHoofdletterVar);
@@ -946,7 +988,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		bolletjesCB.setSelected(bolletjesZichtbaar);
 		volgendeKnopCB.setSelected(volgendeKnopZichtbaar);
 		vorigeKnopCB.setSelected(vorigeKnopZichtbaar);
-		paginaCB.setSelected(pagina);
+		//paginaCB.setSelected(pagina);
 		formTimesCB.setSelected(formTimes);
 		fontNameCO.setSelectedItem(fontName);
 		fontOverervingCB.setSelected(fontOvererving);
@@ -955,6 +997,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		margeRechtsTF.setText(""+margeRechts);
 		margeBovenTF.setText(""+margeBoven);
 		margeOnderTF.setText(""+margeOnder);
+		docWidthTF.setText(""+docWidth);
+		docHeightTF.setText(""+docHeight);
 		fToetsCB.setSelected(fToets);
 		globalParamCB.setSelected(globalParam);
 		diffOperatorenCB.setSelected(diffOperatoren);
@@ -975,7 +1019,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	condButton.setVisible(condNav);
 			condButton.zetNavVoorwaarden(navVoorwaarden);
 		}
-		abcDeelOpdrCB.setSelected(abcDeelOpdr);
+		//abcDeelOpdrCB.setSelected(abcDeelOpdr);
 		condPercTF.setText(""+condPerc);
 		
 		zelftoetsGeenCorrCB.setSelected(zelftoetsGeenCorr);
@@ -1034,9 +1078,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			margeRechts = Integer.parseInt(margeRechtsTF.getText());
 			margeBoven = Integer.parseInt(margeBovenTF.getText());
 			margeOnder = Integer.parseInt(margeOnderTF.getText());
+			docWidth = Integer.parseInt(docWidthTF.getText());
+			docHeight = Integer.parseInt(docHeightTF.getText());
 			condPerc = Integer.parseInt(condPercTF.getText());
 		}
 		catch(Exception e){}
+		MyOpdrEditContainer.setDefaultDocSizes(margeLinks, margeBoven, docWidth, docHeight);
 		fontName = (String)fontNameCO.getSelectedItem();
 		WiskOpdr.zetFont(fontName,fontSize);
 		WiskOpdr.setFormTimes(formTimesCB.isSelected());
@@ -1057,9 +1104,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		WiskOpdr.setFToets(fToetsCB.isSelected());
 		//opdrNavStruct.setGlobalParam(globalParamCB.isSelected());
 		//opdrNavStruct.setCondNav(condNavCB.isSelected(), condPerc);
-		opdrNavStruct.setAbcDeelOpdr(abcDeelOpdrCB.isSelected());
+//		opdrNavStruct.setAbcDeelOpdr(abcDeelOpdrCB.isSelected());
 		//opdrNavStruct.setZelftoetsGeenCorr(zelftoetsGeenCorrCB.isSelected());
 		FormuleParser.zetSignificantie(significantieCB.isSelected());
+		
 		AntwoordFormuleVakEditPanel.zetSignificantieAan(significantieCB.isSelected());
 		AntwoordVergelijkingVakEditPanel.zetSignificantieAan(significantieCB.isSelected());
 		if(objectivesCB.isSelected())
@@ -1223,6 +1271,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{
 			layersButton.setVisible(layersCB.isSelected());
 		}
+		
 	}
 	//Eenvoudige parser voor styles van Strings naar Objects
 	private Object styleElementValueStringToObject(String s)
