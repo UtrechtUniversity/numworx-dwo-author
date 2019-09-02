@@ -1063,6 +1063,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		int margeRechts = 15;
 		int margeBoven = 15;
 		int margeOnder = 15;
+		int docWidth = 1024;
+		int docHeight = 450;
 		boolean fToets = true;
 		boolean globalParam = false;
 		boolean voortgang = false;
@@ -1156,6 +1158,10 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			margeBoven = ((Integer) h.get("margeBoven")).intValue();
 		if (h != null && h.containsKey("margeOnder"))
 			margeOnder = ((Integer) h.get("margeOnder")).intValue();
+		if (h != null && h.containsKey("docHeight"))
+		  docHeight = ((Integer) h.get("docHeight")).intValue();
+		if (h != null && h.containsKey("docWidth"))
+          docWidth = ((Integer) h.get("docWidth")).intValue();
 		if (h != null && h.containsKey("fToets"))
 			fToets = ((Boolean) h.get("fToets")).booleanValue();
 		if (h != null && h.containsKey("globalParam"))
@@ -1234,6 +1240,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		if (h != null && h.containsKey("layerVisible"))
 			layerVisible = (boolean[]) h.get("layerVisible");
 
+		MyOpdrEditContainer.setDefaultDocSizes(margeLinks, margeBoven, docWidth, docHeight);
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
 		

@@ -228,8 +228,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		modeChoice = new JComboBox();
 		modeChoice.setFont(font);
 		//modeChoice.setBackground(new Color(180,195,228));
-		modeChoice.setForeground(new Color(51,74,112));
-		modeChoice.setBackground(new Color(255,255,255));
+		//modeChoice.setForeground(new Color(51,74,112));
+		//modeChoice.setBackground(new Color(255,255,255));
+		modeChoice.setBorder(BorderFactory.createLineBorder(new Color(180,195,228)));
 		modeChoice.addItem(WiskOpdr.rb.getString("choiceOefenen"));
 		modeChoice.addItem(WiskOpdr.rb.getString("choiceOefenenStraf"));
 		modeChoice.addItem(WiskOpdr.rb.getString("choiceZelfToets"));
@@ -264,9 +265,10 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		imagesButton = new JButton(WiskOpdr.rb.getString("imagesButtonLabel"));
 		imagesButton.setFont(font);
 		imagesButton.setMargin(new Insets(3, 5, 3, 5));
+		//imagesButton.setBorder(BorderFactory.createEmptyBorder());
 		imagesButton.addActionListener(this);
-		imagesButton.setBackground(new Color(180,195,228));
-		imagesButton.setForeground(new Color(51,74,112));
+		//imagesButton.setBackground(new Color(180,195,228));
+		//imagesButton.setForeground(new Color(51,74,112));
         add(imagesButton,0);
 		
 		sizeLabel = new JLabel("123,456Mb");
@@ -278,11 +280,12 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		
 		instellingenKnop = new JButton(WiskOpdr.rb.getString("optiesButtonLabel"));
 		instellingenKnop.setFont(font);
+		//instellingenKnop.setBorder(BorderFactory.createEmptyBorder());
 		instellingenKnop.setMargin(new Insets(3, 5, 3, 5));
 		instellingenKnop.setBounds(10, actKeuzePanelY + aantalActiviteiten * 20 - 20, 1600, 20);
 		instellingenKnop.addActionListener(this);
-		instellingenKnop.setBackground(new Color(180,195,228));
-		instellingenKnop.setForeground(new Color(51,74,112));
+		//instellingenKnop.setBackground(new Color(180,195,228));
+		//instellingenKnop.setForeground(new Color(51,74,112));
 		add(instellingenKnop,0);
 
 		instellingenDialog = DialogFacade.newInstance(this, WiskOpdr.rb.getString("optiesButtonLabel"), true);

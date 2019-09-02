@@ -42,6 +42,11 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
     protected static final int ZELFTOETS = 2;
     protected static final int EINDTOETS = 3;
     
+    public static int defaultMarginX = 15;
+    public static int defaultMarginY = 10;
+    public static int defaultDocWidth = 1024;
+    public static int defaultDocHeight = 450;
+    
     protected int scoreMax;
     protected int mode;
     
@@ -95,6 +100,12 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private AntwoordEditPanel antwoordEditPanel; // bij oude editorversie: meer ruimte voor antwoordmodel (fullscreen).
 	//Einde Voor oude editorversie
 
+	public static void setDefaultDocSizes(int marginX, int marginY, int docWidth, int docHeight) {
+	  defaultMarginX = marginX;
+	  defaultMarginY = marginY;
+	  defaultDocWidth = docWidth;
+	  defaultDocHeight = docHeight;
+	}
 	
 	public MyOpdrEditContainer() {
 		this(790, 520);
@@ -131,6 +142,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		tekstEditor.setTemplateOption(true);
 		tekstEditor.setStandardComponentOption(true);
 		tekstEditor.setToolbarLeft(true);
+		tekstEditor.setMainEditor(defaultMarginX, defaultMarginY, defaultDocWidth, defaultDocHeight);
 		add(tekstEditor);
 		tekstEditor.setResizable(true);
 
@@ -259,16 +271,18 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 			tekstEditor.setFont(f);
 		if (tekstEditor2 != null)
 			tekstEditor2.setFont(f);
+		if(tekstEditor!=null)
+		  tekstEditor.setMainEditor(defaultMarginX, defaultMarginY, defaultDocWidth, defaultDocHeight);
 	}
 
 	public void paintComponent(Graphics g) {
 		g.setColor(new Color(51,74,112));
-	    g.drawLine(813, 0, 813, 10);
-		g.drawString("800 px", 818, 10);
-		g.drawLine(1037, 0, 1037, 10);
-		g.drawString("1024 px", 1042, 10);
-		g.drawLine(1293, 0, 1293, 10);
-		g.drawString("1280 px", 1298, 10);
+	    g.drawLine(847, 0, 847, 10);
+		g.drawString("800 px", 854, 10);
+		g.drawLine(1071, 0, 1071, 10);
+		g.drawString("1024 px", 1076, 10);
+		g.drawLine(1327, 0, 1327, 10);
+		g.drawString("1280 px", 1332, 10);
 	}
 
 	public void setControlPanelHeight(int h) {
@@ -283,11 +297,15 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelCB.setBounds(hasTitle ? 10 : 65, 8, 80, 15);
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
-		tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
+		//tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
+		tekstEditor.setBounds(10, hasTitle ? 75 : 15, w - 20, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
+		tekstEditor.setMainEditor(defaultMarginX, defaultMarginY, defaultDocWidth, defaultDocHeight);
+        
+        
 		tekstEditor2.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 260 + (hasAntwoordVak ? 0 : h - 450));
 		if (hasTekstVakLayout) {
-			randVarLabel.setBounds(scheidingX+15+corrToolbar - 210, h - 86, 200, 20);
-			randomVarEditor.setBounds(scheidingX+15+corrToolbar - 220, h - 86, 200, 80);
+			randVarLabel.setBounds(w - 200, h - 86, 200, 20);
+			randomVarEditor.setBounds(w - 210, h - 86, 200, 80);
 		} else {
 			randVarLabel.setBounds(scheidingX + 15, 5, eindX - 5 - scheidingX, 20);
 			randomVarEditor.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 70);
