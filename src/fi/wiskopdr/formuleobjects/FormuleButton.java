@@ -49,6 +49,9 @@ public class FormuleButton extends JButton implements MouseListener
 		"eslate.gif",
 		"epsilonwriter.png",
 		"reseticon.gif",
+		"sknop.gif",
+		"cknop.gif",
+		"tknop.gif",
 		
 		"wnformbutton.gif",
 		"wnformbuttonrood.gif",
@@ -657,6 +660,21 @@ public class FormuleButton extends JButton implements MouseListener
 			g.drawImage(getImage("geogebra.gif"),2,2,null);
 			//if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
 		}
+		else if(code.equals("sknop"))
+        {   //g.drawString("I",7,15);
+            g.drawImage(getImage("sknop.gif"),2,2,null);
+            //if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
+        }
+		else if(code.equals("cknop"))
+        {   //g.drawString("I",7,15);
+            g.drawImage(getImage("cknop.gif"),2,2,null);
+            //if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
+        }
+		else if(code.equals("tknop"))
+        {   //g.drawString("I",7,15);
+            g.drawImage(getImage("tknop.gif"),2,2,null);
+            //if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
+        }
 		else if(code.equals("cbook"))
 		{	//g.drawString("I",7,15);
 			g.drawImage(getImage("cbook.png"),2,2,null);
