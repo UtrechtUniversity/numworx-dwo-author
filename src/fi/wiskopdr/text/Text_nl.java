@@ -369,6 +369,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_importStyles" , "Importeer"},
 				{"OPT_exportStyles" , "Exporteer"},	
 				{"OPT_layers" , "Gebruik lagen"},
+				{"OPT_docWidthLabel" , "Pagina: Breedte"},
+				{"OPT_docHeightLabel" , "Hoogte (min)"},
+				
 				
 				{"OBJ_leerdoel", "Leerdoel"},
 				{"OBJ_categorie", "Vul naam in van categorie"},
