@@ -197,7 +197,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		};
 		headerPanel.setLayout(null);
 		headerPanel.setBackground(new Color(221,222,225));
-		headerPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
+		headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
 		super.add(headerPanel);
 		
 		contentPane = new EditorContentPanel(this);
@@ -210,7 +210,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(scrollbar)scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		else scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBackground(Color.white);
-		scrollPane.setBorder(BorderFactory.createLineBorder(Color.gray));
+		scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));
 		basisPanel.add(scrollPane);
 		
 		//scrollPane.setColumnHeaderView(new JPanel());
@@ -556,8 +556,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	{
 	  mainEditor = true;
 	  
-	  headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
-	  scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+	  headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));//new Color(120,150,202)));
+	  scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));//new Color(120,150,202)));
 	 
 	  
 	  tekstVak.setOpaque(true);
@@ -566,12 +566,14 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
      
       tekstVak.zetMarge(marginX);
       tekstVak.zetBovenMarge(marginY);
-      tekstVak.setBounds(5,5, docWidth, docHeight);
+      int x = Math.max(10, (getWidth() - balkH -docWidth)/2);
+      tekstVak.setBounds(x,10, docWidth, docHeight);
       tekstVak.zetMinimumHoogte(docHeight);
       tekstVak.layoutTekst();
       
       setNewScrollSize();
-      contentPane.setBackground(Color.lightGray);
+      contentPane.setShadow(true);
+      contentPane.setBackground(new Color(206,207,208));//Color.lightGray);//Color.lightGray);//instellingenKnop
 	}
 	
 	
