@@ -308,7 +308,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(Box.createHorizontalGlue());
 		boxv2.add(boxh);
 	    
-	    boxv2.add(Box.createVerticalStrut(70));
+	    boxv2.add(Box.createVerticalStrut(170));
+	    
 		
 		
 		//Layout-opties
