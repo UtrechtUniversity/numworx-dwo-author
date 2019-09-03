@@ -388,6 +388,12 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		boolean hasLayers = false;
 		String[] layerNames = null;
 		boolean[] layerVisible = null;
+		int margeLinks = 18;
+        int margeRechts = 15;
+        int margeBoven = 15;
+        int margeOnder = 15;
+        int docWidth = 1024;
+        int docHeight = 450;
 
 		if (h != null && h.containsKey("fontSize"))
 			fontSize = ((Integer) h.get("fontSize")).intValue();
@@ -453,7 +459,21 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			layerNames = (String[]) h.get("layerNames");
 		if (h != null && h.containsKey("layerVisible"))
 			layerVisible = (boolean[]) h.get("layerVisible");
+		if (h != null && h.containsKey("margeLinks"))
+          margeLinks = ((Integer) h.get("margeLinks")).intValue();
+        if (h != null && h.containsKey("margeRechts"))
+            margeRechts = ((Integer) h.get("margeRechts")).intValue();
+        if (h != null && h.containsKey("margeBoven"))
+            margeBoven = ((Integer) h.get("margeBoven")).intValue();
+        if (h != null && h.containsKey("margeOnder"))
+            margeOnder = ((Integer) h.get("margeOnder")).intValue();
+        if (h != null && h.containsKey("docHeight"))
+          docHeight = ((Integer) h.get("docHeight")).intValue();
+        if (h != null && h.containsKey("docWidth"))
+          docWidth = ((Integer) h.get("docWidth")).intValue();
 		
+        MyOpdrEditContainer.setDefaultDocSizes(margeLinks, margeBoven, docWidth, docHeight);
+        
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
 		setFont(WiskOpdr.tekstFont);
