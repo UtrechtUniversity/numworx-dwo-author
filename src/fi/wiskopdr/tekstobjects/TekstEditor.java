@@ -285,7 +285,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		standardComponentChoiceKnop = new FormuleButton("sknop");
 		standardComponentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		standardComponentChoiceKnop.addActionListener(this);
-		standardComponentChoiceKnop.setVisible(false);
+		standardComponentChoiceKnop.setVisible(true);
 		if(form)headerPanel.add(standardComponentChoiceKnop);
 		
 		templateChoiceKnop = new FormuleButton("tknop");
@@ -446,7 +446,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			//standardComponentItems[i] = new JMenuItem(cTypes[i]);new JMenuItem()
 			//standardComponentItems[i].addActionListener(this);
 		  standardComponentItems[i] = new JMenuItem(new TComponentAction(cTypeNames[i], cTypes[i]));
-			standardComponentChoice.add(standardComponentItems[i]);
+		  standardComponentChoice.add(standardComponentItems[i]);
+		  if(i==0)
+		    standardComponentChoice.addSeparator();
 		}
 		
 			
@@ -582,12 +584,19 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
 	public void setTemplateOption(boolean b)
 	{
-		templateOption = b;
+		
 		if(!formMode && templateItems!=null && templateItems.length>0){
+		    templateOption = b;
 			templateChoiceKnop.setVisible(b);
 			componentChoiceKnop.setVisible(b);
+			standardComponentChoiceKnop.setVisible(!b);
+			standardComponentOption = !b;
 		}
-		standardComponentOption = !b;
+		else {
+		  standardComponentChoiceKnop.setVisible(!b);
+		  standardComponentOption = !b;
+		}
+		
 	}
 	
 	public void setStandardComponentOption(boolean b)
@@ -677,7 +686,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
           //tekstVak.setBounds(5,5,b-10-(toolbarLeft?33:0),h-30);
         }
        
-        tekstVak.layoutTekst();
+        //tekstVak.layoutTekst();
         resizeButton.setBounds(getSize().width-18,3,15,15);
         setNewScrollSize();
     }
