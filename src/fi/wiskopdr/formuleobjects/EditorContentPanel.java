@@ -4,6 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
+
 import fi.wiskopdr.AntwoordVergelijkingVak;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.AntwoordFormuleVak;
@@ -108,8 +109,25 @@ public class EditorContentPanel extends JPanel //implements Scrollable
 			
 			
 		}*/
+		else if(shadow && getComponent(0)!=null)
+		{super.paintComponent(g);
+		  drawShadow(g,getComponent(0).getBounds());
+		}
 		else super.paintComponent(g);
 	}
+	
+	boolean shadow=false;
+	public void setShadow(boolean b)
+	{
+	  shadow=b;
+	}
+	
+	private void drawShadow(Graphics g, Rectangle r) {
+      for(int i=0 ; i<10 ; i++) {
+          g.setColor( new Color(150+5*i,150+5*i,150+10*i,255-25*i));
+          g.drawRect(r.x-1*i, r.y-1*i, r.width+2*i, r.height+2*i);
+      }
+    }
 
 	public Dimension getPreferredScrollableViewportSize() {
 		// TODO Auto-generated method stub
