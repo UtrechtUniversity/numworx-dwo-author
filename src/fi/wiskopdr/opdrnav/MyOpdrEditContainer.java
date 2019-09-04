@@ -276,13 +276,14 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	}
 
 	public void paintComponent(Graphics g) {
+	    int xnul = 25 + (tekstEditor.getWidth() - defaultDocWidth)/2;
 		g.setColor(new Color(51,74,112));
-	    g.drawLine(847, 0, 847, 10);
-		g.drawString("800 px", 854, 10);
-		g.drawLine(1071, 0, 1071, 10);
-		g.drawString("1024 px", 1076, 10);
-		g.drawLine(1327, 0, 1327, 10);
-		g.drawString("1280 px", 1332, 10);
+	    g.drawLine(xnul+800, 0, xnul+800, 10);
+		g.drawString("800 px", xnul+805, 10);
+		g.drawLine(xnul+1024, 0, xnul+1024, 10);
+		g.drawString("1024 px", xnul+1029, 10);
+		g.drawLine(xnul+1280, 0, xnul+1280, 10);
+		g.drawString("1280 px", xnul+1288, 10);
 	}
 
 	public void setControlPanelHeight(int h) {
