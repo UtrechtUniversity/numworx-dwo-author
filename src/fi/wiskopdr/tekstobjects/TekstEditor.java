@@ -207,7 +207,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 		
 		this.scrollbar = scrollbar;
-		if(scrollbar)scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		if(scrollbar)scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, (toolbarLeft?JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED:JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
 		else scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBackground(Color.white);
 		scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));
