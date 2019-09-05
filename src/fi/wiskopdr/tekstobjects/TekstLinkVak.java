@@ -7,6 +7,7 @@ import java.net.URL;
 import javafx.embed.swing.JFXPanel;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
@@ -172,7 +173,7 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
       			remove(linkRegel);
       			final Link link = linkRegel.getLink();
       			final SimpleSwingBrowser ssb = new SimpleSwingBrowser();
-      			JFXPanel panel = ssb.getBrowserPanel();
+      			JComponent panel = ssb.getBrowserPanel();
       			//Container panel = ssb.getContentPane();
       			add(panel);
       			panel.invalidate();

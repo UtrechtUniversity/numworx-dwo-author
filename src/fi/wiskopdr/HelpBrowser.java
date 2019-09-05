@@ -7,13 +7,11 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import javafx.embed.swing.JFXPanel;
-
 public class HelpBrowser 
 {
   private DialogFacade frame;
 
-  private JFXPanel panel;
+  private JComponent panel;
   private int width = 465;
   private int height = 500;
 

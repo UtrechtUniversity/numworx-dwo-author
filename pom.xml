@@ -469,6 +469,12 @@
 			<version>2.3.11</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>nl.numworx.swingbrowser</groupId>
+			<artifactId>swingbrowser-jfx</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
 <!-- 	<dependencyManagement> -->
