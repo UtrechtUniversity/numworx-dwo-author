@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 
 import fi.wiskopdr.opdrnav.PlusMinKnop;
 
-public class VoorwaardelijkeNavigatieButton extends JButton implements ActionListener, FocusListener
+public class VoorwaardelijkeNavigatieButton extends WiskOpdrButton implements ActionListener, FocusListener
 {
 	private DialogFacade frame;
 	JPanel voorwaardenPanel = new JPanel();

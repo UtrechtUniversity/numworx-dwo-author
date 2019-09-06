@@ -269,6 +269,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		condNavPercentageRB = new JRadioButton(WiskOpdr.rb.getString("OPT_conditionalPercLabel"));
 		condNavPercentageRB.addActionListener(this);
 		condNavPercentageRB.setFont(font);
+		condNavPercentageRB.setForeground(WiskOpdr.fgcolorEditor);
 		condNavPercentageRB.setOpaque(false);
 		condNavPercentageRB.setVisible(false);
 		condNavPercentageRB.setSelected(true);
@@ -277,6 +278,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		condPercTF = new JTextField(""+condPerc);
 		condPercTF.setFont(font);
+		condPercTF.setForeground(WiskOpdr.fgcolorEditor);
 		condPercTF.setPreferredSize(new Dimension(50,24));
 		condPercTF.setMaximumSize(new Dimension(50,24));
 		condPercTF.setVisible(false);
@@ -292,6 +294,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		condNavVoorwaardenRB.addActionListener(this);
 		condNavVoorwaardenRB.setOpaque(false);
 		condNavVoorwaardenRB.setFont(font);
+		condNavVoorwaardenRB.setForeground(WiskOpdr.fgcolorEditor);
 		condNavVoorwaardenRB.setSelected(false);
 		condNavVoorwaardenRB.setVisible(false);
 		boxh.add(condNavVoorwaardenRB);
@@ -299,7 +302,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(Box.createHorizontalStrut(10));
 		
 		condButton = new VoorwaardelijkeNavigatieButton();
-		condButton.setFont(font);
+		//condButton.setFont(font);
+		condButton.setPreferredSize(new Dimension(100,24));
+		condButton.setMaximumSize(new Dimension(100,24));
 		condButton.setVisible(false);
 		boxh.add(condButton);
 		boxh.add(Box.createGlue());
@@ -316,6 +321,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		allesCorrectCB = new JCheckBox(WiskOpdr.rb.getString("OPT_allesCorrect"));
 		allesCorrectCB.setOpaque(false);
 		allesCorrectCB.setFont(font);
+		allesCorrectCB.setForeground(WiskOpdr.fgcolorEditor);
 		allesCorrectCB.setSelected(false);
 		allesCorrectCB.setVisible(false);
 		boxh.add(allesCorrectCB);
@@ -649,6 +655,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		//cancelButton.setBackground(new Color(49,71,112));
 		cancelButton.addActionListener(this);
 		bottomPanel.add(cancelButton);
+		bottomPanel.setBackground(new Color(219,220,221));
+		bottomPanel.setBorder(BorderFactory.createLineBorder(new Color(219,221,225), 5));
 		
 	}
 	
@@ -658,7 +666,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	{	
 		Box boxh = Box.createHorizontalBox();
 		//boxh.setPreferredSize(new Dimension(300,24));
-		JCheckBox checkbox = new JCheckBox(s);
+		JCheckBox checkbox = new WiskOpdrCheckbox(s);
 		checkbox.setOpaque(false);
 		checkbox.setFont(font);
 		checkbox.setForeground(WiskOpdr.fgcolorEditor);
