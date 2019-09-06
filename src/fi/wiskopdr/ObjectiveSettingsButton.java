@@ -9,7 +9,7 @@ import javax.swing.*;
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.opdrnav.PlusMinKnop;
 
-public class ObjectiveSettingsButton extends JButton implements ActionListener
+public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionListener
 {
 	private DialogFacade frame;
 	private JTextField[][] objectiveTextFields;

@@ -262,13 +262,13 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		}
 		//
 		
-		imagesButton = new JButton(WiskOpdr.rb.getString("imagesButtonLabel"));
-		imagesButton.setFont(font);
+		imagesButton = new WiskOpdrButton(WiskOpdr.rb.getString("imagesButtonLabel"));
+		//imagesButton.setFont(font);
 		imagesButton.setMargin(new Insets(3, 5, 3, 5));
 		//imagesButton.setBorder(BorderFactory.createEmptyBorder());
 		imagesButton.addActionListener(this);
-		//imagesButton.setBackground(new Color(120,150,202));
-		//imagesButton.setForeground(new Color(255,255,255));
+		imagesButton.setBackground(new Color(120,150,202));
+		imagesButton.setForeground(new Color(255,255,255));
         add(imagesButton,0);
 		
 		sizeLabel = new JLabel("123,456Mb");
@@ -278,21 +278,21 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		sizeLabel.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 42, 100, 22);
 		add(sizeLabel,0);
 		
-		instellingenKnop = new JButton(WiskOpdr.rb.getString("optiesButtonLabel"));
-		instellingenKnop.setFont(font);
+		instellingenKnop = new WiskOpdrButton(WiskOpdr.rb.getString("optiesButtonLabel"));
+		//instellingenKnop.setFont(font);
 		//instellingenKnop.setBorder(BorderFactory.createEmptyBorder());
 		instellingenKnop.setMargin(new Insets(3, 5, 3, 5));
 		instellingenKnop.setBounds(10, actKeuzePanelY + aantalActiviteiten * 20 - 20, 1600, 20);
 		instellingenKnop.addActionListener(this);
-		//instellingenKnop.setBackground(new Color(120,150,202));
-		//instellingenKnop.setForeground(new Color(255,255,255));
+		instellingenKnop.setBackground(new Color(120,150,202));
+		instellingenKnop.setForeground(new Color(255,255,255));
 		add(instellingenKnop,0);
 
 		instellingenDialog = DialogFacade.newInstance(this, WiskOpdr.rb.getString("optiesButtonLabel"), true);
 
 		instellingenPanel = new InstellingenPanel(instellingenDialog, this);
 		instellingenPanel.addActionListener(this);
-		instellingenPanel.setBounds(0, 0, 650, 760);
+		instellingenPanel.setBounds(0, 0, 750, 720);
 		instellingenPanel.zetInstellingen(instellingen);
 
 		instellingenDialog.getContentPane().add(instellingenPanel);
@@ -473,7 +473,22 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
           docWidth = ((Integer) h.get("docWidth")).intValue();
 		
         MyOpdrEditContainer.setDefaultDocSizes(margeLinks, margeBoven, docWidth, docHeight);
-        
+        if(styles != null)
+          TekstVakPanel.styles = styles;
+      
+        if(templatePages != null)
+          TekstVakPanel.templatePages = templatePages;
+      
+        if(templatePagesKeys != null)
+          TekstVakPanel.templatePagesKeys = templatePagesKeys;
+      
+        if(templateComponents != null)
+          TekstVakPanel.templateComponents = templateComponents;
+      
+        if(templateComponentsKeys != null)
+          TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
+      
+      
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
 		setFont(WiskOpdr.tekstFont);
@@ -484,20 +499,6 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		WiskOpdr.setMisconceptions(misconceptions);
 		WiskOpdr.setMccCategories(mccCategorieString);
 		
-		if(styles != null)
-			TekstVakPanel.styles = styles;
-		
-		if(templatePages != null)
-			TekstVakPanel.templatePages = templatePages;
-		
-		if(templatePagesKeys != null)
-			TekstVakPanel.templatePagesKeys = templatePagesKeys;
-		
-		if(templateComponents != null)
-			TekstVakPanel.templateComponents = templateComponents;
-		
-		if(templateComponentsKeys != null)
-			TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
 		
 		
 		FormuleTeken.zetMaalTeken(maalTeken);

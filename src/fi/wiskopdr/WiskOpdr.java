@@ -101,8 +101,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static Locale language = new Locale("en", "");
 	
 	public static Color bgcolor;
-	public static Color BG_BLUE = new Color(221, 238, 255);
+	public static Color BG_BLUE = new Color(237, 239, 241);
 	public static Color bgcolorEditor;
+	public static Color fgcolorEditor = new Color(49,71,112);
 
 	public static String deployVariant;
 	public static boolean deployDwoGrading = true;

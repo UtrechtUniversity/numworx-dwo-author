@@ -131,8 +131,37 @@ public class FormuleButton extends JButton implements MouseListener
 				setToolTipText(" " + WiskOpdr.rb.getString("ofLabel") + " ");
 			if (code.equals("\u2205"))
 				setToolTipText(" " + WiskOpdr.rb.getString("geenOplossingen") + " ");
+			
+			
+			  
 		}
-
+		if(code.equals("formule"))
+           setToolTipText(WiskOpdr.rb.getString("TE_formuleButtonTooltip"));
+		if(code.equals("grafiektool"))
+		  setToolTipText(WiskOpdr.rb.getString("TE_graphButtonTooltip"));
+		if(code.equals("link"))
+		  setToolTipText(WiskOpdr.rb.getString("TE_linkButtonTooltip"));
+		if(code.equals("image"))
+		  setToolTipText(WiskOpdr.rb.getString("TE_imageButtonTooltip"));
+		if(code.equals("antwoordvak"))
+		  setToolTipText(WiskOpdr.rb.getString("TE_answerboxButtonTooltip"));
+		if(code.equals("interactiecomponent"))
+          setToolTipText(WiskOpdr.rb.getString("TE_widgetButtonTooltip"));
+		if(code.equals("geogebra"))
+          setToolTipText(WiskOpdr.rb.getString("TE_geogebraButtonTooltip"));
+		if(code.equals("tekstvak"))
+          setToolTipText(WiskOpdr.rb.getString("TE_tekstVakButtonTooltip"));
+		if(code.equals("sknop"))
+		  setToolTipText(WiskOpdr.rb.getString("TE_compositeButtonTooltip"));
+		if(code.equals("tknop"))
+		  setToolTipText(WiskOpdr.rb.getString("TE_templateButtonTooltip"));
+		if(code.equals("cknop"))
+		  setToolTipText(WiskOpdr.rb.getString("TE_templateCompButtonTooltip"));
+		if(code.equals("crosswidget"))
+		  setToolTipText(WiskOpdr.rb.getString("TE_x-widgetButtonTooltip"));
+		
+		 
+		
 	}
 	
 	public void setPopupButtonImage(final Image image)

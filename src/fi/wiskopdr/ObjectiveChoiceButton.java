@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.swing.*;
 
-public class ObjectiveChoiceButton extends JButton implements ActionListener
+public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListener
 {
     class ObjectivesFacade implements ObjectiveChoices {
       public boolean[][] getChoices(){   

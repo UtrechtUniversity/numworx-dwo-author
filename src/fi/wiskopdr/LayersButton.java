@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 
 import fi.wiskopdr.opdrnav.PlusMinKnop;
 
-public class LayersButton extends JButton implements ActionListener, FocusListener
+public class LayersButton extends WiskOpdrButton implements ActionListener, FocusListener
 {
 	private DialogFacade frame;
 	JPanel layersPanel = new JPanel();
