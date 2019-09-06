@@ -41,6 +41,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private FormuleButton cbookKnop, cindyKnop, eslateKnop, epsilonKnop;
 	public FormuleButton crosswidgetKnop; 
 	
+	private JPopupMenu antwoordVakKnopJMenu;
+	private JPopupMenu appletKnopJMenu;
+	
 	public FormuleButton templateChoiceKnop, componentChoiceKnop, standardComponentChoiceKnop;
 	public JPopupMenu templateChoice, componentChoice, standardComponentChoice;
 	JMenuItem[] templateItems;
@@ -251,6 +254,11 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		antwoordVakKnop.setBounds(toolbarLeft,64+26+26,balkH/2-10,20,20);
 		antwoordVakKnop.addActionListener(this);
 		if(form)headerPanel.add(antwoordVakKnop);
+		antwoordVakKnopJMenu = new JPopupMenu();
+		TekstInteractiePanelVak.makeJMenu(this,antwoordVakKnopJMenu, 0);
+		antwoordVakKnopJMenu.setBackground(new Color(237,239,241));
+		antwoordVakKnopJMenu.setForeground(new Color(49,71,112));
+		antwoordVakKnopJMenu.setFont(new Font("SansSerif",Font.PLAIN,12));
 		
 		tekstVakKnop = new FormuleButton("tekstvak");
 		tekstVakKnop.setBounds(toolbarLeft,64+26+26+26+26+26,balkH/2-10,20,20);
@@ -285,7 +293,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		standardComponentChoiceKnop = new FormuleButton("sknop");
 		standardComponentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		standardComponentChoiceKnop.addActionListener(this);
-		standardComponentChoiceKnop.setVisible(true);
+		standardComponentChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(standardComponentChoiceKnop);
 		
 		templateChoiceKnop = new FormuleButton("tknop");
@@ -477,6 +485,11 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		appletKnop.setBounds(toolbarLeft,64+26+26+26,balkH/2-10,20,20);
 		appletKnop.addActionListener(this);
 		if(form)headerPanel.add(appletKnop);
+		appletKnopJMenu = new JPopupMenu();
+        TekstInteractiePanelVak.makeJMenu(this,appletKnopJMenu, 1);
+        appletKnopJMenu.setBackground(new Color(237,239,241));
+        appletKnopJMenu.setForeground(new Color(49,71,112));
+        appletKnopJMenu.setFont(new Font("SansSerif",Font.PLAIN,12));
 		
 		wortelKnop = new FormuleButton("wortel");
 		wortelKnop.setBounds(toolbarLeft,12,balkH/2-10,20,20);
@@ -929,7 +942,10 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		{	if(studentEditor) tekstVakActief.insertStudentTekstInteractiePanelVak(8);
 		}
 		else if(e.getSource()==antwoordVakKnop)
-		{	tekstVakActief.insertTekstInteractiePanelVak(0);
+		{	//tekstVakActief.insertTekstInteractiePanelVak(0);
+		  antwoordVakKnopJMenu.setVisible(true);
+		  antwoordVakKnopJMenu.show(this,antwoordVakKnop.getLocation().x, antwoordVakKnop.getLocation().y+antwoordVakKnop.getHeight());
+	        
 		}
 		else if(e.getSource()==tekstVakKnop)
 		{	tekstVakActief.insertTekstInteractiePanelVak(3);
@@ -938,7 +954,10 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		{	tekstVakActief.insertLinkVak();
 		}
 		else if(e.getSource()==appletKnop)
-		{	tekstVakActief.insertTekstInteractiePanelVak(1);
+		{	//tekstVakActief.insertTekstInteractiePanelVak(1);
+		  appletKnopJMenu.setVisible(true);
+		  appletKnopJMenu.show(this,appletKnop.getLocation().x, appletKnop.getLocation().y+appletKnop.getHeight());
+         
 		}
 		else if(e.getSource()==geogebraKnop)
 		{	tekstVakActief.insertTekstInteractiePanelVak(4);
@@ -1678,4 +1697,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         
       }
 	}
+	
+	public class AntwoordvakKeuzeAction extends AbstractAction {
+      public AntwoordvakKeuzeAction(String text, int setNr, int soort) {
+          super(text, null);
+          putValue("setNr", setNr);
+          putValue("soort", soort);
+      }
+      public void actionPerformed(ActionEvent e) {
+          tekstVakActief.insertTekstInteractiePanelVak((Integer)getValue("setNr"),(Integer)getValue("soort"));
+      }
+    }
 }

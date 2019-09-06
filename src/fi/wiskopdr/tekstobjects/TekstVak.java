@@ -546,6 +546,20 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		tfvNieuw.showDialog(true); // BLOK		
 	}
 	
+	public void insertTekstInteractiePanelVak(int setNr, int soort)
+    {   tekst.insert(caretPos,'@');
+        TekstInteractiePanelVak tfvNieuw = new TekstInteractiePanelVak(this, setNr, soort);
+        tfvNieuw.addActionListener(this); 
+        tfvNieuw.setBackground(getBackground());
+        tfvNieuw.setEditMode(editable);
+        tekst.insertTekstInteractiePanelVak(caretPos,tfvNieuw);
+        vulVak(tekst.toString());
+        repaint();
+        produceAction("resize");
+// last change:
+        tfvNieuw.showDialog(true); // BLOK      
+    }
+	
 	public void insertTekstInteractiePanelVak(TekstInteractiePanelVak tfvNieuw)
 	{
 		tekst.insert(caretPos,'@');

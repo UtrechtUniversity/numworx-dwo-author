@@ -130,7 +130,7 @@ public class ShareAction extends AbstractAction {
 			dialog.soortAntwoordVakKeuze.removeAllItems();
 			dialog.initSet(setNr);
 // prepare setNr...
-			dialog.addInteractieEditPanel(map);
+			dialog.addInteractieEditPanel(map,999);
 		}
 		
 		@SuppressWarnings({ "rawtypes", "unchecked" })

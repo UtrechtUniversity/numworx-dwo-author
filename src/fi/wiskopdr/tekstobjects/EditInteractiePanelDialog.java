@@ -110,7 +110,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     // Deze extra lijst maakt een selectie uit de set, 
     // want niet alle widgets zijn HTML5 compliant. 
     // Bovendien is de volgorde alfabetisch gemaakt
-    int[] widgetSelection = {21,0,1,12,4,31,3,38,8,37,40,36,39,27,26,14,10,28,34,17,33,25,18,19,13,7};
+    //int[] widgetSelection = {21,0,1,12,4,31,3,38,8,37,40,36,39,27,26,14,10,28,34,17,33,25,18,19,13,7};
     
     
     //bij zwevend TeksVakPanel
@@ -142,12 +142,21 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     	initEditInteractiePanelDialog(setNr, launchData, manager);
     }
     
+    public EditInteractiePanelDialog(Window owner, String windowTitle, boolean modal, int setNr,  int soort, XWidgetManager manager) {
+      super(owner, windowTitle);setModal(modal);
+      initEditInteractiePanelDialog(setNr, null, soort, manager);
+    }
+    
 //    public EditInteractiePanelDialog(Dialog owner, String windowTitle, boolean modal, int setNr,  Hashtable launchData, XWidgetManager manager) {
 //    	super(owner, windowTitle, modal);
 //    	initEditInteractiePanelDialog(setNr, launchData, manager);
 //    }
-
+    
     void initEditInteractiePanelDialog(int setNr,  Hashtable launchData, XWidgetManager manager) {
+      initEditInteractiePanelDialog(setNr, launchData, 999, manager);
+    }
+
+    void initEditInteractiePanelDialog(int setNr,  Hashtable launchData, int soort, XWidgetManager manager) {
     	Container content = getContentPane();
     	setLayeredPane(new TabletOwningLayeredPane());
     	setContentPane(content);
@@ -165,7 +174,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         
         size = new Dimension(800,650); // Default value
         if(setNr==4 || setNr==3) {
-        	size = new Dimension(1000,710);
+        	size = new Dimension(1000,700);
         } 
         else {
         	if (setNr == 2) {  // GraphTool
@@ -265,7 +274,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		
 		getContentPane().add(bottomPanel,BorderLayout.SOUTH);
         launchData = shareAction.unwrap(launchData);
-        addInteractieEditPanel(launchData);
+        addInteractieEditPanel(launchData, soort);
         
         
         this.addWindowListener(this);
@@ -300,8 +309,9 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		}
 		else if(setNr == TekstInteractiePanelVak.AppletsSetNr)
 		{	
-		    for(int i=0 ; i<widgetSelection.length ; i++)
-            {   soortAntwoordVakKeuze.addItem(TekstInteractiePanelVak.interactiePanelDescriptions[set[widgetSelection[i]]]);
+		    for(int i=0 ; i<set.length ; i++)//i<widgetSelection.length
+            {   //soortAntwoordVakKeuze.addItem(TekstInteractiePanelVak.interactiePanelDescriptions[set[widgetSelection[i]]]);
+                soortAntwoordVakKeuze.addItem(TekstInteractiePanelVak.interactiePanelDescriptions[set[i]]);
             }
 		}
 		else 
@@ -318,10 +328,31 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     	if(interactieEditPanel!=null)((Component)interactieEditPanel).setBackground(c);
     }
 
-    public void addInteractieEditPanel(Hashtable launchData)
+    public void addInteractieEditPanel(Hashtable launchData, int soort)
+    
     {
     	if(launchData==null) 
-    	{	if(soortAntwoordVakKeuze.getModel().getSize()==2)
+    	{	
+    	  if(soort!=999) {
+    	    int soortInteractiePanel = TekstInteractiePanelVak.interactiePanelSets[setNr][soort];
+            
+    	    if(setNr == TekstInteractiePanelVak.AppletsSetNr)
+              for(int i=0 ; i<set.length ; i++)
+              {    //if(set[widgetSelection[i]]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
+                   if(set[i]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
+              }
+            else
+              for(int i=0 ; i<set.length ; i++)
+              {    if(set[i]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
+                   
+              }
+    	    
+    	    makeInteractieEditPanel(soortInteractiePanel);
+            plaatsEditInteractiePanel();
+            this.huidigSoortInteractiePanel = soortInteractiePanel;
+    	  }
+    	  
+    	  else  if(soortAntwoordVakKeuze.getModel().getSize()==2)
     		{	soortAntwoordVakKeuze.setSelectedIndex(1);
 			}
     		else if(setNr == 3) //Bij Tekstvak is nu keuze tussen tekstvak en symbool. Ik wil dat standaard tekstvak verschijnt, geen keuze.
@@ -358,9 +389,9 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
        if(soortInteractiePanel != -2) 
        {   
          if(setNr == TekstInteractiePanelVak.AppletsSetNr)
-           for(int i=0 ; i<widgetSelection.length ; i++)
-           {	if(set[widgetSelection[i]]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
-				
+           for(int i=0 ; i<set.length ; i++)
+           {	//if(set[widgetSelection[i]]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
+                if(set[i]==soortInteractiePanel)soortAntwoordVakKeuze.setSelectedIndex(i+1);
            }
          else
            for(int i=0 ; i<set.length ; i++)
@@ -609,7 +640,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		  if(interactieEditPanel != null) interactieEditPanel.zetHoogte(57);
 		}
 		else if(soortInteractiePanel == 45)//GraphTool
-		{  		if(soortInteractiePanel == TekstInteractiePanelVak.interactiePanelSets[1][30])
+		{  		//if((""+soortInteractiePanel).equals(TekstInteractiePanelVak.wiskOpdrInteractiePanels[30][1]))
 				{	interactieEditPanel = maakInteractieEditPanel(TekstInteractiePanelVak.wiskOpdrInteractiePanels[30][0], WiskOpdr.language);
 					breedteTF.setText("300");
 					hoogteTF.setText("300");
@@ -623,8 +654,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	System.out.println(""+i);
 				System.out.println(""+soortInteractiePanel);
-				System.out.println(""+TekstInteractiePanelVak.interactiePanelSets[1][i]);
-				if(soortInteractiePanel == TekstInteractiePanelVak.interactiePanelSets[1][i])
+				//System.out.println(""+TekstInteractiePanelVak.interactiePanelSets[1][i]);
+				if((""+soortInteractiePanel).equals(TekstInteractiePanelVak.wiskOpdrInteractiePanels[i][1]))
 				{	interactieEditPanel = maakInteractieEditPanel(TekstInteractiePanelVak.wiskOpdrInteractiePanels[i][0], WiskOpdr.language);
 					breedteTF.setText("500");
 					hoogteTF.setText("450");
@@ -717,8 +748,9 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 				
 			} 
 			else if(this.setNr==TekstInteractiePanelVak.AppletsSetNr) {			
-				soortInteractiePanel = set[widgetSelection[selectNr]];
-				//System.out.println("wasHere: nr="+soortInteractiePanel);
+				//soortInteractiePanel = set[widgetSelection[selectNr]];
+				soortInteractiePanel = set[selectNr];
+				System.out.println("wasHere: nr="+soortInteractiePanel);
 			}
 			else
 			    soortInteractiePanel = set[selectNr];
@@ -834,7 +866,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			} 
 			else if(setNr == TekstInteractiePanelVak.AppletsSetNr)
 			{	
-				if(selectNr >-1 )soortInteractiePanel = set[widgetSelection[selectNr]];
+				//if(selectNr >-1 )soortInteractiePanel = set[widgetSelection[selectNr]];
+				if(selectNr >-1 )soortInteractiePanel = set[selectNr];
 				makeInteractieEditPanel(soortInteractiePanel);
 			} 
 			else 

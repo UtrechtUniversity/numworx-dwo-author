@@ -54,8 +54,11 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 
@@ -105,6 +108,7 @@ import fi.wiskopdr.samengesteldestappen.SamengesteldeStappenPanel;
 import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
 import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
 import fi.wiskopdr.symbolen.SymboolPanel;
+import fi.wiskopdr.tekstobjects.TekstEditor.TComponentAction;
 import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 
 public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListener, InteractiePanelContainerIF, MouseListener, MouseMotionListener, KeyListener, CBookContext
@@ -284,56 +288,99 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private Map<String,Set<Connector>> subscriptions;
 	
 	public static String[][] wiskOpdrInteractiePanels = 
-	{
-		//{ "fi.wiskopdr.AntwoordFormuleVak" , "Formulevak met stappen" },
-		//{ "fi.wiskopdr.AntwoordVergelijkingVak" , "Vergelijkingvak met stappen" },
-		//{ "fi.wiskopdr.SimpelAntwoordFormuleVak" , "Simpel formulevak" },
-		//{ "fi.wiskopdr.SimpelAntwoordVergelijkingVak" , "Simpel vergelijkingvak" },
-		//{ "fi.wiskopdr.tekstobjectsTekstEditor" , "Tekst-antwoordvak" },
-		{ "fi.algebrapijlenopdr.AlgebraPijlenOpdr" , "AlgebraPijlen" },
-		{ "fi.nabouwenaanzichten.NabouwenAanzichten" , "Blokkenbouwen" },
-		{ "fi.flowdiagrams.FlowDiagrams" , "Stroomdiagrammen" },
-		{ "fi.balansfruit.BalansFruitApplet" , "Fruitbalans" },
-		{ "fi.doorziendwo.DoorzienDWO" , "Doorzien" },
-		{ "fi.vergroten.Vergroten" , "Vergroten" },
-		{ "fi.vangen.Vangen" , "Vangen" },
-		{ "fi.verknippen.Verknippen" , "Verknippen" },
-		{ "fi.geomalgebra.GeomAlgebra" , "Geom.algebra 2d" },
-		{ "fi.geomalgebra1d.GeomAlgebra1d" , "Geom.algebra 1d" },
-		{ "fi.normaleverdeling.NormaleVerdeling" , "Normale verdeling" },
-		{ "fi.tinyplayerapplet.TinyPlayerApplet" , "mp3-player" },
-		{ "fi.binomverdeling.BinomVerdeling" , "Binominale verdeling" },
-		{ "fi.tekenveelvlakopdr.TekenVeelvlakOpdr" , "Tekenveelvlak" },
-		{ "fi.mozarch.MozArch" , "Mozaik" },
-		{ "fi.geodefull.GeodeFull" , "Veelvlakken" },
-		{ "fi.figuursnijden.Snijden" , "Eerlijk verdelen" },
-		{ "fi.statistiek.Statistiek" , "Statistische representaties" },
-		{ "fi.stroomdiagrammen.Stroomdiagrammen" , "Stroomdiagrammen Nieuw" },
-		{ "fi.tegels.Tegels" , "Tegels" },
-		{ "fi.omtrekapplet.OmtrekApplet" , "Omtrek applet" },
-		{ "fi.algebraexpressies.AlgebraExpressies" , "Algebra Expressies" },
-		{ "fi.oppervlaktealgebra.OppervlakteAlgebra" , "Oppervlakte-algebra" },
-		{ "fi.blokkenprogramma.BlokkenProgramma" , "Blokkenprogramma" },
-		{ "fi.grafiek3dtest.Grafiek3DTest" , "Grafieken 3D" },
-		{ "fi.spot_problems_dwo.Spot_Problems_dwo" , "Stippelalgebra" },
-		{ "fi.kladje.Kladje" , "Kladje" },
-		{ "fi.kansbomen.Kansbomen" , "Kansbomen" },
-		{ "fi.calculatordwo.CalculatorDwo" , "Rekenmachine" },
-		{ "fi.formstruct.FormStruct" , "[test] FormStruct" },
-		{ "fi.graphtool.GraphTool" , "[test] GraphTool" },
-		{ "fi.draaibank.Draaibank" , "[test] Draaibank" },
-		{ "fi.waarmakersdwo.WaarmakersDwo" , "[test] Waarmaker" },
-		{ "fi.statsim.StatSim" , "[test] Statistiek Simulaties" },
-		{ "fi.sliderwidget.SliderWidget" , "[test] Slider" },
-		{ "fi.dataplot.DataPlot" , "[test] DataPlot" },
-		{ "fi.javalogoweb.JavaLogoWeb" , "[test] JavaLogoWeb" },
-		{ "fi.heks.Heks" , "[test] Heks" },
-		{ "nl.numworx.geodefiner.GeoDefiner", "[test] GeoDefiner" },
-		{ "fi.javalogoweb3d.JavaLogoWeb3d" , "[test] JavaLogoWeb3d" },
-		{ "fi.ivmdraw.IVMdraw" , "[test] IVMdraw" },
+	{   
+		{ "fi.algebrapijlenopdr.AlgebraPijlenOpdr" , "5" },
+		{ "fi.nabouwenaanzichten.NabouwenAanzichten" , "6" },
+		{ "fi.flowdiagrams.FlowDiagrams" , "7" },
+		{ "fi.balansfruit.BalansFruitApplet" , "11" },
+		{ "fi.doorziendwo.DoorzienDWO" , "15" },
+		{ "fi.vergroten.Vergroten" , "17" },
+		{ "fi.vangen.Vangen" , "18" },
+		{ "fi.verknippen.Verknippen" , "19" },
+		{ "fi.geomalgebra.GeomAlgebra" , "20" },
+		{ "fi.geomalgebra1d.GeomAlgebra1d" , "21" },
+		{ "fi.normaleverdeling.NormaleVerdeling" , "22" },
+		{ "fi.tinyplayerapplet.TinyPlayerApplet" , "23" },
+		{ "fi.binomverdeling.BinomVerdeling" , "24" },
+		{ "fi.tekenveelvlakopdr.TekenVeelvlakOpdr" , "26" },
+		{ "fi.mozarch.MozArch" , "27" },
+		{ "fi.geodefull.GeodeFull" , "28" },
+		{ "fi.figuursnijden.Snijden" , "29" },
+		{ "fi.statistiek.Statistiek" , "30" },
+		{ "fi.stroomdiagrammen.Stroomdiagrammen" , "31" },
+		{ "fi.tegels.Tegels" , "32" },
+		{ "fi.omtrekapplet.OmtrekApplet" , "34" },
+		{ "fi.algebraexpressies.AlgebraExpressies" , "35" },
+		{ "fi.oppervlaktealgebra.OppervlakteAlgebra" , "36" },
+		{ "fi.blokkenprogramma.BlokkenProgramma" , "37" },
+		{ "fi.grafiek3dtest.Grafiek3DTest" , "38" },
+		{ "fi.spot_problems_dwo.Spot_Problems_dwo" , "40" },
+		{ "fi.kladje.Kladje" , "41" },
+		{ "fi.kansbomen.Kansbomen" , "42" },
+		{ "fi.calculatordwo.CalculatorDwo" , "43" },
+		{ "fi.formstruct.FormStruct" , "44" },
+		{ "fi.graphtool.GraphTool" , "45" },
+		{ "fi.draaibank.Draaibank" , "46" },
+		{ "fi.waarmakersdwo.WaarmakersDwo" , "47" },
+		{ "fi.statsim.StatSim" , "48" },
+		{ "fi.sliderwidget.SliderWidget" , "50" },
+		{ "fi.dataplot.DataPlot" , "51" },
+		{ "fi.javalogoweb.JavaLogoWeb" , "54" },
+		{ "fi.heks.Heks" , "56" },
+		{ "nl.numworx.geodefiner.GeoDefiner", "57" },
+		{ "fi.javalogoweb3d.JavaLogoWeb3d" , "58" },
+		{ "fi.ivmdraw.IVMdraw" , "59" },
 	};
 	
-	
+//	public static String[][] wiskOpdrInteractiePanels = 
+//	    {
+//	        //{ "fi.wiskopdr.AntwoordFormuleVak" , "Formulevak met stappen" },
+//	        //{ "fi.wiskopdr.AntwoordVergelijkingVak" , "Vergelijkingvak met stappen" },
+//	        //{ "fi.wiskopdr.SimpelAntwoordFormuleVak" , "Simpel formulevak" },
+//	        //{ "fi.wiskopdr.SimpelAntwoordVergelijkingVak" , "Simpel vergelijkingvak" },
+//	        //{ "fi.wiskopdr.tekstobjectsTekstEditor" , "Tekst-antwoordvak" },
+//	        { "fi.algebrapijlenopdr.AlgebraPijlenOpdr" , "AlgebraPijlen" },
+//	        { "fi.nabouwenaanzichten.NabouwenAanzichten" , "Blokkenbouwen" },
+//	        { "fi.flowdiagrams.FlowDiagrams" , "Stroomdiagrammen" },
+//	        { "fi.balansfruit.BalansFruitApplet" , "Fruitbalans" },
+//	        { "fi.doorziendwo.DoorzienDWO" , "Doorzien" },
+//	        { "fi.vergroten.Vergroten" , "Vergroten" },
+//	        { "fi.vangen.Vangen" , "Vangen" },
+//	        { "fi.verknippen.Verknippen" , "Verknippen" },
+//	        { "fi.geomalgebra.GeomAlgebra" , "Geom.algebra 2d" },
+//	        { "fi.geomalgebra1d.GeomAlgebra1d" , "Geom.algebra 1d" },
+//	        { "fi.normaleverdeling.NormaleVerdeling" , "Normale verdeling" },
+//	        { "fi.tinyplayerapplet.TinyPlayerApplet" , "mp3-player" },
+//	        { "fi.binomverdeling.BinomVerdeling" , "Binominale verdeling" },
+//	        { "fi.tekenveelvlakopdr.TekenVeelvlakOpdr" , "Tekenveelvlak" },
+//	        { "fi.mozarch.MozArch" , "Mozaik" },
+//	        { "fi.geodefull.GeodeFull" , "Veelvlakken" },
+//	        { "fi.figuursnijden.Snijden" , "Eerlijk verdelen" },
+//	        { "fi.statistiek.Statistiek" , "Statistische representaties" },
+//	        { "fi.stroomdiagrammen.Stroomdiagrammen" , "Stroomdiagrammen Nieuw" },
+//	        { "fi.tegels.Tegels" , "Tegels" },
+//	        { "fi.omtrekapplet.OmtrekApplet" , "Omtrek applet" },
+//	        { "fi.algebraexpressies.AlgebraExpressies" , "Algebra Expressies" },
+//	        { "fi.oppervlaktealgebra.OppervlakteAlgebra" , "Oppervlakte-algebra" },
+//	        { "fi.blokkenprogramma.BlokkenProgramma" , "Blokkenprogramma" },
+//	        { "fi.grafiek3dtest.Grafiek3DTest" , "Grafieken 3D" },
+//	        { "fi.spot_problems_dwo.Spot_Problems_dwo" , "Stippelalgebra" },
+//	        { "fi.kladje.Kladje" , "Kladje" },
+//	        { "fi.kansbomen.Kansbomen" , "Kansbomen" },
+//	        { "fi.calculatordwo.CalculatorDwo" , "Rekenmachine" },
+//	        { "fi.formstruct.FormStruct" , "[test] FormStruct" },
+//	        { "fi.graphtool.GraphTool" , "[test] GraphTool" },
+//	        { "fi.draaibank.Draaibank" , "[test] Draaibank" },
+//	        { "fi.waarmakersdwo.WaarmakersDwo" , "[test] Waarmaker" },
+//	        { "fi.statsim.StatSim" , "[test] Statistiek Simulaties" },
+//	        { "fi.sliderwidget.SliderWidget" , "[test] Slider" },
+//	        { "fi.dataplot.DataPlot" , "[test] DataPlot" },
+//	        { "fi.javalogoweb.JavaLogoWeb" , "[test] JavaLogoWeb" },
+//	        { "fi.heks.Heks" , "[test] Heks" },
+//	        { "nl.numworx.geodefiner.GeoDefiner", "[test] GeoDefiner" },
+//	        { "fi.javalogoweb3d.JavaLogoWeb3d" , "[test] JavaLogoWeb3d" },
+//	        { "fi.ivmdraw.IVMdraw" , "[test] IVMdraw" },
+//	    };
 	
 	//public static String[] interactiePanelClassNames =
 	//{	 "fi.nabouwenaanzichten.NabouwenAanzichten" , 
@@ -406,18 +453,34 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	};
 	
 	
+//	public static int[][] interactiePanelSets =
+//	{
+//		{2,0,3,1,53,4,13,14,12,16,33,49},//,52
+//		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59,25},
+//		{45},
+//		{9, 55, 60}, 
+//		{10,39},
+//		{-2},
+//		{-2},
+//		{-2},
+//		{-2},
+//	};
+	 //int[] widgetSelection = {21,0,1,12,4,31,3,38,8,37,40,36,39,27,26,14,10,28,34,17,33,25,18,19,13,7};
+	   
 	public static int[][] interactiePanelSets =
-	{
-		{0,1,2,3,4,13,14,12,16,25,33,49,52,53},
-		{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59},
-		{45},
-		{9, 55, 60}, 
-		{10,39},
-		{-2},
-		{-2},
-		{-2},
-		{-2},
-	};
+	    {
+	        {2,0,3,1,53,4,13,14,12,16,33,49},//,52
+	        {35,5,6,24,15,46,11,57,20,25,56,59,54,58,42,41,27,22,43,50,30,48,40,31,32,26,19},
+	        //{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59,25},
+	        //{0,1,2,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,
+	        {45},
+	        {9, 55, 60}, 
+	        {10,39},
+	        {-2},
+	        {-2},
+	        {-2},
+	        {-2},
+	    };
 	
 	public static String[] interactiePanelSetNames =
 	{
@@ -431,6 +494,41 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"eslate widget",
 		"epsilon widget"
 	};
+	
+	public static void makeJMenu(TekstEditor te, JPopupMenu menu, int setNr) {
+	  boolean[][] separators = {{false,false,false,false,true,false,true,true,false,false,false,false}};
+	  String[] itemNames = new String[TekstInteractiePanelVak.interactiePanelSets[setNr].length];
+	  for(int i=0 ; i<interactiePanelSets[setNr].length ; i++) {
+	    JMenuItem item = new JMenuItem(te.new AntwoordvakKeuzeAction(interactiePanelDescriptions[interactiePanelSets[setNr][i]], setNr, i));
+	    item.setBackground(new Color(237,239,241));
+	    item.setForeground(new Color(49,71,112));
+	    item.setFont(new Font("SansSerif",Font.PLAIN,13));
+	    item.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+	    menu.add(item);
+	    if(setNr==0 && i==7) {
+	      
+	      String type = "MultipleChoice";
+          String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
+          item = new JMenuItem(te.new TComponentAction(typeName,type));
+          item.setBackground(new Color(237,239,241));
+          item.setForeground(new Color(49,71,112));
+          item.setFont(new Font("SansSerif",Font.PLAIN,13));
+          item.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+          menu.add(item);
+          
+          type = "DragDrop";
+          typeName = TComponentGeneratorFactory.getComponentTypeName(type);
+          item = new JMenuItem(te.new TComponentAction(typeName,type));
+          item.setBackground(new Color(237,239,241));
+          item.setForeground(new Color(49,71,112));
+          item.setFont(new Font("SansSerif",Font.PLAIN,13));
+          item.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+          menu.add(item);
+	    }
+	    if(setNr==0 && separators[0][i])
+	      menu.addSeparator();
+	  }
+	}
 	
 	public static int AntwoordvakkenSetNr = 0;
 	public static int AppletsSetNr = 1;
@@ -450,7 +548,21 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private String popupImageString;
 	private Iconan iconman;
 		
-	
+	public TekstInteractiePanelVak(TekstVak tv, int setNr, int soort)
+    {
+	  this(tv);
+      currentSetNr = setNr;
+      //tv.getXWidgetManager().newCrossWidgetId(this);
+//TODO omzetten naar DialogFacade              
+      Component window = WiskOpdr.getWindowForComponent(tv);
+      if(window instanceof Frame)editInteractiePanelDialog = new EditInteractiePanelDialog((Frame)window, "", false, currentSetNr,  soort, tv.getXWidgetManager());
+      if(window instanceof Dialog)editInteractiePanelDialog = new EditInteractiePanelDialog((Dialog)window, "", false, currentSetNr,  soort, tv.getXWidgetManager());
+      
+      editInteractiePanelDialog.setBackground(WiskOpdr.bgcolor);
+      editInteractiePanelDialog.addActionListener(this);
+      editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      showDialog(false);
+    }
 	public TekstInteractiePanelVak(TekstVak tv, int setNr)
 	{	this(tv);
 		currentSetNr = setNr;
@@ -1254,7 +1366,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
-			{	if(soortInteractiePanel == interactiePanelSets[1][i])
+			{	if((""+soortInteractiePanel).equals(wiskOpdrInteractiePanels[i][1]))
 				{	interactiePanel = maakInteractiePanel(TekstInteractiePanelVak.wiskOpdrInteractiePanels[i][0], WiskOpdr.language);
 					if(interactiePanel==null) return;
 					//interactiePanel.setBounds(0,0,getSize().width, getSize().height);
@@ -1857,7 +1969,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
-			{	if(soortInteractiePanel == interactiePanelSets[1][i])
+			{	if((""+soortInteractiePanel).equals(wiskOpdrInteractiePanels[i][1]))
 				{	interactiePanel = maakInteractiePanel(TekstInteractiePanelVak.wiskOpdrInteractiePanels[i][0], WiskOpdr.language);
 					if(interactiePanel==null) return;
 					interactiePanel.setBounds(0,0,getSize().width, getSize().height);
@@ -2845,7 +2957,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			
 			
 			Component window = WiskOpdr.getWindowForComponent(this);
-			if(soortInteractiePanel==25)currentSetNr = 0;
+			if(soortInteractiePanel==25)currentSetNr = 1;
 			if(window instanceof Frame)editInteractiePanelDialog = new EditInteractiePanelDialog((Frame)window, "", false, currentSetNr, launchData, getXWidgetManager());
 			if(window instanceof Dialog)editInteractiePanelDialog = new EditInteractiePanelDialog((Dialog)window, "", false, currentSetNr, launchData, getXWidgetManager());
 			
@@ -3132,5 +3244,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
       }
     }
   }
+  
+  
 }
 
