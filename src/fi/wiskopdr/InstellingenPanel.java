@@ -278,6 +278,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		condPercTF = new JTextField(""+condPerc);
 		condPercTF.setFont(font);
+		//condPercTF.setBorder(BorderFactory.createLineBorder(new Color(120,150,202)));
 		condPercTF.setForeground(WiskOpdr.fgcolorEditor);
 		condPercTF.setPreferredSize(new Dimension(50,24));
 		condPercTF.setMaximumSize(new Dimension(50,24));
@@ -318,7 +319,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	    boxh = Box.createHorizontalBox();
 		boxh.add(Box.createHorizontalStrut(20));
 		
-		allesCorrectCB = new JCheckBox(WiskOpdr.rb.getString("OPT_allesCorrect"));
+		allesCorrectCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_allesCorrect"));
 		allesCorrectCB.setOpaque(false);
 		allesCorrectCB.setFont(font);
 		allesCorrectCB.setForeground(WiskOpdr.fgcolorEditor);
@@ -550,6 +551,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		aftrekCorrectieZelftoetsTF = new JTextField(""+aftrekCorrectieZelftoets);
 		aftrekCorrectieZelftoetsTF.setPreferredSize(new Dimension(50,24));
 		aftrekCorrectieZelftoetsTF.setMaximumSize(new Dimension(50,24));
+		aftrekCorrectieZelftoetsTF.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(aftrekCorrectieZelftoetsTF);
 		
 		boxv4.add(boxh);
@@ -557,7 +559,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		eerderGeenCorrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_eerderGeenCorr"), boxv4, false);
 		
 		boxh = Box.createHorizontalBox();
-		timerCB = new JCheckBox(WiskOpdr.rb.getString("OPT_tempoToets"));
+		timerCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_tempoToets"));
 		timerCB.addActionListener(this);
 		timerCB.setOpaque(false);
 		timerCB.setFont(font);
@@ -587,7 +589,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh = Box.createHorizontalBox();
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
 		
-		objectivesCB = new JCheckBox(WiskOpdr.rb.getString("OPT_objectives"));
+		objectivesCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_objectives"));
 		objectivesCB.addActionListener(this);
 		objectivesCB.setOpaque(false);
 		objectivesCB.setFont(font);
@@ -597,7 +599,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
 		boxh.add(Box.createGlue());
 		
-		pilotObjectivesCB = new JCheckBox(WiskOpdr.rb.getString("OPT_pilotObjectives"));
+		pilotObjectivesCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_pilotObjectives"));
 		pilotObjectivesCB.setVisible(false);
 		pilotObjectivesCB.addActionListener(this);
 		pilotObjectivesCB.setOpaque(false);
@@ -618,7 +620,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh = Box.createHorizontalBox();
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
 		
-		misconceptionsCB = new JCheckBox(WiskOpdr.rb.getString("OPT_misconceptions"));
+		misconceptionsCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_misconceptions"));
 		misconceptionsCB.addActionListener(this);
 		misconceptionsCB.setOpaque(false);
 		misconceptionsCB.setFont(font);
@@ -630,8 +632,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		misconceptionsButton = new ObjectiveSettingsButton(WiskOpdr.rb.getString("OPT_misconceptions"), WiskOpdr.rb.getString("MCC_misconception"), WiskOpdr.rb.getString("MCC_categorie"));
 		misconceptionsButton.setVisible(false);
-		misconceptionsButton.setPreferredSize(new Dimension(100,24));
-		misconceptionsButton.setMaximumSize(new Dimension(100,24));
+		misconceptionsButton.setPreferredSize(new Dimension(140,24));
+		misconceptionsButton.setMaximumSize(new Dimension(140,24));
 		boxh.add(misconceptionsButton);
 		boxh.add(Box.createHorizontalStrut(70));
 		boxv4.add(boxh);
