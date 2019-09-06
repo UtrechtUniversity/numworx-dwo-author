@@ -468,6 +468,21 @@ public class Text_es extends java.util.ListResourceBundle
                 {"TVEP_stylesLabel", "Style:"},
                 {"TVEP_editStylesButton", "Edit"},
                 
+              //Text Editor tooltips
+                {"TE_formuleButtonTooltip", "Add Formula"},
+                {"TE_graphButtonTooltip", "Add graph tool"},
+                {"TE_linkButtonTooltip", "Add link"},
+                {"TE_imageButtonTooltip", "add image"},
+                {"TE_answerboxButtonTooltip", "add answer box"},
+                {"TE_widgetButtonTooltip", "Add widget"},
+                {"TE_geogebraButtonTooltip", "Add GeoGebra"},
+                {"TE_tekstVakButtonTooltip", "Add text box"},
+                {"TE_compositeButtonTooltip", "Add composite component"},
+                {"TE_templateCompButtonTooltip", "Add component with template skin"},
+                {"TE_templateButtonTooltip", "Choose template page"},
+                {"TE_x-widgetButtonTooltip", "Cross-widget connections"},
+                {"TE_parameterButtonTooltip", "Use random parameters"},
+                
                 //Style Manager
                 {"SM_titelLabel", "Manage Styles"},
                 {"SM_addStyleButton", "Save settings as new style"},

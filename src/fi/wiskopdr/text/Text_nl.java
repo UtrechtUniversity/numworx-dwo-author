@@ -268,7 +268,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"fruitBalansIpLabel" , "Fruitbalans"},
                 {"checkSelectieUnitLabel" , "Check selectie unit"},
                 {"checkTekstAntwoordVakLabel" , "Check-tekstantwoordvak"},
-                {"keuzeAntwoordVakLabel" , "Keuzeantwoordvak"},
+                {"keuzeAntwoordVakLabel" , "Keuze dropdown-menu"},
                 {"doorzienIpLabel" , "Doorzien-component"},
                 {"checkSleepUnitLabel" , "CheckSleepUnit"},
                 {"vergrotenIpLabel" , "PO Vergroten"},
@@ -285,7 +285,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"veelvlakkenIpLabel" , "Veelvlakken"},
                 {"eerlijkVerdelenIpLabel" , "PO Eerlijk verdelen"},
                 {"statistiekIpLabel" , "Statistische representaties"},
-                {"stroomdiagrammenIpLabel" , "Stroomdiagrammen Nieuw"},
+                {"stroomdiagrammenIpLabel" , "Stroomdiagrammen"},
                 {"tegelsIpLabel" , "Tegels"},
                 {"checkWaardeUnitLabel" , "CheckWaardeUnit"},
                 {"omtrekAppletIpLabel" , "PO Omtrek applet"},
@@ -518,6 +518,22 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"SM_removeStyleButton", "Stijl verwijderen"},
                 {"SM_closeButton", "Sluiten"},
                 {"SM_addStyleAction", "Geef stijlnaam"},
+                
+                //Text Editor tooltips
+                {"TE_formuleButtonTooltip", "Formule invoegen"},
+                {"TE_graphButtonTooltip", "Grafiek invoegen"},
+                {"TE_linkButtonTooltip", "Link invoegen"},
+                {"TE_imageButtonTooltip", "Afbeelding invoegen"},
+                {"TE_answerboxButtonTooltip", "Antwoordvak invoegen"},
+                {"TE_widgetButtonTooltip", "Widget invoegen"},
+                {"TE_geogebraButtonTooltip", "GeoGebra invoegen"},
+                {"TE_tekstVakButtonTooltip", "Tekstvak invoegen"},
+                {"TE_compositeButtonTooltip", "Samengesteld component invoegen"},
+                {"TE_templateCompButtonTooltip", "Component met templatelayout invoegen"},
+                {"TE_templateButtonTooltip", "Templatepagina kiezen"},
+                {"TE_x-widgetButtonTooltip", "Cross-widget verbindingen"},
+                {"TE_parameterButtonTooltip", "Random parameter gebruiken"},
+                
                 
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Bewaaroptie"},

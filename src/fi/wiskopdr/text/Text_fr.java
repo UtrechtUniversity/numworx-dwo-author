@@ -476,6 +476,21 @@ public class Text_fr extends java.util.ListResourceBundle
                 {"SM_removeStyleButton", "Remove style"},
                 {"SM_closeButton", "Close"},
                 {"SM_addStyleAction", "Give style name"},
+                
+              //Text Editor tooltips
+                {"TE_formuleButtonTooltip", "Add Formula"},
+                {"TE_graphButtonTooltip", "Add graph tool"},
+                {"TE_linkButtonTooltip", "Add link"},
+                {"TE_imageButtonTooltip", "add image"},
+                {"TE_answerboxButtonTooltip", "add answer box"},
+                {"TE_widgetButtonTooltip", "Add widget"},
+                {"TE_geogebraButtonTooltip", "Add GeoGebra"},
+                {"TE_tekstVakButtonTooltip", "Add text box"},
+                {"TE_compositeButtonTooltip", "Add composite component"},
+                {"TE_templateCompButtonTooltip", "Add component with template skin"},
+                {"TE_templateButtonTooltip", "Choose template page"},
+                {"TE_x-widgetButtonTooltip", "Cross-widget connections"},
+                {"TE_parameterButtonTooltip", "Use random parameters"},
                                 
                                 //GeogebraEditPanel
                                 {"GEP_bewaarOptie" , "Option Sauvegarder"},
