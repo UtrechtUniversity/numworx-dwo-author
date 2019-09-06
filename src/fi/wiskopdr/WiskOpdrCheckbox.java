@@ -28,16 +28,16 @@ public class WiskOpdrCheckbox extends JCheckBox {
       super.paintComponent(g);
       if(WiskOpdr.mac) {
         g.setColor(Color.white);
-        g.fillRect(4, 6, 13, 13);
+        g.fillRect(7, 5, 14, 14);
         g.setColor(bgColor);
-        g.drawRect(4, 6, 13, 13);
+        g.drawRect(7, 5, 14, 14);
         
         if(isSelected()) {
           g.setColor(bgColor);
-          g.fillRect(4, 6, 13, 13);
+          g.fillRect(7, 5, 14, 14);
           g.setColor(Color.white);
           g.setFont(font);
-          g.drawString("v",7,17);
+          g.drawString("v",10,16);
         }
       }
       else {
