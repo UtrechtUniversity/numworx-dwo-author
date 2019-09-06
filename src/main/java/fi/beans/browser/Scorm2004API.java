@@ -3,7 +3,7 @@ package fi.beans.browser;
 import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.scorm.SCORM2004APIInterface;
 
-public class Scorm2004API extends FilterAPI implements SCORM2004APIInterface, SCORM12APIInterface {
+public class Scorm2004API extends FilterAPI implements SCORM2004APIInterface, SCORM12APIInterface , nl.numworx.swingbrowser.scorm.SCORM2004APIInterface{
 
   /**
    * 

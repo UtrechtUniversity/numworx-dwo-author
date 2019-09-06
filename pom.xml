@@ -20,6 +20,24 @@
 		<artifactId>osgi.promise</artifactId>
 		<version>6.0.0</version>
 	</dependency>
+	<dependency>
+		<groupId>nl.numworx.swingbrowser</groupId>
+		<artifactId>swingbrowser-api</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>nl.numworx.swingbrowser</groupId>
+		<artifactId>swingbrowser-jxb</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>nl.numworx.swingbrowser</groupId>
+		<artifactId>swingbrowser-jfx</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<scope>test</scope>
+	</dependency>
   </dependencies>
   <build>
   	<finalName>previewhtml</finalName>
