@@ -9,6 +9,7 @@ import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -49,10 +50,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -495,7 +498,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"epsilon widget"
 	};
 	
-	public static void makeJMenu(TekstEditor te, JPopupMenu menu, int setNr) {
+	public static void makeJMenu(TekstEditor te, String title, JPopupMenu menu, int setNr) {
 	  boolean[][] separators = {{false,false,false,false,true,false,true,true,false,false,false,false}};
 	  String[] itemNames = new String[TekstInteractiePanelVak.interactiePanelSets[setNr].length];
 	  for(int i=0 ; i<interactiePanelSets[setNr].length ; i++) {
@@ -503,7 +506,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    item.setBackground(new Color(237,239,241));
 	    item.setForeground(new Color(49,71,112));
 	    item.setFont(new Font("SansSerif",Font.PLAIN,13));
-	    item.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+	    item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 	    menu.add(item);
 	    if(setNr==0 && i==7) {
 	      
@@ -513,7 +516,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
           item.setBackground(new Color(237,239,241));
           item.setForeground(new Color(49,71,112));
           item.setFont(new Font("SansSerif",Font.PLAIN,13));
-          item.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
           menu.add(item);
           
           type = "DragDrop";
@@ -522,12 +525,27 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
           item.setBackground(new Color(237,239,241));
           item.setForeground(new Color(49,71,112));
           item.setFont(new Font("SansSerif",Font.PLAIN,13));
-          item.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
           menu.add(item);
 	    }
 	    if(setNr==0 && separators[0][i])
 	      menu.addSeparator();
 	  }
+	  menu.setBackground(new Color(237,239,241));
+	  menu.setForeground(new Color(49,71,112));
+	  menu.setFont(new Font("SansSerif",Font.PLAIN,12));
+	  menu.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(120,150,202)));
+      JLabel titel = new JLabel(title);
+      titel.setOpaque(true);
+      titel.setForeground(new Color(237,239,241));
+      titel.setBackground(new Color(49,71,112));
+      titel.setFont(new Font("SansSerif",Font.BOLD,14));
+      Box hb= Box.createHorizontalBox();
+      hb.add(titel);
+      FontMetrics fm = te.getFontMetrics(new Font("SansSerif",Font.BOLD,14));
+      int margin = (200 - fm.stringWidth(titel.getText()))/2;
+      titel.setBorder(BorderFactory.createMatteBorder(3, margin, 3, margin, new Color(49,71,112)));
+      menu.add(hb,0);
 	}
 	
 	public static int AntwoordvakkenSetNr = 0;

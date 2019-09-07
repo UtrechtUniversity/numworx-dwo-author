@@ -329,7 +329,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_itemOpnieuwKnop" , "'Item opnieuw' mogelijk"},
 				{"OPT_checkPerOpdracht" , "Check-knop per opdracht"},
 				{"OPT_hoekInGraden" , "Hoekberekeningen in graden"},
-				{"OPT_opdrachtBolletjes" , "Opdrachtnummers"},
+				{"OPT_opdrachtBolletjes" , "Opdrachtnummers zichtbaar"},
 				{"OPT_volgendeKnop" , "Volgende-knop zichtbaar"},	
 				{"OPT_VorigeKnop" , "Vorige-knop zichtbaar"},
 				{"OPT_paginaIpvOpdracht" , "Pagina ipv opdracht"},
@@ -369,7 +369,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_importStyles" , "Importeer"},
 				{"OPT_exportStyles" , "Exporteer"},	
 				{"OPT_layers" , "Gebruik lagen"},
-				{"OPT_docWidthLabel" , "Pagina: Breedte"},
+				{"OPT_pageLabel" , "Pagina:"},
+				{"OPT_docWidthLabel" , " Breedte"},
 				{"OPT_docHeightLabel" , "Hoogte (min)"},
 				
 				

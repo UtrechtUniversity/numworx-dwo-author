@@ -345,6 +345,7 @@ public class Text_cn extends java.util.ListResourceBundle
 				{"OPT_importStyles" , "Import"},
 				{"OPT_exportStyles" , "Export"},
 				{"OPT_layers" , "Use layers"},
+				{"OPT_pageLabel" , "Page:"},
 				{"OPT_docWidthLabel" , "Page: Width"},
                 {"OPT_docHeightLabel" , "Height (min)"},
 				

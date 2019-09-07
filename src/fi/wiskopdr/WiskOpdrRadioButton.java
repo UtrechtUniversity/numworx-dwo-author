@@ -1,24 +1,22 @@
 package fi.wiskopdr;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import javax.swing.JRadioButton;
 
-public class WiskOpdrCheckbox extends JCheckBox {
+public class WiskOpdrRadioButton extends JRadioButton {
 
   private Color bgColor = new Color(120,150,202);
   private Color fgColor = Color.white;
   private FontMetrics fm;
   private Font font = new Font("SansSerif", Font.BOLD, 13);
   
-  public WiskOpdrCheckbox(String label) {
+  public WiskOpdrRadioButton(String label) {
     super(label);
     setForeground(fgColor);
     setOpaque(false);
@@ -33,30 +31,27 @@ public class WiskOpdrCheckbox extends JCheckBox {
       super.paintComponent(g);
       if(WiskOpdr.mac) {
         g.setColor(Color.white);
-        g.fillRect(7, 5, 14, 14);
+        g.fillOval(7, 5, 14, 14);
         g.setColor(bgColor);
-        g.drawRect(7, 5, 14, 14);
+        g.drawOval(7, 5, 14, 14);
         
         if(isSelected()) {
           g.setColor(bgColor);
-          g.fillRect(7, 5, 14, 14);
-          g.setColor(Color.white);
-          g.setFont(font);
-          g.drawString("v",10,16);
+          g.fillOval(10, 8, 8, 8);
+         
+          
         }
       }
       else {
         g.setColor(Color.white);
-        g.fillRect(4, 6, 13, 13);
+        g.fillOval(4, 6, 13, 13);
         g.setColor(bgColor);
-        g.drawRect(4, 6, 13, 13);
+        g.drawOval(4, 6, 13, 13);
         
         if(isSelected()) {
           g.setColor(bgColor);
-          g.fillRect(4, 6, 13, 13);
-          g.setColor(Color.white);
-          g.setFont(font);
-          g.drawString("v",7,17);
+          g.fillOval(7, 9, 8, 8);
+          
         }
       }
         
@@ -82,12 +77,4 @@ public class WiskOpdrCheckbox extends JCheckBox {
       super.setForeground(c);
   }
   
-  
-
-
 }
-
-  
-  
-
-

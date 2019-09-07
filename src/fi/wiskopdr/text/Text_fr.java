@@ -332,7 +332,8 @@ public class Text_fr extends java.util.ListResourceBundle
                 				{"OPT_importStyles" , "Import"},
                 				{"OPT_exportStyles" , "Export"},
                 				{"OPT_layers" , "Use layers"},
-                				{"OPT_docWidthLabel" , "Page: Width"},
+                				{"OPT_pageLabel" , "Page:"},
+                                {"OPT_docWidthLabel" , "Page: Width"},
                                 {"OPT_docHeightLabel" , "Height (min)"},
                 				
                                 {"OBJ_leerdoel", "Objectif"},

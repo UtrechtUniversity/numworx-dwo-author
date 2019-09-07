@@ -225,7 +225,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		opdrPositieKnop.addActionListener(this);
 		add(opdrPositieKnop);
 
-		modeChoice = new JComboBox();
+		modeChoice = new WiskOpdrComboBox();
 		modeChoice.setFont(font);
 		//modeChoice.setBackground(new Color(180,195,228));
 		//modeChoice.setForeground(new Color(51,74,112));

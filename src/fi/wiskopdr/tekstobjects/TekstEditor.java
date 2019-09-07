@@ -255,10 +255,10 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		antwoordVakKnop.addActionListener(this);
 		if(form)headerPanel.add(antwoordVakKnop);
 		antwoordVakKnopJMenu = new JPopupMenu();
-		TekstInteractiePanelVak.makeJMenu(this,antwoordVakKnopJMenu, 0);
-		antwoordVakKnopJMenu.setBackground(new Color(237,239,241));
-		antwoordVakKnopJMenu.setForeground(new Color(49,71,112));
-		antwoordVakKnopJMenu.setFont(new Font("SansSerif",Font.PLAIN,12));
+		
+        TekstInteractiePanelVak.makeJMenu(this,"Antwoordtypes",antwoordVakKnopJMenu, 0);
+		
+		
 		
 		tekstVakKnop = new FormuleButton("tekstvak");
 		tekstVakKnop.setBounds(toolbarLeft,64+26+26+26+26+26,balkH/2-10,20,20);
@@ -486,10 +486,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		appletKnop.addActionListener(this);
 		if(form)headerPanel.add(appletKnop);
 		appletKnopJMenu = new JPopupMenu();
-        TekstInteractiePanelVak.makeJMenu(this,appletKnopJMenu, 1);
-        appletKnopJMenu.setBackground(new Color(237,239,241));
-        appletKnopJMenu.setForeground(new Color(49,71,112));
-        appletKnopJMenu.setFont(new Font("SansSerif",Font.PLAIN,12));
+        TekstInteractiePanelVak.makeJMenu(this,"Widgets", appletKnopJMenu, 1);
 		
 		wortelKnop = new FormuleButton("wortel");
 		wortelKnop.setBounds(toolbarLeft,12,balkH/2-10,20,20);
@@ -586,7 +583,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
       
       setNewScrollSize();
       contentPane.setShadow(true);
-      contentPane.setBackground(new Color(206,207,208));//Color.lightGray);//Color.lightGray);//instellingenKnop
+      contentPane.setBackground(new Color(206,207,208));//Color.lightGray);//Color.lightGray);//new Color(206,207,208));
 	}
 	
 	

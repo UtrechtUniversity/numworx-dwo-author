@@ -104,6 +104,16 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static Color BG_BLUE = new Color(237, 239, 241);
 	public static Color bgcolorEditor;
 	public static Color fgcolorEditor = new Color(49,71,112);
+	
+	public static Color colorBlue1 = new Color(49,71,112);
+	public static Color colorBlue2 = new Color(38,115,182);
+	public static Color colorBlue3 = new Color(120,150,202);
+	public static Color colorBlue4 = new Color(180,195,228);
+	
+	public static Color colorGray1 = new Color(206,207,208);
+	public static Color colorGray2 = new Color(221,223,225);
+	public static Color colorGray3 = new Color(237,239,241);
+	    
 
 	public static String deployVariant;
 	public static boolean deployDwoGrading = true;

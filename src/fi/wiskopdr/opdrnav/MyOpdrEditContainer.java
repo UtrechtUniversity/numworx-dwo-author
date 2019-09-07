@@ -448,6 +448,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		if(tekst2==null || "".equals(tekst2.trim()))
 		  remove(tekstEditor2);
 		randomVarEditor.zetTekst(randVarString);
+		randomVarEditor.layoutTekst();
 
 		titelCB.setSelected(hasTitle);
 		if(!hasTitle)

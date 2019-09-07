@@ -115,6 +115,12 @@ public class FormuleVak extends RegelVak implements MouseListener, ActionListene
 	{	kind1.zetStippels(b);
 	}
 	
+	public int getLocationCaret()
+	{   if(actieveRegel!=null && actieveRegel.isShowing())
+	    return(actieveRegel.getLocationOnScreen().x-this.getLocationOnScreen().x + actieveRegel.getCaretX());
+	    return 0;
+	}
+	
 	public void vulVak(String s)
 	{
 		if(s.length() < 2) {

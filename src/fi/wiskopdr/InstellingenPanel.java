@@ -82,6 +82,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	public VoorwaardelijkeNavigatieButton condButton;
 	public LayersButton layersButton;
 	
+	private JLabel pageLabel;
 	private JLabel docWidthLabel;
 	private JLabel docHeightLabel;
 	private JTextField docWidthTF;
@@ -138,7 +139,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	
 	
 	private Font font = new Font("SansSerif",Font.PLAIN,12);
-	private Font boldFont = new Font("SansSerif", Font.BOLD, 14);
+	private Font boldFont = new Font("SansSerif", Font.BOLD, 16);
 	private OpdrNavStructEdit opdrNavStruct;
 	
 	public InstellingenPanel(DialogFacade dialog, OpdrNavStructEdit opdrNavStruct)
@@ -215,8 +216,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(keyboardLabel);
 		boxh.add(Box.createHorizontalStrut(10));
 		
-		keyboardCombobox = new JComboBox();
+		keyboardCombobox = new WiskOpdrComboBox();
 		keyboardCombobox.setFont(font);
+		
 		keyboardCombobox.setForeground(WiskOpdr.fgcolorEditor);
 		keyboardCombobox.addItem(WiskOpdr.rb.getString("Onderbouw-keyboard"));
 		keyboardCombobox.addItem(WiskOpdr.rb.getString("Algebra-keyboard"));
@@ -235,7 +237,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(writeMathLabel);
 		boxh.add(Box.createHorizontalStrut(10));
 		
-		writeMathCombobox = new JComboBox();
+		writeMathCombobox = new WiskOpdrComboBox();
 		writeMathCombobox.setFont(font);
 		writeMathCombobox.setForeground(WiskOpdr.fgcolorEditor);
 		writeMathCombobox.addItem(WiskOpdr.rb.getString("Basis"));
@@ -266,7 +268,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		boxh.add(Box.createHorizontalStrut(20));
 		
-		condNavPercentageRB = new JRadioButton(WiskOpdr.rb.getString("OPT_conditionalPercLabel"));
+		condNavPercentageRB = new WiskOpdrRadioButton(WiskOpdr.rb.getString("OPT_conditionalPercLabel"));
 		condNavPercentageRB.addActionListener(this);
 		condNavPercentageRB.setFont(font);
 		condNavPercentageRB.setForeground(WiskOpdr.fgcolorEditor);
@@ -276,7 +278,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(condNavPercentageRB);
 		boxh.add(Box.createHorizontalStrut(10));
 		
-		condPercTF = new JTextField(""+condPerc);
+		condPercTF = new WiskOpdrTextField(""+condPerc);
 		condPercTF.setFont(font);
 		//condPercTF.setBorder(BorderFactory.createLineBorder(new Color(120,150,202)));
 		condPercTF.setForeground(WiskOpdr.fgcolorEditor);
@@ -291,7 +293,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh = Box.createHorizontalBox();
 		boxh.add(Box.createHorizontalStrut(20));
 		
-		condNavVoorwaardenRB = new JRadioButton(WiskOpdr.rb.getString("OPT_voorwaarden"));
+		condNavVoorwaardenRB = new WiskOpdrRadioButton(WiskOpdr.rb.getString("OPT_voorwaarden"));
 		condNavVoorwaardenRB.addActionListener(this);
 		condNavVoorwaardenRB.setOpaque(false);
 		condNavVoorwaardenRB.setFont(font);
@@ -338,13 +340,20 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		layoutLabel = maakLabel(WiskOpdr.rb.getString("OPT_layoutLabel"), boxv3);
 		
 		boxh = Box.createHorizontalBox();
+		
+		pageLabel = new JLabel(WiskOpdr.rb.getString("OPT_pageLabel"));
+		pageLabel.setFont(font);
+		pageLabel.setForeground(WiskOpdr.fgcolorEditor);
+        boxh.add(pageLabel);
+        boxh.add(Box.createHorizontalStrut(10));
+        
         docWidthLabel = new JLabel(WiskOpdr.rb.getString("OPT_docWidthLabel"));
         docWidthLabel.setFont(font);
         docWidthLabel.setForeground(WiskOpdr.fgcolorEditor);
         boxh.add(docWidthLabel);
         boxh.add(Box.createHorizontalStrut(10));
         
-        docWidthTF = new JTextField(""+docWidth);
+        docWidthTF = new WiskOpdrTextField(""+docWidth);
         docWidthTF.setFont(font);
         docWidthTF.setForeground(WiskOpdr.fgcolorEditor);
         boxh.add(docWidthTF);
@@ -356,11 +365,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
         boxh.add(docHeightLabel);
         boxh.add(Box.createHorizontalStrut(10));
         
-        docHeightTF = new JTextField(""+docHeight);
+        docHeightTF = new WiskOpdrTextField(""+docHeight);
         docHeightTF.setFont(font);
         docHeightTF.setForeground(WiskOpdr.fgcolorEditor);
         boxh.add(docHeightTF);
-        boxh.add(Box.createHorizontalStrut(10));
+        
         
         boxv3.add(boxh);
         boxv3.add(Box.createVerticalStrut(5));
@@ -381,49 +390,51 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		margeLinksLabel.setFont(font);
 		margeLinksLabel.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(margeLinksLabel);
+		boxh.add(Box.createHorizontalStrut(10));
 		
-		margeLinksTF = new JTextField(""+margeLinks);
+		margeLinksTF = new WiskOpdrTextField(""+margeLinks);
 		margeLinksTF.setFont(font);
 		margeLinksTF.setForeground(WiskOpdr.fgcolorEditor);
 		//margeLinksTF.setSize(new Dimension(50,24));
 		boxh.add(margeLinksTF);
-		boxh.add(Box.createHorizontalGlue());
+		boxh.add(Box.createHorizontalStrut(10));
 		
 		margeRechtsLabel = new JLabel(WiskOpdr.rb.getString("OPT_margeRechtsLabel")+" ");
 		margeRechtsLabel.setFont(font);
 		margeRechtsLabel.setForeground(WiskOpdr.fgcolorEditor);
 		//boxh.add(margeRechtsLabel);
 		
-		margeRechtsTF = new JTextField(""+margeRechts);
+		margeRechtsTF = new WiskOpdrTextField(""+margeRechts);
 		margeRechtsTF.setFont(font);
 		margeRechtsTF.setForeground(WiskOpdr.fgcolorEditor);
 		//margeRechtsTF.setSize(new Dimension(50,24));
 		//boxh.add(margeRechtsTF);
-		boxh.add(Box.createHorizontalStrut(10));
+		//boxh.add(Box.createHorizontalStrut(10));
 		
 		margeBovenLabel = new JLabel(WiskOpdr.rb.getString("OPT_margeBovenLabel")+" ");
 		margeBovenLabel.setFont(font);
 		margeBovenLabel.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(margeBovenLabel);
+		boxh.add(Box.createHorizontalStrut(10));
 		 
-		margeBovenTF = new JTextField(""+margeBoven);
+		margeBovenTF = new WiskOpdrTextField(""+margeBoven);
 		margeBovenTF.setFont(font);
 		margeBovenTF.setForeground(WiskOpdr.fgcolorEditor);
 		//margeBovenTF.setSize(new Dimension(50,24));
 		boxh.add(margeBovenTF);
-		boxh.add(Box.createHorizontalStrut(10));
+		
 		
 		margeOnderLabel = new JLabel(WiskOpdr.rb.getString("OPT_margeOnderLabel")+" ");
 		margeOnderLabel.setFont(font);
 		margeOnderLabel.setForeground(WiskOpdr.fgcolorEditor);
 		//boxh.add(margeOnderLabel);
 		
-		margeOnderTF = new JTextField(""+margeOnder);
+		margeOnderTF = new WiskOpdrTextField(""+margeOnder);
 		margeOnderTF.setFont(font);
 		margeOnderTF.setForeground(WiskOpdr.fgcolorEditor);
 		//margeOnderTF.setSize(new Dimension(50,24));
 		//boxh.add(margeOnderTF);
-		boxh.add(Box.createHorizontalGlue());
+		//boxh.add(Box.createHorizontalGlue());
 		
 		
 		boxv3.add(boxh);
@@ -437,7 +448,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(fontLabel);
 		boxh.add(Box.createHorizontalStrut(10));
 		
-		fontNameCO = new JComboBox();
+		fontNameCO = new WiskOpdrComboBox();
 		fontNameCO.setFont(font);
 		fontNameCO.setForeground(WiskOpdr.fgcolorEditor);
 		for(int i=0 ; i<fontNames.length ; i++)
@@ -445,7 +456,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		}
 		fontNameCO.setPreferredSize(new Dimension(100,24));
 		boxh.add(fontNameCO);
-		boxh.add(Box.createGlue());
+		
 		boxv3.add(boxh);
 		boxh.add(Box.createHorizontalStrut(10));
 		
@@ -455,12 +466,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(fontSizeLabel);
 		boxh.add(Box.createHorizontalStrut(10));
 				
-		fontSizeTF = new JTextField(""+fontSize);
+		fontSizeTF = new WiskOpdrTextField(""+fontSize);
 		fontSizeTF.setFont(font);
 		fontSizeTF.setForeground(WiskOpdr.fgcolorEditor);
 		fontSizeTF.setSize(new Dimension(50,24));
 		boxh.add(fontSizeTF);
-		boxh.add(Box.createGlue());
+		
 		boxv3.add(boxh);
 		boxv3.add(Box.createVerticalStrut(5));
 		
@@ -473,7 +484,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		//boxh.add(navigatieSizeLabel);
 		//boxh.add(Box.createHorizontalStrut(10));
 		
-		navigatieSizeTF = new JTextField(""+navigatieSize);
+		navigatieSizeTF = new WiskOpdrTextField(""+navigatieSize);
 		navigatieSizeTF.setFont(font);
 		navigatieSizeTF.setSize(new Dimension(50,24));
 		//boxh.add(navigatieSizeTF);
@@ -548,7 +559,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		aftrekCorrectieZelftoetsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsCorrAftrek"), boxh, true);
 		aftrekCorrectieZelftoetsCB.addActionListener(this);
 		boxh.add(Box.createHorizontalStrut(10));
-		aftrekCorrectieZelftoetsTF = new JTextField(""+aftrekCorrectieZelftoets);
+		aftrekCorrectieZelftoetsTF = new WiskOpdrTextField(""+aftrekCorrectieZelftoets);
 		aftrekCorrectieZelftoetsTF.setPreferredSize(new Dimension(50,24));
 		aftrekCorrectieZelftoetsTF.setMaximumSize(new Dimension(50,24));
 		aftrekCorrectieZelftoetsTF.setForeground(WiskOpdr.fgcolorEditor);
@@ -576,7 +587,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(timerLabel);
 		boxh.add(Box.createHorizontalStrut(10));
 		
-		timerTF = new JTextField("" + timeLimit);
+		timerTF = new WiskOpdrTextField("" + timeLimit);
 		timerTF.setFont(font);
 		timerTF.setForeground(WiskOpdr.fgcolorEditor);
 		timerTF.setPreferredSize(new Dimension(50,24));
@@ -685,12 +696,27 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	{
 		Box boxh = Box.createHorizontalBox();
 		JLabel label = new JLabel(s);
-		label.setOpaque(false);
+		label.setOpaque(true);
 		label.setFont(boldFont);
+		//label.setBackground(new Color(209,210,211));
 		label.setForeground(WiskOpdr.fgcolorEditor);
+		//label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+		//label.setPreferredSize(new Dimension(400,35));
+//		JPanel lijnPanel = new JPanel();
+//        lijnPanel.setBackground(new Color(209,210,211));
+//        lijnPanel.setLayout(null);
+//        lijnPanel.setPreferredSize(new Dimension(300,35));
+//        lijnPanel.add(label);
 		boxh.add(label);
 		boxh.add(Box.createHorizontalGlue());
 		
+		
+//		c.add(boxh);
+//		JPanel lijnPanel = new JPanel();
+//		lijnPanel.setBackground(new Color(209,210,211));
+//		lijnPanel.sboxhetMaximumSize(new Dimension(300,2));
+//		lijnPanel.setPreferredSize(new Dimension(300,2));
+//		lijnPanel.setBackground(new Color(209,210,211));
 		c.add(boxh);
 		c.add(Box.createVerticalStrut(10));
 		
