@@ -49,10 +49,29 @@ public class WiskOpdrComboBox extends JComboBox {
       
       //super.paintComponent(g);
       if(WiskOpdr.mac) {
+        g.setColor(Color.white);
+        g.fillRect(0,0,getWidth(), getHeight());
+        g.setColor(bgColor);
+        g.drawRect(0,0,getWidth()-1, getHeight()-1);
         
+       
+        
+        g.setFont(font);
+        String s = (String)this.getSelectedItem();
+        fm = this.getFontMetrics(getFont());
+        int stringwidth = fm.stringWidth(s);
+        int stringheight = fm.getAscent()-fm.getDescent();
+        g.setColor(WiskOpdr.colorBlue1);
+        g.drawString(s,2 , getHeight()/2 + (stringheight)/2);
+        
+        g.setColor(WiskOpdr.colorBlue3);
+        g.fillRect(getWidth()-getHeight(),0,getHeight(), getHeight());
+        String button = "▾";
+        g.setColor(Color.white);
+        g.setFont(new Font("SansSerif", Font.BOLD, 20));
+        g.drawString(button,getWidth()-getHeight()+5 , getHeight()/2 + (stringheight)/2+2);
       }
       else {
-        //g.setClip(0, 0, getWidth()-20, getHeight());
         g.setColor(Color.white);
         g.fillRect(0,0,getWidth(), getHeight());
         g.setColor(bgColor);
