@@ -799,6 +799,7 @@ public class Text_fa extends java.util.ListResourceBundle
                 { "LinkType_TOP", "top window"},
                 
                 { "TCOMP_list" , "List"},
+                { "TCOMP_list_settings" , "List settings"},
                 { "TCOMP_list_rowCount" , "Number of items"},
                 { "TCOMP_list_numberType" , "Item number type"},
                 { "TCOMP_list_chooseType" , "Choose type"},
@@ -806,6 +807,7 @@ public class Text_fa extends java.util.ListResourceBundle
                 { "TCOMP_list_rowSpace" , "Space between items"},
                 
                 { "TCOMP_multip" , "Multiple Choice"},
+                { "TCOMP_multip_settings" , "Multiple Choice settings"},
                 { "TCOMP_multip_rowCount" , "Number of items"},
                 { "TCOMP_multip_numberType" , "Item number type"},
                 { "TCOMP_multip_chooseType" , "Choose type"},
@@ -814,6 +816,7 @@ public class Text_fa extends java.util.ListResourceBundle
                 { "TCOMP_multip_hasPrefix" , "Item number"},
                 
                 { "TCOMP_drag" , "Drag and Drop"},
+                { "TCOMP_drag_settings" , "Drag and drop settings"},
                 { "TCOMP_drag_rowCount" , "Number of drag objects"},
                 { "TCOMP_drag_itemWidth" , "Width drag object"},
                 { "TCOMP_drag_itemHeight" , "Height drag object"},

@@ -27,7 +27,7 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 	
 	private int balkH = 23;
 	private int rand = 10;
-	private int sparing = 3;
+	private int sparing = -1;
 	
 	private boolean randVerhoging = true;
 	private boolean geenAntwoord;
@@ -118,7 +118,7 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 		}
 		else scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setBackground(Color.white);
-		scrollPane.setBorder(BorderFactory.createLineBorder(Color.gray));
+		scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));
 		if("MW".equals(WiskOpdr.deployVariant))// || "GR".equals(WiskOpdr.deployVariant)
 		{	scrollPane.getVerticalScrollBar().setUI(new MWScrollBarUI());
 			setScrollHorizontal(false);

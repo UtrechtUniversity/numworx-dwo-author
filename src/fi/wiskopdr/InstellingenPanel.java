@@ -99,10 +99,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JTextField margeRechtsTF;
 	private JTextField margeBovenTF;
 	private JTextField margeOnderTF;
-	private int margeLinks = 18;
-	private int margeRechts = 15;
-	private int margeBoven = "GR".equals(WiskOpdr.deployVariant)?10:15;
-	private int margeOnder = 15;
+	private int margeLinks = 10;
+	private int margeRechts = 10;
+	private int margeBoven = 10;
+	private int margeOnder = 10;
 	
 	private JLabel keyboardLabel;
 	private JComboBox keyboardCombobox;
@@ -742,10 +742,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean formTimes = true;
 		int navigatieSize = 12;
 		String fontName = "SansSerif";
-		int margeLinks = 15;
-		int margeRechts = 15;
-		int margeBoven = "GR".equals(WiskOpdr.deployVariant)?10:15;
-		int margeOnder = 15;
+		int margeLinks = 10;
+		int margeRechts = 10;
+		int margeBoven = 10;
+		int margeOnder = 10;
 		int docWidth = 1024;
         int docHeight = 450;
 		boolean fontOvererving = false;
@@ -879,9 +879,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("fontOvererving", new Boolean(fontOvererving));
 		h.put("fontOverervingForm", new Boolean(fontOverervingForm));
 		h.put("margeLinks", new Integer(margeLinks));
-		h.put("margeRechts", new Integer(margeRechts));
+		h.put("margeRechts", new Integer(margeLinks));
 		h.put("margeBoven", new Integer(margeBoven));
-		h.put("margeOnder", new Integer(margeOnder));
+		h.put("margeOnder", new Integer(margeBoven));
 		h.put("docWidth", new Integer(docWidth));
 		h.put("docHeight", new Integer(docHeight));
 		h.put("fToets", new Boolean(fToets));
@@ -954,10 +954,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean formTimes = true;
 		int navigatieSize = 12;
 		String fontName = "SansSerif";
-		int margeLinks = 18;
-		int margeRechts = 15;
-		int margeBoven = "GR".equals(WiskOpdr.deployVariant)?10:15;
-		int margeOnder = 15;
+		int margeLinks = 10;
+		int margeRechts = 10;
+		int margeBoven = 10;
+		int margeOnder = 10;
 		int docWidth = 1024;
 		int docHeight = 450;
 		boolean fToets = true;

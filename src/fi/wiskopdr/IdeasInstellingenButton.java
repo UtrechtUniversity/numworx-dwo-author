@@ -29,7 +29,7 @@ import fi.beans.ideas.Exercise;
 import fi.beans.ideas.IdeasIF;
 import fi.beans.ideas.RuleIF;
 
-public class IdeasInstellingenButton extends JButton implements ActionListener
+public class IdeasInstellingenButton extends WiskOpdrButton implements ActionListener
 {
 	private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
 	

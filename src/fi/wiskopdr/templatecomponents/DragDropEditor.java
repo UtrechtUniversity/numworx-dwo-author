@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -20,6 +21,8 @@ import javax.swing.JTextField;
 
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.WiskOpdrButton;
+import fi.wiskopdr.WiskOpdrTextField;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class DragDropEditor implements TComponentEditor, ActionListener {
@@ -29,9 +32,10 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 	
 	private DialogFacade frame;
 	private JPanel preferencesPanel;
-	private JPanel mainPanel, bottomPanel;
+	private JPanel topPanel, mainPanel, bottomPanel;
 	private JButton okButton, cancelButton;
 	
+	private JLabel titleLabel;
 	private JLabel itemCountLabel;
 	private JTextField itemCountTF;
 	private JLabel itemWidthLabel;
@@ -59,14 +63,27 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 	private void makeGUI() {
 		
 		preferencesPanel = new JPanel(new BorderLayout());
+		
+		topPanel = new JPanel();
+		topPanel.setBackground(WiskOpdr.colorBlue1);
+		topPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+		
 		mainPanel = new JPanel();
 		mainPanel.setBackground(WiskOpdr.bgcolorEditor);
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
 		bottomPanel = new JPanel();
+		bottomPanel.setBackground(WiskOpdr.colorGray2);
+		bottomPanel.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorGray2, 2));
+		
+		titleLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_settings"));
+		titleLabel.setForeground(WiskOpdr.colorGray3);
+		titleLabel.setFont(font.deriveFont(Font.BOLD, 14));
 		
 		itemCountLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_rowCount"));
 		itemCountLabel.setFont(font);
 		
-		itemCountTF = new JTextField();
+		itemCountTF = new WiskOpdrTextField("");
 		itemCountTF.addActionListener(this);
 		itemCountTF.setPreferredSize(new Dimension(30,24));
 		itemCountTF.setMaximumSize(new Dimension(30,24));
@@ -74,7 +91,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		itemWidthLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_itemWidth"));
 		itemWidthLabel.setFont(font);
 		
-		itemWidthTF = new JTextField();
+		itemWidthTF = new WiskOpdrTextField("");
 		itemWidthTF.addActionListener(this);
 		itemWidthTF.setPreferredSize(new Dimension(30,24));
 		itemWidthTF.setMaximumSize(new Dimension(30,24));
@@ -82,7 +99,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		itemHeightLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_itemHeight"));
 		itemHeightLabel.setFont(font);
 		
-		itemHeightTF = new JTextField();
+		itemHeightTF = new WiskOpdrTextField("");
 		itemHeightTF.addActionListener(this);
 		itemHeightTF.setPreferredSize(new Dimension(30,24));
 		itemHeightTF.setMaximumSize(new Dimension(30,24));
@@ -90,7 +107,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		rowSpaceLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_rowSpace"));
 		rowSpaceLabel.setFont(font);
 		
-		rowSpaceTF = new JTextField();
+		rowSpaceTF = new WiskOpdrTextField("");
 		rowSpaceTF.addActionListener(this);
 		rowSpaceTF.setPreferredSize(new Dimension(30,24));
 		rowSpaceTF.setMaximumSize(new Dimension(30,24));
@@ -98,7 +115,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		descrWidthLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_drag_descrWidth"));
 		descrWidthLabel.setFont(font);
 		
-		descrWidthTF = new JTextField();
+		descrWidthTF = new WiskOpdrTextField("");
 		descrWidthTF.addActionListener(this);
 		descrWidthTF.setPreferredSize(new Dimension(30,24));
 		descrWidthTF.setMaximumSize(new Dimension(30,24));
@@ -107,7 +124,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		
 		Box boxh = Box.createHorizontalBox();
 		boxh.add(itemCountLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(itemCountTF);
 		
@@ -116,7 +133,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		
 		boxh = Box.createHorizontalBox();
 		boxh.add(itemCountLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(itemCountTF);
 		
@@ -125,7 +142,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		
 		boxh = Box.createHorizontalBox();
 		boxh.add(itemWidthLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(itemWidthTF);
 		
@@ -134,7 +151,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		
 		boxh = Box.createHorizontalBox();
 		boxh.add(itemHeightLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(itemHeightTF);
 		
@@ -143,7 +160,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		
 		boxh = Box.createHorizontalBox();
 		boxh.add(rowSpaceLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(rowSpaceTF);
 				
@@ -157,37 +174,34 @@ public class DragDropEditor implements TComponentEditor, ActionListener {
 		boxh.add(descrWidthTF);
 				
 		boxv.add(boxh);
-		boxv.add(Box.createVerticalStrut(5));
 		
 		mainPanel.add(boxv);
 		
+		preferencesPanel.add(topPanel,BorderLayout.NORTH);
 		preferencesPanel.add(bottomPanel,BorderLayout.SOUTH);
 		preferencesPanel.add(mainPanel,BorderLayout.CENTER);
 		
-		okButton = new JButton("Ok");//
-		okButton.setFont(font);
+		topPanel.add(titleLabel);
+		
+		okButton = new WiskOpdrButton("Ok");//
+		okButton.setPreferredSize(new Dimension(70,22));
 		okButton.addActionListener(this);
 		bottomPanel.add(okButton);
 		
-		cancelButton = new JButton("Cancel");//
-		cancelButton.setFont(font);
+		cancelButton = new WiskOpdrButton("Cancel");//
+		cancelButton.setPreferredSize(new Dimension(70,22));
 		cancelButton.addActionListener(this);
 		bottomPanel.add(cancelButton);
 	}
 	
 	public void makeFrame(){
 	   	frame = DialogFacade.newInstance(tekstVak, WiskOpdr.rb.getString("TCOMP_drag"), true);
-	   	//Dimension preferredSize = new Dimension(400,320);
-		//frame.setPreferredSize(preferredSize);
 	    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-	    //frame.setSize(preferredSize);
 	    frame.getContentPane().setLayout(new BorderLayout());
 	    frame.getContentPane().add(preferencesPanel);
 	    frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
 	    frame.pack();
 	    frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
-		//frame.setVisible(true);
-		    
 	}
 	
 	@Override

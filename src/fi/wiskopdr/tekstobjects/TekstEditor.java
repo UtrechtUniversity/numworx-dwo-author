@@ -199,7 +199,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 //			}
 		};
 		headerPanel.setLayout(null);
-		headerPanel.setBackground(new Color(221,222,225));
+		headerPanel.setBackground(WiskOpdr.colorGray2);
 		headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
 		super.add(headerPanel);
 		

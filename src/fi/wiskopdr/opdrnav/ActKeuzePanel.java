@@ -6,6 +6,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.WiskOpdrRadioButton;
 
 public class ActKeuzePanel extends JPanel implements ItemListener, ActionListener, MouseListener, FocusListener
 {
@@ -28,13 +29,13 @@ public class ActKeuzePanel extends JPanel implements ItemListener, ActionListene
 		setBounds(x,y,b,h);
 		g = new ButtonGroup();
 		aantalCheckboxen = 0;
-		checkboxen = new JRadioButton[items.length];
+		checkboxen = new WiskOpdrRadioButton[items.length];
 		for(int i=0 ; i<items.length ; i++)
 		{	addCheckbox(items[i],0,20*i,b,20);
 		}
 		keuze = 1;
 		checkboxen[0].setSelected(true);
-		cGeen = new JRadioButton("", false);
+		cGeen = new WiskOpdrRadioButton("", false);
 		g.add(cGeen);
 	}
 	
@@ -44,7 +45,7 @@ public class ActKeuzePanel extends JPanel implements ItemListener, ActionListene
 		setBounds(x,y,b,h);
 		g = new ButtonGroup();
 		aantalCheckboxen = 0;
-		checkboxen = new JRadioButton[items.length];
+		checkboxen = new WiskOpdrRadioButton[items.length];
 		for(int i=0 ; i<items.length ; i++)
 		{	addCheckbox(items[i],0,20*i,b,20);
 			
@@ -84,7 +85,7 @@ public class ActKeuzePanel extends JPanel implements ItemListener, ActionListene
 	}
 		
 	private void addCheckbox(String naam, int x, int y, int b, int h)
-	{	checkboxen[aantalCheckboxen] = new JRadioButton(naam, false);
+	{	checkboxen[aantalCheckboxen] = new WiskOpdrRadioButton(naam, false);
 		checkboxen[aantalCheckboxen].setLayout(null);
 		checkboxen[aantalCheckboxen].setBounds(x,y,b,h);
 		checkboxen[aantalCheckboxen].setBackground(getBackground());

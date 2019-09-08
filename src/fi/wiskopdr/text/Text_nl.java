@@ -887,6 +887,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "LinkType_TOP", "top window"},
 				
 				{ "TCOMP_list" , "Opsomming"},
+				{ "TCOMP_list_settings" , "Instellingen opsomming"},
 				{ "TCOMP_list_rowCount" , "Aantal items"},
 				{ "TCOMP_list_numberType" , "Type opsommingsteken"},
 				{ "TCOMP_list_chooseType" , "Kies type"},
@@ -894,6 +895,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "TCOMP_list_rowSpace" , "Afstand items"},
 				
 				{ "TCOMP_multip" , "Meerkeuzeopdracht"},
+				{ "TCOMP_multip_settings" , "Instellingen meerkeuzeopdracht"},
 				{ "TCOMP_multip_rowCount" , "Aantal keuzes"},
                 { "TCOMP_multip_numberType" , "Type opsommingsteken"},
                 { "TCOMP_multip_chooseType" , "Kies type"},
@@ -902,6 +904,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "TCOMP_multip_hasPrefix" , "Opsommingsteken"},
 				
 				{ "TCOMP_drag" , "Sleepopdracht"},
+				{ "TCOMP_drag_settings" , "Instellingen sleepopdracht"},
 				{ "TCOMP_drag_rowCount" , "Aantal sleepobjecten"},
 				{ "TCOMP_drag_itemWidth" , "Breedte sleepobject"},
 				{ "TCOMP_drag_itemHeight" , "Hoogte sleepobject"},

@@ -14,7 +14,7 @@ import javax.swing.JCheckBox;
 public class WiskOpdrCheckbox extends JCheckBox {
 
   private Color bgColor = new Color(120,150,202);
-  private Color fgColor = Color.white;
+  private Color fgColor = WiskOpdr.colorBlue1;
   private FontMetrics fm;
   private Font font = new Font("SansSerif", Font.BOLD, 13);
   
@@ -32,31 +32,33 @@ public class WiskOpdrCheckbox extends JCheckBox {
     ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
       super.paintComponent(g);
       if(WiskOpdr.mac) {
+        int m = (getHeight() - 24)/2-1;
         g.setColor(Color.white);
-        g.fillRect(7, 5, 14, 14);
+        g.fillRect(7, m+5, 14, 14);
         g.setColor(bgColor);
-        g.drawRect(7, 5, 14, 14);
+        g.drawRect(7, m+5, 14, 14);
         
         if(isSelected()) {
           g.setColor(bgColor);
-          g.fillRect(7, 5, 14, 14);
+          g.fillRect(7, m+5, 14, 14);
           g.setColor(Color.white);
           g.setFont(font);
-          g.drawString("v",10,16);
+          g.drawString("v",10,m+16);
         }
       }
       else {
+        int m = (getHeight() - 24)/2-1;
         g.setColor(Color.white);
-        g.fillRect(4, 6, 13, 13);
+        g.fillRect(4, m+6, 13, 13);
         g.setColor(bgColor);
-        g.drawRect(4, 6, 13, 13);
+        g.drawRect(4, m+6, 13, 13);
         
         if(isSelected()) {
           g.setColor(bgColor);
-          g.fillRect(4, 6, 13, 13);
+          g.fillRect(4, m+6, 13, 13);
           g.setColor(Color.white);
           g.setFont(font);
-          g.drawString("v",7,17);
+          g.drawString("v",7,m+17);
         }
       }
         

@@ -19,6 +19,8 @@ public class WiskOpdrButton extends JButton {
   
   public WiskOpdrButton(String label) {
     super(label);
+    setMaximumSize(new Dimension(250,22));
+    setMinimumSize(new Dimension(50,22));
     setFont(font);
   }
   

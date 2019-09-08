@@ -163,10 +163,12 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     	
         content.setLayout(new BorderLayout());
         //this.setBackground(Color.red);//new Color(230,230,230));
+        setBackground(WiskOpdr.colorGray3);
         
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(null);
         bottomPanel.setPreferredSize(new Dimension(1000,100));
+        bottomPanel.setBackground(WiskOpdr.colorGray2);
                
         this.setNr = setNr;
         this.manager = manager;
@@ -325,7 +327,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     
     public void setBackground(Color c)
     {	super.setBackground(c);
-    	if(interactieEditPanel!=null)((Component)interactieEditPanel).setBackground(c);
+    	//if(interactieEditPanel!=null)((Component)interactieEditPanel).setBackground(c);
     }
 
     public void addInteractieEditPanel(Hashtable launchData, int soort)

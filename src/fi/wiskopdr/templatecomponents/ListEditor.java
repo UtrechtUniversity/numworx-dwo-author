@@ -2,6 +2,7 @@ package fi.wiskopdr.templatecomponents;
 
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -9,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +21,9 @@ import javax.swing.JTextField;
 
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.WiskOpdrButton;
+import fi.wiskopdr.WiskOpdrComboBox;
+import fi.wiskopdr.WiskOpdrTextField;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class ListEditor implements TComponentEditor, ActionListener {
@@ -28,9 +33,10 @@ public class ListEditor implements TComponentEditor, ActionListener {
 	
 	private DialogFacade frame;
 	private JPanel preferencesPanel;
-	private JPanel mainPanel, bottomPanel;
+	private JPanel topPanel, mainPanel, bottomPanel;
 	private JButton okButton, cancelButton;
 	
+	private JLabel titleLabel;
 	private JLabel rowCountLabel;
 	private JTextField rowCountTF;
 	private JLabel listNumberTypeLabel;
@@ -54,23 +60,36 @@ public class ListEditor implements TComponentEditor, ActionListener {
 	private void makeGUI() {
 		
 		preferencesPanel = new JPanel(new BorderLayout());
+		
+		topPanel = new JPanel();
+		topPanel.setBackground(WiskOpdr.colorBlue1);
+		
 		mainPanel = new JPanel();
-		mainPanel.setBackground(WiskOpdr.bgcolorEditor);
+		mainPanel.setBackground(WiskOpdr.colorGray3);
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
 		bottomPanel = new JPanel();
+		bottomPanel.setBackground(WiskOpdr.colorGray2);
+		bottomPanel.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorGray2, 2));
+		
+		titleLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_list_settings"));
+		titleLabel.setForeground(WiskOpdr.colorGray3);
+		titleLabel.setFont(font.deriveFont(Font.BOLD, 14));
 		
 		rowCountLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_list_rowCount"));
 		rowCountLabel.setFont(font);
 		
-		rowCountTF = new JTextField();
+		rowCountTF = new WiskOpdrTextField("");
 		rowCountTF.addActionListener(this);
-		rowCountTF.setPreferredSize(new Dimension(30,24));
-		rowCountTF.setMaximumSize(new Dimension(30,24));
+		rowCountTF.setPreferredSize(new Dimension(30,22));
+		rowCountTF.setMaximumSize(new Dimension(30,22));
 		
 		listNumberTypeLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_list_numberType"));
 		listNumberTypeLabel.setFont(font);
 		
-		listNumberTypeComboBox = new JComboBox();
+		listNumberTypeComboBox = new WiskOpdrComboBox();
 		listNumberTypeComboBox.setFont(font);
+		listNumberTypeComboBox.setPreferredSize(new Dimension(80,22));
 		listNumberTypeComboBox.addItem(WiskOpdr.rb.getString("TCOMP_list_chooseType"));
 		for(int i=0 ; i<ListGenerator.listNumbers.length ; i++) {
 			listNumberTypeComboBox.addItem(ListGenerator.listNumbers[i][0]+" ,"+ListGenerator.listNumbers[i][1]+" ,"+ListGenerator.listNumbers[i][2]+" , ...");
@@ -80,24 +99,24 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		tabWidthLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_list_tabWidth"));
 		tabWidthLabel.setFont(font);
 		
-		tabWidthTF = new JTextField();
+		tabWidthTF = new WiskOpdrTextField("");
 		tabWidthTF.addActionListener(this);
-		tabWidthTF.setPreferredSize(new Dimension(30,24));
-		tabWidthTF.setMaximumSize(new Dimension(30,24));
+		tabWidthTF.setPreferredSize(new Dimension(30,22));
+		tabWidthTF.setMaximumSize(new Dimension(30,22));
 		
 		rowSpaceLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_list_rowSpace"));
 		rowSpaceLabel.setFont(font);
 		
-		rowSpaceTF = new JTextField();
+		rowSpaceTF = new WiskOpdrTextField("");
 		rowSpaceTF.addActionListener(this);
-		rowSpaceTF.setPreferredSize(new Dimension(30,24));
-		rowSpaceTF.setMaximumSize(new Dimension(30,24));
+		rowSpaceTF.setPreferredSize(new Dimension(30,22));
+		rowSpaceTF.setMaximumSize(new Dimension(30,22));
 		
 		Box boxv = Box.createVerticalBox();
 		
 		Box boxh = Box.createHorizontalBox();
 		boxh.add(rowCountLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(rowCountTF);
 		
@@ -106,7 +125,7 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		
 		boxh = Box.createHorizontalBox();
 		boxh.add(listNumberTypeLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(listNumberTypeComboBox);
 		
@@ -115,7 +134,7 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		
 		boxh = Box.createHorizontalBox();
 		boxh.add(tabWidthLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(tabWidthTF);
 		
@@ -124,42 +143,40 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		
 		boxh = Box.createHorizontalBox();
 		boxh.add(rowSpaceLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(rowSpaceTF);
 				
 		boxv.add(boxh);
-		boxv.add(Box.createVerticalStrut(5));
 		
 		mainPanel.add(boxv);
 		
+		preferencesPanel.add(topPanel,BorderLayout.NORTH);
 		preferencesPanel.add(bottomPanel,BorderLayout.SOUTH);
 		preferencesPanel.add(mainPanel,BorderLayout.CENTER);
 		
-		okButton = new JButton("Ok");//
-		okButton.setFont(font);
+		topPanel.add(titleLabel);
+		
+		okButton = new WiskOpdrButton("Ok");//
+		okButton.setPreferredSize(new Dimension(70,22));
 		okButton.addActionListener(this);
 		bottomPanel.add(okButton);
 		
-		cancelButton = new JButton("Cancel");//
-		cancelButton.setFont(font);
+		bottomPanel.add(Box.createHorizontalStrut(5));
+		
+		cancelButton = new WiskOpdrButton("Cancel");//
+		cancelButton.setPreferredSize(new Dimension(70,22));
 		cancelButton.addActionListener(this);
 		bottomPanel.add(cancelButton);
 	}
 	
 	public void makeFrame(){
 	   	frame = DialogFacade.newInstance(tekstVak, WiskOpdr.rb.getString("TCOMP_list"), true);
-	   	//Dimension preferredSize = new Dimension(400,320);
-		//frame.setPreferredSize(preferredSize);
-	    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-	    //frame.setSize(preferredSize);
+	   	frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	    frame.getContentPane().setLayout(new BorderLayout());
 	    frame.getContentPane().add(preferencesPanel);
-	    frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
 	    frame.pack();
 	    frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
-		//frame.setVisible(true);
-		    
 	}
 	
 	@Override
