@@ -31,6 +31,16 @@
 		<artifactId>swingbrowser-jxb</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<scope>test</scope>
+		<exclusions>
+			<exclusion>
+				<groupId>com.teamdev.jxbrowser</groupId>
+				<artifactId>jxbrowser-cross-platform</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>com.teamdev.jxbrowser</groupId>
+				<artifactId>jxbrowser-swing</artifactId>
+			</exclusion>
+		</exclusions>
 	</dependency>
 	<dependency>
 		<groupId>nl.numworx.swingbrowser</groupId>
