@@ -14,7 +14,7 @@ import fi.wiskopdr.formuleobjects.FormuleElement;
 import fi.wiskopdr.formuleobjects.FormuleRegel;
 import fi.wiskopdr.formuleobjects.FormuleTeken;
 
-public class TekstRegel extends JPanel implements TekstElement,MouseListener, MouseMotionListener,KeyListener//, FocusListener
+public class TekstRegel extends JPanel implements TekstElement,MouseListener, MouseMotionListener//,KeyListener//, FocusListener
 {	
 	private TekstVak tekstVak;
 	private int ashoogte;
@@ -765,6 +765,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				else
 				{	((TekstElement)getComponent(caretPos-1)).neemFocus("links");
 				}
+              e.consume();
 			}
             else if (kc == KeyEvent.VK_RIGHT)
             {   if (caretPos < getComponentCount()&& getComponent(caretPos)instanceof TekstTeken)
@@ -780,17 +781,20 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				else
 				{	((TekstElement)getComponent(caretPos)).neemFocus("rechts");
 				}
+            e.consume();
             }
 			else if (kc == KeyEvent.VK_HOME)
             {   caretPos = 0;
                 caretX = correctieCursief;
                 deSelect();
+                e.consume();
             }
             else if (kc == KeyEvent.VK_END)
             {   caretPos = getComponentCount() ;
 				if(getComponentCount() >0)caretX = getSize().width-1;
 				else caretX = 0;
 				deSelect();
+				e.consume();
 			}
             else if (kc == KeyEvent.VK_DELETE)
             {	if(caretVisible)
@@ -802,6 +806,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				else
 				{	deleteSelection();
 				}
+              e.consume();
             } 
 			else if (kc == KeyEvent.VK_BACK_SPACE)
             {   if(caretVisible)
@@ -815,6 +820,10 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				else
 				{	deleteSelection();
 				}
+                e.consume();
+	  		} else if (kc == KeyEvent.VK_ENTER) 
+	  		{
+	  		  e.consume();
 	  		}
 	  		
          	repaint();
@@ -828,6 +837,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
             int kt = e.getKeyChar();
             if (kt == KeyEvent.VK_ENTER)
             {	tekstVak.finish();
+                e.consume();
 			}
 			else if ((kt != KeyEvent.VK_ESCAPE) &&
 	                (kt != KeyEvent.VK_BACK_SPACE) &&
@@ -842,6 +852,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				caretX += getComponent(caretPos) .getSize().width;
 				caretPos++;
 				int nr = caretPos;
+				e.consume();
             } 
             
             zetMaat();   

@@ -1210,24 +1210,30 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             if (isControlDown(e) && kc == KeyEvent.VK_V)
             {	deleteSelection();
               	if(!pasteFromSystemClipboard())tekstVak.insertDups(TekstVak.clipboard);
+              	e.consume();
             }
             else if (isControlDown(e) && kc == KeyEvent.VK_C)
             {	copySelection();
+                e.consume();
             }
             else if (isControlDown(e) && kc == KeyEvent.VK_X)
             {	copySelection();
             	deleteSelection();
+            	e.consume();
             }
             if (isControlDown(e) && kc == KeyEvent.VK_Z)
             {	undo();
+                e.consume();
             	return;
             }
             if (isControlDown(e) && kc == KeyEvent.VK_Y)
             {	redo();
+                e.consume();
             	return;
             }
             else if (e.isAltDown() && kc == KeyEvent.VK_F)
             {	insertFormuleVak(0);
+                e.consume();
             }
             else if (e.isShiftDown() && kc == KeyEvent.VK_LEFT)
             {   if (caretPos > 0)
@@ -1235,7 +1241,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
                     boolean b = (elementAt(caretPos)).isSelected();
                     elementAt(caretPos).setSelected(!b);
                 }
-				
+				e.consume();
             }
             else if (kc == KeyEvent.VK_LEFT)
             {   if (caretPos > 0 && tekst.charAt(caretPos-1)!='@')
@@ -1247,6 +1253,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	            	else caretPos--;
 	            }
                 setCaret(caretPos);
+                e.consume();
 			}
             else if (e.isShiftDown() && kc == KeyEvent.VK_RIGHT)
             {   if (caretPos  < tekst.length()-1)
@@ -1254,7 +1261,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
                     boolean b = (elementAt(caretPos-1)).isSelected();
                     elementAt(caretPos-1).setSelected(!b);
                 }
-				
+				e.consume();
             }
             else if (kc == KeyEvent.VK_RIGHT)
             {  
@@ -1267,22 +1274,27 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	            	else caretPos++;
 	            }
             	setCaret(caretPos);
+            	e.consume();
 	        }
             else if (kc == KeyEvent.VK_UP)
             {   if(actieveRegel==null) return;
             	int rn = geefRegelNummer(actieveRegel);
             	if(rn>0)setCaretPosition(regels[rn-1],0);
+            	e.consume();
             }
             else if (kc == KeyEvent.VK_DOWN)
             {   if(actieveRegel==null) return;
             	int rn = geefRegelNummer(actieveRegel);
             	if(rn<aantalRegels-1)setCaretPosition(regels[rn+1],0);
+            	e.consume();
             }
 			else if (kc == KeyEvent.VK_HOME)
             {   caretPos = 0;
+                e.consume();
             }
             else if (kc == KeyEvent.VK_END)
             {   caretPos = tekst.length()-1;
+                e.consume();
 			}
             else if (kc == KeyEvent.VK_DELETE)
             {	boolean b = deleteSelection();
@@ -1296,6 +1308,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
         	    	}
             	}
             	produceAction("resize");
+            	e.consume();
             } 
 			else if (kc == KeyEvent.VK_BACK_SPACE)
             {   boolean b = deleteSelection();  
@@ -1312,6 +1325,10 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
                 	}
                 	produceAction("resize");
                 }
+                e.consume();
+	  		} else if ( kc == KeyEvent.VK_ENTER) 
+	  		{
+	  		  e.consume();
 	  		}
 	  		
          	repaint();
@@ -1359,11 +1376,12 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             		vulVak(tekst.toString());
             	}
             	produceAction("resize");
-            	
+            	e.consume();
 			}
 			else if (kt == KeyEvent.VK_BACK_SPACE || kt == KeyEvent.VK_DELETE)
 	        {
 				vulVak(tekst.toString());
+				e.consume();
 	        }
     		
 			else if ((kt != KeyEvent.VK_ESCAPE) &&
@@ -1416,12 +1434,14 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 			    deleteSelection();
       			tekst.insert(caretPos,(char)kt);
 				caretPos++;
+				e.consume();
 				
             } 
 			if(!keyStrokeUpdated)
 			{	vulVak(tekst.toString());
 	    		setCaret(caretPos);
 	    		keyStrokeUpdated = true;
+	    		e.consume();
 			}
             
             //repaint();
