@@ -1268,6 +1268,10 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 		
 	}
 	
+	public int getCaretX()
+	{  return caretX;
+	}
+	
 	public int geefVoorgangerHoogte(FormuleElement fe)
 	{	for(int i=0 ; i<getComponentCount()  ; i++)
 		{	if(i>0 && getComponent(i)==fe)
