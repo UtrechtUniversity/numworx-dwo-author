@@ -2668,6 +2668,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			// TODO voor vector/matrix-vergelijking is dit altijd false als er meer dan 1 variabele zijn
 			boolean isGelijkwaardigEind = antwoord.isOplossing(gewensteEindOplossing.geefEindOplossingen(var), var, gewensteEindOplossing.geefVergTekens());
 			
+			
 
 			// Hiermee wordt, in geval er geen eindoplossing is, maar wel een
 			// voorlopige tussenoplossing, aan het eind gevraagd de oplossing te
