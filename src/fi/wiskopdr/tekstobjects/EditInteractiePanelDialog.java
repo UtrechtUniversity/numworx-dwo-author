@@ -66,6 +66,10 @@ import fi.wiskopdr.TabletOwningLayeredPane;
 import fi.wiskopdr.TekstVakEditPanel;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.WiskOpdrButton;
+import fi.wiskopdr.WiskOpdrCheckbox;
+import fi.wiskopdr.WiskOpdrComboBox;
+import fi.wiskopdr.WiskOpdrTextField;
 import fi.wiskopdr.cbook.CBookInteractieEditPanel;
 import fi.wiskopdr.cbook.CBookWrap;
 import fi.wiskopdr.cbook.Service;
@@ -178,32 +182,35 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         if(setNr==4 || setNr==3) {
         	size = new Dimension(1000,700);
         } 
-        else {
-        	if (setNr == 2) {  // GraphTool
-            	size = new Dimension(900,700);
-        	}
+        else if (setNr == 2) {  // GraphTool
+            size = new Dimension(900,700);
+        	
+        }
+        else if(setNr==0 && soort == 3) {
+          size = new Dimension(1060,700);
         }
 
         bottomPanel.setPreferredSize(new Dimension(1000,60));
 
-        okButton = new JButton(WiskOpdr.rb.getString("okKnopLabel"));
-        okButton.setBounds(30,10,65,20);
-        okButton.setFont(font);
+        okButton = new WiskOpdrButton(WiskOpdr.rb.getString("okKnopLabel"));
+        okButton.setBounds(30,10,65,24);
+        //okButton.setFont(font);
         okButton.addActionListener(this);
         bottomPanel.add(okButton);
         
-        cancelButton = new JButton(WiskOpdr.rb.getString("annuleerKnopLabel"));
-        cancelButton.setBounds(110,10,65,20);
+        cancelButton = new WiskOpdrButton(WiskOpdr.rb.getString("annuleerKnopLabel"));
+        cancelButton.setBounds(110,10,65,24);
         cancelButton.setMargin(new Insets(4,10,4,10));
-        cancelButton.setFont(font);
+       // cancelButton.setFont(font);
         cancelButton.addActionListener(this);
         bottomPanel.add(cancelButton);
         
-        soortAntwoordVakKeuze = new JComboBox();
+        soortAntwoordVakKeuze = new WiskOpdrComboBox();
 		soortAntwoordVakKeuze.setBounds(190,10,165,24);
 		soortAntwoordVakKeuze.setFont(font);
 		soortAntwoordVakKeuze.addActionListener(this);
-		bottomPanel.add(soortAntwoordVakKeuze);
+		if(setNr!=0 || soort !=3)
+		  bottomPanel.add(soortAntwoordVakKeuze);
 		
 		
 		initSet(setNr);
@@ -223,12 +230,12 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		*/
 		
 		breedteLabel = new JLabel(WiskOpdr.rb.getString("breedteLabel"));
-        breedteLabel.setBounds(370,10,50,20);
+        breedteLabel.setBounds(370,10,50,22);
         breedteLabel.setFont(font);
         bottomPanel.add(breedteLabel,0);
         
-        breedteTF = new JTextField("300");
-        breedteTF.setBounds(420,10,40,20);
+        breedteTF = new WiskOpdrTextField("300");
+        breedteTF.setBounds(420,10,40,22);
         breedteTF.setFont(font);
         breedteTF.addActionListener(this);
         breedteTF.addFocusListener(this);
@@ -236,30 +243,30 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         bottomPanel.add(breedteTF,0);
         
         hoogteLabel = new JLabel(WiskOpdr.rb.getString("hoogteLabel"));
-        hoogteLabel.setBounds(465,10,50,20);
+        hoogteLabel.setBounds(465,10,50,22);
         hoogteLabel.setFont(font);
         bottomPanel.add(hoogteLabel,0);
         
-        hoogteTF = new JTextField("250");
-        hoogteTF.setBounds(515,10,40,20);
+        hoogteTF = new WiskOpdrTextField("250");
+        hoogteTF.setBounds(515,10,40,22);
         hoogteTF.setFont(font);
         hoogteTF.addActionListener(this);
         hoogteTF.addFocusListener(this);
         
         bottomPanel.add(hoogteTF,0);
         
-        volledigeBreedteCB = new JCheckBox(WiskOpdr.rb.getString("volleBreedteLabel"));
+        volledigeBreedteCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("volleBreedteLabel"));
         volledigeBreedteCB.setOpaque(false);
         volledigeBreedteCB.setFont(font);
-        volledigeBreedteCB.setBounds(560,13,100,15);
+        volledigeBreedteCB.setBounds(560,13,100,22);
         volledigeBreedteCB.addActionListener(this);
         //volledigeBreedteCB.setSelected(true);
         bottomPanel.add(volledigeBreedteCB,0);
 		
-		popupCB = new JCheckBox(WiskOpdr.rb.getString("popupLabel"));
+		popupCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("popupLabel"));
 		popupCB.setOpaque(false);
 		popupCB.setFont(font);
-		popupCB.setBounds(670,13,70,15);
+		popupCB.setBounds(670,13,70,22);
 		popupCB.addActionListener(this);
 	    //volledigeBreedteCB.setSelected(true);
 		bottomPanel.add(popupCB,0);
