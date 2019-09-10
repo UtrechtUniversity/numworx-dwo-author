@@ -83,7 +83,7 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 			g.setColor(Color.white);//new Color(210,210,210));
 			if(!selected)g.setColor(new Color(230,230,230));
 			g.fillRect(0,0,20,22);
-			g.setColor(Color.gray.darker());
+			g.setColor(Color.gray);
 			g.drawRect(0,0,20,22);
 			if(selected)
 			{	g.drawRect(1,1,18,22);
@@ -94,14 +94,14 @@ public class NrComponent extends JComponent implements MouseListener //ToolTipIF
 			}
 			else
 			{
-				g.setColor(Color.gray);
+				g.setColor(Color.lightGray);
 				//g.drawLine(0,getSize().height-5,getSize().width-1,getSize().height-5);
 				g.drawLine(0,getSize().height-2,getSize().width,getSize().height-2);
 			}
 			int cor;
 			if(nr<10)cor = 3;
 			else cor = 0;
-			g.setColor(Color.black);
+			g.setColor(WiskOpdr.colorBlue1);
 			g.drawString(Integer.toString(nr),5+cor,15);
 		}
 		else

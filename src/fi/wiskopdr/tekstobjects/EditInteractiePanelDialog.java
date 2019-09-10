@@ -187,26 +187,28 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	
         }
         else if(setNr==0 && soort == 3) {
-          size = new Dimension(1060,700);
+          size = new Dimension(1100,720);
         }
 
         bottomPanel.setPreferredSize(new Dimension(1000,60));
 
         okButton = new WiskOpdrButton(WiskOpdr.rb.getString("okKnopLabel"));
-        okButton.setBounds(30,10,65,24);
+        okButton.setBounds(15,20,75,24);
+        okButton.setBackground(WiskOpdr.colorBlue1);
         //okButton.setFont(font);
         okButton.addActionListener(this);
         bottomPanel.add(okButton);
         
         cancelButton = new WiskOpdrButton(WiskOpdr.rb.getString("annuleerKnopLabel"));
-        cancelButton.setBounds(110,10,65,24);
+        cancelButton.setBackground(WiskOpdr.colorBlue1);
+        cancelButton.setBounds(105,20,75,24);
         cancelButton.setMargin(new Insets(4,10,4,10));
        // cancelButton.setFont(font);
         cancelButton.addActionListener(this);
         bottomPanel.add(cancelButton);
         
         soortAntwoordVakKeuze = new WiskOpdrComboBox();
-		soortAntwoordVakKeuze.setBounds(190,10,165,24);
+		soortAntwoordVakKeuze.setBounds(190,20,165,24);
 		soortAntwoordVakKeuze.setFont(font);
 		soortAntwoordVakKeuze.addActionListener(this);
 		if(setNr!=0 || soort !=3)
@@ -230,12 +232,13 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		*/
 		
 		breedteLabel = new JLabel(WiskOpdr.rb.getString("breedteLabel"));
-        breedteLabel.setBounds(370,10,50,22);
+		breedteLabel.setForeground(WiskOpdr.colorBlue1);
+        breedteLabel.setBounds(370,20,50,22);
         breedteLabel.setFont(font);
         bottomPanel.add(breedteLabel,0);
         
         breedteTF = new WiskOpdrTextField("300");
-        breedteTF.setBounds(420,10,40,22);
+        breedteTF.setBounds(420,20,40,22);
         breedteTF.setFont(font);
         breedteTF.addActionListener(this);
         breedteTF.addFocusListener(this);
@@ -243,12 +246,13 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         bottomPanel.add(breedteTF,0);
         
         hoogteLabel = new JLabel(WiskOpdr.rb.getString("hoogteLabel"));
-        hoogteLabel.setBounds(465,10,50,22);
+        hoogteLabel.setForeground(WiskOpdr.colorBlue1);
+        hoogteLabel.setBounds(465,20,50,22);
         hoogteLabel.setFont(font);
         bottomPanel.add(hoogteLabel,0);
         
         hoogteTF = new WiskOpdrTextField("250");
-        hoogteTF.setBounds(515,10,40,22);
+        hoogteTF.setBounds(510,20,40,22);
         hoogteTF.setFont(font);
         hoogteTF.addActionListener(this);
         hoogteTF.addFocusListener(this);
@@ -258,7 +262,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         volledigeBreedteCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("volleBreedteLabel"));
         volledigeBreedteCB.setOpaque(false);
         volledigeBreedteCB.setFont(font);
-        volledigeBreedteCB.setBounds(560,13,100,22);
+        volledigeBreedteCB.setBounds(560,20,100,22);
         volledigeBreedteCB.addActionListener(this);
         //volledigeBreedteCB.setSelected(true);
         bottomPanel.add(volledigeBreedteCB,0);
@@ -266,19 +270,19 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		popupCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("popupLabel"));
 		popupCB.setOpaque(false);
 		popupCB.setFont(font);
-		popupCB.setBounds(670,13,70,22);
+		popupCB.setBounds(670,20,70,22);
 		popupCB.addActionListener(this);
 	    //volledigeBreedteCB.setSelected(true);
 		bottomPanel.add(popupCB,0);
 		
 		imageButton = new FormuleButton("tekstvak");
-		imageButton.setBounds(740,10,20,20);
+		imageButton.setBounds(730,20,20,20);
 		imageButton.addActionListener(this);
 		imageButton.setVisible(false);
 		bottomPanel.add(imageButton);
 		
 		shareButton = new JButton(shareAction);
-		shareButton.setBounds(762,10,24,20);
+		shareButton.setBounds((int)size.getWidth()-45,20,24,20);
 		bottomPanel.add(shareButton);
 		
 		getContentPane().add(bottomPanel,BorderLayout.SOUTH);

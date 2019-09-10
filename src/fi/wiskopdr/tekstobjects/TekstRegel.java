@@ -217,6 +217,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 		g.setColor(Color.black);
 		if(caretVisible && editable && aan)
 		{	g.drawLine(caretX,0,caretX,getSize().height);
+		    g.drawLine(caretX+1,0,caretX+1,getSize().height);
 		}
 		
 	}
