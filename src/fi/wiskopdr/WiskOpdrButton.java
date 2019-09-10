@@ -15,7 +15,7 @@ public class WiskOpdrButton extends JButton {
   private Color bgColor = new Color(120,150,202);
   private Color fgColor = Color.white;
   private FontMetrics fm;
-  private Font font = new Font("SansSerif", Font.BOLD, 13);
+  private Font font = new Font("SansSerif", Font.BOLD, 12);
   
   public WiskOpdrButton(String label) {
     super(label);

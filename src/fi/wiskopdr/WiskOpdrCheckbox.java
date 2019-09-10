@@ -34,13 +34,13 @@ public class WiskOpdrCheckbox extends JCheckBox {
       if(WiskOpdr.mac) {
         int m = (getHeight() - 24)/2-1;
         g.setColor(Color.white);
-        g.fillRect(7, m+5, 14, 14);
+        g.fillRect(6, m+5, 15, 15);
         g.setColor(bgColor);
-        g.drawRect(7, m+5, 14, 14);
+        g.drawRect(6, m+5, 15, 15);
         
         if(isSelected()) {
           g.setColor(bgColor);
-          g.fillRect(7, m+5, 14, 14);
+          g.fillRect(6, m+5, 15, 15);
           g.setColor(Color.white);
           g.setFont(font);
           g.drawString("v",10,m+16);

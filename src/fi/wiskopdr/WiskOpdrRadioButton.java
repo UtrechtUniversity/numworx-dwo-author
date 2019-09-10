@@ -38,11 +38,11 @@ public class WiskOpdrRadioButton extends JRadioButton {
     ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
       super.paintComponent(g);
       if(WiskOpdr.mac) {
-        int m = (getHeight() - 24)/2-1;
+        int m = (getHeight() - 24)/2;
         g.setColor(Color.white);
-        g.fillOval(7, m+5, 14, 14);
+        g.fillOval(6, m+4, 16, 16);
         g.setColor(WiskOpdr.colorBlue3);
-        g.drawOval(7, m+5, 14, 14);
+        g.drawOval(6, m+4, 16, 16);
         
         if(isSelected()) {
           g.setColor(WiskOpdr.colorBlue3);
