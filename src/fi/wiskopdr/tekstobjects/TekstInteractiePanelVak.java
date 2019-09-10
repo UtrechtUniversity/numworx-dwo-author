@@ -543,7 +543,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
       Box hb= Box.createHorizontalBox();
       hb.add(titel);
       FontMetrics fm = te.getFontMetrics(new Font("SansSerif",Font.BOLD,14));
-      int margin = (200 - fm.stringWidth(titel.getText()))/2;
+      int margin = (220 - fm.stringWidth(titel.getText()))/2;
       titel.setBorder(BorderFactory.createMatteBorder(3, margin, 3, margin, new Color(49,71,112)));
       menu.add(hb,0);
 	}
