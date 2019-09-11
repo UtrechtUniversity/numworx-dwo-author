@@ -143,7 +143,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 	}
     
     public AntwoordVergelijkingVakEditPanel(int soort)
-    {   setLayout(null);
+    {   setLayout(new BorderLayout());
        super.setSize(770,520); //voor dwo
         setBackground(WiskOpdr.colorGray3); 
         setOpaque(true);
@@ -178,8 +178,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         antwoordEditorPanel.setLayout(null);
         antwoordEditorPanel.add(antwoordvak);
         antwoordEditorPanel.setPreferredSize(new Dimension(835,170));
-        antwoordEditorPanel.setMaximumSize(new Dimension(835,170));
-        antwoordEditorPanel.setMinimumSize(new Dimension(835,170));
+       // antwoordEditorPanel.setMaximumSize(new Dimension(835,170));
+       // antwoordEditorPanel.setMinimumSize(new Dimension(835,170));
         add(antwoordEditorPanel);
         
         antwoordSubstitutiesVak = new FormuleEditor(true);
@@ -273,7 +273,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         feedbackEditor = new TekstEditor(false,true,true);
         feedbackEditor.setPreferredSize(new Dimension(280,160));
         feedbackEditor.setMaximumSize(new Dimension(280,160));
-        feedbackEditor.setMinimumSize(new Dimension(280,160));
+        //feedbackEditor.setMinimumSize(new Dimension(280,160));
         feedbackEditor.setBounds(5,350,280,160);
         feedbackEditor.setFont(font);
         feedbackEditor.addActionListener(this);
@@ -294,7 +294,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         vormEditorPanel.setLayout(null);
         vormEditorPanel.setPreferredSize(new Dimension(260,160));
         vormEditorPanel.setMaximumSize(new Dimension(260,160));
-        vormEditorPanel.setMinimumSize(new Dimension(260,160));
+        //vormEditorPanel.setMinimumSize(new Dimension(260,160));
         vormEditorPanel.add(vormEditor);
         add(vormEditorPanel);
         
@@ -360,11 +360,17 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         
         setFeedbackOption(false);
         
+        
+        
+        makeNewPanel();
+        add(mainPanel); 
+        
         if(soort==1)
         {   stappen = true;
        		stappenDefault = true;
         	formuleToolBijFocusCB.setVisible(false);
         	uitwCB.setVisible(false);
+        	
         }
         else if(soort==3)
         {   stappen = false;
@@ -380,11 +386,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             formuleToolBijFocusCB.setVisible(true);
             solveButton.setVisible(false);
             solveTF.setVisible(false);
+            titleStartLabel.setVisible(false);
         }
-        
-        makeNewPanel();
-        newPanel.setBounds(0,0,1100,760);
-        add(newPanel,0); 	
     }
     
     private static JPanel newPanel;
@@ -417,7 +420,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		topPanel.setBackground(WiskOpdr.colorBlue1);
 		newPanel.add(topPanel,BorderLayout.NORTH);
 		
-		mainPanel = new JPanel();
+		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(WiskOpdr.colorGray3);
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		newPanel.add(mainPanel,BorderLayout.CENTER);
@@ -570,6 +573,16 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	regelBox.add(Box.createHorizontalGlue());   
     	settingsBox.add(regelBox);
     	settingsBox.add(Box.createVerticalStrut(15));
+    	
+    	regelBox = Box.createHorizontalBox();
+    	regelBox.add(formuleToolBijFocusCB);
+    	regelBox.add(Box.createHorizontalGlue());   
+    	settingsBox.add(regelBox);
+    	
+    	regelBox = Box.createHorizontalBox();
+    	regelBox.add(uitwCB);
+    	regelBox.add(Box.createHorizontalGlue());   
+    	settingsBox.add(regelBox);
     	    	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(linStrategieVersieCB);
@@ -612,6 +625,11 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	settingsBox.add(regelBox);
     	
     	regelBox = Box.createHorizontalBox();
+    	regelBox.add(casAntwCB);
+    	regelBox.add(Box.createHorizontalGlue());   
+    	settingsBox.add(regelBox);
+    	
+    	regelBox = Box.createHorizontalBox();
     	regelBox.add(tipsCB);
     	regelBox.add(ideasButton);
     	regelBox.add(Box.createHorizontalGlue());   
@@ -649,6 +667,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	feedbackBox.add(Box.createVerticalStrut(5));
     	
     	regelBox = Box.createHorizontalBox();
+    	regelBox.add(Box.createRigidArea(new Dimension(0,160)));
     	regelBox.add(Box.createHorizontalGlue()); 
     	regelBox.add(feedbackEditor);
     	feedbackBox.add(regelBox);
@@ -726,6 +745,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	vormBox.add(Box.createVerticalStrut(5));
     	
     	regelBox = Box.createHorizontalBox();
+    	regelBox.add(Box.createRigidArea(new Dimension(0,160)));
     	regelBox.add(vormEditorPanel);
     	regelBox.add(Box.createHorizontalGlue()); 
     	vormBox.add(regelBox);
@@ -753,9 +773,10 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		boxv1.add(boxh3);
 		
 		boxh1.add(startBox);
-		boxh1.add(Box.createHorizontalStrut(110));
+		boxh1.add(Box.createRigidArea(new Dimension(20,20)));
+		boxh1.add(Box.createHorizontalGlue());
 		boxh1.add(contextBox);
-		
+		boxh1.add(Box.createHorizontalGlue());
 		boxh2.add(antwoordBox);
 		
 		boxh3.add(verificatieBox);
