@@ -2,6 +2,9 @@ package fi.wiskopdr;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -13,7 +16,7 @@ import nl.numworx.swingbrowser.api.SwingBrowser;
 import nl.numworx.swingbrowser.api.SwingBrowserProvider;
 
 //@SuppressWarnings("restriction")
-public class SimpleSwingBrowser {
+public class SimpleSwingBrowser implements WindowListener {
   
     private static final SwingBrowserProvider BROWSER_PROVIDER = new SwingBrowserProvider();
     final private SwingBrowser browser;
@@ -27,16 +30,17 @@ public class SimpleSwingBrowser {
 	    observer.repaint();
 	}
 	
+	public void dispose() {
+	  try {
+        browser.close();
+      } catch (IOException e) {
+      }
+	}
+	
 	public SimpleSwingBrowser() {
 		browser = BROWSER_PROVIDER.getFactory().newBrowser();
 		browser.addTitleListener(ev -> setTitle(ev.getTitle()));
 		browser.addRefreshListener(this::repaint);
-	}
-
-	public void setAdressFieldVisible(boolean b) {
-	}
-
-	public void setStatusBarVisible(boolean b) {
 	}
 
 	public JComponent getBrowserPanel() {
@@ -77,7 +81,7 @@ public class SimpleSwingBrowser {
 			frame.setContentPane(getBrowserPanel());
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // for fire and forget
 			frame.setPreferredSize(new Dimension(1024, 600));
-			frame.pack();
+			frame.addWindowListener(this); // displ
 		}
 		return frame;
 	}
@@ -89,5 +93,30 @@ public class SimpleSwingBrowser {
 	public void setVisible(boolean b) {
 		getFrame().setVisible(b);
 	}
+
+  @Override
+  public void windowActivated(WindowEvent arg0) {
+  }
+  @Override
+  public void windowClosed(WindowEvent arg0) {
+  }
+
+  @Override
+  public void windowClosing(WindowEvent ev) {
+    dispose();
+  }
+
+  @Override
+  public void windowDeactivated(WindowEvent arg0) {
+  }
+  @Override
+  public void windowDeiconified(WindowEvent arg0) {
+  }
+  @Override
+  public void windowIconified(WindowEvent arg0) {
+  }
+  @Override
+  public void windowOpened(WindowEvent arg0) {
+  }
 
 }

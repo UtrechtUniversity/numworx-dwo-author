@@ -699,6 +699,18 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			instellingenDialog.dispose();
 			instellingenDialog = null;
 		}
+		if (helpBrowser != null) {
+		  helpBrowser.dispose();
+		  helpBrowser = null;
+		}
+		if (iconman != null) {
+		  iconman.dispose();
+		  iconman = null;
+		}
+		if (imageDialog != null) {
+		  imageDialog.dispose();
+		  imageDialog = null;
+		}
 	}
 
 	/**

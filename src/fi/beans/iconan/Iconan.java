@@ -988,6 +988,12 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 		heightField.setText("");
 	}
+
+
+  public void dispose() {
+    svgStrategy.dispose();
+    imageStrategy.dispose();
+  }
 	
 }
 

@@ -471,9 +471,15 @@
 		</dependency>
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
-			<artifactId>swingbrowser-jfx</artifactId>
+			<artifactId>swingbrowser-api</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.swingbrowser</groupId>
+			<artifactId>swingbrowser-jxb</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>

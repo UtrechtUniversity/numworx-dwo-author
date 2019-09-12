@@ -3,8 +3,6 @@ package fi.beans.iconan;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 
-import fi.wiskopdr.SimpleSwingBrowser;
-
 interface Strategy {
 
   int getWidth(String name);
@@ -16,4 +14,6 @@ interface Strategy {
   JComponent getComponent(String name);
 
   Icon getIcon(String name);
+  
+  default void dispose() { }
 }

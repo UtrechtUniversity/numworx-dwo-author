@@ -1054,6 +1054,13 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		if(interactieEditPanel != null)
 			interactieEditPanel.stop();
 	}
+
+  @Override
+  public void dispose() {
+    if (iconman != null) iconman.dispose();
+    if (imageDialog != null) imageDialog.dispose();
+    super.dispose();
+  }
     
     
 }
