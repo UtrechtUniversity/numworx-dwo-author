@@ -186,9 +186,9 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
             size = new Dimension(900,700);
         	
         }
-        else if(setNr==0 && soort == 3) {
-          size = new Dimension(1100,720);
-        }
+//        else if(setNr==0 && soort == 3) {
+//          size = new Dimension(1100,720);
+//        }
 
         bottomPanel.setPreferredSize(new Dimension(1000,60));
 
@@ -211,7 +211,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		soortAntwoordVakKeuze.setBounds(190,20,165,24);
 		soortAntwoordVakKeuze.setFont(font);
 		soortAntwoordVakKeuze.addActionListener(this);
-		if(setNr!=0 || soort !=3)
+		if(setNr!=0 || (soort !=0 && soort !=1 && setNr!=2 && soort !=3))
 		  bottomPanel.add(soortAntwoordVakKeuze);
 		
 		
@@ -285,14 +285,22 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		shareButton.setBounds((int)size.getWidth()-45,20,24,20);
 		bottomPanel.add(shareButton);
 		
-		getContentPane().add(bottomPanel,BorderLayout.SOUTH);
-        launchData = shareAction.unwrap(launchData);
-        addInteractieEditPanel(launchData, soort);
+		if(setNr==0 && (soort==0 || soort==1 || soort==2 || soort==3)) {
+			launchData = shareAction.unwrap(launchData);
+	        addInteractieEditPanel(launchData, soort);
+	        getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+		}
+		else {
+			getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+	        launchData = shareAction.unwrap(launchData);
+	        addInteractieEditPanel(launchData, soort);
+	        this.setSize(Math.max(size.width, widthEditPanel), size.height);
+	        doLayout();
+		}
         
         
         this.addWindowListener(this);
-        this.setSize(Math.max(size.width, widthEditPanel), size.height);
-        doLayout();
+        
     }
 
 	void initSet(int setNr) {
@@ -487,8 +495,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     {
     	if(interactieEditPanel!=null)
 		{	((Component) interactieEditPanel).setBounds(-1,-1,getSize().width,getSize().height-110);
-			if(interactieEditPanel instanceof JComponent)((JComponent)interactieEditPanel).setBorder(BorderFactory.createLineBorder(Color.gray));
+			//if(interactieEditPanel instanceof JComponent)((JComponent)interactieEditPanel).setBorder(BorderFactory.createLineBorder(Color.gray));
 			((Component)interactieEditPanel).setBackground(getBackground());
+			if(huidigSoortInteractiePanel==0 || huidigSoortInteractiePanel==1 || huidigSoortInteractiePanel==2 || huidigSoortInteractiePanel==3)
+				getContentPane().removeAll();
 			getContentPane().add((Component)interactieEditPanel);
 			widthEditPanel = ((Component)interactieEditPanel).getPreferredSize().width;
 			if(interactieEditPanel!=null)((Component)interactieEditPanel).doLayout();//if(interactieEditPanel!=null) interactieEditPanel.start();
@@ -497,8 +507,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		    imageButton.setCode(TekstInteractiePanelVak.interactiePanelSetNames[setNr]);
 		    //System.out.println("layout");
 		}
+    	this.setSize(size.width, size.height);
 		pack();
-		this.setSize(Math.max(size.width, widthEditPanel), size.height);
+		//this.setSize(Math.max(size.width, widthEditPanel), size.height);
+		
     }
     
     public void makeInteractieEditPanel(int soortInteractiePanel)

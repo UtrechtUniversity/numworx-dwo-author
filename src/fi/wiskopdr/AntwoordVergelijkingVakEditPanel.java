@@ -24,13 +24,13 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     private FormuleEditor antwoordvak,startEditor,vormEditor;
     private JLabel antwoordLabel, startLabel, feedbackLabel;
     private JCheckBox  gelijkwaardigCB, vormCB, exactCB, stappenCB, eindOplossingCB, bewerkingKnoppenCB, 
-    	bewerkingKnoppenExtraCB, abcKnopCB, subKnopExtraCB,subKnopCB;
+    	bewerkingKnoppenExtraCB, abcKnopCB, subKnopExtraCB,subKnopCB, contextVarCB;
     private JCheckBox  significantCB;
     private JCheckBox linStrategieVersieCB,linOefenVersieCB, bordjesMethodeCB;
     private JLabel ScoringLabel, puntenLabel, checkTotaalLabel;
     private JTextField gelijkwaardigPV, vormPV, exactPV, significantPV, eindOplossingPV, feedbackPV;
     private JCheckBox tipsCB;
-        
+      
     
     private int puntenGelijkwaardig = 0;
     private int puntenVorm = 0;
@@ -96,6 +96,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     
     private JButton solveButton;
     private FormuleEditor antwoordSolveVak;
+    private DialogFacade solveVakPopupFrame;
     private JTextField solveTF;
     
     private JCheckBox pijlCB;
@@ -125,6 +126,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 	private JPanel vormEditorPanel;
 	private JPanel antwoordEditorPanel;
 	
+	private JPopupMenu solvePopup;
+	
 	private static String[][] strategieDomeinNamen = {
     		{IdeasIF.MATH_LINEQ,"algebra.equations.linear"},
     		{IdeasIF.MATH_QUADREQ,"algebra.equations.quadratic"},
@@ -137,14 +140,16 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     		{IdeasIF.MATH_COVERUP,"algebra.equations.coverup"}
     };
 	public static Hashtable strategieOudNieuw = new Hashtable();
+	private int soort;
 	
 	public static void zetSignificantieAan(boolean b)
 	{	significantieAan = b;
 	}
     
     public AntwoordVergelijkingVakEditPanel(int soort)
-    {   setLayout(new BorderLayout());
-       super.setSize(770,520); //voor dwo
+    {   this.soort = soort;
+    	setLayout(new BorderLayout());
+        super.setSize(770,520); //voor dwo
         setBackground(WiskOpdr.colorGray3); 
         setOpaque(true);
         addMouseListener(this);
@@ -155,28 +160,30 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 
         startEditor = new FormuleEditor(false);
         startEditor.setHeader(true);
-		startEditor.setBounds(0,0,470,105);
+		startEditor.setBounds(0,0,470,110);
 		startEditor.setFont(font);
         startEditor.setResizable(true);	
         startEditor.addActionListener(this);
         startEditorPanel = new JPanel();
         startEditorPanel.setLayout(null);
         startEditorPanel.add(startEditor);
-        startEditorPanel.setPreferredSize(new Dimension(470,105));
-        startEditorPanel.setMaximumSize(new Dimension(470,105));
-        startEditorPanel.setMinimumSize(new Dimension(470,105));
+        startEditorPanel.addComponentListener(new EditorComponentListener());
+        startEditorPanel.setPreferredSize(new Dimension(470,110));
+        //startEditorPanel.setMaximumSize(new Dimension(470,105));
+        //startEditorPanel.setMinimumSize(new Dimension(470,105));
         add(startEditorPanel);
         
         
         antwoordLabel = makeLabel(5,160,770,20,WiskOpdr.rb.getString("antwoordLabel"),true);
                 
         antwoordvak = new FormuleEditor(true);
-        antwoordvak.setBounds(0,20,835,150);
+        antwoordvak.setBounds(0,20,435,150);
         antwoordvak.setFont(font);
         antwoordvak.addActionListener(this);
         antwoordEditorPanel = new JPanel();
         antwoordEditorPanel.setLayout(null);
         antwoordEditorPanel.add(antwoordvak);
+        antwoordEditorPanel.addComponentListener(new EditorComponentListener());
         antwoordEditorPanel.setPreferredSize(new Dimension(835,170));
        // antwoordEditorPanel.setMaximumSize(new Dimension(835,170));
        // antwoordEditorPanel.setMinimumSize(new Dimension(835,170));
@@ -220,17 +227,21 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         add(functiesButton,0);
         
         antwoordSolveVak = new FormuleEditor(true);
-        antwoordSolveVak.setBounds(230,85,300,150);
+        antwoordSolveVak.setBounds(0,0,300,150);
         antwoordSolveVak.setFont(font);
         antwoordSolveVak.addActionListener(this);
         antwoordSolveVak.setMultiLine(true);
         antwoordSolveVak.setResizable(true);
         setLayer((Component)antwoordSolveVak, JLayeredPane.POPUP_LAYER.intValue());
+        solvePopup = new JPopupMenu();
+        solvePopup.add(antwoordSolveVak);
         
-        solveButton = new WiskOpdrButton(WiskOpdr.rb.getString("antwoordmodelButtonLabel"));
-        solveButton.setBounds(270,130,175,20);
-        solveButton.setPreferredSize(new Dimension(175,22));
-        solveButton.setMaximumSize(new Dimension(175,22));
+        
+        
+        solveButton = new WiskOpdrButton("Bereken");//WiskOpdr.rb.getString("antwoordmodelButtonLabel"));
+        solveButton.setBounds(270,130,80,20);
+        solveButton.setPreferredSize(new Dimension(80,22));
+        solveButton.setMaximumSize(new Dimension(80,22));
         //solveButton.setFont(font);
         solveButton.addActionListener(this);
         setLayer((Component)solveButton, JLayeredPane.PALETTE_LAYER.intValue());
@@ -245,7 +256,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         
         String[] items = {WiskOpdr.rb.getString("goedLabel"),WiskOpdr.rb.getString("doorLabel"),WiskOpdr.rb.getString("halfLabel"),WiskOpdr.rb.getString("foutLabel")};
         goedFoutIP = new ActKeuzePanel(items,440,420,80,80);
-        goedFoutIP.setPreferredSize(new Dimension(80,80));
+        goedFoutIP.setPreferredSize(new Dimension(100,80));
         add(goedFoutIP,0);
         
         tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
@@ -271,10 +282,10 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         feedbackLabel = makeLabel(20,330,320,20,"feedback",true);
         
         feedbackEditor = new TekstEditor(false,true,true);
-        feedbackEditor.setPreferredSize(new Dimension(280,160));
-        feedbackEditor.setMaximumSize(new Dimension(280,160));
+        feedbackEditor.setPreferredSize(new Dimension(880,160));
+        //feedbackEditor.setMaximumSize(new Dimension(280,110));
         //feedbackEditor.setMinimumSize(new Dimension(280,160));
-        feedbackEditor.setBounds(5,350,280,160);
+        feedbackEditor.setBounds(5,350,280,110);
         feedbackEditor.setFont(font);
         feedbackEditor.addActionListener(this);
         feedbackEditor.setBackground(new Color(255,255,200));
@@ -286,16 +297,17 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         vormEditor.setResizable(true);
         vormEditor.setMultiLine(true);
         vormEditor.setScrollHorizontal(true);
-        vormEditor.setBounds(0,0,260,160);
+        vormEditor.setBounds(0,0,260,110);
         vormEditor.setFont(font);
         vormEditor.addActionListener(this);
         vormEditor.setVisible(false);
         vormEditorPanel = new JPanel();
         vormEditorPanel.setLayout(null);
-        vormEditorPanel.setPreferredSize(new Dimension(260,160));
-        vormEditorPanel.setMaximumSize(new Dimension(260,160));
+        vormEditorPanel.setPreferredSize(new Dimension(860,160));
+        //vormEditorPanel.setMaximumSize(new Dimension(260,110));
         //vormEditorPanel.setMinimumSize(new Dimension(260,160));
         vormEditorPanel.add(vormEditor);
+        vormEditorPanel.addComponentListener(new EditorComponentListener());
         add(vormEditorPanel);
         
         
@@ -315,6 +327,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         bewerkingKnoppenExtraCB = makeCheckBox(500,135,230,20,WiskOpdr.rb.getString("bewerkingKnoppenExtraCBLabel"),false,true);
         abcKnopCB = makeCheckBox(630,115,60,20,WiskOpdr.rb.getString("abcCBLabel"),false,true);
         subKnopCB = makeCheckBox(690,115,100,20,WiskOpdr.rb.getString("subKnopCBLabel"),false,true);
+        contextVarCB = makeCheckBox(690,115,100,20,"gebruik contextvariabelen",false,true);
         subKnopExtraCB = makeCheckBox(690,135,100,20,WiskOpdr.rb.getString("subKnopExtraCBLabel"),false,false);
         eindOplossingCB = makeCheckBox(320,460,120,20,WiskOpdr.rb.getString("eindOplossingCBLabel"),true,true);
         tipsCB = makeCheckBox(690,45,280,20,"Ideas [test]",false,true);
@@ -333,6 +346,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+        logObjectivesButton.setPreferredSize(new Dimension(120,22));
+        logObjectivesButton.setMaximumSize(new Dimension(120,22));
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
@@ -356,14 +371,11 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         significantPV = makeTextField(460,485,30,20,"0",false);
 		feedbackPV = makeTextField(200,0,30,20,""+puntenFeedback,false);
         
-        
-        
         setFeedbackOption(false);
         
-        
-        
+        removeAll();
         makeNewPanel();
-        add(mainPanel); 
+        add(newPanel); 
         
         if(soort==1)
         {   stappen = true;
@@ -390,7 +402,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         }
     }
     
-    private static JPanel newPanel;
+    private  JPanel newPanel;
     private JPanel topPanel, mainPanel;
     
     JLabel titleStartLabel;
@@ -414,26 +426,26 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     Box vormBox;
     
     public void makeNewPanel() {
-    	newPanel = new JPanel(new BorderLayout());
-    	
+        newPanel = new JPanel(new BorderLayout());
+        newPanel.setPreferredSize(new Dimension(890,640));
+        
     	topPanel = new JPanel();
 		topPanel.setBackground(WiskOpdr.colorBlue1);
 		newPanel.add(topPanel,BorderLayout.NORTH);
 		
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(WiskOpdr.colorGray3);
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
 		newPanel.add(mainPanel,BorderLayout.CENTER);
 		
 		JLabel titleLabel = new JLabel("Instellingen vergelijkingvak met stappen");
+		if(soort==3)
+			titleLabel = new JLabel("Instellingen simpel vergelijkingvak");
 		titleLabel.setForeground(WiskOpdr.colorGray3);
 		titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 28));
 		topPanel.add(titleLabel);
     	
-		
-		
-		
-    	titleStartLabel = new JLabel("Startvergelijking");
+		titleStartLabel = new JLabel("Startvergelijking");
     	titleStartLabel.setForeground(WiskOpdr.colorBlue1);
     	titleStartLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
@@ -478,59 +490,52 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	titleContextLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
     	Box regelBox = Box.createHorizontalBox();
+    	Box kolomBox = Box.createHorizontalBox();
     	
     	//startbox
     	startBox = Box.createVerticalBox();
-    	//startBox.setBorder(BorderFactory.createLineBorder(Color.gray));
-    	startBox.setPreferredSize(new Dimension(470,135));
-    	startBox.setMaximumSize(new Dimension(470,135));
+    	regelBox = Box.createHorizontalBox();
     	regelBox.add(titleStartLabel);
     	regelBox.add(Box.createHorizontalGlue());
     	regelBox.add(solveButton);
-    	regelBox.add(Box.createHorizontalStrut(5));
+    	regelBox.add(Box.createRigidArea(new Dimension(5,5)));
     	regelBox.add(solveTF);
     	startBox.add(regelBox);
-    	startBox.add(Box.createVerticalStrut(5));
+    	startBox.add(Box.createRigidArea(new Dimension(5,5)));
     	regelBox = Box.createHorizontalBox();
+    	regelBox.add(Box.createRigidArea(new Dimension(0,110)));
     	regelBox.add(startEditorPanel);
-    	regelBox.add(Box.createHorizontalGlue());
     	startBox.add(regelBox);
-		
+    	
     	//contextBox
-    	contextBox = Box.createVerticalBox();
-    	//contextBox.setBorder(BorderFactory.createLineBorder(Color.gray));
+    	contextBox = Box.createHorizontalBox();
+    	if(soort==1)
+    		contextBox.add(Box.createRigidArea(new Dimension(20,0)));
+    	kolomBox = Box.createVerticalBox();
     	regelBox = Box.createHorizontalBox();
         regelBox.add(titleContextLabel);
-        regelBox.add(Box.createHorizontalGlue());   
-        contextBox.add(regelBox);
-        contextBox.add(Box.createVerticalStrut(15));
+        kolomBox.add(regelBox);
+        kolomBox.add(Box.createVerticalStrut(15));
+        
         
         regelBox = Box.createHorizontalBox();
         regelBox.add(substitutiesButton);
-        regelBox.add(Box.createHorizontalGlue());   
-        contextBox.add(regelBox);
-        contextBox.add(Box.createVerticalStrut(10));
+        kolomBox.add(regelBox);
+        kolomBox.add(Box.createVerticalStrut(10));
         
         regelBox = Box.createHorizontalBox();
         regelBox.add(functiesButton);
-        regelBox.add(Box.createHorizontalGlue());   
-        contextBox.add(regelBox);
-        
-        contextBox.add(Box.createVerticalGlue());
+        kolomBox.add(regelBox);
+        if(soort==1)
+        	kolomBox.add(Box.createVerticalGlue());
+        contextBox.add(kolomBox);
     	
     	//antwoordbox
     	antwoordBox = Box.createVerticalBox();
-    	
-//    	antwoordBox.setBorder(BorderFactory.createLineBorder(Color.gray));
-//    	regelBox = Box.createHorizontalBox();
-//    	regelBox.add(titleAntwoordLabel);
-//    	regelBox.add(Box.createHorizontalStrut(10));
-//    	regelBox.add(feedbackCB);
-//    	regelBox.add(Box.createHorizontalGlue());
-//    	antwoordBox.add(regelBox);
-    	//antwoordBox.add(Box.createVerticalStrut(5));
-    	antwoordBox.add(antwoordEditorPanel);
     	regelBox = Box.createHorizontalBox();
+    	regelBox.add(Box.createRigidArea(new Dimension(0,130)));
+    	regelBox.add(antwoordEditorPanel);
+    	antwoordBox.add(regelBox);
     	
     	//settingsBox
     	settingsBox = Box.createVerticalBox(); 
@@ -539,7 +544,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	regelBox.add(titleLoggingLabel);
     	regelBox.add(Box.createHorizontalGlue());
     	settingsBox.add(regelBox);
-    	settingsBox.add(Box.createVerticalStrut(15));
+    	settingsBox.add(Box.createVerticalStrut(5));
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(checkCB);
@@ -561,18 +566,20 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	regelBox.add(logIDLabelField);
     	regelBox.add(Box.createHorizontalGlue());
     	settingsBox.add(regelBox);
-    	settingsBox.add(Box.createVerticalStrut(35));
-    	
-    	regelBox = Box.createHorizontalBox();      
+    	settingsBox.add(Box.createRigidArea(new Dimension(5,5)));
+    	regelBox = Box.createHorizontalBox();
+    	regelBox.add(Box.createRigidArea(new Dimension(10,5)));
     	regelBox.add(logObjectivesButton);
     	regelBox.add(Box.createHorizontalGlue());
     	settingsBox.add(regelBox);
+    	settingsBox.add(Box.createVerticalStrut(20));
+    	
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(titleHulpLabel);
     	regelBox.add(Box.createHorizontalGlue());   
     	settingsBox.add(regelBox);
-    	settingsBox.add(Box.createVerticalStrut(15));
+    	settingsBox.add(Box.createVerticalStrut(5));
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(formuleToolBijFocusCB);
@@ -625,6 +632,11 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	settingsBox.add(regelBox);
     	
     	regelBox = Box.createHorizontalBox();
+    	regelBox.add(contextVarCB);
+    	regelBox.add(Box.createHorizontalGlue());   
+    	settingsBox.add(regelBox);
+    	
+    	regelBox = Box.createHorizontalBox();
     	regelBox.add(casAntwCB);
     	regelBox.add(Box.createHorizontalGlue());   
     	settingsBox.add(regelBox);
@@ -634,13 +646,21 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	regelBox.add(ideasButton);
     	regelBox.add(Box.createHorizontalGlue());   
     	settingsBox.add(regelBox);
-    	settingsBox.add(Box.createVerticalStrut(35));
+    	
+    	if(soort==3) {
+    		settingsBox.add(Box.createVerticalStrut(20));
+    		regelBox = Box.createHorizontalBox();
+        	regelBox.add(contextBox);
+        	regelBox.add(Box.createHorizontalGlue());   
+        	settingsBox.add(regelBox);
+    	}
+    	settingsBox.add(Box.createVerticalStrut(20));
     	
     	regelBox = Box.createHorizontalBox();
         regelBox.add(titleOpmaakLabel);
         regelBox.add(Box.createHorizontalGlue());   
         settingsBox.add(regelBox);
-        settingsBox.add(Box.createVerticalStrut(15));
+        settingsBox.add(Box.createVerticalStrut(5));
         
         regelBox = Box.createHorizontalBox();
         regelBox.add(pijlCB);
@@ -652,14 +672,11 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         regelBox.add(Box.createHorizontalGlue());   
         settingsBox.add(regelBox);
         
-        
-        
         settingsBox.add(Box.createVerticalGlue());
         
     	
     	//feedbackBox
     	feedbackBox = Box.createVerticalBox(); 
-    	//feedbackBox.setBorder(BorderFactory.createLineBorder(Color.gray));
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(Box.createHorizontalGlue());   
     	regelBox.add(titleFeedbackLabel);
@@ -667,62 +684,59 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	feedbackBox.add(Box.createVerticalStrut(5));
     	
     	regelBox = Box.createHorizontalBox();
-    	regelBox.add(Box.createRigidArea(new Dimension(0,160)));
+    	regelBox.add(Box.createRigidArea(new Dimension(0,110)));
     	regelBox.add(Box.createHorizontalGlue()); 
     	regelBox.add(feedbackEditor);
     	feedbackBox.add(regelBox);
     	feedbackBox.add(Box.createVerticalGlue());
     	
     	//VerificatieBox
-    	verificatieBox = Box.createVerticalBox(); 
-    	verificatieBox.setMaximumSize(new Dimension(180,200));
-    	verificatieBox.setPreferredSize(new Dimension(180,200));
-        
+    	verificatieBox = Box.createHorizontalBox();
+    	kolomBox = Box.createVerticalBox(); 
+    	 
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(titleVerificatieLabel);
     	regelBox.add(Box.createRigidArea(new Dimension(10,10)));
     	regelBox.add(Box.createHorizontalGlue()); 
     	regelBox.add(titleScoreLabel);
-    	verificatieBox.add(regelBox);
-    	verificatieBox.add(Box.createVerticalStrut(25));
+    	kolomBox.add(regelBox);
+    	kolomBox.add(Box.createVerticalStrut(25));
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(gelijkwaardigCB);
     	regelBox.add(Box.createHorizontalGlue()); 
     	regelBox.add(gelijkwaardigPV);
-    	verificatieBox.add(regelBox);
-    	//verificatieBox.add(Box.createVerticalStrut(3));
+    	kolomBox.add(regelBox);
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(vormCB);
     	regelBox.add(Box.createHorizontalGlue());   
     	regelBox.add(vormPV);
-    	verificatieBox.add(regelBox);
-    	//verificatieBox.add(Box.createVerticalStrut(3));
+    	kolomBox.add(regelBox);
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(eindOplossingCB);
     	regelBox.add(Box.createHorizontalGlue());   
     	regelBox.add(eindOplossingPV);
-    	verificatieBox.add(regelBox);
-    	//verificatieBox.add(Box.createVerticalStrut(3));
+    	kolomBox.add(regelBox);
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(significantCB);
     	regelBox.add(Box.createHorizontalGlue());   
     	regelBox.add(significantPV);
-    	verificatieBox.add(regelBox);
-    	//verificatieBox.add(Box.createVerticalStrut(3));
+    	kolomBox.add(regelBox);
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(exactCB);
     	regelBox.add(Box.createHorizontalGlue());   
     	regelBox.add(exactPV);
-    	verificatieBox.add(regelBox);
+    	kolomBox.add(regelBox);
+    	kolomBox.add(Box.createRigidArea(new Dimension(10,50)));
+    	kolomBox.add(Box.createVerticalGlue());
+    	verificatieBox.add(kolomBox);
+    	verificatieBox.add(Box.createHorizontalGlue());
+    	verificatieBox.add(Box.createHorizontalGlue());
     	
-    	verificatieBox.add(Box.createVerticalGlue());
-    	
-    	//scoringBox
     	scoringBox = Box.createVerticalBox();
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(Box.createRigidArea(new Dimension(10,10)));
@@ -745,7 +759,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	vormBox.add(Box.createVerticalStrut(5));
     	
     	regelBox = Box.createHorizontalBox();
-    	regelBox.add(Box.createRigidArea(new Dimension(0,160)));
+    	regelBox.add(Box.createRigidArea(new Dimension(0,110)));
     	regelBox.add(vormEditorPanel);
     	regelBox.add(Box.createHorizontalGlue()); 
     	vormBox.add(regelBox);
@@ -762,21 +776,24 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		vormBox.setVisible(false);
 		scoringBox.setVisible(false);
 		feedbackBox.setVisible(false);
+		contextBox.setVisible(false);
 		
 		Box boxh1 = Box.createHorizontalBox();
 		Box boxh2 = Box.createHorizontalBox();
 		Box boxh3 = Box.createHorizontalBox();
-		boxv1.add(boxh1);
-		boxv1.add(Box.createVerticalStrut(20));
+		if(soort==1) {
+			boxv1.add(boxh1);
+			boxv1.add(Box.createVerticalStrut(20));
+		}
+		
 		boxv1.add(boxh2);
 		boxv1.add(Box.createVerticalStrut(20));
 		boxv1.add(boxh3);
 		
 		boxh1.add(startBox);
-		boxh1.add(Box.createRigidArea(new Dimension(20,20)));
-		boxh1.add(Box.createHorizontalGlue());
-		boxh1.add(contextBox);
-		boxh1.add(Box.createHorizontalGlue());
+		if(soort==1)
+			boxh1.add(contextBox);
+		
 		boxh2.add(antwoordBox);
 		
 		boxh3.add(verificatieBox);
@@ -787,31 +804,26 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		boxh3.add(Box.createRigidArea(new Dimension(20,20)));
 		boxh3.add(Box.createHorizontalGlue());
 		boxh3.add(feedbackBox);
-		
-        
-		
-    }
+	}
+    static AntwoordVergelijkingVakEditPanel instance;
     
     public static void main(String[] args) {
     	WiskOpdr wiskOpdr = new WiskOpdr();
-    	(new AntwoordVergelijkingVakEditPanel(0)).makeNewPanel();
+    	instance = new AntwoordVergelijkingVakEditPanel(0);
     	makeFrame(wiskOpdr);
     }
     
     public static void makeFrame(Component c){
     	Frame frame = new JFrame();
 	   	frame.setLayout(new BorderLayout());
-	    frame.add(newPanel);
+	    frame.add(instance);
 	    frame.pack();
 	    frame.setVisible(true);
-	    //frame.setSize(400,400);
 	}
     
     public JCheckBox makeCheckBox(int x, int y, int b, int h, String text, boolean selected, boolean visible)
     {   JCheckBox checkbox = new WiskOpdrCheckbox(text);
         checkbox.setBounds(x,y,b,h+2);
-        //checkbox.setPreferredSize(new Dimension(50,22));
-        //checkbox.setMaximumSize(new Dimension(150,22));
         checkbox.setFont(font);
         checkbox.setOpaque(false);
         checkbox.addActionListener(this);
@@ -969,7 +981,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		
         
         vormEditor.setVisible(vorm);
-        vormBox.setVisible(false);
+        vormBox.setVisible(vorm);
         
         feedbackPV.setVisible(hasFeedback);
         feedbackPV.setText(""+puntenFeedback);
@@ -1184,7 +1196,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 if(hasFeedback)
                 {   aantalAnswerModels = answerModels.length;
                 	antwoordEditorPanel.remove(tabbladTab);
-                    tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,184);
+                    tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
                     tabbladTab.setTab(true);
                     tabbladTab.setScoresVisible(false);
                     tabbladTab.setSize(tabbladTab.getSize().width, 23);
@@ -1192,7 +1204,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                     tabbladTab.setBackground(new Color(210,210,210));
                     tabbladTab.setSelected(answerModelNr+1);
                     antwoordEditorPanel.add(tabbladTab,0);
-                    aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,184);
+                    aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,20);
                     
                     answerModelNr = 0;
                     setAnswerModel();
@@ -1297,7 +1309,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 vormPV.setText(""+puntenVorm);
                     
                 vormEditor.setVisible(vorm);
-                vormBox.setVisible(false);
+                vormBox.setVisible(vorm);
                     
                 exactCB.setSelected(exact);
                 exactPV.setVisible(exact);
@@ -1586,6 +1598,19 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		});
 	}
     
+    public void maakSolveVakPopupFrame()
+   	{
+   		solveVakPopupFrame = DialogFacade.newInstance(this, "");
+   		solveVakPopupFrame.getContentPane().setLayout(null);
+   		solveVakPopupFrame.getContentPane().add(this.antwoordSolveVak);
+   		solveVakPopupFrame.addWindowListener(new WindowAdapter(){
+   			public void windowClosing(WindowEvent e)
+   			{   
+   			}
+   		});
+   		
+   	}
+    
     public void maakVormPopupFrame()
 	{
     	vormEditorPopupFrame = DialogFacade.newInstance(this, "");
@@ -1722,6 +1747,10 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         {   setFeedbackOption(feedbackCB.isSelected());
             
         }
+        else if(e.getSource()==contextVarCB)
+        {   contextBox.setVisible(contextVarCB.isSelected());
+        }
+        
         else if(e.getSource()==feedbackSizeCB)
 		{	feedbackEditor.setResizable(feedbackSizeCB.isSelected());
 			
@@ -1998,7 +2027,18 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         		antwoordSolveVak.geefFormuleVak().vulVak("$f"+def+"@");
         		
         	}
-        	add(antwoordSolveVak,0);
+        	//add(antwoordSolveVak,0);
+        	//solvePopup.setVisible(true);
+        	//solvePopup.show(this,solveButton.getLocation().x-solveButton.getWidth(), solveButton.getLocation().y+solveButton.getHeight());
+        	maakSolveVakPopupFrame();
+        	solveVakPopupFrame.setVisible(true); 
+        	Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+			int x = solveButton.getLocationOnScreen().x + Math.min(0,screenSize.width - (getLocationOnScreen().x + 500));
+			int y = solveButton.getLocationOnScreen().y + Math.min(0,screenSize.height - (getLocationOnScreen().y + 400));
+			solveVakPopupFrame.setVisible(true);
+			solveVakPopupFrame.pack();
+			solveVakPopupFrame.setSize(antwoordSolveVak.getWidth(),antwoordSolveVak.getHeight());
+			solveVakPopupFrame.setLocation(x,y);
         }
         
         else if(e.getSource()==logCB)
@@ -2283,4 +2323,46 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         }
     }
     //end ActionProducer
+    
+    public class EditorComponentListener implements ComponentListener {
+
+      @Override
+      public void componentResized(ComponentEvent e) {
+    	  if(e.getSource()==antwoordEditorPanel) {
+    		  int w = antwoordEditorPanel.getWidth();
+    		  int h = antwoordEditorPanel.getHeight();
+    		  antwoordvak.setBounds(0,20,w,h-20);
+    	  }
+    	  if(e.getSource()==vormEditorPanel) {
+    		  int w = vormEditorPanel.getWidth();
+    		  int h = vormEditorPanel.getHeight();
+    		  vormEditor.setBounds(0,0,w,h);
+    	  }
+    	  if(e.getSource()==startEditorPanel) {
+    		  int w = startEditorPanel.getWidth();
+    		  int h = startEditorPanel.getHeight();
+    		  startEditor.setBounds(0,0,w,h);
+    	  }
+        
+      }
+
+      @Override
+      public void componentMoved(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+
+      @Override
+      public void componentShown(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+
+      @Override
+      public void componentHidden(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+      
+    }
 }

@@ -86,7 +86,7 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 		};
 		headerPanel.setLayout(null);
 		headerPanel.setBackground(new Color(221,222,225));
-		headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+		headerPanel.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue4));
 		if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
 		{	setBackground(Color.white);
 			headerPanel.setBackground(Color.white);//(new Color(195,213,229));
@@ -118,7 +118,7 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 		}
 		else scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setBackground(Color.white);
-		scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+		scrollPane.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue4));
 		if("MW".equals(WiskOpdr.deployVariant))// || "GR".equals(WiskOpdr.deployVariant)
 		{	scrollPane.getVerticalScrollBar().setUI(new MWScrollBarUI());
 			setScrollHorizontal(false);

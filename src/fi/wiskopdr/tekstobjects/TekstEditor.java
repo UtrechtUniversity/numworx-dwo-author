@@ -200,7 +200,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		};
 		headerPanel.setLayout(null);
 		headerPanel.setBackground(WiskOpdr.colorGray2);
-		headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+		headerPanel.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue4));
 		super.add(headerPanel);
 		
 		contentPane = new EditorContentPanel(this);
@@ -213,7 +213,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(scrollbar)scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, (toolbarLeft?JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED:JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
 		else scrollPane = new JScrollPane(contentPane,JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBackground(Color.white);
-		scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+		scrollPane.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue4));
 		basisPanel.add(scrollPane);
 		
 		//scrollPane.setColumnHeaderView(new JPanel());
