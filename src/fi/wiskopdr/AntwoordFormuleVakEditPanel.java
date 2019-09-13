@@ -92,6 +92,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	private ObjectiveChoiceButton logMisconceptionsButton;
 		
 	private JTextField aantalDecRmField;
+	private JLabel aantalDecRmLabel;
 	
 	private double eqTestValueMin = 0;
 	private double eqTestValueMax = 5;
@@ -102,6 +103,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	
 	private JCheckBox uitwCB;
 	private JCheckBox boxMetRandCB;
+	private JCheckBox kladblaadjeCB;
 	
 	private JCheckBox tipsCB;
     private boolean tips;
@@ -140,7 +142,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				
 		startEditor = new FormuleEditor(false);
         startEditor.setHeader(true);
-		startEditor.setBounds(5,50,470,105);
+		startEditor.setBounds(5,50,270,105);
         startEditor.setFont(font);
         startEditor.setResizable(true);	
         startEditor.addActionListener(this);
@@ -149,6 +151,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         startEditorPanel.add(startEditor);
         startEditorPanel.addComponentListener(new EditorComponentListener());
         startEditorPanel.setPreferredSize(new Dimension(470,110));
+        startEditorPanel.setMaximumSize(new Dimension(2870,150));
         //startEditorPanel.setMaximumSize(new Dimension(470,105));
         //startEditorPanel.setMinimumSize(new Dimension(470,105));
         add(startEditorPanel);
@@ -166,8 +169,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	    antwoordEditorPanel.add(antwoordvak);
 	    antwoordEditorPanel.addComponentListener(new EditorComponentListener());
 	    antwoordEditorPanel.setPreferredSize(new Dimension(835,170));
+	    antwoordEditorPanel.setMaximumSize(new Dimension(2835,170));
 	    add(antwoordEditorPanel);
-		antwoordvak.setResizable(true);
+		//antwoordvak.setResizable(true);
 		
 		antwoordSubstitutiesVak = new FormuleEditor(true);
         antwoordSubstitutiesVak.setBounds(15,270,570,150);
@@ -239,6 +243,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		
 		feedbackEditor = new TekstEditor(false,true,true);
 		feedbackEditor.setPreferredSize(new Dimension(880,160));
+		feedbackEditor.setMaximumSize(new Dimension(2835,160));
 		feedbackEditor.setBounds(5,350,300,160);
 		feedbackEditor.setFont(font);
 		feedbackEditor.addActionListener(this);
@@ -258,6 +263,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         vormEditorPanel = new JPanel();
         vormEditorPanel.setLayout(null);
         vormEditorPanel.setPreferredSize(new Dimension(860,160));
+        vormEditorPanel.setMaximumSize(new Dimension(2860,160));
         vormEditorPanel.add(vormEditor);
         vormEditorPanel.addComponentListener(new EditorComponentListener());
         add(vormEditorPanel);
@@ -278,7 +284,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		formuleToolBijFocusCB = makeCheckBox(530,50,270,20,WiskOpdr.rb.getString("formuleToolCBLabel"),false,false);
 		subKnopCB = makeCheckBox(650,55,100,20,WiskOpdr.rb.getString("subKnopCBLabel"),false,true);
 		subKnopExtraCB = makeCheckBox(650,80,100,20,WiskOpdr.rb.getString("subKnopExtraCBLabel"),false,false);
-		contextVarCB = makeCheckBox(690,115,100,20,"gebruik contextvariabelen",false,true);
+		contextVarCB = makeCheckBox(690,115,100,20,WiskOpdr.rb.getString("contextVarCBLabel"),false,true);
 		rmKnopCB = makeCheckBox(650,105,150,20,WiskOpdr.rb.getString("rmCBLabel"),false,true);
 		//subKnopCB.setVisible(false);
 		checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
@@ -288,6 +294,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         logIDLabelField = makeTextField(520,25,60,20,"",false);
         uitwCB = makeCheckBox(530,75,270,20,WiskOpdr.rb.getString("uitwCBLabel"),false,false);
         boxMetRandCB = makeCheckBox(500,105,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
+        kladblaadjeCB = makeCheckBox(10,565,120,20,"kladblaadje",false,true);
         
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
@@ -297,11 +304,13 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
         
         logMisconceptionsButton = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"), WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
-        logMisconceptionsButton.setVisible(false);
+        logMisconceptionsButton.setVisible(WiskOpdr.misconceptions!=null);
         logMisconceptionsButton.setBounds(350,350,120,20);
+        logMisconceptionsButton.setPreferredSize(new Dimension(200,22));
         if(WiskOpdr.misconceptions!=null)add(logMisconceptionsButton);
        
         aantalDecRmField = makeTextField(670,135,100,20,"10",false);
+        aantalDecRmLabel = makeLabel(670,135,100,20,WiskOpdr.rb.getString("rmAantalDecLabel"),false);
         		
 		gelijkwaardigPV = makeTextField(460,410,30,20,"10",true);
 		herleidingPV = makeTextField(460,435,30,20,"0",false);
@@ -401,54 +410,54 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
 		newPanel.add(mainPanel,BorderLayout.CENTER);
 		
-		JLabel titleLabel = new JLabel("Instellingen formulevak met stappen");
+		JLabel titleLabel = new JLabel(WiskOpdr.rb.getString("titleFormuleAntwVakLabel"));
 		if(soort==2)
-			titleLabel = new JLabel("Instellingen simpel formulevak");
+			titleLabel = new JLabel(WiskOpdr.rb.getString("titleSimpelFormuleAntwVakLabel"));
 		titleLabel.setForeground(WiskOpdr.colorGray3);
 		titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 28));
 		topPanel.add(titleLabel);
     	
-		titleStartLabel = new JLabel("Startexpressie");
+		
+		titleStartLabel = new JLabel(WiskOpdr.rb.getString("FEF_titleStartLabel"));
     	titleStartLabel.setForeground(WiskOpdr.colorBlue1);
     	titleStartLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	
-    	titleLoggingLabel = new JLabel("Logging / nakijken");
+    	titleLoggingLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"));
     	titleLoggingLabel.setForeground(WiskOpdr.colorBlue1);
     	titleLoggingLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	    	
-    	titleHulpLabel = new JLabel("Hulp bij oplossen");
+    	titleHulpLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"));
     	titleHulpLabel.setForeground(WiskOpdr.colorBlue1);
     	titleHulpLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	titleOpmaakLabel = new JLabel("Opmaak");
+    	titleOpmaakLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleOpmaakLabel"));
     	titleOpmaakLabel.setForeground(WiskOpdr.colorBlue1);
     	titleOpmaakLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	titleAntwoordLabel = new JLabel("Juiste antwoord");
+    	titleAntwoordLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
     	titleAntwoordLabel.setForeground(WiskOpdr.colorBlue1);
     	titleAntwoordLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	titleAntwoordLabel.setBounds(0,-3,140,20);
     	antwoordEditorPanel.add(titleAntwoordLabel);
-    	antwoordEditorPanel.add(feedbackCB);
+    	//antwoordEditorPanel.add(feedbackCB);
     	
-    	titleFeedbackLabel = new JLabel("Feedbacktekst");
+    	titleFeedbackLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
     	titleFeedbackLabel.setForeground(WiskOpdr.colorBlue1);
     	titleFeedbackLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	titleVerificatieLabel = new JLabel("Verificatie");
+    	titleVerificatieLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleVerificatieLabel"));
     	titleVerificatieLabel.setForeground(WiskOpdr.colorBlue1);
     	titleVerificatieLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	titleScoreLabel = new JLabel("Score");
+    	titleScoreLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
     	titleScoreLabel.setForeground(WiskOpdr.colorBlue1);
     	titleScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	titleVormLabel = new JLabel("Juiste vormen");
+    	titleVormLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleVormLabel"));
     	titleVormLabel.setForeground(WiskOpdr.colorBlue1);
     	titleVormLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	titleContextLabel = new JLabel("Contextvariabelen");
+    	titleContextLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleContextLabel"));
     	titleContextLabel.setForeground(WiskOpdr.colorBlue1);
     	titleContextLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
@@ -542,12 +551,30 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	settingsBox.add(Box.createVerticalStrut(5));
     	
     	regelBox = Box.createHorizontalBox();
+    	regelBox.add(feedbackCB);
+    	regelBox.add(Box.createHorizontalGlue());
+    	settingsBox.add(regelBox);
+    	
+    	regelBox = Box.createHorizontalBox();
     	regelBox.add(formuleToolBijFocusCB);
     	regelBox.add(Box.createHorizontalGlue());   
     	settingsBox.add(regelBox);
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(uitwCB);
+    	regelBox.add(Box.createHorizontalGlue());   
+    	settingsBox.add(regelBox);
+    	
+    	regelBox = Box.createHorizontalBox();
+    	regelBox.add(rmKnopCB);
+    	regelBox.add(Box.createHorizontalGlue());   
+    	settingsBox.add(regelBox);
+    	
+    	regelBox = Box.createHorizontalBox();
+    	regelBox.add(Box.createRigidArea(new Dimension(20,0)));
+    	regelBox.add(aantalDecRmLabel);
+    	regelBox.add(Box.createRigidArea(new Dimension(4,0)));
+    	regelBox.add(aantalDecRmField);
     	regelBox.add(Box.createHorizontalGlue());   
     	settingsBox.add(regelBox);
     	    	
@@ -571,11 +598,13 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	regelBox.add(Box.createHorizontalGlue());   
     	settingsBox.add(regelBox);
     	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(tipsCB);
-    	regelBox.add(ideasButton);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
+    	if(WiskOpdr.isExperimental()) {
+        	regelBox = Box.createHorizontalBox();
+	    	regelBox.add(tipsCB);
+	    	regelBox.add(ideasButton);
+	    	regelBox.add(Box.createHorizontalGlue());   
+	    	settingsBox.add(regelBox);
+    	}
     	
     	if(soort==2) {
     		settingsBox.add(Box.createVerticalStrut(20));
@@ -601,19 +630,22 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         
     	
     	//feedbackBox
-    	feedbackBox = Box.createVerticalBox(); 
+      	feedbackBox = Box.createHorizontalBox(); 
+    	kolomBox = Box.createVerticalBox(); 
     	regelBox = Box.createHorizontalBox();
-    	regelBox.add(Box.createHorizontalGlue());   
     	regelBox.add(titleFeedbackLabel);
-    	feedbackBox.add(regelBox);
-    	feedbackBox.add(Box.createVerticalStrut(5));
+    	regelBox.add(Box.createHorizontalGlue());   
+    	kolomBox.add(regelBox);
+    	kolomBox.add(Box.createVerticalStrut(5));
     	
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(Box.createRigidArea(new Dimension(0,110)));
     	regelBox.add(Box.createHorizontalGlue()); 
     	regelBox.add(feedbackEditor);
-    	feedbackBox.add(regelBox);
-    	feedbackBox.add(Box.createVerticalGlue());
+    	kolomBox.add(regelBox);
+    	kolomBox.add(Box.createVerticalGlue());
+    	feedbackBox.add(Box.createRigidArea(new Dimension(20,10)));
+    	feedbackBox.add(kolomBox);
     	
     	//VerificatieBox
     	verificatieBox = Box.createHorizontalBox();
@@ -651,7 +683,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	regelBox.add(Box.createHorizontalGlue());   
     	regelBox.add(exactPV);
     	kolomBox.add(regelBox);
-    	kolomBox.add(Box.createRigidArea(new Dimension(10,50)));
+    	
+    	kolomBox.add(logMisconceptionsButton);
     	kolomBox.add(Box.createVerticalGlue());
     	verificatieBox.add(kolomBox);
     	verificatieBox.add(Box.createHorizontalGlue());
@@ -721,7 +754,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		boxh3.add(scoringBox);
 		boxh3.add(Box.createHorizontalStrut(10));
 		boxh3.add(vormBox);
-		boxh3.add(Box.createRigidArea(new Dimension(20,20)));
+		//boxh3.add(Box.createRigidArea(new Dimension(20,20)));
 		boxh3.add(Box.createHorizontalGlue());
 		boxh3.add(feedbackBox);
 	}
@@ -755,6 +788,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	
 	public JLabel makeLabel(int x, int y, int b, int h, String text, boolean visible)
 	{	JLabel label = new JLabel(text);
+		label.setForeground(WiskOpdr.colorBlue1);
 		label.setBounds(x,y,b,h);
 		label.setFont(font);
 		label.setVisible(visible);
@@ -842,6 +876,19 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		return h;
 	}
 	
+	private void updateFeedbackTitelLabel()
+    {	String feedbackNrString = "";
+    	if(hasFeedback && answerModelNr>0) {
+    		feedbackNrString += (answerModelNr+1);
+	    	titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
+	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
+    	}
+    	else {
+    		titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
+	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
+    	}
+    }
+	
 	private void setAnswerModel(Hashtable h)
 	{	String antwoordString = "$f@";
 		boolean gelijkwaardig = true;
@@ -924,7 +971,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		
 		logMisconceptionsButton.setChoices(logMisconceptions);
 		
-		
+		updateFeedbackTitelLabel();
 	}
 	
 	private void getAnswerModel()
@@ -934,7 +981,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	
 	private void setAnswerModel()
 	{	if(answerModels==null)return;
-		logMisconceptionsButton.setVisible(answerModelNr>-1);
+		logMisconceptionsButton.setVisible(WiskOpdr.misconceptions!=null && answerModelNr>-1);
 		setAnswerModel(answerModels[answerModelNr]);	
 	}
 	
@@ -992,6 +1039,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				double eqTestValueMax = 5;
 				int aantalDecRm = 10;
 				boolean uitw = false;
+				boolean kladblaadje = false;
 				boolean tips = false;
                 Hashtable ideasInstellingen = new Hashtable();
                 boolean eigenOpdr = false;
@@ -1028,7 +1076,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				if(interactiePanelLaunchState.containsKey("eqTestValueMax")) eqTestValueMax = ((Double)interactiePanelLaunchState.get("eqTestValueMax")).doubleValue();
 				if(interactiePanelLaunchState.containsKey("aantalDecRm")) aantalDecRm = ((Integer)interactiePanelLaunchState.get("aantalDecRm")).intValue();
 				if(interactiePanelLaunchState.containsKey("uitw")) uitw = ((Boolean)interactiePanelLaunchState.get("uitw")).booleanValue();
-				if(interactiePanelLaunchState.containsKey("eigenOpdr")) eigenOpdr = ((Boolean)interactiePanelLaunchState.get("eigenOpdr")).booleanValue();
+				if(interactiePanelLaunchState.containsKey("kladblaadje")) kladblaadje = ((Boolean)interactiePanelLaunchState.get("kladblaadje")).booleanValue();
+                if(interactiePanelLaunchState.containsKey("eigenOpdr")) eigenOpdr = ((Boolean)interactiePanelLaunchState.get("eigenOpdr")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("tips")) tips = ((Boolean)interactiePanelLaunchState.get("tips")).booleanValue();
                 if(tips){
@@ -1113,6 +1162,10 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
                 
                 antwoordSubstitutiesVak.zetRegels(antwoordSubStrings);
                 antwoordFunctiesVak.zetRegels(antwoordFuncStrings);
+                boolean hasSub = antwoordSubStrings!=null && (antwoordSubStrings.length>0 && !antwoordSubStrings[0].equals("$f@"));
+                boolean hasFunc = antwoordFuncStrings!=null && (antwoordFuncStrings.length>0 && !antwoordFuncStrings[0].equals("$f@"));
+                contextBox.setVisible(hasSub || hasFunc);
+                this.contextVarCB.setSelected(hasSub || hasFunc);
                                
 				stappenCB.setSelected(stappen);
 				formuleToolBijFocusCB.setSelected(formuleToolBijFocus);
@@ -1128,11 +1181,13 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	            logCB.setSelected(logOption);
 	            
 	            uitwCB.setSelected(uitw);
+	            kladblaadjeCB.setSelected(kladblaadje);
 	            boxMetRandCB.setSelected(boxMetRand);
 	            eigenOpdrCB.setSelected(eigenOpdr);
 	            rmKnopCB.setVisible(uitw||stappen);
 	            rmKnopCB.setSelected(rmKnop);
 	            aantalDecRmField.setVisible(uitw && rmKnop);
+	            aantalDecRmLabel.setVisible(uitw && rmKnop);
 		    	
 	            //startLabel.setVisible(uitw);
 				//startEditor.setVisible(uitw);
@@ -1148,6 +1203,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	            logObjectivesButton.setObjectives(smObjectives);
 	           	            
 	            aantalDecRmField.setVisible(rmKnop);
+	            aantalDecRmLabel.setVisible(rmKnop);
 	            aantalDecRmField.setText(""+aantalDecRm);
 				
                 gelijkwaardigPV.setText(""+puntenGelijkwaardig);
@@ -1217,6 +1273,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			double eqTestValueMax = 5;
 			int aantalDecRm = 10;
 			boolean uitw = false;
+			boolean kladblaadje = false;
 			boolean tips;
 			Hashtable ideasInstellingen = new Hashtable();
 			boolean eigenOpdr = false;
@@ -1336,6 +1393,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			rmKnop = rmKnopCB.isSelected();
 						
 			uitw = uitwCB.isSelected();
+			kladblaadje = kladblaadjeCB.isSelected();
 			eigenOpdr = eigenOpdrCB.isSelected();
 			boxMetRand = boxMetRandCB.isSelected();
 			
@@ -1376,6 +1434,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
 			interactiePanelLaunchState.put("aantalDecRm",new Integer(aantalDecRm));
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
+			interactiePanelLaunchState.put("kladblaadje",new Boolean(kladblaadje));
 			interactiePanelLaunchState.put("eigenOpdr",new Boolean(eigenOpdr));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
 			interactiePanelLaunchState.put("tips",new Boolean(tips));
@@ -1505,6 +1564,64 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			}
 		});
 	}
+    
+    public void maakantwoordSubstitutiesFrame()
+   	{
+    	DialogFacade substitutiesVakPopupFrame = DialogFacade.newInstance(this, "Definities variabelen");
+    	substitutiesVakPopupFrame.getContentPane().setLayout(null);
+    	substitutiesVakPopupFrame.getContentPane().add(this.antwoordSubstitutiesVak);
+    	substitutiesVakPopupFrame.addWindowListener(new WindowAdapter(){
+   			public void windowClosing(WindowEvent e)
+   			{   substitutiesVakPopupFrame.dispose();
+   			}
+   		});
+    	substitutiesVakPopupFrame.addComponentListener(new ComponentAdapter(){
+			public void componentResized(ComponentEvent e)
+			{   int x = 0;
+				int y = 0;
+				int b = substitutiesVakPopupFrame.getSize().width - substitutiesVakPopupFrame.getInsets().left - substitutiesVakPopupFrame.getInsets().right;
+				int h = substitutiesVakPopupFrame.getSize().height - substitutiesVakPopupFrame.getInsets().top - substitutiesVakPopupFrame.getInsets().bottom;
+				antwoordSubstitutiesVak.setBounds(x,y,b,h);
+			}
+		});
+    	substitutiesVakPopupFrame.setVisible(true); 
+    	Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+		int x = substitutiesButton.getLocationOnScreen().x + Math.min(0,screenSize.width - (getLocationOnScreen().x + 350));
+		int y = substitutiesButton.getLocationOnScreen().y + Math.min(0,screenSize.height - (getLocationOnScreen().y + 430));
+		substitutiesVakPopupFrame.setVisible(true);
+		substitutiesVakPopupFrame.pack();
+		substitutiesVakPopupFrame.setSize(400,400);
+		substitutiesVakPopupFrame.setLocation(x,y);
+   	}
+    
+    public void maakantwoordFunctiesFrame()
+   	{
+    	DialogFacade functiesVakPopupFrame = DialogFacade.newInstance(this, "Definities functies");
+    	functiesVakPopupFrame.getContentPane().setLayout(null);
+    	functiesVakPopupFrame.getContentPane().add(this.antwoordFunctiesVak);
+    	functiesVakPopupFrame.addWindowListener(new WindowAdapter(){
+   			public void windowClosing(WindowEvent e)
+   			{   functiesVakPopupFrame.dispose();
+   			}
+   		});
+    	functiesVakPopupFrame.addComponentListener(new ComponentAdapter(){
+			public void componentResized(ComponentEvent e)
+			{   int x = 0;
+				int y = 0;
+				int b = functiesVakPopupFrame.getSize().width - functiesVakPopupFrame.getInsets().left - functiesVakPopupFrame.getInsets().right;
+				int h = functiesVakPopupFrame.getSize().height - functiesVakPopupFrame.getInsets().top - functiesVakPopupFrame.getInsets().bottom;
+				antwoordFunctiesVak.setBounds(x,y,b,h);
+			}
+		});
+    	functiesVakPopupFrame.setVisible(true); 
+    	Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+		int x = functiesButton.getLocationOnScreen().x + Math.min(0,screenSize.width - (getLocationOnScreen().x + 350));
+		int y = functiesButton.getLocationOnScreen().y + Math.min(0,screenSize.height - (getLocationOnScreen().y + 430));
+		functiesVakPopupFrame.setVisible(true);
+		functiesVakPopupFrame.pack();
+		functiesVakPopupFrame.setSize(400,400);
+		functiesVakPopupFrame.setLocation(x,y);
+   	}
     
     public void maakFeedbackEditorPopupFrame()
     {
@@ -1711,16 +1828,18 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         	repaint();
         }
         else if(e.getSource() == substitutiesButton)
-        {  	add(antwoordSubstitutiesVak,0);
-        	repaint();
+        {  	//add(antwoordSubstitutiesVak,0);
+        	//repaint();
+        	maakantwoordSubstitutiesFrame();
         }
         else if(e.getSource() == antwoordFunctiesVak)
         {  	remove(antwoordFunctiesVak);
         	repaint();
         }
         else if(e.getSource() == functiesButton)
-        {  	add(antwoordFunctiesVak,0);
-        	repaint();
+        {  	//add(antwoordFunctiesVak,0);
+        	//repaint();
+        	maakantwoordFunctiesFrame();
         }
 		else if(e.getSource()==herleidingsKeuze)
 		{	soortHerleiding = herleidingsKeuze.getSelectedIndex();
@@ -1734,12 +1853,14 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		else if(e.getSource()==uitwCB)
 	    {   rmKnopCB.setVisible(uitwCB.isSelected()); 
 	    	aantalDecRmField.setVisible(uitwCB.isSelected() && rmKnopCB.isSelected());
+	    	aantalDecRmLabel.setVisible(uitwCB.isSelected() && rmKnopCB.isSelected());
 		    //startLabel.setVisible(uitwCB.isSelected());
 			//startEditor.setVisible(uitwCB.isSelected());
 	    }
 		else if(e.getSource()==rmKnopCB)
-	    {   aantalDecRmField.setVisible(rmKnopCB.isSelected());   
-	    }
+	    {   aantalDecRmField.setVisible(rmKnopCB.isSelected());
+	    	aantalDecRmLabel.setVisible(rmKnopCB.isSelected());
+ 	    }
 		else if(e.getSource()==startEditor)
 		{	if(e.getActionCommand().equals("vergroot"))
 			{	if(startEditorPopupFrame==null)	maakStartPopupFrame();
@@ -1756,8 +1877,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			if(e.getActionCommand().equals("verklein"))
 			{	startEditorPopupFrame.setVisible(false);
 				startLabel.setVisible(true);
-				startEditor.setBounds(0,0,470,105);
-		        startLabel.setBounds(5,30,770,20);
+				startEditor.setBounds(startEditorPanel.getBounds());
+		        startLabel.setBounds(5,30,470,20);
 				startEditorPanel.add(startEditor);
 				startEditorPopupFrame.dispose();
 			}
@@ -1778,7 +1899,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			}
 			if(e.getActionCommand().equals("verklein"))
 			{	vormEditorPopupFrame.setVisible(false);
-				vormEditor.setBounds(0,0,260,160);
+				vormEditor.setBounds(vormEditorPanel.getBounds());
 		        vormEditorPanel.add(vormEditor);
 				vormEditorPopupFrame.dispose();
 			}

@@ -214,8 +214,27 @@ public class Text_in extends java.util.ListResourceBundle
 				{"abc" , "discr"},
 				
 				{"checkExternalCBLabel" , "check external"},
+				{"contextVarCBLabel", "Use contextvariables"},
+				{"rmAantalDecLabel", "Number of decimals"},
+				
+				{"FEV_titleStartLabel", "Start expression"},
+				{"FEF_titleStartLabel", "Start equation"},
+				{"FEV_titleAntwoordLabel", "Correct answer"},
+				{"FEV_titleAntwoordNrLabel", "Answer"},
+				{"FEV_titleContextLabel", "Context variables"},
+				{"FEV_titleFeedbackLabel", "Feedback text"},
+				{"FEV_titleVerificatieLabel", "Verificaton"},
+				{"FEV_titleHulpLabel", "Help solving"},
+				{"FEV_titleOpmaakLabel", "Layout"},
+				{"FEV_titleLoggingLabel", "Logging / checking"},
+				{"FEV_titleScoringLabel", "Score"},
+				{"FEV_titleVormLabel", "Correct forms"},
 				
 				// TekstVakInteractiePanel
+				{"titleFormuleAntwVakLabel" , "Settings formula answer box with steps"},
+                {"titleVergelijkingAntwVakLabel" , "Settings equation answer box with steps"},
+                {"titleSimpelFormuleAntwVakLabel" , "Settings small formula answer box"},
+                {"titleSimpelVergelijkingAntwVakLabel" , "Settings small equation answer box"},	
 				{"formuleAntwVakLabel" , "Formula answer box with steps"},
                 {"vergelijkingAntwVakLabel" , "Kotak jawaban persamaan dengan langkah-langkah"},
                 {"simpelFormuleAntwVakLabel" , "Kotak jawaban rumus sederhana"},

@@ -5,14 +5,16 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import fi.wiskopdr.WiskOpdr;
+
 public class PlusMinKnop extends JPanel implements MouseListener
 {	
 	private Polygon pijlPlus, pijlMin;
 	private boolean ingedrukt = false;
 	private boolean plus;
 	private boolean enabled = true;
-	private Color buttonColorEnabled = new Color(38,115,182);//new Color(60,60,60);
-	private Color buttonColorDisabled = new Color(180,195,228);//new Color(150,150,150);
+	private Color buttonColorEnabled = WiskOpdr.colorBlue3;//new Color(60,60,60);
+	private Color buttonColorDisabled = WiskOpdr.colorBlue4;//new Color(150,150,150);
 	private LoopDraad loopDraad;
 	public static int VERTIKAAL = 0;
 	public static int HORIZONTAAL = 1;

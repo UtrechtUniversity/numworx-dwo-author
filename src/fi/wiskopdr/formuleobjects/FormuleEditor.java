@@ -85,7 +85,7 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 //			}
 		};
 		headerPanel.setLayout(null);
-		headerPanel.setBackground(new Color(221,222,225));
+		headerPanel.setBackground(WiskOpdr.colorGray2);
 		headerPanel.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue4));
 		if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))
 		{	setBackground(Color.white);
