@@ -91,6 +91,7 @@ public class FormuleButton extends JButton implements MouseListener
 	 */
 	public FormuleButton(String s, int soort)
 	{
+		super(s);
 		code = s;
 		this.soort = soort;
 		addMouseListener(this);
