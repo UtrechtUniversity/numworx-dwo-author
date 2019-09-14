@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -170,7 +171,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         setBackground(WiskOpdr.colorGray3);
         
         JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(null);
+        bottomPanel.setLayout(new BorderLayout());
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
         bottomPanel.setPreferredSize(new Dimension(1000,100));
         bottomPanel.setBackground(WiskOpdr.colorGray2);
                
@@ -191,73 +193,79 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 //        }
 
         bottomPanel.setPreferredSize(new Dimension(1000,60));
+        Box boxh = Box.createHorizontalBox();
 
         okButton = new WiskOpdrButton(WiskOpdr.rb.getString("okKnopLabel"));
+        okButton.setPreferredSize(new Dimension(75,24));
+        okButton.setMaximumSize(new Dimension(75,24));
+        okButton.setMinimumSize(new Dimension(75,24));
         okButton.setBounds(15,20,75,24);
         okButton.setBackground(WiskOpdr.colorBlue1);
         //okButton.setFont(font);
         okButton.addActionListener(this);
-        bottomPanel.add(okButton);
+        boxh.add(okButton);
+        boxh.add(Box.createHorizontalStrut(20));
         
         cancelButton = new WiskOpdrButton(WiskOpdr.rb.getString("annuleerKnopLabel"));
         cancelButton.setBackground(WiskOpdr.colorBlue1);
+        cancelButton.setPreferredSize(new Dimension(75,24));
+        cancelButton.setMaximumSize(new Dimension(75,24));
+        cancelButton.setMinimumSize(new Dimension(75,24));
         cancelButton.setBounds(105,20,75,24);
         cancelButton.setMargin(new Insets(4,10,4,10));
        // cancelButton.setFont(font);
         cancelButton.addActionListener(this);
-        bottomPanel.add(cancelButton);
+        boxh.add(cancelButton);
+        boxh.add(Box.createHorizontalStrut(20));
         
         soortAntwoordVakKeuze = new WiskOpdrComboBox();
 		soortAntwoordVakKeuze.setBounds(190,20,165,24);
+		soortAntwoordVakKeuze.setPreferredSize(new Dimension(175,22));
+		soortAntwoordVakKeuze.setMaximumSize(new Dimension(175,22));
 		soortAntwoordVakKeuze.setFont(font);
 		soortAntwoordVakKeuze.addActionListener(this);
-		if(setNr!=0 || (soort !=0 && soort !=1 && setNr!=2 && soort !=3))
-		  bottomPanel.add(soortAntwoordVakKeuze);
+		if(setNr!=0 || (soort !=0 && soort !=1 && soort!=2 && soort !=3)) {
+			boxh.add(soortAntwoordVakKeuze);
+			boxh.add(Box.createHorizontalStrut(20));
+		}
 		
 		
 		initSet(setNr);
 		
-		/*
-		soortAntwoordVakKeuze.addItem("Kies soort interactievak");
-		soortAntwoordVakKeuze.addItem("Formulevak met stappen");
-		soortAntwoordVakKeuze.addItem("Vergelijkingvak met stappen");
-		soortAntwoordVakKeuze.addItem("Simpel formulevak");
-		soortAntwoordVakKeuze.addItem("Simpel vergelijkingvak");
-		soortAntwoordVakKeuze.addItem("Tekstvak");
-		
-		
-		for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
-		{	soortAntwoordVakKeuze.addItem(TekstInteractiePanelVak.wiskOpdrInteractiePanels[i][1]);
-		}
-		*/
-		
 		breedteLabel = new JLabel(WiskOpdr.rb.getString("breedteLabel"));
 		breedteLabel.setForeground(WiskOpdr.colorBlue1);
-        breedteLabel.setBounds(370,20,50,22);
+        breedteLabel.setBounds(370,20,40,22);
         breedteLabel.setFont(font);
-        bottomPanel.add(breedteLabel,0);
+        boxh.add(breedteLabel);
+        boxh.add(Box.createHorizontalStrut(5));
         
         breedteTF = new WiskOpdrTextField("300");
         breedteTF.setBounds(420,20,40,22);
+        breedteTF.setPreferredSize(new Dimension(40,22));
         breedteTF.setFont(font);
         breedteTF.addActionListener(this);
         breedteTF.addFocusListener(this);
         
-        bottomPanel.add(breedteTF,0);
+        boxh.add(breedteTF);
+        boxh.add(Box.createHorizontalStrut(10));
         
         hoogteLabel = new JLabel(WiskOpdr.rb.getString("hoogteLabel"));
         hoogteLabel.setForeground(WiskOpdr.colorBlue1);
         hoogteLabel.setBounds(465,20,50,22);
         hoogteLabel.setFont(font);
-        bottomPanel.add(hoogteLabel,0);
+        boxh.add(hoogteLabel);
+        boxh.add(Box.createHorizontalStrut(5));
         
         hoogteTF = new WiskOpdrTextField("250");
         hoogteTF.setBounds(510,20,40,22);
+        hoogteTF.setPreferredSize(new Dimension(40,22));
         hoogteTF.setFont(font);
         hoogteTF.addActionListener(this);
         hoogteTF.addFocusListener(this);
         
-        bottomPanel.add(hoogteTF,0);
+        
+        boxh.add(hoogteTF);
+        boxh.add(Box.createHorizontalStrut(20));
         
         volledigeBreedteCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("volleBreedteLabel"));
         volledigeBreedteCB.setOpaque(false);
@@ -265,25 +273,30 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         volledigeBreedteCB.setBounds(560,20,100,22);
         volledigeBreedteCB.addActionListener(this);
         //volledigeBreedteCB.setSelected(true);
-        bottomPanel.add(volledigeBreedteCB,0);
-		
-		popupCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("popupLabel"));
+        boxh.add(volledigeBreedteCB);
+        boxh.add(Box.createHorizontalStrut(20));
+
+        popupCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("popupLabel"));
 		popupCB.setOpaque(false);
 		popupCB.setFont(font);
 		popupCB.setBounds(670,20,70,22);
 		popupCB.addActionListener(this);
 	    //volledigeBreedteCB.setSelected(true);
-		bottomPanel.add(popupCB,0);
+		boxh.add(popupCB);
+		boxh.add(Box.createHorizontalStrut(5));
 		
 		imageButton = new FormuleButton("tekstvak");
 		imageButton.setBounds(730,20,20,20);
+		imageButton.setPreferredSize(new Dimension(22,22));
 		imageButton.addActionListener(this);
 		imageButton.setVisible(false);
-		bottomPanel.add(imageButton);
-		
+		boxh.add(imageButton);
+		boxh.add(Box.createHorizontalGlue());
 		shareButton = new JButton(shareAction);
 		shareButton.setBounds((int)size.getWidth()-45,20,24,20);
-		bottomPanel.add(shareButton);
+		boxh.add(shareButton);
+		
+		bottomPanel.add(boxh);
 		
 		if(setNr==0 && (soort==0 || soort==1 || soort==2 || soort==3)) {
 			launchData = shareAction.unwrap(launchData);
@@ -509,7 +522,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		}
     	this.setSize(size.width, size.height);
 		pack();
-		//this.setSize(Math.max(size.width, widthEditPanel), size.height);
+		if(huidigSoortInteractiePanel!=0 && huidigSoortInteractiePanel!=1 && huidigSoortInteractiePanel!=2 && huidigSoortInteractiePanel!=3)
+			this.setSize(Math.max(size.width, widthEditPanel), size.height);
 		
     }
     
