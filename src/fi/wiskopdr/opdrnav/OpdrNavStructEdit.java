@@ -297,6 +297,10 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		instellingenDialog.getContentPane().add(instellingenPanel);
 		instellingenDialog.setSize(instellingenPanel.getSize());
+		Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+	    int xD = (screenSize.width-instellingenDialog.getSize().width)/2;
+	    int yD = (screenSize.height-instellingenDialog.getSize().height)/2;
+	    instellingenDialog.setLocation(xD, yD);
 		instellingenDialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				instellingenPanel.cancel();
@@ -473,24 +477,27 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
           docWidth = ((Integer) h.get("docWidth")).intValue();
 		
         MyOpdrEditContainer.setDefaultDocSizes(margeLinks, margeBoven, docWidth, docHeight);
-        if(styles != null)
-          TekstVakPanel.styles = styles;
-      
-        if(templatePages != null)
-          TekstVakPanel.templatePages = templatePages;
-      
-        if(templatePagesKeys != null)
-          TekstVakPanel.templatePagesKeys = templatePagesKeys;
-      
-        if(templateComponents != null)
-          TekstVakPanel.templateComponents = templateComponents;
-      
-        if(templateComponentsKeys != null)
-          TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
-      
+       
+      //if(styles != null)
+        TekstVakPanel.styles = styles;
+    
+      //if(templatePages != null)
+        TekstVakPanel.templatePages = templatePages;
+    
+      //if(templatePagesKeys != null)
+        TekstVakPanel.templatePagesKeys = templatePagesKeys;
+    
+      //if(templateComponents != null)
+        TekstVakPanel.templateComponents = templateComponents;
+    
+      //if(templateComponentsKeys != null)
+        TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
       
 		WiskOpdr.zetFont(fontName, fontSize);
 		WiskOpdr.setFormTimes(formTimes);
+		
+		
+		
 		setFont(WiskOpdr.tekstFont);
 
 		WiskOpdr.setObjectives(objectives);

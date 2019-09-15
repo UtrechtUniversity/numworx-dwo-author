@@ -68,6 +68,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "deelscoresKnopLabel", "Deelscores"},
 				{ "misconceptionsKnopLabel", "Analyse"},
 				{ "imagesButtonLabel", "Afbeeldingen"},
+				{ "settingsLabel", "Instellingen"},
+				
 				
 				{ "choiceOefenen" , "Oefenen" },
 				{ "choiceOefenenEindloos" , "Oefenen eindeloos" },
@@ -323,7 +325,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"statSimIpLabel" , "Statistiek Simulaties"},
                 {"stelselVakLabel", "Stelsel-antwoordvak"},
                 {"javaLogoIpLabel", "JavaLogo"},
-                {"symboolIpLabel", "Symbool"},
+                {"symboolIpLabel", "Vorm"},
                 {"samengesteldeStappenIpLabel", "Samengestelde stappen"},
                 
                 //CheckButtonEditor
@@ -845,7 +847,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"executeLabel", "Uitvoeren"},
 				
 				//symbolen
-				{"SYM_kiesSymbool", "Kies symbool"},
+				{"SYM_kiesSymbool", "Kies vorm"},
 				{"SYM_lijn", "Lijn"},
 				{"SYM_pijl", "Pijl"},
 				{"SYM_accolade", "Accolade"},

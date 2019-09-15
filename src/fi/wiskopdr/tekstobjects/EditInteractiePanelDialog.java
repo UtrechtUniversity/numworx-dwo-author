@@ -170,10 +170,20 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         //this.setBackground(Color.red);//new Color(230,230,230));
         setBackground(WiskOpdr.colorGray3);
         
+        JPanel headerPanel = new JPanel();
+        //headerPanel.setPreferredSize(new Dimension(1000,60));
+        headerPanel.setBackground(WiskOpdr.colorBlue1);
+        
+        String title = soort==999 ? "" : (TekstInteractiePanelVak.interactiePanelDescriptions[TekstInteractiePanelVak.interactiePanelSets[setNr][soort]]).toLowerCase();
+        JLabel headerTitle = new JLabel(WiskOpdr.rb.getString("settingsLabel") + " " + title);
+        headerTitle.setForeground(WiskOpdr.colorGray3);
+        headerTitle.setFont(new Font("SansSerif",Font.PLAIN, 28));
+        headerPanel.add(headerTitle);
+        
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-        bottomPanel.setPreferredSize(new Dimension(1000,100));
+        bottomPanel.setPreferredSize(new Dimension(1000,60));
         bottomPanel.setBackground(WiskOpdr.colorGray2);
                
         this.setNr = setNr;
@@ -192,7 +202,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 //          size = new Dimension(1100,720);
 //        }
 
-        bottomPanel.setPreferredSize(new Dimension(1000,60));
+       
         Box boxh = Box.createHorizontalBox();
 
         okButton = new WiskOpdrButton(WiskOpdr.rb.getString("okKnopLabel"));
@@ -224,10 +234,11 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		soortAntwoordVakKeuze.setMaximumSize(new Dimension(175,22));
 		soortAntwoordVakKeuze.setFont(font);
 		soortAntwoordVakKeuze.addActionListener(this);
-		if(setNr!=0 || (soort !=0 && soort !=1 && soort!=2 && soort !=3)) {
-			boxh.add(soortAntwoordVakKeuze);
-			boxh.add(Box.createHorizontalStrut(20));
-		}
+		//if(setNr!=0 || (soort !=0 && soort !=1 && soort!=2 && soort !=3)) {
+//		if(setNr==3 || setNr==4) {
+//			boxh.add(soortAntwoordVakKeuze);
+//			boxh.add(Box.createHorizontalStrut(20));
+//		}
 		
 		
 		initSet(setNr);
@@ -298,19 +309,22 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		
 		bottomPanel.add(boxh);
 		
+		
 		if(setNr==0 && (soort==0 || soort==1 || soort==2 || soort==3)) {
 			launchData = shareAction.unwrap(launchData);
 	        addInteractieEditPanel(launchData, soort);
-	        getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+	        
 		}
 		else {
-			getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+			//getContentPane().add(bottomPanel,BorderLayout.SOUTH);
 	        launchData = shareAction.unwrap(launchData);
 	        addInteractieEditPanel(launchData, soort);
 	        this.setSize(Math.max(size.width, widthEditPanel), size.height);
 	        doLayout();
 		}
-        
+		
+		getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+		getContentPane().add(headerPanel,BorderLayout.NORTH);
         
         this.addWindowListener(this);
         
@@ -882,8 +896,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         }
         else if (e.getSource() == volledigeBreedteCB) {
         	boolean b = volledigeBreedteCB.isSelected();
-        	breedteTF.setVisible(!b);
-        	breedteLabel.setVisible(!b);
+        	//breedteTF.setVisible(!b);
+        	//breedteLabel.setVisible(!b);
+        	breedteTF.setEnabled(!b);
+        	breedteLabel.setEnabled(!b);
         	if(!b && interactieEditPanel != null)
         		interactieEditPanel.zetBreedte(Integer.parseInt(breedteTF.getText()));
         }

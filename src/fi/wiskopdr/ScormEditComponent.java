@@ -55,6 +55,33 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
 //	    }
 	    if(WiskOpdr.lookAndFeel==null) WiskOpdr.lookAndFeel = UIManager.getLookAndFeel();
 	       
+	    String instellingenString = (String) launchData.get("instellingen");
+		Object ob = StringCodeObject.decodeStringToObject(instellingenString);
+		Hashtable instellingen = (Hashtable) ob;
+		
+		Hashtable styles = null;
+		Hashtable templatePages = null;
+		Hashtable templateComponents = null;
+		ArrayList<String> templatePagesKeys = null;
+		ArrayList<String> templateComponentsKeys = null;
+		
+		if (instellingen != null && instellingen.containsKey("TekstVakPanelStyles"))
+			styles = (Hashtable) instellingen.get("TekstVakPanelStyles");
+		if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePages"))
+			templatePages = (Hashtable) instellingen.get("TekstVakPanelTemplatePages");
+		if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponents"))
+			templateComponents = (Hashtable) instellingen.get("TekstVakPanelTemplateComponents");
+		if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePagesKeys"))
+			templatePagesKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplatePagesKeys");
+		if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponentsKeys"))
+			templateComponentsKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplateComponentsKeys");
+		
+		TekstVakPanel.styles = styles;
+		TekstVakPanel.templatePages = templatePages;
+		TekstVakPanel.templateComponents = templateComponents;
+		TekstVakPanel.templatePagesKeys = templatePagesKeys;
+		TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
+		
 		onsEdit = new OpdrNavStructEdit(new fi.wiskopdr.opdrnav.MyOpdrEditContainer(),0,0,790, 520, launchData);
 		onsEdit.setBackground(getBackground());
 		onsEdit.setSizeLabel(launchData);

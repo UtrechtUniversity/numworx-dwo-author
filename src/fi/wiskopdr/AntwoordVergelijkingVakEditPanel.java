@@ -438,7 +438,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         
     	topPanel = new JPanel();
 		topPanel.setBackground(WiskOpdr.colorBlue1);
-		newPanel.add(topPanel,BorderLayout.NORTH);
+		//newPanel.add(topPanel,BorderLayout.NORTH);
 		
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(WiskOpdr.colorGray3);

@@ -531,6 +531,10 @@ public class IdeasInstellingenButton extends WiskOpdrButton implements ActionLis
         frame.getContentPane().add(scrollPane);
         frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
 		frame.pack();
+		Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+	    int x = (screenSize.width-frame.getSize().width)/2;
+	    int y = (screenSize.height-frame.getSize().height)/2;
+	    frame.setLocation(x, y);
 	    frame.setVisible(true);
 	    
     }

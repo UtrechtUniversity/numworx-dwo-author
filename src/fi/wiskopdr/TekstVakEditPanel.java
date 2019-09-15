@@ -333,7 +333,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		callOutCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_callOut"), 10,505,225,20, callOut, layoutOptionsPanel);
 		inklapbaarCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_inklapbaar"), 10,415,120,20, inklapbaar, layoutOptionsPanel);
 		checkUitklapVakCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_checkUitklapVak"), 210,415,120,20, checkUitklapVak, layoutOptionsPanel);
-		randomCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_random"), 240,20,70,24, random, this);
+		randomCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_random"), 260,20,70,24, random, this);
 		logCB = maakCheckBox(WiskOpdr.rb.getString("logCBLabel"),10,280,70,20,false,interactionOptionsPanel);
 		visibleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_visible"), 10,530,100,20, visible, layoutOptionsPanel);
 		ideasCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_ideasStatistiek"), 10, 555, 150, 20, ideasStatistiek, interactionOptionsPanel);
@@ -631,7 +631,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactionOptionsPanel.add(aftrekPopupLabel);
 		
 		randomTF = new JTextField(randomVar);
-		randomTF.setBounds(320,22,30,20);
+		randomTF.setBounds(340,22,30,20);
 		randomTF.setFont(ifFont);
 		randomTF.addActionListener(this);
 		randomTF.addFocusListener(this);
@@ -639,7 +639,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		add(randomTF,0);
 		add(randomCB,0);
 		
-		randomTab = new OpdrachtNrRij(aantalRandom, 360,22);
+		randomTab = new OpdrachtNrRij(aantalRandom, 380,22);
 		randomTab.setSize(randomTab.getSize().width, 23);
 		randomTab.setTab(true);
 		randomTab.setScoresVisible(false);
@@ -649,13 +649,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		randomTab.setVisible(false);
 		add(randomTab,0);
 		
-		aantalTabsKnop = new PlusMinKnop(360+25*aantalRandom+5 ,24,20,16,PlusMinKnop.HORIZONTAAL);
+		aantalTabsKnop = new PlusMinKnop(380+25*aantalRandom+5 ,24,20,16,PlusMinKnop.HORIZONTAAL);
 		aantalTabsKnop.setBackground(new Color(210,210,210));
 		aantalTabsKnop.addActionListener(this);
 		aantalTabsKnop.setVisible(false);
     	add(aantalTabsKnop,0);
     	
-    	tabPositieKnop = new PlusMinKnop(356+25*randomNr+5 ,2,20,16,PlusMinKnop.HORIZONTAAL);
+    	tabPositieKnop = new PlusMinKnop(396+25*randomNr+5 ,2,20,16,PlusMinKnop.HORIZONTAAL);
     	tabPositieKnop.addActionListener(this);
     	tabPositieKnop.setVisible(false);
     	add(tabPositieKnop,0);
@@ -1527,7 +1527,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			randomTab.setBackground(new Color(210,210,210));
 			randomTab.setSelected(1);
 			add(randomTab,0);
-			aantalTabsKnop.setLocation(360+25*aantalRandom+5 ,22);
+			aantalTabsKnop.setLocation(380+25*aantalRandom+5 ,22);
 			
 			randomNr = 0;
 		}
@@ -1743,7 +1743,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				h.put("teksten",randomteksten[randomNr]);
 				h.put("interactiePanelLaunchData",randomIpLaunchdata[randomNr]);
 				tekstVakPanel.setEditState(h);
-				tabPositieKnop.setLocation(356+25*randomNr+5 ,2);
+				tabPositieKnop.setLocation(376+25*randomNr+5 ,2);
 			}
 			
 		}
@@ -1759,7 +1759,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				randomIpLaunchdata[randomNr+1] = resLaunchdata;
 				randomNr++;
 				randomTab.setSelected(randomNr+1);
-				tabPositieKnop.setLocation(356+25*randomNr+5 ,2);
+				tabPositieKnop.setLocation(376+25*randomNr+5 ,2);
 			}
 			if(e.getActionCommand().equals("min") && randomNr>0) 
 			{	String[][] resTeksten = null;
@@ -1770,7 +1770,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				randomIpLaunchdata[randomNr-1] = resLaunchdata;
 				randomNr--;
 				randomTab.setSelected(randomNr+1);
-				tabPositieKnop.setLocation(356+25*randomNr+5 ,2);
+				tabPositieKnop.setLocation(376+25*randomNr+5 ,2);
 			}
 			
 		}
@@ -1785,7 +1785,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				h.put("interactiePanelLaunchData",randomIpLaunchdata[randomNr]);
 				tekstVakPanel.setEditState(h);
 				
-				aantalTabsKnop.setLocation(360+25*aantalRandom+5 ,22);
+				aantalTabsKnop.setLocation(380+25*aantalRandom+5 ,22);
 				remove(randomTab);
 				randomTab = new OpdrachtNrRij(aantalRandom, 360,22);
 				randomTab.setTab(true);
@@ -1810,7 +1810,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			}
 			if(e.getActionCommand().equals("plus") && aantalRandom<20)
 			{	aantalRandom++;
-				aantalTabsKnop.setLocation(360+25*aantalRandom+5 ,22);
+				aantalTabsKnop.setLocation(380+25*aantalRandom+5 ,22);
 				remove(randomTab);
 				randomTab = new OpdrachtNrRij(aantalRandom, 360,22);
 				randomTab.setTab(true);

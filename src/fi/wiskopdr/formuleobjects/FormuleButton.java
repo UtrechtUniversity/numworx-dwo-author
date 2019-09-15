@@ -52,6 +52,7 @@ public class FormuleButton extends JButton implements MouseListener
 		"sknop.gif",
 		"cknop.gif",
 		"tknop.gif",
+		"opsomming.png",
 		
 		"wnformbutton.gif",
 		"wnformbuttonrood.gif",
@@ -703,6 +704,11 @@ public class FormuleButton extends JButton implements MouseListener
 		else if(code.equals("tknop"))
         {   //g.drawString("I",7,15);
             g.drawImage(getImage("tknop.gif"),2,2,null);
+            //if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
+        }
+		else if(code.equals("opsomming"))
+        {   //g.drawString("I",7,15);
+            g.drawImage(getImage("opsomming.png"),2,2,null);
             //if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
         }
 		else if(code.equals("cbook"))

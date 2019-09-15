@@ -403,7 +403,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         
     	topPanel = new JPanel();
 		topPanel.setBackground(WiskOpdr.colorBlue1);
-		newPanel.add(topPanel,BorderLayout.NORTH);
+		//newPanel.add(topPanel,BorderLayout.NORTH);
 		
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(WiskOpdr.colorGray3);
@@ -762,7 +762,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     
     public static void main(String[] args) {
     	WiskOpdr wiskOpdr = new WiskOpdr();
-    	instance = new AntwoordFormuleVakEditPanel(0);
+    	instance = new AntwoordFormuleVakEditPanel(2);
     	makeFrame(wiskOpdr);
     }
     

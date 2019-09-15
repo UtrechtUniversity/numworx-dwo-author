@@ -36,13 +36,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 
 	private boolean resized;
 	
-	private FormuleButton formuleKnop,  antwoordVakKnop, tekstVakKnop, grafiekKnop, appletKnop, linkKnop, plaatjeKnop, grafiekToolKnop, geogebraKnop;
+	private FormuleButton formuleKnop,  antwoordVakKnop, tekstVakKnop, opsommingKnop, grafiekKnop, appletKnop, linkKnop, plaatjeKnop, grafiekToolKnop, geogebraKnop;
 	private FormuleButton tabletButton, wortelKnop, machtKnop, breukKnop, kwadraatKnop, ndewortelKnop, ndelogKnop,integraalKnop, prvKnop, haakjesKnop, absKnop, rmKnop;
 	private FormuleButton cbookKnop, cindyKnop, eslateKnop, epsilonKnop;
 	public FormuleButton crosswidgetKnop; 
 	
 	private JPopupMenu antwoordVakKnopJMenu;
 	private JPopupMenu appletKnopJMenu;
+	private JPopupMenu geogebraKnopJMenu;
+	private JPopupMenu tekstvakKnopJMenu;
 	
 	public FormuleButton templateChoiceKnop, componentChoiceKnop, standardComponentChoiceKnop;
 	public JPopupMenu templateChoice, componentChoice, standardComponentChoice;
@@ -255,15 +257,19 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		antwoordVakKnop.addActionListener(this);
 		if(form)headerPanel.add(antwoordVakKnop);
 		antwoordVakKnopJMenu = new JPopupMenu();
-		
-        TekstInteractiePanelVak.makeJMenu(this,"Antwoordtypes",antwoordVakKnopJMenu, 0);
-		
-		
+		TekstInteractiePanelVak.makeJMenu(this,"Antwoordtypes",antwoordVakKnopJMenu, 0);
 		
 		tekstVakKnop = new FormuleButton("tekstvak");
 		tekstVakKnop.setBounds(toolbarLeft,64+26+26+26+26+26,balkH/2-10,20,20);
 		tekstVakKnop.addActionListener(this);
 		if(form)headerPanel.add(tekstVakKnop);
+		tekstvakKnopJMenu = new JPopupMenu();
+		TekstInteractiePanelVak.makeJMenu(this,"Tekstvakken",tekstvakKnopJMenu, 3);
+		
+		opsommingKnop = new FormuleButton("opsomming");
+		opsommingKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26,balkH/2-10,20,20);
+		opsommingKnop.addActionListener(this);
+		if(form)headerPanel.add(opsommingKnop);
 		
 		rmKnop = new FormuleButton("rmvak");
 		rmKnop.setBounds(toolbarLeft,38,balkH/2-10,20,20);
@@ -281,9 +287,11 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		geogebraKnop.setBounds(toolbarLeft,64+26+26+26+26,balkH/2-10,20,20);
 		geogebraKnop.addActionListener(this);
 		if(form)headerPanel.add(geogebraKnop);
+		geogebraKnopJMenu = new JPopupMenu();
+		TekstInteractiePanelVak.makeJMenu(this,"GeoGebra",geogebraKnopJMenu, 4);
 		
 		crosswidgetKnop = new FormuleButton("crosswidget");
-		crosswidgetKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26,balkH/2-10,20,20);
+		crosswidgetKnop.setBounds(toolbarLeft,-20,-20,20,20);
 		crosswidgetKnop.setToggle(true);
 		crosswidgetKnop.addActionListener(this);
 		crosswidgetKnop.setVisible(false);
@@ -294,7 +302,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		standardComponentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		standardComponentChoiceKnop.addActionListener(this);
 		standardComponentChoiceKnop.setVisible(false);
-		if(form)headerPanel.add(standardComponentChoiceKnop);
+		//if(form)headerPanel.add(standardComponentChoiceKnop);
 		
 		templateChoiceKnop = new FormuleButton("tknop");
 		templateChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26,balkH/2-10,22,22);
@@ -303,7 +311,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(form)headerPanel.add(templateChoiceKnop);
 		
 		componentChoiceKnop = new FormuleButton("cknop");
-		componentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26+26,balkH/2-10,22,22);
+		componentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		componentChoiceKnop.addActionListener(this);
 		componentChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(componentChoiceKnop);
@@ -675,10 +683,14 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
             if(toolbarLeft)
             {   basisPanel.setBounds(balkH+sparing,0,b-balkH-sparing,h);
                 headerPanel.setBounds(0,0,balkH,h);
+                crosswidgetKnop.setLocation(6,h-30);
+                templateChoiceKnop.setLocation(6,h-56);
             }
             else
             {   basisPanel.setBounds(0,balkH+sparing,b,h-balkH-sparing);
                 headerPanel.setBounds(0,0,b,balkH);
+                crosswidgetKnop.setLocation(b-30,2);
+                templateChoiceKnop.setLocation(b-56,2);
             }
         }
         else
@@ -828,6 +840,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			tekstVakKnop.setVisible(false);
 			geogebraKnop.setVisible(false);
 			crosswidgetKnop.setVisible(false);
+			opsommingKnop.setVisible(false);
 			templateChoiceKnop.setVisible(false);
 			componentChoiceKnop.setVisible(false);
 			standardComponentChoiceKnop.setVisible(false);
@@ -858,6 +871,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			antwoordVakKnop.setVisible(true);
 			tekstVakKnop.setVisible(true);
 			geogebraKnop.setVisible(true);
+			opsommingKnop.setVisible(true);
 			if(crossWidgetOption)crosswidgetKnop.setVisible(true);
 			if(templateOption){
 				templateChoiceKnop.setVisible(templateItems!=null && templateItems.length>0);
@@ -945,19 +959,28 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	        
 		}
 		else if(e.getSource()==tekstVakKnop)
-		{	tekstVakActief.insertTekstInteractiePanelVak(3);
+		{	//tekstVakActief.insertTekstInteractiePanelVak(3);
+			tekstvakKnopJMenu.setVisible(true);
+			tekstvakKnopJMenu.show(this,tekstVakKnop.getLocation().x + tekstVakKnop.getWidth(), tekstVakKnop.getLocation().y);
 		}
+	
+		else if(e.getSource()==opsommingKnop)
+		{	TComponentGeneratorFactory.getComponentGenerator("List").generateComponent( tekstVakActief);
+		}
+	
 		else if(e.getSource()==linkKnop)
 		{	tekstVakActief.insertLinkVak();
 		}
 		else if(e.getSource()==appletKnop)
 		{	//tekstVakActief.insertTekstInteractiePanelVak(1);
 		  appletKnopJMenu.setVisible(true);
-		  appletKnopJMenu.show(this,appletKnop.getLocation().x, appletKnop.getLocation().y+appletKnop.getHeight());
+		  appletKnopJMenu.show(this,appletKnop.getLocation().x + appletKnop.getWidth(), appletKnop.getLocation().y);
          
 		}
 		else if(e.getSource()==geogebraKnop)
-		{	tekstVakActief.insertTekstInteractiePanelVak(4);
+		{	//tekstVakActief.insertTekstInteractiePanelVak(4);
+			geogebraKnopJMenu.setVisible(true);
+			geogebraKnopJMenu.show(this,geogebraKnop.getLocation().x + geogebraKnop.getWidth(), geogebraKnop.getLocation().y);
 		}
 		else if(e.getSource()==cbookKnop)
 		{	tekstVakActief.insertTekstInteractiePanelVak(5);
@@ -1691,7 +1714,6 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
       }
       public void actionPerformed(ActionEvent e) {
           TComponentGeneratorFactory.getComponentGenerator((String)getValue("TCOMP_KEY")).generateComponent( tekstVakActief);
-        
       }
 	}
 	

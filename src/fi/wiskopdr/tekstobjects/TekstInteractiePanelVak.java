@@ -1,6 +1,7 @@
 package fi.wiskopdr.tekstobjects;
 
 import java.awt.AWTEventMulticaster;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -12,8 +13,11 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -26,6 +30,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.GeneralPath;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -70,6 +75,8 @@ import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.CBookWidgetIF;
 import org.json.fimple.JSONArray;
+
+
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.iconan.Iconan;
@@ -472,12 +479,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	   
 	public static int[][] interactiePanelSets =
 	    {
-	        {2,0,3,1,53,4,13,14,12,16,33,49},//,52
+	        {2,0,3,1,53,4,13,14,12,16,33,49, 60},//,52
 	        {35,5,6,24,15,46,11,57,20,25,56,59,54,58,42,41,27,22,43,50,30,48,40,31,32,26,19},
 	        //{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59,25},
 	        //{0,1,2,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,
 	        {45},
-	        {9, 55, 60}, 
+	        {9, 55}, 
 	        {10,39},
 	        {-2},
 	        {-2},
@@ -499,7 +506,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	};
 	
 	public static void makeJMenu(TekstEditor te, String title, JPopupMenu menu, int setNr) {
-	  boolean[][] separators = {{false,false,false,false,true,false,true,true,false,false,false,false}};
+	  boolean[][] separators = {{false,false,false,false,true,false,true,true,false,false,false,true,false},{},{},
+			  					{true,false}};
+			  
 	  String[] itemNames = new String[TekstInteractiePanelVak.interactiePanelSets[setNr].length];
 	  for(int i=0 ; i<interactiePanelSets[setNr].length ; i++) {
 	    JMenuItem item = new JMenuItem(te.new AntwoordvakKeuzeAction(interactiePanelDescriptions[interactiePanelSets[setNr][i]], setNr, i));
@@ -508,28 +517,46 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    item.setFont(new Font("SansSerif",Font.PLAIN,13));
 	    item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 	    menu.add(item);
-	    if(setNr==0 && i==7) {
-	      
-	      String type = "MultipleChoice";
-          String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
-          item = new JMenuItem(te.new TComponentAction(typeName,type));
-          item.setBackground(new Color(237,239,241));
-          item.setForeground(new Color(49,71,112));
-          item.setFont(new Font("SansSerif",Font.PLAIN,13));
-          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
-          menu.add(item);
-          
-          type = "DragDrop";
-          typeName = TComponentGeneratorFactory.getComponentTypeName(type);
-          item = new JMenuItem(te.new TComponentAction(typeName,type));
-          item.setBackground(new Color(237,239,241));
-          item.setForeground(new Color(49,71,112));
-          item.setFont(new Font("SansSerif",Font.PLAIN,13));
-          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
-          menu.add(item);
+	    if(setNr==0) {
+	      if(i==7) {
+		      String type = "MultipleChoice";
+	          String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
+	          item = new JMenuItem(te.new TComponentAction(typeName,type));
+	          item.setBackground(new Color(237,239,241));
+	          item.setForeground(new Color(49,71,112));
+	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
+	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
+	          menu.add(item);
+	          
+	          type = "DragDrop";
+	          typeName = TComponentGeneratorFactory.getComponentTypeName(type);
+	          item = new JMenuItem(te.new TComponentAction(typeName,type));
+	          item.setBackground(new Color(237,239,241));
+	          item.setForeground(new Color(49,71,112));
+	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
+	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
+	          menu.add(item);
+	      }
+          if(separators[0][i])
+        	  menu.addSeparator();
 	    }
-	    if(setNr==0 && separators[0][i])
-	      menu.addSeparator();
+	    if(setNr==3) {
+//	    	if(i==0) {
+//	    		menu.addSeparator();
+//	    		String type = "List";
+//		        String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
+//		        item = new JMenuItem(te.new TComponentAction(typeName,type));
+//		        item.setBackground(new Color(237,239,241));
+//		        item.setForeground(new Color(49,71,112));
+//		        item.setFont(new Font("SansSerif",Font.PLAIN,13));
+//		        item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
+//		        menu.add(item);
+//	    	}
+//	    	
+//	    	if(separators[3][i])
+//	    		menu.addSeparator();
+	    }
+	      
 	  }
 	  menu.setBackground(new Color(237,239,241));
 	  menu.setForeground(new Color(49,71,112));
@@ -579,6 +606,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
       editInteractiePanelDialog.setBackground(WiskOpdr.bgcolor);
       editInteractiePanelDialog.addActionListener(this);
       editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+      int x = (screenSize.width-editInteractiePanelDialog.getWidth())/2;
+      int y = (screenSize.height-editInteractiePanelDialog.getHeight())/2;
+      editInteractiePanelDialog.setLocation(x , y);
       showDialog(false);
     }
 	public TekstInteractiePanelVak(TekstVak tv, int setNr)
@@ -593,6 +624,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		editInteractiePanelDialog.setBackground(WiskOpdr.bgcolor);
 		editInteractiePanelDialog.addActionListener(this);
 		editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+	    int x = (screenSize.width-editInteractiePanelDialog.getWidth())/2;
+	    int y = (screenSize.height-editInteractiePanelDialog.getHeight())/2;
 		showDialog(false);
 	}
 	
@@ -964,9 +998,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(resizePanel!=null) {
 			resizePanel.setBounds(b-6,h-6,6,6);
 			if(tComponent!=null) {
-				resizePanel.setBounds(getSize().width-11,getSize().height-12,12,12);
+				resizePanel.setBounds(getSize().width-24,getSize().height-24,24,24);
 				resizePanel.setBackground(new Color(150,150,150,150));
 			}
+			
 		}
 		if(interactiePanel!=null && !popup)((Component)interactiePanel).setSize(b,h);
 	}
@@ -1544,7 +1579,17 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         else afdekPanel.remove(vervangingsPanel);
         
         if(	resizePanel==null) 
-        {	resizePanel = new JPanel();
+        {	resizePanel = new JPanel() {
+        	
+        	public void paintComponent(Graphics g) {
+        		if(tComponent!=null)
+        			drawPenButton(g, new Rectangle(0,0,getWidth(),getHeight()));
+        		else
+        			super.paintComponent(g);
+        	}
+        	
+        };
+        
         	resizePanel.setOpaque(false);
         	resizePanel.addMouseListener(this);
         	resizePanel.addMouseMotionListener(this);
@@ -1559,15 +1604,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     			afdekPanel.setBackground(Color.black);
     			if(tComponent!=null) {
     				afdekPanel.setBounds(0,0,12,12);
-    				afdekPanel.setBackground(new Color(150,150,150,150));
+    				afdekPanel.setBackground(new Color(38, 115, 182,100));
     			}
     			    			
     			resizePanel.setBounds(getSize().width-6,getSize().height-6,6,6);
     			resizePanel.setOpaque(true);
     			resizePanel.setBackground(Color.black);
     			if(tComponent!=null) {
-    				resizePanel.setBounds(getSize().width-12,getSize().height-12,12,12);
-    				resizePanel.setBackground(new Color(150,150,150,150));
+    				resizePanel.setBounds(getSize().width-24,getSize().height-24,24,24);
+    				resizePanel.setBackground(new Color(38, 115, 182,100));
     			}
     			
     			add(resizePanel,0);
@@ -2259,6 +2304,35 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		
 	}
 	
+	private void drawPenButton(Graphics gr, java.awt.Rectangle r) {
+		Graphics2D g = (Graphics2D)gr;
+		if(true)
+			g.setColor(new Color(38, 115, 182,100));
+		else
+			g.setColor(new Color(180, 195, 228));
+		g.fillRect(r.x, r.y, r.width, r.height);
+		
+		g.setColor(new Color(255,255,255));
+		
+		g.setStroke(new BasicStroke(2.0f));
+		int x = r.x+r.width/8;
+		int y = r.y+r.height/8;
+		int w = 3*r.width/4;
+		int h = 3*r.height/4;
+		GeneralPath path = new GeneralPath();
+		path.moveTo(x, y+h);
+		path.lineTo(x, y+3*h/4);
+		path.lineTo(x+3*w/4, y);
+		path.lineTo(x+w, y+h/4);
+		path.lineTo(x+w/4, y+h);
+		path.lineTo(x, y+3*h/4);
+		path.lineTo(x+w/4, y+h);
+		path.lineTo(x, y+h);
+		path.closePath();
+		
+		g.draw(path);
+	}
+	
 	
 	public void zetMode(int mode)
 	{	if(interactiePanel!=null)interactiePanel.zetMode(mode);
@@ -2762,6 +2836,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				editInteractiePanelDialog.setBackground(WiskOpdr.bgcolor);
 				editInteractiePanelDialog.addActionListener(this);
 				editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+			    int x = (screenSize.width-editInteractiePanelDialog.getWidth())/2;
+			    int y = (screenSize.height-editInteractiePanelDialog.getHeight())/2;
 				interactiePanel.start();
 				showDialog(true);
 			}
@@ -2869,6 +2946,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			editInteractiePanelDialog.setModal(modal);
 			editInteractiePanelDialog.toFront(); 		// FIXME orderening (met Events)
 			editInteractiePanelDialog.requestFocus(); 
+			Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+		      int x = (screenSize.width-editInteractiePanelDialog.getWidth())/2;
+		      int y = (screenSize.height-editInteractiePanelDialog.getHeight())/2;
+		      editInteractiePanelDialog.setLocation(x , y);
 			editInteractiePanelDialog.setVisible(true); // BLOKKEERT als 'modal' true
 		}
 	}
@@ -2983,6 +3064,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			editInteractiePanelDialog.setBackground(WiskOpdr.bgcolor);
 			editInteractiePanelDialog.addActionListener(this);
 			editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+		    int x = (screenSize.width-editInteractiePanelDialog.getWidth())/2;
+		    int y = (screenSize.height-editInteractiePanelDialog.getHeight())/2;
 			showDialog(true);
 		}
 	}

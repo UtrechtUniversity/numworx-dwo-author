@@ -64,6 +64,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "deelscoresKnopLabel", "Partial scores"},
 				{ "misconceptionsKnopLabel", "Error analysis"},
 				{ "imagesButtonLabel", "Images"},
+				{ "settingsLabel", "Settings"},
 								
 				{ "choiceOefenen" , "Practice" },
 				{ "choiceOefenenEindloos" , "Practice endless" },
@@ -306,7 +307,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"statSimIpLabel" , "Statistics Simulations"},
 				{"stelselVakLabel", "System of equations"},
 	            {"javaLogoIpLabel", "JavaLogo"},
-	            {"symboolIpLabel", "Symbol"},
+	            {"symboolIpLabel", "Shape"},
 	            {"samengesteldeStappenIpLabel", "Composite steps"},
                 
 
