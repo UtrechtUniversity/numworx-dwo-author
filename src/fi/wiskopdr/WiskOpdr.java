@@ -988,8 +988,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		defaultEditModeLaunchData.put("subKnop", new Boolean(false));
 		defaultEditModeLaunchData.put("hasTitle", new Boolean(false));
 		defaultEditModeLaunchData.put("hasAntwoordVak", new Boolean(false));
-		defaultEditModeLaunchData.put("scheidingX", new Integer(780));
-
+		defaultEditModeLaunchData.put("scheidingX", new Integer(1024));
+		
 		defaultEditModeState = StringCodeObject.encodeObjectToString(defaultEditModeLaunchData);
 
 		h.put("aantalActiviteiten", "1");
