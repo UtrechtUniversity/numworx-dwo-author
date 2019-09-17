@@ -237,6 +237,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		tekstEditor = new TekstEditor(true, true, false, new BasisTekstVak(manager));
 		tekstEditor.setBackground(getBackground());
 		tekstEditor.remove(tekstEditor.crosswidgetKnop);
+		tekstEditor.remove(tekstEditor.opsommingKnop);
 		tekstEditor.setBounds(10,20,680,24);
 		//if(!tableMode)
 			add(tekstEditor);
@@ -268,7 +269,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		optionsPanel = new JPanel();
 		optionsPanel.setLayout(null);
-		optionsPanel.setBounds(defaultIpWidth+20,20,defaultOpWidth,defaultOpHeight);
+		optionsPanel.setBounds(defaultIpWidth+20,0,defaultOpWidth,defaultOpHeight);
 		add(optionsPanel,0);
 		
 		tabbedPane = new JTabbedPane();

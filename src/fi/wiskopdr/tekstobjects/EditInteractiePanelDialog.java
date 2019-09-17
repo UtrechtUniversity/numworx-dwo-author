@@ -172,13 +172,13 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         setBackground(WiskOpdr.colorGray3);
         
         JPanel headerPanel = new JPanel();
-        headerPanel.setBorder(BorderFactory.createEmptyBorder(2, 20, 2, 20));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
         headerPanel.setBackground(WiskOpdr.colorBlue1);
         
         String title = soort==999 ? "" : (TekstInteractiePanelVak.interactiePanelDescriptions[TekstInteractiePanelVak.interactiePanelSets[setNr][soort]]).toLowerCase();
         JLabel headerTitle = new JLabel(WiskOpdr.rb.getString("settingsLabel") + " " + title);
         headerTitle.setForeground(WiskOpdr.colorGray3);
-        headerTitle.setFont(new Font("SansSerif",Font.PLAIN, 28));
+        headerTitle.setFont(new Font("SansSerif",Font.PLAIN, 24));
         headerPanel.add(headerTitle);
         
         JPanel bottomPanel = new JPanel();

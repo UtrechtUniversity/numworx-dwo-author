@@ -36,7 +36,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 
 	private boolean resized;
 	
-	private FormuleButton formuleKnop,  antwoordVakKnop, tekstVakKnop, opsommingKnop, grafiekKnop, appletKnop, linkKnop, plaatjeKnop, grafiekToolKnop, geogebraKnop;
+	private FormuleButton formuleKnop,  antwoordVakKnop, tekstVakKnop,  grafiekKnop, appletKnop, linkKnop, plaatjeKnop, grafiekToolKnop, geogebraKnop;
 	private FormuleButton tabletButton, wortelKnop, machtKnop, breukKnop, kwadraatKnop, ndewortelKnop, ndelogKnop,integraalKnop, prvKnop, haakjesKnop, absKnop, rmKnop;
 	private FormuleButton cbookKnop, cindyKnop, eslateKnop, epsilonKnop;
 	public FormuleButton crosswidgetKnop; 
@@ -46,7 +46,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private JPopupMenu geogebraKnopJMenu;
 	private JPopupMenu tekstvakKnopJMenu;
 	
-	public FormuleButton templateChoiceKnop, componentChoiceKnop, standardComponentChoiceKnop;
+	public FormuleButton opsommingKnop, templateChoiceKnop, componentChoiceKnop, standardComponentChoiceKnop;
 	public JPopupMenu templateChoice, componentChoice, standardComponentChoice;
 	JMenuItem[] templateItems;
 	JMenuItem[] componentItems;

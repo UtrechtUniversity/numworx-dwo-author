@@ -247,6 +247,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		feedbackEditor.setBounds(5,350,300,160);
 		feedbackEditor.setFont(font);
 		feedbackEditor.addActionListener(this);
+		feedbackEditor.remove(feedbackEditor.crosswidgetKnop);
+		feedbackEditor.remove(feedbackEditor.opsommingKnop);
+		
 		feedbackEditor.setBackground(new Color(255,255,200));
 		add(feedbackEditor,0);
 		
@@ -407,7 +410,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(WiskOpdr.colorGray3);
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		newPanel.add(mainPanel,BorderLayout.CENTER);
 		
 		JLabel titleLabel = new JLabel(WiskOpdr.rb.getString("titleFormuleAntwVakLabel"));
