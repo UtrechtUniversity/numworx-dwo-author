@@ -788,9 +788,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			//navigatieSize = Integer.parseInt(navigatieSizeTF.getText());
 			timeLimit = Integer.parseInt(timerTF.getText());
 			margeLinks = Integer.parseInt(margeLinksTF.getText());
-			margeRechts = Integer.parseInt(margeRechtsTF.getText());
+			margeRechts = Integer.parseInt(margeLinksTF.getText());
 			margeBoven = Integer.parseInt(margeBovenTF.getText());
-			margeOnder = Integer.parseInt(margeOnderTF.getText());
+			margeOnder = Integer.parseInt(margeBovenTF.getText());
 			docWidth = Integer.parseInt(docWidthTF.getText());
 			docHeight = Integer.parseInt(docHeightTF.getText());
 			//condPerc = Integer.parseInt(condPercTF.getText());
@@ -1166,9 +1166,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			navigatieSize = Integer.parseInt(navigatieSizeTF.getText());
 			timeLimit = Integer.parseInt(timerTF.getText());
 			margeLinks = Integer.parseInt(margeLinksTF.getText());
-			margeRechts = Integer.parseInt(margeRechtsTF.getText());
+			margeRechts = Integer.parseInt(margeLinksTF.getText());
 			margeBoven = Integer.parseInt(margeBovenTF.getText());
-			margeOnder = Integer.parseInt(margeOnderTF.getText());
+			margeOnder = Integer.parseInt(margeBovenTF.getText());
 			docWidth = Integer.parseInt(docWidthTF.getText());
 			docHeight = Integer.parseInt(docHeightTF.getText());
 			condPerc = Integer.parseInt(condPercTF.getText());
