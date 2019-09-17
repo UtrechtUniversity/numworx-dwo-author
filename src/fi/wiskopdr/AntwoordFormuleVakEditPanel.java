@@ -150,7 +150,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         startEditorPanel.setLayout(null);
         startEditorPanel.add(startEditor);
         startEditorPanel.addComponentListener(new EditorComponentListener());
-        startEditorPanel.setPreferredSize(new Dimension(470,110));
+        startEditorPanel.setPreferredSize(new Dimension(600,110));
         startEditorPanel.setMaximumSize(new Dimension(2870,150));
         //startEditorPanel.setMaximumSize(new Dimension(470,105));
         //startEditorPanel.setMinimumSize(new Dimension(470,105));
@@ -168,7 +168,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	    antwoordEditorPanel.setLayout(null);
 	    antwoordEditorPanel.add(antwoordvak);
 	    antwoordEditorPanel.addComponentListener(new EditorComponentListener());
-	    antwoordEditorPanel.setPreferredSize(new Dimension(835,170));
+	    antwoordEditorPanel.setPreferredSize(new Dimension(600,170));
 	    antwoordEditorPanel.setMaximumSize(new Dimension(2835,170));
 	    add(antwoordEditorPanel);
 		//antwoordvak.setResizable(true);
@@ -242,7 +242,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		feedbackLabel = makeLabel(20,330,320,20,WiskOpdr.rb.getString("feedbackLabel"),true);
 		
 		feedbackEditor = new TekstEditor(false,true,true);
-		feedbackEditor.setPreferredSize(new Dimension(880,160));
+		feedbackEditor.setPreferredSize(new Dimension(400,160));
 		feedbackEditor.setMaximumSize(new Dimension(2835,160));
 		feedbackEditor.setBounds(5,350,300,160);
 		feedbackEditor.setFont(font);
@@ -262,7 +262,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         vormEditor.setVisible(false);
         vormEditorPanel = new JPanel();
         vormEditorPanel.setLayout(null);
-        vormEditorPanel.setPreferredSize(new Dimension(860,160));
+        vormEditorPanel.setPreferredSize(new Dimension(450,160));
         vormEditorPanel.setMaximumSize(new Dimension(2860,160));
         vormEditorPanel.add(vormEditor);
         vormEditorPanel.addComponentListener(new EditorComponentListener());
@@ -399,7 +399,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     
     public void makeNewPanel() {
         newPanel = new JPanel(new BorderLayout());
-        newPanel.setPreferredSize(new Dimension(890,640));
+        //newPanel.setPreferredSize(new Dimension(890,640));
         
     	topPanel = new JPanel();
 		topPanel.setBackground(WiskOpdr.colorBlue1);
@@ -508,7 +508,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	
     	//settingsBox
     	settingsBox = Box.createVerticalBox(); 
-    	settingsBox.setPreferredSize(new Dimension(210,300));
+    	//settingsBox.setPreferredSize(new Dimension(210,300));
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(titleLoggingLabel);
     	regelBox.add(Box.createHorizontalGlue());
@@ -765,9 +765,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	instance = new AntwoordFormuleVakEditPanel(2);
     	makeFrame(wiskOpdr);
     }
-    
+    static Frame frame;
     public static void makeFrame(Component c){
-    	Frame frame = new JFrame();
+    	frame = new JFrame();
 	   	frame.setLayout(new BorderLayout());
 	    frame.add(instance);
 	    frame.pack();
@@ -1745,6 +1745,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		}
 		else if(e.getSource()==contextVarCB)
         {   contextBox.setVisible(contextVarCB.isSelected());
+        	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)newPanel)).packWidth();
         }
 		else if(e.getSource()==antwoordCheckCB)
 		{	antwoordCheck = antwoordCheckCB.isSelected();

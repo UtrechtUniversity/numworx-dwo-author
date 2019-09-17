@@ -168,7 +168,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         startEditorPanel.setLayout(null);
         startEditorPanel.add(startEditor);
         startEditorPanel.addComponentListener(new EditorComponentListener());
-        startEditorPanel.setPreferredSize(new Dimension(470,110));
+        startEditorPanel.setPreferredSize(new Dimension(600,110));
         startEditorPanel.setMaximumSize(new Dimension(2870,150));
         //startEditorPanel.setMinimumSize(new Dimension(470,105));
         add(startEditorPanel);
@@ -184,7 +184,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         antwoordEditorPanel.setLayout(null);
         antwoordEditorPanel.add(antwoordvak);
         antwoordEditorPanel.addComponentListener(new EditorComponentListener());
-        antwoordEditorPanel.setPreferredSize(new Dimension(835,170));
+        antwoordEditorPanel.setPreferredSize(new Dimension(600,170));
       antwoordEditorPanel.setMaximumSize(new Dimension(2835,170));
        // antwoordEditorPanel.setMinimumSize(new Dimension(835,170));
         add(antwoordEditorPanel);
@@ -289,7 +289,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         feedbackLabel = makeLabel(20,330,320,20,"feedback",true);
         
         feedbackEditor = new TekstEditor(false,true,true);
-        feedbackEditor.setPreferredSize(new Dimension(880,160));
+        feedbackEditor.setPreferredSize(new Dimension(400,160));
         feedbackEditor.setMaximumSize(new Dimension(2280,160));
         //feedbackEditor.setMinimumSize(new Dimension(280,160));
         feedbackEditor.setBounds(5,350,280,110);
@@ -310,7 +310,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         vormEditor.setVisible(false);
         vormEditorPanel = new JPanel();
         vormEditorPanel.setLayout(null);
-        vormEditorPanel.setPreferredSize(new Dimension(860,160));
+        vormEditorPanel.setPreferredSize(new Dimension(450,160));
         vormEditorPanel.setMaximumSize(new Dimension(2860,160));
         //vormEditorPanel.setMinimumSize(new Dimension(260,160));
         vormEditorPanel.add(vormEditor);
@@ -434,7 +434,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     
     public void makeNewPanel() {
         newPanel = new JPanel(new BorderLayout());
-        newPanel.setPreferredSize(new Dimension(890,680));
+        //newPanel.setPreferredSize(new Dimension(890,500));
         
     	topPanel = new JPanel();
 		topPanel.setBackground(WiskOpdr.colorBlue1);
@@ -547,7 +547,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	
     	//settingsBox
     	settingsBox = Box.createVerticalBox(); 
-    	settingsBox.setPreferredSize(new Dimension(210,300));
+    	//settingsBox.setPreferredSize(new Dimension(210,300));
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(titleLoggingLabel);
     	regelBox.add(Box.createHorizontalGlue());
@@ -747,7 +747,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	regelBox.add(Box.createHorizontalGlue());   
     	regelBox.add(exactPV);
     	kolomBox.add(regelBox);
-    	kolomBox.add(Box.createRigidArea(new Dimension(10,50)));
+    	//kolomBox.add(Box.createRigidArea(new Dimension(10,50)));
     	kolomBox.add(Box.createVerticalGlue());
     	verificatieBox.add(kolomBox);
     	verificatieBox.add(Box.createHorizontalGlue());
@@ -825,7 +825,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     
     public static void main(String[] args) {
     	WiskOpdr wiskOpdr = new WiskOpdr();
-    	instance = new AntwoordVergelijkingVakEditPanel(0);
+    	instance = new AntwoordVergelijkingVakEditPanel(3);
     	makeFrame(wiskOpdr);
     }
     
@@ -1856,6 +1856,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         }
         else if(e.getSource()==contextVarCB)
         {   contextBox.setVisible(contextVarCB.isSelected());
+    		((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)newPanel)).packWidth();
         }
         
         else if(e.getSource()==feedbackSizeCB)
@@ -2053,6 +2054,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 	    {   subKnop = subKnopCB.isSelected();
 	    	subKnopExtraCB.setVisible(subKnop);
 	    	if(!subKnop)subKnopExtraCB.setSelected(subKnop);
+	    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)newPanel)).packWidth();
 	    }
 		else if(e.getSource()==subKnopExtraCB)
 	    {   subKnopExtra = subKnopExtraCB.isSelected();
