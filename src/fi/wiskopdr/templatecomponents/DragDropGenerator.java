@@ -61,7 +61,7 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		}
 	}
 	
-	public void generateComponent(TekstVak tekstVak) {
+	public TekstInteractiePanelVak generateAndReturnComponent(TekstVak tekstVak) {
 		TekstInteractiePanelVak tComponent = new TekstInteractiePanelVak(tekstVak, makeTComponentLD(initPreferences));
 		
 		TekstVak tComponentTV = ((TekstVakPanel)tComponent.getInteractiePanel()).geefTekstVak(0, 0);	
@@ -89,6 +89,12 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		
 		tComponentTV.insert(dragComponent.toCompleteString());
 		tComponentTV.insert("\n\n"+checkUnit.toCompleteString());
+		
+		return tComponent;
+	}
+	
+	public void generateComponent(TekstVak tekstVak) {
+		TekstInteractiePanelVak tComponent = generateAndReturnComponent(tekstVak);
 		tekstVak.insertDups(tComponent.toCompleteString());
 	}
 	

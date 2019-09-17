@@ -5,7 +5,9 @@ import fi.wiskopdr.tekstobjects.TekstVak;
 
 public interface TComponentGenerator {
 
-	void generateComponent(TekstVak tekstVak);
+	public void generateComponent(TekstVak tekstVak);
+	
+	public TekstInteractiePanelVak generateAndReturnComponent(TekstVak tekstVak);
 	
 	public void edit(TekstInteractiePanelVak tipv);
 	

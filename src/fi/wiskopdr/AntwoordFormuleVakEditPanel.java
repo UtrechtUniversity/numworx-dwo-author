@@ -247,8 +247,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		feedbackEditor.setBounds(5,350,300,160);
 		feedbackEditor.setFont(font);
 		feedbackEditor.addActionListener(this);
-		feedbackEditor.remove(feedbackEditor.crosswidgetKnop);
-		feedbackEditor.remove(feedbackEditor.opsommingKnop);
+		
 		
 		feedbackEditor.setBackground(new Color(255,255,200));
 		add(feedbackEditor,0);

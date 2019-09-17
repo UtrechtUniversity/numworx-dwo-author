@@ -70,8 +70,9 @@ public class ListGenerator implements TComponentGenerator, ActionListener {
 		}
 	}
 	
-	public void generateComponent(TekstVak tekstVak) {
-		
+	
+	
+	public TekstInteractiePanelVak generateAndReturnComponent(TekstVak tekstVak) {
 		TekstInteractiePanelVak tComponent = new TekstInteractiePanelVak(tekstVak, makeTComponentLD(initPreferences));
 		
 		for(int i=0 ; i<initialRowCount ; i++) {
@@ -79,6 +80,11 @@ public class ListGenerator implements TComponentGenerator, ActionListener {
 			TekstInteractiePanelVak listNr = new TekstInteractiePanelVak(tv, makeListNrLD(initPreferences, i));
 			tv.insert(listNr.toCompleteString());
 		}
+		return tComponent;
+	}
+	
+	public void generateComponent(TekstVak tekstVak) {
+		TekstInteractiePanelVak tComponent = generateAndReturnComponent(tekstVak);
 		tekstVak.insertDups(tComponent.toCompleteString());
 	}
 		

@@ -3055,6 +3055,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 // TODO omzetten naar DialogFacade	
 			
 			
+//			TekstVakPanel tvp = (TekstVakPanel)tekstVak.getParent();
+//			Hashtable h = tvp.getEditState();
+//			if(h.containsKey("templateModeFill") && ((Boolean)h.get("templateModeFill")).booleanValue())
+//				return;
+			
 			Component window = WiskOpdr.getWindowForComponent(this);
 			if(soortInteractiePanel==25)currentSetNr = 1;
 			if(window instanceof Frame)editInteractiePanelDialog = new EditInteractiePanelDialog((Frame)window, "", false, currentSetNr, launchData, getXWidgetManager());

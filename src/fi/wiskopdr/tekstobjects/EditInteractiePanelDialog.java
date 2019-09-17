@@ -487,8 +487,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         volledigeBreedteCB.setSelected(volledigeBreedte);
         popupCB.setSelected(popup);
         imageButton.setVisible(popup);
-        breedteTF.setVisible(!volledigeBreedte);
-    	breedteLabel.setVisible(!volledigeBreedte);
+        //breedteTF.setVisible(!volledigeBreedte);
+    	//breedteLabel.setVisible(!volledigeBreedte);
+    	breedteTF.setEnabled(!volledigeBreedte);
+    	breedteLabel.setEnabled(!volledigeBreedte);
     	
     	this.popupImageString = popupImageString;
     	

@@ -73,7 +73,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		}
 	}
 	
-	public void generateComponent(TekstVak tekstVak) {
+	public TekstInteractiePanelVak generateAndReturnComponent(TekstVak tekstVak) {
 		TekstInteractiePanelVak tComponent = new TekstInteractiePanelVak(tekstVak, makeTComponentLD(initPreferences));
 		
 		TekstVak tComponentTV = ((TekstVakPanel)tComponent.getInteractiePanel()).geefTekstVak(0, 0);		
@@ -91,6 +91,12 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		TekstInteractiePanelVak checkUnit = new TekstInteractiePanelVak(tComponentTV, makeCheckUnitLD(initPreferences));
 		tComponentTV.insert(list.toCompleteString());
 		tComponentTV.insert("\n\n"+checkUnit.toCompleteString());
+		
+		return tComponent;
+	}
+	
+	public void generateComponent(TekstVak tekstVak) {
+		TekstInteractiePanelVak tComponent = generateAndReturnComponent(tekstVak);
 		tekstVak.insertDups(tComponent.toCompleteString());
 	}
 	
@@ -152,6 +158,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		ipLaunchState.put("tekst", "");
 		ipLaunchState.put("pasAanH", new Boolean(true));
 		if(!decompose) ipLaunchState.put("templateModeEdit", new Boolean(true));
+		if(!decompose) ipLaunchState.put("templateModeFill", new Boolean(true));
 		
 		Hashtable<String,Object> launchData = new Hashtable<String,Object>();
 		launchData.put("soortInteractiePanel", new Integer(9));

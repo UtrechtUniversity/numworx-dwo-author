@@ -1713,7 +1713,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
           putValue("TCOMP_KEY", desc);
       }
       public void actionPerformed(ActionEvent e) {
-          TComponentGeneratorFactory.getComponentGenerator((String)getValue("TCOMP_KEY")).generateComponent( tekstVakActief);
+    	  TekstInteractiePanelVak tipv = TComponentGeneratorFactory.getComponentGenerator((String)getValue("TCOMP_KEY")).generateAndReturnComponent( tekstVakActief);
+    	  TComponentGeneratorFactory.getComponentGenerator((String)getValue("TCOMP_KEY")).edit( tipv);
       }
 	}
 	
