@@ -155,6 +155,11 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 	}
 	
 	private Hashtable<String,Object> makeTComponentLD(Hashtable<String,Object> preferences) {
+		boolean volledigeBreedte = true;
+		int breedte = 300;
+		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
+		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
+		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
 		ipLaunchState.put("tekst", "");
 		ipLaunchState.put("pasAanH", new Boolean(true));
@@ -165,7 +170,8 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		launchData.put("soortInteractiePanel", new Integer(9));
 		launchData.put("setNr", new Integer(3));
 		launchData.put("interactiePanelLaunchState", ipLaunchState);
-		launchData.put("volledigeBreedte", new Boolean(true));
+		launchData.put("volledigeBreedte", new Boolean(volledigeBreedte));
+		launchData.put("breedte", new Integer(breedte));
 		if(!decompose) launchData.put("TComponent", "MultipleChoice");
 		if(!decompose) launchData.put("TComponentPreferences", preferences);
 		
@@ -208,7 +214,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		launchData.put("setNr", new Integer(3));
 		launchData.put("interactiePanelLaunchState", ipLaunchState);
 		launchData.put("volledigeBreedte", new Boolean(true));
-		
+				
 		return launchData;
 	}
 	
@@ -272,6 +278,8 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		String knopImageString = "";
 		boolean[][][] logMisconceptions = null;
 		
+		
+		
 		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		if(preferences.containsKey("juisteSelecties")) juisteSelecties = (boolean[])preferences.get("juisteSelecties");
 	    if(preferences.containsKey("scoreMax")) scoreMax = ((Integer)preferences.get("scoreMax")).intValue();
@@ -287,6 +295,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		if(preferences.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])preferences.get("logMisconceptions");
+		
 		
 		if(juisteSelecties==null)
 			juisteSelecties = new boolean[itemCount];
@@ -321,7 +330,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		launchData.put("interactiePanelLaunchState", ipLaunchState);
 		launchData.put("breedte", new Integer(100));
 		launchData.put("hoogte", new Integer(30));
-		launchData.put("volledigeBreedte", new Boolean(true));
+		launchData.put("volledigeBreedte", new Boolean(false));
 		return launchData;
 	}
 	
@@ -350,15 +359,25 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		if(e.getSource().equals(editChoiceItems[1])) {
 			Hashtable<String,Object> preferences = (Hashtable<String,Object>)tipvEdit.getEditState().get("TComponentPreferences");
 			int itemCount = (Integer)preferences.get("itemCount");
+			boolean[] juisteSelecties = (boolean[])preferences.get("juisteSelecties");
 			itemCount++;
+			boolean[] juisteSelectiesNew = new boolean[itemCount];
+			for(int i=0 ; i<itemCount-1 ; i++)
+				juisteSelectiesNew[i] = juisteSelecties[i];
 			preferences.put("itemCount", new Integer(itemCount));
+			preferences.put("juisteSelecties", juisteSelectiesNew);
 			editComponent(tipvEdit, preferences);
 		}
 		if(e.getSource().equals(editChoiceItems[2])) {
 			Hashtable<String,Object> preferences = (Hashtable<String,Object>)tipvEdit.getEditState().get("TComponentPreferences");
+			boolean[] juisteSelecties = (boolean[])preferences.get("juisteSelecties");
 			int itemCount = (Integer)preferences.get("itemCount");
 			if(itemCount>1)itemCount--;
+			boolean[] juisteSelectiesNew = new boolean[itemCount];
+			for(int i=0 ; i<itemCount ; i++)
+				juisteSelectiesNew[i] = juisteSelecties[i];
 			preferences.put("itemCount", new Integer(itemCount));
+			preferences.put("juisteSelecties", juisteSelectiesNew);
 			editComponent(tipvEdit, preferences);
 		}
 		if(e.getSource().equals(editChoiceItems[3])) {

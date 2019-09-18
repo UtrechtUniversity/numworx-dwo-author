@@ -240,8 +240,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
     	selectableCBBox = Box.createVerticalBox();
     	
     	logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
-        logObjectivesButton.setBounds(600,5,120,20);
+        //logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        logObjectivesButton.setPreferredSize(new Dimension(120,22));
+        logObjectivesButton.setMaximumSize(new Dimension(120,22));
         //if(WiskOpdr.objectives!=null)add(logObjectivesButton);
                 
         knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
@@ -356,13 +357,14 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
     	regelBox.add(logIDLabelField);
     	regelBox.add(Box.createHorizontalGlue());
     	boxv2.add(regelBox);
-//    	boxv2.add(Box.createRigidArea(new Dimension(5,5)));
-//    	regelBox = Box.createHorizontalBox();
-//    	regelBox.add(Box.createRigidArea(new Dimension(10,5)));
-//    	regelBox.add(logObjectivesButton);
-//    	regelBox.add(Box.createHorizontalGlue());
-//    	boxv2.add(regelBox);
-    	
+    	if(WiskOpdr.objectives!=null) {
+	    	boxv2.add(Box.createRigidArea(new Dimension(5,5)));
+	    	regelBox = Box.createHorizontalBox();
+	    	regelBox.add(Box.createRigidArea(new Dimension(5,5)));
+	    	regelBox.add(logObjectivesButton);
+	    	regelBox.add(Box.createHorizontalGlue());
+	    	boxv2.add(regelBox);
+    	}
     	boxv2.add(Box.createVerticalGlue());
 		
     	boxh.add(boxv0);
@@ -563,6 +565,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		String knopImageString = "";
 		boolean[][][] logMisconceptions = null;
 		
+		boolean volledigeBreedte = true;
+		int breedte = 300;
+		
 		itemCount = Integer.parseInt(itemCountTF.getText());
 		listNumberType = listNumberTypeComboBox.getSelectedIndex()-1;
 		tabWidth = Integer.parseInt(tabWidthTF.getText());
@@ -587,6 +592,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		//checkFormule = checkFormuleCB.isSelected();
 		//formuleStrings = formuleEditor.geefRegels();
 		logMisconceptions = this.logMisconceptions;
+		
+		volledigeBreedte = volledigeBreedteCB.isSelected();
+		breedte = Integer.parseInt(breedteTF.getText());
 		
 		if(logObjectives!=null)
 		{	scoreMaxObjectives = new int[logObjectives.length][];
@@ -634,6 +642,11 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         }
 		preferences.put("knopImageString", knopImageString);
 		
+		preferences.put("volledigeBreedte", new Boolean(volledigeBreedte));
+		preferences.put("breedte", new Integer(breedte));
+		
+		
+		
 		return preferences;
 	}
 
@@ -661,6 +674,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		String knopImageString = "";
 		boolean[][][] logMisconceptions = null;
 		
+		boolean volledigeBreedte = true;
+		int breedte = 300;
+		
 		if(preferences.containsKey("itemCount")) itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		if(preferences.containsKey("listNumberType")) listNumberType = ((Integer)preferences.get("listNumberType")).intValue()+1;
 		if(preferences.containsKey("tabWidth")) tabWidth = ((Integer)preferences.get("tabWidth")).intValue();
@@ -682,6 +698,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		if(preferences.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])preferences.get("logMisconceptions");
 		
+		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
+		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
+		
 		itemCountTF.setText(""+itemCount);
 		listNumberTypeComboBox.setSelectedIndex(listNumberType);
 		tabWidthTF.setText(""+tabWidth);
@@ -698,6 +717,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    //randomizePositionsCB.setSelected(randomizePositions);
 	    multiSelectionsCB.setSelected(multiSelections);
 	    this.logMisconceptions = logMisconceptions;
+	    
+	    volledigeBreedteCB.setSelected(volledigeBreedte);
+	    breedteTF.setText(""+breedte);
 	    
 //	    for(int i=0 ; i<aantalSelectables ; i++)
 //		{
@@ -719,7 +741,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    for(int i=0 ; i<aantalSelectables ; i++)
 		{
 	    	selectableCheckboxes[i].setSelected(juisteSelecties[i]);
-	    	if(WiskOpdr.misconceptions!=null)
+	    	if(WiskOpdr.misconceptions!=null && logMisconceptionsButtons[i]!=null && logMisconceptions!=null)
 	    		logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
 		}
 	    enableMisconceptions();
@@ -831,6 +853,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    {   listNumberTypeLabel.setVisible(hasPrefixCB.isSelected());
 	    	listNumberTypeComboBox.setVisible(hasPrefixCB.isSelected());
 	    	frame.pack();
+	    }
+	    else if(e.getSource()==volledigeBreedteCB)
+	    {   breedteTF.setEnabled(!volledigeBreedteCB.isSelected());
 	    }
 		
 
