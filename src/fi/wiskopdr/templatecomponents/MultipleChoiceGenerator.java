@@ -14,6 +14,7 @@ import javax.swing.JPopupMenu;
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
@@ -256,13 +257,64 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 	}
 	
 	private Hashtable<String,Object> makeCheckUnitLD(Hashtable<String,Object> preferences) {
-		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
+		boolean[] juisteSelecties = null;
+	    int scoreMax = 0;
+		boolean randomizePositions = false;
+		boolean multiSelections = false;
+		boolean logOption = false;
+		String logID = "";
+		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
+		boolean check = true;
+		boolean teltMee = true;
+		//boolean checkFormule = false;
+		//String[] formuleStrings = null;
+		String knopImageString = "";
+		boolean[][][] logMisconceptions = null;
 		
-		boolean[] juisteSelecties = new boolean[itemCount];
+		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
+		if(preferences.containsKey("juisteSelecties")) juisteSelecties = (boolean[])preferences.get("juisteSelecties");
+	    if(preferences.containsKey("scoreMax")) scoreMax = ((Integer)preferences.get("scoreMax")).intValue();
+	    if(preferences.containsKey("randomizePositions")) randomizePositions = ((Boolean)preferences.get("randomizePositions")).booleanValue();
+	    if(preferences.containsKey("multiSelections")) multiSelections = ((Boolean)preferences.get("multiSelections")).booleanValue();
+	    if(preferences.containsKey("logOption")) logOption = ((Boolean)preferences.get("logOption")).booleanValue();
+		if(preferences.containsKey("logID")) logID = (String)preferences.get("logID");
+		if(preferences.containsKey("check")) check = ((Boolean)preferences.get("check")).booleanValue();
+		if(preferences.containsKey("teltMee")) teltMee = ((Boolean)preferences.get("teltMee")).booleanValue();
+		//if(preferences.containsKey("checkFormule")) checkFormule = ((Boolean)preferences.get("checkFormule")).booleanValue();
+		//if(preferences.containsKey("formuleStrings")) formuleStrings = (String[])preferences.get("formuleStrings");
+		if(preferences.containsKey("logObjectives")) logObjectives = (boolean[][])preferences.get("logObjectives");
+		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
+		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
+		if(preferences.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])preferences.get("logMisconceptions");
+		
+		if(juisteSelecties==null)
+			juisteSelecties = new boolean[itemCount];
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
 		ipLaunchState.put("juisteSelecties", juisteSelecties);
 		ipLaunchState.put("knopImageString", "controleerknop");
+		ipLaunchState.put("juisteSelecties", juisteSelecties);
+		ipLaunchState.put("scoreMax", new Integer(scoreMax));
+		ipLaunchState.put("randomizePositions", new Boolean(randomizePositions));
+		ipLaunchState.put("multiSelections", new Boolean(multiSelections));
+		ipLaunchState.put("logOption",new Boolean(logOption));
+		ipLaunchState.put("logID",logID);
+		ipLaunchState.put("check",new Boolean(check));
+		ipLaunchState.put("teltMee",new Boolean(teltMee));
+		//ipLaunchState.put("checkFormule",new Boolean(checkFormule));
+		//ipLaunchState.put("formuleStrings", formuleStrings);
+		if(logObjectives!=null)
+	    {	ipLaunchState.put("logObjectives",logObjectives);
+	    	//ipLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+            try {
+              ipLaunchState.put(Constants.OBJECTIVES, smObjectives);
+            } catch(Exception e) {}
+	    }
+		if(logMisconceptions!=null)
+        {	ipLaunchState.put("logMisconceptions",logMisconceptions);
+        }
+		ipLaunchState.put("knopImageString", knopImageString);
 				
 		Hashtable<String,Object> launchData = new Hashtable<String,Object>();
 		launchData.put("soortInteractiePanel", new Integer(12));

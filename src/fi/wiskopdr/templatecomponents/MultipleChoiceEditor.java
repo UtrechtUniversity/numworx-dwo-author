@@ -11,6 +11,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
@@ -32,11 +34,12 @@ import fi.wiskopdr.WiskOpdrButton;
 import fi.wiskopdr.WiskOpdrCheckbox;
 import fi.wiskopdr.WiskOpdrComboBox;
 import fi.wiskopdr.WiskOpdrTextField;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
-public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
+public class MultipleChoiceEditor implements TComponentEditor, ActionListener, FocusListener {
 
 	private TekstVak tekstVak;
 	private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
@@ -45,6 +48,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 	private JPanel preferencesPanel;
 	private JPanel topPanel, mainPanel, bottomPanel;
 	private JButton okButton, cancelButton;
+	private JTextField breedteTF, hoogteTF;
+    private JLabel breedteLabel, hoogteLabel;
+    private JCheckBox volledigeBreedteCB;
 	
 	private JLabel titleLabel;
 	private JLabel titleOpmaakLabel;
@@ -109,11 +115,11 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		
 		mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBackground(WiskOpdr.colorGray3);
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 50, 30));
 		
-		bottomPanel = new JPanel();
+		bottomPanel = new JPanel(new BorderLayout());
 		bottomPanel.setBackground(WiskOpdr.colorGray2);
-		bottomPanel.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorGray2, 2));
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 		
 		titleLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_settings"));
 		titleLabel.setForeground(WiskOpdr.colorGray3);
@@ -167,6 +173,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		hasPrefixCB.setOpaque(false);
 		hasPrefixCB.setSelected(true);
 		hasPrefixCB.setFont(font);
+		hasPrefixCB.addActionListener(this);
 		
 		titleLoggingLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"));
     	titleLoggingLabel.setForeground(WiskOpdr.colorBlue1);
@@ -174,32 +181,36 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		
 		checkCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("checkCBLabel"));
 		checkCB.setOpaque(false);
-		checkCB.setSelected(false);
+		checkCB.setSelected(true);
 		checkCB.setFont(font);
 		
 		teltMeeCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("teltMeeCBLabel"));
 		teltMeeCB.setOpaque(false);
-		teltMeeCB.setSelected(false);
+		teltMeeCB.setSelected(true);
 		teltMeeCB.setFont(font);
 		
 		logCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("logCBLabel"));
 		logCB.setOpaque(false);
 		logCB.setSelected(false);
 		logCB.setFont(font);
+		logCB.addActionListener(this);
 		
 		logIDField = new WiskOpdrTextField("");
 		logIDField.addActionListener(this);
 		logIDField.setPreferredSize(new Dimension(50,22));
 		logIDField.setMaximumSize(new Dimension(50,22));
+		logIDField.setVisible(false);
 		
 		logIDLabelLabel = new JLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"));
 		logIDLabelLabel.setFont(font);
 		logIDLabelLabel.setForeground(WiskOpdr.colorBlue1);
+		logIDLabelLabel.setVisible(false);
 		
 		logIDLabelField = new WiskOpdrTextField("");
 		logIDLabelField.addActionListener(this);
 		logIDLabelField.setPreferredSize(new Dimension(50,22));
 		logIDLabelField.setMaximumSize(new Dimension(50,22));
+		logIDLabelField.setVisible(false);
 		
 		titleSettingsLabel = new JLabel(WiskOpdr.rb.getString("settingsLabel"));
 		titleSettingsLabel.setForeground(WiskOpdr.colorBlue1);
@@ -262,7 +273,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		
 		
 		regelBox = Box.createHorizontalBox();
-		regelBox.add(titleOpmaakLabel);
+		regelBox.add(titleSettingsLabel);
 		regelBox.add(Box.createHorizontalGlue());
 		boxv1.add(regelBox);
 		boxv1.add(Box.createVerticalStrut(15));
@@ -275,6 +286,19 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		
 		boxv1.add(regelBox);
 		boxv1.add(Box.createVerticalStrut(5));
+		
+		regelBox = Box.createHorizontalBox();
+    	regelBox.add(multiSelectionsCB);
+    	regelBox.add(Box.createHorizontalGlue());
+    	boxv1.add(regelBox);
+    	boxv1.add(Box.createVerticalStrut(5));
+    	
+    	regelBox = Box.createHorizontalBox();
+		regelBox.add(hasPrefixCB);
+		regelBox.add(Box.createHorizontalGlue());
+		boxv1.add(regelBox);
+		boxv1.add(Box.createVerticalStrut(5));
+		
 		
 		regelBox = Box.createHorizontalBox();
 		regelBox.add(listNumberTypeLabel);
@@ -303,11 +327,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		boxv1.add(regelBox);
 		boxv1.add(Box.createVerticalStrut(5));
 		
-		regelBox = Box.createHorizontalBox();
-		regelBox.add(hasPrefixCB);
-		regelBox.add(Box.createHorizontalGlue());
-				
-		boxv1.add(regelBox);
+		
 		boxv1.add(Box.createVerticalGlue());
 		
 		regelBox = Box.createHorizontalBox();
@@ -342,20 +362,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 //    	regelBox.add(logObjectivesButton);
 //    	regelBox.add(Box.createHorizontalGlue());
 //    	boxv2.add(regelBox);
-    	boxv2.add(Box.createVerticalStrut(20));
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(titleSettingsLabel);
-    	regelBox.add(Box.createHorizontalGlue());
-    	boxv2.add(regelBox);
-    	boxv2.add(Box.createVerticalStrut(15));
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(multiSelectionsCB);
-    	regelBox.add(Box.createHorizontalGlue());
-    	boxv2.add(regelBox);
-    	
-//    	boxv2.add(Box.createVerticalStrut(20));
     	
     	boxv2.add(Box.createVerticalGlue());
 		
@@ -372,15 +378,73 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		
 		topPanel.add(titleLabel);
 		
+		
+		
 		okButton = new WiskOpdrButton("Ok");//
-		okButton.setPreferredSize(new Dimension(70,22));
+		okButton.setBackground(WiskOpdr.colorBlue1);
+		okButton.setForeground(WiskOpdr.colorGray3);
+		okButton.setPreferredSize(new Dimension(70,24));
 		okButton.addActionListener(this);
-		bottomPanel.add(okButton);
 		
 		cancelButton = new WiskOpdrButton("Cancel");//
-		cancelButton.setPreferredSize(new Dimension(70,22));
+		cancelButton.setBackground(WiskOpdr.colorBlue1);
+		cancelButton.setForeground(WiskOpdr.colorGray3);
+		cancelButton.setPreferredSize(new Dimension(70,24));
 		cancelButton.addActionListener(this);
-		bottomPanel.add(cancelButton);
+		
+		breedteLabel = new JLabel(WiskOpdr.rb.getString("breedteLabel"));
+		breedteLabel.setForeground(WiskOpdr.colorBlue1);
+        breedteLabel.setBounds(370,20,40,22);
+        breedteLabel.setFont(font);
+        
+        breedteTF = new WiskOpdrTextField("300");
+        breedteTF.setBounds(420,20,40,22);
+        breedteTF.setPreferredSize(new Dimension(40,22));
+        breedteTF.setFont(font);
+        breedteTF.addActionListener(this);
+        breedteTF.addFocusListener(this);
+        breedteTF.setEnabled(false);
+        
+        hoogteLabel = new JLabel(WiskOpdr.rb.getString("hoogteLabel"));
+        hoogteLabel.setForeground(WiskOpdr.colorBlue1);
+        hoogteLabel.setBounds(465,20,50,22);
+        hoogteLabel.setFont(font);
+        
+        hoogteTF = new WiskOpdrTextField("250");
+        hoogteTF.setBounds(510,20,40,22);
+        hoogteTF.setPreferredSize(new Dimension(40,22));
+        hoogteTF.setFont(font);
+        hoogteTF.addActionListener(this);
+        hoogteTF.addFocusListener(this);
+        hoogteTF.setEnabled(false);
+        
+        
+        
+        volledigeBreedteCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("volleBreedteLabel"));
+        volledigeBreedteCB.setOpaque(false);
+        volledigeBreedteCB.setFont(font);
+        volledigeBreedteCB.setBounds(560,20,100,22);
+        volledigeBreedteCB.addActionListener(this);
+        volledigeBreedteCB.setSelected(true);
+        
+		Box boxBottom = Box.createHorizontalBox();
+		boxBottom.add(okButton);
+		boxBottom.add(Box.createHorizontalStrut(20));
+		boxBottom.add(cancelButton);
+		boxBottom.add(Box.createHorizontalStrut(20));
+		boxBottom.add(breedteLabel);
+		boxBottom.add(Box.createHorizontalStrut(5));
+		boxBottom.add(breedteTF);
+		boxBottom.add(Box.createHorizontalStrut(10));
+		boxBottom.add(hoogteLabel);
+		boxBottom.add(Box.createHorizontalStrut(5));
+		boxBottom.add(hoogteTF);
+		boxBottom.add(Box.createHorizontalStrut(20));
+		boxBottom.add(volledigeBreedteCB);
+		boxBottom.add(Box.createHorizontalStrut(20));
+		   
+		boxBottom.add(Box.createHorizontalGlue());
+		bottomPanel.add(boxBottom);
 	}
 	
 	public void makeFrame(){
@@ -445,19 +509,17 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 	
 	public void verwijderCheckboxes()
 	{
-//		for(int i=0 ; i<aantalSelectables ; i++)
-//		{
-//		    if(selectableCheckboxes[i]!=null) 
-//		    {	remove(selectableCheckboxes[i]);
-//		    	selectableCheckboxes[i] = null;
-//		    	if(logMisconceptionsButtons[i]!=null) 
-//		    	{	remove(logMisconceptionsButtons[i]);
-//		    		logMisconceptionsButtons[i] = null;
-//		    	}
-//		    }
-//		}	
-//		aantalSelectables = 0;
-//		repaint();
+		for(int i=0 ; i<aantalSelectables ; i++)
+		{
+		    if(selectableCheckboxes[i]!=null) 
+		    {	selectableCheckboxes[i] = null;
+		    	if(logMisconceptionsButtons[i]!=null) 
+		    	{	logMisconceptionsButtons[i] = null;
+		    	}
+		    }
+		}
+		selectableCBBox.removeAll();
+		aantalSelectables = 0;
 	}
 	
 	public void editImage() {
@@ -485,11 +547,62 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		int rowSpace = MultipleChoiceGenerator.initialRowSpace;
 		boolean hasPrefix = MultipleChoiceGenerator.initialHasPrefix;
 		
+		boolean[] juisteSelecties = null;
+		int scoreMax = 0;
+	    int[][] scoreMaxObjectives = null;
+	    boolean randomizePositions = false;
+		boolean multiSelections = false;
+		boolean logOption = false;
+		String logID = "";
+		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
+		boolean check = true;
+		boolean teltMee = true;
+		boolean checkFormule = false;
+		String[] formuleStrings = null;
+		String knopImageString = "";
+		boolean[][][] logMisconceptions = null;
+		
 		itemCount = Integer.parseInt(itemCountTF.getText());
 		listNumberType = listNumberTypeComboBox.getSelectedIndex()-1;
 		tabWidth = Integer.parseInt(tabWidthTF.getText());
 		rowSpace = Integer.parseInt(rowSpaceTF.getText());
 		hasPrefix = hasPrefixCB.isSelected();
+		
+		knopImageString = this.knopImageString;
+	    juisteSelecties = new boolean[aantalSelectables];
+	    for(int i=0 ; i<aantalSelectables ; i++)
+	    {  juisteSelecties[i] = selectableCheckboxes[i].isSelected();
+	    }
+	    
+	    scoreMax = Integer.parseInt(maxScoreTF.getText());
+	    //randomizePositions = randomizePositionsCB.isSelected();
+	    multiSelections = multiSelectionsCB.isSelected();
+	    logOption = logCB.isSelected();
+		logID = logIDField.getText();
+		logObjectives = logObjectivesButton.getChoices();
+		smObjectives = logObjectivesButton.getObjectives();
+		check = checkCB.isSelected();
+		teltMee = teltMeeCB.isSelected();
+		//checkFormule = checkFormuleCB.isSelected();
+		//formuleStrings = formuleEditor.geefRegels();
+		logMisconceptions = this.logMisconceptions;
+		
+		if(logObjectives!=null)
+		{	scoreMaxObjectives = new int[logObjectives.length][];
+			for(int j=0 ; j<scoreMaxObjectives.length; j++)
+			{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
+				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
+				{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
+				}
+			}
+		}
+		
+		if(logMisconceptions!=null)
+		{	for(int i=0 ; i<aantalSelectables ; i++)
+			{	logMisconceptions[i] = logMisconceptionsButtons[i].getChoices();
+			}
+		}
 		
 		Hashtable preferences = new Hashtable();
 		
@@ -498,6 +611,29 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		preferences.put("tabWidth", new Integer(tabWidth));
 		preferences.put("rowSpace", new Integer(rowSpace));
 		preferences.put("hasPrefix", new Boolean(hasPrefix));
+		
+		preferences.put("juisteSelecties", juisteSelecties);
+		preferences.put("scoreMax", new Integer(scoreMax));
+		preferences.put("randomizePositions", new Boolean(randomizePositions));
+		preferences.put("multiSelections", new Boolean(multiSelections));
+		preferences.put("logOption",new Boolean(logOption));
+		preferences.put("logID",logID);
+		preferences.put("check",new Boolean(check));
+		preferences.put("teltMee",new Boolean(teltMee));
+		//preferences.put("checkFormule",new Boolean(checkFormule));
+		//preferences.put("formuleStrings", formuleStrings);
+		if(logObjectives!=null)
+	    {	preferences.put("logObjectives",logObjectives);
+	    	preferences.put("scoreMaxObjectives",scoreMaxObjectives);
+            try {
+            	preferences.put(Constants.OBJECTIVES, smObjectives);
+            } catch(Exception e) {}
+	    }
+		if(logMisconceptions!=null)
+        {	preferences.put("logMisconceptions",logMisconceptions);
+        }
+		preferences.put("knopImageString", knopImageString);
+		
 		return preferences;
 	}
 
@@ -510,17 +646,106 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		int rowSpace = MultipleChoiceGenerator.initialRowSpace;
 		boolean hasPrefix = MultipleChoiceGenerator.initialHasPrefix;
 		
+		boolean[] juisteSelecties = null;
+	    int scoreMax = 0;
+		boolean randomizePositions = false;
+		boolean multiSelections = false;
+		boolean logOption = false;
+		String logID = "";
+		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
+		boolean check = true;
+		boolean teltMee = true;
+		boolean checkFormule = false;
+		String[] formuleStrings = null;
+		String knopImageString = "";
+		boolean[][][] logMisconceptions = null;
+		
 		if(preferences.containsKey("itemCount")) itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		if(preferences.containsKey("listNumberType")) listNumberType = ((Integer)preferences.get("listNumberType")).intValue()+1;
 		if(preferences.containsKey("tabWidth")) tabWidth = ((Integer)preferences.get("tabWidth")).intValue();
 		if(preferences.containsKey("rowSpace")) rowSpace = ((Integer)preferences.get("rowSpace")).intValue();
 		if(preferences.containsKey("hasPrefix")) hasPrefix = ((Boolean)preferences.get("hasPrefix")).booleanValue();
 		
+		if(preferences.containsKey("juisteSelecties")) juisteSelecties = (boolean[])preferences.get("juisteSelecties");
+	    if(preferences.containsKey("scoreMax")) scoreMax = ((Integer)preferences.get("scoreMax")).intValue();
+	    if(preferences.containsKey("randomizePositions")) randomizePositions = ((Boolean)preferences.get("randomizePositions")).booleanValue();
+	    if(preferences.containsKey("multiSelections")) multiSelections = ((Boolean)preferences.get("multiSelections")).booleanValue();
+	    if(preferences.containsKey("logOption")) logOption = ((Boolean)preferences.get("logOption")).booleanValue();
+		if(preferences.containsKey("logID")) logID = (String)preferences.get("logID");
+		if(preferences.containsKey("check")) check = ((Boolean)preferences.get("check")).booleanValue();
+		if(preferences.containsKey("teltMee")) teltMee = ((Boolean)preferences.get("teltMee")).booleanValue();
+		if(preferences.containsKey("checkFormule")) checkFormule = ((Boolean)preferences.get("checkFormule")).booleanValue();
+		if(preferences.containsKey("formuleStrings")) formuleStrings = (String[])preferences.get("formuleStrings");
+		if(preferences.containsKey("logObjectives")) logObjectives = (boolean[][])preferences.get("logObjectives");
+		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
+		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
+		if(preferences.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])preferences.get("logMisconceptions");
+		
 		itemCountTF.setText(""+itemCount);
 		listNumberTypeComboBox.setSelectedIndex(listNumberType);
 		tabWidthTF.setText(""+tabWidth);
 		rowSpaceTF.setText(""+rowSpace);
 		hasPrefixCB.setSelected(hasPrefix);
+		
+		if(juisteSelecties==null) 
+			juisteSelecties = new boolean[itemCount];
+	    
+		verwijderCheckboxes();
+	    aantalSelectables = juisteSelecties.length;
+	    //aantalSelectablesTF.setText(""+aantalSelectables);
+	    maxScoreTF.setText(""+scoreMax);
+	    //randomizePositionsCB.setSelected(randomizePositions);
+	    multiSelectionsCB.setSelected(multiSelections);
+	    this.logMisconceptions = logMisconceptions;
+	    
+//	    for(int i=0 ; i<aantalSelectables ; i++)
+//		{
+//		    selectableCheckboxes[i] = new JCheckBox("Nr "+(i+1));
+//		    selectableCheckboxes[i].setSelected(juisteSelecties[i]);
+//            selectableCheckboxes[i].setOpaque(false);
+//            selectableCheckboxes[i].setBounds(10,80+i*25,60,20);
+//            add(selectableCheckboxes[i],0);
+//            
+//            if(logMisconceptions!=null)
+//            {   logMisconceptionsButtons[i] = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"),WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
+//			    logMisconceptionsButtons[i].setBounds(100,80+i*25,100,20);
+//			    logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
+//			    add(logMisconceptionsButtons[i]);
+//		    }
+//		}
+	    
+	    maakCheckboxes();
+	    for(int i=0 ; i<aantalSelectables ; i++)
+		{
+	    	selectableCheckboxes[i].setSelected(juisteSelecties[i]);
+	    	if(WiskOpdr.misconceptions!=null)
+	    		logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
+		}
+	    enableMisconceptions();
+	    
+	    logCB.setSelected(logOption);
+        logIDField.setVisible(logOption);
+        //logObjectivesButton.setVisible(logOption);
+        logIDField.setText(logID);
+        logObjectivesButton.setChoices(logObjectives);
+        logObjectivesButton.setObjectives(smObjectives);
+        checkCB.setSelected(check);
+        teltMeeCB.setSelected(teltMee);
+        //checkFormuleCB.setSelected(checkFormule);
+        //if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
+        //formuleEditor.setVisible(checkFormule);
+        
+        knopImageButton.setPopupButtonImage(knopImage);
+    	iconman = new Iconan(WiskOpdr.applet, (Component)mainPanel, (Hashtable)TekstImageVak.getImageMap());
+    	if(knopImageString!=null && !"".equals(knopImageString)) {
+    		knopImage = iconman.getImage(knopImageString);
+    		knopImageButton.setPopupButtonImage(knopImage);
+    	}
+    	else {
+    		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
+    	}
+    	this.knopImageString = knopImageString;
 		
 		frame.setVisible(true);
 		frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
@@ -573,11 +798,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 			}
 			
 		}
-		else if(e.getSource()==logCB)
-	    {   logIDField.setVisible(logCB.isSelected());   
-	    	//logObjectivesButton.setVisible(logCB.isSelected());
-	    }
-		
 		else if(e.getSource()==multiSelectionsCB)
 	    {   enableMisconceptions();
 	    }
@@ -601,9 +821,33 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 	           // repaint();
 	        }
 	    }
+	    else if(e.getSource()==logCB)
+	    {   logIDField.setVisible(logCB.isSelected());
+	    	logIDLabelField.setVisible(logCB.isSelected());
+	    	logIDLabelLabel.setVisible(logCB.isSelected());
+	    	frame.pack();
+	    }
+	    else if(e.getSource()==hasPrefixCB)
+	    {   listNumberTypeLabel.setVisible(hasPrefixCB.isSelected());
+	    	listNumberTypeComboBox.setVisible(hasPrefixCB.isSelected());
+	    	frame.pack();
+	    }
+		
 
 	    if(imageDialog!=null)
 	        imageDialog.setVisible(false);
+		
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 }
