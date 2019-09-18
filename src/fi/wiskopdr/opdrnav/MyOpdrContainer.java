@@ -364,7 +364,8 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 
 		antwB = eindX - 5 - scheidingX;
 		antwX = scheidingX + 5;
-		tekstB = scheidingX - 20;
+		//tekstB = scheidingX - 20;
+		tekstB = MyOpdrEditContainer.defaultDocWidth+5;
 		titelB = scheidingX - 20;
 		tekst2B = eindX - 5 - scheidingX;
 		tekst2X = scheidingX;
@@ -649,7 +650,8 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 
 		antwB = eindX - 5 - scheidingX;
 		antwX = scheidingX + 5;
-		tekstB = scheidingX - 20;
+		//tekstB = scheidingX - 20;
+		tekstB = MyOpdrEditContainer.defaultDocWidth+5;
 		titelB = scheidingX - 20;
 		tekst2B = eindX - 5 - scheidingX;
 		tekst2X = scheidingX;
