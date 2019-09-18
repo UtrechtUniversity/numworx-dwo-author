@@ -71,7 +71,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 	private JLabel titleSettingsLabel;
 	private JCheckBox multiSelectionsCB;
 	
-	private JLabel titleVerificatieLabel;
+	private JLabel titleAntwoordLabel;
 	private JLabel maxScoreLabel;
 	private JTextField maxScoreTF;
 	private JCheckBox[] selectableCheckboxes;
@@ -220,9 +220,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		multiSelectionsCB.setOpaque(false);
 		multiSelectionsCB.setFont(font);
 		
-		titleVerificatieLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleVerificatieLabel"));
-    	titleVerificatieLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleVerificatieLabel.setFont(font.deriveFont(Font.BOLD, 16));
+		titleAntwoordLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
+		titleAntwoordLabel.setForeground(WiskOpdr.colorBlue1);
+		titleAntwoordLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
     	selectableCheckboxes = new JCheckBox[aantalSelectablesMax];
     	logMisconceptionsButtons = new ObjectiveChoiceButton[aantalSelectablesMax];
@@ -248,7 +248,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener {
 		Box boxv2 = Box.createVerticalBox();
 		
 		Box regelBox = Box.createHorizontalBox();
-		regelBox.add(titleVerificatieLabel);
+		regelBox.add(titleAntwoordLabel);
 		regelBox.add(Box.createHorizontalGlue());
 		boxv0.add(regelBox);
 		boxv0.add(Box.createVerticalStrut(15));
