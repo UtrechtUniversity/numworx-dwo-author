@@ -16,7 +16,7 @@ public class WiskOpdrCheckbox extends JCheckBox {
   private Color bgColor = new Color(120,150,202);
   private Color fgColor = WiskOpdr.colorBlue1;
   private FontMetrics fm;
-  private Font font = new Font("SansSerif", Font.BOLD, 13);
+  private Font font = new Font("SansSerif", Font.PLAIN, 12);
   
   public WiskOpdrCheckbox(String label) {
     super(label);

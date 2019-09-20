@@ -448,16 +448,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		WiskOpdr.rb.getString("draaibankIpLabel"),//"[test] Draaibank"
 		WiskOpdr.rb.getString("waarmakersIpLabel"),//"[test] Waarmakers"
 		WiskOpdr.rb.getString("statSimIpLabel"),//"[test] StatSim"
-		"CheckButton",//WiskOpdr.rb.getString("checkButtonIpLabel"),//"[test] CheckButton"
-		"Slider",
+		WiskOpdr.rb.getString("checkButtonIpLabel"),//"[test] CheckButton"
+		WiskOpdr.rb.getString("sliderIpLabel"),
 		"DataPlot",
 		"ReactieVergelijking",
 		WiskOpdr.rb.getString("stelselVakLabel"),//[test] Stelsel-antwoordvak
 		WiskOpdr.rb.getString("javaLogoIpLabel"),//[test] JavaLogo
 		WiskOpdr.rb.getString("symboolIpLabel"),
-		"Heks",
-		"GeoDefiner",
-		"JavaLogoWeb3d",
+		WiskOpdr.rb.getString("heksIpLabel"),
+		WiskOpdr.rb.getString("geoDefinerIpLabel"),
+		WiskOpdr.rb.getString("javaLogo3DIpLabel"),
 		"IVM Draw [test]",
 		"[test] " + WiskOpdr.rb.getString("samengesteldeStappenIpLabel")
 	};
@@ -479,7 +479,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	   
 	public static int[][] interactiePanelSets =
 	    {
-	        {2,0,3,1,53,4,13,14,12,16,33,49, 60},//,52
+	        {2,0,3,1,53,4,13,14,60,12,16,33,49},//,52
 	        {35,5,6,24,15,46,11,57,20,25,56,59,54,58,42,41,27,22,43,50,30,48,40,31,32,26,19},
 	        //{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59,25},
 	        //{0,1,2,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,
@@ -506,17 +506,26 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	};
 	
 	public static void makeJMenu(TekstEditor te, String title, JPopupMenu menu, int setNr) {
-	  boolean[][] separators = {{false,false,false,false,true,false,true,true,false,false,false,true,false},{},{},
+	  boolean[][] separators = {{false,false,false,false,true,false,true,true,true,false,false,false,false},{},{},
 			  					{true,false}};
 			  
 	  String[] itemNames = new String[TekstInteractiePanelVak.interactiePanelSets[setNr].length];
+	  JMenu checkButtonsSubMenu = new JMenu(WiskOpdr.rb.getString("checkButtonsMenuLabel"));
+	  checkButtonsSubMenu.setForeground(new Color(49,71,112));
 	  for(int i=0 ; i<interactiePanelSets[setNr].length ; i++) {
 	    JMenuItem item = new JMenuItem(te.new AntwoordvakKeuzeAction(interactiePanelDescriptions[interactiePanelSets[setNr][i]], setNr, i));
 	    item.setBackground(new Color(237,239,241));
 	    item.setForeground(new Color(49,71,112));
 	    item.setFont(new Font("SansSerif",Font.PLAIN,13));
 	    item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
-	    menu.add(item);
+	   
+	    if(setNr==0 && i>8) {
+	    	checkButtonsSubMenu.add(item);
+	    	if(i==9)
+	    		menu.add(checkButtonsSubMenu);
+	    }
+	    else
+	    	menu.add(item);
 	    if(setNr==0) {
 	      if(i==7) {
 		      String type = "MultipleChoice";
@@ -537,6 +546,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 	          menu.add(item);
 	      }
+	      
           if(separators[0][i])
         	  menu.addSeparator();
 	    }
@@ -3061,7 +3071,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 //				return;
 			
 			Component window = WiskOpdr.getWindowForComponent(this);
-			if(soortInteractiePanel==25)currentSetNr = 1;
+			if(soortInteractiePanel==25)currentSetNr = 1; //getallenlijn naar andere set
 			if(window instanceof Frame)editInteractiePanelDialog = new EditInteractiePanelDialog((Frame)window, "", false, currentSetNr, launchData, getXWidgetManager());
 			if(window instanceof Dialog)editInteractiePanelDialog = new EditInteractiePanelDialog((Dialog)window, "", false, currentSetNr, launchData, getXWidgetManager());
 			
@@ -3072,6 +3082,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
 		    int x = (screenSize.width-editInteractiePanelDialog.getWidth())/2;
 		    int y = (screenSize.height-editInteractiePanelDialog.getHeight())/2;
+		    //editInteractiePanelDialog.pack();
 			showDialog(true);
 		}
 	}

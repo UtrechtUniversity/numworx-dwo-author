@@ -156,6 +156,10 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		    headerPanel.remove(appletKnop);
 		    headerPanel.remove(tekstVakKnop);
 		    headerPanel.remove(geogebraKnop);
+		    headerPanel.remove(opsommingKnop);
+		    headerPanel.remove(templateChoiceKnop);
+		    headerPanel.remove(componentChoiceKnop);
+		    headerPanel.remove(opsommingKnop);
 // cbookKnop, cindyKnop, eslateKnop, epsilonKnop
 		    headerPanel.remove(cbookKnop);
 		    headerPanel.remove(cindyKnop);

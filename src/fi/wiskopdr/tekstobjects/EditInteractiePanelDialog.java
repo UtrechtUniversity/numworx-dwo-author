@@ -176,6 +176,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         headerPanel.setBackground(WiskOpdr.colorBlue1);
         
         String title = soort==999 ? "" : (TekstInteractiePanelVak.interactiePanelDescriptions[TekstInteractiePanelVak.interactiePanelSets[setNr][soort]]).toLowerCase();
+        if(title.equals("") && launchData!=null) {
+	        int soortInteractiePanel = ((Integer)launchData.get("soortInteractiePanel")).intValue();
+	        title = TekstInteractiePanelVak.interactiePanelDescriptions[soortInteractiePanel];
+        }
         JLabel headerTitle = new JLabel(WiskOpdr.rb.getString("settingsLabel") + " " + title);
         headerTitle.setForeground(WiskOpdr.colorGray3);
         headerTitle.setFont(new Font("SansSerif",Font.PLAIN, 24));
@@ -311,6 +315,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		boxh.add(imageButton);
 		boxh.add(Box.createHorizontalGlue());
 		shareButton = new JButton(shareAction);
+		shareButton.setVisible(ShareAction.getSharingPossible() || ShareAction.getSharingIsUsed());
 		//shareButton.setBounds((int)size.getWidth()-45,20,24,20);
 		boxh.add(shareButton);
 		

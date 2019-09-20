@@ -290,6 +290,13 @@ public class Text_fa extends java.util.ListResourceBundle
 	            {"javaLogoIpLabel", "JavaLogo"},
 	            {"symboolIpLabel", "Symbol"},
                 {"samengesteldeStappenIpLabel", "Composite steps"},
+                {"checkButtonIpLabel", "Check button"},
+                {"sliderIpLabel", "Slider"},
+                {"heksIpLabel", "Witch"},
+                {"geoDefinerIpLabel", "GeoDefiner"},
+                {"javaLogo3DIpLabel", "Programming JavaLogo 3D"},
+
+                {"checkButtonsMenuLabel", "Check buttons"},
 
 	            //CheckButtonEditor
                 {"CB_kijkNaOptieLabel", "Check" },
@@ -422,6 +429,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"IEP_verwijderen" , "حذف"},
 				{"IEP_ok" , "تأیید"},
 				{"IEP_cancel" , "لغو"},
+				{"editImageKnopLabel" , "Image checkButton"},
 				
 				//TekstVakEditPanel
 				{"TVEP_randZichtbaar" , "مرز"},
@@ -502,6 +510,7 @@ public class Text_fa extends java.util.ListResourceBundle
                 {"TE_templateButtonTooltip", "Choose template page"},
                 {"TE_x-widgetButtonTooltip", "Cross-widget connections"},
                 {"TE_parameterButtonTooltip", "Use random parameters"},
+                {"TE_opsommingButtonTooltip", "Add list"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "گزینه ذخیره کردن"},

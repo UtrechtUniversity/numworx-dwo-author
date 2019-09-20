@@ -52,6 +52,7 @@ public class ShareAction extends AbstractAction {
 		private static Hashtable<String,Hashtable<String,Object>> shareMap = new Hashtable<String, Hashtable<String, Object>>();
 		private Hashtable<String,Hashtable<String,Object>> localMap;
 		private static Hashtable<String,Object> stateMap = new Hashtable<String, Object>();
+		private static boolean sharingPossible;
 				
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -175,6 +176,18 @@ public class ShareAction extends AbstractAction {
 			if(shareMap == null) 
 				return Collections.emptySet();
 			return new TreeSet<String> (shareMap.keySet());
+		}
+		
+		public static void setSharingPossible(boolean b ) {
+			sharingPossible = b;
+		}
+		
+		public static boolean getSharingPossible() {
+			return sharingPossible;
+		}
+		
+		public static boolean getSharingIsUsed() {
+			return (shareMap != null && !shareMap.isEmpty());
 		}
 		
 		private Set<String> getLocalKeySet() {

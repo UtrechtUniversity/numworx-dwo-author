@@ -139,7 +139,7 @@ public class FormuleButton extends JButton implements MouseListener
 		}
 		if(code.equals("formule"))
            setToolTipText(WiskOpdr.rb.getString("TE_formuleButtonTooltip"));
-		if(code.equals("grafiektool"))
+		if(code.equals("grafiektool") || code.equals("grafiekcomponent"))
 		  setToolTipText(WiskOpdr.rb.getString("TE_graphButtonTooltip"));
 		if(code.equals("link"))
 		  setToolTipText(WiskOpdr.rb.getString("TE_linkButtonTooltip"));
@@ -161,7 +161,8 @@ public class FormuleButton extends JButton implements MouseListener
 		  setToolTipText(WiskOpdr.rb.getString("TE_templateCompButtonTooltip"));
 		if(code.equals("crosswidget"))
 		  setToolTipText(WiskOpdr.rb.getString("TE_x-widgetButtonTooltip"));
-		
+		if(code.equals("opsomming"))
+			  setToolTipText(WiskOpdr.rb.getString("TE_opsommingButtonTooltip"));
 		 
 		
 	}

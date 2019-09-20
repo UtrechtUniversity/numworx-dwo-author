@@ -17,6 +17,7 @@ import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.*;
+import fi.wiskopdr.tekstobjects.ShareAction;
 //import fi.wiskopdr.tekstobjects.VoorwaardelijkeLinkButton;
 import fi.wiskopdr.expressies.*;
 
@@ -63,6 +64,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JButton importStylesNowButton;
 	private JButton exportStylesButton;
 	private JCheckBox layersCB;
+	private JCheckBox combinedComponentsCB;
 	
 	
 	private JLabel wiskundeLabel, navigatieLabel, layoutLabel, nakijkenLabel;
@@ -256,6 +258,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		voortgangCB = maakCheckBox(WiskOpdr.rb.getString("OPT_voortgangKnop"), boxv2, false);
 		condNavCB = maakCheckBox(WiskOpdr.rb.getString("OPT_conditionalNav"), boxv2, false);
 		condNavCB.addActionListener(this);
+		combinedComponentsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_combCompNav"), boxv2, false);
 		
 		
 		//Box boxh;
@@ -545,6 +548,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		opnieuwCB = maakCheckBox(WiskOpdr.rb.getString("OPT_opnieuwKnop"),boxv4, false);//"'Opnieuw' mogelijk"
 		itemOpnieuwCB = maakCheckBox(WiskOpdr.rb.getString("OPT_itemOpnieuwKnop"),boxv4, false);//"'Opnieuw' mogelijk"
 		checkPerOpdrachtCB = maakCheckBox(WiskOpdr.rb.getString("OPT_checkPerOpdracht"), boxv4, false);//"Check-knop per opdracht"
+		checkPerOpdrachtCB.setVisible(false);
 		zelftoetsGeenCorrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsGeenCorr"), boxv4, false);//"F-toetsen gebruiken of niet"
 		
 		boxh = Box.createHorizontalBox();
@@ -782,6 +786,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean hasLayers = false;
 		String[] layerNames = null;
 		boolean[] layerVisible = null;
+		boolean combinedComponents = false;
 		
 		try
 		{	fontSize = Integer.parseInt(fontSizeTF.getText());
@@ -855,6 +860,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		try{aftrekCorrectieZelftoets = Integer.parseInt(aftrekCorrectieZelftoetsTF.getText());
 		}
 		catch(Exception e){aftrekCorrectieZelftoets = 0;}
+		
+		combinedComponents = combinedComponentsCB.isSelected();
 		 
 		
 		Hashtable h = new Hashtable();
@@ -929,6 +936,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("scoresZichtbaar", new Boolean(scoresZichtbaar));
 		h.put("templateEdit", new Boolean(templateEdit));
 		h.put("aftrekCorrectieZelftoets", new Integer(aftrekCorrectieZelftoets));
+		h.put("combinedComponents", new Boolean(combinedComponents));
 		
 		return h;
 	}
@@ -994,6 +1002,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean hasLayers = false;
 		String[] layerNames = null;
 		boolean[] layerVisible = null;
+		boolean combinedComponents = false;
 		
 		if(h.containsKey("fontSize")) fontSize = ((Integer)h.get("fontSize")).intValue();
 		if(h.containsKey("maalTeken")) maalTeken = ((Boolean)h.get("maalTeken")).booleanValue();
@@ -1062,6 +1071,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("hasLayers")) hasLayers = ((Boolean)h.get("hasLayers")).booleanValue();
 		if(h.containsKey("layerNames")) layerNames = (String[])h.get("layerNames");
 		if(h.containsKey("layerVisible")) layerVisible = (boolean[])h.get("layerVisible");
+		if(h.containsKey("combinedComponents")) combinedComponents = ((Boolean)h.get("combinedComponents")).booleanValue();
 		
 		fontSizeTF.setText(""+fontSize);
 		//navigatieSizeTF.setText(""+navigatieSize);
@@ -1075,6 +1085,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		opnieuwCB.setSelected(opnieuw);
 		itemOpnieuwCB.setSelected(itemOpnieuw);
 		checkPerOpdrachtCB.setSelected(checkPerOpdracht);
+		checkPerOpdrachtCB.setVisible(checkPerOpdracht);
 		hoekGradenCB.setSelected(hoekGraden);
 		bolletjesCB.setSelected(bolletjesZichtbaar);
 		volgendeKnopCB.setSelected(volgendeKnopZichtbaar);
@@ -1149,6 +1160,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		layersCB.setSelected(hasLayers);
 		layersButton.setVisible(hasLayers);
 		layersButton.zetLayerInfo(layerNames, layerVisible);
+		combinedComponentsCB.setSelected(combinedComponents || ShareAction.getSharingIsUsed());
 	}
 	
 	public void cancel()
@@ -1184,6 +1196,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		AntwoordVergelijkingVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
 		SimpelAntwoordVergelijkingVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
 		AntwoordTekstVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
+		ShareAction.setSharingPossible(combinedComponentsCB.isSelected() || ShareAction.getSharingIsUsed());
 		
 		//opdrNavStruct.setTimer(timerCB.isSelected(), timeLimit);
 		//opdrNavStruct.zetOpnieuwMogelijk(opnieuwCB.isSelected());

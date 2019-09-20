@@ -18,6 +18,7 @@ import fi.wiskopdr.*;
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.tekstobjects.ShareAction;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 
 public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, ActionListener, ItemListener, TabletOwner, ClipboardOwner {
@@ -398,6 +399,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
         int margeOnder = 15;
         int docWidth = 1024;
         int docHeight = 450;
+        boolean combinedComponents = false;
 
 		if (h != null && h.containsKey("fontSize"))
 			fontSize = ((Integer) h.get("fontSize")).intValue();
@@ -475,6 +477,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
           docHeight = ((Integer) h.get("docHeight")).intValue();
         if (h != null && h.containsKey("docWidth"))
           docWidth = ((Integer) h.get("docWidth")).intValue();
+        if (h!=null && h.containsKey("combinedComponents"))
+        	combinedComponents = ((Boolean) h.get("combinedComponents")).booleanValue();
 		
         MyOpdrEditContainer.setDefaultDocSizes(margeLinks, margeBoven, docWidth, docHeight);
        
@@ -527,6 +531,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		WiskOpdr.setFToets(fToets);
 		
 		setAbcDeelOpdr(abcDeelOpdr);
+		ShareAction.setSharingPossible(combinedComponents);
 	}
 
 	/**

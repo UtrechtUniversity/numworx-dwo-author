@@ -302,6 +302,13 @@ public class Text_jp extends java.util.ListResourceBundle
 	            {"javaLogoIpLabel", "JavaLogo"},
 	            {"symboolIpLabel", "Symbol"},
                 {"samengesteldeStappenIpLabel", "Composite steps"},
+                {"checkButtonIpLabel", "Check button"},
+                {"sliderIpLabel", "Slider"},
+                {"heksIpLabel", "Witch"},
+                {"geoDefinerIpLabel", "GeoDefiner"},
+                {"javaLogo3DIpLabel", "Programming JavaLogo 3D"},
+
+                {"checkButtonsMenuLabel", "Check buttons"},
 
 	            //CheckButtonEditor
                 {"CB_kijkNaOptieLabel", "Check" },
@@ -369,6 +376,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"OPT_pageLabel" , "Page:"},
                 {"OPT_docWidthLabel" , "Page: Width"},
                 {"OPT_docHeightLabel" , "Height (min)"},
+                {"OPT_combCompNav" , "Combined components"},
 				
 				{"OBJ_leerdoel", "目標"}, 
 				{"OBJ_categorie", "カテゴリー"}, 
@@ -445,6 +453,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"IEP_verwijderen" , "取り除きます"},
 				{"IEP_ok" , "OK"},
 				{"IEP_cancel" , "キャンセル"},
+				{"editImageKnopLabel" , "Image checkButton"},
 				
 				//TekstVakEditPanel
 				{"TVEP_randZichtbaar" , "境界"},
@@ -525,6 +534,7 @@ public class Text_jp extends java.util.ListResourceBundle
                 {"TE_templateButtonTooltip", "Choose template page"},
                 {"TE_x-widgetButtonTooltip", "Cross-widget connections"},
                 {"TE_parameterButtonTooltip", "Use random parameters"},
+                {"TE_opsommingButtonTooltip", "Add list"},
 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "オプションを保存します"},

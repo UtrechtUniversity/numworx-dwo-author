@@ -306,9 +306,16 @@ public class Text_en extends java.util.ListResourceBundle
 				{"waarmakersIpLabel" , "[test] Truemakers"},
 				{"statSimIpLabel" , "Statistics Simulations"},
 				{"stelselVakLabel", "System of equations"},
-	            {"javaLogoIpLabel", "JavaLogo"},
+	            {"javaLogoIpLabel", "Programming JavaLogo"},
 	            {"symboolIpLabel", "Shape"},
 	            {"samengesteldeStappenIpLabel", "Composite steps"},
+	            {"checkButtonIpLabel", "Check button"},
+                {"sliderIpLabel", "Slider"},
+                {"heksIpLabel", "Witch"},
+                {"geoDefinerIpLabel", "GeoDefiner"},
+                {"javaLogo3DIpLabel", "Programming JavaLogo 3D"},
+                
+                {"checkButtonsMenuLabel", "Check buttons"},
                 
 
 	            //CheckButtonEditor
@@ -376,6 +383,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"OPT_pageLabel" , "Page:"},
 				{"OPT_docWidthLabel" , "Page: Width"},
                 {"OPT_docHeightLabel" , "Height (min)"},
+                {"OPT_combCompNav" , "Combined components"},
 				
 				{"OBJ_leerdoel", "Objective"},
 				{"OBJ_categorie", "Category"},
@@ -452,6 +460,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"IEP_verwijderen" , "Remove"},
 				{"IEP_ok" , "OK"},
 				{"IEP_cancel" , "Cancel"},
+				{"editImageKnopLabel" , "Image checkButton"},
 				
 				//TekstVakEditPanel
 				{"TVEP_randZichtbaar" , "Border"},
@@ -533,6 +542,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TE_templateButtonTooltip", "Choose template page"},
                 {"TE_x-widgetButtonTooltip", "Cross-widget connections"},
                 {"TE_parameterButtonTooltip", "Use random parameters"},
+                {"TE_opsommingButtonTooltip", "Add list"},
                 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Save option"},

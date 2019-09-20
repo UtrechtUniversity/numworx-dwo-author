@@ -42,29 +42,49 @@ import fi.wiskopdr.tekstobjects.TekstVak;
 public class MultipleChoiceEditor implements TComponentEditor, ActionListener, FocusListener {
 
 	private TekstVak tekstVak;
-	private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
+	private Font font = new Font("SansSerif",Font.PLAIN,12);
+	private int scoreMax;
+	private boolean multiselections;
+	private int aantalSelectables = 4;
+	private int aantalSelectablesMax = 30;
+	private boolean[][][] logMisconceptions;
 	
 	private DialogFacade frame;
 	private JPanel preferencesPanel;
 	private JPanel topPanel, mainPanel, bottomPanel;
-	private JButton okButton, cancelButton;
-	private JTextField breedteTF, hoogteTF;
-    private JLabel breedteLabel, hoogteLabel;
-    private JCheckBox volledigeBreedteCB;
 	
+	//topPanel
 	private JLabel titleLabel;
-	private JLabel titleOpmaakLabel;
+	
+	//mainPanel  //juiste antwoord
+	private JLabel titleAntwoordLabel;
+	private JCheckBox[] selectableCheckboxes;
+	private Box selectableCBBox;
+	private ObjectiveChoiceButton[] logMisconceptionsButtons;
+	
+	// instellingen
+	private JLabel titleSettingsLabel;
 	private JLabel itemCountLabel;
 	private JTextField itemCountTF;
+	private JCheckBox multiSelectionsCB;
+	private JCheckBox hasPrefixCB;
 	private JLabel listNumberTypeLabel;
 	private JComboBox listNumberTypeComboBox;
 	private JLabel tabWidthLabel;
 	private JTextField tabWidthTF;
 	private JLabel rowSpaceLabel;
 	private JTextField rowSpaceTF;
-	private JCheckBox hasPrefixCB;
+	private JLabel imageKnopLabel;
+	private FormuleButton knopImageButton;
+	private Image knopImage;
+	private Dialog imageDialog;
+	private Iconan iconman;
+	private String knopImageString = "";
 	
+	// logging /nakijken
 	private JLabel titleLoggingLabel;
+	private JLabel maxScoreLabel;
+	private JTextField maxScoreTF;
 	private JCheckBox checkCB;
 	private JCheckBox teltMeeCB;
 	private JCheckBox logCB;
@@ -72,30 +92,14 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	private JTextField logIDLabelField;
 	private JLabel logIDLabelLabel;
 	private ObjectiveChoiceButton logObjectivesButton;
-	private ObjectiveChoiceButton[] logMisconceptionsButtons;
 	
-	private JLabel titleSettingsLabel;
-	private JCheckBox multiSelectionsCB;
+	// bottomPanel
+	private JButton okButton, cancelButton;
+	private JTextField breedteTF, hoogteTF;
+    private JLabel breedteLabel, hoogteLabel;
+    private JCheckBox volledigeBreedteCB;
 	
-	private JLabel titleAntwoordLabel;
-	private JLabel maxScoreLabel;
-	private JTextField maxScoreTF;
-	private JCheckBox[] selectableCheckboxes;
-	private Box selectableCBBox;
-	
-	private FormuleButton knopImageButton;
-	private Dialog imageDialog;
-	private Iconan iconman;
-	private String knopImageString = "";
-	private Image knopImage;
-	
-	private int scoreMax;
-	private boolean multiselections;
-	private int aantalSelectables = 4;
-	private int aantalSelectablesMax = 30;
-	private boolean[][][] logMisconceptions;
-	
-	
+    
 	public MultipleChoiceEditor(TekstVak tekstVak) {
 		this.tekstVak = tekstVak;
 		makeGUI();
@@ -107,7 +111,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	}
 	
 	private void makeGUI() {
-		
 		preferencesPanel = new JPanel(new BorderLayout());
 		
 		topPanel = new JPanel();
@@ -121,27 +124,25 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		bottomPanel.setBackground(WiskOpdr.colorGray2);
 		bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 		
-		titleLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_settings"));
+		//topPanel
+		titleLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_multip_settings"), new Font("SansSerif",Font.PLAIN, 24));
 		titleLabel.setForeground(WiskOpdr.colorGray3);
-		titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
 		topPanel.add(titleLabel);
 		
-		titleOpmaakLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleOpmaakLabel"));
-    	titleOpmaakLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleOpmaakLabel.setFont(font.deriveFont(Font.BOLD, 16));
+		//mainPanel  //juiste antwoord
+		titleAntwoordLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"), font.deriveFont(Font.BOLD, 16));
+		selectableCheckboxes = new JCheckBox[aantalSelectablesMax];
+    	logMisconceptionsButtons = new ObjectiveChoiceButton[aantalSelectablesMax];
+    	selectableCBBox = Box.createVerticalBox();
+    	maakCheckboxes();
     	
-		itemCountLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_rowCount"));
-		itemCountLabel.setFont(font);
-		itemCountLabel.setForeground(WiskOpdr.colorBlue1);
-		
-		itemCountTF = new WiskOpdrTextField("");
-		itemCountTF.addActionListener(this);
-		itemCountTF.setPreferredSize(new Dimension(30,22));
-		itemCountTF.setMaximumSize(new Dimension(30,22));
-		
-		listNumberTypeLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_numberType"));
-		listNumberTypeLabel.setFont(font);
-		listNumberTypeLabel.setForeground(WiskOpdr.colorBlue1);
+		//mainPanel  //settings
+		titleSettingsLabel = makeLabel(WiskOpdr.rb.getString("settingsLabel"), font.deriveFont(Font.BOLD, 16));
+		itemCountLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_multip_rowCount"), font);
+		itemCountTF = makeTextField("", 30, 22, this);
+		multiSelectionsCB = makeCheckBox(WiskOpdr.rb.getString("meervSelectiesLabel"), false, this);//("Meervoudige selecties mogelijk");
+		hasPrefixCB = makeCheckBox(WiskOpdr.rb.getString("TCOMP_multip_hasPrefix"), true, this);
+		listNumberTypeLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_multip_numberType"), font);
 		
 		listNumberTypeComboBox = new WiskOpdrComboBox();
 		listNumberTypeComboBox.setFont(font);
@@ -150,374 +151,193 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		for(int i=0 ; i<MultipleChoiceGenerator.listNumbers.length ; i++) {
 			listNumberTypeComboBox.addItem(MultipleChoiceGenerator.listNumbers[i][0]+" ,"+MultipleChoiceGenerator.listNumbers[i][1]+" ,"+MultipleChoiceGenerator.listNumbers[i][2]+" , ...");
 		}
+		tabWidthLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_multip_tabWidth"),font);
+		tabWidthTF = makeTextField("",30,22,this);
+		rowSpaceLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_multip_rowSpace"), font);
+		rowSpaceTF = makeTextField("", 30, 22, this);
+		imageKnopLabel = makeLabel(WiskOpdr.rb.getString("editImageKnopLabel"), font);
 		
-		tabWidthLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_tabWidth"));
-		tabWidthLabel.setFont(font);
-		tabWidthLabel.setForeground(WiskOpdr.colorBlue1);
-		
-		tabWidthTF = new WiskOpdrTextField("");
-		tabWidthTF.addActionListener(this);
-		tabWidthTF.setPreferredSize(new Dimension(30,22));
-		tabWidthTF.setMaximumSize(new Dimension(30,22));
-		
-		rowSpaceLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_multip_rowSpace"));
-		rowSpaceLabel.setFont(font);
-		rowSpaceLabel.setForeground(WiskOpdr.colorBlue1);
-		
-		rowSpaceTF = new WiskOpdrTextField("");
-		rowSpaceTF.addActionListener(this);
-		rowSpaceTF.setPreferredSize(new Dimension(30,22));
-		rowSpaceTF.setMaximumSize(new Dimension(30,22));
-		
-		hasPrefixCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("TCOMP_multip_hasPrefix"));
-		hasPrefixCB.setOpaque(false);
-		hasPrefixCB.setSelected(true);
-		hasPrefixCB.setFont(font);
-		hasPrefixCB.addActionListener(this);
-		
-		titleLoggingLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"));
-    	titleLoggingLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleLoggingLabel.setFont(font.deriveFont(Font.BOLD, 16));
-		
-		checkCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("checkCBLabel"));
-		checkCB.setOpaque(false);
-		checkCB.setSelected(true);
-		checkCB.setFont(font);
-		
-		teltMeeCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("teltMeeCBLabel"));
-		teltMeeCB.setOpaque(false);
-		teltMeeCB.setSelected(true);
-		teltMeeCB.setFont(font);
-		
-		logCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("logCBLabel"));
-		logCB.setOpaque(false);
-		logCB.setSelected(false);
-		logCB.setFont(font);
-		logCB.addActionListener(this);
-		
-		logIDField = new WiskOpdrTextField("");
-		logIDField.addActionListener(this);
-		logIDField.setPreferredSize(new Dimension(50,22));
-		logIDField.setMaximumSize(new Dimension(50,22));
+		knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
+		knopImageButton.setPreferredSize(new Dimension(80,22));
+		knopImageButton.addActionListener(this);
+			
+		//mainPanel  // logging / nakijken
+		titleLoggingLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"),font.deriveFont(Font.BOLD, 16));
+		maxScoreLabel = makeLabel(WiskOpdr.rb.getString("score"), font);
+		maxScoreTF = makeTextField("0",50,22,this);
+		checkCB = makeCheckBox(WiskOpdr.rb.getString("checkCBLabel"),true, null);
+		teltMeeCB = makeCheckBox(WiskOpdr.rb.getString("teltMeeCBLabel"), true, null);
+		logCB = makeCheckBox(WiskOpdr.rb.getString("logCBLabel"), false, this);
+		logIDField = makeTextField("",50,22,this);
 		logIDField.setVisible(false);
-		
-		logIDLabelLabel = new JLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"));
-		logIDLabelLabel.setFont(font);
-		logIDLabelLabel.setForeground(WiskOpdr.colorBlue1);
+		logIDLabelLabel = makeLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),font);
 		logIDLabelLabel.setVisible(false);
-		
-		logIDLabelField = new WiskOpdrTextField("");
-		logIDLabelField.addActionListener(this);
-		logIDLabelField.setPreferredSize(new Dimension(50,22));
-		logIDLabelField.setMaximumSize(new Dimension(50,22));
-		logIDLabelField.setVisible(false);
-		
-		titleSettingsLabel = new JLabel(WiskOpdr.rb.getString("settingsLabel"));
-		titleSettingsLabel.setForeground(WiskOpdr.colorBlue1);
-		titleSettingsLabel.setFont(font.deriveFont(Font.BOLD, 16));
-		
-		
-		maxScoreLabel = new JLabel(WiskOpdr.rb.getString("score"));//Score");
-		maxScoreLabel.setBounds(300,50,80,20);
-		maxScoreLabel.setFont(font);
-		
-		maxScoreTF = new WiskOpdrTextField("0");
-		maxScoreTF.setPreferredSize(new Dimension(50,22));
-		maxScoreTF.setBounds(380,50,40,20);
-		maxScoreTF.addActionListener(this);
-		
-		multiSelectionsCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("meervSelectiesLabel"));//("Meervoudige selecties mogelijk");
-		multiSelectionsCB.setBounds(300,120,280,20);
-		multiSelectionsCB.setOpaque(false);
-		multiSelectionsCB.setFont(font);
-		
-		titleAntwoordLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
-		titleAntwoordLabel.setForeground(WiskOpdr.colorBlue1);
-		titleAntwoordLabel.setFont(font.deriveFont(Font.BOLD, 16));
-    	
-    	selectableCheckboxes = new JCheckBox[aantalSelectablesMax];
-    	logMisconceptionsButtons = new ObjectiveChoiceButton[aantalSelectablesMax];
-    	selectableCBBox = Box.createVerticalBox();
-    	
-    	logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
-        //logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+		logIDLabelField = makeTextField("",50,22,this);
+		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
-        //if(WiskOpdr.objectives!=null)add(logObjectivesButton);
                 
-        knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
-		knopImageButton.setBounds(550,50,80,20);
-		knopImageButton.addActionListener(this);
-		//add(knopImageButton);
-	
-	
-	
+        //plaats componenten mainPanel
+        Component[] r11 = {titleAntwoordLabel, 	hgl()};
+		Component[] r12 = {selectableCBBox, 	hgl()};
 		
+		Component[] k1 = {hb(r11), vst(15), hb(r12), vst(15)};
 		
-		Box boxh = Box.createHorizontalBox();
-		Box boxv0 = Box.createVerticalBox();
-		Box boxv1 = Box.createVerticalBox();
-		Box boxv2 = Box.createVerticalBox();
+		Component[] r21 = {titleSettingsLabel, 	hgl()};
+		Component[] r22 = {itemCountLabel, 		ra(10,10), 	hgl(), 	itemCountTF};
+		Component[] r23 = {multiSelectionsCB, 	hgl()};
+		Component[] r24 = {hasPrefixCB, 		hgl()};
+		Component[] r25 = {listNumberTypeLabel, ra(10,10), 	hgl(), 	listNumberTypeComboBox};
+		Component[] r26 = {tabWidthLabel, 		ra(10,10), 	hgl(), 	tabWidthTF};
+		Component[] r27 = {rowSpaceLabel, 		ra(10,10), 	hgl(), 	rowSpaceTF};
+		Component[] r28 = {imageKnopLabel, 		ra(5,5), 	hgl(), 	knopImageButton};
 		
-		Box regelBox = Box.createHorizontalBox();
-		regelBox.add(titleAntwoordLabel);
-		regelBox.add(Box.createHorizontalGlue());
-		boxv0.add(regelBox);
-		boxv0.add(Box.createVerticalStrut(15));
+		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), 
+				hb(r25), vst(5), hb(r26), vst(5), hb(r27), vst(5), hb(r28), vst(5), vgl()};
 		
-		maakCheckboxes();
-		regelBox = Box.createHorizontalBox();
-		regelBox.add(selectableCBBox);
-		regelBox.add(Box.createHorizontalGlue());
-		boxv0.add(regelBox);
-		boxv0.add(Box.createVerticalGlue());
+		Component[] r31 = {titleLoggingLabel, 	hgl()};
+		Component[] r32 = {maxScoreLabel, 		ra(5,10), maxScoreTF, hgl()};
+		Component[] r33 = {checkCB, 			hgl()};
+		Component[] r34 = {teltMeeCB, 			hgl()};
+		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r36 = {logObjectivesButton, hgl()};
 		
+		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vgl()};
 		
-		regelBox = Box.createHorizontalBox();
-		regelBox.add(titleSettingsLabel);
-		regelBox.add(Box.createHorizontalGlue());
-		boxv1.add(regelBox);
-		boxv1.add(Box.createVerticalStrut(15));
+		Component[] main = {vb(k1), hst(50), vb(k2), hst(50), vb(k3)};
+		mainPanel.add(hb(main));
 		
-		regelBox = Box.createHorizontalBox();
-		regelBox.add(itemCountLabel);
-		regelBox.add(Box.createRigidArea(new Dimension(10,10)));
-		regelBox.add(Box.createHorizontalGlue());
-		regelBox.add(itemCountTF);
-		
-		boxv1.add(regelBox);
-		boxv1.add(Box.createVerticalStrut(5));
-		
-		regelBox = Box.createHorizontalBox();
-    	regelBox.add(multiSelectionsCB);
-    	regelBox.add(Box.createHorizontalGlue());
-    	boxv1.add(regelBox);
-    	boxv1.add(Box.createVerticalStrut(5));
-    	
-    	regelBox = Box.createHorizontalBox();
-		regelBox.add(hasPrefixCB);
-		regelBox.add(Box.createHorizontalGlue());
-		boxv1.add(regelBox);
-		boxv1.add(Box.createVerticalStrut(5));
-		
-		
-		regelBox = Box.createHorizontalBox();
-		regelBox.add(listNumberTypeLabel);
-		regelBox.add(Box.createRigidArea(new Dimension(10,10)));
-		regelBox.add(Box.createHorizontalGlue());
-		regelBox.add(listNumberTypeComboBox);
-		
-		boxv1.add(regelBox);
-		boxv1.add(Box.createVerticalStrut(5));
-		
-		regelBox = Box.createHorizontalBox();
-		regelBox.add(tabWidthLabel);
-		regelBox.add(Box.createRigidArea(new Dimension(10,10)));
-		regelBox.add(Box.createHorizontalGlue());
-		regelBox.add(tabWidthTF);
-		
-		boxv1.add(regelBox);
-		boxv1.add(Box.createVerticalStrut(5));
-		
-		regelBox = Box.createHorizontalBox();
-		regelBox.add(rowSpaceLabel);
-		regelBox.add(Box.createRigidArea(new Dimension(10,10)));
-		regelBox.add(Box.createHorizontalGlue());
-		regelBox.add(rowSpaceTF);
-				
-		boxv1.add(regelBox);
-		boxv1.add(Box.createVerticalStrut(5));
-		
-		
-		boxv1.add(Box.createVerticalGlue());
-		
-		regelBox = Box.createHorizontalBox();
-    	regelBox.add(titleLoggingLabel);
-    	regelBox.add(Box.createHorizontalGlue());
-    	boxv2.add(regelBox);
-    	boxv2.add(Box.createVerticalStrut(15));
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(checkCB);
-    	regelBox.add(Box.createHorizontalGlue());
-    	boxv2.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(teltMeeCB);
-    	regelBox.add(Box.createHorizontalGlue());
-    	boxv2.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(logCB);
-    	regelBox.add(Box.createRigidArea(new Dimension(5,10)));
-    	regelBox.add(logIDField);
-    	regelBox.add(Box.createRigidArea(new Dimension(5,10)));
-    	regelBox.add(logIDLabelLabel);
-    	regelBox.add(Box.createRigidArea(new Dimension(5,10)));
-    	regelBox.add(logIDLabelField);
-    	regelBox.add(Box.createHorizontalGlue());
-    	boxv2.add(regelBox);
-    	if(WiskOpdr.objectives!=null) {
-	    	boxv2.add(Box.createRigidArea(new Dimension(5,5)));
-	    	regelBox = Box.createHorizontalBox();
-	    	regelBox.add(Box.createRigidArea(new Dimension(5,5)));
-	    	regelBox.add(logObjectivesButton);
-	    	regelBox.add(Box.createHorizontalGlue());
-	    	boxv2.add(regelBox);
-    	}
-    	boxv2.add(Box.createVerticalGlue());
-		
-    	boxh.add(boxv0);
-		boxh.add(Box.createHorizontalStrut(50));
-		boxh.add(boxv1);
-		boxh.add(Box.createHorizontalStrut(50));
-		boxh.add(boxv2);
-		mainPanel.add(boxh);
+		// bottomPanel
+		okButton = makeButton("Ok",this);//
+		okButton.setPreferredSize(new Dimension(70,24));
+		cancelButton = makeButton("Cancel", this);//
+		cancelButton.setPreferredSize(new Dimension(70,24));
+		breedteLabel = makeLabel(WiskOpdr.rb.getString("breedteLabel"),font);
+		breedteTF = makeTextField("300", 40, 22, this);
+        breedteTF.setEnabled(false);
+        hoogteLabel = makeLabel(WiskOpdr.rb.getString("hoogteLabel"), font);
+        hoogteTF = makeTextField("250", 40,22, this);
+        hoogteTF.setEnabled(false);
+        volledigeBreedteCB = makeCheckBox(WiskOpdr.rb.getString("volleBreedteLabel"),true,this);
+       
+        // plaats componenten bottomPanel
+        Component[] comp = {okButton, hst(20), cancelButton, hst(20), breedteLabel, hst(5), breedteTF, hst(10), hoogteLabel, hst(5), hoogteTF, hst(20), volledigeBreedteCB, hgl()};
+        bottomPanel.add(hb(comp));
 		
 		preferencesPanel.add(topPanel,BorderLayout.NORTH);
 		preferencesPanel.add(bottomPanel,BorderLayout.SOUTH);
 		preferencesPanel.add(mainPanel,BorderLayout.CENTER);
-		
-		topPanel.add(titleLabel);
-		
-		
-		
-		okButton = new WiskOpdrButton("Ok");//
-		okButton.setBackground(WiskOpdr.colorBlue1);
-		okButton.setForeground(WiskOpdr.colorGray3);
-		okButton.setPreferredSize(new Dimension(70,24));
-		okButton.addActionListener(this);
-		
-		cancelButton = new WiskOpdrButton("Cancel");//
-		cancelButton.setBackground(WiskOpdr.colorBlue1);
-		cancelButton.setForeground(WiskOpdr.colorGray3);
-		cancelButton.setPreferredSize(new Dimension(70,24));
-		cancelButton.addActionListener(this);
-		
-		breedteLabel = new JLabel(WiskOpdr.rb.getString("breedteLabel"));
-		breedteLabel.setForeground(WiskOpdr.colorBlue1);
-        breedteLabel.setBounds(370,20,40,22);
-        breedteLabel.setFont(font);
-        
-        breedteTF = new WiskOpdrTextField("300");
-        breedteTF.setBounds(420,20,40,22);
-        breedteTF.setPreferredSize(new Dimension(40,22));
-        breedteTF.setFont(font);
-        breedteTF.addActionListener(this);
-        breedteTF.addFocusListener(this);
-        breedteTF.setEnabled(false);
-        
-        hoogteLabel = new JLabel(WiskOpdr.rb.getString("hoogteLabel"));
-        hoogteLabel.setForeground(WiskOpdr.colorBlue1);
-        hoogteLabel.setBounds(465,20,50,22);
-        hoogteLabel.setFont(font);
-        
-        hoogteTF = new WiskOpdrTextField("250");
-        hoogteTF.setBounds(510,20,40,22);
-        hoogteTF.setPreferredSize(new Dimension(40,22));
-        hoogteTF.setFont(font);
-        hoogteTF.addActionListener(this);
-        hoogteTF.addFocusListener(this);
-        hoogteTF.setEnabled(false);
-        
-        
-        
-        volledigeBreedteCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("volleBreedteLabel"));
-        volledigeBreedteCB.setOpaque(false);
-        volledigeBreedteCB.setFont(font);
-        volledigeBreedteCB.setBounds(560,20,100,22);
-        volledigeBreedteCB.addActionListener(this);
-        volledigeBreedteCB.setSelected(true);
-        
-		Box boxBottom = Box.createHorizontalBox();
-		boxBottom.add(okButton);
-		boxBottom.add(Box.createHorizontalStrut(20));
-		boxBottom.add(cancelButton);
-		boxBottom.add(Box.createHorizontalStrut(20));
-		boxBottom.add(breedteLabel);
-		boxBottom.add(Box.createHorizontalStrut(5));
-		boxBottom.add(breedteTF);
-		boxBottom.add(Box.createHorizontalStrut(10));
-		boxBottom.add(hoogteLabel);
-		boxBottom.add(Box.createHorizontalStrut(5));
-		boxBottom.add(hoogteTF);
-		boxBottom.add(Box.createHorizontalStrut(20));
-		boxBottom.add(volledigeBreedteCB);
-		boxBottom.add(Box.createHorizontalStrut(20));
-		   
-		boxBottom.add(Box.createHorizontalGlue());
-		bottomPanel.add(boxBottom);
+	}
+	
+	private JCheckBox makeCheckBox (String text, boolean selected, ActionListener al) {
+		JCheckBox cb = new WiskOpdrCheckbox(text);
+		if(al!=null) cb.addActionListener(al);
+		cb.setSelected(selected);
+		return cb;
+	}
+	
+	private JButton makeButton (String text,  ActionListener al) {
+		JButton bt = new WiskOpdrButton(text);
+		if(al!=null) bt.addActionListener(al);
+		return bt;
+	}
+	
+	private JLabel makeLabel (String text, Font f) {
+		JLabel lb = new JLabel(text);
+		lb.setFont(f);
+		lb.setForeground(WiskOpdr.colorBlue1);
+		return lb;
+	}
+	
+	private JTextField makeTextField (String text, int prefWidth, int prefHeight, ActionListener al) {
+		JTextField tf = new WiskOpdrTextField(text);
+		tf.setPreferredSize(new Dimension(prefWidth,prefHeight));
+		if(al!=null) tf.addActionListener(al);
+		return tf;
+	}
+	
+	private Box hb(Component[] c) {
+		Box box = Box.createHorizontalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Box vb(Component[] c) {
+		Box box = Box.createVerticalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Component hgl() {
+		return Box.createHorizontalGlue();
+	}
+	
+	private Component vgl() {
+		return Box.createVerticalGlue();
+	}
+	
+	private Component hst(int n) {
+		return Box.createHorizontalStrut(n);
+	}
+	
+	private Component vst(int n) {
+		return Box.createVerticalStrut(n);
+	}
+	
+	private Component ra(int w, int h) {
+		return Box.createRigidArea(new Dimension(w,h));
 	}
 	
 	public void makeFrame(){
 	   	frame = DialogFacade.newInstance(tekstVak, WiskOpdr.rb.getString("TCOMP_multip"), true);
-	   	//Dimension preferredSize = new Dimension(400,320);
-		//frame.setPreferredSize(preferredSize);
 	    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-	    //frame.setSize(preferredSize);
 	    frame.getContentPane().setLayout(new BorderLayout());
 	    frame.getContentPane().add(preferencesPanel);
 	    frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
 	    frame.pack();
-	    //frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
-		//frame.setVisible(true);
-		    
 	}
 	
-	public void maakCheckboxes()
-	{
+	public void maakCheckboxes() {
 		if(WiskOpdr.misconceptions!=null)
 			logMisconceptions = new boolean[aantalSelectables][][];
 				
-		for(int i=0 ; i<aantalSelectables ; i++)
-		{
+		for(int i=0 ; i<aantalSelectables ; i++) {
 			Box regelBox = Box.createHorizontalBox();
-			if(selectableCheckboxes[i]==null)
-            {   
+			if(selectableCheckboxes[i]==null) {   
 				selectableCheckboxes[i] = new WiskOpdrCheckbox("Nr "+(i+1));
                 regelBox.add(selectableCheckboxes[i]);
                 regelBox.add(Box.createRigidArea(new Dimension(20,10)));
-                
-                
             }
-		    if(logMisconceptionsButtons[i]==null)
-		    {
+		    if(logMisconceptionsButtons[i]==null) {
 		    	logMisconceptionsButtons[i] = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"),WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
 		    	logMisconceptionsButtons[i].setPreferredSize(new Dimension(120,22));
-		    	//if(WiskOpdr.misconceptions!=null)
-		        	regelBox.add(logMisconceptionsButtons[i]);
+		    	regelBox.add(logMisconceptionsButtons[i]);
 		    }
 		    selectableCBBox.add(regelBox);
-		   
 		}
-		
-	    selectableCBBox.add(Box.createVerticalGlue());
+		selectableCBBox.add(Box.createVerticalGlue());
 		enableMisconceptions();
-		
 	}
 	
-	private void enableMisconceptions()
-	{
-		for(int i=0 ; i<aantalSelectables ; i++)
-		{
+	private void enableMisconceptions() {
+		for(int i=0 ; i<aantalSelectables ; i++) {
 			boolean visible = WiskOpdr.misconceptions!=null 
 					&& !multiSelectionsCB.isSelected()
 					&& checkCB.isSelected();
 		   	if(logMisconceptionsButtons[i]!=null)
 		   		logMisconceptionsButtons[i].setVisible(visible);
-		   
 		}	
 	}
 	
-	public void verwijderCheckboxes()
-	{
-		for(int i=0 ; i<aantalSelectables ; i++)
-		{
-		    if(selectableCheckboxes[i]!=null) 
-		    {	selectableCheckboxes[i] = null;
+	public void verwijderCheckboxes() {
+		for(int i=0 ; i<aantalSelectables ; i++) {
+		    if(selectableCheckboxes[i]!=null) {	
+		    	selectableCheckboxes[i] = null;
 		    	if(logMisconceptionsButtons[i]!=null) 
-		    	{	logMisconceptionsButtons[i] = null;
-		    	}
+		    		logMisconceptionsButtons[i] = null;
+		    	
 		    }
 		}
 		selectableCBBox.removeAll();
@@ -525,16 +345,14 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	}
 	
 	public void editImage() {
-        if(imageDialog == null)
-        {
-        	
-//        	Frame f = JOptionPane.getFrameForComponent(this);
-//			imageDialog = new Dialog(f,"title", true);
-//			imageDialog.setLayout(new BorderLayout());
-//			iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-//            imageDialog.add(iconman);
-//            imageDialog.pack();
-//            iconman.addActionListener(this);
+        if(imageDialog == null) {
+        	Frame f = JOptionPane.getFrameForComponent(mainPanel);
+			imageDialog = new Dialog(f,"title", true);
+			imageDialog.setLayout(new BorderLayout());
+			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
+            imageDialog.add(iconman);
+            imageDialog.pack();
+            iconman.addActionListener(this);
         }
         iconman.select(knopImageString);
         imageDialog.setVisible(true);
@@ -542,7 +360,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	
 	@Override
 	public Hashtable getPreferences() {
-		
 		int itemCount = MultipleChoiceGenerator.initialItemCount;
 		int listNumberType = MultipleChoiceGenerator.initialListNumberType;
 		int tabWidth = MultipleChoiceGenerator.initialTabWidth;
@@ -576,8 +393,8 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		
 		knopImageString = this.knopImageString;
 	    juisteSelecties = new boolean[aantalSelectables];
-	    for(int i=0 ; i<aantalSelectables ; i++)
-	    {  juisteSelecties[i] = selectableCheckboxes[i].isSelected();
+	    for(int i=0 ; i<aantalSelectables ; i++) {  
+	    	juisteSelecties[i] = selectableCheckboxes[i].isSelected();
 	    }
 	    
 	    scoreMax = Integer.parseInt(maxScoreTF.getText());
@@ -596,20 +413,19 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		volledigeBreedte = volledigeBreedteCB.isSelected();
 		breedte = Integer.parseInt(breedteTF.getText());
 		
-		if(logObjectives!=null)
-		{	scoreMaxObjectives = new int[logObjectives.length][];
-			for(int j=0 ; j<scoreMaxObjectives.length; j++)
-			{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-				{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
+		if(logObjectives!=null) {
+			scoreMaxObjectives = new int[logObjectives.length][];
+			for(int j=0 ; j<scoreMaxObjectives.length; j++)	{	
+				scoreMaxObjectives[j] = new int[logObjectives[j].length];
+				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)	{	
+					if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
 				}
 			}
 		}
 		
-		if(logMisconceptions!=null)
-		{	for(int i=0 ; i<aantalSelectables ; i++)
-			{	logMisconceptions[i] = logMisconceptionsButtons[i].getChoices();
-			}
+		if(logMisconceptions!=null)	{	
+			for(int i=0 ; i<aantalSelectables ; i++)
+				logMisconceptions[i] = logMisconceptionsButtons[i].getChoices();
 		}
 		
 		Hashtable preferences = new Hashtable();
@@ -630,22 +446,20 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		preferences.put("teltMee",new Boolean(teltMee));
 		//preferences.put("checkFormule",new Boolean(checkFormule));
 		//preferences.put("formuleStrings", formuleStrings);
-		if(logObjectives!=null)
-	    {	preferences.put("logObjectives",logObjectives);
+		if(logObjectives!=null) {	
+			preferences.put("logObjectives",logObjectives);
 	    	preferences.put("scoreMaxObjectives",scoreMaxObjectives);
             try {
             	preferences.put(Constants.OBJECTIVES, smObjectives);
             } catch(Exception e) {}
 	    }
-		if(logMisconceptions!=null)
-        {	preferences.put("logMisconceptions",logMisconceptions);
+		if(logMisconceptions!=null) {	
+			preferences.put("logMisconceptions",logMisconceptions);
         }
 		preferences.put("knopImageString", knopImageString);
 		
 		preferences.put("volledigeBreedte", new Boolean(volledigeBreedte));
 		preferences.put("breedte", new Integer(breedte));
-		
-		
 		
 		return preferences;
 	}
@@ -712,7 +526,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    
 		verwijderCheckboxes();
 	    aantalSelectables = juisteSelecties.length;
-	    //aantalSelectablesTF.setText(""+aantalSelectables);
 	    maxScoreTF.setText(""+scoreMax);
 	    //randomizePositionsCB.setSelected(randomizePositions);
 	    multiSelectionsCB.setSelected(multiSelections);
@@ -721,25 +534,8 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    volledigeBreedteCB.setSelected(volledigeBreedte);
 	    breedteTF.setText(""+breedte);
 	    
-//	    for(int i=0 ; i<aantalSelectables ; i++)
-//		{
-//		    selectableCheckboxes[i] = new JCheckBox("Nr "+(i+1));
-//		    selectableCheckboxes[i].setSelected(juisteSelecties[i]);
-//            selectableCheckboxes[i].setOpaque(false);
-//            selectableCheckboxes[i].setBounds(10,80+i*25,60,20);
-//            add(selectableCheckboxes[i],0);
-//            
-//            if(logMisconceptions!=null)
-//            {   logMisconceptionsButtons[i] = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"),WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
-//			    logMisconceptionsButtons[i].setBounds(100,80+i*25,100,20);
-//			    logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
-//			    add(logMisconceptionsButtons[i]);
-//		    }
-//		}
-	    
 	    maakCheckboxes();
-	    for(int i=0 ; i<aantalSelectables ; i++)
-		{
+	    for(int i=0 ; i<aantalSelectables ; i++) {
 	    	selectableCheckboxes[i].setSelected(juisteSelecties[i]);
 	    	if(WiskOpdr.misconceptions!=null && logMisconceptionsButtons[i]!=null && logMisconceptions!=null)
 	    		logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
@@ -748,12 +544,15 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    
 	    logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
-        //logObjectivesButton.setVisible(logOption);
+        logIDLabelLabel.setVisible(logOption);
+        logIDLabelField.setVisible(logOption);
         logIDField.setText(logID);
         logObjectivesButton.setChoices(logObjectives);
         logObjectivesButton.setObjectives(smObjectives);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        
         //checkFormuleCB.setSelected(checkFormule);
         //if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
         //formuleEditor.setVisible(checkFormule);
@@ -765,11 +564,14 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
     		knopImageButton.setPopupButtonImage(knopImage);
     	}
     	else {
+    		knopImageButton.setPopupButtonImage(null);
     		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
+    		knopImageButton.setPreferredSize(new Dimension(80,22));
     	}
     	this.knopImageString = knopImageString;
 		
 		frame.setVisible(true);
+		frame.pack();
 		frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
 		
 	}
@@ -809,29 +611,23 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		if(e.getSource().equals(cancelButton)) {
 			frame.setVisible(false);
 		}
-		
-		if(e.getSource()==itemCountTF)
-		{
+		if(e.getSource()==itemCountTF) {
 			int aantal = Math.min(aantalSelectablesMax, Integer.parseInt(itemCountTF.getText()));
-			if(aantal != aantalSelectables)
-			{	verwijderCheckboxes();
+			if(aantal != aantalSelectables)	{	
+				verwijderCheckboxes();
 				aantalSelectables = aantal;
 				maakCheckboxes();
 			}
-			
 		}
-		else if(e.getSource()==multiSelectionsCB)
-	    {   enableMisconceptions();
+		else if(e.getSource()==multiSelectionsCB) {   
+			enableMisconceptions();
 	    }
-		else if(e.getSource()==knopImageButton)
-	    {   editImage();
-	            
+		else if(e.getSource()==knopImageButton) {   
+			editImage();
 	    }
-	    else if(e.getSource()==iconman)
-	    {
+	    else if(e.getSource()==iconman) {
 	    	String name = e.getActionCommand();
-	        if(!"".equals(name))
-	        {
+	        if(!"".equals(name)) {
 	        	knopImageString = name;
 	            this.knopImage = iconman.getImage(name);
 	            knopImageButton.setPopupButtonImage(knopImage);
@@ -839,26 +635,29 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 				int imHeight = iconman.getHeight(knopImageString);
 				if(imWidth == -1) imWidth = 20;
 				if(imHeight == -1) imHeight = 20;
-				knopImageButton.setSize(imWidth,imHeight);
-	           // repaint();
-	        }
+				knopImageButton.setPreferredSize(new Dimension(Math.max(imWidth,80),Math.max(imHeight,22)));
+	         }
+	        else {
+	    		knopImageButton.setPopupButtonImage(null);
+	    		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
+	    		knopImageButton.setPreferredSize(new Dimension(80,22));
+	    	}
 	    }
-	    else if(e.getSource()==logCB)
-	    {   logIDField.setVisible(logCB.isSelected());
+	    else if(e.getSource()==logCB) {   
+	    	logIDField.setVisible(logCB.isSelected());
 	    	logIDLabelField.setVisible(logCB.isSelected());
 	    	logIDLabelLabel.setVisible(logCB.isSelected());
 	    	frame.pack();
 	    }
-	    else if(e.getSource()==hasPrefixCB)
-	    {   listNumberTypeLabel.setVisible(hasPrefixCB.isSelected());
+	    else if(e.getSource()==hasPrefixCB) {   
+	    	listNumberTypeLabel.setVisible(hasPrefixCB.isSelected());
 	    	listNumberTypeComboBox.setVisible(hasPrefixCB.isSelected());
 	    	frame.pack();
 	    }
-	    else if(e.getSource()==volledigeBreedteCB)
-	    {   breedteTF.setEnabled(!volledigeBreedteCB.isSelected());
+	    else if(e.getSource()==volledigeBreedteCB) {   
+	    	breedteTF.setEnabled(!volledigeBreedteCB.isSelected());
 	    }
 		
-
 	    if(imageDialog!=null)
 	        imageDialog.setVisible(false);
 		
@@ -867,12 +666,10 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	@Override
 	public void focusGained(FocusEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 }
