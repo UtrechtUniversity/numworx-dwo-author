@@ -7,15 +7,16 @@ public class Text_en extends ListResourceBundle {
 	 public Object [] [] getContents() { return contents; }
      static final Object [] [] contents =
      {
-         	{ Text.TITEL , "title" },
-			{ Text.ANNULEER , "cancel" },
-			{ Text.NIEUW , "add" },
-			{ Text.REMOVE , "remove" },
-			{ Text.OK , "ok" },
+         	{ Text.TITEL , "Title" },
+			{ Text.ANNULEER , "Cancel" },
+			{ Text.NIEUW , "Add" },
+			{ Text.REMOVE , "Remove" },
+			{ Text.OK , "Ok" },
+			{ Text.CLOSE , "Close" },
 			{ Text.FILE , "file" },
 			{ Text.URL , "URL" },
-			{ Text.EDIT , "edit"},
-			{ Text.WIJZIG, "change"}, 
+			{ Text.EDIT , "Edit"},
+			{ Text.WIJZIG, "Change"}, 
 			{ Text.EDIT_URL, "URL of picture" },
      };
 }

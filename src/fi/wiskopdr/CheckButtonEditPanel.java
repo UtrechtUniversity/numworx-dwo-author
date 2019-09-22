@@ -212,19 +212,23 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	}
 	
 	public void editImage() {
-        if(imageDialog == null)
-        {
-        	
-        	Frame f = JOptionPane.getFrameForComponent(this);
-			imageDialog = new Dialog(f,"title", true);
-			imageDialog.setLayout(new BorderLayout());
-			iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-            imageDialog.add(iconman);
-            imageDialog.pack();
-            iconman.addActionListener(this);
-        }
-        iconman.select(knopImageString);
-        imageDialog.setVisible(true);
+		if(iconman==null)
+			iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+		iconman.editImage(knopImageString, this, this);
+		
+//        if(imageDialog == null)
+//        {
+//        	
+//        	Frame f = JOptionPane.getFrameForComponent(this);
+//			imageDialog = new Dialog(f,"title", true);
+//			imageDialog.setLayout(new BorderLayout());
+//			iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+//            imageDialog.add(iconman);
+//            imageDialog.pack();
+//            iconman.addActionListener(this);
+//        }
+//        iconman.select(knopImageString);
+//        imageDialog.setVisible(true);
     }
 
 	@Override

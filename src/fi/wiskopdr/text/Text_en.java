@@ -212,7 +212,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"checkVasteDoelenLabel" , "Check on fixed targets for drag objects"},
 				{"checkWaardeOpDoelLabel" , "Check using values of drag objects"},
 				{"relocateCBLabel" , "Jumps back"},
-				{"viewCBLabel" , "View"},
+				{"viewCBLabel" , "Show wrong drag object"},
 				{"aantalValueObjectenLabel" , "Number of objects"},
 				{"checkAfzonderlijkLabel" , "Check separately"},
 				{"checkOpSamenhangLabel" , "Check in coherence"},

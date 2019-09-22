@@ -71,18 +71,22 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 	}
 
 	public void editImage() {
-		if(imageDialog == null)
-		{
-			Frame f = JOptionPane.getFrameForComponent(tekstVak);
-			imageDialog = new Dialog(f,"title", true);
-			imageDialog.setLayout(new BorderLayout());
-			iconman = new Iconan(WiskOpdr.applet, tekstVak, imagemap);
-			imageDialog.add(iconman);
-			imageDialog.pack();
-			iconman.addActionListener(this);
-		}
-		iconman.select(imagename);
-		imageDialog.show();
+		if(iconman==null)
+			iconman = new Iconan(WiskOpdr.applet, tekstVak, (Hashtable)TekstImageVak.getImageMap());
+		iconman.editImage(imagename, tekstVak, this);
+		
+//		if(imageDialog == null)
+//		{
+//			Frame f = JOptionPane.getFrameForComponent(tekstVak);
+//			imageDialog = new Dialog(f,"title", true);
+//			imageDialog.setLayout(new BorderLayout());
+//			iconman = new Iconan(WiskOpdr.applet, tekstVak, imagemap);
+//			imageDialog.add(iconman);
+//			imageDialog.pack();
+//			iconman.addActionListener(this);
+//		}
+//		iconman.select(imagename);
+//		imageDialog.show();
 
 		zetMaat();
 	}

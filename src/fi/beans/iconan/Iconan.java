@@ -4,7 +4,11 @@ import java.applet.Applet;
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -14,6 +18,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,11 +39,13 @@ import java.util.logging.Logger;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -47,9 +55,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import fi.beans.iconan.text.Text;
+import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.WiskOpdrButton;
+import fi.wiskopdr.WiskOpdrTextField;
+import fi.wiskopdr.tekstobjects.TekstImageVak;
 
 @SuppressWarnings("serial")
 public class Iconan extends JPanel implements ActionListener, FocusListener, ListSelectionListener {
@@ -60,13 +74,16 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	
 	Hashtable<String,Image> imagemap;
 	private ActionListener al;
-	private JButton newBtn, okBtn, cancelBtn, rmBtn, urlBtn, chngBtn;
+	private JButton newBtn, okBtn, cancelBtn, closeBtn, rmBtn, urlBtn, chngBtn;
 	JTextField widthField, heightField;
+	JLabel widthLabel, heightLabel;
 	int previewWidth = 32, previewHeight = 32;
-	private JPanel previewCanvas = new JPanel(new BorderLayout()); { previewCanvas.setBorder(BorderFactory.createEtchedBorder()); }
+	private JPanel previewCanvas = new JPanel(new BorderLayout()); //{ previewCanvas.setBorder(BorderFactory.createEtchedBorder()); }
 	private Applet applet;
 	private boolean emptyStart = true;
 	private boolean chooseImage = true;
+	
+	private JDialog imageDialog;
 	
 	class MyListRenderer extends DefaultListCellRenderer implements Icon {
 
@@ -176,7 +193,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 				}				
 				al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, selected));
 			}
-		} else if(e.getSource()==cancelBtn)
+			if(imageDialog!=null)
+				imageDialog.setVisible(false);
+		} else if(e.getSource()==cancelBtn || e.getSource()==imageDialog || e.getSource()==closeBtn)
 		{
 			if(al != null)
 			{
@@ -185,7 +204,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 				al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "cancel"));
               else
                 al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ""));
-			}				
+			}
+			if(imageDialog!=null)
+				imageDialog.setVisible(false);
 		} else if(e.getSource()==getComponent())
 		{
 			rebuildList();
@@ -274,6 +295,102 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		
 	}
 
+	public void editImage(String imageName, Component parent, ActionListener aListener) {
+        
+		if(imageDialog == null) {
+        	Frame f = JOptionPane.getFrameForComponent(parent);
+        	imageDialog = new JDialog(f,"title", true);
+			imageDialog.setLayout(new BorderLayout());
+			//imageDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+			if(!chooseImage) {
+				imageDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+			}
+			JPanel headerPanel = new JPanel();
+			headerPanel.setBackground(WiskOpdr.colorBlue1);
+			JLabel iconanTitleLabel = new JLabel("Kies een afbeelding");
+			if(!chooseImage) {
+				iconanTitleLabel.setText("Afbeeldingen beheren");
+			}
+			iconanTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+			iconanTitleLabel.setForeground(WiskOpdr.colorGray3);
+			headerPanel.add(iconanTitleLabel);
+			imageDialog.add(headerPanel, BorderLayout.NORTH);
+			
+			JPanel bottomPanel = new JPanel(new BorderLayout());
+			bottomPanel.setBackground(WiskOpdr.colorGray2);
+			bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+			Component[] comp = {okBtn, hst(20), cancelBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField };
+			Component[] compBeheer = {closeBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField};
+			if(chooseImage) 
+				bottomPanel.add(hb(comp));
+			else
+				bottomPanel.add(hb(compBeheer));
+			imageDialog.add(bottomPanel, BorderLayout.SOUTH);
+			
+            imageDialog.add(this);
+            imageDialog.pack();
+            Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+    	    int xD = (screenSize.width-imageDialog.getSize().width)/2;
+    	    int yD = (screenSize.height-imageDialog.getSize().height)/2;
+    	    imageDialog.setLocation(xD, yD);
+            addActionListener(aListener);
+            
+           imageDialog.addWindowListener(new WindowListener() {
+            	@Override
+				public void windowOpened(WindowEvent e) {
+				}
+
+				@Override
+				public void windowClosing(WindowEvent e) {
+					if(al!=null) {
+						String selected = (String) list.getSelectedValue();
+			            if(null == selected || "".equals(selected) || emptyStart)
+			            	actionPerformed(new ActionEvent(imageDialog, ActionEvent.ACTION_PERFORMED, "cancel"));
+			            else
+			                actionPerformed(new ActionEvent(imageDialog, ActionEvent.ACTION_PERFORMED, ""));
+					}
+				}
+
+				@Override
+				public void windowClosed(WindowEvent e) {
+					
+				}
+
+				@Override
+				public void windowIconified(WindowEvent e) {
+				}
+
+				@Override
+				public void windowDeiconified(WindowEvent e) {
+				}
+
+				@Override
+				public void windowActivated(WindowEvent e) {
+				}
+
+				@Override
+				public void windowDeactivated(WindowEvent e) {
+				}
+            });
+		}
+        select(imageName);
+        imageDialog.setVisible(true);
+    }
+	
+	private Box hb(Component[] c) {
+		Box box = Box.createHorizontalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Component hgl() {
+		return Box.createHorizontalGlue();
+	}
+	
+	private Component hst(int n) {
+		return Box.createHorizontalStrut(n);
+	}
 
 	private void insert(String name) {
 		if(name != null)
@@ -559,6 +676,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 	private void initialize() {
 		setLayout(new GridBagLayout());
+		setBackground(WiskOpdr.colorGray3);
+		setBorder(BorderFactory.createEmptyBorder(10,10,20,20));
 		buildList();
 		Insets ring = new Insets(10,10,10,10);
         GridBagConstraints listConstraints = new GridBagConstraints();
@@ -571,24 +690,55 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
         listConstraints.fill = GridBagConstraints.BOTH;
         add(new JScrollPane(list), listConstraints);
         
-		newBtn = new JButton(Text.FILE);
-		urlBtn = new JButton(Text.URL);
-		okBtn  = new JButton(Text.OK);
+		newBtn = new WiskOpdrButton(Text.FILE);
+		newBtn.setMaximumSize(new Dimension(120,22));
+		newBtn.setPreferredSize(new Dimension(80,22));
+		
+		urlBtn = new WiskOpdrButton(Text.URL);
+		urlBtn.setMaximumSize(new Dimension(120,22));
+		urlBtn.setPreferredSize(new Dimension(80,22));
+		
+		okBtn  = new WiskOpdrButton(Text.OK);
+		okBtn.setBackground(WiskOpdr.colorBlue1);
+		okBtn.setForeground(WiskOpdr.colorGray3);
+		okBtn.setPreferredSize(new Dimension(70,24));
+		okBtn.setMaximumSize(new Dimension(70,24));
+		
 		newPnl = new JPanel(new FlowLayout());
 		newPnl.add(newBtn);
 		newPnl.add(urlBtn);
-		newPnl.setBorder(BorderFactory.createTitledBorder(Text.NIEUW));
+		TitledBorder border = BorderFactory.createTitledBorder(Text.NIEUW);
+		border.setTitleColor(WiskOpdr.colorBlue1);
+		newPnl.setBorder(border);
 		
 		
-		cancelBtn = new JButton(Text.ANNULEER);
+		cancelBtn = new WiskOpdrButton(Text.ANNULEER);
+		cancelBtn.setBackground(WiskOpdr.colorBlue1);
+		cancelBtn.setForeground(WiskOpdr.colorGray3);
+		cancelBtn.setPreferredSize(new Dimension(70,24));
+		cancelBtn.setMaximumSize(new Dimension(70,24));
 		
-		rmBtn = new JButton(Text.REMOVE);
-		chngBtn = new JButton(Text.WIJZIG);
+		closeBtn = new WiskOpdrButton(Text.CLOSE);
+		closeBtn.setBackground(WiskOpdr.colorBlue1);
+		closeBtn.setForeground(WiskOpdr.colorGray3);
+		closeBtn.setPreferredSize(new Dimension(70,24));
+		closeBtn.setMaximumSize(new Dimension(70,24));
+		
+		rmBtn = new WiskOpdrButton(Text.REMOVE);
+		rmBtn.setMaximumSize(new Dimension(120,22));
+		rmBtn.setPreferredSize(new Dimension(80,22));
+		
+		chngBtn = new WiskOpdrButton(Text.WIJZIG);
+		chngBtn.setMaximumSize(new Dimension(120,22));
+		chngBtn.setPreferredSize(new Dimension(80,22));
+		
 		editPnl = new JPanel();
 		editPnl.add(chngBtn);
     	editPnl.add(rmBtn);
 		
-		editPnl.setBorder(BorderFactory.createTitledBorder(Text.EDIT));
+    	border = BorderFactory.createTitledBorder(Text.EDIT);
+		border.setTitleColor(WiskOpdr.colorBlue1);
+		editPnl.setBorder(border);
 		
         GridBagConstraints newConstraints = new GridBagConstraints();
         newConstraints.gridx = 0;
@@ -629,9 +779,10 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		urlBtn.addActionListener(this);
 		okBtn.addActionListener(this);	
 		cancelBtn.addActionListener(this);
+		closeBtn.addActionListener(this);
 		rmBtn.addActionListener(this);
 		chngBtn.addActionListener(this);
-        previewCanvas.setSize(128,128);
+        previewCanvas.setSize(250,250);
         previewCanvas.setPreferredSize(previewCanvas.getSize());
         previewCanvas.setMinimumSize(previewCanvas.getSize());
         
@@ -643,12 +794,12 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 		add(previewCanvas, previewConstraints);
 		
-		widthField = new JTextField("16");
-		widthField.setEditable(false);
+		widthField = new WiskOpdrTextField("16");
+		widthField.setEnabled(false);
 		widthField.setColumns(5);
 		widthField.setMinimumSize(widthField.getPreferredSize());
-		heightField = new JTextField("16");
-		heightField.setEditable(false);
+		heightField = new WiskOpdrTextField("16");
+		heightField.setEnabled(false);
 		heightField.setColumns(5);
 		heightField.setMinimumSize(heightField.getPreferredSize());
 		
@@ -661,7 +812,10 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
         wlConstraints.gridheight = 1;
         wlConstraints.anchor = GridBagConstraints.EAST;
         wlConstraints.insets=wl;
-        add(new JLabel(" b = "), wlConstraints);
+        widthLabel = new JLabel(WiskOpdr.rb.getString("breedteLabel"));
+        widthLabel.setFont(WiskOpdr.tekstFont);
+        widthLabel.setForeground(WiskOpdr.colorBlue1);
+        add(widthLabel, wlConstraints);
         GridBagConstraints hlConstraints = new GridBagConstraints();
         hlConstraints.gridx = 3;
         hlConstraints.gridy = 1;
@@ -669,8 +823,10 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
         hlConstraints.gridheight = 1;
         hlConstraints.anchor = GridBagConstraints.NORTHEAST;
         hlConstraints.insets = hl;
-        
-        add(new JLabel(" h = "), hlConstraints);
+        heightLabel = new JLabel(WiskOpdr.rb.getString("hoogteLabel"));
+        widthLabel.setFont(WiskOpdr.tekstFont);
+        heightLabel.setForeground(WiskOpdr.colorBlue1);
+        add(heightLabel, hlConstraints);
         GridBagConstraints wConstraints = new GridBagConstraints();
         wConstraints.gridx = 4;
         wConstraints.gridy = 0;
@@ -722,9 +878,17 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		okBtn.setText(rb.getString(Text.OK));
 		newBtn.setText(rb.getString(Text.FILE));
 		urlBtn.setText(rb.getString(Text.URL));
-		newPnl.setBorder(BorderFactory.createTitledBorder(rb.getString(Text.NIEUW)));
-		editPnl.setBorder(BorderFactory.createTitledBorder(rb.getString(Text.EDIT)));
+
+		TitledBorder border = BorderFactory.createTitledBorder(Text.NIEUW);
+		border.setTitleColor(WiskOpdr.colorBlue1);
+		newPnl.setBorder(border);
+		
+		border = BorderFactory.createTitledBorder(Text.EDIT);
+		border.setTitleColor(WiskOpdr.colorBlue1);
+		editPnl.setBorder(border);
+		
 		cancelBtn.setText(rb.getString(Text.ANNULEER));
+		closeBtn.setText(rb.getString(Text.CLOSE));
 		//title = rb.getString(Text.TITEL);
 		rmBtn.setText(rb.getString(Text.REMOVE));
 		chngBtn.setText(rb.getString(Text.WIJZIG));

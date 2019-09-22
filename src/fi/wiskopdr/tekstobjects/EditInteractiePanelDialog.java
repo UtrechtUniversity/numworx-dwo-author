@@ -163,11 +163,11 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     }
 
     void initEditInteractiePanelDialog(int setNr,  Hashtable launchData, int soort, XWidgetManager manager) {
-    	Container content = getContentPane();
+    	//Container content = getContentPane();
     	setLayeredPane(new TabletOwningLayeredPane());
-    	setContentPane(content);
+    	setContentPane(getContentPane());
     	
-        content.setLayout(new BorderLayout());
+    	getContentPane().setLayout(new BorderLayout());
         //this.setBackground(Color.red);//new Color(230,230,230));
         setBackground(WiskOpdr.colorGray3);
         
@@ -887,18 +887,22 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     }
 
     public void editImage() {
-        if(imageDialog == null)
-        {
-            //Frame f = JOptionPane.getFrameForComponent(this);
-            imageDialog = new Dialog(this,"title", true);
-            imageDialog.setLayout(new BorderLayout());
-            iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-            imageDialog.add(iconman);
-            imageDialog.pack();
-            iconman.addActionListener(this);
-        }
-        iconman.select(popupImageString);
-        imageDialog.show();
+    	if(iconman==null)
+			iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+		iconman.editImage(popupImageString, this, this);
+		
+//        if(imageDialog == null)
+//        {
+//            //Frame f = JOptionPane.getFrameForComponent(this);
+//            imageDialog = new Dialog(this,"title", true);
+//            imageDialog.setLayout(new BorderLayout());
+//            iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+//            imageDialog.add(iconman);
+//            imageDialog.pack();
+//            iconman.addActionListener(this);
+//        }
+//        iconman.select(popupImageString);
+//        imageDialog.show();
     }
    
     /*

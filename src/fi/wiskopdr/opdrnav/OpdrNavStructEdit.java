@@ -1128,18 +1128,21 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		}
 		if(e.getSource()==imagesButton)
 		{
-		  if(imageDialog == null)
-	        {
-	            //Frame f = JOptionPane.getFrameForComponent(this);
-	            imageDialog = DialogFacade.newInstance(this,"title", true);
-	           // imageDialog.setLayout(new BorderLayout());
-	             iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap(),false);
-	            imageDialog.getContentPane().add(iconman);
-	            imageDialog.pack();
-	            iconman.addActionListener(this);
-	        }
-	       
-	        imageDialog.setVisible(true);
+			if(iconman==null)
+				iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap(), false);
+			iconman.editImage(null, this, this);
+//		  if(imageDialog == null)
+//	        {
+//	            //Frame f = JOptionPane.getFrameForComponent(this);
+//	            imageDialog = DialogFacade.newInstance(this,"title", true);
+//	           // imageDialog.setLayout(new BorderLayout());
+//	             iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap(),false);
+//	            imageDialog.getContentPane().add(iconman);
+//	            imageDialog.pack();
+//	            iconman.addActionListener(this);
+//	        }
+//	       
+//	        imageDialog.setVisible(true);
 		}
 
 	}

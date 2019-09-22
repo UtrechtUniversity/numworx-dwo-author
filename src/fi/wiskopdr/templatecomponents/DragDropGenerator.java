@@ -14,6 +14,7 @@ import javax.swing.JPopupMenu;
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
@@ -120,12 +121,14 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		for(int i=0 ; i<itemCount ; i++) {
 			if(i<oldItemCount) {
 				TekstVak oldDescrListTV = ((TekstVakPanel)oldDescrList.getInteractiePanel()).geefTekstVak(i, 0);
-				String s = "";
-				s = oldDescrListTV.toCompleteString();
-				if(s.charAt(s.length()-1)=='\n')
-					s = s.substring(0,s.length()-1);
-				TekstVak descrListTV = ((TekstVakPanel)descrList.getInteractiePanel()).geefTekstVak(i,0);
-				descrListTV.insert(s);
+				if(oldDescrListTV!=null) {
+					String s = "";
+					s = oldDescrListTV.toCompleteString();
+					if(s.charAt(s.length()-1)=='\n')
+						s = s.substring(0,s.length()-1);
+					TekstVak descrListTV = ((TekstVakPanel)descrList.getInteractiePanel()).geefTekstVak(i,0);
+					descrListTV.insert(s);
+				}
 			}
 		}
 		
@@ -137,12 +140,14 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 			if(i<oldItemCount) {
 				TekstInteractiePanelVak oldDragTarget = (TekstInteractiePanelVak)oldDragComponentTV1.geefInteractiePanels().elementAt(i);
 				TekstVak oldDragTargetTV = ((TekstVakPanel)oldDragTarget.getInteractiePanel()).geefTekstVak(0, 0);
-				String s = "";
-				s = oldDragTargetTV.toCompleteString();
-				if(s.charAt(s.length()-1)=='\n')
-					s = s.substring(0,s.length()-1);
-				TekstVak dragTargetTV = ((TekstVakPanel)dragTarget.getInteractiePanel()).geefTekstVak(0,0);
-				dragTargetTV.insert(s);
+				if(oldDragTargetTV!=null) {
+					String s = "";
+					s = oldDragTargetTV.toCompleteString();
+					if(s.charAt(s.length()-1)=='\n')
+						s = s.substring(0,s.length()-1);
+					TekstVak dragTargetTV = ((TekstVakPanel)dragTarget.getInteractiePanel()).geefTekstVak(0,0);
+					dragTargetTV.insert(s);
+				}
 			}
 			dragComponentTV1.insert(dragTarget.toCompleteString());
 		}
@@ -152,12 +157,14 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 			if(i<oldItemCount) {
 				TekstInteractiePanelVak oldDragObject = (TekstInteractiePanelVak)oldDragComponentTV1.geefInteractiePanels().elementAt(oldItemCount+i);
 				TekstVak oldDragObjectTV = ((TekstVakPanel)oldDragObject.getInteractiePanel()).geefTekstVak(0, 0);
-				String s = "";
-				s = oldDragObjectTV.toCompleteString();
-				if(s.charAt(s.length()-1)=='\n')
-					s = s.substring(0,s.length()-1);
-				TekstVak dragObjectTV = ((TekstVakPanel)dragObject.getInteractiePanel()).geefTekstVak(0,0);
-				dragObjectTV.insert(s);
+				if(oldDragObjectTV!=null) {
+					String s = "";
+					s = oldDragObjectTV.toCompleteString();
+					if(s.charAt(s.length()-1)=='\n')
+						s = s.substring(0,s.length()-1);
+					TekstVak dragObjectTV = ((TekstVakPanel)dragObject.getInteractiePanel()).geefTekstVak(0,0);
+					dragObjectTV.insert(s);
+				}
 			}
 			dragComponentTV1.insert(dragObject.toCompleteString());
 		}
@@ -179,16 +186,23 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 	}
 	
 	private Hashtable<String,Object> makeTComponentLD(Hashtable<String,Object> preferences) {
+		boolean volledigeBreedte = true;
+		int breedte = 500;
+		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
+		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
+		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
 		ipLaunchState.put("tekst", "");
 		ipLaunchState.put("pasAanH", new Boolean(true));
 		if(!decompose) ipLaunchState.put("templateModeEdit", new Boolean(true));
+		if(!decompose) ipLaunchState.put("templateModeFill", new Boolean(true));
 		
 		Hashtable<String,Object> launchData = new Hashtable<String,Object>();
 		launchData.put("soortInteractiePanel", new Integer(9));
 		launchData.put("setNr", new Integer(3));
 		launchData.put("interactiePanelLaunchState", ipLaunchState);
-		launchData.put("volledigeBreedte", new Boolean(true));
+		launchData.put("volledigeBreedte", new Boolean(volledigeBreedte));
+		launchData.put("breedte", new Integer(breedte));
 		if(!decompose) launchData.put("TComponent", "DragDrop");
 		if(!decompose) launchData.put("TComponentPreferences", preferences);
 		
@@ -353,25 +367,75 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 	}
 	
 	private Hashtable<String,Object> makeCheckSleepUnitLD(Hashtable<String,Object> preferences) {
-		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
+		boolean randomizePositions = false;
+		boolean snapToTarget = true;
+		int acceptedMarge = 10;
+		boolean relocate = false;
+		boolean view = false;
+		int scoreMax = 0;
+	    int[][] scoreMaxObjectives = null;
+	    boolean logOption = false;
+		String logID = "";
+		boolean[][] logObjectives = null;
+		String[] smObjectives = null;
+		boolean check = true;
+		boolean teltMee = true;
+		//boolean checkFormule = false;
+		//String[] formuleStrings = null;
+		String knopImageString = "";
 		
-		boolean[] juisteSelecties = new boolean[itemCount];
+		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
+		if(preferences.containsKey("randomizePositions")) randomizePositions = ((Boolean)preferences.get("randomizePositions")).booleanValue();
+		if(preferences.containsKey("snapToTarget")) snapToTarget = ((Boolean)preferences.get("snapToTarget")).booleanValue();
+		if(preferences.containsKey("acceptedMarge")) acceptedMarge = ((Integer)preferences.get("acceptedMarge")).intValue();
+		if(preferences.containsKey("relocate")) relocate = ((Boolean)preferences.get("relocate")).booleanValue();
+		if(preferences.containsKey("view")) view = ((Boolean)preferences.get("view")).booleanValue();
+		if(preferences.containsKey("scoreMax")) scoreMax = ((Integer)preferences.get("scoreMax")).intValue();
+	    if(preferences.containsKey("logOption")) logOption = ((Boolean)preferences.get("logOption")).booleanValue();
+		if(preferences.containsKey("logID")) logID = (String)preferences.get("logID");
+		if(preferences.containsKey("check")) check = ((Boolean)preferences.get("check")).booleanValue();
+		if(preferences.containsKey("teltMee")) teltMee = ((Boolean)preferences.get("teltMee")).booleanValue();
+		//if(preferences.containsKey("checkFormule")) checkFormule = ((Boolean)preferences.get("checkFormule")).booleanValue();
+		//if(preferences.containsKey("formuleStrings")) formuleStrings = (String[])preferences.get("formuleStrings");
+		if(preferences.containsKey("logObjectives")) logObjectives = (boolean[][])preferences.get("logObjectives");
+		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
+		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
+		
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
 		ipLaunchState.put("aantalSleepObjects", new Integer(itemCount));
 		ipLaunchState.put("aantalDoelObjects", new Integer(itemCount));
-		ipLaunchState.put("randomizePositions", new Boolean(true));
-		ipLaunchState.put("snapToTarget", new Boolean(true));
-		ipLaunchState.put("acceptedMarge", new Integer(15));
+		ipLaunchState.put("randomizePositions", new Boolean(randomizePositions));
+		ipLaunchState.put("snapToTarget", new Boolean(snapToTarget));
+		ipLaunchState.put("acceptedMarge", new Integer(acceptedMarge));
 		ipLaunchState.put("relocate",new Boolean(true));
-		ipLaunchState.put("knopImageString", "controleerknop");
+		ipLaunchState.put("view",new Boolean(view));
+		ipLaunchState.put("scoreMax", new Integer(scoreMax));
+		ipLaunchState.put("logOption",new Boolean(logOption));
+		ipLaunchState.put("logID",logID);
+		ipLaunchState.put("check",new Boolean(check));
+		ipLaunchState.put("teltMee",new Boolean(teltMee));
+		//ipLaunchState.put("checkFormule",new Boolean(checkFormule));
+		//ipLaunchState.put("formuleStrings", formuleStrings);
+		if(logObjectives!=null)
+	    {	ipLaunchState.put("logObjectives",logObjectives);
+	    	//ipLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+            try {
+              ipLaunchState.put(Constants.OBJECTIVES, smObjectives);
+            } catch(Exception e) {}
+	    }
+		if("".equals(knopImageString))
+			ipLaunchState.put("knopImageString", "controleerknop");
+		else
+			ipLaunchState.put("knopImageString", knopImageString);
+		
 				
 		Hashtable<String,Object> launchData = new Hashtable<String,Object>();
 		launchData.put("soortInteractiePanel", new Integer(16));
 		launchData.put("interactiePanelLaunchState", ipLaunchState);
 		launchData.put("breedte", new Integer(100));
 		launchData.put("hoogte", new Integer(30));
-		launchData.put("volledigeBreedte", new Boolean(true));
+		launchData.put("volledigeBreedte", new Boolean(false));
 		return launchData;
 	}
 	
@@ -386,7 +450,7 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		}
 		Hashtable<String,Object> preferences = (Hashtable<String,Object>)tipv.getEditState().get("TComponentPreferences");
 		ddEditor.setPreferences(preferences);
-		ddEditor.show();
+		//ddEditor.show();
 	}
 
 	@Override
@@ -398,26 +462,16 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 			edit(tipvEdit);
 		}
 		if(e.getSource().equals(editChoiceItems[1])) {
-			if(ddEditor==null) {
-				ddEditor = new DragDropEditor(tipvEdit.getTekstVak());
-				ddEditor.addActionListener(this);
-			}
-			Hashtable<String,Object> h = (Hashtable<String,Object>)tipvEdit.getEditState().get("TComponentPreferences");
-			ddEditor.setPreferences(h);
-			Hashtable<String,Object> preferences = ddEditor.getPreferences();
+			Hashtable<String,Object> p = (Hashtable<String,Object>)tipvEdit.getEditState().get("TComponentPreferences");
+			Hashtable preferences = (Hashtable)p.clone();
 			int itemCount = ((Integer)preferences.get("itemCount")).intValue();
 			itemCount++;
 			preferences.put("itemCount", new Integer(itemCount));
 			editComponent(tipvEdit, preferences);
 		}
 		if(e.getSource().equals(editChoiceItems[2])) {
-			if(ddEditor==null) {
-				ddEditor = new DragDropEditor(tipvEdit.getTekstVak());
-				ddEditor.addActionListener(this);
-			}
-			Hashtable<String,Object> h = (Hashtable<String,Object>)tipvEdit.getEditState().get("TComponentPreferences");
-			ddEditor.setPreferences(h);
-			Hashtable<String,Object> preferences = ddEditor.getPreferences();
+			Hashtable<String,Object> p = (Hashtable<String,Object>)tipvEdit.getEditState().get("TComponentPreferences");
+			Hashtable preferences = (Hashtable)p.clone();
 			int itemCount = ((Integer)preferences.get("itemCount")).intValue();
 			if(itemCount>1)itemCount--;
 			preferences.put("itemCount", new Integer(itemCount));

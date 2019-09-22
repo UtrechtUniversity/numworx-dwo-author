@@ -230,7 +230,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"checkVasteDoelenLabel" , "Check op vaste doelen voor sleepobjecten"},
                 {"checkWaardeOpDoelLabel" , "Check met waarden sleepobjecten"},
                 {"relocateCBLabel" , "Springt terug"},
-                {"viewCBLabel" , "View"},
+                {"viewCBLabel" , "Toon foute sleepobjecten"},
                 {"aantalValueObjectenLabel" , "Aantal objecten"},
 				{"checkAfzonderlijkLabel" , "Check afzonderlijk"},
 				{"checkOpSamenhangLabel" , "Check op samenhang"},

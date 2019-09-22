@@ -323,7 +323,10 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		if(logMisconceptions!=null)
         {	ipLaunchState.put("logMisconceptions",logMisconceptions);
         }
-		ipLaunchState.put("knopImageString", knopImageString);
+		if("".equals(knopImageString))
+			ipLaunchState.put("knopImageString", "controleerknop");
+		else
+			ipLaunchState.put("knopImageString", knopImageString);
 				
 		Hashtable<String,Object> launchData = new Hashtable<String,Object>();
 		launchData.put("soortInteractiePanel", new Integer(12));

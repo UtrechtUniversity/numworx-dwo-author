@@ -210,8 +210,14 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		// bottomPanel
 		okButton = makeButton("Ok",this);//
 		okButton.setPreferredSize(new Dimension(70,24));
+		okButton.setBackground(WiskOpdr.colorBlue1);
+		okButton.setForeground(WiskOpdr.colorGray3);
+		
 		cancelButton = makeButton("Cancel", this);//
 		cancelButton.setPreferredSize(new Dimension(70,24));
+		cancelButton.setBackground(WiskOpdr.colorBlue1);
+		cancelButton.setForeground(WiskOpdr.colorGray3);
+		
 		breedteLabel = makeLabel(WiskOpdr.rb.getString("breedteLabel"),font);
 		breedteTF = makeTextField("300", 40, 22, this);
         breedteTF.setEnabled(false);
@@ -252,7 +258,10 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	private JTextField makeTextField (String text, int prefWidth, int prefHeight, ActionListener al) {
 		JTextField tf = new WiskOpdrTextField(text);
 		tf.setPreferredSize(new Dimension(prefWidth,prefHeight));
-		if(al!=null) tf.addActionListener(al);
+		if(al!=null) {
+			tf.addActionListener(al);
+			tf.addFocusListener(this);
+		}
 		return tf;
 	}
 	
@@ -290,6 +299,15 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		return Box.createRigidArea(new Dimension(w,h));
 	}
 	
+	private int intFromText(int defaultInt, String text) {
+		int i = defaultInt;
+		try {
+			i = Integer.parseInt(text);
+		}
+		catch(NumberFormatException e) {}
+		return i;
+	}
+	
 	public void makeFrame(){
 	   	frame = DialogFacade.newInstance(tekstVak, WiskOpdr.rb.getString("TCOMP_multip"), true);
 	    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -297,6 +315,10 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    frame.getContentPane().add(preferencesPanel);
 	    frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
 	    frame.pack();
+	    Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+ 	    int xD = (screenSize.width-frame.getSize().width)/2;
+ 	    int yD = (screenSize.height-frame.getSize().height)/2;
+ 	    frame.setLocation(xD, yD);
 	}
 	
 	public void maakCheckboxes() {
@@ -342,21 +364,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		}
 		selectableCBBox.removeAll();
 		aantalSelectables = 0;
-	}
-	
-	public void editImage() {
-        if(imageDialog == null) {
-        	Frame f = JOptionPane.getFrameForComponent(mainPanel);
-			imageDialog = new Dialog(f,"title", true);
-			imageDialog.setLayout(new BorderLayout());
-			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
-            imageDialog.add(iconman);
-            imageDialog.pack();
-            iconman.addActionListener(this);
-        }
-        iconman.select(knopImageString);
-        imageDialog.setVisible(true);
-    }  
+	} 
 	
 	@Override
 	public Hashtable getPreferences() {
@@ -385,10 +393,10 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		boolean volledigeBreedte = true;
 		int breedte = 300;
 		
-		itemCount = Integer.parseInt(itemCountTF.getText());
+		itemCount = intFromText(itemCount, itemCountTF.getText());
 		listNumberType = listNumberTypeComboBox.getSelectedIndex()-1;
-		tabWidth = Integer.parseInt(tabWidthTF.getText());
-		rowSpace = Integer.parseInt(rowSpaceTF.getText());
+		tabWidth = intFromText(tabWidth, tabWidthTF.getText());
+		rowSpace = intFromText(rowSpace, rowSpaceTF.getText());
 		hasPrefix = hasPrefixCB.isSelected();
 		
 		knopImageString = this.knopImageString;
@@ -397,7 +405,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    	juisteSelecties[i] = selectableCheckboxes[i].isSelected();
 	    }
 	    
-	    scoreMax = Integer.parseInt(maxScoreTF.getText());
+	    scoreMax = intFromText(scoreMax, maxScoreTF.getText());
 	    //randomizePositions = randomizePositionsCB.isSelected();
 	    multiSelections = multiSelectionsCB.isSelected();
 	    logOption = logCB.isSelected();
@@ -411,7 +419,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		logMisconceptions = this.logMisconceptions;
 		
 		volledigeBreedte = volledigeBreedteCB.isSelected();
-		breedte = Integer.parseInt(breedteTF.getText());
+		breedte = intFromText(breedte, breedteTF.getText());
 		
 		if(logObjectives!=null) {
 			scoreMaxObjectives = new int[logObjectives.length][];
@@ -526,13 +534,10 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    
 		verwijderCheckboxes();
 	    aantalSelectables = juisteSelecties.length;
-	    maxScoreTF.setText(""+scoreMax);
-	    //randomizePositionsCB.setSelected(randomizePositions);
+	  //randomizePositionsCB.setSelected(randomizePositions);
 	    multiSelectionsCB.setSelected(multiSelections);
 	    this.logMisconceptions = logMisconceptions;
 	    
-	    volledigeBreedteCB.setSelected(volledigeBreedte);
-	    breedteTF.setText(""+breedte);
 	    
 	    maakCheckboxes();
 	    for(int i=0 ; i<aantalSelectables ; i++) {
@@ -542,6 +547,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		}
 	    enableMisconceptions();
 	    
+	    maxScoreTF.setText(""+scoreMax);
 	    logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
         logIDLabelLabel.setVisible(logOption);
@@ -569,11 +575,17 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
     		knopImageButton.setPreferredSize(new Dimension(80,22));
     	}
     	this.knopImageString = knopImageString;
-		
+    	
+    	volledigeBreedteCB.setSelected(volledigeBreedte);
+	    breedteTF.setText(""+breedte);
+	    
 		frame.setVisible(true);
 		frame.pack();
-		frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
-		
+		//frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
+		Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+ 	    int xD = (screenSize.width-frame.getSize().width)/2;
+ 	    int yD = (screenSize.height-frame.getSize().height)/2;
+ 	    frame.setLocation(xD, yD);
 	}
 	
 	
@@ -608,11 +620,11 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 			produceAction("ok");
 			frame.setVisible(false);
 		}
-		if(e.getSource().equals(cancelButton)) {
+		else if(e.getSource().equals(cancelButton)) {
 			frame.setVisible(false);
 		}
-		if(e.getSource()==itemCountTF) {
-			int aantal = Math.min(aantalSelectablesMax, Integer.parseInt(itemCountTF.getText()));
+		else if(e.getSource()==itemCountTF) {
+			int aantal = Math.min(aantalSelectablesMax, intFromText(4, itemCountTF.getText()));
 			if(aantal != aantalSelectables)	{	
 				verwijderCheckboxes();
 				aantalSelectables = aantal;
@@ -622,8 +634,15 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		else if(e.getSource()==multiSelectionsCB) {   
 			enableMisconceptions();
 	    }
+		else if(e.getSource()==hasPrefixCB) {   
+			tabWidthLabel.setVisible(hasPrefixCB.isSelected());
+			tabWidthTF.setVisible(hasPrefixCB.isSelected());
+			listNumberTypeLabel.setVisible(hasPrefixCB.isSelected());
+			listNumberTypeComboBox.setVisible(hasPrefixCB.isSelected());
+	    }
 		else if(e.getSource()==knopImageButton) {   
-			editImage();
+			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
+			iconman.editImage(knopImageString, mainPanel, this);
 	    }
 	    else if(e.getSource()==iconman) {
 	    	String name = e.getActionCommand();
@@ -658,8 +677,8 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    	breedteTF.setEnabled(!volledigeBreedteCB.isSelected());
 	    }
 		
-	    if(imageDialog!=null)
-	        imageDialog.setVisible(false);
+	    //if(imageDialog!=null)
+	    //    imageDialog.setVisible(false);
 		
 	}
 
@@ -670,6 +689,13 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		// TODO Auto-generated method stub
+		if(e.getSource()==itemCountTF) {
+			int aantal = Math.min(aantalSelectablesMax, intFromText(4,itemCountTF.getText()));
+			if(aantal != aantalSelectables)	{	
+				verwijderCheckboxes();
+				aantalSelectables = aantal;
+				maakCheckboxes();
+			}
+		}
 	}
 }
