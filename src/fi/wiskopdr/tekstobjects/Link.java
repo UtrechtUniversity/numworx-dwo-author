@@ -91,11 +91,8 @@ public class Link
 		{
 			SimpleSwingBrowser browser = new SimpleSwingBrowser();
 			browser.setSize(width, height);
-			browser.setAdressFieldVisible(false);
-			browser.setStatusBarVisible(false);
 			browser.setVisible(true);
 			browser.loadURL(url);
-			
 		}
 		
 	}

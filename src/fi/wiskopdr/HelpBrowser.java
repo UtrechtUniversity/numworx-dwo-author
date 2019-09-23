@@ -7,13 +7,11 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import javafx.embed.swing.JFXPanel;
-
 public class HelpBrowser 
 {
   private DialogFacade frame;
 
-  private JFXPanel panel;
+  private JComponent panel;
   private int width = 465;
   private int height = 500;
 
@@ -23,8 +21,7 @@ public class HelpBrowser
 
   public HelpBrowser(Component c){	
     src = c;
-    if(ssb==null)
-      ssb = new SimpleSwingBrowser();
+    ssb = new SimpleSwingBrowser();
     panel = ssb.getBrowserPanel();
     panel.invalidate();
     panel.setBounds(0, 0, width, height); // o i d
@@ -51,5 +48,10 @@ public class HelpBrowser
     ssb.loadURL(url);
     frame.pack();
     frame.setVisible(true);
+  }
+
+  public void dispose() {
+    ssb.dispose();
+    frame.dispose();
   }
 }

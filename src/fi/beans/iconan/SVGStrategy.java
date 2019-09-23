@@ -43,7 +43,15 @@ public class SVGStrategy implements Strategy {
     }
     
 
-	SVGStrategy(Iconan parent) {
+	@Override
+    public void dispose() {
+      if (_browser != null) {
+        _browser.dispose();
+        _browser = null;
+      }
+    }
+
+  SVGStrategy(Iconan parent) {
 		this.parent = parent;
 	}
 	
