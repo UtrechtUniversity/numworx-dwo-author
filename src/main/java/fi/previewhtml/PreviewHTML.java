@@ -127,7 +127,7 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 		content = Box.createHorizontalBox();
 		//Fi-logo, copyright
 		FIButton fiButton = new FIButton("PreviewHTML",new String[]
-			{	"versie-info: 20180612",
+			{	"versie-info: 20190902",
 				"auteur: Wim van Velthoven",
 				"programmeur: Wim van Velthoven",
 				"Freudenthal Instituut",
@@ -178,20 +178,17 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 	@SuppressWarnings("restriction")
 	@Override
 	public void stop() {
-		browser.setState(javafx.concurrent.Worker.State.CANCELLED);
-		browser.setApi(null);
-		browser.setConsole(null);
 		browser.loadURL(null);
 		int cnt = 10;
 		synchronized(browser) {
-			while( cnt-- > 0 && inited && browser.getState() != javafx.concurrent.Worker.State.SUCCEEDED )
-				//System.out.println("waiting for " + browser.getState());
+			while( cnt-- > 0 && inited )
 				try {
 					browser.wait(10000);
 				} catch (InterruptedException e) {
-
 				}
 		}
+        browser.setApi(null);
+        browser.setConsole(null);
 		browser.removeMembers();
 		System.out.println("Preview stopped " + cnt);
 	}
@@ -201,17 +198,6 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 		removeAll();
 		browser = null;
 		System.gc();
-	}
-
-	public static void main(String[] args)    
-	{	int width = 800;
-        int height = 600;
-        Locale.setDefault(new Locale("nl"));
-		ScormMainFrame mf = new ScormMainFrame(new PreviewHTML(),width, height);
-		mf.setTitle("PreviewHTML");
-		mf.pack();
-		mf.setVisible(true);
-		mf.setSize(width, height);
 	}
 
 	public String getState() {

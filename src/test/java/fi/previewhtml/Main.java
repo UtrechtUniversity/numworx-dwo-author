@@ -53,7 +53,7 @@ public class Main implements AppletStub, AppletContext {
 		public String getParameter(String name) {
 			if ("debug".equals(name)) return "true";
 			if ("url".equals(name))
-				return "https://test.dwo.nl/dwo/apps/player.html?locale=nl#cmi.launch_data:464016";
+				return "https://test.dwo.nl/dwo/apps/player.html?locale=nl#371821";
 			if ("API".equals(name))
 			    return DefaultAPI.class.getName();
 			return null;
