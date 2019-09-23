@@ -589,7 +589,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
       tekstVak.zetMarge(marginX);
       tekstVak.zetBovenMarge(marginY);
       int x = Math.max(10, (getWidth() - balkH -docWidth)/2);
-      tekstVak.setBounds(x,10, docWidth, docHeight);
+      int y = Math.max(10, (getHeight() -tekstVak.getHeight())/2);
+      tekstVak.setBounds(x,y, docWidth, tekstVak.getHeight());
       tekstVak.zetMinimumHoogte(docHeight);
       tekstVak.layoutTekst();
       
