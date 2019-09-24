@@ -1,5 +1,6 @@
 package fi.wiskopdr;
 
+import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,11 +33,10 @@ public class HelpButton extends JLabel implements  MouseListener
 	  Graphics2D g = (Graphics2D)gr;
 	  g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	  g.setColor(new Color(211,229,244));
-	  g.fillOval(0,0,getWidth(),getHeight());
+	  g.fillOval(0,0,getPreferredSize().width,getPreferredSize().height);
 	  super.paintComponent(g);  
 	  g.setColor(new Color(50,72,111));
-	    g.setFont(new Font("SansSerif",Font.BOLD,14));
-	    g.drawOval(0,0,getWidth()-1,getHeight()-1);
+	  g.drawOval(0,0,getPreferredSize().width-1,getPreferredSize().height-1);
 	}
 
   @Override
@@ -45,8 +45,9 @@ public class HelpButton extends JLabel implements  MouseListener
 
   @Override
   public void mousePressed(MouseEvent e) {
-    if(OpdrNavStructEdit.helpBrowser!=null)
-      OpdrNavStructEdit.helpBrowser.loadURL(url);
+    //if(OpdrNavStructEdit.helpBrowser!=null)
+    //  OpdrNavStructEdit.helpBrowser;
+	  produceAction("help");
   }
 
   @Override
@@ -59,5 +60,23 @@ public class HelpButton extends JLabel implements  MouseListener
 
   @Override
   public void mouseExited(MouseEvent e) {
+  }  
+  
+//ActionProducer
+  private ActionListener actionListener = null;
+  
+  public void addActionListener(ActionListener l) 
+  {   actionListener = AWTEventMulticaster.add(actionListener,l);
+  }
+  
+  public void removeActionListener(ActionListener l)
+  {   actionListener = AWTEventMulticaster.remove(actionListener, l);
   }   
+  
+  public void produceAction(String command)
+  {   if (actionListener != null)
+      {   actionListener.actionPerformed( new ActionEvent(this, 0, command) );
+      }
+  }
+  //end ActionProducer
 }

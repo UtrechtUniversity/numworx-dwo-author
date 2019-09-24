@@ -41,33 +41,34 @@ public class StyleManager extends JPanel implements ActionListener {
 		setOpaque(true);
 		
 		titelLabel = new JLabel(WiskOpdr.rb.getString("SM_titelLabel"));
+		titelLabel.setForeground(WiskOpdr.colorBlue1);
 		titelLabel.setBounds(10,5,250,25);
 		titelLabel.setHorizontalAlignment(JLabel.CENTER);
 		titelLabel.setFont(titelFont);
 		add(titelLabel);
 		
-		addStyleButton = new JButton(WiskOpdr.rb.getString("SM_addStyleButton"));
+		addStyleButton = new WiskOpdrButton(WiskOpdr.rb.getString("SM_addStyleButton"));
 		addStyleButton.addActionListener(this);
 		addStyleButton.setFont(ifFont);
 		addStyleButton.setBounds(10,65,250,20);
 		addStyleButton.setVisible(true);
 		add(addStyleButton);
 		
-		saveStyleButton = new JButton(WiskOpdr.rb.getString("SM_saveStyleButton"));
+		saveStyleButton = new WiskOpdrButton(WiskOpdr.rb.getString("SM_saveStyleButton"));
 		saveStyleButton.addActionListener(this);
 		saveStyleButton.setFont(ifFont);
 		saveStyleButton.setBounds(10,90,120,20);
 		saveStyleButton.setVisible(true);
 		add(saveStyleButton);
 		
-		removeStyleButton = new JButton(WiskOpdr.rb.getString("SM_removeStyleButton"));
+		removeStyleButton = new WiskOpdrButton(WiskOpdr.rb.getString("SM_removeStyleButton"));
 		removeStyleButton.addActionListener(this);
 		removeStyleButton.setFont(ifFont);
 		removeStyleButton.setBounds(140,90,120,20);
 		removeStyleButton.setVisible(true);
 		add(removeStyleButton);
 		
-		closeButton = new JButton(WiskOpdr.rb.getString("SM_closeButton"));
+		closeButton = new WiskOpdrButton(WiskOpdr.rb.getString("SM_closeButton"));
 		closeButton.addActionListener(this);
 		//closeButton.setFont(ifFont);
 		closeButton.setBounds(75,120,120,20);

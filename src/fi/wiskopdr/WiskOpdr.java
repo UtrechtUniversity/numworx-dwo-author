@@ -109,6 +109,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static Color colorBlue2 = new Color(38,115,182);
 	public static Color colorBlue3 = new Color(120,150,202);
 	public static Color colorBlue4 = new Color(180,195,228);
+	public static Color colorBlue5 = new Color(211,229,244);
 	
 	public static Color colorGray1 = new Color(206,207,208);
 	public static Color colorGray2 = new Color(221,223,225);
@@ -988,7 +989,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		defaultEditModeLaunchData.put("subKnop", new Boolean(false));
 		defaultEditModeLaunchData.put("hasTitle", new Boolean(false));
 		defaultEditModeLaunchData.put("hasAntwoordVak", new Boolean(false));
-		defaultEditModeLaunchData.put("scheidingX", new Integer(1024));
+		defaultEditModeLaunchData.put("scheidingX", new Integer(1029));
 		
 		defaultEditModeState = StringCodeObject.encodeObjectToString(defaultEditModeLaunchData);
 

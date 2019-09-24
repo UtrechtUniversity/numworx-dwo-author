@@ -75,7 +75,7 @@ public class WiskOpdrCheckbox extends JCheckBox {
   }
   @Override
   public void setBackground(Color c) {
-      bgColor = c;
+      //bgColor = c;
       super.setBackground(c);
   }
   

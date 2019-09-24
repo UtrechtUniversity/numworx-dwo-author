@@ -463,6 +463,11 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	titleContextLabel.setForeground(WiskOpdr.colorBlue1);
     	titleContextLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
+    	 String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
+ 		HelpButton helpButton = new HelpButton(HELP_URL1);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(16,16));
+    	
     	Box regelBox = Box.createHorizontalBox();
     	Box kolomBox = Box.createHorizontalBox();
     	
@@ -520,6 +525,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	regelBox = Box.createHorizontalBox();
     	regelBox.add(checkCB);
     	regelBox.add(Box.createHorizontalGlue());
+    	regelBox.add(helpButton);
     	settingsBox.add(regelBox);
     	
     	regelBox = Box.createHorizontalBox();

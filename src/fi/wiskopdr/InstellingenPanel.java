@@ -662,14 +662,17 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		mainPanel.add(boxv2);
 		mainPanel.add(boxv4);
 		okButton = new WiskOpdrButton("Ok");//
+		okButton.setPreferredSize(new Dimension(70,24));
 		//okButton.setFont(font);
-		//okButton.setBackground(new Color(49,71,112));
+		okButton.setBackground(WiskOpdr.colorBlue1);
 		okButton.addActionListener(this);
 		bottomPanel.add(okButton);
 		
+		bottomPanel.add(Box.createHorizontalStrut(10));
 		cancelButton = new WiskOpdrButton("Cancel");//
 		//cancelButton.setFont(font);
-		//cancelButton.setBackground(new Color(49,71,112));
+		cancelButton.setPreferredSize(new Dimension(70,24));
+		cancelButton.setBackground(WiskOpdr.colorBlue1);
 		cancelButton.addActionListener(this);
 		bottomPanel.add(cancelButton);
 		bottomPanel.setBackground(new Color(219,220,221));

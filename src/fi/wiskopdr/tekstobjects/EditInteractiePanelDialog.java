@@ -61,6 +61,7 @@ import fi.wiskopdr.Geogebra3Panel;
 import fi.wiskopdr.GeogebraPanel;
 import fi.wiskopdr.GetallenlijnSprongPanel;
 import fi.wiskopdr.GrafiekPanel;
+import fi.wiskopdr.HelpButton;
 import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
 import fi.wiskopdr.TabletOwningLayeredPane;
@@ -75,6 +76,7 @@ import fi.wiskopdr.cbook.CBookInteractieEditPanel;
 import fi.wiskopdr.cbook.CBookWrap;
 import fi.wiskopdr.cbook.Service;
 import fi.wiskopdr.formuleobjects.FormuleButton;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 //import fi.tekenveelvlakopdr.TekenVeelvlakOpdr;
 //import fi.mozarch.MozArch;
 import fi.wiskopdr.opdrnav.XWidgetManager;
@@ -127,6 +129,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	private String crossWidgetId;
 	private XWidgetManager manager;
 	Object subscriptions; // Not to loose. 
+	
+	HelpButton helpButton;
+	private JPanel helpPanel;
+    private Box helpBox;
 
     public EditInteractiePanelDialog(Frame owner, String windowTitle, boolean modal, int setNr,  Hashtable launchData, XWidgetManager manager) {
     	super(owner, windowTitle, modal);
@@ -171,8 +177,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         //this.setBackground(Color.red);//new Color(230,230,230));
         setBackground(WiskOpdr.colorGray3);
         
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
         headerPanel.setBackground(WiskOpdr.colorBlue1);
         
         String title = soort==999 ? "" : (TekstInteractiePanelVak.interactiePanelDescriptions[TekstInteractiePanelVak.interactiePanelSets[setNr][soort]]).toLowerCase();
@@ -183,7 +189,33 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         JLabel headerTitle = new JLabel(WiskOpdr.rb.getString("settingsLabel") + " " + title);
         headerTitle.setForeground(WiskOpdr.colorGray3);
         headerTitle.setFont(new Font("SansSerif",Font.PLAIN, 24));
-        headerPanel.add(headerTitle);
+        //headerPanel.add(headerTitle);
+        
+        String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
+		 helpButton = new HelpButton(HELP_URL1);
+		//helpButton.setFont(new Font("SansSerif",Font.BOLD,14));
+		helpButton.setPreferredSize(new Dimension(20,20));
+		helpButton.addActionListener(this);
+		//headerPanel.add(helpButton);
+		helpPanel = new JPanel(new BorderLayout());
+		helpPanel.setBackground(WiskOpdr.colorBlue5);
+		helpPanel.setPreferredSize(new Dimension(300,400));
+//		JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
+//    	bp.setPreferredSize(new Dimension(300,400));
+    	
+    	//helpPanel.add(bp);
+		
+		helpBox = Box.createVerticalBox();
+		helpBox.add(Box.createRigidArea(new Dimension(300,0)));
+		helpBox.add(helpPanel);
+		helpBox.setVisible(false);
+		
+		Box headerbox = Box.createHorizontalBox();
+		headerbox.add(Box.createHorizontalGlue());
+		headerbox.add(headerTitle);
+		headerbox.add(Box.createHorizontalGlue());
+		headerbox.add(helpButton);
+		headerPanel.add(headerbox);
         
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
@@ -200,7 +232,11 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         mainPanel.setBackground(WiskOpdr.colorGray3);
         
-        getContentPane().add(mainPanel);
+        Box hb = Box.createHorizontalBox();
+        hb.add(mainPanel);
+        hb.add(helpBox);
+        
+        getContentPane().add(hb);
 		getContentPane().add(bottomPanel,BorderLayout.SOUTH);
 		getContentPane().add(headerPanel,BorderLayout.NORTH);
                
@@ -553,7 +589,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			if(interactieEditPanel!=null && ((Component)interactieEditPanel).getPreferredSize().height<100) {
 				((Component)interactieEditPanel).setPreferredSize(new Dimension(800,500));
 				if(setNr==3)
-					((Component)interactieEditPanel).setPreferredSize(new Dimension(1100,610));
+					((Component)interactieEditPanel).setPreferredSize(new Dimension(900,610));
 				if(setNr==2)
 					((Component)interactieEditPanel).setPreferredSize(new Dimension(880,500));
 			}
@@ -923,6 +959,17 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	WiskOpdr.setLaunchDataChanged();
             this.setVisible(false);
             this.dispose();
+            
+        }
+        else if (e.getSource() == helpButton) {
+        	//if(interactieEditPanel!=null && interactieEditPanel instanceof AntwoordVergelijkingVakEditPanel) 
+			//{
+        		//((AntwoordVergelijkingVakEditPanel)interactieEditPanel).showHelp(true);
+        		helpBox.setVisible(true);
+        		helpBox.validate(); 
+            	OpdrNavStructEdit.helpBrowser.loadURL("https://app.dwo.nl/wisweb/?header=less&hash=#s:654439");
+            	packWidth();
+			//}
             
         }
         else if (e.getSource() == volledigeBreedteCB) {
