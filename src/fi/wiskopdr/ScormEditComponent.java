@@ -33,6 +33,7 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
 		String langArg = getParameter("language");
         if ( langArg == null || langArg.equals("")) langArg = "en";
         Locale language = new Locale (langArg, "");
+        WiskOpdr.language = language;
         WiskOpdr.rb = ResourceBundle.getBundle("fi.wiskopdr.text.Text",language);
         if(WiskOpdr.ideas == null)
         {   try 
