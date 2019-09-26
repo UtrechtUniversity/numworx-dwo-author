@@ -565,6 +565,8 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TE_x-widgetButtonTooltip", "Cross-widget verbindingen"},
                 {"TE_parameterButtonTooltip", "Random parameter gebruiken"},
                 {"TE_opsommingButtonTooltip", "Opsomming invoegen"},
+                {"TE_vormenButtonTooltip", "Vorm invoegen"},
+                {"TE_geodefinerButtonTooltip", "GeoDefiner invoegen"},
                 
                 
 				//GeogebraEditPanel

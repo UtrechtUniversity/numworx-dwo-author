@@ -22,6 +22,7 @@ public class HelpButton extends JLabel implements  MouseListener
 	public HelpButton(String url){	
 		super("?");
 		this.url = url;
+		this.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 		addMouseListener(this);
 		setFont(new Font("SansSerif",Font.BOLD,16));
 		setHorizontalAlignment(JLabel.CENTER);
@@ -32,11 +33,11 @@ public class HelpButton extends JLabel implements  MouseListener
 	public void paintComponent(Graphics gr) {
 	  Graphics2D g = (Graphics2D)gr;
 	  g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	  g.setColor(new Color(211,229,244));
-	  g.fillOval(0,0,getPreferredSize().width,getPreferredSize().height);
+	  g.setColor(WiskOpdr.colorBlue5);
+	  g.fillOval(1,1,getSize().width-2,getSize().height-2);
 	  super.paintComponent(g);  
 	  g.setColor(new Color(50,72,111));
-	  g.drawOval(0,0,getPreferredSize().width-1,getPreferredSize().height-1);
+	  g.drawOval(1,1,getSize().width-2,getSize().height-2);
 	}
 
   @Override

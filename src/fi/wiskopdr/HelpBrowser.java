@@ -9,7 +9,7 @@ import javax.swing.*;
 
 public class HelpBrowser 
 {
-  private DialogFacade frame;
+  //private DialogFacade frame;
 
   private JComponent panel;
   private int width = 465;
@@ -27,31 +27,35 @@ public class HelpBrowser
     panel.setBounds(0, 0, width, height); // o i d
     panel.validate(); 
     panel.doLayout();
-    frame = DialogFacade.newInstance(c, "", true);
-
-
-    Dimension preferredSize = new Dimension(width,height);
-    frame.setPreferredSize(preferredSize);
-    frame.getContentPane().setLayout(new BorderLayout());
-    frame.getContentPane().add(panel);
+//    frame = DialogFacade.newInstance(c, "", true);
+//
+//
+//    Dimension preferredSize = new Dimension(width,height);
+//    frame.setPreferredSize(preferredSize);
+//    frame.getContentPane().setLayout(new BorderLayout());
+//    frame.getContentPane().add(panel);
+  }
+  
+  public JComponent getBrowserPanel() {
+	  return panel;
   }
 
   public void loadURL(String url) {
-    src = WiskOpdr.getWindowForComponent(src);
-    Dimension preferredSize = new Dimension(width,src.getHeight());
-    frame.setPreferredSize(preferredSize);
-    int x = src.getLocationOnScreen().x + src.getWidth() - width;
-    int y = src.getLocationOnScreen().y;
-    frame.setLocation(x,y);  
+//    src = WiskOpdr.getWindowForComponent(src);
+//    Dimension preferredSize = new Dimension(width,src.getHeight());
+//    frame.setPreferredSize(preferredSize);
+//    int x = src.getLocationOnScreen().x + src.getWidth() - width;
+//    int y = src.getLocationOnScreen().y;
+//    frame.setLocation(x,y);  
 
 
     ssb.loadURL(url);
-    frame.pack();
-    frame.setVisible(true);
+//    frame.pack();
+//    frame.setVisible(true);
   }
 
   public void dispose() {
     ssb.dispose();
-    frame.dispose();
+    //frame.dispose();
   }
 }

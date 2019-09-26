@@ -543,6 +543,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TE_x-widgetButtonTooltip", "Cross-widget connections"},
                 {"TE_parameterButtonTooltip", "Use random parameters"},
                 {"TE_opsommingButtonTooltip", "Add list"},
+                {"TE_vormenButtonTooltip", "Add shape"},
                 				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Save option"},

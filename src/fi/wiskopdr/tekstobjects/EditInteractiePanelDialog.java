@@ -133,6 +133,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	HelpButton helpButton;
 	private JPanel helpPanel;
     private Box helpBox;
+    private Box helpTitelBox;
 
     public EditInteractiePanelDialog(Frame owner, String windowTitle, boolean modal, int setNr,  Hashtable launchData, XWidgetManager manager) {
     	super(owner, windowTitle, modal);
@@ -194,28 +195,42 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
 		 helpButton = new HelpButton(HELP_URL1);
 		//helpButton.setFont(new Font("SansSerif",Font.BOLD,14));
-		helpButton.setPreferredSize(new Dimension(20,20));
+		helpButton.setPreferredSize(new Dimension(22,22));
 		helpButton.addActionListener(this);
 		//headerPanel.add(helpButton);
 		helpPanel = new JPanel(new BorderLayout());
 		helpPanel.setBackground(WiskOpdr.colorBlue5);
 		helpPanel.setPreferredSize(new Dimension(300,400));
-//		JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
-//    	bp.setPreferredSize(new Dimension(300,400));
+		JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
+    	bp.setPreferredSize(new Dimension(300,400));
     	
-    	//helpPanel.add(bp);
+    	helpPanel.add(bp);
 		
 		helpBox = Box.createVerticalBox();
 		helpBox.add(Box.createRigidArea(new Dimension(300,0)));
 		helpBox.add(helpPanel);
 		helpBox.setVisible(false);
 		
+		JLabel helpTitleLabel = new JLabel("Help");
+		helpTitleLabel.setForeground(WiskOpdr.colorBlue5);
+		helpTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+	        
+		helpTitelBox = Box.createVerticalBox();
+		helpTitelBox.add(Box.createRigidArea(new Dimension(300,0)));
+		Box helpheader = Box.createHorizontalBox();
+		helpheader.add(helpTitleLabel);
+		helpTitelBox.setPreferredSize(new Dimension(300,40));
+		helpTitelBox.add(helpheader);
+		helpTitelBox.setVisible(false);
+		
 		Box headerbox = Box.createHorizontalBox();
 		headerbox.add(Box.createHorizontalGlue());
 		headerbox.add(headerTitle);
 		headerbox.add(Box.createHorizontalGlue());
 		headerbox.add(helpButton);
+		headerbox.add(helpTitelBox);
 		headerPanel.add(headerbox);
+		
         
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
@@ -562,6 +577,19 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	    	((Component)interactieEditPanel).setPreferredSize(new Dimension(w,h));
 	    	super.pack();
 	    	((Component)interactieEditPanel).setPreferredSize(null);
+    	}
+    }
+    public void packWidth(int maxWidth)
+    {
+    	if(interactieEditPanel!=null) {
+	    	int w = ((Component)interactieEditPanel).getWidth();
+	    	int h = ((Component)interactieEditPanel).getPreferredSize().height;
+	    	((Component)interactieEditPanel).setPreferredSize(new Dimension(w,h));
+	    	this.setPreferredSize(new Dimension(Math.min(getPreferredSize().width, maxWidth), getPreferredSize().height));
+	    	super.pack();
+	    	((Component)interactieEditPanel).setPreferredSize(null);
+	    	this.setPreferredSize(null);
+	    	
     	}
     }
     
@@ -965,10 +993,18 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	//if(interactieEditPanel!=null && interactieEditPanel instanceof AntwoordVergelijkingVakEditPanel) 
 			//{
         		//((AntwoordVergelijkingVakEditPanel)interactieEditPanel).showHelp(true);
-        		helpBox.setVisible(true);
-        		helpBox.validate(); 
-            	OpdrNavStructEdit.helpBrowser.loadURL("https://app.dwo.nl/wisweb/?header=less&hash=#s:654439");
-            	packWidth();
+        	
+        		helpBox.setVisible(!helpBox.isVisible());
+        		helpTitelBox.setVisible(helpBox.isVisible());
+        		if(helpBox.isVisible()) {
+	        		helpBox.validate(); 
+	            	OpdrNavStructEdit.helpBrowser.loadURL("https://app.dwo.nl/wisweb/?header=less&hash=#s:654439");
+	            	packWidth(1100);
+        		}
+        		else {
+        			helpBox.validate(); 
+        			pack();	
+        		}	
 			//}
             
         }

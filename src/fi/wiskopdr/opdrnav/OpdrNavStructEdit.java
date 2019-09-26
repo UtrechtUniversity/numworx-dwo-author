@@ -169,7 +169,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 //        this.add(helpButton);
 
 		orPosX = 10;//orSize * 2 + 17 + margeLinks;
-		orPosY = h - 80;//(2 * orSize);
+		orPosY = h - 90;//(2 * orSize);
 		
 		actKeuzePanelX = 490;//margeLinks;
 		actKeuzePanelY = h-30-aantalActiviteiten * 20;//orPosY - aantalActiviteiten * 20 - 10;
@@ -566,7 +566,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public void setSize(int b, int h) {
 		super.setSize(b, h);
 		opdrEditContainer.setSize(b, h);
-		orPosY = h - 80;//(2 * orSize);
+		orPosY = h - 90;//(2 * orSize);
 		
 		opdrEditContainer.setControlPanelHeight(2 * orSize);
 		actKeuzePanelY = h-30- aantalActiviteiten * 20;//orPosY - aantalActiviteiten * 20 - 15;
@@ -586,12 +586,12 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		aantalOpdrKnop.setBounds(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2, 20, 16);
 		nivPositieKnop.setBounds(actKeuzePanelX - 20, actKeuzePanelY + aantalActiviteiten * 20 - 20, 12, 16);
 		opdrPositieKnop.setBounds(orPosX + 25 * opdrachtNr, orPosY + 25, 20, 16);
-		modeChoice.setBounds(190, h-30, 140, 24);
+		modeChoice.setBounds(190, h-40, 140, 24);
 		gekoppeldeOpdrCB.setBounds(10, orPosY + 30, 50, 15);
 		gekoppeldeOpdrCB.addItemListener(this);
-		instellingenKnop.setBounds(10, h - 30, 160, 24);
-		sizeLabel.setBounds(480, h-30, 60, 24);
-		imagesButton.setBounds(350,h-30,120,24);
+		instellingenKnop.setBounds(10, h - 40, 160, 24);
+		sizeLabel.setBounds(480, h-40, 60, 24);
+		imagesButton.setBounds(350,h-40,120,24);
 	}
 	
 	/**
@@ -708,7 +708,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	 * Maakt geheugen-resources vrij
 	 */
 	public void destroy() {
-		if (instellingenPanel != null) {
+		if (instellingenDialog != null) {
 			instellingenDialog.dispose();
 			instellingenDialog = null;
 		}

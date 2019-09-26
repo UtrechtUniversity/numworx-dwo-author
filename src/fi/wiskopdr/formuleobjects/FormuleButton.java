@@ -53,6 +53,8 @@ public class FormuleButton extends JButton implements MouseListener
 		"cknop.gif",
 		"tknop.gif",
 		"opsomming.png",
+		"vormen.png",
+		"geodefiner.png",
 		
 		"wnformbutton.gif",
 		"wnformbuttonrood.gif",
@@ -163,6 +165,10 @@ public class FormuleButton extends JButton implements MouseListener
 		  setToolTipText(WiskOpdr.rb.getString("TE_x-widgetButtonTooltip"));
 		if(code.equals("opsomming"))
 			  setToolTipText(WiskOpdr.rb.getString("TE_opsommingButtonTooltip"));
+		if(code.equals("vormen"))
+			  setToolTipText(WiskOpdr.rb.getString("TE_vormenButtonTooltip"));
+		if(code.equals("geodefiner"))
+			  setToolTipText(WiskOpdr.rb.getString("TE_geodefinerButtonTooltip"));
 		 
 		
 	}
@@ -710,6 +716,16 @@ public class FormuleButton extends JButton implements MouseListener
 		else if(code.equals("opsomming"))
         {   //g.drawString("I",7,15);
             g.drawImage(getImage("opsomming.png"),2,2,null);
+            //if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
+        }
+		else if(code.equals("vormen"))
+        {   //g.drawString("I",7,15);
+            g.drawImage(getImage("vormen.png"),2,2,null);
+            //if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
+        }
+		else if(code.equals("geodefiner"))
+        {   //g.drawString("I",7,15);
+            g.drawImage(getImage("geodefiner.png"),1,1,null);
             //if("MW".equals(WiskOpdr.deployVariant))g.drawImage(getImage("wngeogebrabutton.png"),0,0,null);
         }
 		else if(code.equals("cbook"))

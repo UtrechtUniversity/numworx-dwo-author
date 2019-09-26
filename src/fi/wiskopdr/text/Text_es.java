@@ -512,6 +512,7 @@ public class Text_es extends java.util.ListResourceBundle
                 {"TE_x-widgetButtonTooltip", "Cross-widget connections"},
                 {"TE_parameterButtonTooltip", "Use random parameters"},
                 {"TE_opsommingButtonTooltip", "Add list"},
+                {"TE_vormenButtonTooltip", "Add shape"},
                 
                 //Style Manager
                 {"SM_titelLabel", "Manage Styles"},

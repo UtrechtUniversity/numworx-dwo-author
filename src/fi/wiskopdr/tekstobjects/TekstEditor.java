@@ -29,6 +29,7 @@ import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+//import fi.dwo.dwojapplet.gui.numworx.JScrollPane;
 
 public class TekstEditor extends JLayeredPane implements TabletOwner, InteractiePanel, ActionListener, MouseListener, AdjustmentListener, FormuleVakHouder, CBookAware
 {	
@@ -46,7 +47,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private JPopupMenu geogebraKnopJMenu;
 	private JPopupMenu tekstvakKnopJMenu;
 	
-	public FormuleButton opsommingKnop, templateChoiceKnop, componentChoiceKnop, standardComponentChoiceKnop;
+	public FormuleButton geodefinerKnop, vormenKnop, opsommingKnop, templateChoiceKnop, componentChoiceKnop, standardComponentChoiceKnop;
 	public JPopupMenu templateChoice, componentChoice, standardComponentChoice;
 	JMenuItem[] templateItems;
 	JMenuItem[] componentItems;
@@ -157,6 +158,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		    headerPanel.remove(tekstVakKnop);
 		    headerPanel.remove(geogebraKnop);
 		    headerPanel.remove(opsommingKnop);
+		    headerPanel.remove(vormenKnop);
+		    headerPanel.remove(geodefinerKnop);
 		    headerPanel.remove(templateChoiceKnop);
 		    headerPanel.remove(componentChoiceKnop);
 		    headerPanel.remove(opsommingKnop);
@@ -275,6 +278,11 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		opsommingKnop.addActionListener(this);
 		if(form)headerPanel.add(opsommingKnop);
 		
+		vormenKnop = new FormuleButton("vormen");
+		vormenKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,20,20);
+		vormenKnop.addActionListener(this);
+		if(form)headerPanel.add(vormenKnop);
+		
 		rmKnop = new FormuleButton("rmvak");
 		rmKnop.setBounds(toolbarLeft,38,balkH/2-10,20,20);
 		rmKnop.addActionListener(this);
@@ -287,10 +295,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		grafiekToolKnop.setVisible(false);
 		headerPanel.add(grafiekToolKnop);
 		
+		geodefinerKnop = new FormuleButton("geodefiner");
+		geodefinerKnop.setBounds(toolbarLeft,64+26+26+26+26,balkH/2-10,20,20);
+		geodefinerKnop.addActionListener(this);
+		if(form)headerPanel.add(geodefinerKnop);
+		
 		geogebraKnop = new FormuleButton("geogebra");
 		geogebraKnop.setBounds(toolbarLeft,64+26+26+26+26,balkH/2-10,20,20);
 		geogebraKnop.addActionListener(this);
-		if(form)headerPanel.add(geogebraKnop);
+		//if(form)headerPanel.add(geogebraKnop);
 		geogebraKnopJMenu = new JPopupMenu();
 		TekstInteractiePanelVak.makeJMenu(this,"GeoGebra",geogebraKnopJMenu, 4);
 		
@@ -846,6 +859,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			geogebraKnop.setVisible(false);
 			crosswidgetKnop.setVisible(false);
 			opsommingKnop.setVisible(false);
+			vormenKnop.setVisible(false);
+			geodefinerKnop.setVisible(false);
 			templateChoiceKnop.setVisible(false);
 			componentChoiceKnop.setVisible(false);
 			standardComponentChoiceKnop.setVisible(false);
@@ -877,6 +892,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			tekstVakKnop.setVisible(true);
 			geogebraKnop.setVisible(true);
 			opsommingKnop.setVisible(true);
+			vormenKnop.setVisible(true);
+			geodefinerKnop.setVisible(true);
 			if(crossWidgetOption)crosswidgetKnop.setVisible(true);
 			if(templateOption){
 				templateChoiceKnop.setVisible(templateItems!=null && templateItems.length>0);
@@ -971,6 +988,14 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
 		else if(e.getSource()==opsommingKnop)
 		{	TComponentGeneratorFactory.getComponentGenerator("List").generateComponent( tekstVakActief);
+		}
+	
+		else if(e.getSource()==vormenKnop)
+		{	tekstVakActief.insertTekstInteractiePanelVak(3,1);
+		}
+	
+		else if(e.getSource()==geodefinerKnop)
+		{	tekstVakActief.insertTekstInteractiePanelVak(4,0);
 		}
 	
 		else if(e.getSource()==linkKnop)

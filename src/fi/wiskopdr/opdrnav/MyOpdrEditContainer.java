@@ -275,16 +275,16 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		  tekstEditor.setMainEditor(defaultMarginX, defaultMarginY, defaultDocWidth, defaultDocHeight);
 	}
 
-	public void paintComponent(Graphics g) {
-	    int xnul = 25 + (tekstEditor.getWidth() - defaultDocWidth)/2;
-		g.setColor(new Color(51,74,112));
-	    g.drawLine(xnul+800, 0, xnul+800, 10);
-		g.drawString("800 px", xnul+805, 10);
-		g.drawLine(xnul+1024, 0, xnul+1024, 10);
-		g.drawString("1024 px", xnul+1029, 10);
-		g.drawLine(xnul+1280, 0, xnul+1280, 10);
-		g.drawString("1280 px", xnul+1288, 10);
-	}
+//	public void paintComponent(Graphics g) {
+//	    int xnul = 25 + (tekstEditor.getWidth() - defaultDocWidth)/2;
+//		g.setColor(new Color(51,74,112));
+//	    g.drawLine(xnul+800, 0, xnul+800, 10);
+//		g.drawString("800 px", xnul+805, 10);
+//		g.drawLine(xnul+1024, 0, xnul+1024, 10);
+//		g.drawString("1024 px", xnul+1029, 10);
+//		g.drawLine(xnul+1280, 0, xnul+1280, 10);
+//		g.drawString("1280 px", xnul+1288, 10);
+//	}
 
 	public void setControlPanelHeight(int h) {
 		if (hasTekstVakLayout) {
@@ -299,14 +299,14 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
 		//tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
-		tekstEditor.setBounds(10, hasTitle ? 75 : 15, w - 20, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
+		tekstEditor.setBounds(10, hasTitle ? 75 : 5, w - 20, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
 		tekstEditor.setMainEditor(defaultMarginX, defaultMarginY, defaultDocWidth, defaultDocHeight);
         
         
 		tekstEditor2.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 260 + (hasAntwoordVak ? 0 : h - 450));
 		if (hasTekstVakLayout) {
-			randVarLabel.setBounds(w - 200, h - 86, 200, 20);
-			randomVarEditor.setBounds(w - 210, h - 86, 200, 80);
+			randVarLabel.setBounds(w - 200, h - 96, 200, 20);
+			randomVarEditor.setBounds(w - 210, h - 96, 200, 80);
 		} else {
 			randVarLabel.setBounds(scheidingX + 15, 5, eindX - 5 - scheidingX, 20);
 			randomVarEditor.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 70);

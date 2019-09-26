@@ -466,7 +466,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	 String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
  		HelpButton helpButton = new HelpButton(HELP_URL1);
  		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
- 		helpButton.setPreferredSize(new Dimension(16,16));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
     	
     	Box regelBox = Box.createHorizontalBox();
     	Box kolomBox = Box.createHorizontalBox();
