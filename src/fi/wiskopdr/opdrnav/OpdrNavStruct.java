@@ -2969,15 +2969,15 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 	}
 	
-	public void bepaalScoresMaxComponentsChanged()
-	{
-	  scoresMax[activiteitNr][opdrachtNr] = opdrContainer.getScoreMaxComponentsChanged();
-	  scoreMax = 0;
-	  for(int i = 0; i < aantalActiviteiten; i++)
-	    for(int j = 0; j < aantalOpdrachten[i]; j++)
-	      scoreMax += scoresMax[i][j];
-	  
-	}
+//	public void bepaalScoresMaxComponentsChanged()
+//	{
+//	  scoresMax[activiteitNr][opdrachtNr] = opdrContainer.getScoreMaxComponentsChanged();
+//	  scoreMax = 0;
+//	  for(int i = 0; i < aantalActiviteiten; i++)
+//	    for(int j = 0; j < aantalOpdrachten[i]; j++)
+//	      scoreMax += scoresMax[i][j];
+//	  
+//	}
 	
 	public void zetNoScore(int i)
 	{
@@ -3308,14 +3308,14 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 				return;
 			}
 			
-			if(e.getActionCommand().equals("componentsChanged")) //tbv stappenvak
-			{
-			  bepaalScoresMaxComponentsChanged();
-			  zetNoScore(activiteitNr, opdrachtNr);
-			}
+//			if(e.getActionCommand().equals("componentsChanged")) //tbv stappenvak
+//			{
+//			  bepaalScoresMaxComponentsChanged();
+//			  zetNoScore(activiteitNr, opdrachtNr);
+//			}
 			
-			if (!(e.getActionCommand().equals("checked") || e.getActionCommand().equals("changed") || 
-			    e.getActionCommand().equals("componentsChanged")))
+			if (!(e.getActionCommand().equals("checked") || e.getActionCommand().equals("changed")))// || 
+			    //e.getActionCommand().equals("componentsChanged")))
 				return;
 			
 			int score = opdrContainer.getScore();

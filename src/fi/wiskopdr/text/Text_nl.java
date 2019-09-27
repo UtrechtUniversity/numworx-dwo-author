@@ -890,6 +890,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"Steps_nrOfSteps", "Aantal verschillende stappen"},
 				{"Steps_name", "Stapnaam"},
 				{"Steps_content", "Stapinhoud"},
+				{"Steps_required", "Vereist"},
 				
 				// opdr nav struct
 				{"ONS_timeisup", "De tijd is om"},

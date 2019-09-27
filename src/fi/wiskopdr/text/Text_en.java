@@ -841,6 +841,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"Steps_nrOfSteps", "Number of different steps"},
                 {"Steps_name", "Step name"},
                 {"Steps_content", "Step content"},
+                {"Steps_required", "Required"},
 				
 				// opdr nav struct
 				{"ONS_timeisup", "The time is up"},

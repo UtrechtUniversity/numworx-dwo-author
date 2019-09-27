@@ -4359,7 +4359,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
           {   ((TekstInteractiePanelVak) ipc).setEditModeAll(false);
           }
       }
-      componentsChangedAction();
+      //componentsChangedAction();
 	}
 	
 	public void backStep()
@@ -4370,23 +4370,23 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	  tekstVakken[stapNr-1][aantalKolommen-1].setCaret(0);
       stapNr--;
       zetMaat();
-      componentsChangedAction();
+      //componentsChangedAction();
     }
 	
-	public void componentsChangedAction()
-	{
-	  scoreMax = 0;
-      correct = true;
-      Vector v = geefInteractiePanels();
-      for (int i = 0; i < v.size(); i++)
-      {
-          InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(i);
-          score += ipc.getScore();
-          scoreMax += ipc.getScoreMax();
-          correct = correct && ipc.isCorrect();
-      }
-	  produceAction("componentsChanged");
-	}
+//	public void componentsChangedAction()
+//	{
+//	  scoreMax = 0;
+//      correct = true;
+//      Vector v = geefInteractiePanels();
+//      for (int i = 0; i < v.size(); i++)
+//      {
+//          InteractiePanelContainerIF ipc = (InteractiePanelContainerIF) v.elementAt(i);
+//          score += ipc.getScore();
+//          scoreMax += ipc.getScoreMax();
+//          correct = correct && ipc.isCorrect();
+//      }
+//	  produceAction("componentsChanged");
+//	}
 	
 
 	@Override

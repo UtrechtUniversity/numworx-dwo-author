@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
@@ -28,6 +29,8 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
     int ashoogte = 15;
     StappenKeuzeVak keuzeVak;
     int aantalStappen = 4;
+    int scoreMax = 10;
+    boolean[] stepRequired = null;
     TekstVakPanel stappenVak;
     JPanel choiceLine;
     JButton backButton;
@@ -41,6 +44,8 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
     int buttonHeight = 24;
     
     boolean ideasStatistiek = true;
+    
+    ArrayList<Integer> selectedSteps = new ArrayList<Integer>();
     
 	public SamengesteldeStappenPanel()
 	{
@@ -193,17 +198,27 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
 	    zetMaat();
 	}
 	  
-	
+	public void addSelectedStep(int stepNr)
+	{
+	  selectedSteps.add(stepNr);
+	}
 
   @Override
   public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) {
 
     boolean ideasStatistiek = false;
+    int scoreMax = 10;
+    boolean[] stepRequired = null;
     if(h.containsKey("ideasStatistiek"))
       ideasStatistiek = ((Boolean)h.get("ideasStatistiek")).booleanValue();
     
     zetIdeasStatistiek(ideasStatistiek);
-    
+    if(h.containsKey("maxScore"))
+      scoreMax = ((Integer)h.get("scoreMax")).intValue();
+    if(h.containsKey("stepRequired"))
+      stepRequired = (boolean[]) h.get("stepRequired");
+    this.scoreMax = scoreMax;
+    this.stepRequired = stepRequired;
     keuzeVak.zetOpdracht(h);
     zetMaat();
     
@@ -211,6 +226,8 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
 
   @Override
   public void setState(Hashtable h) {
+    if(h.containsKey("selectedSteps"))
+      this.selectedSteps = (ArrayList<Integer>) h.get("selectedSteps");
     stappenVak.setState(h);
     zetMaat();
   }
@@ -227,6 +244,7 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
   @Override
   public Hashtable getState() {
     Hashtable h = stappenVak.getState();
+    h.put("selectedSteps", selectedSteps);
     return h;
   }
 
@@ -279,7 +297,16 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
 
   @Override
   public int getScore() {
-    return stappenVak.getScore();
+    
+    if(isCorrect())
+      return scoreMax;
+    return 0;
+//    
+//    System.out.println("selectedSteps: " + selectedSteps.toString());
+//    
+//    if(stappenVak.isCorrect())
+//      return scoreMax;
+//    return 0;
   }
 
   @Override
@@ -289,12 +316,28 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
 
   @Override
   public int getScoreMax() {
-    return stappenVak.getScoreMax();
+    return scoreMax;
   }
 
   @Override
   public boolean isCorrect() {
-    return stappenVak.isCorrect();
+    //Requirement 1: stappenVak is correct
+    if(stappenVak.isCorrect() && stepRequired != null)
+    {
+      boolean correct = true;
+      //Requirement 2: all required steps are present
+      for(int i = 0; i < stepRequired.length; i++)
+      {
+        if(stepRequired[i])
+        {
+          if(!selectedSteps.contains(i))
+            correct = false;
+        }
+      }
+      return correct;
+    }
+    return false;
+        //stappenVak.isCorrect();
   }
 
   @Override
@@ -380,7 +423,10 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
     if(e.getSource() == backButton)
     {
       stappenVak.backStep();
+      if(selectedSteps.size() > 0)
+        selectedSteps.remove(selectedSteps.size() - 1);
       zetMaat();
+      kijkNa();
     }
     produceAction(e.getActionCommand());
   }

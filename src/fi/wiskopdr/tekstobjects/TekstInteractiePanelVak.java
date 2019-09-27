@@ -2416,15 +2416,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    return scoreMax;
 	}
 	
-	public int getScoreMaxComponentsChanged()
-	{
-	  int scoreMax = 0;
-	  if(interactiePanel!=null)
-        scoreMax = interactiePanel.getScoreMax();
-      else
-          scoreMax = 0;
-      return scoreMax;
-	}
+//	public int getScoreMaxComponentsChanged()
+//	{
+//	  int scoreMax = 0;
+//	  if(interactiePanel!=null)
+//        scoreMax = interactiePanel.getScoreMax();
+//      else
+//          scoreMax = 0;
+//      return scoreMax;
+//	}
 	
 	public int[][] getScoreMaxObjectives()
 	{	if(launchData==null || WiskOpdr.objectives==null)return null;

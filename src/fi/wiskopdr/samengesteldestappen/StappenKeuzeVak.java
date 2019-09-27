@@ -98,8 +98,11 @@ public class StappenKeuzeVak extends JLayeredPane implements ActionListener
   @Override
   public void actionPerformed(ActionEvent e)
   {
+    if(stepKV.getSelectedIndex() == 0)
+      return;
     String stepContent = stepContents[stepKV.getSelectedIndex() - 1];
     parent.makeStep(stepContent);
+    parent.addSelectedStep(stepKV.getSelectedIndex() - 1);
     stepKV.setSelectedIndex(0);
   }
   
