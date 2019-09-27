@@ -4305,7 +4305,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				{   backStep();	
 				    return;
 				}
-				maakStap(contentString);
+				maakStap(contentString, randomVars, randomValues);
 				
 				//zetOpdracht(getEditState(),null,null);
 				
@@ -4325,7 +4325,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
           stappen = new String[aantalRijen];
 	}
 	
-	public void maakStap(String text)
+	public void maakStap(String text, String[] randomVars, Hashtable randomValues)
 	{
 	  if(stapNr > stappen.length - 1)
 	    return;
@@ -4344,7 +4344,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
       Vector vStapNr = tekstVakken[stapNr-1][aantalKolommen-1].geefInteractiePanels();
       if(vStapNr.size()>0)
       {   InteractiePanelContainerIF ipcNew = (InteractiePanelContainerIF)vStapNr.elementAt(0);
-          ipcNew.zetOpdracht(ipcNew.getEditState(),null,null);
+          ipcNew.zetOpdracht(ipcNew.getEditState(),randomVars,randomValues);
           ipcNew.addActionListener(this);
       }
       

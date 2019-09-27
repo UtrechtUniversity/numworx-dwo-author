@@ -106,7 +106,7 @@ public class StappenKeuzeVak extends JLayeredPane implements ActionListener
     stepKV.setSelectedIndex(0);
   }
   
-  public void zetOpdracht(Hashtable h)
+  public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues)
   {
     Hashtable[] steps = null;
     
@@ -122,7 +122,7 @@ public class StappenKeuzeVak extends JLayeredPane implements ActionListener
       String keuze = (String) steps[i].get("keuze");
       try
         {
-            keuze = FormuleParser.randomizeTekstVakString(keuze, null, null);
+            keuze = FormuleParser.randomizeTekstVakString(keuze, randomVars, randomValues);
         }
       catch (Exception e)
       {

@@ -47,6 +47,9 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
     
     ArrayList<Integer> selectedSteps = new ArrayList<Integer>();
     
+    private String[] randomVars;
+    private Hashtable randomValues;
+    
 	public SamengesteldeStappenPanel()
 	{
 	  int width = 400;
@@ -194,7 +197,7 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
 	
 	public void makeStep(String text)
 	{
-	    stappenVak.maakStap(text);
+	    stappenVak.maakStap(text, randomVars, randomValues);
 	    zetMaat();
 	}
 	  
@@ -206,6 +209,8 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
   @Override
   public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) {
 
+    this.randomVars = randomVars;
+    this.randomValues = randomValues;
     boolean ideasStatistiek = false;
     int scoreMax = 10;
     boolean[] stepRequired = null;
@@ -219,7 +224,8 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
       stepRequired = (boolean[]) h.get("stepRequired");
     this.scoreMax = scoreMax;
     this.stepRequired = stepRequired;
-    keuzeVak.zetOpdracht(h);
+    keuzeVak.zetOpdracht(h, randomVars, randomValues);
+    stappenVak.
     zetMaat();
     
   }
