@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
