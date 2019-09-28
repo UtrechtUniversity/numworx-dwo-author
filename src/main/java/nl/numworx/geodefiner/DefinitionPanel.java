@@ -14,11 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.swing.Box;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.TransferHandler;
+import fi.beans.numworxlf.JScrollPane;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 

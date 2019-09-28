@@ -4,7 +4,7 @@ import java.awt.Dimension;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
+import fi.beans.numworxlf.JCheckBox;
 import javax.swing.JLabel;
 
 import nl.numworx.geodefiner.GeoDefiner;

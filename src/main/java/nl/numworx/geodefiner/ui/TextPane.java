@@ -7,15 +7,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.geom.AffineTransform;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
+import fi.beans.numworxlf.JCheckBox;
+import fi.beans.numworxlf.JComboBox;
+import fi.beans.numworxlf.NumworxTextFieldUI;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,6 +43,7 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 		alignBox.setSelectedItem(model.align);
 		preview.add(sampleLabel);
 		fontSize = new JFormattedTextField(NumberFormat.getInstance(Locale.US));
+		fontSize.setUI(NumworxTextFieldUI.createUI(fontSize));
 		fontSize.setValue(model.font.getSize2D()+0.0);
 		fontSize.setColumns(5);
 		fontSize.setMaximumSize(fontSize.getPreferredSize());

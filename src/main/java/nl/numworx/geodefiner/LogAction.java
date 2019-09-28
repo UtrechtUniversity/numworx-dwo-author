@@ -20,13 +20,12 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
+import fi.beans.numworxlf.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import fi.beans.numworxlf.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import fi.beans.numworxlf.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 

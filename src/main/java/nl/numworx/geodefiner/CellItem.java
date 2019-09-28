@@ -13,10 +13,10 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
+import fi.beans.numworxlf.JButton;
+import fi.beans.numworxlf.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import fi.beans.numworxlf.JRadioButton;
 import javax.swing.TransferHandler;
 
 import fi.euclides.model.AbstractViewer;
@@ -138,8 +138,9 @@ public class CellItem extends JPanel {
 		this.viewer = viewer;
 		boolean valid = cell.item != null;
 		potlood = new JButton( valid ? new EditAction(editImage): new DeleteAction());
+		potlood.setContentAreaFilled(false);
 		add(potlood, BorderLayout.LINE_END);
-		radio = new JRadioButton();
+		radio = new JRadioButton(); radio.setContentAreaFilled(false);
 		radio.setEnabled(valid);
 		radio.setSelected(valid && cell.item.isVisible());
 		VisibleAction a = new VisibleAction();

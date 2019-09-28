@@ -4,6 +4,7 @@ import javax.swing.Box;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
+import fi.beans.numworxlf.NumworxTextFieldUI;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.math.Numbers;
 
@@ -15,6 +16,7 @@ class UPane extends PointPane<UModel> {
 	public UPane(UModel model) {
 		super(model);
 		dField = new JFormattedTextField();
+		dField.setUI(NumworxTextFieldUI.createUI(dField));
 		u = (HorizontalPunt) model.item;
 		dField.setValue(u.getDistance().doubleValue());dField.setColumns(5);
 		dField.setMaximumSize(dField.getPreferredSize());

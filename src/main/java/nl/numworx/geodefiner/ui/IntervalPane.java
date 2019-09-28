@@ -6,7 +6,7 @@ import java.util.Locale;
 import javax.swing.Box;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
+import fi.beans.numworxlf.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 

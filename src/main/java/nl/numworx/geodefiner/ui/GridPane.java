@@ -1,7 +1,7 @@
 package nl.numworx.geodefiner.ui;
 
 import javax.swing.Box;
-import javax.swing.JCheckBox;
+import fi.beans.numworxlf.JCheckBox;
 import javax.swing.JLabel;
 
 import fi.euclides.util.Messages;

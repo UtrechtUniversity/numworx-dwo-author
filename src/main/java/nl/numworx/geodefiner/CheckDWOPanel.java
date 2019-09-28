@@ -12,13 +12,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import fi.beans.numworxlf.JButton;
+import fi.beans.numworxlf.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import fi.beans.numworxlf.JTextField;
+import fi.beans.numworxlf.NumworxTextFieldUI;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -43,7 +45,7 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 	private JTextField logID;
 	private Tracker tracker;
 	
-	@Inject @Named("checkBtn") JButton checkBtn;
+	@Inject @Named("checkBtn") javax.swing.JButton checkBtn;
 	@Inject @Named("validator") JComponent validator = this;
 	ObjectiveChoiceButton objBtn;
 
@@ -88,6 +90,7 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 		checkDWO.addChangeListener(this);
 		extern.addChangeListener(this);
 		score = new JFormattedTextField(DEFAULT_SCORE);
+		score.setUI(NumworxTextFieldUI.createUI(score));
 		score.setColumns(5);
 		score.setMaximumSize(score.getPreferredSize());
 		formule = new FormuleEditor(false);

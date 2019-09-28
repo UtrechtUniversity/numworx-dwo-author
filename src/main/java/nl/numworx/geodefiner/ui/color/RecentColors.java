@@ -1,6 +1,5 @@
 package nl.numworx.geodefiner.ui.color;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;

@@ -5,12 +5,13 @@ import java.text.ParseException;
 import java.util.Locale;
 
 import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
+import fi.beans.numworxlf.JCheckBox;
+import fi.beans.numworxlf.JComboBox;
+import fi.beans.numworxlf.NumworxTextFieldUI;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
-import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.Messages;
 import nl.numworx.geodefiner.common.LineType;
 
@@ -29,7 +30,7 @@ public class LinePane<M extends LineModel> extends ColorPane<M> {
 		type   = new JComboBox<LineType>(LineType.values());
 		type.setSelectedItem(model.type);
 		NumberFormat format = NumberFormat.getInstance(Locale.US);
-		widthField = new JFormattedTextField(format);
+		widthField = new JFormattedTextField(format); widthField.setUI(NumworxTextFieldUI.createUI(widthField));
 		widthField.setValue(model.width);
 		widthField.setColumns(5);
 		widthField.setMaximumSize(widthField.getPreferredSize());

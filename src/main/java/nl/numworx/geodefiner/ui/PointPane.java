@@ -1,12 +1,13 @@
 package nl.numworx.geodefiner.ui;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Locale;
 
 import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
+import fi.beans.numworxlf.JCheckBox;
+import fi.beans.numworxlf.JComboBox;
+import fi.beans.numworxlf.NumworxTextFieldUI;
+
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
@@ -28,7 +29,7 @@ class PointPane<T extends PointModel> extends ColorPane<T> {
 		type = new JComboBox<PointType>(PointType.values());
 		type.setSelectedItem(model.type);
 		NumberFormat format = NumberFormat.getIntegerInstance(Locale.US);
-		sizeField = new JFormattedTextField(format);
+		sizeField = new JFormattedTextField(format);sizeField.setUI(NumworxTextFieldUI.createUI(sizeField));
 		sizeField.setValue(Integer.valueOf(model.size));
 		sizeField.setColumns(5);
 		sizeField.setMaximumSize(sizeField.getPreferredSize());

@@ -4,6 +4,7 @@ import javax.swing.Box;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
+import fi.beans.numworxlf.NumworxTextFieldUI;
 import fi.euclides.model.math.Numbers;
 
 public class OPane extends PointPane<OModel> {
@@ -12,8 +13,8 @@ public class OPane extends PointPane<OModel> {
 	
 	public OPane(OModel model) {
 		super(model);
-		xField = new JFormattedTextField();
-		yField = new JFormattedTextField();
+		xField = new JFormattedTextField();xField.setUI(NumworxTextFieldUI.createUI(xField));
+		yField = new JFormattedTextField();yField.setUI(NumworxTextFieldUI.createUI(yField));
 		xField.setValue(model.item.getXd());xField.setColumns(5);
 		xField.setMaximumSize(xField.getPreferredSize());
 		yField.setValue(model.item.getYd());yField.setColumns(5);

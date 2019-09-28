@@ -27,12 +27,12 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import fi.beans.numworxlf.JButton;
+import fi.beans.numworxlf.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import fi.beans.numworxlf.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
 import javax.swing.border.Border;
@@ -224,7 +224,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 			if(box.isSelected())
 			{
 				int n = boxes.indexOf(box);
-				JButton b = toolbox.add(actionsMap.get(n).get());
+				javax.swing.JButton b = toolbox.add(actionsMap.get(n).get());
 //				Border border = b.getBorder();
 //				Dimension size = b.getPreferredSize();
 // XXX opvullen tot 40x40, werkt niet op de MAC
