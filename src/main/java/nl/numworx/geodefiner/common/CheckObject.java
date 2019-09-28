@@ -136,6 +136,10 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 		return c instanceof Label && ((Label) c).getRegistered() instanceof LabelTester;
 	}
 
+	public boolean isTest() {
+	  return isTest(cache);
+	}
+	
 	public void destroy() {
 		for(Destroyable d:depend) d.deleteObserver(this);
 		if(cache != null)

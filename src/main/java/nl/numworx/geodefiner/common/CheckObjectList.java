@@ -173,6 +173,19 @@ public class CheckObjectList extends Groep implements Observer {
 						break;
 					}
 				}
+// Continue with boolean observers and testers?
+				while(i.hasNext()) {
+                  CheckObject co = i.next();
+                  if(co.getCache() == null) {
+                      Destroyable c = co.createObject(expression, tracker.getMapper(), tracker.adapt(Randomizer.class));
+                      if(CheckObject.isTest(c))
+                          co.addObserver(this);
+                  }
+			  
+				}
+				
+				
+				
 			}
 		} else if(arg == Destroyable.DESTROY) {
 			observable.deleteObserver(this);
@@ -305,7 +318,7 @@ public class CheckObjectList extends Groep implements Observer {
 			} else
 				running.add(co);
 		}
-		
+		tracker.getModel().executeDelay();
 		Iterator<CheckObject> i = running.iterator();
 		while (i.hasNext()) {
 			CheckObject co = i.next();
@@ -315,7 +328,7 @@ public class CheckObjectList extends Groep implements Observer {
 			} else
 			for(Iterator<Destroyable> u = userItems.iterator(); u.hasNext(); ) {
 				Destroyable d = u.next();
-				if(co.verify(d))
+				if(!co.isTest() && co.verify(d))
 				{
 					co.addObserver(this);
 					i.remove();
@@ -324,8 +337,20 @@ public class CheckObjectList extends Groep implements Observer {
 					break;
 				}
 			}
+			tracker.getModel().executeDelay();
 			notifyObservers();
-		}
+              
+            }
+		
+       tracker.getModel().executeDelay();
+       i = running.iterator();
+       while (i.hasNext()) {
+          CheckObject co = (CheckObject) i.next();
+          if (co.isTest() && co.verify()) {
+            i.remove();
+            setChanged();
+         }
+        }	
 		notifyObservers();
 	}
 	
