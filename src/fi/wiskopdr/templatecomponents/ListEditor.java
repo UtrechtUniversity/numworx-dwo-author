@@ -41,6 +41,8 @@ public class ListEditor implements TComponentEditor, ActionListener {
 	private JTextField rowCountTF;
 	private JLabel listNumberTypeLabel;
 	private JComboBox listNumberTypeComboBox;
+	private JLabel firstListNumberLabel;
+	private JComboBox firstListNumberComboBox;
 	private JLabel tabWidthLabel;
 	private JTextField tabWidthTF;
 	private JLabel rowSpaceLabel;
@@ -90,9 +92,20 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		listNumberTypeComboBox = new WiskOpdrComboBox();
 		listNumberTypeComboBox.setFont(font);
 		listNumberTypeComboBox.setPreferredSize(new Dimension(80,22));
+		listNumberTypeComboBox.addActionListener(this);
 		listNumberTypeComboBox.addItem(WiskOpdr.rb.getString("TCOMP_list_chooseType"));
 		for(int i=0 ; i<ListGenerator.listNumbers.length ; i++) {
 			listNumberTypeComboBox.addItem(ListGenerator.listNumbers[i][0]+" ,"+ListGenerator.listNumbers[i][1]+" ,"+ListGenerator.listNumbers[i][2]+" , ...");
+		}
+		
+		firstListNumberLabel = new JLabel(WiskOpdr.rb.getString("TCOMP_first_list_number"));
+		firstListNumberLabel.setFont(font);
+		
+		firstListNumberComboBox = new WiskOpdrComboBox();
+		firstListNumberComboBox.setFont(font);
+		firstListNumberComboBox.setPreferredSize(new Dimension(80,22));
+		for(int i=0 ; i<ListGenerator.listNumbers[0].length ; i++) {
+			firstListNumberComboBox.addItem(ListGenerator.listNumbers[0][i]);
 		}
 		
 		
@@ -128,6 +141,15 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(Box.createHorizontalGlue());
 		boxh.add(listNumberTypeComboBox);
+		
+		boxv.add(boxh);
+		boxv.add(Box.createVerticalStrut(5));
+		
+		boxh = Box.createHorizontalBox();
+		boxh.add(firstListNumberLabel);
+		boxh.add(Box.createHorizontalStrut(20));
+		boxh.add(Box.createHorizontalGlue());
+		boxh.add(firstListNumberComboBox);
 		
 		boxv.add(boxh);
 		boxv.add(Box.createVerticalStrut(5));
@@ -184,11 +206,13 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		
 		int rowCount = ListGenerator.initialRowCount;
 		int listNumberType = ListGenerator.initialListNumberType;
+		int firstListNumber = ListGenerator.initialFirstListNumber;
 		int tabWidth = ListGenerator.initialTabWidth;
 		int rowSpace = ListGenerator.initialRowSpace;
 		
 		rowCount = Integer.parseInt(rowCountTF.getText());
 		listNumberType = listNumberTypeComboBox.getSelectedIndex()-1;
+		firstListNumber = firstListNumberComboBox.getSelectedIndex();
 		tabWidth = Integer.parseInt(tabWidthTF.getText());
 		rowSpace = Integer.parseInt(rowSpaceTF.getText());
 		
@@ -196,6 +220,7 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		
 		preferences.put("rowCount", new Integer(rowCount));
 		preferences.put("listNumberType", new Integer(listNumberType));
+		preferences.put("firstListNumber", new Integer(firstListNumber));
 		preferences.put("tabWidth", new Integer(tabWidth));
 		preferences.put("rowSpace", new Integer(rowSpace));
 		return preferences;
@@ -206,16 +231,19 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		
 		int rowCount = ListGenerator.initialRowCount;
 		int listNumberType = ListGenerator.initialListNumberType;
+		int firstListNumber = ListGenerator.initialFirstListNumber;
 		int tabWidth = ListGenerator.initialTabWidth;
 		int rowSpace = ListGenerator.initialRowSpace;
 		
 		if(preferences.containsKey("rowCount")) rowCount = ((Integer)preferences.get("rowCount")).intValue();
 		if(preferences.containsKey("listNumberType")) listNumberType = ((Integer)preferences.get("listNumberType")).intValue()+1;
+		if(preferences.containsKey("firstListNumber")) firstListNumber = ((Integer)preferences.get("firstListNumber")).intValue();
 		if(preferences.containsKey("tabWidth")) tabWidth = ((Integer)preferences.get("tabWidth")).intValue();
 		if(preferences.containsKey("rowSpace")) rowSpace = ((Integer)preferences.get("rowSpace")).intValue();
 		
 		rowCountTF.setText(""+rowCount);
 		listNumberTypeComboBox.setSelectedIndex(listNumberType);
+		firstListNumberComboBox.setSelectedIndex(firstListNumber);
 		tabWidthTF.setText(""+tabWidth);
 		rowSpaceTF.setText(""+rowSpace);
 		
@@ -257,6 +285,15 @@ public class ListEditor implements TComponentEditor, ActionListener {
 		}
 		if(e.getSource().equals(cancelButton)) {
 			frame.setVisible(false);
+		}
+		if(e.getSource().equals(listNumberTypeComboBox)) {
+			int listNumberType = listNumberTypeComboBox.getSelectedIndex()-1;
+			if(firstListNumberComboBox!=null) {
+				firstListNumberComboBox.removeAllItems();
+				for(int i=0 ; i<ListGenerator.listNumbers[listNumberType].length ; i++) {
+					firstListNumberComboBox.addItem(ListGenerator.listNumbers[listNumberType][i]);
+				}
+			}
 		}
 		
 	}

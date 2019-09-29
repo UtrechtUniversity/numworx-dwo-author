@@ -198,7 +198,7 @@ public class StelselOplossingenVak extends JLayeredPane implements ActionListene
 		}
 		else
 			g.fillRect(1, 2, getSize().width - 2, getSize().height - 4);
-		g.setColor(Color.gray);
+		g.setColor(WiskOpdr.colorBlue4);
 		if ("GR".equals(WiskOpdr.deployVariant))
 			g.setColor(new Color(153, 153, 153));
 		g.drawRect(1, 2, getSize().width - 2, getSize().height - 4);

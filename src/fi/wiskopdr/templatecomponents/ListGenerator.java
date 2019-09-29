@@ -30,6 +30,7 @@ public class ListGenerator implements TComponentGenerator, ActionListener {
 	
 	public static int initialRowCount = 3;
 	public static int initialListNumberType = 0;
+	public static int initialFirstListNumber = 0;
 	public static int initialTabWidth = 30;
 	public static int initialRowSpace = 10;
 	
@@ -52,12 +53,14 @@ public class ListGenerator implements TComponentGenerator, ActionListener {
 	public ListGenerator() {
 		int rowCount = initialRowCount;
 		int listNumberType = initialListNumberType;
+		int firstListNumber = initialFirstListNumber;
 		int tabWidth = initialTabWidth;
 		int rowSpace = initialRowSpace;
 		
 		initPreferences = new Hashtable<String,Object>();
 		initPreferences.put("rowCount", new Integer(rowCount));
 		initPreferences.put("listNumberType", new Integer(listNumberType));
+		initPreferences.put("firstListNumber", new Integer(firstListNumber));
 		initPreferences.put("tabWidth", new Integer(tabWidth));
 		initPreferences.put("rowSpace", new Integer(rowSpace));
 		
@@ -164,9 +167,10 @@ public class ListGenerator implements TComponentGenerator, ActionListener {
 	
 	private Hashtable<String,Object> makeListNrLD(Hashtable<String,Object> preferences, int i) {
 		int listNumberType = ((Integer)preferences.get("listNumberType")).intValue();
+		int firstListNumber = ((Integer)preferences.get("firstListNumber")).intValue();
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
-		ipLaunchState.put("tekst", listNumbers[listNumberType][i]);
+		ipLaunchState.put("tekst", listNumbers[listNumberType][i+firstListNumber]);
 		ipLaunchState.put("pasAanH", new Boolean(true));
 		ipLaunchState.put("styleString", "sub-task-number");
 		if(!decompose) ipLaunchState.put("templateModeEdit", new Boolean(true));

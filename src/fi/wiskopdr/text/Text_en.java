@@ -238,8 +238,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{"contextVarCBLabel", "Use contextvariables"},
 				{"rmAantalDecLabel", "Number of decimals"},
 				
-				{"FEV_titleStartLabel", "Start expression"},
-				{"FEF_titleStartLabel", "Start equation"},
+				{"FEV_titleStartLabel", "Start equation"},
+				{"FEF_titleStartLabel", "Start expression"},
 				{"FEV_titleAntwoordLabel", "Correct answer"},
 				{"FEV_titleAntwoordNrLabel", "Answer"},
 				{"FEV_titleContextLabel", "Context variables"},
@@ -878,6 +878,7 @@ public class Text_en extends java.util.ListResourceBundle
                 { "TCOMP_list_chooseType" , "Choose type"},
                 { "TCOMP_list_tabWidth" , "Tab width"},
                 { "TCOMP_list_rowSpace" , "Space between items"},
+                { "TCOMP_first_list_number" , "Start number"},
                 
                 { "TCOMP_multip" , "Multiple Choice"},
                 { "TCOMP_multip_settings" , "Multiple Choice settings"},

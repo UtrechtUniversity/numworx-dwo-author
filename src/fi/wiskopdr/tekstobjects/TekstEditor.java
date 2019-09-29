@@ -29,6 +29,7 @@ import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.numworxlf.JScrollPane;
 //import fi.dwo.dwojapplet.gui.numworx.JScrollPane;
 
 public class TekstEditor extends JLayeredPane implements TabletOwner, InteractiePanel, ActionListener, MouseListener, AdjustmentListener, FormuleVakHouder, CBookAware
@@ -328,7 +329,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(form)headerPanel.add(templateChoiceKnop);
 		
 		componentChoiceKnop = new FormuleButton("cknop");
-		componentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,22,22);
+		componentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		componentChoiceKnop.addActionListener(this);
 		componentChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(componentChoiceKnop);

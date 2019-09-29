@@ -59,7 +59,7 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 	public StelselAntwoordVak()
 	{
 		setLayout(null);
-		setBorder(BorderFactory.createLineBorder(Color.gray));
+		setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue4));
 		rekenVak = new StelselRekenVak(this);
 		add(rekenVak);
 		
@@ -72,16 +72,19 @@ public class StelselAntwoordVak extends JPanel implements InteractiePanel{
 				
 				}
 				else
-					for(int i=0 ; i<10 ; i++)
-					{	g.setColor(new Color(200+5*i,200+5*i,200+5*i));
-						g.fillRect(0,getHeight() - (i+1)*getHeight()/10, getWidth(),getHeight()/10+1);
-					}
+				{	g.setColor(WiskOpdr.colorGray2);
+					g.fillRect(0,0, getWidth(),getHeight());
+				}
+//					for(int i=0 ; i<10 ; i++)
+//					{	g.setColor(new Color(200+5*i,200+5*i,200+5*i));
+//						g.fillRect(0,getHeight() - (i+1)*getHeight()/10, getWidth(),getHeight()/10+1);
+//					}
 				
 			}
 		};
 		oplossingenRegel.setBounds(0, getHeight() - 25, getWidth(), 25);
 		oplossingenRegel.setLayout(null);
-		oplossingenRegel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+		oplossingenRegel.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue4));
 		
 		add(oplossingenRegel);
 		
