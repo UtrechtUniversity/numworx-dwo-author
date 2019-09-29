@@ -981,9 +981,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	        
 		}
 		else if(e.getSource()==tekstVakKnop)
-		{	//tekstVakActief.insertTekstInteractiePanelVak(3);
-			tekstvakKnopJMenu.setVisible(true);
-			tekstvakKnopJMenu.show(this,tekstVakKnop.getLocation().x + tekstVakKnop.getWidth(), tekstVakKnop.getLocation().y);
+		{	tekstVakActief.insertTekstInteractiePanelVak(3,0);
+			//tekstvakKnopJMenu.setVisible(true);
+			//tekstvakKnopJMenu.show(this,tekstVakKnop.getLocation().x + tekstVakKnop.getWidth(), tekstVakKnop.getLocation().y);
 		}
 	
 		else if(e.getSource()==opsommingKnop)

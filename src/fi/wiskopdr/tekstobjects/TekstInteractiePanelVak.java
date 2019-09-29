@@ -512,6 +512,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	  String[] itemNames = new String[TekstInteractiePanelVak.interactiePanelSets[setNr].length];
 	  JMenu checkButtonsSubMenu = new JMenu(WiskOpdr.rb.getString("checkButtonsMenuLabel"));
 	  checkButtonsSubMenu.setForeground(new Color(49,71,112));
+	  checkButtonsSubMenu.setFont(new Font("SansSerif",Font.PLAIN,13));
 	  for(int i=0 ; i<interactiePanelSets[setNr].length ; i++) {
 	    JMenuItem item = new JMenuItem(te.new AntwoordvakKeuzeAction(interactiePanelDescriptions[interactiePanelSets[setNr][i]], setNr, i));
 	    item.setBackground(new Color(237,239,241));

@@ -99,6 +99,10 @@ public class TekstArea extends JPanel implements ActionListener
 		tekstVak.setFont(font);
 	}
 	
+	public void setMargeX(int marge) {
+		tekstVak.zetMarge(marge);
+	}
+	
 	
 	public void setSize(int b, int h)
 	{	//resized = true;

@@ -365,7 +365,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		antwB = eindX - 5 - scheidingX;
 		antwX = scheidingX + 5;
 		//tekstB = scheidingX - 20;
-		tekstB = MyOpdrEditContainer.defaultDocWidth+5;
+		tekstB = MyOpdrEditContainer.defaultDocWidth;
 		titelB = scheidingX - 20;
 		tekst2B = eindX - 5 - scheidingX;
 		tekst2X = scheidingX;
@@ -376,6 +376,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		tekstArea2.deleteStates();
 
 		tekstArea.setBounds(tekstX, hasTitle ? tekstY : titelY, tekstB, tekstH);
+		tekstArea.setMargeX(MyOpdrEditContainer.defaultMarginX);
 		tekstArea2.setBounds(tekst2X, tekst2Y, tekst2B, tekst2H);
 		titelLabel.setBounds(titelX, titelY, titelB, titelH);
 

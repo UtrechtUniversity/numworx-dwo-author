@@ -17,11 +17,20 @@ public class WiskOpdrEditPanel extends JPanel
 	private String launchDataString;
 	private OpdrNavStructEdit onsEdit;
 	private fi.wiskopdr.opdrnav.MyOpdrEditContainer opdrContainer;
+	private static int defaultEditorWidth = 800;
+	private static int defaultEditorHeight = 350;
+	private static int defaultDocumentWidth = 800;
+	private static int defaultDocumentHeight = 300;
 	
 	public WiskOpdrEditPanel(String launchDataString, WiskOpdr applet)
+	{
+		this(launchDataString, applet, defaultEditorWidth, defaultEditorHeight, defaultDocumentWidth, defaultDocumentHeight);
+	}
+	
+	public WiskOpdrEditPanel(String launchDataString, WiskOpdr applet, int editorWidth, int editorHeight, int documentWidth, int documentHeight)
 	{	setLayout(null);
 		setOpaque(false);
-		super.setSize(800,350);
+		super.setSize(500,350);
 		
 		this.launchDataString = launchDataString;
 		launchData = null;
@@ -29,8 +38,14 @@ public class WiskOpdrEditPanel extends JPanel
 			Object o = StringCodeObject.decodeStringToObject(launchDataString);
 			launchData = (Hashtable) o;
 		}
-		if (launchData == null)
+		if (launchData == null) {
 			launchData = applet.makeDefaultParamValues(0);
+			//launchData.put("scheidingX", new Integer(400));
+			Hashtable instellingen = new Hashtable();
+			instellingen.put("docWidth",new Integer(documentWidth));
+			instellingen.put("docHeight",new Integer(documentHeight));
+			launchData.put("instellingen", StringCodeObject.encodeObjectToString(instellingen));
+		}
 
 		ShareAction.init((String)launchData.get(ShareAction.SHARE_MAP));
 		TekstImageVak.setImageMapString((String)launchData.get(TekstImageVak.IMAGE_MAP));
@@ -41,15 +56,21 @@ public class WiskOpdrEditPanel extends JPanel
 //        WiskOpdr.rb = ResourceBundle.getBundle("fi.wiskopdr.text.Text",language);
 		
 	    if(WiskOpdr.lookAndFeel==null) WiskOpdr.lookAndFeel = UIManager.getLookAndFeel();
-	    opdrContainer =  new fi.wiskopdr.opdrnav.MyOpdrEditContainer(800,350); 
-		onsEdit = new OpdrNavStructEdit(opdrContainer,0,0,800, 350, launchData);
+	    opdrContainer =  new fi.wiskopdr.opdrnav.MyOpdrEditContainer(editorWidth,editorHeight); 
+		onsEdit = new OpdrNavStructEdit(opdrContainer,0,0,editorWidth, editorHeight, launchData);
 		onsEdit.removeMouseListener(onsEdit);
 		opdrContainer.setPlainEditor(this);
 		add(opdrContainer);
 
 	}
 	
-	public WiskOpdrEditPanel(Hashtable launchData, WiskOpdr applet)
+	public WiskOpdrEditPanel(Hashtable Hashtable, WiskOpdr applet)
+	{
+		this(Hashtable, applet, defaultEditorWidth, defaultEditorHeight);
+	}
+
+	
+	public WiskOpdrEditPanel(Hashtable launchData, WiskOpdr applet, int editorWidth, int editorHeight)
 	{	setLayout(null);
 		setOpaque(false);
 		super.setSize(800,350); 
@@ -64,8 +85,8 @@ public class WiskOpdrEditPanel extends JPanel
         WiskOpdr.rb = ResourceBundle.getBundle("fi.wiskopdr.text.Text",language);
 		
 	    if(WiskOpdr.lookAndFeel==null) WiskOpdr.lookAndFeel = UIManager.getLookAndFeel();
-	    opdrContainer =  new fi.wiskopdr.opdrnav.MyOpdrEditContainer(800,350); 
-		onsEdit = new OpdrNavStructEdit(opdrContainer,0,0,800, 350, launchData);
+	    opdrContainer =  new fi.wiskopdr.opdrnav.MyOpdrEditContainer(editorWidth,editorHeight); 
+		onsEdit = new OpdrNavStructEdit(opdrContainer,0,0,editorWidth, editorHeight, launchData);
 		onsEdit.removeMouseListener(onsEdit);
 		opdrContainer.setPlainEditor(this);
 		add(opdrContainer);
