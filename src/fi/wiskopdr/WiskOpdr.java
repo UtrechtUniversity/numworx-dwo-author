@@ -1,5 +1,7 @@
 package fi.wiskopdr;
 
+import java.applet.Applet;
+import java.applet.AppletStub;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
@@ -47,6 +49,8 @@ import org.json.fimple.JSONArray;
 import org.json.fimple.JSONObject;
 import org.json.fimple.JSONValue;
 import org.json.fimple.parser.JSONParser;
+import org.json.fimple.parser.ParseException;
+
 import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.ideas.IdeasClient;
@@ -163,7 +167,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private StudentModel studentModels[];
 	public static String[][] misconceptions = null;
 	public static String[] mccCategorieString = null;
-	
+	public static boolean ho;
+
 	
 	private JSONArray studentModelsJSON;
 	
@@ -204,9 +209,25 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return studentModels;
 	}
 	
+	public JSONObject getDwoProfile() {
+	  String json = getParameter("dwoProfile");
+	  if (json != null) {
+	    JSONParser parser = new JSONParser();
+	    try {
+	      return (JSONObject) parser.parse(json);
+	    } catch (Exception e) {
+	    }
+	  }
+      return null;
+	}
 	
-	
-
+	@SuppressWarnings("rawtypes")
+  public boolean isHO() {
+	  Map profile = getDwoProfile();
+	  if (profile == null) return false;
+	  String rights = (String) profile.get("dwoProfileRights");
+	  return rights.contains("H");
+	}
 
 
 
@@ -228,6 +249,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private boolean toetsLocked;
 	private boolean review;
 	private LessonMode lessonMode;
+
 	public static final String CAS_IDEAS = "ideas", CAS_LOCAL = "local";
 	public static String doCAS;
 
@@ -461,6 +483,15 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		WiskOpdrEditPanel wop = new WiskOpdrEditPanel(launchDataString, wiskOpdr);
 		return wop;
 	}
+	public static WiskOpdrEditPanel getWiskOpdrEditPanel(String launchDataString, Locale locale, AppletStub stub, int ew, int eh, int dw, int dh) {
+	  language = locale;
+	  WiskOpdr wiskOpdr = new WiskOpdr();
+	  wiskOpdr.setStub(stub);
+	  return new WiskOpdrEditPanel(launchDataString, wiskOpdr, ew, eh, dw, dh);
+	}
+	
+	
+	
 	
 	public static int getObjectSize(Object o) {
 		return StringCodeObject.encodeObjectToString(o).length();
@@ -757,6 +788,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 		dwo_env = getParameter("dwo_env"); // Zie Wiskopdr.isExperimental();
 		abo_type = getParameter("abo_type"); // Zie WiskOpdr.isPremium();
+		ho = isHO();
 		
 		doJSON = "true".equals(getParameter("JSON"));
 		doCAS  = CAS_LOCAL;
