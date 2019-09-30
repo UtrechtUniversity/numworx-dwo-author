@@ -34,8 +34,6 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
    
     // Basis GUI
     private JPanel mainPanel;
-    private JPanel helpPanel;
-    private Box helpBox;
     
 	//Start editor
 	private FormuleEditor startEditor;
@@ -220,14 +218,6 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		mainPanel.setBackground(WiskOpdr.colorGray3);
 		//mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
 		
-		helpPanel = new JPanel(new BorderLayout());
-		helpPanel.setBackground(WiskOpdr.colorBlue5);
-		helpPanel.setPreferredSize(new Dimension(300,400));
-		
-		helpBox = Box.createVerticalBox();
-		helpBox.add(Box.createRigidArea(new Dimension(300,0)));
-		helpBox.add(helpPanel);
-		helpBox.setVisible(false);
 		
         // GUI startBox  
     	titleStartLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleStartLabel"));
@@ -377,7 +367,6 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         ScoringLabel = makeLabel(320,385,160,20,WiskOpdr.rb.getString("score"),true);
         logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
        
-        
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
@@ -474,13 +463,13 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		Component[] r22 = {substitutiesButton};
 		Component[] r23 = {functiesButton};
 		
-		Component[] k2 = {hb(r21),vst(15),hb(r22),vst(10),hb(r23), vgl()};
+		Component[] k2 = {hb(r21),vst(15),hb(r22),vst(10),hb(r23), ra(10,20),vgl()};
 		if(soort==1) {
 			Component[] h1 = {ra(20,20),vb(k2)};
 			contextBox = hb(h1);
 		}
 		else {
-			Component[] h1 = {vb(k2)};
+			Component[] h1 = {vb(k2), hgl()};
 			contextBox = hb(h1);
 		}
 		
@@ -576,8 +565,6 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		boxh.add(boxv1);
 		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(settingsBox);
-		boxh.add(Box.createHorizontalStrut(20));
-		boxh.add(helpBox);
 		
 		Box boxh1 = Box.createHorizontalBox();
 		Box boxh2 = Box.createHorizontalBox();
@@ -694,11 +681,6 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     }
     
     public void showHelp(boolean b) {
-//    	JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
-//    	bp.setPreferredSize(new Dimension(300,400));
-//    	helpPanel.add(bp);
-//    	OpdrNavStructEdit.helpBrowser.loadURL("https://app.dwo.nl/wisweb/?header=less&hash=#s:654439");
-//    	helpBox.setVisible(b);
     }
     
     public void zetBreedte(int b)
