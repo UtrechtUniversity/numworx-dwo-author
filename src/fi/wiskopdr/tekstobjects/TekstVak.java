@@ -1538,11 +1538,41 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	
 	public void setSelected(boolean b)
   	{	
-	    if(!b)
+	    if(!b) {
           for(int i=0 ; i<aantalRegels; i++)
           {   if(regels[i]!=null && !regels[i].dragging)regels[i].setSelected(b);
           }
+          if(heeftInspr)
+          {
+        	  heeftInspr = false;
+        	  zetMarge(geefMarge()-inspringing);
+        	  resize();
+          }
+	    }
 	}
+	
+	int inspringing = 0;
+	boolean heeftInspr;
+	public boolean zetInspringing(boolean b, int inspr) {
+		if(centerH || !(regels[0].getComponent(0) instanceof TekstInteractiePanelVak))
+			return false;
+		if(b) {
+			this.inspringing = inspr;
+			heeftInspr = b;
+			zetMarge(geefMarge()+inspr);
+			resize();
+			return true;
+		}
+		else if(heeftInspr){
+			zetMarge(geefMarge()-inspringing);
+			this.inspringing = 0;
+			heeftInspr = b;
+			resize();
+			return false;
+		}
+		else return false;
+	}
+	
 	
 	public void neemFocus(String richting, TekstElement fe)
 	{

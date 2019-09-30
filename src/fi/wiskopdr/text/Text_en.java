@@ -190,7 +190,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"volleBreedteLabel" , "Full width"},
 				{"popupLabel" , "Popup"},
 				
-				{"feedbackCBLabel" , "Feedback"},
+				{"feedbackCBLabel" , "Feedback/partial scores"},
 				{"feedbackSizeCBLabel" , "Popup size"},
 				{"uitwCBLabel" , "Popup for steps"},
 				{"casAntwCBLabel" , "CAS"},

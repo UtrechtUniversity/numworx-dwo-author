@@ -753,10 +753,14 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     		feedbackNrString += (answerModelNr+1);
 	    	titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
 	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
+	      	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
+	    	scoringBox.validate();
     	}
     	else {
     		titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
 	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
+	      	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
+	    	scoringBox.validate();
     	}
     }
     

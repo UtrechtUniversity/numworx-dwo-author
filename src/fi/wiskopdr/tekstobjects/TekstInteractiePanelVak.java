@@ -263,7 +263,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private Hashtable launchData;
 	private boolean selected, connected;
 	private EditInteractiePanelDialog editInteractiePanelDialog;
-	private JPanel afdekPanel;
+	private JPanel afdekPanel, inspringingPanel;
 	private JPanel vervangingsPanel;
 	private JPanel resizePanel;
 	private JPanel sleepPanel;
@@ -1007,7 +1007,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         {	if(reviewInteractiePanel!=null)reviewInteractiePanel.setSize(b,h);
         }
 		if(resizePanel!=null) {
-			resizePanel.setBounds(b-6,h-6,6,6);
+			resizePanel.setBounds(b-8,h-8,8,8);
 			if(tComponent!=null) {
 				resizePanel.setBounds(getSize().width-24,getSize().height-24,24,24);
 				resizePanel.setBackground(new Color(150,150,150,150));
@@ -1558,6 +1558,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	        afdekPanel.addMouseListener(this);
 	        afdekPanel.addMouseMotionListener(this);
 	        
+	        inspringingPanel = new JPanel() {
+	        	public void paintComponent(Graphics g) {
+	        		Color c = heeftInspringing ? new Color(255,125,0,0) : new Color(255,125,0,0);
+	        		g.setColor(c);
+	        		g.fillRect(0, 0, getWidth(), getHeight());
+	        	}
+	        };
+	        inspringingPanel.setBounds(0,0,8,getHeight());
+	        inspringingPanel.setBackground(new Color(255,0,0,80));
+	        
 	        vervangingsPanel = new JPanel(){
 				
 	        	String tekst = "Interactief component";
@@ -1610,17 +1620,17 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         if(interactiePanel instanceof TekstVakPanel)
         {	((TekstVakPanel)interactiePanel).setEditable(true);
     		if(!popup)
-    		{	afdekPanel.setBounds(0,0,6,6);
+    		{	afdekPanel.setBounds(0,0,8,8);
     			afdekPanel.setOpaque(true);
-    			afdekPanel.setBackground(Color.black);
+    			afdekPanel.setBackground(new Color(100,100,100,125));
     			if(tComponent!=null) {
     				afdekPanel.setBounds(0,0,12,12);
     				afdekPanel.setBackground(new Color(38, 115, 182,100));
     			}
     			    			
-    			resizePanel.setBounds(getSize().width-6,getSize().height-6,6,6);
+    			resizePanel.setBounds(getSize().width-8,getSize().height-8,8,8);
     			resizePanel.setOpaque(true);
-    			resizePanel.setBackground(Color.black);
+    			resizePanel.setBackground(new Color(100,100,100,125));
     			if(tComponent!=null) {
     				resizePanel.setBounds(getSize().width-24,getSize().height-24,24,24);
     				resizePanel.setBackground(new Color(38, 115, 182,100));
@@ -1646,7 +1656,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     	    }
     		*/
         }
+        
+        add(inspringingPanel,0);
         add(afdekPanel,0);
+        
         setEditMode(true);
         
         zetMaat();
@@ -2281,7 +2294,6 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
     }
 	
-	
 	public Hashtable getState()
 	{
 		return ShareAction.wrapState(launchData, getState_int());
@@ -2544,8 +2556,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public void setSelected(boolean b)
 	{	selected = b;
-	    if(!b && interactiePanel instanceof TekstVakPanel)
+	    if(!b && interactiePanel instanceof TekstVakPanel) {
 	        ((TekstVakPanel)interactiePanel).setSelected(false);
+	        heeftInspringing = false;
+	        inspringing = 0;
+	    }
 	}
 	
 	public boolean isSelected()
@@ -2829,6 +2844,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public void mousePressed(MouseEvent e)
 	{	
+//		if(heeftInspringing ) {//|| xe>=xa+8
+//			TekstVak tv = ((TekstVakPanel)interactiePanel).geefTekstVak(0, 0);
+//			tv.zetMarge(inspringing);
+//			heeftInspringing = false;
+//			inspringing = 0;
+//			tv.layoutTekst();
+//			inspringingPanel.removeMouseListener(this);
+//		}
+		
 		connected = false;
 		if(interactiePanel instanceof TekstVakPanel)
 		{	if(editInteractiePanelDialog==null && (e.getSource()==afdekPanel || e.getSource()==resizePanel) && (e.getModifiers()== InputEvent.BUTTON3_MASK || e.isControlDown()))
@@ -2946,6 +2970,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 		}
 		
+		if(e.getSource()==inspringingPanel) {
+			
+			
+					}
 	}
 /**
  * Laat het editInteractionPanel zien 
@@ -3222,6 +3250,18 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 		}
 		
+		if(interactiePanel instanceof TekstVakPanel)
+		{	if(e.getSource()==afdekPanel)
+			{
+				TekstVak tv = ((TekstVakPanel)interactiePanel).geefTekstVak(0, 0);
+				if(tv.geefMarge()<5) {
+					
+					heeftInspringing = tv.zetInspringing(true,8);
+					//inspringingPanel.addMouseListener(this);
+				}
+			}
+		}
+		
 	}
 
 	private void doConnect() {
@@ -3285,7 +3325,26 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				}
 			}
 		}
+		if(interactiePanel instanceof TekstVakPanel)
+		{	
+			TekstVak tv = ((TekstVakPanel)interactiePanel).geefTekstVak(0, 0);
+			int xa = afdekPanel.getLocationOnScreen().x;
+			int ya = afdekPanel.getLocationOnScreen().y;
+			int xe = e.getLocationOnScreen().x;
+			int ye = e.getLocationOnScreen().y;
+			if(e.getSource()==inspringingPanel && heeftInspringing  ||  e.getSource()==afdekPanel && heeftInspringing && (xe<xa || ye<ya) ) {//|| xe>=xa+8
+					
+				tv.zetInspringing(false,0);
+				heeftInspringing = false;
+				inspringing = 0;
+				
+			}
+		}
+		
+		
 	}
+	boolean heeftInspringing = false;
+	int inspringing = 0;
 	
 	//ActionProducer
 	private ActionListener actionListener = null;

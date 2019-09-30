@@ -78,8 +78,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
  	// Verificatie
  	private JLabel titleVerificatieLabel;
  	private Box verificatieBox;
- 	private JCheckBox  gelijkwaardigCB, herleidingCB, exactCB, significantCB, eindOplossingCB;
- 	private JTextField gelijkwaardigPV, herleidingPV, exactPV, significantPV, eindOplossingPV;
+ 	private JCheckBox  gelijkwaardigCB, herleidingCB, exactCB, significantCB;
+ 	private JTextField gelijkwaardigPV, herleidingPV, exactPV, significantPV;
  	
  	private boolean gelijkwaardig = true;
     private boolean herleiding;
@@ -483,301 +483,77 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				Component[] k3 = {hb(r31)};
 				antwoordBox = vb(k3);
 				
-//		// plaatsComponenten settingBox
-//		Component[] r41 = {titleLoggingLabel, 	hgl()};
-//		Component[] r42 = {checkCB, 			hgl()};
-//		Component[] r43 = {teltMeeCB, 			hgl()};
-//		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
-//		Component[] r45 = {logObjectivesButton, hgl()};
-//		Component[] r46 = {titleHulpLabel, 		hgl()};
-//		Component[] r47 = {feedbackCB, 			hgl()};
-//		Component[] r48 = {formuleToolBijFocusCB, hgl()};
-//		Component[] r49 = {uitwCB, 				hgl()};
-//		Component[] r410 = {linStrategieVersieCB, hgl()};
-//		Component[] r411 = {linOefenVersieCB, 	hgl()};
-//		Component[] r412 = {bordjesMethodeCB, 	hgl()};
-//		Component[] r413 = {bewerkingKnoppenCB, hgl()};
-//		Component[] r414 = {bewerkingKnoppenExtraCB,hgl()};
-//		Component[] r415 = {abcKnopCB, 			hgl()};
-//		Component[] r416 = {subKnopCB, 			hgl()};
-//		Component[] r417 = {subKnopExtraCB, 	hgl()};
-//		Component[] r418 = {contextVarCB, 		hgl()};
-//		Component[] r419 = {eigenOpdrCB, 			hgl()};
-//		Component[] r420 = {tipsCB, 			ideasButton,	hgl()};
-//		Component[] r421 = {contextBox, 		hgl()};
-//		Component[] r422 = {titleOpmaakLabel, 	hgl()};
-//		Component[] r423 = {pijlCB, 			hgl()};
-//		Component[] r424 = {boxMetRandCB, 		hgl()};
-//		Box settingsBox;
-//		if(soort==1) {
-//			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
-//					hb(r410),hb(r411),hb(r412),hb(r413),hb(r414),hb(r415),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20), hb(r422),vst(5),hb(r423),hb(r424)};
-//			settingsBox = vb(k4);
-//		}
-//		else {
-//		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
-//				hb(r410),hb(r411),hb(r412),hb(r413),hb(r414),hb(r415),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r423),hb(r424), vgl()};
-//			settingsBox = vb(k4);
-//		}		
+		// plaatsComponenten settingBox
+		Component[] r41 = {titleLoggingLabel, 	hgl()};
+		Component[] r42 = {checkCB, 			hgl()};
+		Component[] r43 = {teltMeeCB, 			hgl()};
+		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r45 = {logObjectivesButton, hgl()};
+		Component[] r46 = {titleHulpLabel, 		hgl()};
+		Component[] r47 = {feedbackCB, 			hgl()};
+		Component[] r48 = {formuleToolBijFocusCB, hgl()};
+		Component[] r49 = {uitwCB, 				hgl()};
+		Component[] r410 = {rmKnopCB, hgl()};
+		Component[] r411 = {ra(20,0),		aantalDecRmLabel, 	ra(4,0),	aantalDecRmField,hgl()};
+		Component[] r416 = {subKnopCB, 			hgl()};
+		Component[] r417 = {subKnopExtraCB, 	hgl()};
+		Component[] r418 = {contextVarCB, 		hgl()};
+		Component[] r419 = {eigenOpdrCB, 			hgl()};
+		Component[] r420 = {tipsCB, 			ideasButton,	hgl()};
+		Component[] r421 = {contextBox, 		hgl()};
+		Component[] r422 = {titleOpmaakLabel, 	hgl()};
+		Component[] r424 = {boxMetRandCB, 		hgl()};
+		Box settingsBox;
+		if(soort==0) {
+			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
+					hb(r410),hb(r411),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20), hb(r422),vst(5),hb(r424), vgl()};
+			settingsBox = vb(k4);
+		}
+		else {
+		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
+				hb(r410),hb(r411),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r424), vgl()};
+			settingsBox = vb(k4);
+		}		
 				
     	Box regelBox = Box.createHorizontalBox();
     	Box kolomBox = Box.createHorizontalBox();
     	
-//    	//startbox
-//    	startBox = Box.createVerticalBox();
-//    	regelBox = Box.createHorizontalBox();
-//    	regelBox.add(titleStartLabel);
-//    	regelBox.add(Box.createHorizontalGlue());
-//    	startBox.add(regelBox);
-//    	startBox.add(Box.createRigidArea(new Dimension(5,5)));
-//    	regelBox = Box.createHorizontalBox();
-//    	regelBox.add(Box.createRigidArea(new Dimension(0,110)));
-//    	regelBox.add(startEditorPanel);
-//    	startBox.add(regelBox);
-//    	
-//    	//contextBox
-//    	contextBox = Box.createHorizontalBox();
-//    	if(soort==0)
-//    		contextBox.add(Box.createRigidArea(new Dimension(20,0)));
-//    	kolomBox = Box.createVerticalBox();
-//    	regelBox = Box.createHorizontalBox();
-//        regelBox.add(titleContextLabel);
-//        kolomBox.add(regelBox);
-//        kolomBox.add(Box.createVerticalStrut(15));
-//        
-//        
-//        regelBox = Box.createHorizontalBox();
-//        regelBox.add(substitutiesButton);
-//        kolomBox.add(regelBox);
-//        kolomBox.add(Box.createVerticalStrut(10));
-//        
-//        regelBox = Box.createHorizontalBox();
-//        regelBox.add(functiesButton);
-//        kolomBox.add(regelBox);
-//        if(soort==0)
-//        	kolomBox.add(Box.createVerticalGlue());
-//        contextBox.add(kolomBox);
-    	
-//    	//antwoordbox
-//    	antwoordBox = Box.createVerticalBox();
-//    	regelBox = Box.createHorizontalBox();
-//    	regelBox.add(Box.createRigidArea(new Dimension(0,130)));
-//    	regelBox.add(antwoordEditorPanel);
-//    	antwoordBox.add(regelBox);
-    	
-    	//settingsBox
-    	settingsBox = Box.createVerticalBox(); 
-    	//settingsBox.setPreferredSize(new Dimension(210,300));
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(titleLoggingLabel);
-    	regelBox.add(Box.createHorizontalGlue());
-    	settingsBox.add(regelBox);
-    	settingsBox.add(Box.createVerticalStrut(5));
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(checkCB);
-    	regelBox.add(Box.createHorizontalGlue());
-    	regelBox.add(helpButton);
-    	settingsBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(teltMeeCB);
-    	regelBox.add(Box.createHorizontalGlue());
-    	settingsBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(logCB);
-    	regelBox.add(Box.createRigidArea(new Dimension(5,10)));
-    	regelBox.add(logIDField);
-    	regelBox.add(Box.createRigidArea(new Dimension(5,10)));
-    	regelBox.add(logIDLabelLabel);
-    	regelBox.add(Box.createRigidArea(new Dimension(5,10)));
-    	regelBox.add(logIDLabelField);
-    	regelBox.add(Box.createHorizontalGlue());
-    	settingsBox.add(regelBox);
-    	settingsBox.add(Box.createRigidArea(new Dimension(5,5)));
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(Box.createRigidArea(new Dimension(10,5)));
-    	regelBox.add(logObjectivesButton);
-    	regelBox.add(Box.createHorizontalGlue());
-    	settingsBox.add(regelBox);
-    	settingsBox.add(Box.createVerticalStrut(20));
-    	
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(titleHulpLabel);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
-    	settingsBox.add(Box.createVerticalStrut(5));
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(feedbackCB);
-    	regelBox.add(Box.createHorizontalGlue());
-    	settingsBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(formuleToolBijFocusCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(uitwCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(rmKnopCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(Box.createRigidArea(new Dimension(20,0)));
-    	regelBox.add(aantalDecRmLabel);
-    	regelBox.add(Box.createRigidArea(new Dimension(4,0)));
-    	regelBox.add(aantalDecRmField);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
-    	    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(subKnopCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(subKnopExtraCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(contextVarCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(eigenOpdrCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	settingsBox.add(regelBox);
-    	
-    	if(WiskOpdr.isExperimental()) {
-        	regelBox = Box.createHorizontalBox();
-	    	regelBox.add(tipsCB);
-	    	regelBox.add(ideasButton);
-	    	regelBox.add(Box.createHorizontalGlue());   
-	    	settingsBox.add(regelBox);
-    	}
-    	
-    	if(soort==2) {
-    		settingsBox.add(Box.createVerticalStrut(20));
-    		regelBox = Box.createHorizontalBox();
-        	regelBox.add(contextBox);
-        	regelBox.add(Box.createHorizontalGlue());   
-        	settingsBox.add(regelBox);
-    	}
-    	settingsBox.add(Box.createVerticalStrut(20));
-    	
-    	regelBox = Box.createHorizontalBox();
-        regelBox.add(titleOpmaakLabel);
-        regelBox.add(Box.createHorizontalGlue());   
-        settingsBox.add(regelBox);
-        settingsBox.add(Box.createVerticalStrut(5));
-        
-        regelBox = Box.createHorizontalBox();
-        regelBox.add(boxMetRandCB);
-        regelBox.add(Box.createHorizontalGlue());   
-        settingsBox.add(regelBox);
-        
-        settingsBox.add(Box.createVerticalGlue());
-        
-    	
-    	//feedbackBox
-      	feedbackBox = Box.createHorizontalBox(); 
-    	kolomBox = Box.createVerticalBox(); 
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(titleFeedbackLabel);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	kolomBox.add(regelBox);
-    	kolomBox.add(Box.createVerticalStrut(5));
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(Box.createRigidArea(new Dimension(0,110)));
-    	regelBox.add(Box.createHorizontalGlue()); 
-    	regelBox.add(feedbackEditor);
-    	kolomBox.add(regelBox);
-    	kolomBox.add(Box.createVerticalGlue());
-    	feedbackBox.add(Box.createRigidArea(new Dimension(20,10)));
-    	feedbackBox.add(kolomBox);
-    	
-    	//VerificatieBox
-    	verificatieBox = Box.createHorizontalBox();
-    	kolomBox = Box.createVerticalBox(); 
-    	 
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(titleVerificatieLabel);
-    	regelBox.add(Box.createRigidArea(new Dimension(10,10)));
-    	regelBox.add(Box.createHorizontalGlue()); 
-    	regelBox.add(titleScoreLabel);
-    	kolomBox.add(regelBox);
-    	kolomBox.add(Box.createVerticalStrut(25));
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(gelijkwaardigCB);
-    	regelBox.add(Box.createHorizontalGlue()); 
-    	regelBox.add(gelijkwaardigPV);
-    	kolomBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(herleidingCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	regelBox.add(herleidingPV);
-    	kolomBox.add(regelBox);
-    	
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(significantCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	regelBox.add(significantPV);
-    	kolomBox.add(regelBox);
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(exactCB);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	regelBox.add(exactPV);
-    	kolomBox.add(regelBox);
-    	
-    	kolomBox.add(logMisconceptionsButton);
-    	kolomBox.add(Box.createVerticalGlue());
-    	verificatieBox.add(kolomBox);
-    	verificatieBox.add(Box.createHorizontalGlue());
-    	verificatieBox.add(Box.createHorizontalGlue());
-    	
-    	scoringBox = Box.createVerticalBox();
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(Box.createRigidArea(new Dimension(10,10)));
-        regelBox.add(feedbackPV);
-    	regelBox.add(Box.createHorizontalGlue());
-    	scoringBox.add(regelBox);
-    	scoringBox.add(Box.createVerticalStrut(20));
-    	regelBox = Box.createHorizontalBox();
-        regelBox.add(goedFoutIP);
-        regelBox.add(Box.createHorizontalGlue()); 
-        scoringBox.add(regelBox);
-        scoringBox.add(Box.createVerticalGlue());
-    	
-    	//vormBox
-		vormBox = Box.createVerticalBox();       
-		regelBox = Box.createHorizontalBox();
-    	regelBox.add(titleVormLabel);
-    	regelBox.add(Box.createHorizontalGlue());   
-    	vormBox.add(regelBox);
-    	vormBox.add(Box.createVerticalStrut(5));
-    	
-    	regelBox = Box.createHorizontalBox();
-    	regelBox.add(Box.createRigidArea(new Dimension(0,110)));
-    	regelBox.add(vormEditorPanel);
-    	regelBox.add(Box.createHorizontalGlue()); 
-    	vormBox.add(regelBox);
-    	vormBox.add(Box.createVerticalGlue());
+    	// plaats componenten feedback box
+		Component[] r51 = {titleFeedbackLabel, 		hgl()};
+		Component[] r52 = {ra(0,110),				hgl(),  		feedbackEditor};
 		
+		Component[] k5 = {hb(r51),vst(5),hb(r52), vgl()};
+		Component[] h5 = {ra(20,10),vb(k5)};
+		feedbackBox = hb(h5);
+		
+		
+		// plaats componenten verificatie box
+		Component[] r61 = {titleVerificatieLabel, 	ra(10,10),		hgl(),				titleScoreLabel};
+		Component[] r62 = {gelijkwaardigCB,			hgl(),  		gelijkwaardigPV};
+		Component[] r63 = {herleidingCB,			hgl(),  		herleidingPV};
+		Component[] r65 = {significantCB,			hgl(),  		significantPV};
+		Component[] r66 = {exactCB,					hgl(),  		exactPV};
+		
+		Component[] k6 = {hb(r61), vst(25), hb(r62), hb(r63), hb(r65), hb(r66), vgl()};
+		Component[] h6 = {vb(k6), hgl(), hgl()};
+		verificatieBox = hb(h6);
+    			
+		//plaats componenten scoringbox
+        Component[] r71 = {ra(10,10), 		feedbackPV, 	hgl()};
+		Component[] r72 = {goedFoutIP, 		hgl()};
+		
+		Component[] k7 = {hb(r71), vst(20), hb(r72), vgl()};
+		scoringBox = vb(k7);
+		
+		
+		//plaats componenten vormbox
+        Component[] r81 = {titleVormLabel, 		hgl()};
+		Component[] r82 = {ra(0,110), 			vormEditorPanel, 		hgl()};
+		
+		Component[] k8 = {hb(r81), vst(5), hb(r82), vgl()};
+		vormBox = vb(k8);
+		
+		// boxes plaatsen
 		Box boxh = Box.createHorizontalBox();
 		mainPanel.add(boxh);
 		
@@ -814,7 +590,6 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		boxh3.add(scoringBox);
 		boxh3.add(Box.createHorizontalStrut(10));
 		boxh3.add(vormBox);
-		//boxh3.add(Box.createRigidArea(new Dimension(20,20)));
 		boxh3.add(Box.createHorizontalGlue());
 		boxh3.add(feedbackBox);
 	}
@@ -977,11 +752,15 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     		feedbackNrString += (answerModelNr+1);
 	    	titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
 	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
-    	}
+	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
+	    	scoringBox.validate();
+	   }
     	else {
     		titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
 	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
-    	}
+	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+	    	scoringBox.validate();
+	   }
     }
 	
 	private void setAnswerModel(Hashtable h)
@@ -1844,6 +1623,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	    {   subKnop = subKnopCB.isSelected();
 	    	subKnopExtraCB.setVisible(subKnop);
 	    	if(!subKnop)subKnopExtraCB.setSelected(subKnop);
+	    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+
 	    }
 		else if(e.getSource()==subKnopExtraCB)
 	    {   subKnopExtra = subKnopExtraCB.isSelected();
@@ -1946,10 +1727,14 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	    	aantalDecRmLabel.setVisible(uitwCB.isSelected() && rmKnopCB.isSelected());
 		    //startLabel.setVisible(uitwCB.isSelected());
 			//startEditor.setVisible(uitwCB.isSelected());
+	    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+
 	    }
 		else if(e.getSource()==rmKnopCB)
 	    {   aantalDecRmField.setVisible(rmKnopCB.isSelected());
 	    	aantalDecRmLabel.setVisible(rmKnopCB.isSelected());
+	    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+
  	    }
 		else if(e.getSource()==startEditor)
 		{	if(e.getActionCommand().equals("vergroot"))

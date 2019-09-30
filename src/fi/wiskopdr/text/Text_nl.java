@@ -91,7 +91,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "gelijkwaardigCBLabel" , "Gelijkwaardig" },
 				{ "herleidingCBLabel" , "Herleiding" },
 				{ "exactCBLabel" , "Exact" },
-				{ "significantCBLabel" , "Significant (beta)" },
+				{ "significantCBLabel" , "Significant" },
 				{ "stappenCBLabel" , "Stappen mogelijk" },
 				{ "bewerkingKnoppenCBLabel" , "Bewerkingknoppen" },
 				{ "bewerkingKnoppenExtraCBLabel" , "Bewerkingknoppen extra" },
@@ -208,7 +208,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"volleBreedteLabel" , "Volle breedte"},
 				{"popupLabel" , "Popup"},
 				
-				{"feedbackCBLabel" , "Feedback"},
+				{"feedbackCBLabel" , "Feedback/deelscores"},
 				{"feedbackSizeCBLabel" , "popup aanpasbaar"},
 				{"uitwCBLabel" , "Popup voor uitwerking"},
 				{"casAntwCBLabel" , "CAS"},
