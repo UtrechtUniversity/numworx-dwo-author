@@ -37,7 +37,7 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 
 		@Override
 		public String LMSInitialize(String iParam) {
-			System.out.println("Initialize");
+//			System.out.println("Initialize");
 			final String lmsInitialize = "true" ; // NO super.LMSInitialize(iParam);
 			synchronized( browser ) {
 				inited = true;
@@ -48,7 +48,7 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 
 		@Override
 		public String LMSFinish(String iParam) {
-			System.out.println("Finish");
+//			System.out.println("Finish");
 			super.LMSCommit(iParam); // No finish
 			synchronized(browser ) {
 				inited = false;
@@ -60,13 +60,13 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 		@Override
 		public String LMSGetValue(String iDataModelElement) {
 			final String result = super.LMSGetValue(iDataModelElement);
-			System.out.println("Getvalue " + iDataModelElement + " > " + result);
+//			System.out.println("Getvalue " + iDataModelElement + " > " + result);
 			return result;
 		}
 
 		@Override
 		public String LMSSetValue(String iDataModelElement, String iValue) {
-			System.out.println("Setvalue " + iDataModelElement + " = " + iValue);
+//			System.out.println("Setvalue " + iDataModelElement + " = " + iValue);
 			return super.LMSSetValue(iDataModelElement, iValue);
 		}
 
