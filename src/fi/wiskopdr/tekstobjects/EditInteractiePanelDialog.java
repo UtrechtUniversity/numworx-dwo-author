@@ -998,7 +998,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         		helpTitelBox.setVisible(helpBox.isVisible());
         		if(helpBox.isVisible()) {
 	        		helpBox.validate(); 
-	            	OpdrNavStructEdit.helpBrowser.loadURL("https://app.dwo.nl/wisweb/?header=less&hash=#s:654439");
+	            	OpdrNavStructEdit.helpBrowser.loadURL("https://app.dwo.nl/dwo/apps/player.html?profile=105&locale=nl#654439");
 	            	packWidth(1100);
         		}
         		else {
