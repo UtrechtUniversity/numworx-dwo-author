@@ -263,7 +263,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private Hashtable launchData;
 	private boolean selected, connected;
 	private EditInteractiePanelDialog editInteractiePanelDialog;
-	private JPanel afdekPanel, inspringingPanel;
+	private JPanel afdekPanel;//, inspringingPanel;
 	private JPanel vervangingsPanel;
 	private JPanel resizePanel;
 	private JPanel sleepPanel;
@@ -512,6 +512,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	  String[] itemNames = new String[TekstInteractiePanelVak.interactiePanelSets[setNr].length];
 	  JMenu checkButtonsSubMenu = new JMenu(WiskOpdr.rb.getString("checkButtonsMenuLabel"));
 	  checkButtonsSubMenu.setForeground(new Color(49,71,112));
+	  checkButtonsSubMenu.setBackground(new Color(237,239,241));
 	  checkButtonsSubMenu.setFont(new Font("SansSerif",Font.PLAIN,13));
 	  for(int i=0 ; i<interactiePanelSets[setNr].length ; i++) {
 	    JMenuItem item = new JMenuItem(te.new AntwoordvakKeuzeAction(interactiePanelDescriptions[interactiePanelSets[setNr][i]], setNr, i));
@@ -1558,15 +1559,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	        afdekPanel.addMouseListener(this);
 	        afdekPanel.addMouseMotionListener(this);
 	        
-	        inspringingPanel = new JPanel() {
-	        	public void paintComponent(Graphics g) {
-	        		Color c = heeftInspringing ? new Color(255,125,0,0) : new Color(255,125,0,0);
-	        		g.setColor(c);
-	        		g.fillRect(0, 0, getWidth(), getHeight());
-	        	}
-	        };
-	        inspringingPanel.setBounds(0,0,8,getHeight());
-	        inspringingPanel.setBackground(new Color(255,0,0,80));
+//	        inspringingPanel = new JPanel() {
+//	        	public void paintComponent(Graphics g) {
+//	        		Color c = heeftInspringing ? new Color(255,125,0,0) : new Color(255,125,0,0);
+//	        		g.setColor(c);
+//	        		g.fillRect(0, 0, getWidth(), getHeight());
+//	        	}
+//	        };
+//	        inspringingPanel.setBounds(0,0,8,getHeight());
+//	        inspringingPanel.setBackground(new Color(255,0,0,80));
 	        
 	        vervangingsPanel = new JPanel(){
 				
@@ -1657,7 +1658,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     		*/
         }
         
-        add(inspringingPanel,0);
+        //add(inspringingPanel,0);
         add(afdekPanel,0);
         
         setEditMode(true);
@@ -2970,10 +2971,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 		}
 		
-		if(e.getSource()==inspringingPanel) {
-			
-			
-					}
+//		if(e.getSource()==inspringingPanel) {
+//		}
 	}
 /**
  * Laat het editInteractionPanel zien 
@@ -3332,7 +3331,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			int ya = afdekPanel.getLocationOnScreen().y;
 			int xe = e.getLocationOnScreen().x;
 			int ye = e.getLocationOnScreen().y;
-			if(e.getSource()==inspringingPanel && heeftInspringing  ||  e.getSource()==afdekPanel && heeftInspringing && (xe<xa || ye<ya) ) {//|| xe>=xa+8
+			if(e.getSource()==afdekPanel && heeftInspringing && (xe<xa || ye<ya) ) {//e.getSource()==inspringingPanel && heeftInspringing  ||  
 					
 				tv.zetInspringing(false,0);
 				heeftInspringing = false;

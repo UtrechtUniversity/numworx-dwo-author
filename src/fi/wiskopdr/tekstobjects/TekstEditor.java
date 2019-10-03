@@ -335,7 +335,31 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(form)headerPanel.add(componentChoiceKnop);
 		
 		templateChoice = new JPopupMenu();
+		templateChoice.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(120,150,202)));
+		JLabel titel = new JLabel("Template paginatypes");
+	    titel.setOpaque(true);
+	    titel.setForeground(new Color(237,239,241));
+	    titel.setBackground(new Color(49,71,112));
+	    titel.setFont(new Font("SansSerif",Font.BOLD,14));
+	    Box hb= Box.createHorizontalBox();
+	    hb.add(titel);
+	    FontMetrics fm = getFontMetrics(new Font("SansSerif",Font.BOLD,14));
+	    int margin = (220 - fm.stringWidth(titel.getText()))/2;
+	    titel.setBorder(BorderFactory.createMatteBorder(3, margin, 3, margin, new Color(49,71,112)));
+	    templateChoice.add(hb,0);
+	    
 		componentChoice = new JPopupMenu();
+		componentChoice.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(120,150,202)));
+		titel = new JLabel("Componenten in template-opmaak");
+	    titel.setOpaque(true);
+	    titel.setForeground(new Color(237,239,241));
+	    titel.setBackground(new Color(49,71,112));
+	    titel.setFont(new Font("SansSerif",Font.BOLD,14));
+	    hb= Box.createHorizontalBox();
+	    hb.add(titel);
+	   titel.setBorder(BorderFactory.createMatteBorder(3, margin, 3, margin, new Color(49,71,112)));
+	   componentChoice.add(hb,0);
+	    
 		standardComponentChoice = new JPopupMenu();
 		
 		if(TekstVakPanel.templatePages != null) {
@@ -440,12 +464,25 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 				if(!componentList.get(i).isEmpty()) {
 					JMenu subMenu = new JMenu(componentItemList.get(i));
 					for (int j=0 ; j<componentList.get(i).size() ; j++) {
-						JMenuItem subMenutem = new JMenuItem(componentList.get(i).get(j));
-						subMenu.add(subMenutem);
-						componentItems[teller] = subMenutem;
-						componentItems[teller].addActionListener(this);
-						componentKeys[teller] = "DWOCOMP_"+ componentItemList.get(i)+"_"+componentList.get(i).get(j);
-						teller++;
+						if(componentList.get(i).get(j).startsWith("separator")) {
+							subMenu.addSeparator();
+						}
+						else if(componentList.get(i).get(j).startsWith("STND")) {
+							String type = componentList.get(i).get(j).substring(4);
+							String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
+							componentItems[teller] = new JMenuItem(new TComponentAction(typeName,type));
+							componentKeys[teller] = "DWOCOMP_STND"+type;
+							subMenu.add(componentItems[teller]);
+							teller++;
+						}
+						else {
+							JMenuItem subMenutem = new JMenuItem(componentList.get(i).get(j));
+							subMenu.add(subMenutem);
+							componentItems[teller] = subMenutem;
+							componentItems[teller].addActionListener(this);
+							componentKeys[teller] = "DWOCOMP_"+ componentItemList.get(i)+"_"+componentList.get(i).get(j);
+							teller++;
+						}
 					}
 					componentChoice.add(subMenu);
 				}

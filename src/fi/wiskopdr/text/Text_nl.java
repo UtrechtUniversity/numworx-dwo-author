@@ -208,7 +208,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"volleBreedteLabel" , "Volle breedte"},
 				{"popupLabel" , "Popup"},
 				
-				{"feedbackCBLabel" , "Feedback/deelscores"},
+				{"feedbackCBLabel" , "Feedback / deelscores"},
 				{"feedbackSizeCBLabel" , "popup aanpasbaar"},
 				{"uitwCBLabel" , "Popup voor uitwerking"},
 				{"casAntwCBLabel" , "CAS"},
@@ -230,7 +230,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"checkVasteDoelenLabel" , "Check op vaste doelen voor sleepobjecten"},
                 {"checkWaardeOpDoelLabel" , "Check met waarden sleepobjecten"},
                 {"relocateCBLabel" , "Springt terug"},
-                {"viewCBLabel" , "Toon foute sleepobjecten"},
+                {"viewCBLabel" , "Toon foute objecten"},
                 {"aantalValueObjectenLabel" , "Aantal objecten"},
 				{"checkAfzonderlijkLabel" , "Check afzonderlijk"},
 				{"checkOpSamenhangLabel" , "Check op samenhang"},

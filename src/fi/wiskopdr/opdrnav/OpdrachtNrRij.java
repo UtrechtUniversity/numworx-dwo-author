@@ -100,7 +100,7 @@ public class OpdrachtNrRij extends JPanel implements ActionListener
 	public void paint(Graphics g)
 	{	if(tab)
 		{	g.setColor(Color.gray);
-			g.drawLine(0,getSize().height-1,getSize().width-1,getSize().height-1);
+			//g.drawLine(0,getSize().height-1,getSize().width-1,getSize().height-1);
 			//g.drawLine(0,getSize().height-2,getSize().width-2,getSize().height-2);
 		}
 		super.paint(g);
