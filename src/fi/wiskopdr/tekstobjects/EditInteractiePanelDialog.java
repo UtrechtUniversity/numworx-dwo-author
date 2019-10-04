@@ -244,7 +244,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 //        	}
         };
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         mainPanel.setBackground(WiskOpdr.colorGray3);
         
         Box hb = Box.createHorizontalBox();

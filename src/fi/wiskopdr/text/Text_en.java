@@ -251,6 +251,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{"FEV_titleScoringLabel", "Score"},
 				{"FEV_titleVormLabel", "Correct forms"},
 				
+				{"AKV_titleTekstenLabel", "Teksten keuzelijst"},
+				
 				// TekstVakInteractiePanel
 				{"titleFormuleAntwVakLabel" , "Settings formula answer box with steps"},
                 {"titleVergelijkingAntwVakLabel" , "Settings equation answer box with steps"},

@@ -1100,7 +1100,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
                 significantPV.setVisible(significant && significantieAan);
                 significantPV.setText(""+puntenSignificant);
                 
-               
+                ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+
 		
 			//// EIND //// Deze code zal moeten worden aangepast als de interface meerdere antwoordvakken ondersteunt
 			

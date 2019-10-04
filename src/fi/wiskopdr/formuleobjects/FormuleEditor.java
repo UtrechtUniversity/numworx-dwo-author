@@ -11,6 +11,8 @@ import fi.beans.wnwidgets.MWScrollBarUI;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.expressies.*;
 
+import fi.beans.numworxlf.JScrollPane;
+
 public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionListener, MouseListener, AdjustmentListener, FormuleVakHouder
 {	
 		
@@ -530,7 +532,7 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 //    }
     
     public void setNewScrollSize()
-    {   
+    {   System.out.println("setNewScroll");
     	int maxX = 0; 
         int maxY = 0; 
         for(int i=0 ; i<contentPane.getComponentCount() ; i++)
@@ -542,6 +544,7 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
         }
         if(scrollHorizontal)
         {	contentPane.setPreferredSize(new Dimension(maxX,maxY));
+        contentPane.setSize(new Dimension(maxX,maxY));
         }
         else 
         {	contentPane.setPreferredSize(new Dimension(contentPane.getSize().width-20, maxY));
