@@ -551,6 +551,10 @@ public class Text_gr extends java.util.ListResourceBundle
 				{"TEEP_menuBalkOptie" , "Γραμμή μενού"},
 				{"TEEP_rekenToolOptie" , "Υπολογιστής"},
 				{"TEEP_grafToolOptie" , "Εργαλείο γραφήματος"},
+				{"TEEP_titleStartLabel", "Tekst-answer-box"},
+				{"TEEP_checkDocentCBLabel", "Check (by teacher)"},
+				{"TEEP_maxScoreLabel", "Maximum score"},
+				{"TEEP_editorOptiesLabel", "Editor options"},
 				
 				//Ideas
 				

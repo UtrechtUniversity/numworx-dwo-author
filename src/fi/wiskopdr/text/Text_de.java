@@ -552,6 +552,10 @@ public class Text_de extends java.util.ListResourceBundle
 				{"TEEP_menuBalkOptie" , "Menuleiste"},
 				{"TEEP_rekenToolOptie" , "Rechner"},
 				{"TEEP_grafToolOptie" , "Funktionsplotter"},
+				{"TEEP_titleStartLabel", "Tekst-answer-box"},
+				{"TEEP_checkDocentCBLabel", "Check (by teacher)"},
+				{"TEEP_maxScoreLabel", "Maximum score"},
+				{"TEEP_editorOptiesLabel", "Editor options"},
 				
 				//Ideas
 				

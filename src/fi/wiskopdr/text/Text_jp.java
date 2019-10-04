@@ -562,6 +562,10 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"TEEP_menuBalkOptie" , "メニューバー"},
 				{"TEEP_rekenToolOptie" , "計算機"},
 				{"TEEP_grafToolOptie" , "グラフツール"},
+				{"TEEP_titleStartLabel", "Tekst-answer-box"},
+				{"TEEP_checkDocentCBLabel", "Check (by teacher)"},
+				{"TEEP_maxScoreLabel", "Maximum score"},
+				{"TEEP_editorOptiesLabel", "Editor options"},
 				
 				//Ideas
 				

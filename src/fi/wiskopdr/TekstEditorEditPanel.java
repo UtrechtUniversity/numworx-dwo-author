@@ -1,6 +1,10 @@
 package fi.wiskopdr;
 
 import java.awt.AWTEventMulticaster;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.*;
 import java.util.*;
@@ -8,69 +12,188 @@ import java.util.*;
 import javax.swing.*;
 
 import fi.beans.wiskopdrbeans.*;
+import fi.wiskopdr.AntwoordTekstVakEditPanel.EditorComponentListener;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.*;
 
 public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel , ActionListener, TabletOwner
 {
-	private TekstEditor tekstEditor;
+	// Algemene attributen 
+    private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
+	 
+    private Tablet tablet;
+    private boolean tabletAdded;
+    private FormuleVakHouder tabletUser;
+    
+    // Basis GUI
+    private JPanel mainPanel;
+    
+    // StarEditor
+	private TekstEditor startEditor;
+	private JPanel startEditorPanel;
+  	private JLabel titleStartLabel;
+  	private Box startEditorBox;
+  	
+  	 // Logging/Nakijken
+  	private Box settingsBox;
+ 	private JLabel titleLoggingLabel;
+    private JCheckBox checkCB;
+    private JLabel maxScoreLabel;
+    private JTextField maxScoreField;
+    
+    private JCheckBox logCB;
+ 	private JTextField logIDField;
+ 	private JTextField logIDLabelField;
+ 	private JLabel logIDLabelLabel;
+ 	private ObjectiveChoiceButton logObjectivesButton;
+  	
+ 	// Hulp setting
+ 	private JLabel titleHulpLabel;
+	private JCheckBox formuleEditorCB;
+	private JCheckBox rekenToolCB; 
+	private JCheckBox grafToolCB; 
 	
-	private JCheckBox balkZichtbaarCB, rekenToolCB, grafToolCB, formuleKnopCB, formuleToolPopupCB, buttonCB, boxMetRandCB;
-	private JLabel varNaamLabel;
+	// Opmaak
+  	private JLabel titleOpmaakLabel;
+  	private JCheckBox boxMetRandCB;
+	private boolean formuleEditorAan, rekenTool, grafTool;
 	
-	private JCheckBox logCB;
-	private JTextField logIDField;
 	
-	private boolean balkZichtbaar, rekenTool, grafTool, formuleKnop, formuleToolPopup, buttonOptie, boxMetRand;
-	
-	private Tablet tablet;
-	private boolean tabletAdded;
-	private FormuleVakHouder tabletUser;
-	
-	private Font font = new Font("SansSerif",Font.PLAIN,12);
 	
 	public TekstEditorEditPanel()
 	{	
-		setLayout(null);
-		setBackground(WiskOpdr.bgcolor);
-		tekstEditor = new TekstEditor();
-		tekstEditor.setBounds(10,20,300,440);
-		add(tekstEditor);
+		setLayout(new BorderLayout());
+		setBackground(Color.white);	
 		
-		balkZichtbaar = true;
+		formuleEditorAan = true;
 		rekenTool = false;
 		grafTool = false;
-		formuleKnop = true;
-		formuleToolPopup = false;
-		boxMetRand = true;
 		
-		balkZichtbaarCB = maakCheckBox(WiskOpdr.rb.getString("TEEP_menuBalkOptie"), 500,50,160,20, balkZichtbaar);
-		rekenToolCB = maakCheckBox(WiskOpdr.rb.getString("TEEP_rekenToolOptie"), 500,80,160,20, rekenTool);
-		grafToolCB = maakCheckBox(WiskOpdr.rb.getString("TEEP_grafToolOptie"), 500,110,160,20, grafTool);
-		formuleKnopCB = maakCheckBox("Formuleknop ", 500,110,160,20, formuleKnop);
-		formuleToolPopupCB = maakCheckBox("Formuletool als popup", 500,140,160,20, formuleToolPopup);
-		buttonCB = maakCheckBox("Weergave via pop-up", 500,190,160,20, buttonOptie);
-		boxMetRandCB = maakCheckBox(WiskOpdr.rb.getString("boxMetRand"), 500,190,160,20, boxMetRand);
+		makeGUI();
+	}
+	
+	private void makeGUI() {
+		// Main
+    	mainPanel = new JPanel(new BorderLayout());
+		mainPanel.setBackground(WiskOpdr.colorGray3);
 		
-		// nog even niet
-		//remove(rekenToolCB);
-		remove(formuleKnopCB);
-		remove(formuleToolPopupCB);
-		remove(buttonCB);
+		// GUI antwoordBox
+		titleStartLabel = new JLabel(WiskOpdr.rb.getString("TEEP_titleStartLabel"));
+		titleStartLabel.setForeground(WiskOpdr.colorBlue1);
+		titleStartLabel.setFont(font.deriveFont(Font.BOLD, 16));
 		
-		logCB = new JCheckBox(WiskOpdr.rb.getString("logCBLabel"));
-        logCB.setBounds(450,5,70,20);
-        logCB.addActionListener(this);
-        logCB.setOpaque(false);
-		add(logCB);
+		startEditor = new TekstEditor();
+		startEditor.setBounds(0,0,300,250);
+		startEditor.setFont(font);
+		startEditor.addActionListener(this);
+		startEditor.setResizable(true);
+        
+        startEditorPanel = new JPanel();
+        startEditorPanel.setLayout(null);
+        startEditorPanel.add(startEditor);
+        startEditorPanel.addComponentListener(new EditorComponentListener());
+        startEditorPanel.setPreferredSize(new Dimension(300,250));
+        startEditorPanel.setMaximumSize(new Dimension(300,250));
+        startEditorPanel.setMinimumSize(new Dimension(300,250));
+        
+        // Logging/Nakijken
+ 		titleLoggingLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"));
+     	titleLoggingLabel.setForeground(WiskOpdr.colorBlue1);
+     	titleLoggingLabel.setFont(font.deriveFont(Font.BOLD, 16));
+     	
+     	checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("TEEP_checkDocentCBLabel"),false,true);
+     	maxScoreLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TEEP_maxScoreLabel"),false);   
+ 		maxScoreField = makeTextField(520,25,60,20,"0",false);
+ 		logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
+        logIDField = makeTextField(520,5,60,20,"0",false);
+        logIDLabelField = makeTextField(520,25,60,20,"",false);
+        logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
+ 		
+        // Hulp setting
+        titleHulpLabel = new JLabel(WiskOpdr.rb.getString("TEEP_editorOptiesLabel"));
+    	titleHulpLabel.setForeground(WiskOpdr.colorBlue1);
+    	titleHulpLabel.setFont(font.deriveFont(Font.BOLD, 16));
+    	
+    	formuleEditorCB = makeCheckBox(500,50,160,20,WiskOpdr.rb.getString("TEEP_menuBalkOptie"),  formuleEditorAan,true);
+		rekenToolCB = makeCheckBox(500,80,160,20,WiskOpdr.rb.getString( "TEEP_rekenToolOptie"), rekenTool, true);
 		
-		logIDField = new JTextField("0");
-		logIDField.setBounds(520,5,60,20);
-		logIDField.addActionListener(this);
-		logIDField.setVisible(false);
-		add(logIDField);
-
+		// GUI Opmaak box
+        titleOpmaakLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleOpmaakLabel"));
+    	titleOpmaakLabel.setForeground(WiskOpdr.colorBlue1);
+    	titleOpmaakLabel.setFont(font.deriveFont(Font.BOLD, 16));
+    	
+    	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
+    	
+    	
+    	removeAll();
+	    plaatsGUI();
+	    add(mainPanel);	
+	}
+	
+	private void plaatsGUI() {
+		// plaats compoenenten antwoordbox
+		Component[] r31 = {titleStartLabel, hgl()};
+		Component[] r32 = {startEditorPanel, hgl()};
+		Component[] k3 = {hb(r31),vst(20), hb(r32), vgl()};
+		startEditorBox = vb(k3);
 		
+		// plaatsComponenten settingBox
+		Component[] r41 = {titleLoggingLabel, 	hgl()};
+		Component[] r42 = {checkCB, 			hgl()};
+		Component[] r43 = {ra(25,0), 			maxScoreLabel, 		ra(5,0),	maxScoreField,	hgl()};
+		Component[] r44 = {logCB, 				ra(5,0), logIDField, ra(5,0), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r45 = {titleHulpLabel, 		hgl()};
+		Component[] r46 = {formuleEditorCB, 	hgl()};
+		Component[] r47 = {rekenToolCB, 		hgl()};
+		Component[] r48 = {titleOpmaakLabel, 	hgl()};
+		Component[] r49 = {boxMetRandCB, 		hgl()};
+		
+		Component[] k4 = {hb(r41),vst(10),hb(r42),hb(r43),hb(r44),vst(20),hb(r45),vst(10),hb(r46),hb(r47),
+				vst(20),hb(r48),vst(10),hb(r49), vgl()};
+		settingsBox = vb(k4);
+		
+		// boxes plaatsen
+		Box boxh = Box.createHorizontalBox();
+		mainPanel.add(boxh);
+		
+		boxh.add(startEditorBox);
+		boxh.add(Box.createHorizontalStrut(20));
+		boxh.add(settingsBox);
+		
+	}
+	
+	private Box hb(Component[] c) {
+		Box box = Box.createHorizontalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Box vb(Component[] c) {
+		Box box = Box.createVerticalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Component hgl() {
+		return Box.createHorizontalGlue();
+	}
+	
+	private Component vgl() {
+		return Box.createVerticalGlue();
+	}
+	
+	private Component hst(int n) {
+		return Box.createHorizontalStrut(n);
+	}
+	
+	private Component vst(int n) {
+		return Box.createVerticalStrut(n);
+	}
+	
+	private Component ra(int w, int h) {
+		return Box.createRigidArea(new Dimension(w,h));
 	}
 	
 	private JCheckBox maakCheckBox(String s, int x, int y, int b, int h, boolean selected)
@@ -85,37 +208,65 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		return checkbox;
 	}
 	
+	public JCheckBox makeCheckBox(int x, int y, int b, int h, String text, boolean selected, boolean visible)
+	{	JCheckBox checkbox = new WiskOpdrCheckbox(text);
+		checkbox.setBounds(x,y,b,h);
+		checkbox.setFont(font);
+		checkbox.setOpaque(false);
+		checkbox.addActionListener(this);
+		checkbox.setSelected(selected);
+		checkbox.setVisible(visible);
+		add(checkbox,0);
+		return checkbox;
+	}
+	
+	public JTextField makeTextField(int x, int y, int b, int h, String text, boolean visible)
+	{	JTextField textField = new WiskOpdrTextField(text);
+		textField.setBounds(x,y,b,h);
+		textField.setPreferredSize(new Dimension(50,22));
+	    textField.setMaximumSize(new Dimension(50,22));
+		textField.setFont(font);
+		textField.addActionListener(this);
+		textField.setVisible(visible);
+		add(textField,0);
+		return textField;
+	}
+	
+	public JLabel makeLabel(int x, int y, int b, int h, String text, boolean visible)
+	{	JLabel label = new JLabel(text);
+		label.setForeground(WiskOpdr.colorBlue1);
+		label.setBounds(x,y,b,h);
+		label.setFont(font);
+		label.setVisible(visible);
+		add(label,0);
+		return label;
+	}
+	
 	public Hashtable getEditState()
 	{	
 		boolean balkZichtbaar = true;
 		boolean rekenTool = false;
 		boolean grafTool = false;
-		boolean formuleKnop = true;
-		boolean formuleToolPopup = true;
-		boolean buttonOptie = false;
 		boolean boxMetRand = true;
 		boolean logOption;
 		String  logID;
+		boolean checkDocent = false;
+		int scoreMax = 0;
 		
-		balkZichtbaar = this.balkZichtbaar;
+		balkZichtbaar = this.formuleEditorAan;
 		rekenTool = this.rekenTool;
 		grafTool = this.grafTool;
-		formuleKnop = this.formuleKnop;
-		formuleToolPopup = this.formuleToolPopup;
-		buttonOptie = this.buttonOptie;
-		
 		boxMetRand = boxMetRandCB.isSelected();
 		logOption = logCB.isSelected();
 		logID = logIDField.getText();
+		checkDocent = checkCB.isSelected();
+		scoreMax = Integer.parseInt(maxScoreField.getText());
 		
-		Hashtable h = tekstEditor.getEditState();
+		Hashtable h = startEditor.getEditState();
 		
 		h.put("balkZichtbaar", new Boolean(balkZichtbaar));
 		h.put("rekenTool", new Boolean(rekenTool));
 		h.put("grafTool", new Boolean(grafTool));
-		h.put("formuleKnop", new Boolean(formuleKnop));
-		h.put("formuleToolPopup", new Boolean(formuleToolPopup));
-		h.put("buttonOptie", new Boolean(buttonOptie));
 		h.put("boxMetRand", new Boolean(boxMetRand));
 		if(logOption) {
 			h.put("logOption", Boolean.TRUE);
@@ -123,7 +274,8 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 			h.remove("logOption");
 		}
 		h.put("logID", logID);
-		
+		h.put("checkDocent", new Boolean(checkDocent));
+		h.put("scoreMax", new Integer(scoreMax));
 		
 		return h;
 	}
@@ -133,43 +285,44 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		boolean balkZichtbaar = true;
 		boolean rekenTool = false;
 		boolean grafTool = false;
-		boolean formuleKnop = true;
-		boolean formuleToolPopup = true;
-		boolean buttonOptie = false;
+		boolean checkDocent = false;
 		boolean boxMetRand = true;
 		boolean logOption = false;
+		int scoreMax = 0;
 		String logID = "";
 				
 		if(h.containsKey("balkZichtbaar")) balkZichtbaar = ((Boolean)h.get("balkZichtbaar")).booleanValue();
 		if(h.containsKey("rekenTool")) rekenTool = ((Boolean)h.get("rekenTool")).booleanValue();
 		if(h.containsKey("grafTool")) grafTool = ((Boolean)h.get("grafTool")).booleanValue();
-		if(h.containsKey("formuleKnop")) formuleKnop = ((Boolean)h.get("formuleKnop")).booleanValue();
-		if(h.containsKey("formuleToolPopup")) formuleToolPopup = ((Boolean)h.get("formuleToolPopup")).booleanValue();
-		if(h.containsKey("buttonOptie")) buttonOptie = ((Boolean)h.get("buttonOptie")).booleanValue();
 		if(h.containsKey("boxMetRand")) boxMetRand = ((Boolean)h.get("boxMetRand")).booleanValue();
 		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
 		if(h.containsKey("logID")) logID = (String)h.get("logID");
+		if(h.containsKey("checkDocent")) checkDocent = ((Boolean)h.get("checkDocent")).booleanValue();
+		if(h.containsKey("scoreMax")) scoreMax = ((Integer)h.get("scoreMax")).intValue();
 		
-		this.balkZichtbaar = balkZichtbaar;
+		this.formuleEditorAan = balkZichtbaar;
 		this.rekenTool = rekenTool;
 		this.grafTool = grafTool;
-		this.formuleKnop = formuleKnop;
-		this.formuleToolPopup = formuleToolPopup;
-		this.buttonOptie = buttonOptie;
-		this.boxMetRand = boxMetRand;
+//		this.formuleKnop = formuleKnop;
+//		this.formuleToolPopup = formuleToolPopup;
+//		this.buttonOptie = buttonOptie;
+//		this.boxMetRand = boxMetRand;
 		
-		balkZichtbaarCB.setSelected(balkZichtbaar);
+		formuleEditorCB.setSelected(balkZichtbaar);
 		rekenToolCB.setSelected(rekenTool);
-		grafToolCB.setSelected(grafTool);
-		formuleKnopCB.setSelected(formuleKnop);
-		formuleToolPopupCB.setSelected(formuleToolPopup);
-		buttonCB.setSelected(buttonOptie);
+//		grafToolCB.setSelected(grafTool);
+
 		boxMetRandCB.setSelected(boxMetRand);
 		
         logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
+        
+        checkCB.setSelected(checkDocent);
+        maxScoreLabel.setVisible(checkCB.isSelected());
+    	maxScoreField.setVisible(checkCB.isSelected());
+    	maxScoreField.setText(""+scoreMax);
 
 		
 		//grafiekPanel.zetFormulesZichtbaar(formulesZichtbaar);
@@ -177,16 +330,22 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		//grafiekPanel.zetZoomOptie(zoomOptie);
 		//grafiekPanel.zetDragOptie(dragOptie);
 		
-		tekstEditor.setEditState(h);
-		tekstEditor.setButton(false);
+        startEditor.setEditState(h);
+        startEditor.setButton(false);
 		
 	}
 	
 	public void zetBreedte(int b)
-	{	tekstEditor.setSize(b,tekstEditor.getSize().height);
+	{	startEditorPanel.setSize(b,startEditorPanel.getSize().height);
+		startEditorPanel.setPreferredSize(new Dimension(b,startEditorPanel.getSize().height));
+	    startEditorPanel.setMaximumSize(new Dimension(b,startEditorPanel.getSize().height));
+	    startEditorPanel.setMinimumSize(new Dimension(b,startEditorPanel.getSize().height));
 	}
 	public void zetHoogte(int h)
-	{	tekstEditor.setSize(tekstEditor.getSize().width, h);
+	{	startEditorPanel.setSize(startEditorPanel.getSize().width, h);
+		startEditorPanel.setPreferredSize(new Dimension(startEditorPanel.getSize().width, h));
+	    startEditorPanel.setMaximumSize(new Dimension(startEditorPanel.getSize().width, h));
+	    startEditorPanel.setMinimumSize(new Dimension(startEditorPanel.getSize().width, h));
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
@@ -205,33 +364,38 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 	public void actionPerformed(ActionEvent e)
 	{	
 		
-		if(e.getSource().equals(balkZichtbaarCB))
-		{	balkZichtbaar = balkZichtbaarCB.isSelected();
-			tekstEditor.zetBalkZichtbaar(balkZichtbaar);
+		if(e.getSource().equals(formuleEditorCB))
+		{	formuleEditorAan = formuleEditorCB.isSelected();
+			startEditor.zetBalkZichtbaar(formuleEditorAan);
+			if(!formuleEditorAan) {
+				rekenTool = false;
+				rekenToolCB.setSelected(false);
+			}
+			startEditor.zetRekenTool(rekenTool);
 		}
 		if(e.getSource().equals(rekenToolCB))
 		{	rekenTool = rekenToolCB.isSelected();
-			tekstEditor.zetRekenTool(rekenTool);
+			startEditor.zetRekenTool(rekenTool);
+			if(!formuleEditorAan) {
+				formuleEditorAan = true;
+				formuleEditorCB.setSelected(true);
+				startEditor.zetBalkZichtbaar(formuleEditorAan);
+			}
 		}
 		if(e.getSource().equals(grafToolCB))
 		{	grafTool = grafToolCB.isSelected();
-			tekstEditor.zetGrafTool(grafTool);
-		}
-		if(e.getSource().equals(formuleKnopCB))
-		{	formuleKnop = formuleKnopCB.isSelected();
-			tekstEditor.zetFormuleKnop(formuleKnop);
-		}
-			if(e.getSource().equals(formuleToolPopupCB))
-		{	formuleToolPopup = formuleToolPopupCB.isSelected();
-			tekstEditor.zetFormuleToolPopup(formuleToolPopup);
-		}
-		if(e.getSource().equals(buttonCB))
-		{	buttonOptie = buttonCB.isSelected();
-			
+			startEditor.zetGrafTool(grafTool);
 		}
 		else if(e.getSource()==logCB)
 	    {   logIDField.setVisible(logCB.isSelected());
+	    	validate();
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
+	    }
+		else if(e.getSource()==checkCB)
+	    {   maxScoreLabel.setVisible(checkCB.isSelected());
+	    	maxScoreField.setVisible(checkCB.isSelected());
+	    	if(!checkCB.isSelected())
+	    		maxScoreField.setText("0");
 	    }
 
 	}
@@ -300,5 +464,32 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
  	}
  	//end ActionProducer
 	
-	
+ 	public class EditorComponentListener implements ComponentListener {
+
+	      @Override
+	      public void componentResized(ComponentEvent e) {
+	    	  if(e.getSource()==startEditorPanel) {
+	    		  int w = startEditorPanel.getWidth();
+	    		  int h = startEditorPanel.getHeight();
+	    		  startEditor.setBounds(0,0,w,h);
+	    	  }
+	      }
+	     @Override
+	      public void componentMoved(ComponentEvent e) {
+	        // TODO Auto-generated method stub
+	        
+	      }
+
+	      @Override
+	      public void componentShown(ComponentEvent e) {
+	        // TODO Auto-generated method stub
+	        
+	      }
+
+	      @Override
+	      public void componentHidden(ComponentEvent e) {
+	        // TODO Auto-generated method stub
+	        
+	      }
+	}
 }

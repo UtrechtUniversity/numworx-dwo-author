@@ -553,6 +553,10 @@ public class Text_fr extends java.util.ListResourceBundle
                                 {"TEEP_menuBalkOptie" , "Bar de menu"},
                                 {"TEEP_rekenToolOptie" , "Calculatrice"},
                                 {"TEEP_grafToolOptie" , "Outil de graphe"},
+                                {"TEEP_titleStartLabel", "Tekst-answer-box"},
+                				{"TEEP_checkDocentCBLabel", "Check (by teacher)"},
+                				{"TEEP_maxScoreLabel", "Maximum score"},
+                				{"TEEP_editorOptiesLabel", "Editor options"},
                                 
                                 //Ideas
                                 

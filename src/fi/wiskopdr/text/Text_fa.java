@@ -540,6 +540,10 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"TEEP_menuBalkOptie" , "نوار منو"},
 				{"TEEP_rekenToolOptie" , "ماشین حساب"},
 				{"TEEP_grafToolOptie" , "ابزار ترسیم"},
+				{"TEEP_titleStartLabel", "Tekst-answer-box"},
+				{"TEEP_checkDocentCBLabel", "Check (by teacher)"},
+				{"TEEP_maxScoreLabel", "Maximum score"},
+				{"TEEP_editorOptiesLabel", "Editor options"},
 				
 				//Ideas
 				

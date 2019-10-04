@@ -227,7 +227,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		headerbox.add(Box.createHorizontalGlue());
 		headerbox.add(headerTitle);
 		headerbox.add(Box.createHorizontalGlue());
-		headerbox.add(helpButton);
+		if(setNr==0 && (soort<4 || soort>4 && soort<8))
+			headerbox.add(helpButton);
 		headerbox.add(helpTitelBox);
 		headerPanel.add(headerbox);
 		

@@ -507,6 +507,10 @@ public class Text_in extends java.util.ListResourceBundle
 				{"TEEP_menuBalkOptie" , "Menu Bar"},
 				{"TEEP_rekenToolOptie" , "Kalkulator"},
 				{"TEEP_grafToolOptie" , "Alat Grafik"},
+				{"TEEP_titleStartLabel", "Tekst-answer-box"},
+				{"TEEP_checkDocentCBLabel", "Check (by teacher)"},
+				{"TEEP_maxScoreLabel", "Maximum score"},
+				{"TEEP_editorOptiesLabel", "Editor options"},
 				
 				//Ideas
 				

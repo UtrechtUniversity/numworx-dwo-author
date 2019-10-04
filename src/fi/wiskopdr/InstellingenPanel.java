@@ -227,27 +227,33 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		keyboardCombobox.addItem(WiskOpdr.rb.getString("Gonio-keyboard"));
 		keyboardCombobox.addItem(WiskOpdr.rb.getString("Statistiek-keyboard"));
 		keyboardCombobox.addItem(WiskOpdr.rb.getString("Meetkunde-keyboard"));
-		boxh.add(keyboardCombobox);
-		boxh.add(Box.createHorizontalStrut(80));
-		boxv1.add(boxh);
-		boxv1.add(Box.createVerticalStrut(5));
+		if("GR".equals(WiskOpdr.deployVariant) || "MW".equals(WiskOpdr.deployVariant)) {
+			boxh.add(keyboardCombobox);
+			boxh.add(Box.createHorizontalStrut(80));
+			boxv1.add(boxh);
+			boxv1.add(Box.createVerticalStrut(5));
+		}
 		
 		boxh = Box.createHorizontalBox();
 		writeMathLabel = new JLabel(WiskOpdr.rb.getString("Tablet handschriftset")+" ");
 		writeMathLabel.setFont(font);
 		writeMathLabel.setForeground(WiskOpdr.fgcolorEditor);
-		boxh.add(writeMathLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		if("GR".equals(WiskOpdr.deployVariant) || "MW".equals(WiskOpdr.deployVariant)) {
+			boxh.add(writeMathLabel);
+			boxh.add(Box.createHorizontalStrut(10));
+		}
 		
 		writeMathCombobox = new WiskOpdrComboBox();
 		writeMathCombobox.setFont(font);
 		writeMathCombobox.setForeground(WiskOpdr.fgcolorEditor);
 		writeMathCombobox.addItem(WiskOpdr.rb.getString("Basis"));
 		writeMathCombobox.addItem(WiskOpdr.rb.getString("Uitgebreid"));
-		boxh.add(writeMathCombobox);
-		boxh.add(Box.createHorizontalStrut(80));
-		boxv1.add(boxh);
-		boxv1.add(Box.createVerticalStrut(90));
+		if("GR".equals(WiskOpdr.deployVariant) || "MW".equals(WiskOpdr.deployVariant)) {
+			boxh.add(writeMathCombobox);
+			boxh.add(Box.createHorizontalStrut(80));
+			boxv1.add(boxh);
+			boxv1.add(Box.createVerticalStrut(90));
+		}
 		
 		//Navigatie-opties
 		Box boxv2 = Box.createVerticalBox();

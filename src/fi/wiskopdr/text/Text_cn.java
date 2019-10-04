@@ -563,6 +563,10 @@ public class Text_cn extends java.util.ListResourceBundle
 				{"TEEP_menuBalkOptie" , "Menu bar"},
 				{"TEEP_rekenToolOptie" , "Calculator"},
 				{"TEEP_grafToolOptie" , "Graph tool"},
+				{"TEEP_titleStartLabel", "Tekst-answer-box"},
+				{"TEEP_checkDocentCBLabel", "Check (by teacher)"},
+				{"TEEP_maxScoreLabel", "Maximum score"},
+				{"TEEP_editorOptiesLabel", "Editor options"},
 				
 				//Ideas
 				

@@ -271,6 +271,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{"AKV_titleTekstenLabel", "Teksten keuzelijst"},
 				
+				
+				
 				// TekstVakInteractiePanel
 				{"titleFormuleAntwVakLabel" , "Instellingen formulevak met stappen"},
                 {"titleVergelijkingAntwVakLabel" , "Instellingen vergelijkingvak met stappen"},
@@ -596,9 +598,13 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				
 				//TekstEditorEditPanel
-				{"TEEP_menuBalkOptie" , "Menubalk"},
+				{"TEEP_menuBalkOptie" , "Formule-editor"},
 				{"TEEP_rekenToolOptie" , "Calculator"},
 				{"TEEP_grafToolOptie" , "Grafiekentool"},
+				{"TEEP_titleStartLabel", "Tekstantwoordvak bij opstarten"},
+				{"TEEP_checkDocentCBLabel", "Nakijken (door docent)"},
+				{"TEEP_maxScoreLabel", "Maximale score"},
+				{"TEEP_editorOptiesLabel", "Editoropties"},
 				
 				//Ideas
 				{"ideasTip",		"tip"},
