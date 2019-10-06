@@ -4,6 +4,7 @@ import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.*;
@@ -340,12 +341,19 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		startEditorPanel.setPreferredSize(new Dimension(b,startEditorPanel.getSize().height));
 	    startEditorPanel.setMaximumSize(new Dimension(b,startEditorPanel.getSize().height));
 	    startEditorPanel.setMinimumSize(new Dimension(b,startEditorPanel.getSize().height));
+	    EditInteractiePanelDialog c = ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel));
+	    if(c!=null)
+	    	c.pack();
 	}
 	public void zetHoogte(int h)
 	{	startEditorPanel.setSize(startEditorPanel.getSize().width, h);
 		startEditorPanel.setPreferredSize(new Dimension(startEditorPanel.getSize().width, h));
 	    startEditorPanel.setMaximumSize(new Dimension(startEditorPanel.getSize().width, h));
 	    startEditorPanel.setMinimumSize(new Dimension(startEditorPanel.getSize().width, h));
+	    EditInteractiePanelDialog c = ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel));
+	    if(c!=null)
+	    	c.pack();
+
 	}
 	
 	public void setBounds(int x, int y, int b, int h)

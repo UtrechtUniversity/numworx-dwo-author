@@ -75,6 +75,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	private PlusMinKnop aantalOpdrKnop;
 	private PlusMinKnop opdrPositieKnop;
 	private PlusMinKnop nivPositieKnop;
+	private JButton nieuweOpdrKnop;
 
 	private JComboBox modeChoice;
 	private Font font = new Font("SansSerif", Font.PLAIN, 12);
@@ -101,6 +102,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	
 	public static HelpBrowser helpBrowser;
 	private static String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
+	public static String defaultTemplatePage = "";
 	
 	/**
 	 * Maakt nieuwe Opdrachtnavigatie-editor op basis van de aangeleverde launchData
@@ -108,7 +110,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public OpdrNavStructEdit(MyOpdrEditContainer opdrEditContainer, int x, int y, int b, int h, Hashtable launchData) {
 		setLayout(null);
 		setBounds(x, y, b, h);
-		setBackground(WiskOpdr.bgcolor);
+		setBackground(WiskOpdr.colorGray3);
 		instance = this; // FIXME hoe kom ik hierachter?
 		helpBrowser = new HelpBrowser(instance);
 		
@@ -216,8 +218,17 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		aantalOpdrKnop = new PlusMinKnop(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2, 20, 16, PlusMinKnop.HORIZONTAAL);
 		aantalOpdrKnop.addActionListener(this);
 		add(aantalOpdrKnop);
+		
+		nieuweOpdrKnop = new WiskOpdrButton("+");
+		nieuweOpdrKnop.setBounds(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1, 20, 20);
+		nieuweOpdrKnop.setFont(new Font("SansSerif",Font.BOLD, 24));
+		nieuweOpdrKnop.setForeground(WiskOpdr.colorBlue3);
+		nieuweOpdrKnop.setBackground(WiskOpdr.colorGray3);
+		nieuweOpdrKnop.setBorder(BorderFactory.createEmptyBorder());
+		nieuweOpdrKnop.addActionListener(this);
+		add(nieuweOpdrKnop);
 
-		nivPositieKnop = new PlusMinKnop(actKeuzePanelX - 20, actKeuzePanelY + aantalActiviteiten * 20 - 20, 12, 16, PlusMinKnop.VERTIKAAL);
+		nivPositieKnop = new PlusMinKnop(actKeuzePanelX - 20, actKeuzePanelY + aantalActiviteiten * 20 + 2, 12, 16, PlusMinKnop.VERTIKAAL);
 		nivPositieKnop.addActionListener(this);
 		if(aantalActiviteiten>1)
           add(nivPositieKnop);
@@ -584,6 +595,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		actKeuzePanel.setLocation(actKeuzePanelX,actKeuzePanelY);
 		aantalNivKnop.setBounds(actKeuzePanelX - 2, actKeuzePanelY + aantalActiviteiten * 20, 16, 20);
 		aantalOpdrKnop.setBounds(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2, 20, 16);
+		nieuweOpdrKnop.setBounds(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1, 20, 20);
 		nivPositieKnop.setBounds(actKeuzePanelX - 20, actKeuzePanelY + aantalActiviteiten * 20 - 20, 12, 16);
 		opdrPositieKnop.setBounds(orPosX + 25 * opdrachtNr, orPosY + 25, 20, 16);
 		modeChoice.setBounds(190, h-40, 140, 24);
@@ -748,6 +760,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 25);
 		aantalOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2);
+		nieuweOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1);
 
 		if (globalParam)
 			opdrEditContainer.viewRandVarEditor(opdrNr == 0);
@@ -809,6 +822,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		or[activiteitNr].setSelected(opdrachtNr + 1);
 		add(or[activiteitNr], 0);
 		aantalOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2);
+		nieuweOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1);
 		opdrEditContainer.setEditState(opdrachten[activiteitNr][opdrachtNr]);
 		repaint();
 		WiskOpdr.setLaunchDataChanged();
@@ -832,7 +846,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		or[activiteitNr].setSelected(opdrachtNr + 1);
 		add(or[activiteitNr], 0);
 		aantalOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2);
+		nieuweOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1);
 		opdrEditContainer.setEditState(opdrachten[activiteitNr][opdrachtNr]);
+		opdrEditContainer.zetTekst(defaultTemplatePage);
 		repaint();
 		WiskOpdr.setLaunchDataChanged();
 	}
@@ -858,6 +874,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		or[activiteitNr].setSelected(opdrachtNr + 1);
 		add(or[activiteitNr], 0);
 		aantalOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2);
+		nieuweOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1);
 		opdrEditContainer.setEditState(opdrachten[activiteitNr][opdrachtNr]);
 		repaint();
 		WiskOpdr.setLaunchDataChanged();
@@ -947,6 +964,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 				or[activiteitNr].setSelected(opdrachtNr + 1);
 				add(or[activiteitNr], 0);
 				aantalOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2);
+				nieuweOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1);
 				repaint();
 			}
 			if (e.getActionCommand().equals("plus") && aantalOpdrachten[activiteitNr] < maxAantalOpdrachten) {
@@ -969,9 +987,33 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 				or[activiteitNr].setSelected(opdrachtNr + 1);
 				add(or[activiteitNr], 0);
 				aantalOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2);
+				nieuweOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1);
 				repaint();
 			}
-		} else if (e.getSource() == aantalNivKnop) {
+		} 
+		else if(e.getSource() == nieuweOpdrKnop) {
+			opdrachten[activiteitNr][opdrachtNr] = opdrEditContainer.getEditState();
+			aantalOpdrachten[activiteitNr]++;
+			opdrachtNr = aantalOpdrachten[activiteitNr]-1;
+			opdrachten[activiteitNr][opdrachtNr] = WiskOpdr.defaultEditModeState;
+			remove(or[activiteitNr]);
+			or[activiteitNr] = null;
+			or[activiteitNr] = new OpdrachtNrRij(aantalOpdrachten[activiteitNr], orPosX, orPosY);
+			or[activiteitNr].zetLetters(gekoppeldeOpdrachten || abcDeelOpdr);
+			or[activiteitNr].setSize(or[activiteitNr].getSize().width, 25);
+			or[activiteitNr].addActionListener(this);
+			or[activiteitNr].setRightClickPossible(true);
+			or[activiteitNr].setBackground(getBackground());
+			or[activiteitNr].setSelected(opdrachtNr + 1);
+			add(or[activiteitNr], 0);
+			aantalOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 5, orPosY + 2);
+			nieuweOpdrKnop.setLocation(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1);
+			opdrEditContainer.setEditState(opdrachten[activiteitNr][opdrachtNr]);
+			opdrEditContainer.zetTekst(defaultTemplatePage);
+			repaint();
+			WiskOpdr.setLaunchDataChanged();
+		}
+		else if (e.getSource() == aantalNivKnop) {
 			if (e.getActionCommand().equals("plus") && aantalActiviteiten > 1) {
 				WiskOpdr.setLaunchDataChanged();
 				for (int i = 0; i < aantalOpdrachten[aantalActiviteiten - 1]; i++) {

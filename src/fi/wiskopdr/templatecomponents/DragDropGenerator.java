@@ -307,7 +307,7 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		ipLaunchState.put("fgColor", new Color(150,150,150));
 		ipLaunchState.put("centerV", new Boolean(true));
 		ipLaunchState.put("centerH", new Boolean(true));
-		ipLaunchState.put("styleString", "drag-target");
+		ipLaunchState.put("styleString", "target-object");
 		if(!decompose) ipLaunchState.put("templateModeEdit", new Boolean(true));
 		ipLaunchState.put("zwevend", new Boolean(true));
 		ipLaunchState.put("sleepdoel", new Boolean(true));

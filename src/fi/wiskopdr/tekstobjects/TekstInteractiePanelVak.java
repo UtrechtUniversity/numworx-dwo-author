@@ -535,8 +535,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	          item = new JMenuItem(te.new TComponentAction(typeName,type));
 	          item.setBackground(new Color(237,239,241));
 	          item.setForeground(new Color(49,71,112));
-	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
 	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
+	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
+	          
 	          menu.add(item);
 	          
 	          type = "DragDrop";

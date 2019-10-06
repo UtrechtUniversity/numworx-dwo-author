@@ -24,6 +24,7 @@ import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.wiskopdr.templatecomponents.TComponentGenerator;
 import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.beans.wiskopdrbeans.CBookAware;
@@ -368,9 +369,19 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			//System.out.println("templatePages:"+TekstVakPanel.templatePages.keySet().size());
 			int teller = 0;
 			//for (String key : TekstVakPanel.templatePages.keySet()) 
+			ButtonGroup buttonGroup = new ButtonGroup();
 			for (int i=0 ; i<TekstVakPanel.templatePagesKeys.size() ; i++) 
 			{	String key = TekstVakPanel.templatePagesKeys.get(i);
-				templateItems[teller] = new JMenuItem(key.substring(8));
+				templateItems[teller] = new JRadioButtonMenuItem(key.substring(8));
+				templateItems[teller].setFont(new Font("SansSerif",Font.PLAIN,13));
+				templateItems[teller].setBackground(new Color(237,239,241));
+				templateItems[teller].setForeground(new Color(49,71,112));
+				templateItems[teller].setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
+				buttonGroup.add(templateItems[teller]);
+				if(i==0) {
+					templateItems[teller].setSelected(true);
+					OpdrNavStructEdit.defaultTemplatePage = TekstVakPanel.templatePages.get(key);
+				}
 				templateItems[teller].addActionListener(this);
 				templateKeys[teller] = "DWOTEMP_"+templateItems[teller].getText();
 				templateChoice.add(templateItems[teller]);
@@ -471,12 +482,20 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 							String type = componentList.get(i).get(j).substring(4);
 							String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
 							componentItems[teller] = new JMenuItem(new TComponentAction(typeName,type));
+							componentItems[teller].setFont(new Font("SansSerif",Font.PLAIN,13));
+							componentItems[teller].setBackground(new Color(237,239,241));
+							componentItems[teller].setForeground(new Color(49,71,112));
+					        componentItems[teller].setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 							componentKeys[teller] = "DWOCOMP_STND"+type;
 							subMenu.add(componentItems[teller]);
 							teller++;
 						}
 						else {
 							JMenuItem subMenutem = new JMenuItem(componentList.get(i).get(j));
+							subMenutem.setFont(new Font("SansSerif",Font.PLAIN,13));
+							subMenutem.setBackground(new Color(237,239,241));
+							subMenutem.setForeground(new Color(49,71,112));
+							subMenutem.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 							subMenu.add(subMenutem);
 							componentItems[teller] = subMenutem;
 							componentItems[teller].addActionListener(this);
@@ -494,12 +513,20 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 					  String type = componentItemList.get(i).substring(4);
 					  String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
 					  componentItems[teller] = new JMenuItem(new TComponentAction(typeName,type));
+					  componentItems[teller].setFont(new Font("SansSerif",Font.PLAIN,13));
+					  componentItems[teller].setBackground(new Color(237,239,241));
+					  componentItems[teller].setForeground(new Color(49,71,112));
+					  componentItems[teller].setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 					  componentKeys[teller] = "DWOCOMP_STND"+type;
                       componentChoice.add(componentItems[teller]);
 					  teller++;
 					}
 					else {
 						componentItems[teller] = new JMenuItem(componentItemList.get(i));
+						componentItems[teller].setFont(new Font("SansSerif",Font.PLAIN,13));
+						componentItems[teller].setBackground(new Color(237,239,241));
+						componentItems[teller].setForeground(new Color(49,71,112));
+						componentItems[teller].setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 						componentItems[teller].addActionListener(this);
 						componentKeys[teller] = "DWOCOMP_"+componentItems[teller].getText();
 						componentChoice.add(componentItems[teller]);
@@ -768,7 +795,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
        
         //tekstVak.layoutTekst();
         resizeButton.setBounds(getSize().width-18,3,15,15);
-        setNewScrollSize();
+        //setNewScrollSize();
     }
 	
     public void setSize(int b, int h)
@@ -802,7 +829,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         //tekstVak.setSize(b-10-(toolbarLeft?33:0),h-30);
         //tekstVak.layoutTekst();
         resizeButton.setBounds(getSize().width-18,3,15,15);
-        setNewScrollSize();
+        //setNewScrollSize();
     }
 	
 	public String getText()
@@ -823,6 +850,10 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
 	public void zetTekst(String s)
 	{	tekstVak.zetTekst(s);
+	}
+	
+	public void insert(String s)
+	{	tekstVak.insertDups(s);
 	}
 	
 	public void zetOpBalk(Component c)
@@ -1195,9 +1226,11 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			}
 			for(int i=0 ; templateItems!=null && i<templateItems.length ; i++)
 			{
-				if(e.getSource()==templateItems[i] && tekstVakActief instanceof BasisTekstVak )
-					tekstVakActief.insertDups(TekstVakPanel.templatePages.get(templateKeys[i]));
-				//System.out.println("Key-template: "+templateItems[i].getText());
+				if(e.getSource()==templateItems[i] && tekstVakActief instanceof BasisTekstVak ) 
+					OpdrNavStructEdit.defaultTemplatePage = TekstVakPanel.templatePages.get(templateKeys[i]);
+				
+				//tekstVakActief.insertDups(TekstVakPanel.templatePages.get(templateKeys[i]));
+				
 			}
 			for(int i=0 ;componentItems!=null && i<componentItems.length ; i++)
 			{

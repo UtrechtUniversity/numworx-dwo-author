@@ -337,6 +337,13 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelEditor.setVisible(b);
 		setSizesGui();
 	}
+	
+	public void zetTekst(String s) {
+		tekstEditor.zetTekst("");
+		tekstEditor.insert(s);
+		tekstEditor.layoutTekst();
+	}
+	
 
 	private void zetAntwoordVakUsed(boolean b) {
 		hasAntwoordVak = b;
