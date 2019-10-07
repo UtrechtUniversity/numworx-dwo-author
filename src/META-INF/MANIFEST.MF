@@ -6,3 +6,5 @@ Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff
 Application-Name: Graph Tool
 Application-Library-Allowable-Codebase: *
 Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.toegang.nu *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org
+Bundle-Name: Graph Tool
+Bundle-SymbolicName: fi.graphtool.GraphTool

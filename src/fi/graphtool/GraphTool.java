@@ -13,6 +13,7 @@ import fi.beans.copyright.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 import fi.beans.wiskopdrbeans.*;
+import fi.wiskopdr.WiskOpdr;
 
 public class GraphTool extends Applet implements ScormAppletIF, WiskOpdrApplet { 
 
@@ -22,6 +23,8 @@ public class GraphTool extends Applet implements ScormAppletIF, WiskOpdrApplet {
 	
 	
 	public static void main(String[] args) {	
+      WiskOpdr.applet = new WiskOpdr();
+      WiskOpdr.dwo_env = "test";
 		int width = 800;
         int height = 600;
 		ScormMainFrame mf = new ScormMainFrame(new GraphTool(),width, height);
