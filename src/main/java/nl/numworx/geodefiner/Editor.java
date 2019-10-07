@@ -22,9 +22,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import fi.beans.numworxlf.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
+import fi.beans.numworxlf.JTabbedPane;
 import javax.swing.KeyStroke;
 
 import nl.numworx.geodefiner.common.CELL;
