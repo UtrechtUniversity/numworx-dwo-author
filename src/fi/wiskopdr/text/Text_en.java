@@ -79,7 +79,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "startVergLabel" , "Start equation:" },
 				{ "variabelenLabel", "Variables (separated by commas): "},
 				{ "antwoordLabel" , "Answer model:" },
-				{ "antwoordLabelStelsel", "Answer model (tupels numbers, like (0,0),(1,1))"},
+				{ "antwoordLabelStelsel", "(tupels numbers, like (0,0),(1,1))"},
 				{ "scoringLabel" , "Scoring of the answer:" },
 				{ "puntenLabel" , "Points:" },
 				{ "checkTotaalLabel" , "Attention! Total score 10" },

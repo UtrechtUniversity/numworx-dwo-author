@@ -474,6 +474,10 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 				
 				if(!componentList.get(i).isEmpty()) {
 					JMenu subMenu = new JMenu(componentItemList.get(i));
+					subMenu.setFont(new Font("SansSerif",Font.PLAIN,13));
+					subMenu.setBackground(new Color(237,239,241));
+					subMenu.setForeground(new Color(49,71,112));
+					subMenu.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 					for (int j=0 ; j<componentList.get(i).size() ; j++) {
 						if(componentList.get(i).get(j).startsWith("separator")) {
 							subMenu.addSeparator();

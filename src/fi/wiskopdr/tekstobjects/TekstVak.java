@@ -1551,6 +1551,13 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	    }
 	}
 	
+	private boolean mouseAtDistance()
+	{
+		int dx = MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x;
+		int dy = MouseInfo.getPointerInfo().getLocation().y - this.getLocationOnScreen().y;
+		return (dx+dy>50);
+	}
+	
 	int inspringing = 0;
 	boolean heeftInspr;
 	public boolean zetInspringing(boolean b, int inspr) {
@@ -1572,6 +1579,52 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		}
 		else return false;
 	}
+	
+//	int inspringing = 0;
+//	boolean heeftInspr;
+//	public boolean zetInspringing(boolean b, int inspr) {
+//		if(centerH || !(regels[0].getComponent(0) instanceof TekstInteractiePanelVak))
+//			return false;
+//		if(b) {
+//			Thread thread = new Thread() {
+//				public void run() {
+//					try {
+//						Thread.sleep(500);
+//					}catch(Exception e) {}
+//					inspringing = inspr;
+//					heeftInspr = true;
+//					zetMarge(geefMarge()+inspr);
+//					resize();
+//					
+//				}
+//			};
+//			thread.start();
+//			Thread threadSluit = new Thread() {
+//				public void run() {
+//					try {
+//						Thread.sleep(3000);
+//					}catch(Exception e) {}
+//					if(heeftInspr && mouseAtDistance()) {
+//						zetMarge(geefMarge()-inspringing);
+//						inspringing = 0;
+//						heeftInspr = false;
+//						resize();
+//					}
+//				}
+//				
+//			};
+//			//threadSluit.start();
+//			return true;
+//		}
+//		else if(heeftInspr){
+//			zetMarge(geefMarge()-inspringing);
+//			this.inspringing = 0;
+//			heeftInspr = b;
+//			resize();
+//			return false;
+//		}
+//		else return false;
+//	}
 	
 	
 	public void neemFocus(String richting, TekstElement fe)

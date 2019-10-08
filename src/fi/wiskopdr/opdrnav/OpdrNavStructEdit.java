@@ -996,6 +996,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			aantalOpdrachten[activiteitNr]++;
 			opdrachtNr = aantalOpdrachten[activiteitNr]-1;
 			opdrachten[activiteitNr][opdrachtNr] = WiskOpdr.defaultEditModeState;
+			opdrPositieKnop.setLocation(orPosX + 25 * opdrachtNr, orPosY + 25);
+			
 			remove(or[activiteitNr]);
 			or[activiteitNr] = null;
 			or[activiteitNr] = new OpdrachtNrRij(aantalOpdrachten[activiteitNr], orPosX, orPosY);

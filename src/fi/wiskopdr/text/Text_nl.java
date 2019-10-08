@@ -84,7 +84,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "startVergLabel" , "Startvergelijking:" },
 				{ "variabelenLabel", "Variabelen (gescheiden door komma's): "},
 				{ "antwoordLabel" , "Antwoordmodel:" },
-				{ "antwoordLabelStelsel", "Antwoordmodel (tupels getallen, bijv (0,0),(1,1))"},
+				{ "antwoordLabelStelsel", "(tupels getallen, bijv (0,0),(1,1))"},
 				{ "scoringLabel" , "Scoring van het antwoord:" },
 				{ "puntenLabel" , "Punten:" },
 				{ "checkTotaalLabel" , "Let op! Totaal 10" },
