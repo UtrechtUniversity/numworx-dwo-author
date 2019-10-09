@@ -47,11 +47,14 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
     //Feedback editor
    	private TekstEditor feedbackEditor;
    	private JLabel titleFeedbackLabel;
-   	private Box feedbackBox;
+ 	private JLabel titleFeedbackTekstLabel;
+ 	private ActKeuzePanel goedFoutIP;
+ 	private Box feedbackBox;
    	private DialogFacade feedbackEditorPopupFrame;
    	
    	// Verificatie
   	private JLabel titleVerificatieLabel;
+  	private JLabel titleVerificatieScoreLabel;
   	private Box verificatieBox;
   	    
     private int puntenGelijkwaardig = 0;
@@ -63,7 +66,6 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
     private Box scoringBox;
     private JTextField  feedbackPV;
     private JTextField scoreMaxPV;
-    private ActKeuzePanel goedFoutIP;
     
     // Logging/Nakijken
  	private JLabel titleLoggingLabel;
@@ -157,9 +159,9 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
         antwoordEditorPanel.add(tabPositieKnop,0);
         	
         //GUI Feedback editor
-        titleFeedbackLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
-    	titleFeedbackLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleFeedbackLabel.setFont(font.deriveFont(Font.BOLD, 16));
+        titleFeedbackTekstLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
+        titleFeedbackTekstLabel.setForeground(WiskOpdr.colorBlue1);
+        titleFeedbackTekstLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
         feedbackEditor = new TekstEditor(false,true,true);
         feedbackEditor.setPreferredSize(new Dimension(400,120));
@@ -259,7 +261,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		Box settingsBox = vb(k4);
 		
 		// plaats componenten feedback box
-		Component[] r51 = {titleFeedbackLabel, 		hgl()};
+		Component[] r51 = {titleFeedbackTekstLabel, 		hgl()};
 		Component[] r52 = {ra(0,110),				hgl(),  		feedbackEditor};
 		
 		Component[] k5 = {hb(r51),vst(5),hb(r52), vgl()};
@@ -385,13 +387,13 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
     {	String feedbackNrString = "";
     	if(hasFeedback && answerModelNr>0) {
     		feedbackNrString += (answerModelNr+1);
-	    	titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
+    		titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
 	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
 	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
 	    	scoringBox.validate();
 	   }
     	else {
-    		titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
+    		titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
 	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
 	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
 	    	scoringBox.validate();

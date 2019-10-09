@@ -72,11 +72,14 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 	private TekstEditor feedbackEditor;
 	private JCheckBox feedbackSizeCB;
 	private JLabel titleFeedbackLabel;
+	private JLabel titleFeedbackTekstLabel;
+	private ActKeuzePanel goedFoutIP;
 	private Box feedbackBox;
 	private DialogFacade feedbackEditorPopupFrame;
 	   
     // Verificatie
 	private JLabel titleVerificatieLabel;
+	private JLabel titleVerificatieScoreLabel;
 	private Box verificatieBox;
 	private JCheckBox  gelijkwaardigCB, vormCB, exactCB, significantCB, eindOplossingCB;
 	private JTextField gelijkwaardigPV, vormPV, exactPV, significantPV, eindOplossingPV;
@@ -103,7 +106,6 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     private JLabel ScoringLabel; // overbodig?
     private Box scoringBox;
     private JTextField  feedbackPV;
-    private ActKeuzePanel goedFoutIP;
     //private JLabel puntenLabel, checkTotaalLabel; // overbodig?
     
 	// Logging/Nakijken
@@ -312,9 +314,13 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         vormEditorPanel.addComponentListener(new EditorComponentListener());
         
         //GUI Feedback editor
-        titleFeedbackLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
-    	titleFeedbackLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleFeedbackLabel.setFont(font.deriveFont(Font.BOLD, 16));
+        titleFeedbackLabel = new JLabel(WiskOpdr.rb.getString("feedbackLabel"));
+        titleFeedbackLabel.setForeground(WiskOpdr.colorBlue1);
+        titleFeedbackLabel.setFont(font.deriveFont(Font.BOLD, 16));
+    	
+        titleFeedbackTekstLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
+        titleFeedbackTekstLabel.setForeground(WiskOpdr.colorBlue1);
+        titleFeedbackTekstLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
         feedbackEditor = new TekstEditor(false,true,true);
         feedbackEditor.setPreferredSize(new Dimension(400,160));
@@ -331,6 +337,10 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	titleVerificatieLabel.setForeground(WiskOpdr.colorBlue1);
     	titleVerificatieLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
+    	titleVerificatieScoreLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+     	titleVerificatieScoreLabel.setForeground(WiskOpdr.colorBlue1);
+     	titleVerificatieScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
+     	
         gelijkwaardigCB = makeCheckBox(320,410,120,20,WiskOpdr.rb.getString("gelijkwaardigCBLabel"),true,true);
         gelijkwaardigCB.addMouseListener(this);
         vormCB = makeCheckBox(320,435,120,20,WiskOpdr.rb.getString("vormCBLabel"),false,true);
@@ -363,7 +373,9 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
         logIDField = makeTextField(520,5,60,20,"0",false);
+        logIDField.setPreferredSize(new Dimension(50,22));
         logIDLabelField = makeTextField(520,25,60,20,"",false);
+        logIDLabelField.setPreferredSize(new Dimension(50,22));
         ScoringLabel = makeLabel(320,385,160,20,WiskOpdr.rb.getString("score"),true);
         logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
        
@@ -517,32 +529,39 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		
 		// plaats componenten feedback box
 		Component[] r51 = {titleFeedbackLabel, 		hgl()};
-		Component[] r52 = {ra(0,110),				hgl(),  		feedbackEditor};
+		Component[] r52 = {goedFoutIP,				hgl()};
 		
-		Component[] k5 = {hb(r51),vst(5),hb(r52), vgl()};
-		Component[] h5 = {ra(20,10),vb(k5)};
+		Component[] r53 = {titleFeedbackTekstLabel, hgl()};
+		Component[] r54 = {ra(0,110),				hgl(),  		feedbackEditor};
+		
+		Component[] k51 = {hb(r51),vst(5),hb(r52), vgl()};
+		Component[] k52 = {hb(r53),vst(5),hb(r54), vgl()};
+		
+		Component[] h5 = {ra(20,0),vb(k51),hst(10), vb(k52)};
 		feedbackBox = hb(h5);
 		
+		//plaats componenten scoringbox 
+        Component[] r70 = {titleScoreLabel, 	ra(10,10), 		feedbackPV, hgl()};
+        //Component[] r71 = {ra(10,10), 		feedbackPV, 	hgl()};
+		//Component[] r72 = {goedFoutIP, 		hgl()};
+		
+		Component[] k7 = {hb(r70), vgl()};
+		scoringBox = vb(k7);
 		
 		// plaats componenten verificatie box
-		Component[] r61 = {titleVerificatieLabel, 	ra(10,10),		hgl(),				titleScoreLabel};
-		Component[] r62 = {gelijkwaardigCB,			hgl(),  		gelijkwaardigPV};
+		Component[] r61 = {titleVerificatieLabel, 	ra(10,10),		hgl(),				titleVerificatieScoreLabel};
+		Component[] r62 = {gelijkwaardigCB,			ra(10,10),		hgl(),  		gelijkwaardigPV};
 		Component[] r63 = {vormCB,					hgl(),  		vormPV};
 		Component[] r64 = {eindOplossingCB,			hgl(),  		eindOplossingPV};
 		Component[] r65 = {significantCB,			hgl(),  		significantPV};
 		Component[] r66 = {exactCB,					hgl(),  		exactPV};
+		Component[] r67 = {scoringBox,				hgl(),  	};
 		
-		Component[] k6 = {hb(r61), vst(25), hb(r62), hb(r63), hb(r64), hb(r65), hb(r66), vgl()};
-		Component[] h6 = {vb(k6), hgl(), hgl()};
+		Component[] k6 = {hb(r61), vst(5), hb(r62), hb(r63), hb(r64), hb(r65), hb(r66), vst(10),vgl(),hb(r67)};
+		Component[] h6 = {vb(k6)};
 		verificatieBox = hb(h6);
+		verificatieBox.setMaximumSize(new Dimension(240,300));
 		
-		
-		//plaats componenten scoringbox
-        Component[] r71 = {ra(10,10), 		feedbackPV, 	hgl()};
-		Component[] r72 = {goedFoutIP, 		hgl()};
-		
-		Component[] k7 = {hb(r71), vst(20), hb(r72), vgl()};
-		scoringBox = vb(k7);
 		
 		
 		//plaats componenten vormbox
@@ -584,8 +603,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		boxh2.add(antwoordBox);
 		
 		boxh3.add(verificatieBox);
-		boxh3.add(Box.createHorizontalStrut(5));
-		boxh3.add(scoringBox);
+		//boxh3.add(Box.createHorizontalStrut(5));
+		//boxh3.add(scoringBox);
 		boxh3.add(Box.createHorizontalStrut(10));
 		boxh3.add(vormBox);
 		boxh3.add(Box.createHorizontalGlue());
@@ -671,8 +690,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     public JTextField makeTextField(int x, int y, int b, int h, String text, boolean visible)
     {   JTextField textField = new WiskOpdrTextField(text);
         textField.setBounds(x,y,b,h);
-        textField.setPreferredSize(new Dimension(50,22));
-        textField.setMaximumSize(new Dimension(50,22));
+        textField.setPreferredSize(new Dimension(40,22));
+        textField.setMaximumSize(new Dimension(40,22));
         textField.setFont(font);
         textField.addActionListener(this);
         textField.setVisible(visible);
@@ -751,15 +770,19 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     {	String feedbackNrString = "";
     	if(hasFeedback && answerModelNr>0) {
     		feedbackNrString += (answerModelNr+1);
-	    	titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
-	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
-	      	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
+    		titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
+    		titleFeedbackLabel.setText(WiskOpdr.rb.getString("feedbackLabel") + " " + feedbackNrString);
+	    	titleVerificatieLabel.setText(WiskOpdr.rb.getString("FEV_titleVerificatieLabel") + " " + feedbackNrString);
+    		titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
+	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
 	    	scoringBox.validate();
     	}
     	else {
-    		titleFeedbackLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
-	    	titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
-	      	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
+    		titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
+    		titleFeedbackLabel.setText(WiskOpdr.rb.getString("feedbackLabel"));
+    		titleVerificatieLabel.setText(WiskOpdr.rb.getString("FEV_titleVerificatieLabel"));
+    		titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
+	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
 	    	scoringBox.validate();
     	}
     }
@@ -2120,6 +2143,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         goedFoutIP.setVisible(b);
         if(scoringBox!=null)
           scoringBox.setVisible(b);
+        titleVerificatieScoreLabel.setVisible(!b);
         //puntenLabel.setVisible(!b);
         
         gelijkwaardigPV.setVisible(!b);
