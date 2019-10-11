@@ -206,6 +206,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		tweeHLVarCB = maakCheckBox(WiskOpdr.rb.getString("OPT_tweeHoofdletterVars"), boxv1, false);//"Twee-hoofdletter variabelen "
 		hoekGradenCB = maakCheckBox(WiskOpdr.rb.getString("OPT_hoekInGraden"),boxv1, false);//"Hoekberekeningen in graden"
 		fToetsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fToets"), boxv1, true);//"F-toetsen gebruiken of niet"
+		boxv1.remove(boxv1.getComponentCount()-1);
 		significantieCB = maakCheckBox(WiskOpdr.rb.getString("OPT_significantie"), boxv1, false); //"Checkmogelijkheid significante getallen"
 		globalParamCB = maakCheckBox(WiskOpdr.rb.getString("OPT_globalParam"), boxv1, false);//"Globale parameters"
 		diffOperatorenCB = maakCheckBox(WiskOpdr.rb.getString("OPT_diffOperatoren"), boxv1, false);
@@ -657,7 +658,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		misconceptionsButton.setMaximumSize(new Dimension(140,24));
 		boxh.add(misconceptionsButton);
 		boxh.add(Box.createHorizontalStrut(70));
-		boxv4.add(boxh);
+		//boxv4.add(boxh);
 		boxv4.add(Box.createVerticalStrut(60));
 		
 		
@@ -697,6 +698,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		checkbox.setFont(font);
 		checkbox.setForeground(WiskOpdr.fgcolorEditor);
 		checkbox.setSelected(selected);
+		
 		boxh.add(checkbox);
 		boxh.add(Box.createHorizontalGlue());
 		

@@ -351,7 +351,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				//InstellingenPanel
                 {"OPT_wiskundeLabel" , "Wiskunde"},
                 {"OPT_navigatieLabel" , "Navigatie"},
-                {"OPT_layoutLabel" , "Layout"},
+                {"OPT_layoutLabel" , "Opmaak"},
                 {"OPT_nakijkenLabel" , "Nakijken (algemeen)"},
 				{"OPT_vermenigvTeken" , "Vermenigvuldigingsteken ×"},
 				{"OPT_woordformules" , "Woordformules "},
@@ -517,7 +517,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_fgKleurKnopLabel" , "Kleur"},
                 {"TVEP_zichtbaarNaNakijken" , "Zichtbaar na nakijken toets"},
                 {"TVEP_balansVergCom" , "Balans-Vergelijkingvak communicatie"},
-                {"TVEP_aftrekPopup" , "Detectie popup-uitklapvak gebruik"},
+                {"TVEP_aftrekPopup" , "Detectie gebruik popup-uitklapvak"},
                 {"TVEP_callOut" , "Commentaarballon"},
                 {"TVEP_vulHoogte" , "Hoogte opvullen"},
                 {"TVEP_inklapbaar" , "In-/uitklapbaar"},
@@ -599,7 +599,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				//TekstEditorEditPanel
 				{"TEEP_menuBalkOptie" , "Formule-editor"},
-				{"TEEP_rekenToolOptie" , "Calculator"},
+				{"TEEP_rekenToolOptie" , "Rekenmachine"},
 				{"TEEP_grafToolOptie" , "Grafiekentool"},
 				{"TEEP_titleStartLabel", "Tekstantwoordvak bij opstarten"},
 				{"TEEP_checkDocentCBLabel", "Nakijken (door docent)"},

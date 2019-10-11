@@ -1101,13 +1101,13 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		{	tekstVak.setCrossWidgetViewActief(crosswidgetKnop.isToggleAan());
 		}
 		else if(e.getSource()==standardComponentChoiceKnop)
-		{	standardComponentChoice.show(this,standardComponentChoiceKnop.getLocation().x, standardComponentChoiceKnop.getLocation().y+standardComponentChoiceKnop.getHeight());
+		{	standardComponentChoice.show(this,standardComponentChoiceKnop.getLocation().x+standardComponentChoice.getWidth(), standardComponentChoiceKnop.getLocation().y);
 		}
 		else if(e.getSource()==templateChoiceKnop)
-		{	templateChoice.show(this,templateChoiceKnop.getLocation().x, templateChoiceKnop.getLocation().y+templateChoiceKnop.getHeight());
+		{	templateChoice.show(this,templateChoiceKnop.getLocation().x+templateChoiceKnop.getWidth(), templateChoiceKnop.getLocation().y);
 		}
 		else if(e.getSource()==componentChoiceKnop)
-		{	componentChoice.show(this,componentChoiceKnop.getLocation().x, componentChoiceKnop.getLocation().y+componentChoiceKnop.getHeight());
+		{	componentChoice.show(this,componentChoiceKnop.getLocation().x+componentChoiceKnop.getWidth(), componentChoiceKnop.getLocation().y);
 		}
 		
 		else if(e.getSource()==wortelKnop)
