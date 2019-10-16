@@ -159,6 +159,9 @@ public class JSONEncoder {
 		Object[] result = array;
 		for (int i = 0; i < array.length; i++) {
 			Object value = array[i];
+            if (value instanceof String && value.toString().startsWith("H4sIA")) {
+              value = StringCodeObject.decodeStringToObject(value.toString());
+            }
 			value = transformTypes(value);
 
 			if(value != array[i])
