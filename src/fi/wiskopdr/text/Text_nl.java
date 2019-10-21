@@ -339,6 +339,9 @@ public class Text_nl extends java.util.ListResourceBundle
                 
                 {"checkButtonsMenuLabel", "Nakijkknoppen"},
                 
+                {"kiesKoppelingLabel", "Kies een koppeling"},
+                {"koppelingLabel", "Koppeling"},
+                
                 //CheckButtonEditor
                 {"CB_kijkNaOptieLabel", "Kijk na" },
                 {"CB_bewaarOptieLabel", "Bewaar" },
@@ -404,7 +407,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_pageLabel" , "Pagina:"},
 				{"OPT_docWidthLabel" , " Breedte"},
 				{"OPT_docHeightLabel" , "Hoogte (min)"},
-				{"OPT_combCompNav" , "Gecombineerde componenten"},
+				{"OPT_combCompNav" , "Gedeelde componenten"},
 				
 				
 				{"OBJ_leerdoel", "Leerdoel"},
@@ -566,7 +569,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TE_compositeButtonTooltip", "Samengesteld component invoegen"},
                 {"TE_templateCompButtonTooltip", "Component met templateopmaak invoegen"},
                 {"TE_templateButtonTooltip", "Templatepagina kiezen"},
-                {"TE_x-widgetButtonTooltip", "Cross-widget verbindingen"},
+                {"TE_x-widgetButtonTooltip", "Koppelingen tussen componenten"},
                 {"TE_parameterButtonTooltip", "Random parameter gebruiken"},
                 {"TE_opsommingButtonTooltip", "Opsomming invoegen"},
                 {"TE_vormenButtonTooltip", "Vorm invoegen"},
@@ -908,7 +911,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				// shareAction
 				{ ShareAction.SHARE_KEY, "gedeelde sleutel"},
-				{ ShareAction.SHARE_MAP, "Gecombineerde componenten" },
+				{ ShareAction.SHARE_MAP, "Gedeelde componenten" },
 // tablet opties
 				{ "Tablet keyboard", "Tablet toetsenbord" },
 				{ "Onderbouw-keyboard", "Onderbouw-toetsenbord" },

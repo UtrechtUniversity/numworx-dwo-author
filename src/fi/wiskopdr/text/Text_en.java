@@ -319,6 +319,9 @@ public class Text_en extends java.util.ListResourceBundle
                 
                 {"checkButtonsMenuLabel", "Check buttons"},
                 
+                {"kiesKoppelingLabel", "Choose linkage"},
+                {"koppelingLabel", "Linkage"},
+                
 
 	            //CheckButtonEditor
                 {"CB_kijkNaOptieLabel", "Check" },
