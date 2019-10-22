@@ -110,7 +110,7 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 //instelling taal
 		String langArg = getParameter("language");
 		if ( langArg == null) langArg = "nl";
-		Locale language = new Locale (langArg, "");
+		Locale language = Locale.forLanguageTag(langArg);
 		//rb = ResourceBundle.getBundle("fi.popupurlapplet.text.Text",language);
 		
 //instelling achtergrondkleur
