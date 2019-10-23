@@ -3325,7 +3325,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				}
 			}
 		}
-		if(interactiePanel instanceof TekstVakPanel)
+		if(interactiePanel instanceof TekstVakPanel && afdekPanel!=null)
 		{	
 			TekstVak tv = ((TekstVakPanel)interactiePanel).geefTekstVak(0, 0);
 			int xa = afdekPanel.getLocationOnScreen().x;
