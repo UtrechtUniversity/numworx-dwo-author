@@ -74,7 +74,12 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
       return p;
     }
     
-    public SamlLoginPanel(String url) {
+    @Override
+	public void loadURL(String url) {
+		super.loadURL(url);
+	}
+
+	public SamlLoginPanel(String url) {
       this();
       loadURL(url);
     }
