@@ -354,7 +354,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	}
 	
 	public void verwijderCheckboxes() {
-		for(int i=0 ; i<aantalSelectables ; i++) {
+		for(int i=0 ; i<aantalSelectablesMax ; i++) {
 		    if(selectableCheckboxes[i]!=null) {	
 		    	selectableCheckboxes[i] = null;
 		    	if(logMisconceptionsButtons[i]!=null) 
@@ -363,6 +363,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		    }
 		}
 		selectableCBBox.removeAll();
+		mainPanel.validate();
 		aantalSelectables = 0;
 	} 
 	
