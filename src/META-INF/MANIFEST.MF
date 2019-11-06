@@ -6,3 +6,5 @@ Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff
 Application-Name: BalansFruitApplet
 Caller-Allowable-Codebase: *.science.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org
 Application-Library-Allowable-Codebase: *
+Bundle-Name BalansFruit Applet
+Bundle-SymbolicName: fi.balansfruit.BalansFruitApplet
