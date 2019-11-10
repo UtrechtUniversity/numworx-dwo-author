@@ -235,7 +235,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		String su = (String) namemap.get(selected + "/u");
 		if(su != null)
 		{
-			String filename = (String) JOptionPane.showInputDialog(this, rb.getString(Text.EDIT_URL), rb.getString(Text.WIJZIG), JOptionPane.QUESTION_MESSAGE, null, null, su);
+			String filename = (String) JOptionPane.showInputDialog(this, WiskOpdr.rb.getString("editUrlLabel"), WiskOpdr.rb.getString("wijzigKnopLabel"), JOptionPane.QUESTION_MESSAGE, null, null, su);
 			if(filename != null)				// "URL van plaatje"
 			{
 				last = filename;
@@ -299,7 +299,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
         
 		if(imageDialog == null) {
         	Frame f = JOptionPane.getFrameForComponent(parent);
-        	imageDialog = new JDialog(f,"title", true);
+        	imageDialog = new JDialog(f,"", true);
 			imageDialog.setLayout(new BorderLayout());
 			//imageDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 			if(!chooseImage) {
@@ -307,9 +307,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			}
 			JPanel headerPanel = new JPanel();
 			headerPanel.setBackground(WiskOpdr.colorBlue1);
-			JLabel iconanTitleLabel = new JLabel("Kies een afbeelding");
+			JLabel iconanTitleLabel = new JLabel(WiskOpdr.rb.getString("kiesAfbeeldingLabel"));
 			if(!chooseImage) {
-				iconanTitleLabel.setText("Afbeeldingen beheren");
+				iconanTitleLabel.setText(WiskOpdr.rb.getString("afbeeldingenBeherenLabel"));
 			}
 			iconanTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
 			iconanTitleLabel.setForeground(WiskOpdr.colorGray3);
@@ -690,15 +690,15 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
         listConstraints.fill = GridBagConstraints.BOTH;
         add(new JScrollPane(list), listConstraints);
         
-		newBtn = new WiskOpdrButton(Text.FILE);
+		newBtn = new WiskOpdrButton(WiskOpdr.rb.getString("fileKnopLabel"));
 		newBtn.setMaximumSize(new Dimension(120,22));
 		newBtn.setPreferredSize(new Dimension(80,22));
 		
-		urlBtn = new WiskOpdrButton(Text.URL);
+		urlBtn = new WiskOpdrButton(WiskOpdr.rb.getString("urlKnopLabel"));
 		urlBtn.setMaximumSize(new Dimension(120,22));
 		urlBtn.setPreferredSize(new Dimension(80,22));
 		
-		okBtn  = new WiskOpdrButton(Text.OK);
+		okBtn  = new WiskOpdrButton(WiskOpdr.rb.getString("okKnopLabel"));
 		okBtn.setBackground(WiskOpdr.colorBlue1);
 		okBtn.setForeground(WiskOpdr.colorGray3);
 		okBtn.setPreferredSize(new Dimension(70,24));
@@ -707,28 +707,28 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		newPnl = new JPanel(new FlowLayout());
 		newPnl.add(newBtn);
 		newPnl.add(urlBtn);
-		TitledBorder border = BorderFactory.createTitledBorder(Text.NIEUW);
+		TitledBorder border = BorderFactory.createTitledBorder(WiskOpdr.rb.getString("toevoegenLabel"));
 		border.setTitleColor(WiskOpdr.colorBlue1);
 		newPnl.setBorder(border);
 		
 		
-		cancelBtn = new WiskOpdrButton(Text.ANNULEER);
+		cancelBtn = new WiskOpdrButton(WiskOpdr.rb.getString("annuleerKnopLabel"));
 		cancelBtn.setBackground(WiskOpdr.colorBlue1);
 		cancelBtn.setForeground(WiskOpdr.colorGray3);
 		cancelBtn.setPreferredSize(new Dimension(70,24));
 		cancelBtn.setMaximumSize(new Dimension(70,24));
 		
-		closeBtn = new WiskOpdrButton(Text.CLOSE);
+		closeBtn = new WiskOpdrButton(WiskOpdr.rb.getString("sluitKnopLabel"));
 		closeBtn.setBackground(WiskOpdr.colorBlue1);
 		closeBtn.setForeground(WiskOpdr.colorGray3);
 		closeBtn.setPreferredSize(new Dimension(70,24));
 		closeBtn.setMaximumSize(new Dimension(70,24));
 		
-		rmBtn = new WiskOpdrButton(Text.REMOVE);
+		rmBtn = new WiskOpdrButton(WiskOpdr.rb.getString("verwijderKnopLabel"));
 		rmBtn.setMaximumSize(new Dimension(120,22));
 		rmBtn.setPreferredSize(new Dimension(80,22));
 		
-		chngBtn = new WiskOpdrButton(Text.WIJZIG);
+		chngBtn = new WiskOpdrButton(WiskOpdr.rb.getString("wijzigKnopLabel"));
 		chngBtn.setMaximumSize(new Dimension(120,22));
 		chngBtn.setPreferredSize(new Dimension(80,22));
 		
@@ -736,7 +736,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		editPnl.add(chngBtn);
     	editPnl.add(rmBtn);
 		
-    	border = BorderFactory.createTitledBorder(Text.EDIT);
+    	border = BorderFactory.createTitledBorder(WiskOpdr.rb.getString("bewerkenLabel"));
 		border.setTitleColor(WiskOpdr.colorBlue1);
 		editPnl.setBorder(border);
 		
@@ -875,23 +875,23 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	private ResourceBundle rb = new Text();
 	private void reLocale() {
 		rb = ResourceBundle.getBundle(Text.class.getName(), getLocale());
-		okBtn.setText(rb.getString(Text.OK));
-		newBtn.setText(rb.getString(Text.FILE));
-		urlBtn.setText(rb.getString(Text.URL));
+		okBtn.setText(WiskOpdr.rb.getString("okKnopLabel"));
+		newBtn.setText(rb.getString(WiskOpdr.rb.getString("fileKnopLabel")));
+		urlBtn.setText(rb.getString(WiskOpdr.rb.getString("urlKnopLabel")));
 
-		TitledBorder border = BorderFactory.createTitledBorder(Text.NIEUW);
+		TitledBorder border = BorderFactory.createTitledBorder(WiskOpdr.rb.getString("toevoegenLabel"));
 		border.setTitleColor(WiskOpdr.colorBlue1);
 		newPnl.setBorder(border);
 		
-		border = BorderFactory.createTitledBorder(Text.EDIT);
+		border = BorderFactory.createTitledBorder(WiskOpdr.rb.getString("bewerkenLabel"));
 		border.setTitleColor(WiskOpdr.colorBlue1);
 		editPnl.setBorder(border);
 		
-		cancelBtn.setText(rb.getString(Text.ANNULEER));
-		closeBtn.setText(rb.getString(Text.CLOSE));
+		cancelBtn.setText(rb.getString(WiskOpdr.rb.getString("annuleerKnopLabel")));
+		closeBtn.setText(rb.getString(WiskOpdr.rb.getString("sluitKnopLabel")));
 		//title = rb.getString(Text.TITEL);
-		rmBtn.setText(rb.getString(Text.REMOVE));
-		chngBtn.setText(rb.getString(Text.WIJZIG));
+		rmBtn.setText(rb.getString(WiskOpdr.rb.getString("verwijderKnopLabel")));
+		chngBtn.setText(rb.getString(WiskOpdr.rb.getString("wijzigKnopLabel")));
 	}
 
 	/**
@@ -971,7 +971,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	private String newURLImage() throws IOException {
 		if(last == null)
 			last = getCDN().toString();
-		String filename = (String) JOptionPane.showInputDialog(this, rb.getString(Text.EDIT_URL), rb.getString(Text.NIEUW), JOptionPane.QUESTION_MESSAGE, null, null, last);
+		String filename = (String) JOptionPane.showInputDialog(this, WiskOpdr.rb.getString("editUrlLabel"), WiskOpdr.rb.getString("toevoegenLabel"), JOptionPane.QUESTION_MESSAGE, null, null, last);
 		if(filename == null)
 			return null;
 		last = filename;
