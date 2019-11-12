@@ -18,6 +18,7 @@ import nl.numworx.swingbrowser.api.ConsoleEvent;
 //import javafx.scene.control.ButtonType;
 //import javafx.scene.control.Dialog;
 import nl.numworx.swingbrowser.api.SwingBrowser;
+import nl.numworx.swingbrowser.api.SwingBrowserFactory;
 import nl.numworx.swingbrowser.api.SwingBrowserProvider;
 import nl.numworx.swingbrowser.scorm.ConsoleListener;
 
@@ -25,8 +26,8 @@ public class SimpleSwingBrowser extends JPanel implements Status, ConsoleListene
     public static boolean debug;
     
     static final SwingBrowserProvider PROVIDER = new SwingBrowserProvider();
-    
-    final SwingBrowser browser = PROVIDER.getFactory().newBrowser();
+    final SwingBrowserFactory FACTORY = PROVIDER.getFactory();    
+    final SwingBrowser browser = FACTORY.newBrowser();
     /**
 	 * 
 	 */
@@ -38,6 +39,10 @@ public class SimpleSwingBrowser extends JPanel implements Status, ConsoleListene
 		return jfxPanel;
 	}
 
+	public void newSession() {
+	  FACTORY.newSession();
+	}
+	
 	SCORM12APIInterface api;
 	private Console console;
 	private Status status = this;
