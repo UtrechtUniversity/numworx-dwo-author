@@ -172,6 +172,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		stylesExportDialog.setSize(stylesExportTekstArea.getSize());
 		JScrollPane scrollpaneExport = new JScrollPane(stylesExportTekstArea);
 		stylesExportDialog.getContentPane().add(scrollpaneExport, BorderLayout.CENTER);
+		Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+	    int x = (screenSize.width-stylesExportDialog.getSize().width)/2;
+	    int y = (screenSize.height-stylesExportDialog.getSize().height)/2;
+	    stylesExportDialog.setLocation(x , y);
 		
 		stylesImportTekstArea = new JTextArea();
 		stylesImportTekstArea.setBounds(0, 0, 600, 400);
@@ -180,6 +184,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		stylesImportDialog.setSize(stylesImportTekstArea.getSize());
 		JScrollPane scrollpaneImport = new JScrollPane(stylesImportTekstArea);
 		stylesImportDialog.getContentPane().add(scrollpaneImport, BorderLayout.CENTER);
+		screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+	    x = (screenSize.width-stylesImportDialog.getSize().width)/2;
+	    y = (screenSize.height-stylesImportDialog.getSize().height)/2;
+	    stylesImportDialog.setLocation(x , y);
 		
 		importStylesNowButton = new WiskOpdrButton(WiskOpdr.rb.getString("OPT_importStyles"));
 		importStylesNowButton.addActionListener(this);
