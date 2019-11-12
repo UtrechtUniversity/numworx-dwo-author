@@ -257,7 +257,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"FEV_titleVerificatieLabel", "Verificaton"},
 				{"FEV_titleHulpLabel", "Help solving"},
 				{"FEV_titleOpmaakLabel", "Layout"},
-				{"FEV_titleLoggingLabel", "Logging / checking"},
+				{"FEV_titleLoggingLabel", "Checking / logging"},
 				{"FEV_titleScoringLabel", "Score"},
 				{"FEV_titleVormLabel", "Correct forms"},
 				

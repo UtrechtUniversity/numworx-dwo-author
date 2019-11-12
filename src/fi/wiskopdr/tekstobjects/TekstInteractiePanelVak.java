@@ -3093,11 +3093,25 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		if(editInteractiePanelDialog==null && !connected){
 // TODO omzetten naar DialogFacade	
 			
-			
-//			TekstVakPanel tvp = (TekstVakPanel)tekstVak.getParent();
-//			Hashtable h = tvp.getEditState();
-//			if(h.containsKey("templateModeFill") && ((Boolean)h.get("templateModeFill")).booleanValue())
-//				return;
+			// Nakijkknop in de comtext van een TComponent geeft editor van TComponent
+			if(tekstVak.getParent() instanceof TekstVakPanel) {
+				TekstVakPanel tvp = (TekstVakPanel)tekstVak.getParent();
+				Hashtable h = tvp.getEditState();
+				if(h.containsKey("templateModeFill") && ((Boolean)h.get("templateModeFill")).booleanValue()) {
+					if(tvp.getParent() instanceof TekstInteractiePanelVak) {
+						TekstInteractiePanelVak ip = ((TekstInteractiePanelVak)tvp.getParent());
+						Hashtable ht = ip.getEditState();
+						String tComponent = null;
+						if(ht.containsKey("TComponent")) {
+							tComponent = (String)ht.get("TComponent");
+							TComponentGeneratorFactory.getComponentGenerator(tComponent).edit(ip);
+							return;
+						}
+					}
+					return;
+				}
+			}
+			//
 			
 			Component window = WiskOpdr.getWindowForComponent(this);
 			if(soortInteractiePanel==25)currentSetNr = 1; //getallenlijn naar andere set

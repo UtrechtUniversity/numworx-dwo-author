@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
@@ -17,208 +18,348 @@ import javax.swing.*;
 
 import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
+import fi.wiskopdr.tekstobjects.TekstVak;
+import fi.wiskopdr.templatecomponents.MultipleChoiceGenerator;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
 
 public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener
 {
-	private FormuleEditor formuleEditor;
-	private Font font = new Font("SansSerif",Font.PLAIN,12);
+	// Algemene attributen 
+    private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
+    private int scoreMax;
+   	private boolean multiselections;
+   	private int aantalSelectables = 4;
+   	private int aantalSelectablesMax = 30;
+   	private boolean[][][] logMisconceptions;
 	
-	private int aantalSelectables;
-	private int aantalSelectablesMax = 30;
-	private InteractiePanel[] selectables;
-	
-	private JLabel aantalSelectablesLabel;
-	private JTextField aantalSelectablesTF;
-	
-	private JCheckBox[] selectableCheckboxes;
-	private JLabel[] selectableLabels;
-	
-	private JLabel maxScoreLabel;
-	private JTextField maxScoreTF;
-	
-	private JCheckBox randomizePositionsCB;
-	private JCheckBox multiSelectionsCB;
+    // Basis GUI
+    private JPanel mainPanel;
+    
+    //mainPanel  //juiste antwoord
+  	private JLabel titleAntwoordLabel;
+  	private JCheckBox[] selectableCheckboxes;
+  	private Box selectableCBBox;
+  	private ObjectiveChoiceButton[] logMisconceptionsButtons;
+  	
+  	// instellingen
+ 	private JLabel titleSettingsLabel;
+ 	private JLabel itemCountLabel;
+ 	private JTextField itemCountTF;
+ 	private JCheckBox multiSelectionsCB;
+ 	private JCheckBox randomizePositionsCB;
 	private JCheckBox checkFormuleCB;
-	
-	
-	private int scoreMax;
-	private boolean randomizePositions;
-	private boolean multiselections;
-	
-	private JCheckBox logCB;
-	private JTextField logIDField;
-	private JCheckBox checkCB;
-	private JCheckBox teltMeeCB;
-	private ObjectiveChoiceButton logObjectivesButton;
-	private ObjectiveChoiceButton[] logMisconceptionsButtons;
-	private boolean[][][] logMisconceptions;
-	
-	private FormuleButton knopImageButton;
-	private Dialog imageDialog;
-	private Iconan iconman;
-	private String knopImageString = "";
-	private Image knopImage;
+	private FormuleEditor formuleEditor;
+ 	private JLabel imageKnopLabel;
+ 	private FormuleButton knopImageButton;
+ 	private Image knopImage;
+ 	private Dialog imageDialog;
+ 	private Iconan iconman;
+ 	private String knopImageString = "";
+ 	
+ 	// logging /nakijken
+ 	private JLabel titleLoggingLabel;
+ 	private JLabel maxScoreLabel;
+ 	private JTextField maxScoreTF;
+ 	private JCheckBox checkCB;
+ 	private JCheckBox teltMeeCB;
+ 	private JCheckBox logCB;
+ 	private JTextField logIDField;
+ 	private JTextField logIDLabelField;
+ 	private JLabel logIDLabelLabel;
+ 	private ObjectiveChoiceButton logObjectivesButton;
+ 	
+ 	
+	//private InteractiePanel[] selectables;
+	//private JLabel[] selectableLabels;
+	//private boolean randomizePositions;
 	
 	public CheckUnitEditPanel()
 	{
-		setLayout(null);
-		setBounds(0,0,780,480);
+		setLayout(new BorderLayout());
+		//setBounds(0,0,780,480);
+		makeGUI();
+	}
+	
+	private void makeGUI() {
+		// Main
+    	mainPanel = new JPanel(new BorderLayout());
+		mainPanel.setBackground(WiskOpdr.colorGray3);
+		//mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
 		
+		//mainPanel  //juiste antwoord
+		titleAntwoordLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"), font.deriveFont(Font.BOLD, 16));
 		selectableCheckboxes = new JCheckBox[aantalSelectablesMax];
-		selectableLabels = new JLabel[aantalSelectablesMax];
 		logMisconceptionsButtons = new ObjectiveChoiceButton[aantalSelectablesMax];
+		selectableCBBox = Box.createVerticalBox();
+		maakCheckboxes();
 		
 		formuleEditor = new FormuleEditor(true);
 		formuleEditor.setMultiLine(true);
-		formuleEditor.setBounds(300,180,480,200);
+		formuleEditor.setPreferredSize(new Dimension(340,200));
 		formuleEditor.setVisible(false);
-        add(formuleEditor);
+        
 		
-		aantalSelectablesLabel = new JLabel(WiskOpdr.rb.getString("aantalSelectieObjLabel"));//"Aantal selectie-objecten");
-		aantalSelectablesLabel.setBounds(10,50,180,20);
-		aantalSelectablesLabel.setFont(font);
-		add(aantalSelectablesLabel);
+		//mainPanel  //settings
+		titleSettingsLabel = makeLabel(WiskOpdr.rb.getString("settingsLabel"), font.deriveFont(Font.BOLD, 16));
+		itemCountLabel = makeLabel(WiskOpdr.rb.getString("aantalSelectieObjLabel"), font);
+		itemCountTF = makeTextField(""+aantalSelectables, 30, 22, this);
+		multiSelectionsCB = makeCheckBox(WiskOpdr.rb.getString("meervSelectiesLabel"), false, this);//("Meervoudige selecties mogelijk");
+		randomizePositionsCB = makeCheckBox(WiskOpdr.rb.getString("randomPosLabel"), false, this);
+		checkFormuleCB = makeCheckBox(WiskOpdr.rb.getString("checkViaFormuleLabel"), false, this);
+		imageKnopLabel = makeLabel(WiskOpdr.rb.getString("editImageKnopLabel"), font);
 		
-		aantalSelectablesTF = new JTextField("0");
-		aantalSelectablesTF.setBounds(190,50,40,20);
-		aantalSelectablesTF.addActionListener(this);
-		aantalSelectablesTF.addFocusListener(this);
-		add(aantalSelectablesTF);
-		
-		maxScoreLabel = new JLabel(WiskOpdr.rb.getString("score"));//Score");
-		maxScoreLabel.setBounds(300,50,80,20);
-		maxScoreLabel.setFont(font);
-		add(maxScoreLabel);
-		
-		maxScoreTF = new JTextField("0");
-		maxScoreTF.setBounds(380,50,40,20);
-		maxScoreTF.addActionListener(this);
-		add(maxScoreTF);
-		
-		randomizePositionsCB = new JCheckBox(WiskOpdr.rb.getString("randomPosLabel"));//("Randomiseer posities");
-		randomizePositionsCB.setBounds(300,90,280,20);
-		randomizePositionsCB.setOpaque(false);
-		randomizePositionsCB.setFont(font);
-		add(randomizePositionsCB);
-		
-		multiSelectionsCB = new JCheckBox(WiskOpdr.rb.getString("meervSelectiesLabel"));//("Meervoudige selecties mogelijk");
-		multiSelectionsCB.setBounds(300,120,280,20);
-		multiSelectionsCB.setOpaque(false);
-		multiSelectionsCB.setFont(font);
-		add(multiSelectionsCB);
-		
-		checkFormuleCB = new JCheckBox(WiskOpdr.rb.getString("checkViaFormuleLabel"));//("Check formule");
-		checkFormuleCB.setBounds(300,150,280,20);
-		checkFormuleCB.addActionListener(this);
-		checkFormuleCB.setOpaque(false);
-		checkFormuleCB.setFont(font);
-		add(checkFormuleCB);
-		
-
-        logCB = new JCheckBox(WiskOpdr.rb.getString("logCBLabel"));
-        logCB.setBounds(450,5,70,20);
-        logCB.addActionListener(this);
-        logCB.setOpaque(false);
-        logCB.setFont(font);
-		add(logCB);
-		
-		logIDField = new JTextField("0");
-		logIDField.setBounds(520,5,60,20);
-		logIDField.addActionListener(this);
-		logIDField.setVisible(false);
-		add(logIDField);
-		
-		checkCB = new JCheckBox(WiskOpdr.rb.getString("checkCBLabel"));
-		checkCB.setBounds(5,5,200,20);
-		checkCB.addActionListener(this);
-		checkCB.setOpaque(false);
-		checkCB.setFont(font);
-		checkCB.setSelected(true);
-		add(checkCB);
-		
-		teltMeeCB = new JCheckBox(WiskOpdr.rb.getString("teltMeeCBLabel"));
-		teltMeeCB.setBounds(225,5,200,20);
-		teltMeeCB.addActionListener(this);
-		teltMeeCB.setOpaque(false);
-		teltMeeCB.setFont(font);
-		teltMeeCB.setSelected(true);
-		add(teltMeeCB);
-		
-		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
-        logObjectivesButton.setBounds(600,5,120,20);
-        if(WiskOpdr.objectives!=null)add(logObjectivesButton);
-                
-        knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
-		knopImageButton.setBounds(550,50,80,20);
+		knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
+		knopImageButton.setPreferredSize(new Dimension(80,22));
 		knopImageButton.addActionListener(this);
-		add(knopImageButton);
+		
+		//mainPanel  // logging / nakijken
+		titleLoggingLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"),font.deriveFont(Font.BOLD, 16));
+		maxScoreLabel = makeLabel(WiskOpdr.rb.getString("score"), font);
+		maxScoreTF = makeTextField("0",50,22,this);
+		checkCB = makeCheckBox(WiskOpdr.rb.getString("checkCBLabel"),true, null);
+		teltMeeCB = makeCheckBox(WiskOpdr.rb.getString("teltMeeCBLabel"), true, null);
+		logCB = makeCheckBox(WiskOpdr.rb.getString("logCBLabel"), false, this);
+		logIDField = makeTextField("",50,22,this);
+		logIDField.setVisible(false);
+		logIDLabelLabel = makeLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),font);
+		logIDLabelLabel.setVisible(false);
+		logIDLabelField = makeTextField("",50,22,this);
+		logIDLabelField.setVisible(false);
+		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+        logObjectivesButton.setPreferredSize(new Dimension(120,22));
+        logObjectivesButton.setMaximumSize(new Dimension(120,22));
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+		
+		
+		
+//        itemCountLabel = new JLabel(WiskOpdr.rb.getString("aantalSelectieObjLabel"));//"Aantal selectie-objecten");
+//        itemCountLabel.setBounds(10,50,180,20);
+//        itemCountLabel.setFont(font);
+//		add(itemCountLabel);
+//		
+//		itemCountTF = new JTextField("0");
+//		itemCountTF.setBounds(190,50,40,20);
+//		itemCountTF.addActionListener(this);
+//		itemCountTF.addFocusListener(this);
+//		add(itemCountTF);
+		
+//		randomizePositionsCB = new JCheckBox(WiskOpdr.rb.getString("randomPosLabel"));//("Randomiseer posities");
+//		randomizePositionsCB.setBounds(300,90,280,20);
+//		randomizePositionsCB.setOpaque(false);
+//		randomizePositionsCB.setFont(font);
+//		add(randomizePositionsCB);
+//		
+//		multiSelectionsCB = new JCheckBox(WiskOpdr.rb.getString("meervSelectiesLabel"));//("Meervoudige selecties mogelijk");
+//		multiSelectionsCB.setBounds(300,120,280,20);
+//		multiSelectionsCB.setOpaque(false);
+//		multiSelectionsCB.setFont(font);
+//		add(multiSelectionsCB);
+		
+//		checkFormuleCB = new JCheckBox(WiskOpdr.rb.getString("checkViaFormuleLabel"));//("Check formule");
+//		checkFormuleCB.setBounds(300,150,280,20);
+//		checkFormuleCB.addActionListener(this);
+//		checkFormuleCB.setOpaque(false);
+//		checkFormuleCB.setFont(font);
+//		add(checkFormuleCB);
+//		
+//
+//        logCB = new JCheckBox(WiskOpdr.rb.getString("logCBLabel"));
+//        logCB.setBounds(450,5,70,20);
+//        logCB.addActionListener(this);
+//        logCB.setOpaque(false);
+//        logCB.setFont(font);
+//		add(logCB);
+//		
+//		logIDField = new JTextField("0");
+//		logIDField.setBounds(520,5,60,20);
+//		logIDField.addActionListener(this);
+//		logIDField.setVisible(false);
+//		add(logIDField);
+//		
+//		checkCB = new JCheckBox(WiskOpdr.rb.getString("checkCBLabel"));
+//		checkCB.setBounds(5,5,200,20);
+//		checkCB.addActionListener(this);
+//		checkCB.setOpaque(false);
+//		checkCB.setFont(font);
+//		checkCB.setSelected(true);
+//		add(checkCB);
+//		
+//		teltMeeCB = new JCheckBox(WiskOpdr.rb.getString("teltMeeCBLabel"));
+//		teltMeeCB.setBounds(225,5,200,20);
+//		teltMeeCB.addActionListener(this);
+//		teltMeeCB.setOpaque(false);
+//		teltMeeCB.setFont(font);
+//		teltMeeCB.setSelected(true);
+//		add(teltMeeCB);
+//		
+//		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+//        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+//        logObjectivesButton.setBounds(600,5,120,20);
+//        if(WiskOpdr.objectives!=null)add(logObjectivesButton);
+//                
+//        knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
+//		knopImageButton.setBounds(550,50,80,20);
+//		knopImageButton.addActionListener(this);
+//		add(knopImageButton);
+        
+        removeAll();
+	    plaatsGUI();
+	    add(mainPanel);
+	}
+        
+   private void plaatsGUI() {   
+        //plaats componenten mainPanel
+        Component[] r11 = {titleAntwoordLabel, 	hgl()};
+		Component[] r12 = {selectableCBBox, 	hgl()};
+		Component[] r13 = {formuleEditor, 	hgl()};
+		
+		Component[] k1 = {hb(r11), vst(15), hb(r12), hb(r13), vst(15)};
+		
+		Component[] r21 = {titleSettingsLabel, 	hgl()};
+		Component[] r22 = {itemCountLabel, 		ra(10,10), 	hgl(), 	itemCountTF};
+		Component[] r23 = {multiSelectionsCB, 	hgl()};
+		Component[] r24 = {randomizePositionsCB, 		hgl()};
+		Component[] r25 = {checkFormuleCB,  		hgl()};
+		Component[] r26 = {imageKnopLabel, 		ra(5,5), 	hgl(), 	knopImageButton};
+		
+		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), 
+				hb(r25), vst(5), hb(r26), vst(5), vgl()};
+		
+		Component[] r31 = {titleLoggingLabel, 	hgl()};
+		Component[] r32 = {maxScoreLabel, 		ra(5,10), maxScoreTF, hgl()};
+		Component[] r33 = {checkCB, 			hgl()};
+		Component[] r34 = {teltMeeCB, 			hgl()};
+		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r36 = {logObjectivesButton, hgl()};
+		
+		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vgl()};
+		
+		Component[] main = {vb(k1), hst(50), vb(k2), hst(50), vb(k3)};
+		mainPanel.add(hb(main));
 	}
 	
-	public void maakCheckboxes()
-	{
+	private JCheckBox makeCheckBox (String text, boolean selected, ActionListener al) {
+		JCheckBox cb = new WiskOpdrCheckbox(text);
+		if(al!=null) cb.addActionListener(al);
+		cb.setSelected(selected);
+		return cb;
+	}
+	
+	private JButton makeButton (String text,  ActionListener al) {
+		JButton bt = new WiskOpdrButton(text);
+		if(al!=null) bt.addActionListener(al);
+		return bt;
+	}
+	
+	private JLabel makeLabel (String text, Font f) {
+		JLabel lb = new JLabel(text);
+		lb.setFont(f);
+		lb.setForeground(WiskOpdr.colorBlue1);
+		return lb;
+	}
+	
+	private JTextField makeTextField (String text, int prefWidth, int prefHeight, ActionListener al) {
+		JTextField tf = new WiskOpdrTextField(text);
+		tf.setPreferredSize(new Dimension(prefWidth,prefHeight));
+		if(al!=null) {
+			tf.addActionListener(al);
+			tf.addFocusListener(this);
+		}
+		return tf;
+	}
+	
+	private Box hb(Component[] c) {
+		Box box = Box.createHorizontalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Box vb(Component[] c) {
+		Box box = Box.createVerticalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Component hgl() {
+		return Box.createHorizontalGlue();
+	}
+	
+	private Component vgl() {
+		return Box.createVerticalGlue();
+	}
+	
+	private Component hst(int n) {
+		return Box.createHorizontalStrut(n);
+	}
+	
+	private Component vst(int n) {
+		return Box.createVerticalStrut(n);
+	}
+	
+	private Component ra(int w, int h) {
+		return Box.createRigidArea(new Dimension(w,h));
+	}
+	
+	private int intFromText(int defaultInt, String text) {
+		int i = defaultInt;
+		try {
+			i = Integer.parseInt(text);
+		}
+		catch(NumberFormatException e) {}
+		return i;
+	}
+	
+
+	public void maakCheckboxes() {
 		if(WiskOpdr.misconceptions!=null)
 			logMisconceptions = new boolean[aantalSelectables][][];
 				
-		for(int i=0 ; i<aantalSelectables ; i++)
-		{
-		    if(selectableLabels[i]==null)
-		    {   selectableLabels[i] = new JLabel("Nr "+(i+1));
-		        selectableLabels[i].setBounds(10,70+i*25,50,20);
-		        //add(selectableLabels[i]);
-		    }
-		    if(selectableCheckboxes[i]==null)
-            {   selectableCheckboxes[i] = new JCheckBox("Nr "+(i+1));
-                selectableCheckboxes[i].setOpaque(false);
-                selectableCheckboxes[i].setBounds(10,80+i*25,60,20);
-                add(selectableCheckboxes[i],0);
+		for(int i=0 ; i<aantalSelectables ; i++) {
+			Box regelBox = Box.createHorizontalBox();
+			if(selectableCheckboxes[i]==null) {   
+				selectableCheckboxes[i] = new WiskOpdrCheckbox("Nr "+(i+1));
+                regelBox.add(selectableCheckboxes[i]);
+                regelBox.add(Box.createRigidArea(new Dimension(20,10)));
             }
-		    if(logMisconceptionsButtons[i]==null)
-		    {
+		    if(logMisconceptionsButtons[i]==null) {
 		    	logMisconceptionsButtons[i] = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"),WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
-		        logMisconceptionsButtons[i].setBounds(100,80+i*25,100,20);
-		        if(WiskOpdr.misconceptions!=null)add(logMisconceptionsButtons[i]);
+		    	logMisconceptionsButtons[i].setPreferredSize(new Dimension(120,22));
+		    	regelBox.add(logMisconceptionsButtons[i]);
 		    }
+		    selectableCBBox.add(regelBox);
 		}
+		selectableCBBox.add(Box.createVerticalGlue());
 		enableMisconceptions();
-		repaint();
 	}
 	
-	public void verwijderCheckboxes()
-	{
-		for(int i=0 ; i<aantalSelectables ; i++)
-		{
-		    if(selectableLabels[i]!=null) 
-		    {	remove(selectableLabels[i]);
-		    	selectableLabels[i] = null;
-		    	remove(selectableCheckboxes[i]);
-		    	selectableCheckboxes[i] = null;
-		    	if(logMisconceptionsButtons[i]!=null) 
-		    	{	remove(logMisconceptionsButtons[i]);
-		    		logMisconceptionsButtons[i] = null;
-		    	}
-		    }
-		}	
-		aantalSelectables = 0;
-		repaint();
-	}
-	
-	private void enableMisconceptions()
-	{
-		for(int i=0 ; i<aantalSelectables ; i++)
-		{
+	private void enableMisconceptions() {
+		for(int i=0 ; i<aantalSelectables ; i++) {
 			boolean visible = WiskOpdr.misconceptions!=null 
-					&& !checkFormuleCB.isSelected()
 					&& !multiSelectionsCB.isSelected()
 					&& checkCB.isSelected();
 		   	if(logMisconceptionsButtons[i]!=null)
 		   		logMisconceptionsButtons[i].setVisible(visible);
-		   
 		}	
 	}
+	
+	public void verwijderCheckboxes() {
+		for(int i=0 ; i<aantalSelectablesMax ; i++) {
+		    if(selectableCheckboxes[i]!=null) {	
+		    	selectableCheckboxes[i] = null;
+		    	if(logMisconceptionsButtons[i]!=null) 
+		    		logMisconceptionsButtons[i] = null;
+		    	
+		    }
+		}
+		selectableCBBox.removeAll();
+		mainPanel.validate();
+		aantalSelectables = 0;
+	} 
 	
 	public void setEditState(Hashtable h)
 	{
@@ -253,29 +394,40 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		if(h.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])h.get("logMisconceptions");
 		
 	    if(juisteSelecties==null) return;
+	    verwijderCheckboxes();
 	    
 	    aantalSelectables = juisteSelecties.length;
-	    aantalSelectablesTF.setText(""+aantalSelectables);
+	    itemCountTF.setText(""+aantalSelectables);
 	    maxScoreTF.setText(""+scoreMax);
 	    randomizePositionsCB.setSelected(randomizePositions);
 	    multiSelectionsCB.setSelected(multiSelections);
 	    this.logMisconceptions = logMisconceptions;
 	    
-	    for(int i=0 ; i<aantalSelectables ; i++)
-		{
-		    selectableCheckboxes[i] = new JCheckBox("Nr "+(i+1));
-		    selectableCheckboxes[i].setSelected(juisteSelecties[i]);
-            selectableCheckboxes[i].setOpaque(false);
-            selectableCheckboxes[i].setBounds(10,80+i*25,60,20);
-            add(selectableCheckboxes[i],0);
-            
-            if(logMisconceptions!=null)
-            {   logMisconceptionsButtons[i] = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"),WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
-			    logMisconceptionsButtons[i].setBounds(100,80+i*25,100,20);
-			    logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
-			    add(logMisconceptionsButtons[i]);
-		    }
+//	    for(int i=0 ; i<aantalSelectables ; i++)
+//		{
+//		    selectableCheckboxes[i] = new JCheckBox("Nr "+(i+1));
+//		    selectableCheckboxes[i].setSelected(juisteSelecties[i]);
+//            selectableCheckboxes[i].setOpaque(false);
+//            selectableCheckboxes[i].setBounds(10,80+i*25,60,20);
+//            add(selectableCheckboxes[i],0);
+//            
+//            if(logMisconceptions!=null)
+//            {   logMisconceptionsButtons[i] = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"),WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
+//			    logMisconceptionsButtons[i].setBounds(100,80+i*25,100,20);
+//			    logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
+//			    add(logMisconceptionsButtons[i]);
+//		    }
+//		}
+//	    enableMisconceptions();
+	    
+	    
+	    maakCheckboxes();
+	    for(int i=0 ; i<aantalSelectables ; i++) {
+	    	selectableCheckboxes[i].setSelected(juisteSelecties[i]);
+	    	if(WiskOpdr.misconceptions!=null && logMisconceptionsButtons[i]!=null && logMisconceptions!=null)
+	    		logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
 		}
+	    
 	    enableMisconceptions();
 	    
 	    logCB.setSelected(logOption);
@@ -289,17 +441,34 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
         checkFormuleCB.setSelected(checkFormule);
         if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
         formuleEditor.setVisible(checkFormule);
+        selectableCBBox.setVisible(!checkFormule);
+        
+        
+//        knopImageButton.setPopupButtonImage(knopImage);
+//    	iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+//    	if(knopImageString!=null && !"".equals(knopImageString)) {
+//    		knopImage = iconman.getImage(knopImageString);
+//    		knopImageButton.setPopupButtonImage(knopImage);
+//    	}
+//    	else {
+//    		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
+//    	}
+//    	this.knopImageString = knopImageString;
         
         knopImageButton.setPopupButtonImage(knopImage);
-    	iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+    	iconman = new Iconan(WiskOpdr.applet, (Component)mainPanel, (Hashtable)TekstImageVak.getImageMap());
     	if(knopImageString!=null && !"".equals(knopImageString)) {
     		knopImage = iconman.getImage(knopImageString);
     		knopImageButton.setPopupButtonImage(knopImage);
     	}
     	else {
+    		knopImageButton.setPopupButtonImage(null);
     		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
+    		knopImageButton.setPreferredSize(new Dimension(80,22));
     	}
     	this.knopImageString = knopImageString;
+    	
+    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 	}
 	
 	public Hashtable getEditState()
@@ -400,31 +569,31 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
     
     public void addActionListener(ActionListener al){}
     
-    public void editImage() {
-    	if(iconman==null)
-			iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
-		iconman.editImage(knopImageString, this, this);
-		
-//        if(imageDialog == null)
-//        {
-//        	
-//        	Frame f = JOptionPane.getFrameForComponent(this);
-//			imageDialog = new Dialog(f,"title", true);
-//			imageDialog.setLayout(new BorderLayout());
-//			iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-//            imageDialog.add(iconman);
-//            imageDialog.pack();
-//            iconman.addActionListener(this);
-//        }
-//        iconman.select(knopImageString);
-//        imageDialog.setVisible(true);
-    }    
+//    public void editImage() {
+//    	if(iconman==null)
+//			iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+//		iconman.editImage(knopImageString, this, this);
+//		
+////        if(imageDialog == null)
+////        {
+////        	
+////        	Frame f = JOptionPane.getFrameForComponent(this);
+////			imageDialog = new Dialog(f,"title", true);
+////			imageDialog.setLayout(new BorderLayout());
+////			iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+////            imageDialog.add(iconman);
+////            imageDialog.pack();
+////            iconman.addActionListener(this);
+////        }
+////        iconman.select(knopImageString);
+////        imageDialog.setVisible(true);
+//    }    
     
 	public void actionPerformed(ActionEvent e)
 	{
-		if(e.getSource()==aantalSelectablesTF)
+		if(e.getSource()==itemCountTF)
 		{
-			int aantal = Math.min(aantalSelectablesMax, Integer.parseInt(aantalSelectablesTF.getText()));
+			int aantal = Math.min(aantalSelectablesMax, Integer.parseInt(itemCountTF.getText()));
 			if(aantal != aantalSelectables)
 			{	verwijderCheckboxes();
 				aantalSelectables = aantal;
@@ -433,25 +602,47 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 			
 		}
 		else if(e.getSource()==logCB)
-	    {   logIDField.setVisible(logCB.isSelected());   
+	    {   logIDField.setVisible(logCB.isSelected());  
+	    	mainPanel.validate();
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
 	    }
 		else if(e.getSource()==checkFormuleCB)
 	    {   formuleEditor.setVisible(checkFormuleCB.isSelected()); 
+	    	selectableCBBox.setVisible(!checkFormuleCB.isSelected());
 	    	enableMisconceptions();
+	    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+
 	    }
 		else if(e.getSource()==multiSelectionsCB)
 	    {   enableMisconceptions();
 	    }
-		else if(e.getSource()==knopImageButton)
-	    {   editImage();
-	            
+//		else if(e.getSource()==knopImageButton)
+//	    {   editImage();
+//	            
+//	    }
+//	    else if(e.getSource()==iconman)
+//	    {
+//	    	String name = e.getActionCommand();
+//	        if(!"".equals(name))
+//	        {
+//	        	knopImageString = name;
+//	            this.knopImage = iconman.getImage(name);
+//	            knopImageButton.setPopupButtonImage(knopImage);
+//	            int imWidth = iconman.getWidth(knopImageString);
+//				int imHeight = iconman.getHeight(knopImageString);
+//				if(imWidth == -1) imWidth = 20;
+//				if(imHeight == -1) imHeight = 20;
+//				knopImageButton.setSize(imWidth,imHeight);
+//	            repaint();
+//	        }
+//	    }
+		else if(e.getSource()==knopImageButton) {   
+			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
+			iconman.editImage(knopImageString, mainPanel, this);
 	    }
-	    else if(e.getSource()==iconman)
-	    {
+	    else if(e.getSource()==iconman) {
 	    	String name = e.getActionCommand();
-	        if(!"".equals(name))
-	        {
+	        if(!"".equals(name)) {
 	        	knopImageString = name;
 	            this.knopImage = iconman.getImage(name);
 	            knopImageButton.setPopupButtonImage(knopImage);
@@ -459,9 +650,13 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 				int imHeight = iconman.getHeight(knopImageString);
 				if(imWidth == -1) imWidth = 20;
 				if(imHeight == -1) imHeight = 20;
-				knopImageButton.setSize(imWidth,imHeight);
-	            repaint();
-	        }
+				knopImageButton.setPreferredSize(new Dimension(Math.max(imWidth,80),Math.max(imHeight,22)));
+	         }
+	        else {
+	    		knopImageButton.setPopupButtonImage(null);
+	    		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
+	    		knopImageButton.setPreferredSize(new Dimension(80,22));
+	    	}
 	    }
 
 	    if(imageDialog!=null)
@@ -475,9 +670,9 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		if(e.getSource()==aantalSelectablesTF)
+		if(e.getSource()==itemCountTF)
 		{
-			int aantal = Math.min(aantalSelectablesMax, Integer.parseInt(aantalSelectablesTF.getText()));
+			int aantal = Math.min(aantalSelectablesMax, Integer.parseInt(itemCountTF.getText()));
 			if(aantal != aantalSelectables)
 			{	verwijderCheckboxes();
 				aantalSelectables = aantal;

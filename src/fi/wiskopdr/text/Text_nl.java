@@ -275,7 +275,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"FEV_titleVerificatieLabel", "Verificatie"},
 				{"FEV_titleHulpLabel", "Hulp bij oplossen"},
 				{"FEV_titleOpmaakLabel", "Opmaak"},
-				{"FEV_titleLoggingLabel", "Logging / nakijken"},
+				{"FEV_titleLoggingLabel", "Nakijken / logging"},
 				{"FEV_titleScoringLabel", "Score"},
 				{"FEV_titleVormLabel", "Juiste vormen"},
 				
