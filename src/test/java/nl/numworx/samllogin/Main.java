@@ -3,8 +3,6 @@ package nl.numworx.samllogin;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -16,13 +14,17 @@ public class Main {
     
     final JFrame f = new JFrame("Login uu-dev");
     SamlLoginPanel.debug = true;
-    SAMLLoginIF browser = new SamlLoginPanel("https://entree.dwo.nl/dwo/saml/login.jsp");
+    SAMLLoginIF browser = new SamlLoginPanel("https://numworx.acc.uu.nl/dwo/saml/login.jsp");
     browser
       .getPromise()
       .then( p -> {
         p.getValue().store(System.out, "Login succeeded");
         SwingUtilities.invokeLater(f::dispose);
-        System.exit(0);
+        
+        if(args != null)
+          SwingUtilities.invokeLater( () -> Main.main(null) );
+        else 
+          System.exit(1);
         return null;
     });
     browser.asComponent().addComponentListener(new ComponentAdapter() {

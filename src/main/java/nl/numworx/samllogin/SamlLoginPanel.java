@@ -4,6 +4,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 
 import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
@@ -57,10 +58,18 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     }
   }
     
-    
- 
+    void cleanup() {
+      if (SwingUtilities.isEventDispatchThread()) {
+        removeMembers();
+      } else {
+        SwingUtilities.invokeLater(this::cleanup);
+      }
+    }
+  
     public Promise<Properties> getPromise() {
-      return api.getPromise().map(this::getCookie);
+      Promise<Properties> result = api.getPromise().map(this::getCookie);
+      result.onResolve(this::cleanup);
+      return result;
     }
 
     public Properties getCookie(Properties p) {
@@ -86,6 +95,7 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     API api = new API();
 
   public SamlLoginPanel() {
+    newSession();
     PrintStatus status = new PrintStatus();
     setConsole(status);
     setApi(api);
