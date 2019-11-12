@@ -151,9 +151,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static boolean fToets = true;
 	public static boolean launchDataChanged = false;
 
-	public static String dwo_env; // "dummy", "test", "app" of null
+	public static String dwo_env; // "dummy", "test", "app" of null of een combinatie, bijv. saml,test
 	public static boolean isExperimental() {
-		return "test".equals(dwo_env);
+		return dwo_env != null && dwo_env.contains("test");
 	}
 	public static String abo_type; // free,demo,premium,standard (null)
 	public static boolean isPremium() {
