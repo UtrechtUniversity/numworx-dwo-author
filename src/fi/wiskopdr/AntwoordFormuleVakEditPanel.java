@@ -23,7 +23,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.stringutils.StringUtils;
 
 
-public class AntwoordFormuleVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener, TabletOwner
+public class AntwoordFormuleVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;

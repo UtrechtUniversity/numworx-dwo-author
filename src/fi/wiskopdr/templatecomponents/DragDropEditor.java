@@ -172,7 +172,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
         titleHulpLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"), font.deriveFont(Font.BOLD, 16));
         viewCB = makeCheckBox(WiskOpdr.rb.getString("viewCBLabel"), false, this);
 		
-      //plaats componenten mainPanel
+        //plaats componenten mainPanel
         
 		Component[] r21 = {titleSettingsLabel, 		hgl()};
 		Component[] r22 = {itemCountLabel, 			ra(10,10), 	hgl(), itemCountTF	};

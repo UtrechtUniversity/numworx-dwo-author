@@ -19,7 +19,7 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
 
-public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener, TabletOwner
+public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;

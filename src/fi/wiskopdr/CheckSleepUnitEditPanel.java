@@ -2,12 +2,15 @@ package fi.wiskopdr;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Hashtable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
@@ -21,212 +24,170 @@ import fi.wiskopdr.formuleobjects.*;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
 
-public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPanel, ActionListener, TabletOwner
+public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener
 {
-	private TekstEditor tekstEditor;
-	private Font font = new Font("SansSerif",Font.PLAIN,12);
-	
-	private int aantalSleepObjects;
+	// Algemene attributen 
+    private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
+    private int scoreMax;
+    private int aantalSleepObjects;
 	private int aantalDoelObjects;
-	//private InteractiePanel[] sleepObjects;
-	
-	private JLabel aantalSleepObjectsLabel;
-	private JTextField aantalSleepObjectsTF;
-	
-	private JLabel aantalDoelObjectsLabel;
+    private Tablet tablet;
+    private boolean tabletAdded;
+    private FormuleVakHouder tabletUser;
+   	
+    // Basis GUI
+    private JPanel mainPanel;
+    
+    //mainPanel  //juiste antwoord
+  	private JLabel titleAntwoordLabel;
+  	private FormuleEditor formuleEditor;
+   	
+  	//mainPanel  // instellingen
+  	private JLabel titleSettingsLabel;
+  	private JLabel aantalSleepObjectsLabel;
+  	private JTextField aantalSleepObjectsTF;
+  	private JCheckBox snapToTargetCB;
+  	private JLabel acceptedMargeLabel;
+  	private JTextField acceptedMargeTF;
+  	private JCheckBox randomizePositionsCB;
+  	private JCheckBox relocateCB;
+  	private JLabel aantalDoelObjectsLabel;
 	private JTextField aantalDoelObjectsTF;
-	
-	private JLabel maxScoreLabel;
-	private JTextField maxScoreTF;
-	
-	private JCheckBox randomizePositionsCB;
-	private JCheckBox snapToTargetCB;
-	private JLabel acceptedMargeLabel;
-	private JTextField acceptedMargeTF;
-	
 	private JCheckBox checkVastCB;
 	private JCheckBox checkFormuleCB;
-	
-	private boolean checkFormule;
-	
-	private FormuleEditor formuleEditor;
-	
-	private String formuleString;
-	private String[] formuleStrings;
-	
-	private Tablet tablet;
-    private FormuleVakHouder tabletUser;
-    private boolean tabletAdded;
-    
-    private JCheckBox logCB;
-	private JTextField logIDField;
-	private JCheckBox checkCB;
-	private JCheckBox teltMeeCB;
-	private ObjectiveChoiceButton logObjectivesButton;
-	
-	private JCheckBox relocateCB;
-	private JCheckBox viewCB;
-	
 	private JCheckBox verzamelDoelCB;
-	
-	//private int scoreMax;
-	//private boolean randomizePositions;
-	//private boolean snapToTarget;
-	//private int acceptedMarge;
-	
-	private FormuleButton knopImageButton;
-	private Dialog imageDialog;
-	private Iconan iconman;
-	private String knopImageString = "";
-	private Image knopImage;
+  	
+  	private JLabel imageKnopLabel;
+  	private FormuleButton knopImageButton;
+  	private Image knopImage;
+  	private Dialog imageDialog;
+  	private Iconan iconman;
+  	private String knopImageString = "";
+  	
+  	// logging /nakijken
+ 	private JLabel titleLoggingLabel;
+ 	private JLabel maxScoreLabel;
+ 	private JTextField maxScoreTF;
+ 	private JCheckBox checkCB;
+ 	private JCheckBox teltMeeCB;
+ 	private JCheckBox logCB;
+ 	private JTextField logIDField;
+ 	private JTextField logIDLabelField;
+ 	private JLabel logIDLabelLabel;
+ 	private ObjectiveChoiceButton logObjectivesButton;	
+  	
+ 	// Hulp
+ 	private JLabel titleHulpLabel;
+ 	private JCheckBox viewCB;
+  	
 	
 	public CheckSleepUnitEditPanel()
 	{
-		setLayout(null);
+		setLayout(new BorderLayout());
 		setBounds(0,0,780,480);
-		tekstEditor = new TekstEditor(true,false,false);
-		tekstEditor.setBounds(300,130,465,365);
-		//add(tekstEditor);
 		
-		aantalSleepObjectsLabel = new JLabel(WiskOpdr.rb.getString("aantalSleepObjLabel"));//("Aantal sleep-objecten");
-		aantalSleepObjectsLabel.setBounds(10,30,180,20);
-		aantalSleepObjectsLabel.setFont(font);
-		add(aantalSleepObjectsLabel);
-		
-		aantalSleepObjectsTF = new JTextField("0");
-		aantalSleepObjectsTF.setBounds(190,30,40,20);
-		aantalSleepObjectsTF.addActionListener(this);
-		add(aantalSleepObjectsTF);
-		
-		aantalDoelObjectsLabel = new JLabel(WiskOpdr.rb.getString("aantalDoelObjLabel"));//("Aantal doel-objecten");
-		aantalDoelObjectsLabel.setBounds(10,60,180,20);
-		aantalDoelObjectsLabel.setFont(font);
-		add(aantalDoelObjectsLabel);
-		
-		aantalDoelObjectsTF = new JTextField("0");
-		aantalDoelObjectsTF.setBounds(190,60,40,20);
-		aantalDoelObjectsTF.addActionListener(this);
-		add(aantalDoelObjectsTF);
-		
-		maxScoreLabel = new JLabel(WiskOpdr.rb.getString("score"));//("Score");
-		maxScoreLabel.setBounds(300,30,80,20);
-		maxScoreLabel.setFont(font);
-		add(maxScoreLabel);
-		
-		maxScoreTF = new JTextField("0");
-		maxScoreTF.setBounds(380,30,40,20);
-		maxScoreTF.addActionListener(this);
-		add(maxScoreTF);
-		
-		randomizePositionsCB = new JCheckBox(WiskOpdr.rb.getString("randomPosLabel"));//("Randomiseer posities");
-		randomizePositionsCB.setBounds(300,70,280,20);
-		randomizePositionsCB.setOpaque(false);
-		randomizePositionsCB.setFont(font);
-		add(randomizePositionsCB);
-		
-		snapToTargetCB = new JCheckBox(WiskOpdr.rb.getString("snapToTargetLabel"));//("Snap to target");
-		snapToTargetCB.addActionListener(this);
-		snapToTargetCB.setBounds(300,100,280,20);
-		snapToTargetCB.setOpaque(false);
-		snapToTargetCB.setFont(font);
-		add(snapToTargetCB);
-		
-		acceptedMargeLabel = new JLabel(WiskOpdr.rb.getString("snapMargeLabel"));//("Afwijking");
-		acceptedMargeLabel.setBounds(300,130,80,20);
-		acceptedMargeLabel.setFont(font);
-		add(acceptedMargeLabel);
-		
-		acceptedMargeTF = new JTextField("10");
-		acceptedMargeTF.setBounds(380,130,40,20);
-		acceptedMargeTF.addActionListener(this);
-		add(acceptedMargeTF);
-		
-		checkVastCB = new JCheckBox(WiskOpdr.rb.getString("checkVasteDoelenLabel"));//("Check op vaste doelen voor sleepobjecten");
-		checkVastCB.setBounds(300,170,280,20);
-		checkVastCB.addActionListener(this);
-		checkVastCB.setOpaque(false);
-		checkVastCB.setFont(font);
-		checkVastCB.setSelected(true);
-		add(checkVastCB);
-		
-		checkFormuleCB = new JCheckBox(WiskOpdr.rb.getString("checkWaardeOpDoelLabel"));//("Check met waarden sleepobjecten");
-		checkFormuleCB.setBounds(300,200,380,20);
-		checkFormuleCB.addActionListener(this);
-		checkFormuleCB.setOpaque(false);
-		checkFormuleCB.setFont(font);
-		add(checkFormuleCB);
-		
-		formuleEditor = new FormuleEditor(true);
-		formuleEditor.setMultiLine(true);
-		formuleEditor.setBounds(300,230,480,200);
-		formuleEditor.setVisible(false);
-        add(formuleEditor);
-        
-        logCB = new JCheckBox(WiskOpdr.rb.getString("logCBLabel"));
-        logCB.setBounds(450,5,70,20);
-        logCB.addActionListener(this);
-        logCB.setOpaque(false);
-        logCB.setFont(font);
-		add(logCB);
-		
-		logIDField = new JTextField("0");
-		logIDField.setBounds(520,5,60,20);
-		logIDField.addActionListener(this);
-		logIDField.setVisible(false);
-		add(logIDField);
-		
-		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
-        logObjectivesButton.setBounds(600,5,120,20);
-        if(WiskOpdr.objectives!=null)add(logObjectivesButton);
-		
-		checkCB = new JCheckBox(WiskOpdr.rb.getString("checkCBLabel"));
-		checkCB.setBounds(5,5,200,20);
-		checkCB.addActionListener(this);
-		checkCB.setOpaque(false);
-		checkCB.setFont(font);
-		checkCB.setSelected(true);
-		add(checkCB);
-		
-		teltMeeCB = new JCheckBox(WiskOpdr.rb.getString("teltMeeCBLabel"));
-		teltMeeCB.setBounds(225,5,200,20);
-		teltMeeCB.addActionListener(this);
-		teltMeeCB.setOpaque(false);
-		teltMeeCB.setFont(font);
-		teltMeeCB.setSelected(true);
-		add(teltMeeCB);
-		
-		relocateCB = new JCheckBox(WiskOpdr.rb.getString("relocateCBLabel"));//("Springt terug");
-		relocateCB.setBounds(580,100,280,20);
-		relocateCB.setOpaque(false);
-		relocateCB.setFont(font);
-		relocateCB.setSelected(false);
-		relocateCB.setVisible(false);
-		add(relocateCB);
-		
-		viewCB = new JCheckBox(WiskOpdr.rb.getString("viewCBLabel"));//("View");
-		viewCB.setBounds(580,170,280,20);
-		viewCB.setOpaque(false);
-		viewCB.setFont(font);
-		viewCB.setSelected(false);
-		viewCB.setVisible(true);
-		add(viewCB);
-		
-		verzamelDoelCB = new JCheckBox(WiskOpdr.rb.getString("verzamelDoelCBLabel"));
-		verzamelDoelCB.addActionListener(this);
-		verzamelDoelCB.setBounds(10,90,240,20);
-		verzamelDoelCB.setOpaque(false);
-		verzamelDoelCB.setFont(font);
-		verzamelDoelCB.setSelected(false);
-		verzamelDoelCB.setVisible(true);
-		add(verzamelDoelCB);
-		
-		knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
-		knopImageButton.setBounds(10,120,80,20);
-		knopImageButton.addActionListener(this);
-		add(knopImageButton);
+		makeGUI();
 	}
 	
+	private void makeGUI() {
+		// Main
+    	mainPanel = new JPanel(new BorderLayout());
+		mainPanel.setBackground(WiskOpdr.colorGray3);
+		//mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
+		
+		//mainPanel  //juiste antwoord
+		titleAntwoordLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"), font.deriveFont(Font.BOLD, 16));
+		titleAntwoordLabel.setVisible(false);
+		formuleEditor = new FormuleEditor(true);
+		formuleEditor.setMultiLine(true);
+		formuleEditor.setPreferredSize(new Dimension(340,200));
+		formuleEditor.setVisible(false);
+		
+		//mainPanel  //settings
+		titleSettingsLabel = makeLabel(WiskOpdr.rb.getString("settingsLabel"), font.deriveFont(Font.BOLD, 16));
+		aantalSleepObjectsLabel = makeLabel(WiskOpdr.rb.getString("aantalSleepObjLabel"), font);
+		aantalSleepObjectsTF = makeTextField("0", 30, 22, this);
+		aantalDoelObjectsLabel = makeLabel(WiskOpdr.rb.getString("aantalDoelObjLabel"), font);
+		aantalDoelObjectsTF = makeTextField("0", 30, 22, this);
+		
+		randomizePositionsCB = makeCheckBox(WiskOpdr.rb.getString("randomPosLabel"),false,this);
+		snapToTargetCB = makeCheckBox(WiskOpdr.rb.getString("snapToTargetLabel"),true,this);//("Snap to target");
+		acceptedMargeLabel = makeLabel(WiskOpdr.rb.getString("snapMargeLabel"),font);
+		acceptedMargeTF = makeTextField("10",40,20,this);
+		relocateCB = makeCheckBox(WiskOpdr.rb.getString("relocateCBLabel"), false, this);//("Springt terug");
+		checkVastCB = makeCheckBox(WiskOpdr.rb.getString("checkVasteDoelenLabel"), true, this);
+		checkFormuleCB = makeCheckBox(WiskOpdr.rb.getString("checkWaardeOpDoelLabel"), false, this);
+		verzamelDoelCB = makeCheckBox(WiskOpdr.rb.getString("verzamelDoelCBLabel"), false, this);
+		
+		imageKnopLabel = makeLabel(WiskOpdr.rb.getString("editImageKnopLabel"), font);
+		
+		knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
+		knopImageButton.setPreferredSize(new Dimension(80,22));
+		knopImageButton.addActionListener(this);
+				
+		//mainPanel  // logging / nakijken
+		titleLoggingLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"),font.deriveFont(Font.BOLD, 16));
+		maxScoreLabel = makeLabel(WiskOpdr.rb.getString("score"), font);
+		maxScoreTF = makeTextField("0",50,22,this);
+		checkCB = makeCheckBox(WiskOpdr.rb.getString("checkCBLabel"),true, null);
+		teltMeeCB = makeCheckBox(WiskOpdr.rb.getString("teltMeeCBLabel"), true, null);
+		logCB = makeCheckBox(WiskOpdr.rb.getString("logCBLabel"), false, this);
+		logIDField = makeTextField("",50,22,this);
+		logIDField.setVisible(false);
+		logIDLabelLabel = makeLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),font);
+		logIDLabelLabel.setVisible(false);
+		logIDLabelField = makeTextField("",50,22,this);
+		logIDLabelField.setVisible(false);
+		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+        logObjectivesButton.setPreferredSize(new Dimension(120,22));
+        logObjectivesButton.setMaximumSize(new Dimension(120,22));
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        
+        // mainPanel    //Hulp
+        titleHulpLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"), font.deriveFont(Font.BOLD, 16));
+        viewCB = makeCheckBox(WiskOpdr.rb.getString("viewCBLabel"), false, this);
+		
+        removeAll();
+	    plaatsGUI();
+	    add(mainPanel);
+	}
+	
+	public void plaatsGUI() {
+		//plaats componenten mainPanel
+		Component[] r11 = {titleAntwoordLabel, 	hgl()};
+		Component[] r12 = {formuleEditor, 	hgl()};
+			
+		Component[] k1 = {hb(r11), vst(15), hb(r12),  vst(15), vgl()};
+        
+		Component[] r21 = {titleSettingsLabel, 		hgl()};
+		Component[] r22 = {aantalSleepObjectsLabel, 			ra(10,10), 	hgl(), aantalSleepObjectsTF	};
+		Component[] r23 = {aantalDoelObjectsLabel, 			ra(10,10), 	hgl(), aantalDoelObjectsTF	};
+		Component[] r24 = {randomizePositionsCB, 	hgl()};
+		Component[] r25 = {snapToTargetCB, 			hgl()};
+		Component[] r26 = {acceptedMargeLabel, 		ra(10,10), 	hgl(), acceptedMargeTF	};
+		Component[] r27 = {relocateCB, 				hgl()};
+		Component[] r28 = {checkVastCB, 			hgl()};
+		Component[] r29 = {checkFormuleCB, 		hgl()};
+		Component[] r210 = {verzamelDoelCB, 			hgl()};
+		Component[] r211 = {imageKnopLabel, 			ra(5,5), 	hgl(), 	knopImageButton};
+		
+		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), 
+				hb(r25), vst(5), hb(r26), vst(5), hb(r27), vst(5), hb(r28), vst(5), hb(r29), vst(5), hb(r210), vst(5), hb(r211), vst(5), vgl()};
+		
+		Component[] r31 = {titleLoggingLabel, 	hgl()};
+		Component[] r32 = {maxScoreLabel, 		ra(5,10), maxScoreTF, hgl()};
+		Component[] r33 = {checkCB, 			hgl()};
+		Component[] r34 = {teltMeeCB, 			hgl()};
+		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r36 = {logObjectivesButton, hgl()};
+		Component[] r37 = {titleHulpLabel, 		hgl()};
+		Component[] r38 = {viewCB, 				hgl()};
+		
+		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vst(30), hb(r37), vst(15), hb(r38),vgl()};
+		
+		Component[] main = {vb(k2), hst(50), vb(k1), hst(50), vb(k3)};
+		mainPanel.add(hb(main));
+	}
 	
 	public void setEditState(Hashtable h)
 	{
@@ -310,7 +271,82 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
     	else {
     		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
     	}
+    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+
     }
+	
+	private JCheckBox makeCheckBox (String text, boolean selected, ActionListener al) {
+		JCheckBox cb = new WiskOpdrCheckbox(text);
+		if(al!=null) cb.addActionListener(al);
+		cb.setSelected(selected);
+		return cb;
+	}
+	
+	private JButton makeButton (String text,  ActionListener al) {
+		JButton bt = new WiskOpdrButton(text);
+		if(al!=null) bt.addActionListener(al);
+		return bt;
+	}
+	
+	private JLabel makeLabel (String text, Font f) {
+		JLabel lb = new JLabel(text);
+		lb.setFont(f);
+		lb.setForeground(WiskOpdr.colorBlue1);
+		return lb;
+	}
+	
+	private JTextField makeTextField (String text, int prefWidth, int prefHeight, ActionListener al) {
+		JTextField tf = new WiskOpdrTextField(text);
+		tf.setPreferredSize(new Dimension(prefWidth,prefHeight));
+		if(al!=null) {
+			tf.addActionListener(al);
+			tf.addFocusListener(this);
+		}
+		return tf;
+	}
+	
+	private Box hb(Component[] c) {
+		Box box = Box.createHorizontalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Box vb(Component[] c) {
+		Box box = Box.createVerticalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Component hgl() {
+		return Box.createHorizontalGlue();
+	}
+	
+	private Component vgl() {
+		return Box.createVerticalGlue();
+	}
+	
+	private Component hst(int n) {
+		return Box.createHorizontalStrut(n);
+	}
+	
+	private Component vst(int n) {
+		return Box.createVerticalStrut(n);
+	}
+	
+	private Component ra(int w, int h) {
+		return Box.createRigidArea(new Dimension(w,h));
+	}
+	
+	private int intFromText(int defaultInt, String text) {
+		int i = defaultInt;
+		try {
+			i = Integer.parseInt(text);
+		}
+		catch(NumberFormatException e) {}
+		return i;
+	}
 	
 	public Hashtable getEditState()
 	{
@@ -443,19 +479,29 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		}
 		else if(e.getSource()==checkVastCB)
 		{	checkFormuleCB.setSelected(!checkVastCB.isSelected());
+			titleAntwoordLabel.setVisible(!checkVastCB.isSelected());
 			formuleEditor.setVisible(!checkVastCB.isSelected());
 			viewCB.setVisible(checkVastCB.isSelected());
+			titleHulpLabel.setVisible(checkVastCB.isSelected());
 			if(!checkVastCB.isSelected())viewCB.setSelected(false);
+			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+
 		}
 		else if(e.getSource()==checkFormuleCB)
 		{	checkVastCB.setSelected(!checkFormuleCB.isSelected());
 			formuleEditor.setVisible(!checkVastCB.isSelected());
+			titleAntwoordLabel.setVisible(!checkVastCB.isSelected());
 			viewCB.setVisible(checkVastCB.isSelected());
+			titleHulpLabel.setVisible(checkVastCB.isSelected());
 			if(!checkVastCB.isSelected())viewCB.setSelected(false);
+			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+
 		}
 		else if(e.getSource()==logCB)
 	    {   logIDField.setVisible(logCB.isSelected()); 
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
+	    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+
 	    }
 		else if(e.getSource()==snapToTargetCB)
 		{	relocateCB.setVisible(snapToTargetCB.isSelected());
@@ -465,31 +511,42 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		{
 			boolean b = verzamelDoelCB.isSelected();
 			checkVastCB.setEnabled(!b);
+			checkFormuleCB.setEnabled(!b);
 			
 			if (b)
 				checkVastCB.setSelected(!b);
 			if (b)
 				checkFormuleCB.setSelected(b);
+			
+			formuleEditor.setVisible(!checkVastCB.isSelected());
+			titleAntwoordLabel.setVisible(!checkVastCB.isSelected());
+			viewCB.setVisible(checkVastCB.isSelected());
+			titleHulpLabel.setVisible(checkVastCB.isSelected());
+			if(!checkVastCB.isSelected())viewCB.setSelected(false);
+			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+
 		}
-		else if(e.getSource()==knopImageButton)
-	    {   editImage();
-	            
+		else if(e.getSource()==knopImageButton) {   
+			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
+			iconman.editImage(knopImageString, mainPanel, this);
 	    }
-	    else if(e.getSource()==iconman)
-	    {
+	    else if(e.getSource()==iconman) {
 	    	String name = e.getActionCommand();
-	        if(!"".equals(name))
-	        {
+	        if(!"".equals(name)) {
 	        	knopImageString = name;
 	            this.knopImage = iconman.getImage(name);
 	            knopImageButton.setPopupButtonImage(knopImage);
 	            int imWidth = iconman.getWidth(knopImageString);
 				int imHeight = iconman.getHeight(knopImageString);
-				if(imWidth == -1) imWidth = 80;
+				if(imWidth == -1) imWidth = 20;
 				if(imHeight == -1) imHeight = 20;
-				knopImageButton.setSize(imWidth,imHeight);
-	            repaint();
-	        }
+				knopImageButton.setPreferredSize(new Dimension(Math.max(imWidth,80),Math.max(imHeight,22)));
+	         }
+	        else {
+	    		knopImageButton.setPopupButtonImage(null);
+	    		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
+	    		knopImageButton.setPreferredSize(new Dimension(80,22));
+	    	}
 	    }
 
 	    if(imageDialog!=null)
@@ -544,6 +601,18 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
     public Tablet getTablet()
     {   return tablet;
     }
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
     
     // einde methode TabletOwner
 }

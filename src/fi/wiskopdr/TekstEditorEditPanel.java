@@ -17,7 +17,7 @@ import fi.wiskopdr.AntwoordTekstVakEditPanel.EditorComponentListener;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.*;
 
-public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel , ActionListener, TabletOwner
+public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel , ActionListener
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;

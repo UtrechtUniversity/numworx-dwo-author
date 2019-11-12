@@ -42,6 +42,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
   	private JLabel titleAntwoordLabel;
   	private JCheckBox[] selectableCheckboxes;
   	private Box selectableCBBox;
+  	private FormuleEditor formuleEditor;
   	private ObjectiveChoiceButton[] logMisconceptionsButtons;
   	
   	// instellingen
@@ -51,8 +52,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
  	private JCheckBox multiSelectionsCB;
  	private JCheckBox randomizePositionsCB;
 	private JCheckBox checkFormuleCB;
-	private FormuleEditor formuleEditor;
- 	private JLabel imageKnopLabel;
+	private JLabel imageKnopLabel;
  	private FormuleButton knopImageButton;
  	private Image knopImage;
  	private Dialog imageDialog;
