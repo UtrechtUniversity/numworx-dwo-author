@@ -262,7 +262,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"antwoordModelGeen" , "geen"},
 				{"abc" , "abc"},
 				
-				{"checkExternalCBLabel" , "extern controleren"},
+				{"checkExternalCBLabel" , "Extern controleren"},
 				{"contextVarCBLabel", "Contextvariabelen gebruiken"},
 				{"rmAantalDecLabel", "Aantal decimalen"},
 				
