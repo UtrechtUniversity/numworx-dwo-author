@@ -99,7 +99,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		
 		//mainPanel  //settings
 		titleSettingsLabel = makeLabel(WiskOpdr.rb.getString("settingsLabel"), font.deriveFont(Font.BOLD, 16));
-		aantalValueObjectsLabel = makeLabel(WiskOpdr.rb.getString("aantalSleepObjLabel"), font);
+		aantalValueObjectsLabel = makeLabel(WiskOpdr.rb.getString("aantalValueObjectenLabel"), font);
 		aantalValueObjectsTF = makeTextField("0", 30, 22, this);
 		checkAfzonderlijkCB = makeCheckBox(WiskOpdr.rb.getString("checkAfzonderlijkLabel"), false, this);
 		checkSamenCB = makeCheckBox(WiskOpdr.rb.getString("checkOpSamenhangLabel"), true, this);
