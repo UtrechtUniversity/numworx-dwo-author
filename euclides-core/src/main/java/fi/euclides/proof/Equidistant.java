@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
 
-import fi.euclides.util.JMath;
 import fi.euclides.util.Messages;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Cirkel;
@@ -16,7 +15,7 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.math.FloatingPoint;
 import fi.euclides.model.math.Numbers;
 
-public class Equidistant extends LabelTester implements Comparator  {
+public class Equidistant extends LabelTester implements Comparator<Numbers>  {
 
 	public static final String TYPE = "="; //$NON-NLS-1$
 	public String getSubKey() { return TYPE; }
@@ -288,10 +287,6 @@ public boolean define(Label l) {
 public int compare(Numbers n1, Numbers n2)
 {
 	return Double.compare(n1.doubleValue(), n2.doubleValue());
-}
-
-public int compare(Object arg0, Object arg1) {	
-	return compare( (Numbers)arg0, (Numbers)arg1);
 }
 
 }

@@ -3,10 +3,8 @@ package fi.euclides.model.algo;
 import fi.euclides.model.Kegelsnede2.DegeneratedStrategy;
 import fi.euclides.model.Kegelsnede2.HyperboolStrategy;
 import fi.euclides.model.MP;
-import fi.euclides.model.PuntOp;
 import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 
 public class PointOnConic extends PointOnLocus implements PointOnAlgorithm<MP> {
 
@@ -27,8 +25,8 @@ public class PointOnConic extends PointOnLocus implements PointOnAlgorithm<MP> {
 			inp = (ds.dx*(x-ds.cx)+ds.dy*(y-ds.cy))/(ds.dx*ds.dx + ds.dy*ds.dy);
 			double x2 = ds.cx + inp * ds.dx;
 			double y2 = ds.cy + inp * ds.dy;
-			double alfa = JMath.hypot(x-x1, y-y1);
-			double beta = JMath.hypot(x-x2, y-y2);
+			double alfa = Math.hypot(x-x1, y-y1);
+			double beta = Math.hypot(x-x2, y-y2);
 			if(alfa < beta)	// kan overwippen!
 			{
 				punt.setXY(Numbers.createDouble(x1), Numbers.createDouble(y1));

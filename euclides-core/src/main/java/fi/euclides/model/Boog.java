@@ -5,7 +5,6 @@ import java.io.IOException;
 import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.algo.PointOnArc;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 
 public class Boog extends Rondje implements OpObject<Boog> {
@@ -43,7 +42,7 @@ public class Boog extends Rondje implements OpObject<Boog> {
 		double my = base.getCenter().getYd();
 		double ax = getA().getXd();
 		double ay = getA().getYd();
-		double s = JMath.atan2(my-ay, ax-mx); //range -pi .. pi
+		double s = Math.atan2(my-ay, ax-mx); //range -pi .. pi
 		return s;
 	}
 	
@@ -55,10 +54,10 @@ public class Boog extends Rondje implements OpObject<Boog> {
 		
 		double cx = c.getXd();
 		double cy = c.getYd();
-		double e = JMath.atan2(my-cy, cx-mx);
+		double e = Math.atan2(my-cy, cx-mx);
 		double bx = getB().getXd();
 		double by = getB().getYd();
-		double m = JMath.atan2(my-by, bx-mx);
+		double m = Math.atan2(my-by, bx-mx);
 		while ( m < s) m += PI2;
 // Er moet gelden e > m > s  dan e-s > 0
 //		          e < m < s  dan e-s < 0
@@ -196,11 +195,11 @@ public class Boog extends Rondje implements OpObject<Boog> {
 		double r = getR();
 		double x = getCenter().getXd()-lastx;
 		double y = getCenter().getYd()-lasty;
-		double r2 = JMath.hypot(x,y);
+		double r2 = Math.hypot(x,y);
 		double marge = 0.01;
 		boolean done = Math.abs(r2-r) < marge;
 		if(!done) return false;
-		double h = JMath.atan2(y, -x);
+		double h = Math.atan2(y, -x);
 		double s = getStart();
 		double l = length();
 		if(l >= 0) {

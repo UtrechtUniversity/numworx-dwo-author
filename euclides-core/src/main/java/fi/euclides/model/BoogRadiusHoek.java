@@ -2,7 +2,6 @@ package fi.euclides.model;
 
 import java.io.IOException;
 
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 
 public class BoogRadiusHoek extends BoogHoek {
@@ -55,7 +54,7 @@ public class BoogRadiusHoek extends BoogHoek {
 	private double angleOU() {
 		double dx = u.getXd() - o.getXd();
 		double dy = u.getYd() - o.getYd();
-		return JMath.atan2(dy, dx);
+		return Math.atan2(dy, dx);
 	}
 
 	@Override

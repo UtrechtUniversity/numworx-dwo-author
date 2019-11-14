@@ -8,7 +8,6 @@ import fi.euclides.model.Lijn;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.DefaultAdapter;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Messages;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
@@ -123,7 +122,7 @@ public class HoekHandler extends LabelValue implements Observer {
 		}
 		int mod = isLijn?180:360;
 		//System.out.println(l + ": "+ l.value);
-		double result = (JMath.atan2(yd, xd));
+		double result = (Math.atan2(yd, xd));
 // experiment met hoek als value 0..2pi
 		if(result < 0)
 			result += Math.PI*2.0;

@@ -172,7 +172,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 			canvas.addTouchEndHandler(h);
 			canvas.addTouchMoveHandler(h);
 			canvas.addTouchStartHandler(h);
-		} else {
+		} 
+		{
 			GWTMouseHandler h = new GWTMouseHandler(new DelayMouse(this, 200L, 4)); // testing...
 			canvas.addMouseDownHandler(h);
 			canvas.addMouseUpHandler(h);

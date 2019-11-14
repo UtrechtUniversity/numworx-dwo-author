@@ -3,7 +3,6 @@ package fi.euclides.model.algo;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 
 public class PointOnArc implements PointOnAlgorithm<Boog> {
 
@@ -17,8 +16,8 @@ public class PointOnArc implements PointOnAlgorithm<Boog> {
 	}
 
 	public void recalc(Boog on, FreePoint punt, double dx, double dy) {
-		Numbers x = Numbers.createRational(JMath.round(dx), 1);
-		Numbers y = Numbers.createRational(JMath.round(dy), 1);
+		Numbers x = Numbers.createRational(Math.round(dx), 1);
+		Numbers y = Numbers.createRational(Math.round(dy), 1);
 		Numbers cx= on.getCenter().getX();
 		Numbers cy= on.getCenter().getY();
 		x = Numbers.sub(x, cx);
@@ -30,7 +29,7 @@ public class PointOnArc implements PointOnAlgorithm<Boog> {
 		
 		double rx = punt.getX().doubleValue() - cx.doubleValue();
 		double ry = punt.getY().doubleValue() - cy.doubleValue();
-		double hoek = JMath.atan2(-ry, rx);
+		double hoek = Math.atan2(-ry, rx);
 		double l = on.length();
 		double s = on.getStart();
 		if( l >= 0) {

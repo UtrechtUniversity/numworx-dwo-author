@@ -5,7 +5,6 @@ import java.io.IOException;
 import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.algo.PointOnCircle;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -87,7 +86,7 @@ public class Cirkel extends Rondje implements Observer, OpObject<Cirkel> {
 	void recalc() {
 		double rx = radius2.getXd()-getRadius().getXd();
 		double ry = radius2.getYd()-getRadius().getYd();
-		setD( 2 * JMath.hypot(rx,ry));
+		setD( 2 * Math.hypot(rx,ry));
 		setX(getCenter().getXd()-getR());
 		setY(getCenter().getYd()-getR());
 		setChanged();

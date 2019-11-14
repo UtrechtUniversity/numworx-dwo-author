@@ -7,15 +7,12 @@ import fi.euclides.model.Codec;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Dpunt;
 import fi.euclides.model.ExtendedLijn;
-import fi.euclides.model.Model;
 import fi.euclides.model.Pair;
 import fi.euclides.model.Punt;
-import fi.euclides.model.PuntOp;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.algo.PointOnConic;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 
 public class Kegelsnede2 extends MP {
@@ -48,8 +45,8 @@ public class Kegelsnede2 extends MP {
 			double p = n.doubleValue();
 // -oo < t < oo en 0<=p<=1
 			double t = (p - 0.5) * 2;
-			if(t >= 0) t = JMath.pow(t, 1./81.) / 2.;
-			else t = -JMath.pow(-t, 1./81.) / 2.;
+			if(t >= 0) t = Math.pow(t, 1./81.) / 2.;
+			else t = -Math.pow(-t, 1./81.) / 2.;
 			t = t * Math.PI / (1 + SMALL);
 			t = Math.tan(t);
 			

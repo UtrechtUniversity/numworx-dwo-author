@@ -5,7 +5,6 @@ import java.io.IOException;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 
 public class Dpunt extends PuntOp<Punt> implements PointOnAlgorithm<Punt> {
 
@@ -92,7 +91,7 @@ public class Dpunt extends PuntOp<Punt> implements PointOnAlgorithm<Punt> {
 				double cy = p.getYd();
 				x = x - cx;
 				y = y - cy;
-				double ln = JMath.hypot(x,y) / r;
+				double ln = Math.hypot(x,y) / r;
 				setXY(cx+x/ln, cy+y/ln);		
 	}
 

@@ -8,4 +8,8 @@
   	<version>0.0.5-SNAPSHOT</version>
 	<relativePath>..</relativePath>
   </parent>
+  <properties>
+  	<maven.compiler.source>1.8</maven.compiler.source>
+  	<maven.compiloer.target>1.8</maven.compiloer.target>
+  </properties>
 </project>

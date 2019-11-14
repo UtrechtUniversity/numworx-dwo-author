@@ -3,7 +3,6 @@ package fi.euclides.model;
 import java.io.IOException;
 
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 
 public class RaaklijnLocus extends LijnPuntCombi<MP> implements SegmentVisitor {
@@ -69,7 +68,7 @@ public class RaaklijnLocus extends LijnPuntCombi<MP> implements SegmentVisitor {
 		Punt pb = s.getP2();
 		if(pb.isDefined())
 		{
-			double d = JMath.hypot(x-pb.getXd(), y-pb.getYd());
+			double d = Math.hypot(x-pb.getXd(), y-pb.getYd());
 			if(d < dist)
 			{
 				x1 = pb.getX(); y1 = pb.getY();

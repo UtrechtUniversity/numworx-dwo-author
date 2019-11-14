@@ -5,7 +5,6 @@ import java.io.IOException;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelDelegate;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 

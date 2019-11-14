@@ -2,9 +2,9 @@ package fi.euclides.util;
 
 import java.util.Vector;
 
-import fi.euclides.gwt.CreateUtil;
+import fi.euclides.persist.CreateUtil;
 
-public class Observable {
+public class Observable  {
 
 	private boolean changed;
 	private Vector<Observer> obs  = new Vector<Observer>();
@@ -19,7 +19,7 @@ public class Observable {
 		return null;
 	}
 
-	protected void notifyObservers(Object arg) {
+	public void notifyObservers(Object arg) {
 		if(!changed)
 			return;
 		changed = false;

@@ -10,11 +10,9 @@ import fi.euclides.model.Pair;
 import fi.euclides.model.Punt;
 import fi.euclides.model.PuntOp;
 import fi.euclides.model.Segment;
-import fi.euclides.model.Visitor;
 import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.algo.PointOnLocus;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observer;
 
 public abstract class MP extends Destroyable implements Observer, OpObject<MP> {
@@ -60,7 +58,7 @@ public abstract class MP extends Destroyable implements Observer, OpObject<MP> {
 			double dx, dy, px, py;
 			dx = l.getDXn().doubleValue();
 			dy = l.getDYn().doubleValue();
-			double h = JMath.hypot(dx, dy);
+			double h = Math.hypot(dx, dy);
 			dx /= h;
 			dy /= h;
 			px = l.getX1();
@@ -70,8 +68,8 @@ public abstract class MP extends Destroyable implements Observer, OpObject<MP> {
 			{
 				double p = i/(double)(N-1);
 				double c = (p - 0.5) * 2;
-				if(c >= 0) c = JMath.pow(c, 1./81.) / 2.;
-				else c = -JMath.pow(-c, 1./81.) / 2.;
+				if(c >= 0) c = Math.pow(c, 1./81.) / 2.;
+				else c = -Math.pow(-c, 1./81.) / 2.;
 				c = c * Math.PI / (1 + SMALL);
 				c = Math.tan(c);
 				source.setXY(px + c * dx, py + c * dy);	
@@ -85,15 +83,15 @@ public abstract class MP extends Destroyable implements Observer, OpObject<MP> {
 			double dx, dy, px, py;
 			dx = l.getDXn().doubleValue();
 			dy = l.getDYn().doubleValue();
-			double h = JMath.hypot(dx, dy);
+			double h = Math.hypot(dx, dy);
 			dx /= h;
 			dy /= h;
 			px = l.getX1();
 			py = l.getY1();
 			double p = x.doubleValue();
 			double c = (p - 0.5) * 2;
-			if(c >= 0) c = JMath.pow(c, 1./81.) / 2.;
-			else c = -JMath.pow(-c, 1./81.) / 2.;
+			if(c >= 0) c = Math.pow(c, 1./81.) / 2.;
+			else c = -Math.pow(-c, 1./81.) / 2.;
 			c = c * Math.PI / (1 + SMALL);
 			c = Math.tan(c);
 			source.setXY(px + c * dx, py + c * dy);
@@ -227,7 +225,7 @@ public abstract class MP extends Destroyable implements Observer, OpObject<MP> {
 	}
 
 	private double length(Segment seg) {
-		return JMath.hypot(seg.getDX(), seg.getDY());
+		return Math.hypot(seg.getDX(), seg.getDY());
 	}
 
 	/* (non-Javadoc)

@@ -1,11 +1,8 @@
 package fi.euclides.model.algo;
 
 import fi.euclides.model.Lijn;
-import fi.euclides.model.Punt;
-import fi.euclides.model.PuntOp;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.DefaultAdapter;
-import fi.euclides.util.JMath;
 
 public class PointOnLine implements PointOnAlgorithm<Lijn> {
 

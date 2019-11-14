@@ -1,10 +1,7 @@
 package fi.euclides.model.algo;
 
 import fi.euclides.model.Cirkel;
-import fi.euclides.model.Punt;
-import fi.euclides.model.PuntOp;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 
 public class PointOnCircle implements PointOnAlgorithm<Cirkel> {
 
@@ -18,8 +15,8 @@ public class PointOnCircle implements PointOnAlgorithm<Cirkel> {
 	}
 
 	public void recalc(Cirkel cirkel, FreePoint punt, double dx, double dy) {
-		Numbers x = Numbers.createRational(JMath.round(dx), 1);
-		Numbers y = Numbers.createRational(JMath.round(dy), 1);
+		Numbers x = Numbers.createRational(Math.round(dx), 1);
+		Numbers y = Numbers.createRational(Math.round(dy), 1);
 		Numbers cx= cirkel.getCenter().getX();
 		Numbers cy= cirkel.getCenter().getY();
 		x = Numbers.sub(x, cx);

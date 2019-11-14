@@ -15,7 +15,6 @@ import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 
 
 /**
@@ -37,7 +36,7 @@ public class HitTester implements Visitor, SegmentVisitor  {
 		double r = c.getR();
 		double x = c.getCenter().getXd()-lastx;
 		double y = c.getCenter().getYd()-lasty;
-		double r2 =  JMath.hypot(x,y);
+		double r2 =  Math.hypot(x,y);
 		boolean done = Math.abs(r2-r) < marge;
 		if(done)
 			call(c);
@@ -48,10 +47,10 @@ public class HitTester implements Visitor, SegmentVisitor  {
 		double r = b.getR();
 		double x = b.getCenter().getXd()-lastx;
 		double y = b.getCenter().getYd()-lasty;
-		double r2 = JMath.hypot(x,y);
+		double r2 = Math.hypot(x,y);
 		boolean done = Math.abs(r2-r) < marge;
 		if(!done) return;
-		double h = JMath.atan2(y, -x);
+		double h = Math.atan2(y, -x);
 		double s = b.getStart();
 		double l = b.length();
 		if(l >= 0) {

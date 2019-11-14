@@ -2,7 +2,6 @@ package fi.euclides.model;
 
 import fi.euclides.model.math.Exact;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.JMath;
 
 public class CirkelSnijpunt extends PuntOp2<Rondje,Rondje> {
 
@@ -56,7 +55,7 @@ public class CirkelSnijpunt extends PuntOp2<Rondje,Rondje> {
 		Numbers dx, dy;
 		dx = Numbers.sub(lijn2.getCenter().getX(), lijn1.getCenter().getX());
 		dy = Numbers.sub(lijn2.getCenter().getY(), lijn1.getCenter().getY());
-		double r  = JMath.hypot(dx.doubleValue(),dy.doubleValue());
+		double r  = Math.hypot(dx.doubleValue(),dy.doubleValue());
 // overlap?
 		if(r*2 > lijn1.getD()+lijn2.getD()+2.0e-10)
 		{

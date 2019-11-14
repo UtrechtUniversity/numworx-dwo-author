@@ -5,7 +5,6 @@ import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelValue;
 import fi.euclides.util.DefaultAdapter;
-import fi.euclides.util.JMath;
 import fi.euclides.util.Observable;
 
 public class Som extends LabelValue {
@@ -108,7 +107,7 @@ public class Som extends LabelValue {
 		double y = s.doubleValue();
 		double x = c.doubleValue();
 		//if(y<0) { y = -y; x = -x; } // bij modulo 180
-		double result = JMath.atan2(y, x);
+		double result = Math.atan2(y, x);
 		if(result < 0)
 			result += Math.PI*2.0;
 		value = Numbers.createDouble(result);
