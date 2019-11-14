@@ -1112,4 +1112,26 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
     } catch (IOException e) {
     }
   }
+
+  public Destroyable buildConic(Destroyable[] depend) {
+	if(depend.length == 5)
+	{
+		Destroyable l = createConic(depend);
+		add(l, lijnen);
+		return l;
+	}
+	return null;
+
+}
+
+	public Destroyable createConic(Destroyable[] depend) {
+		if(depend.length == 5)
+		{
+			Punt[] punten = new Punt[5];
+			System.arraycopy(depend, 0, punten, 0, 5);
+			DComparator.sort(punten);
+			return new Kegelsnede2(punten);
+		}
+		return null;
+	}
 }

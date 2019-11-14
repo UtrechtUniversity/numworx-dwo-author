@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
   <inherits name="nl.tue.win.riaca.openmath.OpenMath" />
+  <inherits name="com.vaadin.pointerevents.PointerEvents" />
   <inherits name="gwt.Geom" />
 
   <source path='model'/>

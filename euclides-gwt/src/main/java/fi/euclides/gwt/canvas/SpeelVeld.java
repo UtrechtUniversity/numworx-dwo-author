@@ -13,6 +13,12 @@ import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.pointerevents.client.PointerCancelEvent;
+import com.vaadin.pointerevents.client.PointerDownEvent;
+import com.vaadin.pointerevents.client.PointerEventInitializer;
+import com.vaadin.pointerevents.client.PointerEventsSupport;
+import com.vaadin.pointerevents.client.PointerMoveEvent;
+import com.vaadin.pointerevents.client.PointerUpEvent;
 
 import fi.euclides.event.EventHandler;
 import fi.euclides.event.HitTester;
@@ -28,6 +34,7 @@ import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.gwt.DelayMouse;
 import fi.euclides.gwt.GWTMouseHandler;
 import fi.euclides.gwt.GWTMultiTouchHandler;
+import fi.euclides.gwt.GWTPointerHandler;
 import fi.euclides.gwt.MouseContext;
 import fi.euclides.gwt.ViewerWidget;
 
@@ -165,6 +172,22 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	}
 	
 	private void initHandlers(final Canvas canvas) {
+		PointerEventsSupport.init();
+		boolean haspointer = PointerEventsSupport.isSupported();
+		LOG.info("haspointer = " + haspointer);
+		if (haspointer) {
+			LOG.info("pointer events support");
+			GWTPointerHandler h = new GWTPointerHandler(new DelayMouse(this));
+			// en nu?
+			canvas.addDomHandler(h, PointerDownEvent.getType());
+			canvas.addDomHandler(h, PointerUpEvent.getType());
+			canvas.addDomHandler(h, PointerMoveEvent.getType());
+			canvas.addDomHandler(h, PointerCancelEvent.getType());
+			return;
+		}
+		
+		
+		
 		boolean hastouch = TouchStartEvent.isSupported();
 		if(hastouch) {
 			GWTMultiTouchHandler h = new GWTMultiTouchHandler(new DelayMouse(this));
