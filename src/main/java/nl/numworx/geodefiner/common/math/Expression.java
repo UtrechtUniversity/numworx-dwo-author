@@ -264,6 +264,11 @@ public class Expression extends fi.euclides.openmath.Expression {
 			copy(oma, mapper, depend);
 			return model.createCirkel(depend);
 		}
+		if (Definitions.CONIC.isSame(func)) {
+			Destroyable depend[] = new Destroyable[oma.getLength()-1];
+			copy(oma, mapper, depend);
+			return model.createConic(depend);
+		}
 		if (Definitions.ARC.isSame(func)) {
 			Destroyable depend[] = new Destroyable[oma.getLength()-1];
 			copy(oma, mapper, depend);

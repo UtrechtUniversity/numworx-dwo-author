@@ -73,6 +73,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 	public static final OMSymbol POLYGON = new OMSymbol("geodefiner","polygon");
 	public static final OMSymbol TEXT   = new OMSymbol("geodefiner", "text");
 	public static final OMSymbol HALFLINE = new OMSymbol("geodefiner", "halfline");
+	public static final OMSymbol CONIC = new OMSymbol("geodefiner", "conic");
 	
 	static final OMSymbol INTERVAL = OMConstants.INTERVAL1_INTERVAL;
 	static final OMSymbol LIST_SELECTOR = OMConstants.LIST2_LIST_SELECTOR;
@@ -226,6 +227,13 @@ public class Definitions implements Observer /*, ListModel*/ {
 				if (CIRCLE.isSame(f)) {
 					Destroyable l = model.buildCirkel(depend);
 					n(l,"circle error");
+					installConfig(new CELL(text, l, var), config);
+					return;
+				}
+// $l := conic($P, $Q)
+				if (CONIC.isSame(f)) {
+					Destroyable l = model.buildConic(depend);
+					n(l,"conic error");
 					installConfig(new CELL(text, l, var), config);
 					return;
 				}
