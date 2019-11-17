@@ -185,7 +185,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		
 		if(soort==0)
 		{	stappen = true;	
-			stappenDefault = true;	
+			stappenDefault = true;
+			tipsCB.setVisible(WiskOpdr.isExperimental());
 		}
 		
 		else if(soort==2)
@@ -524,7 +525,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		}
 		else {
 		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
-				hb(r410),hb(r411),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r424), vgl()};
+				hb(r410),hb(r411),hb(r416),hb(r417),hb(r418),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r424), vgl()};
 			settingsBox = vb(k4);
 		}		
 				

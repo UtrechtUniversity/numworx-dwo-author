@@ -196,6 +196,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
        		stappenDefault = true;
         	formuleToolBijFocusCB.setVisible(false);
         	uitwCB.setVisible(false);
+        	tipsCB.setVisible(WiskOpdr.isExperimental());
         	
         }
         else if(soort==3)
@@ -523,7 +524,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		}
 		else {
 		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
-				hb(r410),hb(r411),hb(r412),hb(r413),hb(r414),hb(r415),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r423),hb(r424), vgl()};
+				hb(r410),hb(r411),hb(r412),hb(r413),hb(r414),hb(r415),hb(r416),hb(r417),hb(r418),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r423),hb(r424), vgl()};
 			settingsBox = vb(k4);
 		}
 		
