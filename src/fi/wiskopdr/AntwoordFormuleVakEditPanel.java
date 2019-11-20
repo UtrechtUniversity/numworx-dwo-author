@@ -23,7 +23,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.stringutils.StringUtils;
 
 
-public class AntwoordFormuleVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener
+public class AntwoordFormuleVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener, HelpButtonPanelIF
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
@@ -151,8 +151,39 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     private FormuleEditor antwoordFunctiesVak;
      
  	// Helpbuttons
-    String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
-	HelpButton helpButton;
+    private static String HELP_0_URL_2 = WiskOpdr.rb.getString("HELP_0_URL_2");
+    private static String HELP_0_URL_0 = WiskOpdr.rb.getString("HELP_0_URL_0");
+    private static String HELP_0_URL_CHECK = WiskOpdr.rb.getString("HELP_0_URL_CHECK");
+    private static String HELP_0_URL_TELTMEE = WiskOpdr.rb.getString("HELP_0_URL_TELTMEE");
+    private static String HELP_0_URL_LOGID = WiskOpdr.rb.getString("HELP_0_URL_LOGID");
+    
+    private static String HELP_0_URL_FEEDBACK = WiskOpdr.rb.getString("HELP_0_URL_FEEDBACK");
+    private static String HELP_0_URL_REKENMACHINE = WiskOpdr.rb.getString("HELP_0_URL_REKENMACHINE");
+    private static String HELP_0_URL_SUBSTITUTIES = WiskOpdr.rb.getString("HELP_0_URL_SUBSTITUTIES");
+    private static String HELP_0_URL_CONTEXTVAR = WiskOpdr.rb.getString("HELP_0_URL_CONTEXTVAR");
+    private static String HELP_0_URL_EIGENOPDR = WiskOpdr.rb.getString("HELP_0_URL_EIGENOPDR");
+    private static String HELP_0_URL_FORMINVOER = WiskOpdr.rb.getString("HELP_0_URL_FORMINVOER");
+    private static String HELP_0_URL_UITWERKING = WiskOpdr.rb.getString("HELP_0_URL_UITWERKING");
+    private static String HELP_0_URL_RAND = WiskOpdr.rb.getString("HELP_0_URL_RAND");
+    
+    private HelpButton hbCheck;
+    private HelpButton hbTeltMee;
+    private HelpButton hbLogID;
+    private HelpButton hbFeedback;
+    private HelpButton hbRekenmach;
+    private HelpButton hbSubstituties;
+    private HelpButton hbContextvar;
+    private HelpButton hbEigenOpdr;
+    private HelpButton hbFormInvoer;
+    private HelpButton hbUitwerking;
+    private HelpButton hbRand;
+    void h(){
+    	
+   
+    
+    }
+	
+	
     
     // Overige attributen (wellicht overbodig geworden
 	//private JLabel feedbackLabel;
@@ -169,6 +200,13 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	public static void zetSignificantieAan(boolean b)
     {	significantieAan = b;
     }
+	
+	public String geefHelpURL() {
+		if(soort==2)
+			return HELP_0_URL_2;
+		else
+			return HELP_0_URL_0;
+	}
     
 	public AntwoordFormuleVakEditPanel(int soort)
 	{	this.soort = soort;
@@ -187,6 +225,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		{	stappen = true;	
 			stappenDefault = true;
 			tipsCB.setVisible(WiskOpdr.isExperimental());
+			
+			
 		}
 		
 		else if(soort==2)
@@ -197,11 +237,14 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			rmKnopCB.setVisible(false);
 			subKnopCB.setVisible(false);
 			tipsCB.setVisible(false);
-			
 			formuleToolBijFocusCB.setVisible(true);
 			uitwCB.setVisible(true);
 			boxMetRandCB.setVisible(true);
 			//feedbackCB.setVisible(false);
+			
+			hbRekenmach.setVisible(false);
+	    	hbSubstituties.setVisible(false);
+	    	hbEigenOpdr.setVisible(false);
 		}
 	}
 	
@@ -435,12 +478,22 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
     	
     	// HelpKnoppen
-    	helpButton = new HelpButton(HELP_URL1);
- 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
- 		helpButton.setPreferredSize(new Dimension(18,18));
- 		helpButton.setMinimumSize(new Dimension(18,18));
+    	hbCheck = makeHelpButton(HELP_0_URL_CHECK);
+    	hbTeltMee = makeHelpButton(HELP_0_URL_TELTMEE);
+    	hbLogID = makeHelpButton(HELP_0_URL_LOGID);
     	
-		
+    	hbFeedback = makeHelpButton(HELP_0_URL_FEEDBACK);
+    	hbRekenmach = makeHelpButton(HELP_0_URL_REKENMACHINE);
+    	hbSubstituties = makeHelpButton(HELP_0_URL_SUBSTITUTIES);
+    	hbContextvar = makeHelpButton(HELP_0_URL_CONTEXTVAR);
+    	hbEigenOpdr = makeHelpButton(HELP_0_URL_EIGENOPDR);
+    	hbFormInvoer = makeHelpButton(HELP_0_URL_FORMINVOER);
+    	hbUitwerking = makeHelpButton(HELP_0_URL_UITWERKING);
+    	hbRand = makeHelpButton(HELP_0_URL_RAND);	
+    	
+    	hbFormInvoer.setVisible(false);
+    	hbUitwerking.setVisible(false);
+    	
 		//Overige zaken, wellicht overbodig
 		puntenLabel = makeLabel(460,385,40,20,WiskOpdr.rb.getString("puntenLabel"),true);
 		checkTotaalLabel = makeLabel(620,385,160,20,WiskOpdr.rb.getString("checkTotaalLabel"),false);
@@ -497,26 +550,27 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				Component[] k3 = {hb(r31)};
 				antwoordBox = vb(k3);
 				
+					
 		// plaatsComponenten settingBox
 		Component[] r41 = {titleLoggingLabel, 	hgl()};
-		Component[] r42 = {checkCB, 			hgl()};
-		Component[] r43 = {teltMeeCB, 			hgl()};
-		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
+		Component[] r43 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r44 = {logCB, 				ra(5,10), 	logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, 	ra(5,0),	hgl(),	hbLogID};
 		Component[] r45 = {logObjectivesButton, hgl()};
 		Component[] r46 = {titleHulpLabel, 		hgl()};
-		Component[] r47 = {feedbackCB, 			hgl()};
-		Component[] r48 = {formuleToolBijFocusCB, hgl()};
-		Component[] r49 = {uitwCB, 				hgl()};
-		Component[] r410 = {rmKnopCB, hgl()};
-		Component[] r411 = {ra(20,0),		aantalDecRmLabel, 	ra(4,0),	aantalDecRmField,hgl()};
-		Component[] r416 = {subKnopCB, 			hgl()};
+		Component[] r47 = {feedbackCB, 			ra(5,0),	hgl(),	hbFeedback};
+		Component[] r48 = {formuleToolBijFocusCB, 			ra(5,0),	hgl(),	hbFormInvoer};
+		Component[] r49 = {uitwCB, 				ra(5,0),	hgl(),	hbUitwerking};
+		Component[] r410 = {rmKnopCB, 			ra(5,0),	hgl(),	hbRekenmach};
+		Component[] r411 = {ra(20,0),			aantalDecRmLabel, 	ra(4,0),	aantalDecRmField,hgl()};
+		Component[] r416 = {subKnopCB, 			ra(5,0),	hgl(),	hbSubstituties};
 		Component[] r417 = {subKnopExtraCB, 	hgl()};
-		Component[] r418 = {contextVarCB, 		hgl()};
-		Component[] r419 = {eigenOpdrCB, 			hgl()};
+		Component[] r418 = {contextVarCB, 		ra(5,0),	hgl(),	hbContextvar};
+		Component[] r419 = {eigenOpdrCB, 		ra(5,0),	hgl(),	hbEigenOpdr};
 		Component[] r420 = {tipsCB, 			ideasButton,	hgl()};
 		Component[] r421 = {contextBox, 		hgl()};
 		Component[] r422 = {titleOpmaakLabel, 	hgl()};
-		Component[] r424 = {boxMetRandCB, 		hgl()};
+		Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand};
 		Box settingsBox;
 		if(soort==0) {
 			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
@@ -699,6 +753,16 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		textField.setVisible(visible);
 		add(textField,0);
 		return textField;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url, new HelpButtonAction("",url));
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
 	}
 	
 	public void zetBreedte(int b)
@@ -2178,4 +2242,29 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
  	        
  	      }
  	}
+	@Override
+	public void showHelpButtons(boolean b) {
+		hbCheck.setVisible(b);
+    	hbTeltMee.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbFeedback.setVisible(b);
+    	if(soort==0) hbRekenmach.setVisible(b);
+    	if(soort==0)hbSubstituties.setVisible(b);
+    	hbContextvar.setVisible(b);
+    	if(soort==0)hbEigenOpdr.setVisible(b);
+    	if(soort==2)hbFormInvoer.setVisible(b);
+    	if(soort==2)hbUitwerking.setVisible(b);
+    	hbRand.setVisible(b);	
+    	validate();
+	}
+	
+	public class HelpButtonAction extends AbstractAction {
+	    public HelpButtonAction(String text, String url) {
+	        super(text, null);
+	        putValue("url", url);
+	    }
+	    public void actionPerformed(ActionEvent e) {
+	    	OpdrNavStructEdit.helpBrowser.loadURL((String)getValue("url"));
+	    }
+	}
 }

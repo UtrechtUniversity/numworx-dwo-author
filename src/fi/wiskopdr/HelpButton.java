@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -15,12 +16,21 @@ import javax.swing.*;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import javafx.embed.swing.JFXPanel;
 
-public class HelpButton extends JLabel implements  MouseListener
+public class HelpButton extends JButton implements  MouseListener
 {
 	String url;
+	FontMetrics fm;
+	String text = "?";
 	
-	public HelpButton(String url){	
+	public HelpButton(String url){
+		this(url,null);
+	}
+	
+	public HelpButton(String url, Action action){	
 		super("?");
+		if(action!=null)
+			setAction(action);
+		super.setUI(null);
 		this.url = url;
 		this.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 		addMouseListener(this);
@@ -35,9 +45,19 @@ public class HelpButton extends JLabel implements  MouseListener
 	  g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	  g.setColor(WiskOpdr.colorBlue5);
 	  g.fillOval(1,1,getSize().width-2,getSize().height-2);
-	  super.paintComponent(g);  
+	  //super.paintComponent(g); 
+	  
+	  
 	  g.setColor(new Color(50,72,111));
 	  g.drawOval(1,1,getSize().width-2,getSize().height-2);
+	  
+	  fm = this.getFontMetrics(getFont());
+      int stringwidth = fm.stringWidth(text);
+      int stringheight = fm.getAscent()-fm.getDescent();
+      g.setColor(new Color(50,72,111));
+      //g.setFont(getFont());
+      g.drawString(text,(getWidth()-stringwidth+1)/2 , getHeight()/2 + (stringheight)/2);
+      
 	}
 
   @Override

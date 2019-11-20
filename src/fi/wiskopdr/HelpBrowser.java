@@ -12,7 +12,7 @@ public class HelpBrowser
   //private DialogFacade frame;
 
   private JComponent panel;
-  private int width = 465;
+  private int width = 300;
   private int height = 500;
 
   private SimpleSwingBrowser ssb;

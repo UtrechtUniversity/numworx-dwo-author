@@ -22,7 +22,7 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 
-public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel, ActionListener {
+public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel, ActionListener, HelpButtonPanelIF {
 
 	private FormuleButton knopImageButton;
 	private Dialog imageDialog;
@@ -263,6 +263,18 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	    if(imageDialog!=null)
 	        imageDialog.setVisible(false);
 		
+	}
+
+	@Override
+	public void showHelpButtons(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String geefHelpURL() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

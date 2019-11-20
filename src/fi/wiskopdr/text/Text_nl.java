@@ -972,6 +972,20 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "TCOMP_removeItem" , "Item verwijderen"},
 				{ "TCOMP_decompose" , "Ontbinden"},
 				
+				// Helpteksten (URL's)
+				{ "HELP_0_URL_0" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670053"},
+				{ "HELP_0_URL_2" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670047"},
+				{ "HELP_0_URL_CHECK" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670050"},
+				{ "HELP_0_URL_TELTMEE" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670051"},
+				{ "HELP_0_URL_LOGID" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670052"},
+				{ "HELP_0_URL_FEEDBACK" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670057"},
+				{ "HELP_0_URL_REKENMACHINE" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670058"},
+				{ "HELP_0_URL_SUBSTITUTIES" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670059"},
+				{ "HELP_0_URL_CONTEXTVAR" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670060"},
+				{ "HELP_0_URL_EIGENOPDR" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670061"},
+				{ "HELP_0_URL_FORMINVOER" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670062"},
+				{ "HELP_0_URL_UITWERKING" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670063"},
+				{ "HELP_0_URL_RAND" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670064"},
 				
 		};
 }

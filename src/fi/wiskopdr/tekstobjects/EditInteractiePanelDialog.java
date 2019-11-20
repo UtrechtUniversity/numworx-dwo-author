@@ -62,6 +62,7 @@ import fi.wiskopdr.GeogebraPanel;
 import fi.wiskopdr.GetallenlijnSprongPanel;
 import fi.wiskopdr.GrafiekPanel;
 import fi.wiskopdr.HelpButton;
+import fi.wiskopdr.HelpButtonPanelIF;
 import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
 import fi.wiskopdr.TabletOwningLayeredPane;
@@ -153,6 +154,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     public EditInteractiePanelDialog(Window owner, String windowTitle, boolean modal, int setNr,  Hashtable launchData, XWidgetManager manager) {
     	super(owner, windowTitle);setModal(modal);
     	initEditInteractiePanelDialog(setNr, launchData, manager);
+    	
     }
     
     public EditInteractiePanelDialog(Window owner, String windowTitle, boolean modal, int setNr,  int soort, XWidgetManager manager) {
@@ -182,9 +184,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         headerPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
         headerPanel.setBackground(WiskOpdr.colorBlue1);
         
+        int soortInteractiePanel=-1;
         String title = soort==999 ? "" : (TekstInteractiePanelVak.interactiePanelDescriptions[TekstInteractiePanelVak.interactiePanelSets[setNr][soort]]).toLowerCase();
         if(title.equals("") && launchData!=null) {
-	        int soortInteractiePanel = ((Integer)launchData.get("soortInteractiePanel")).intValue();
+	        soortInteractiePanel = ((Integer)launchData.get("soortInteractiePanel")).intValue();
 	        title = TekstInteractiePanelVak.interactiePanelDescriptions[soortInteractiePanel];
         }
         JLabel headerTitle = new JLabel(WiskOpdr.rb.getString("settingsLabel") + " " + title);
@@ -192,10 +195,12 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         headerTitle.setFont(new Font("SansSerif",Font.PLAIN, 24));
         //headerPanel.add(headerTitle);
         
-        String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
+        String HELP_URL1 = "https://app.dwo.nl/public/?header=less&hash=#s:670047";
 		 helpButton = new HelpButton(HELP_URL1);
 		//helpButton.setFont(new Font("SansSerif",Font.BOLD,14));
 		helpButton.setPreferredSize(new Dimension(22,22));
+		helpButton.setMinimumSize(new Dimension(22,22));
+		helpButton.setMaximumSize(new Dimension(22,22));
 		helpButton.addActionListener(this);
 		//headerPanel.add(helpButton);
 		helpPanel = new JPanel(new BorderLayout());
@@ -227,7 +232,19 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		headerbox.add(Box.createHorizontalGlue());
 		headerbox.add(headerTitle);
 		headerbox.add(Box.createHorizontalGlue());
-		if(setNr==0 && (soort<4 || soort>4 && soort<8))
+		
+		// Nog niet alle interactieEditPanel zijn klaar voor een helppanel
+		boolean geschikt = setNr==0 && soort<13 && soort!=8	|| 
+				( soortInteractiePanel>-1 && 
+						(soortInteractiePanel<5
+								|| soortInteractiePanel==12
+								|| soortInteractiePanel==16
+								|| soortInteractiePanel==33
+								|| soortInteractiePanel==49
+								|| soortInteractiePanel==13
+								|| soortInteractiePanel==14
+								|| soortInteractiePanel==53));
+		if(geschikt) 
 			headerbox.add(helpButton);
 		headerbox.add(helpTitelBox);
 		headerPanel.add(headerbox);
@@ -373,7 +390,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		
 		bottomPanel.add(boxh);
 		
-		
+		// nog nodig?
 		if(soort!=999 && (setNr==0 && (soort==0 || soort==1 || soort==2 || soort==3)
 				//|| TekstInteractiePanelVak.interactiePanelSets[setNr][soort]==6
 				)) {
@@ -980,6 +997,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	produceAction("cancel");
             this.setVisible(false);
             this.dispose();
+            OpdrNavStructEdit.helpBrowser.loadURL(null);
             
         } 
         else if (e.getSource() == okButton) {
@@ -988,24 +1006,31 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	WiskOpdr.setLaunchDataChanged();
             this.setVisible(false);
             this.dispose();
+            OpdrNavStructEdit.helpBrowser.loadURL(null);
             
         }
         else if (e.getSource() == helpButton) {
         	//if(interactieEditPanel!=null && interactieEditPanel instanceof AntwoordVergelijkingVakEditPanel) 
 			//{
         		//((AntwoordVergelijkingVakEditPanel)interactieEditPanel).showHelp(true);
-        	
-        		helpBox.setVisible(!helpBox.isVisible());
-        		helpTitelBox.setVisible(helpBox.isVisible());
-        		if(helpBox.isVisible()) {
-	        		helpBox.validate(); 
-	            	OpdrNavStructEdit.helpBrowser.loadURL("https://app.dwo.nl/dwo/apps/player.html?profile=105&locale=nl#654439");
-	            	packWidth(1100);
-        		}
-        		else {
-        			helpBox.validate(); 
-        			pack();	
-        		}	
+        	if(interactieEditPanel!=null && interactieEditPanel instanceof HelpButtonPanelIF) 
+        		((HelpButtonPanelIF)interactieEditPanel).showHelpButtons(!helpBox.isVisible());
+        		
+    		helpBox.setVisible(!helpBox.isVisible());
+    		helpTitelBox.setVisible(helpBox.isVisible());
+    		if(helpBox.isVisible()) {
+    			 
+    			helpBox.validate();
+    			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButtonPanelIF)interactieEditPanel).geefHelpURL());
+            	
+            	packWidth(1100);
+    		}
+    		else {
+    			helpBox.validate(); 
+    			OpdrNavStructEdit.helpBrowser.loadURL(null);
+            	
+    			pack();	
+    		}	
 			//}
             
         }
@@ -1188,6 +1213,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
      * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
      */
     public void windowClosed(WindowEvent e) {
+    	 OpdrNavStructEdit.helpBrowser.loadURL(null);
     }
 
     public void windowClosing(WindowEvent e) {

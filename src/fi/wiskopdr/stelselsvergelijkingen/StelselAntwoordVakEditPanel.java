@@ -10,6 +10,7 @@ import javax.swing.*;
 import fi.beans.base64code.*;
 import fi.beans.ideas.*;
 import fi.wiskopdr.DialogFacade;
+import fi.wiskopdr.HelpButtonPanelIF;
 import fi.wiskopdr.IdeasInstellingenButton;
 import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
@@ -27,7 +28,7 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
 
-public class StelselAntwoordVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener
+public class StelselAntwoordVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener, HelpButtonPanelIF
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
@@ -1622,4 +1623,15 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
         }
         
       }
+	@Override
+	public void showHelpButtons(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String geefHelpURL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -18,7 +18,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.numworxlf.JScrollPane;
 
 
-public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements InteractieEditPanel, FocusListener, ActionListener,  MouseListener, MouseMotionListener, TabletOwner
+public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements InteractieEditPanel, FocusListener, ActionListener,  MouseListener, MouseMotionListener, TabletOwner, HelpButtonPanelIF
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
@@ -1021,6 +1021,17 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	        // TODO Auto-generated method stub
 	        
 	      }
+	}
+	@Override
+	public void showHelpButtons(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String geefHelpURL() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

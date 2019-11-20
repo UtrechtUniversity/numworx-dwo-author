@@ -24,7 +24,7 @@ import fi.wiskopdr.formuleobjects.*;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
 
-public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener
+public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener, HelpButtonPanelIF
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
@@ -529,6 +529,18 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 	public void focusLost(FocusEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void showHelpButtons(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String geefHelpURL() {
+		// TODO Auto-generated method stub
+		return null;
 	}
     
     // einde methode TabletOwner

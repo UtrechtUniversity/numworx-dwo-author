@@ -19,7 +19,7 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
 
-public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener
+public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener, HelpButtonPanelIF
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
@@ -2311,4 +2311,15 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
       }
       
     }
+	@Override
+	public void showHelpButtons(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String geefHelpURL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

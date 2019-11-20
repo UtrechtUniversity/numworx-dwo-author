@@ -17,7 +17,7 @@ import fi.wiskopdr.AntwoordTekstVakEditPanel.EditorComponentListener;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.*;
 
-public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel , ActionListener
+public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel , ActionListener, HelpButtonPanelIF
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
@@ -499,5 +499,16 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 	        // TODO Auto-generated method stub
 	        
 	      }
+	}
+	@Override
+	public void showHelpButtons(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String geefHelpURL() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
