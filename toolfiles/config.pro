@@ -132,7 +132,9 @@
 # Keep - Applets. Keep all extensions of java.applet.Applet.
 -keep public class * extends java.applet.Applet
 
-
+# voor export-package/import-package match
+-keeppackagenames fi.beans.wiskopdrbeans, fi.wiskopdr, fi.wiskopdr.domainmodel, fi.wiskopdr.expressies
+-keeppackagenames fi.wiskopdr.formuleobjects, fi.wiskopdr.opdrnav, fi.wiskopdr.tekstobjects
 
 # Also keep - Enumerations. Keep the special static methods that are required in
 # enumeration classes.
