@@ -108,6 +108,7 @@
 							javax.inject.*
 						</Private-Package>
 						<Main-class>nl.numworx.geodefiner.GeoDefiner</Main-class>
+						<Bundle-SymbolicName>nl.numworx.geodefiner.GeoDefiner</Bundle-SymbolicName>
 						<Trusted-Only>true</Trusted-Only>
 						<Permissions>all-permissions</Permissions>
 						<Codebase>*.uu.nl *.dwo.nl localhost dme.mathhouse.org</Codebase>
