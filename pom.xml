@@ -3,6 +3,10 @@
   <groupId>nl.numworx</groupId>
   <artifactId>SAMLlogin</artifactId>
   <version>0.0.2-SNAPSHOT</version>
+  <properties>
+  	<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+	<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
+  </properties>
   <build>
     <finalName>samllogin</finalName>
     <plugins>
@@ -21,8 +25,10 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+					<_snapshot>${osgi.qualifier}</_snapshot>
 					<Export-Package>nl.numworx.samllogin</Export-Package>
 					<Private-Package>fi.beans.browser,fi.previewhtml,fi.beans.copyright</Private-Package>
+					<Bundle-SymbolicName>nl.numworx.samllogin.SamlLoginPanel</Bundle-SymbolicName>
           </instructions>
         </configuration>
       </plugin>	
