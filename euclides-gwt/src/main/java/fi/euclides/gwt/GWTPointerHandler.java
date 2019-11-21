@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.google.gwt.dom.client.NativeEvent;
 import com.vaadin.pointerevents.client.PointerCancelEvent;
 import com.vaadin.pointerevents.client.PointerCancelHandler;
 import com.vaadin.pointerevents.client.PointerDownEvent;
@@ -44,7 +45,7 @@ public class GWTPointerHandler
 
 		@Override
 		public int getY() {
-			return ev.getClientY();
+			return ev.getY();
 		}
 
 		@Override
@@ -80,26 +81,32 @@ public class GWTPointerHandler
 
 	@Override
 	public void onPointerUp(PointerUpEvent event) {
-		LOG.info("up " + event+ " " + bitset);
-		CTX ctx = new CTX(event);
-		viewer.processMouseUp(ctx);
-		bitset.remove(event.getPointerId());
+		if(event.getNativeButton() == NativeEvent.BUTTON_LEFT)
+		{
+			LOG.fine("up " + event+ " " + bitset);
+			CTX ctx = new CTX(event);
+			viewer.processMouseUp(ctx);
+			bitset.remove(event.getPointerId());
+		}
 	}
 
 	@Override
 	public void onPointerMove(PointerMoveEvent event) {
-		LOG.info("move " + event + " " + bitset);
-		CTX ctx = new CTX(event);
-		if (bitset.contains(event.getPointerId()))
-				viewer.processMouseDrag(ctx);
+		if (bitset.contains(event.getPointerId())) {
+			CTX ctx = new CTX(event);
+			viewer.processMouseDrag(ctx);			
+		}
 	}
 
 	@Override
 	public void onPointerDown(PointerDownEvent event) {
-		LOG.info("down " + event + " " + bitset);
-		CTX ctx = new CTX(event);
-		bitset.add(event.getPointerId());
-		viewer.processMouseDown(ctx);
+		if(event.getNativeButton() == NativeEvent.BUTTON_LEFT)
+		{
+			LOG.fine("down " + event + " " + bitset);
+			CTX ctx = new CTX(event);
+			bitset.add(event.getPointerId());
+			viewer.processMouseDown(ctx);
+		}
 	}
 
 	@Override
