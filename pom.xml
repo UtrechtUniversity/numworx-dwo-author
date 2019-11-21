@@ -25,11 +25,43 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+        <plugin>   
+		  <groupId>org.apache.felix</groupId>
+		  <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.5.3</version>
+		  <executions>
+		    <execution>
+		      <id>bundle-manifest</id>
+		      <phase>process-classes</phase>
+		      <goals>    
+		        <goal>manifest</goal>
+		      </goals>   
+		    </execution>
+		  </executions>
+       	  <configuration>
+       	    <niceManifest>true</niceManifest>
+          	<instructions>
+          		<Bundle-SymbolicName>fi.balansfruit.BalansFruit</Bundle-SymbolicName>
+ 				<Main-Class>fi.balansfruit.BalansFruitApplet</Main-Class>
+				<Trusted-Only>true</Trusted-Only>
+				<Permissions>all-permissions</Permissions>
+				<Codebase>*.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org</Codebase>
+				<Application-Name>BalansFruitApplet</Application-Name>
+				<Bundle-Name>BalansFruit Applet</Bundle-Name>
+				<Caller-Allowable-Codebase>*.science.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org</Caller-Allowable-Codebase>
+				<Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>
+ 				<Private-Package>*</Private-Package>
+ 				<Export-Package>fi.balansfruit</Export-Package>
+ 				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
+ 				<Fragment-Host>fi.wiskopdr.WiskOpdr</Fragment-Host>
+          	</instructions>
+          </configuration>
+         </plugin>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
-						<manifestFile>src/META-INF/MANIFEST.MF</manifestFile>
+						<manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
 					</archive>
 				</configuration>
 			</plugin>
