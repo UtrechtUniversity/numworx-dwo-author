@@ -55,6 +55,10 @@ import fi.euclides.util.Observable;
 
 public abstract class Instance /*implements Observer*/ {
 
+	static {
+		Volgpunt.addCreator();
+		Polygon.addCreator();
+	}
 	public final class Selector extends SelectHandler {
       boolean gravity;
       boolean hasTools;

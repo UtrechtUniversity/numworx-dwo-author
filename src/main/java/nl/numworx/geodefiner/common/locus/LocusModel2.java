@@ -20,6 +20,7 @@ import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 import fi.euclides.util.Queue;
+import nl.numworx.geodefiner.common.Volgpunt;
 
 public class LocusModel2 extends Observable implements Codec, Observer, LocusModel {
 
@@ -95,7 +96,14 @@ public class LocusModel2 extends Observable implements Codec, Observer, LocusMod
 			return true;
 		if(punt == source || punt == dest)
 			return true;
+
+		boolean free = punt.isFree(); // kan door user worden bewogen.
+		if (free && punt.getIndex() != 0)
+			return false;
+
 		if(punt.key() == Punt.TYPE && punt.getIndex() != 0)
+			return false;
+		if(punt.key() == Volgpunt.TYPE && punt.getIndex() != 0)
 			return false;
 		if(punt instanceof PuntOp)
 		{

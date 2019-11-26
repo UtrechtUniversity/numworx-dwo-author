@@ -1,6 +1,5 @@
 package nl.numworx.geodefiner.common;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,10 +17,6 @@ import fi.euclides.persist.DataOutput;
 
 public class Memento extends fi.euclides.persist.Memento implements DataInput, DataOutput {
 	
-	static {
-		Volgpunt.addCreator();
-		Polygon.addCreator();
-	}
 	
 	private List<Object> list;
 	private ObjectList olist; int cursor;
