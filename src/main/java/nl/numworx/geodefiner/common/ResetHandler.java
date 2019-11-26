@@ -13,7 +13,7 @@ public class ResetHandler extends EventHandler {
 
 	@Override
 	public void command() {
-		setStatus("reset");
+		setStatus(string);
 		if(instance != null) 
 			instance.reset();
 	}
