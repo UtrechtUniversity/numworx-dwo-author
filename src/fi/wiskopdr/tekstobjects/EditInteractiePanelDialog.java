@@ -204,6 +204,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		helpButton.addActionListener(this);
 		//headerPanel.add(helpButton);
 		helpPanel = new JPanel(new BorderLayout());
+		helpPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, WiskOpdr.colorBlue4));
 		helpPanel.setBackground(WiskOpdr.colorBlue5);
 		helpPanel.setPreferredSize(new Dimension(300,400));
 		JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();

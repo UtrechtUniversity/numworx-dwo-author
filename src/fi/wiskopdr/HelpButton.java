@@ -13,10 +13,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
-import javafx.embed.swing.JFXPanel;
 
-public class HelpButton extends JButton 
+public class HelpButton extends JButton implements MouseListener
 {
 	String url;
 	FontMetrics fm;
@@ -26,7 +24,9 @@ public class HelpButton extends JButton
 	public HelpButton(String url){	
 		super("?");
 		this.url = url;
+		this.setUI(null);
 		this.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
+		addMouseListener(this);
 		setFont(new Font("SansSerif",Font.BOLD,16));
 		setHorizontalAlignment(JLabel.CENTER);
 	    setVerticalAlignment(JLabel.CENTER);
@@ -57,23 +57,42 @@ public class HelpButton extends JButton
       
 	}
 
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) {
+	  produceAction("help");
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+	
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+	
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}  
   
+//ActionProducer
+  private ActionListener actionListener = null;
   
-////ActionProducer
-//  private ActionListener actionListener = null;
-//  
-//  public void addActionListener(ActionListener l) 
-//  {   actionListener = AWTEventMulticaster.add(actionListener,l);
-//  }
-//  
-//  public void removeActionListener(ActionListener l)
-//  {   actionListener = AWTEventMulticaster.remove(actionListener, l);
-//  }   
-//  
-//  public void produceAction(String command)
-//  {   if (actionListener != null)
-//      {   actionListener.actionPerformed( new ActionEvent(this, 0, command) );
-//      }
-//  }
-//  //end ActionProducer
+  public void addActionListener(ActionListener l) 
+  {   actionListener = AWTEventMulticaster.add(actionListener,l);
+  }
+  
+  public void removeActionListener(ActionListener l)
+  {   actionListener = AWTEventMulticaster.remove(actionListener, l);
+  }   
+  
+  public void produceAction(String command)
+  {   if (actionListener != null)
+      {   actionListener.actionPerformed( new ActionEvent(this, 0, command) );
+      }
+  }
+  //end ActionProducer
 }

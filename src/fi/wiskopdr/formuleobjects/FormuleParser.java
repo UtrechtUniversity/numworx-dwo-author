@@ -57,6 +57,33 @@ public class FormuleParser
 		return parseVergelijking(s, null);
 	}
 	
+	//teveel variabelen (>7) laat parser vastlopen. Vaak wordt geen expressie bedoeld
+	public static boolean expressieVerdacht(String exprString)
+	{
+	    boolean verdacht = false;
+	    int varTeller = 0;
+	    for(int i=0 ; i < exprString.length() ; i++)
+	    {
+	        char c = exprString.charAt(i);
+	        if(Character.isLetter(c))
+	        {   varTeller++;
+    	        for(int j=0 ; j<i ; j++)
+    	        {
+    	            if(exprString.charAt(j)==c)
+    	               varTeller--;
+    	            break;
+    	        } 
+	        }
+	        if(varTeller > 20)
+            {
+                verdacht = true;
+                break;
+            }
+	        System.out.println("tellerVar: "+varTeller);
+	    }
+	    return verdacht;
+	}
+	
 	public static VergelijkingMeerv parseVergelijking(String s, FunctieMVDefSet fds) //FunctieDefSet
 	{	//Functie.setFunctieDefSet(fds);
 		FunctieMV.setFunctieMVDefSet(fds);
@@ -2074,7 +2101,7 @@ public class FormuleParser
 	public static Expressie geefExpressie(String codeString, FunctieMVDefSet fds) //FunctieDefSet
 	{	
 //		System.out.println("----- FormuleParser.geefExpressie(" + codeString + ")");
-		
+    	
 		FunctieMV.setFunctieMVDefSet(fds);
 		Expressie e = parse(schoon(formuleString(codeString)));
 
