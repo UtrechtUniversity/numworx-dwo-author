@@ -319,7 +319,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		soortAntwoordVakKeuze.setMaximumSize(new Dimension(175,22));
 		soortAntwoordVakKeuze.setFont(font);
 		soortAntwoordVakKeuze.addActionListener(this);
-		
+//		if(setNr==0 && (soort==0 || soort==1 || soort==2 || soort==3)) {
+//			boxh.add(soortAntwoordVakKeuze);
+//			boxh.add(Box.createHorizontalStrut(20));
+//		}
 		
 		initSet(setNr);
 		
