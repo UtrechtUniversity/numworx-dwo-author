@@ -16,28 +16,25 @@ import javax.swing.*;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import javafx.embed.swing.JFXPanel;
 
-public class HelpButton extends JButton implements  MouseListener
+public class HelpButton extends JButton 
 {
 	String url;
 	FontMetrics fm;
 	String text = "?";
 	
-	public HelpButton(String url){
-		this(url,null);
-	}
 	
-	public HelpButton(String url, Action action){	
+	public HelpButton(String url){	
 		super("?");
-		if(action!=null)
-			setAction(action);
-		super.setUI(null);
 		this.url = url;
 		this.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
-		addMouseListener(this);
 		setFont(new Font("SansSerif",Font.BOLD,16));
 		setHorizontalAlignment(JLabel.CENTER);
 	    setVerticalAlignment(JLabel.CENTER);
 	    setForeground(new Color(50,72,111));
+	}
+	
+	public String getURL() {
+		return url;
 	}
 	
 	public void paintComponent(Graphics gr) {
@@ -60,44 +57,23 @@ public class HelpButton extends JButton implements  MouseListener
       
 	}
 
-  @Override
-  public void mouseClicked(MouseEvent e) {
-  }
-
-  @Override
-  public void mousePressed(MouseEvent e) {
-    //if(OpdrNavStructEdit.helpBrowser!=null)
-    //  OpdrNavStructEdit.helpBrowser;
-	  produceAction("help");
-  }
-
-  @Override
-  public void mouseReleased(MouseEvent e) {
-  }
-
-  @Override
-  public void mouseEntered(MouseEvent e) {
-  }
-
-  @Override
-  public void mouseExited(MouseEvent e) {
-  }  
   
-//ActionProducer
-  private ActionListener actionListener = null;
   
-  public void addActionListener(ActionListener l) 
-  {   actionListener = AWTEventMulticaster.add(actionListener,l);
-  }
-  
-  public void removeActionListener(ActionListener l)
-  {   actionListener = AWTEventMulticaster.remove(actionListener, l);
-  }   
-  
-  public void produceAction(String command)
-  {   if (actionListener != null)
-      {   actionListener.actionPerformed( new ActionEvent(this, 0, command) );
-      }
-  }
-  //end ActionProducer
+////ActionProducer
+//  private ActionListener actionListener = null;
+//  
+//  public void addActionListener(ActionListener l) 
+//  {   actionListener = AWTEventMulticaster.add(actionListener,l);
+//  }
+//  
+//  public void removeActionListener(ActionListener l)
+//  {   actionListener = AWTEventMulticaster.remove(actionListener, l);
+//  }   
+//  
+//  public void produceAction(String command)
+//  {   if (actionListener != null)
+//      {   actionListener.actionPerformed( new ActionEvent(this, 0, command) );
+//      }
+//  }
+//  //end ActionProducer
 }
