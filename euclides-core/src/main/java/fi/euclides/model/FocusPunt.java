@@ -21,6 +21,7 @@ public class FocusPunt extends PuntOp<Kegelsnede2> implements OpObject<Kegelsned
 		setOb(this);
 		recalc(Numbers.ZERO, Numbers.ZERO);
 	}
+
 	public FocusPunt(Kegelsnede2 o, FocusPunt other) {
 		super(Numbers.ZERO, Numbers.ZERO, o, other);
 		setFree(false);
