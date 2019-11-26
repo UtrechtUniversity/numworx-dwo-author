@@ -177,6 +177,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     private HelpButton hbFormInvoer;
     private HelpButton hbUitwerking;
     private HelpButton hbRand;
+    
     void h(){
     	
    
@@ -289,7 +290,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         antwoordEditorPanel.add(titleAntwoordLabel);
         antwoordEditorPanel.add(antwoordvak);
         antwoordEditorPanel.addComponentListener(new EditorComponentListener());
-        antwoordEditorPanel.setPreferredSize(new Dimension(600,170));
+        antwoordEditorPanel.setPreferredSize(new Dimension(600,140));
         antwoordEditorPanel.setMaximumSize(new Dimension(2835,170));
         
         tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
@@ -345,7 +346,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		goedFoutIP.setPreferredSize(new Dimension(100,80));
     	
         feedbackEditor = new TekstEditor(false,true,true);
-        feedbackEditor.setPreferredSize(new Dimension(400,160));
+        feedbackEditor.setPreferredSize(new Dimension(400,110));
         feedbackEditor.setMaximumSize(new Dimension(2280,160));
         feedbackEditor.setBounds(5,350,280,110);
         feedbackEditor.setFont(font);
@@ -756,7 +757,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	}
 	
 	public HelpButton makeHelpButton(String url) {
-		HelpButton helpButton = new HelpButton(url, new HelpButtonAction("",url));
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
  		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
  		helpButton.setPreferredSize(new Dimension(18,18));
  		helpButton.setMinimumSize(new Dimension(18,18));
@@ -1618,6 +1620,11 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     
 	public void actionPerformed(ActionEvent e)
 	{	
+		if(e.getSource() instanceof HelpButton)
+		{
+			//OpdrNavStructEdit.helpBrowser.loadURL(null);
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
 		if(e.getSource() == tabbladTab)
 		{	int nr = Integer.parseInt(e.getActionCommand())-1;
 			if(answerModelNr != nr) 
@@ -1697,7 +1704,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		}
 		else if(e.getSource()==feedbackCB)
 		{	setFeedbackOption(feedbackCB.isSelected());
-			
+	 		((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 		}
 		else if(e.getSource()==feedbackSizeCB)
 		{	feedbackEditor.setResizable(feedbackSizeCB.isSelected());
@@ -2255,16 +2262,18 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	if(soort==2)hbFormInvoer.setVisible(b);
     	if(soort==2)hbUitwerking.setVisible(b);
     	hbRand.setVisible(b);	
-    	validate();
+    	//validate();
+     	//((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+        
 	}
 	
-	public class HelpButtonAction extends AbstractAction {
-	    public HelpButtonAction(String text, String url) {
-	        super(text, null);
-	        putValue("url", url);
-	    }
-	    public void actionPerformed(ActionEvent e) {
-	    	OpdrNavStructEdit.helpBrowser.loadURL((String)getValue("url"));
-	    }
-	}
+//	public class HelpButtonAction extends AbstractAction {
+//	    public HelpButtonAction(String text, String url) {
+//	        super(text, null);
+//	        putValue("url", url);
+//	    }
+//	    public void actionPerformed(ActionEvent e) {
+//	    	OpdrNavStructEdit.helpBrowser.loadURL((String)getValue("url"));
+//	    }
+//	}
 }
