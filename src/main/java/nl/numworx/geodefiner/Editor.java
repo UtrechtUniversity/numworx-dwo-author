@@ -153,7 +153,10 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		component.setBorder(BorderFactory.createEtchedBorder());
 
 		flow.add(component);
-		menu.ifPresent(popup -> flow.addMouseListener(new MousePopupListener(popup)));
+		menu.ifPresent(popup -> {
+		  MousePopupListener l = new MousePopupListener(popup);
+          addMouseListener(l, flow);
+		});
 		tabs = new JTabbedPane();
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(flow), tabs);
 		//split.setDividerLocation(0.7);
@@ -191,7 +194,18 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		tabs.addTab("Axes", null, axes, null);
 	}
 
-	@Override
+	private void addMouseListener(MousePopupListener l, JComponent c) {
+	  c.addMouseListener(l);
+      Component[] cc = c.getComponents();
+      for (int i = 0; i < cc.length; i++) {
+        if (cc[i] instanceof JComponent) {
+          addMouseListener(l, (JComponent) cc[i]);
+        }
+      }
+    
+  }
+
+  @Override
 	public void setBounds(int x, int y, int width, int height) {
 		super.setBounds(x, y, width, height);
 		content.setBounds(0,0,width, height); // contentlayer follows size
