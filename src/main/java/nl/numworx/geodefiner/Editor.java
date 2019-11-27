@@ -8,20 +8,27 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+
 import fi.beans.numworxlf.JScrollPane;
 import javax.swing.JSplitPane;
 import fi.beans.numworxlf.JTabbedPane;
@@ -66,8 +73,35 @@ geteditstate
 162	                        launchData.put(CBookInteractiePanel.LOG_OBJECTIVES, logObjectivesButton.getChoices());
 163	                }
 */
+@SuppressWarnings("serial")
 public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF , TabletOwner, ActionListener, PropertyChangeListener {
 
+  static class MousePopupListener extends MouseAdapter {
+    
+    private JPopupMenu popup;
+    private Component invoker; 
+    MousePopupListener(JPopupMenu popup) {
+      this.popup = popup;
+    }
+
+    public void mousePressed(MouseEvent e) {
+      checkPopup(e);
+    }
+
+    public void mouseClicked(MouseEvent e) {
+      checkPopup(e);
+    }
+
+    public void mouseReleased(MouseEvent e) {
+      checkPopup(e);
+    }
+
+    private void checkPopup(MouseEvent e) {
+      if (e.isPopupTrigger()) {
+        popup.show(e.getComponent(), e.getX(), e.getY());
+      }
+    }
+  }
 	private Instance instance;
 	private DefinitionPanel definition;
 	private RandomPanel random;
@@ -98,7 +132,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 			final CheckObjectsPanel checkObjects,
 			final CheckDWOPanel checkDWO,
 			final ToolboxPanel toolbox,
-			final Axes axes
+			final Axes axes,
+			final @Named("context") Optional<JPopupMenu> menu
 			) {
 		content = new JPanel(new BorderLayout());
 		this.context = context;
@@ -116,7 +151,9 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		component.setMaximumSize(instanceSize);
 		component.setMinimumSize(instanceSize);
 		component.setBorder(BorderFactory.createEtchedBorder());
+
 		flow.add(component);
+		menu.ifPresent(popup -> flow.addMouseListener(new MousePopupListener(popup)));
 		tabs = new JTabbedPane();
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(flow), tabs);
 		//split.setDividerLocation(0.7);

@@ -2,10 +2,14 @@ package nl.numworx.geodefiner.module;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
 import dagger.Binds;
@@ -15,6 +19,7 @@ import fi.euclides.event.Tracker;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.swing.AWTViewer;
 import nl.numworx.geodefiner.Definitions;
+import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.Instance;
 import nl.numworx.geodefiner.InstanceViewer;
 import nl.numworx.geodefiner.ToolboxPanel;
@@ -58,5 +63,16 @@ public abstract class EditModule {
 	
 	@Provides static ToolboxPanel toolboxPanel(Instance instance) {
 		return instance.getToolboxPanel();
+	}
+	
+	@Provides @Singleton @Named("context") static  Optional<JPopupMenu> popup() {
+	  if (GeoDefiner.isPremium && GeoDefiner.isExperimental) {
+	    JPopupMenu popup = new JPopupMenu();
+	    popup.add(new JMenuItem("Safe..."));
+	    popup.add(new JMenuItem("Restore..."));
+	    popup.add(new JMenuItem("Merge..."));	    
+	    return Optional.of(popup);
+	  }
+	  return Optional.empty();
 	}
 }

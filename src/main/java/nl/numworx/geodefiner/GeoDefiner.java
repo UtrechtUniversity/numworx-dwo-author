@@ -2,6 +2,7 @@ package nl.numworx.geodefiner;
 
 import java.net.URL;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -15,7 +16,6 @@ import org.cbook.cbookif.CBookWidgetInstanceIF;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
-import fi.euclides.math.IntegerFactory;
 import fi.euclides.model.math.Numbers;
 //import fi.euclides.openmath.Popcorn;
 import fi.euclides.swing.DoubleFormat;
@@ -28,12 +28,17 @@ public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet
 
 	private static final long serialVersionUID = -8167425499542355350L;
 
-	public static final boolean isExperimental;
+	public static boolean isExperimental, isPremium;
+
+	private void setEnvironment() {
+      isExperimental = "test".equals(getParameter("dwo_env"));
+      isPremium = "premium".equals(getParameter("abo_type"));         
+      Logger.getGlobal().info("features: " + isExperimental + ", " + isPremium);
+	}
 	
 	static {
-//		Popcorn.map = new SwingSymbols();
 		isExperimental = WiskOpdr.isExperimental();
-//		Numbers.setFactory(IntegerFactory.INSTANCE);
+		isPremium = true;
 		Numbers.setFactory(new CommonFactory());
 	}
 		
@@ -73,6 +78,7 @@ public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet
 	}
 
 	public InteractiePanel getInteractiePanel() {
+	    setEnvironment();
 		return new GeoDefinerInteractiePanel();
 	}
 }

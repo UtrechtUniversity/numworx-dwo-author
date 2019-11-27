@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.ItemEvent;
@@ -14,12 +12,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.swing.Action;
@@ -27,52 +22,16 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import fi.beans.numworxlf.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
-import javax.swing.border.Border;
-
-import dagger.Lazy;
-import nl.numworx.geodefiner.common.FilteredDestroyHandler;
-import nl.numworx.geodefiner.common.AddCirkelHandler;
-import nl.numworx.geodefiner.common.AddPolygonHandler;
-import nl.numworx.geodefiner.common.AddSnapPuntHandler;
-import nl.numworx.geodefiner.common.ResetHandler;
 import nl.numworx.geodefiner.common.Tools;
-import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
-import fi.euclides.event.AddBissectriceHandler;
-import fi.euclides.event.AddBoogHandler;
-import fi.euclides.event.AddBoogHandler2;
-import fi.euclides.event.AddFocusHandler;
-import fi.euclides.event.AddKegelsnedeHandler;
-import fi.euclides.event.AddLijnHandler;
-import fi.euclides.event.AddLocusHandler;
-import fi.euclides.event.AddLoodLijnHandler;
-import fi.euclides.event.AddMiddelPuntHandler;
-import fi.euclides.event.AddParallelHandler;
-import fi.euclides.event.AddPoollijnHandler;
-import fi.euclides.event.AddPuntHandler;
-import fi.euclides.event.AddRaakLijnHandler;
-import fi.euclides.event.AddSpiegelHandler;
-import fi.euclides.event.AddTriangleHandler2;
-import fi.euclides.event.DestroyHandler;
-import fi.euclides.event.SelectHandler;
-import fi.euclides.proof.AfstandHandler;
-import fi.euclides.proof.HoekHandler;
-import fi.euclides.proof.OppHandler;
-import fi.euclides.proof.VectorHandler;
-import fi.euclides.swing.AWTViewer;
-import fi.euclides.swing.CirkelAction;
-import fi.euclides.swing.PanHandler;
-import fi.euclides.swing.PuntAction;
-import fi.euclides.util.Messages;
 
+@SuppressWarnings("serial")
 public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 
 	private JToolBar toolbox;
@@ -165,21 +124,17 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	private Map<Integer, Provider<Action>> actionsMap;
 	
 	void createActions(nl.numworx.geodefiner.common.Instance instance) {
-
-/*			case 19:
-				btn = newBtn(url + "/segment.png", new AfstandHandler("lengte"), tracker); break;
-			case 20:
-				btn = newBtn(url + "/triangle.png", new OppHandler("oppervlakte"), tracker); break;
-			case 21:
-				btn = newBtn(url + "/angle.png", new HoekHandler("hoek"), tracker); break;
-			case 22:
-				btn = newBtn(url + "/ray.png", new VectorHandler("vector"), tracker); break;
-
-	*/	
 			
 		for(int i = 0; i < TOOL_SIZE; i++) {
 			Provider<Action> action = actionsMap.get(i);
 			vbox.add(createCheckBox(action.get()));
+		}
+		if (!GeoDefiner.isExperimental) 
+		{
+		  int[] experimental = { FOCUS, FORMULA, TANGENT };
+		  for(int i: experimental) {
+		    vbox.getComponent(i).hide();
+		  }
 		}
 	}
 
