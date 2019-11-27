@@ -202,21 +202,21 @@ public abstract class AWTViewer extends AbstractViewer implements MouseListener,
 	}
 
 	public void mousePressed(MouseEvent e) {
-		if(handler != null) {
+		if(handler != null && e.getButton() == MouseEvent.BUTTON1) {
 			handler.pointerPressed(e.getX()-offX, e.getY()-offY,this);
 			paint();
 		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		if(handler != null) {
+		if(handler != null && e.getButton() == MouseEvent.BUTTON1) {
 			handler.pointerReleased(e.getX()-offX, e.getY()-offY,this);
 			paint();
 		}
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		if(handler != null) {
+		if(handler != null && (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK) {
 			handler.pointerDragged(e.getX()-offX, e.getY()-offY,this);
 			paint();
 		}
