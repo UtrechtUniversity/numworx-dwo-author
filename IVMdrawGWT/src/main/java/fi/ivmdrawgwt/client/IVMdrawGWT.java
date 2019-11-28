@@ -41,7 +41,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	static int hoogte = 550;
 	
 	int bottomHeight = 0;
-	int topHeight = 52;
+	int topHeight = 24;
 	int leftOffset = 5;
 	int topOffset = 5;
 	int toggleSize = 22;
@@ -61,8 +61,11 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	OpdrNavIF comRoot;
 	int vaasNummer = 0;
 	boolean feedbackVisible = false;
+	boolean historyVisible = false;
 	
 	boolean correctGraph = false;
+	
+	ListBox historyList;
 
 
 	/**
@@ -158,10 +161,17 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		//dlp.addSouth(bottomPanel, bottomHeight);
 		
 		topPanel = new LayoutPanel();
-		topPanel.addStyleName(ivmDrawCss.top());
-		//dlp.addNorth(topPanel, topHeight);
+		//topPanel.addStyleName(ivmDrawCss.top());
+		dlp.addNorth(topPanel, 24);
+		
+		historyList = new ListBox();
+		topPanel.add(historyList);
+		topPanel.setWidgetLeftWidth(historyList.asWidget(), breedte/4-60, Style.Unit.PX, 120, Style.Unit.PX);
+		
+		
+		
 
-		int veldhoogte = hoogte - bottomHeight;
+		int veldhoogte = hoogte - bottomHeight-24;
 		
 		ivmDrawGWTField = new IVMdrawGWTField(breedte,veldhoogte, this);
 
@@ -184,10 +194,15 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 			vaasNummer = launchState.getInt("vaasNummer");
 		if(launchState.containsKey("feedbackVisible")) 
 			feedbackVisible = launchState.getBoolean("feedbackVisible");
+		if(launchState.containsKey("historyVisible")) 
+			historyVisible = launchState.getBoolean("historyVisible");
 			
+		
+		
 		
 		this.ivmDrawGWTField.correctVaasNummer = vaasNummer;
 		label.setVisible(feedbackVisible);
+		historyList.setVisible(historyVisible);
 		
 		//bottomPanel.add(new Label("Vaasnummer = "+vaasNummer));
 
@@ -202,6 +217,10 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	
 	public Widget asWidget() {
 		return mainPanel; 
+	}
+	
+	public ListBox getHistoryListBox() {
+		return historyList;
 	}
 
 	@Override

@@ -22,6 +22,8 @@ import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Touch;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -34,6 +36,7 @@ import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchMoveHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
+import com.google.gwt.user.client.ui.ListBox;
 
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
@@ -72,9 +75,12 @@ public class IVMdrawGWTField {
 	private Stroke lastStroke;
 	
 	private ArrayList<IVMStrokeContainer> strokeContainerHistory = new ArrayList<IVMStrokeContainer>();
+	private ListBox historyList;
 
 	public IVMdrawGWTField(int w, int h, IVMdrawGWT owner) {
 		this.owner = owner;
+		historyList = owner.getHistoryListBox();
+		historyList.addChangeHandler(new ListHandler());
 		
 		ivmDrawGWTCanvas = Canvas.createIfSupported();
 		backgroundCanvas = Canvas.createIfSupported();
@@ -135,6 +141,8 @@ public class IVMdrawGWTField {
 		catch(Exception e) {
 		}
 		
+		historyList.clear();
+		
 		List<Map<String,Object>> strokeContainerList = new ArrayList<Map<String,Object>>();
 		if (launchState.containsKey("strokeContainerList"))
 			strokeContainerList = launchState.getMapList("strokeContainerList");
@@ -143,8 +151,11 @@ public class IVMdrawGWTField {
 			IVMStrokeContainer sc = new IVMStrokeContainer();
 			sc.setState(strokeContainerList.get(sCnt));
 			strokeContainerHistory.add(sc);
+			
+			historyList.addItem("Attempt " + (sCnt+1));
 		}
-		
+		historyList.setVisible(strokeContainerList.size()>0);
+		historyList.setSelectedIndex(historyList.getItemCount()-1);
 		lastStroke = currentStrokeContainer.getLastStroke();
 		processIVM();
 		paint();
@@ -164,7 +175,7 @@ public class IVMdrawGWTField {
 		List<Map<String,Object>> strokeContainerList = new ArrayList<Map<String,Object>>();
 		for (int i = 0; i < strokeContainerHistory.size(); i++)
 		{	IVMStrokeContainer sc = strokeContainerHistory.get(i);
-			if(sc != currentStrokeContainer)
+			//if(sc != currentStrokeContainer)
 				strokeContainerList.add(sc.getState());
 		}
 		h.put("strokeContainerList", strokeContainerList);
@@ -453,6 +464,7 @@ public class IVMdrawGWTField {
 		currentStrokeContainer.addStroke(lastStroke);
 		formulaStrokePoints.clear();
 		strokeContainerHistory.add(currentStrokeContainer);
+		historyList.addItem("Attempt " + (historyList.getItemCount()+1));
 
 		if (!inputPoints.validInput()) {
 			return;
@@ -460,10 +472,27 @@ public class IVMdrawGWTField {
 
 		processIVM();
 		paint();
+		historyList.setVisible(strokeContainerHistory.size()>0);
+		historyList.setSelectedIndex(historyList.getItemCount()-1);
 		
 		owner.setChanged();
 	}
 	
+	class ListHandler implements ChangeHandler {
+
+		@Override
+		public void onChange(ChangeEvent event) {
+			int selectedIndex = historyList.getSelectedIndex();
+			if(selectedIndex>-1) {
+				currentStrokeContainer = strokeContainerHistory.get(selectedIndex);
+				lastStroke = currentStrokeContainer.getLastStroke();
+				processIVM();
+				paint();
+			}
+			
+		}
+		
+	}
 	
 	class MouseHandler implements MouseDownHandler, MouseMoveHandler, MouseUpHandler
 	{
