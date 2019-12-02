@@ -24,12 +24,12 @@ public class Geogebra3EditPanel extends GeogebraEditPanel
 	}
 
 	@Override
-	protected void createGeogebraPanel(String id) {
+	protected void createGeogebraPanel(String id, Container c) {
 		geogebraPanel = new Geogebra3Panel(true);
 		geogebraPanel.setInstanceId(id);
 		geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
 		geogebraPanel.refreshGeogebra();
-		add(geogebraPanel);
+		c.add(geogebraPanel);
 		setGeogebraBounds();
 	}
 
@@ -39,6 +39,7 @@ public class Geogebra3EditPanel extends GeogebraEditPanel
 
 	protected void setGeogebraBounds() {
 		geogebraPanel.setBounds(defaultPanelBounds);
+		geogebraPanel.setPreferredSize(defaultPanelBounds.getSize());
 	}
 
 
