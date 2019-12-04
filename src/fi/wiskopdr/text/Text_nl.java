@@ -1018,7 +1018,20 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "HELP_1_URL_SCORE" , "https://app.dwo.nl/dwo/apps/player.html?t=16&profile=236&locale=nl#671166"},
 				{ "HELP_1_URL_FEEDBACKTITLE" , "https://app.dwo.nl/dwo/apps/player.html?t=24&profile=106&locale=nl#671167"},
 				
+				{ "HELP_53_URL" , "https://app.dwo.nl/dwo/apps/player.html?t=17&profile=106&locale=nl#671209"},
+				{ "HELP_53_URL_CHECK" , "https://app.dwo.nl/dwo/apps/player.html?t=2&profile=106&locale=nl#671210"},
+				{ "HELP_53_URL_TELTMEE" , "https://app.dwo.nl/dwo/apps/player.html?t=3&profile=106&locale=nl#671211"},
+				{ "HELP_53_URL_LOGID" , "https://app.dwo.nl/dwo/apps/player.html?t=4&profile=106&locale=nl#671212"},
+				{ "HELP_53_URL_REKENVAKZICHTBAAR" , "https://app.dwo.nl/dwo/apps/player.html?t=5&profile=106&locale=nl#671213"},
+				{ "HELP_53_URL_OPLOSSINGREGEL" , "https://app.dwo.nl/dwo/apps/player.html?t=6&profile=106&locale=nl#671214"},
+				{ "HELP_53_URL_CONTEXTVAR" , "https://app.dwo.nl/dwo/apps/player.html?t=7&profile=106&locale=nl#671215"},
+				{ "HELP_53_URL_FORMINVOER" , "https://app.dwo.nl/dwo/apps/player.html?t=8&profile=106&locale=nl#671216"},
+				{ "HELP_53_URL_RAND" , "https://app.dwo.nl/dwo/apps/player.html?t=9&profile=106&locale=nl#671217"},
+				{ "HELP_53_URL_VERIFICATIE" , "https://app.dwo.nl/dwo/apps/player.html?t=10&profile=106&locale=nl#671218"},
+				{ "HELP_53_URL_VARIABELEN" , "https://app.dwo.nl/dwo/apps/player.html?t=11&profile=106&locale=nl#671219"},
+				{ "HELP_53_URL_ANTWOORD" , "https://app.dwo.nl/dwo/apps/player.html?t=12&profile=106&locale=nl#671220"},
 				
+	    
 		};
 }
 

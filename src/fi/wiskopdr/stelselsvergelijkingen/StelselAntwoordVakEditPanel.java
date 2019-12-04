@@ -10,6 +10,7 @@ import javax.swing.*;
 import fi.beans.base64code.*;
 import fi.beans.ideas.*;
 import fi.wiskopdr.DialogFacade;
+import fi.wiskopdr.HelpButton;
 import fi.wiskopdr.HelpButtonPanelIF;
 import fi.wiskopdr.IdeasInstellingenButton;
 import fi.wiskopdr.ObjectiveChoiceButton;
@@ -136,10 +137,33 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
     private JButton functiesButton;
     private FormuleEditor antwoordFunctiesVak;
     
+ // Helpbuttons
+    private static String HELP_53_URL = WiskOpdr.rb.getString("HELP_53_URL");
+    private static String HELP_53_URL_CHECK = WiskOpdr.rb.getString("HELP_53_URL_CHECK");
+    private static String HELP_53_URL_TELTMEE = WiskOpdr.rb.getString("HELP_53_URL_TELTMEE");
+    private static String HELP_53_URL_LOGID = WiskOpdr.rb.getString("HELP_53_URL_LOGID");
+    private static String HELP_53_URL_REKENVAKZICHTBAAR = WiskOpdr.rb.getString("HELP_53_URL_REKENVAKZICHTBAAR");
+    private static String HELP_53_URL_OPLOSSINGREGEL = WiskOpdr.rb.getString("HELP_53_URL_OPLOSSINGREGEL");
+    private static String HELP_53_URL_CONTEXTVAR = WiskOpdr.rb.getString("HELP_53_URL_CONTEXTVAR");
+    private static String HELP_53_URL_FORMINVOER = WiskOpdr.rb.getString("HELP_53_URL_FORMINVOER");
+    private static String HELP_53_URL_RAND = WiskOpdr.rb.getString("HELP_53_URL_RAND");
+    private static String HELP_53_URL_VERIFICATIE = WiskOpdr.rb.getString("HELP_53_URL_VERIFICATIE");
+    private static String HELP_53_URL_VARIABELEN = WiskOpdr.rb.getString("HELP_53_URL_VARIABELEN");
+    private static String HELP_53_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_53_URL_ANTWOORD");
     
+    private HelpButton hbCheck;
+    private HelpButton hbTeltMee;
+    private HelpButton hbLogID;
+    private HelpButton hbRekenVakZichtbaar;
+    private HelpButton hbOplossingRegel;
+    private HelpButton hbContextvar;
+    private HelpButton hbFormInvoer;
+    private HelpButton hbRand;
+    private HelpButton hbVerificatie;
+    private HelpButton hbVariabelen;
+    private HelpButton hbAntwoord;
     
-    
-	private JLabel antwoordLabel, variabelenLabel, feedbackLabel;
+    private JLabel antwoordLabel, variabelenLabel, feedbackLabel;
 	private JCheckBox oplossingenRegelZichtbaarCB, rekenVakZichtbaarCB;
     //private JTextField solveTF;
     
@@ -345,6 +369,18 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
     	
     	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
     	
+    	//GUI HelpButtons
+	    hbCheck = makeHelpButton(HELP_53_URL_CHECK);
+    	hbTeltMee = makeHelpButton(HELP_53_URL_TELTMEE);
+    	hbLogID = makeHelpButton(HELP_53_URL_LOGID);
+    	hbRekenVakZichtbaar = makeHelpButton(HELP_53_URL_REKENVAKZICHTBAAR);
+    	hbOplossingRegel = makeHelpButton(HELP_53_URL_OPLOSSINGREGEL);
+    	hbContextvar = makeHelpButton(HELP_53_URL_CONTEXTVAR);
+    	hbFormInvoer = makeHelpButton(HELP_53_URL_FORMINVOER);
+    	hbRand = makeHelpButton(HELP_53_URL_RAND);	
+    	hbVerificatie = makeHelpButton(HELP_53_URL_VERIFICATIE);
+    	hbVariabelen = makeHelpButton(HELP_53_URL_VARIABELEN);
+    	hbAntwoord = makeHelpButton(HELP_53_URL_ANTWOORD);
         
         // Overige
     	feedbackLabel = makeLabel(20,330,320,20,"feedback",true);        
@@ -352,135 +388,6 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
         checkTotaalLabel = makeLabel(620,385,160,20,WiskOpdr.rb.getString("checkTotaalLabel"),false);
         checkTotaalLabel.setForeground(Color.red);
 		
-        
-                
-//        variabelenEditor = new FormuleEditor(false);
-//        variabelenEditor.setHeader(false);
-//        variabelenEditor.setBounds(5,50,470,50);
-//        variabelenEditor.setFont(font);
-//        variabelenEditor.setResizable(false);	
-//        variabelenEditor.addActionListener(this);
-//        add(variabelenEditor);
-        
-        
-        
-                
-//        antwoordvak = new FormuleEditor(true);
-//        antwoordvak.setBounds(5,180,770,150);
-//        antwoordvak.setFont(font);
-//        antwoordvak.addActionListener(this);
-//        add(antwoordvak);
-        
-//        antwoordSubstitutiesVak = new FormuleEditor(true);
-//        antwoordSubstitutiesVak.setBounds(15,270,570,150);
-//        antwoordSubstitutiesVak.setFont(font);
-//        antwoordSubstitutiesVak.addActionListener(this);
-//        antwoordSubstitutiesVak.setMultiLine(true);
-//        antwoordSubstitutiesVak.setResizable(true);
-//        setLayer((Component)antwoordSubstitutiesVak, JLayeredPane.POPUP_LAYER.intValue());
-//        
-//        substitutiesButton = new JButton(WiskOpdr.rb.getString("substitutiesButtonLabel"));
-//        substitutiesButton.setBounds(10,305,150,20);
-//        substitutiesButton.setMargin(new Insets(3,2,3,2));
-//        substitutiesButton.setFont(font);
-//        substitutiesButton.addActionListener(this);
-//        setLayer((Component)substitutiesButton, JLayeredPane.PALETTE_LAYER.intValue());
-//        add(substitutiesButton,0);
-//        
-//        antwoordFunctiesVak = new FormuleEditor(true);
-//        antwoordFunctiesVak.setBounds(125,270,570,150);
-//        antwoordFunctiesVak.setFont(font);
-//        antwoordFunctiesVak.addActionListener(this);
-//        antwoordFunctiesVak.setMultiLine(true);
-//        antwoordFunctiesVak.setResizable(true);
-//        setLayer((Component)antwoordFunctiesVak, JLayeredPane.POPUP_LAYER.intValue());
-//        
-//        functiesButton = new JButton(WiskOpdr.rb.getString("functiesButtonLabel"));
-//        functiesButton.setBounds(180,305,150,20);
-//        functiesButton.setMargin(new Insets(3,2,3,2));
-//        functiesButton.setFont(font);
-//        functiesButton.addActionListener(this);
-//        setLayer((Component)functiesButton, JLayeredPane.PALETTE_LAYER.intValue());
-//        add(functiesButton,0);
-        
-//        antwoordSolveVak = new FormuleEditor(true);
-//        antwoordSolveVak.setBounds(15,130,480,150);
-//        antwoordSolveVak.setFont(font);
-//        antwoordSolveVak.addActionListener(this);
-//        antwoordSolveVak.setMultiLine(true);
-//        antwoordSolveVak.setResizable(true);
-//        setLayer((Component)antwoordSolveVak, JLayeredPane.POPUP_LAYER.intValue());
-        
-       // feedbackCB = makeCheckBox(145,160,80,20,WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
-        
-//        String[] items = {WiskOpdr.rb.getString("goedLabel"),WiskOpdr.rb.getString("doorLabel"),WiskOpdr.rb.getString("halfLabel"),WiskOpdr.rb.getString("foutLabel")};
-//        goedFoutIP = new ActKeuzePanel(items,440,420,80,80);
-//        add(goedFoutIP,0);
-        
-//        tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,184);
-//        tabbladTab.setSize(tabbladTab.getSize().width, 23);
-//        tabbladTab.setTab(true);
-//        tabbladTab.setScoresVisible(false);
-//        tabbladTab.addActionListener(this);
-//        tabbladTab.setBackground(new Color(210,210,210));
-//        tabbladTab.setSelected(1);
-//        add(tabbladTab,0);
-//        
-//        aantalTabsKnop = new PlusMinKnop(250+25*aantalAnswerModels+5 ,184,20,16,PlusMinKnop.HORIZONTAAL);
-//        aantalTabsKnop.setBackground(new Color(210,210,210));
-//        aantalTabsKnop.addActionListener(this);
-//        add(aantalTabsKnop,0);
-//        
-//        tabPositieKnop = new PlusMinKnop(246+25*answerModelNr+5 ,162,20,16,PlusMinKnop.HORIZONTAAL);
-//        tabPositieKnop.addActionListener(this);
-//        add(tabPositieKnop,0);
-        
-        
-        
-       
-        
-//        feedbackEditor = new TekstEditor(false,true,true);
-//        feedbackEditor.setBounds(5,350,300,160);
-//        feedbackEditor.setFont(font);
-//        feedbackEditor.addActionListener(this);
-//        feedbackEditor.setBackground(new Color(255,255,200));
-//        add(feedbackEditor,0);
-//        
-//        feedbackSizeCB = makeCheckBox(80,330,180,20,WiskOpdr.rb.getString("feedbackSizeCBLabel"),false,true);
-    	
-        
-//        gelijkwaardigCB = makeCheckBox(320,410,120,20,WiskOpdr.rb.getString("gelijkwaardigCBLabel"),true,true);
-//        gelijkwaardigCB.addMouseListener(this);
-//        exactCB = makeCheckBox(320,significantieAan?510:485,120,20,WiskOpdr.rb.getString("exactCBLabel"),false,true);
-//        significantCB = makeCheckBox(320,485,120,20,WiskOpdr.rb.getString("significantCBLabel"),false,significantieAan?true:false);
-//		stappenCB = makeCheckBox(630,50,200,20,WiskOpdr.rb.getString("stappenCBLabel"),true,false);
-//        eindOplossingCB = makeCheckBox(320,435,120,20,WiskOpdr.rb.getString("eindOplossingCBLabel"),true,true);
-//        onafhankelijkCB = makeCheckBox(320,460,120,20,WiskOpdr.rb.getString("onafhankelijkCBLabel"), false, true);
-//        checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
-//        teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
-//        logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
-//        logIDField = makeTextField(520,5,60,20,"0",false);
-       // casAntwCB = makeCheckBox(700,160,270,20,WiskOpdr.rb.getString("casAntwCBLabel")+" [test]",false,true);
-        //boxMetRandCB = makeCheckBox(500,155,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
-//        rekenVakZichtbaarCB = makeCheckBox(500,80,200,20,WiskOpdr.rb.getString("rekenVakZichtbaar"), true, true);
-//        oplossingenRegelZichtbaarCB = makeCheckBox(500,100,200,20,WiskOpdr.rb.getString("oplossingenRegelZichtbaar"), true, true);
-//        formuleToolBijFocusCB = makeCheckBox(500,120,200,20,WiskOpdr.rb.getString("formuleToolCBLabel"), false, true);
-//        
-//        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
-//        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
-//        logObjectivesButton.setBounds(600,5,120,20);
-//        if(WiskOpdr.objectives!=null)add(logObjectivesButton);
-        
-//        gelijkwaardigPV = makeTextField(460,410,30,20,""+puntenGelijkwaardig,true);
-//        eindOplossingPV = makeTextField(460,435,30,20,""+puntenEindOplossing,true);
-//        onafhankelijkPV = makeTextField(460, 460, 30, 20, "" + puntenOnafhankelijk, true);
-//        exactPV = makeTextField(460,significantieAan?510:485,30,20,""+puntenExact,false);
-//        significantPV = makeTextField(460,485,30,20,"0",false);
-//		feedbackPV = makeTextField(460,385,30,20,""+puntenFeedback,false);
-        
-        
-        
-        
         removeAll();
         plaatsGUI();
         add(mainPanel); 
@@ -488,7 +395,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
     
     public void plaatsGUI() {
     	//plaats componenten startbox
-        Component[] r11 = {titleVariabelenLabel, 	hgl()};
+        Component[] r11 = {titleVariabelenLabel, 	ra(5,0), hbVariabelen, hgl()};
 		Component[] r12 = {ra(0,110), 			variabelenEditorPanel};
 		
 		Component[] k1 = {hb(r11), ra(5,5), hb(r12)};
@@ -504,25 +411,25 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 		contextBox = hb(h1);
 		
 		// plaats compoenenten antwoordbox
-		Component[] r31 = {titleAntwoordLabel, hgl()};
+		Component[] r31 = {titleAntwoordLabel,	ra(5,0),	 hbAntwoord, 	hgl()};
 		Component[] r32 = {ra(0,110), 	antwoordEditorPanel};
 		Component[] k3 = {hb(r31), ra(5,5), hb(r32)};
 		antwoordBox = vb(k3);
 				
 		// plaatsComponenten settingBox
 		Component[] r41 = {titleLoggingLabel, 	hgl()};
-		Component[] r42 = {checkCB, 			hgl()};
-		Component[] r43 = {teltMeeCB, 			hgl()};
-		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
+		Component[] r43 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField,ra(5,0),	hgl(),	hbLogID};
 		Component[] r45 = {logObjectivesButton, hgl()};
 		Component[] r46 = {titleHulpLabel, 		hgl()};
-		Component[] r47 = {rekenVakZichtbaarCB, 		hgl()};
-		Component[] r48 = {oplossingenRegelZichtbaarCB, hgl()};
-		Component[] r49 = {formuleToolBijFocusCB, hgl()};
-		Component[] r418 = {contextVarCB, 		hgl()};
+		Component[] r47 = {rekenVakZichtbaarCB, ra(5,0),		hgl(), hbRekenVakZichtbaar};
+		Component[] r48 = {oplossingenRegelZichtbaarCB, ra(5,0),		hgl(), hbOplossingRegel};
+		Component[] r49 = {formuleToolBijFocusCB, ra(5,0),	hgl(),	hbFormInvoer};
+		Component[] r418 = {contextVarCB, 		ra(5,0),	hgl(),	hbContextvar};
 		Component[] r421 = {contextBox, 		hgl()};
 		Component[] r422 = {titleOpmaakLabel, 	hgl()};
-		Component[] r424 = {boxMetRandCB, 		hgl()};
+		Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand};
 		Box settingsBox;
 		
 		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
@@ -530,7 +437,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 		settingsBox = vb(k4);
 				
 		// plaats componenten verificatie box
-		Component[] r61 = {titleVerificatieLabel, 	ra(10,10),		hgl(),				titleScoreLabel};
+		Component[] r61 = {titleVerificatieLabel, 	ra(5,10),	hbVerificatie,	hgl(),	ra(5,10),				titleScoreLabel};
 		Component[] r62 = {gelijkwaardigCB,			hgl(),  		gelijkwaardigPV};
 		Component[] r64 = {eindOplossingCB,			hgl(),  		eindOplossingPV};
 		Component[] r65 = {onafhankelijkCB,			hgl(),  		onafhankelijkPV};
@@ -649,6 +556,17 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
         add(textField,0);
         return textField;
     }
+    
+    public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
+	}
     
     public void zetBreedte(int b)
     {   //grafiekPanel.setSize(b,grafiekPanel.getSize().height);
@@ -1188,7 +1106,11 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
     
     public void actionPerformed(ActionEvent e)
     {   
-        if(e.getSource() == tabbladTab)
+    	if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
+		else if(e.getSource() == tabbladTab)
         {   int nr = Integer.parseInt(e.getActionCommand())-1;
             if(answerModelNr != nr) 
             {
@@ -1625,13 +1547,21 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
       }
 	@Override
 	public void showHelpButtons(boolean b) {
-		// TODO Auto-generated method stub
-		
+		hbCheck.setVisible(b);
+    	hbTeltMee.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbRekenVakZichtbaar.setVisible(b);
+    	hbOplossingRegel.setVisible(b);
+    	hbContextvar.setVisible(b);
+    	hbFormInvoer.setVisible(b);
+    	hbRand.setVisible(b);
+    	hbVerificatie.setVisible(b);
+    	hbVariabelen.setVisible(b);
+    	hbAntwoord.setVisible(b);
 	}
 
 	@Override
 	public String geefHelpURL() {
-		// TODO Auto-generated method stub
-		return null;
+		return HELP_53_URL;
 	}
 }

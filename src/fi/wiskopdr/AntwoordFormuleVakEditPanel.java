@@ -491,7 +491,6 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	hbCheck = makeHelpButton(HELP_0_URL_CHECK);
     	hbTeltMee = makeHelpButton(HELP_0_URL_TELTMEE);
     	hbLogID = makeHelpButton(HELP_0_URL_LOGID);
-    	
     	hbFeedback = makeHelpButton(HELP_0_URL_FEEDBACK);
     	hbRekenmach = makeHelpButton(HELP_0_URL_REKENMACHINE);
     	hbSubstituties = makeHelpButton(HELP_0_URL_SUBSTITUTIES);
@@ -1383,8 +1382,6 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			tips = this.tips;
 			if(tips) ideasInstellingen = ideasButton.geefInstellingen();
             
-            
-			
 			interactiePanelLaunchState.put("antwoordString",antwoordString);
 			interactiePanelLaunchState.put("startString",startString);
 			interactiePanelLaunchState.put("herleiding",new Boolean(herleiding));
@@ -1641,7 +1638,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		{
 			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
 		}
-		if(e.getSource() == tabbladTab)
+		else if(e.getSource() == tabbladTab)
 		{	int nr = Integer.parseInt(e.getActionCommand())-1;
 			if(answerModelNr != nr) 
 			{
