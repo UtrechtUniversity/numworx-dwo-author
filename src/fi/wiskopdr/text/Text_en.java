@@ -941,6 +941,32 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "HELP_0_URL_SCORE" , "https://app.dwo.nl/dwo/apps/player.html?t=16&profile=106&locale=nl#671071"},
 				{ "HELP_0_URL_FEEDBACKTITLE" , "https://app.dwo.nl/dwo/apps/player.html?t=17&profile=106&locale=nl#671072"},
 				
+				{ "HELP_1_URL_3" , "https://app.dwo.nl/dwo/apps/player.html?t=0&profile=106&locale=nl#671172"},
+				{ "HELP_1_URL_1" , "https://app.dwo.nl/dwo/apps/player.html?t=1&profile=106&locale=nl#671173"},
+				{ "HELP_1_URL_CHECK" , "https://app.dwo.nl/dwo/apps/player.html?t=2&profile=106&locale=nl#671174"},
+				{ "HELP_1_URL_TELTMEE" , "https://app.dwo.nl/dwo/apps/player.html?t=3&profile=106&locale=nl#671175"},
+				{ "HELP_1_URL_LOGID" , "https://app.dwo.nl/dwo/apps/player.html?t=4&profile=106&locale=nl#671176"},
+				{ "HELP_1_URL_FEEDBACK" , "https://app.dwo.nl/dwo/apps/player.html?t=5&profile=106&locale=nl#671177"},
+				{ "HELP_1_URL_LINSTRATEGIEVERSIE" , "https://app.dwo.nl/dwo/apps/player.html?t=6&profile=106&locale=nl#671178"},
+				{ "HELP_1_URL_LINSTARTEGIEOEFENVERSIE" , "https://app.dwo.nl/dwo/apps/player.html?t=7&profile=106&locale=nl#671179"},
+				{ "HELP_1_URL_BORDJESVERSIE" , "https://app.dwo.nl/dwo/apps/player.html?t=8&profile=106&locale=nl#671180"},
+				{ "HELP_1_URL_BEWERKINGSKNOPPEN" , "https://app.dwo.nl/dwo/apps/player.html?t=9&profile=106&locale=nl#671181"},
+				{ "HELP_1_URL_UITWERKINGSKNOPPENEXTRA" , "https://app.dwo.nl/dwo/apps/player.html?t=10&profile=106&locale=nl#671182"},
+				{ "HELP_1_URL_SUBSTITUTIES" , "https://app.dwo.nl/dwo/apps/player.html?t=11&profile=106&locale=nl#671183"},
+				{ "HELP_1_URL_ABC" , "https://app.dwo.nl/dwo/apps/player.html?t=12&profile=106&locale=nl#671184"},
+				{ "HELP_1_URL_CONTEXTVAR" , "https://app.dwo.nl/dwo/apps/player.html?t=13&profile=106&locale=nl#671185"},
+				{ "HELP_1_URL_EIGENOPDR" , "https://app.dwo.nl/dwo/apps/player.html?t=14&profile=106&locale=nl#671186"},
+				{ "HELP_1_URL_FORMINVOER" , "https://app.dwo.nl/dwo/apps/player.html?t=15&profile=106&locale=nl#671187"},
+				{ "HELP_1_URL_UITWERKING" , "https://app.dwo.nl/dwo/apps/player.html?t=16&profile=106&locale=nl#671188"},
+				{ "HELP_1_URL_RAND" , "https://app.dwo.nl/dwo/apps/player.html?t=17&profile=106&locale=nl#671189"},
+				{ "HELP_1_URL_PIJL" , "https://app.dwo.nl/dwo/apps/player.html?t=18&profile=106&locale=nl#671190"},
+				{ "HELP_1_URL_VERIFICATIE" , "https://app.dwo.nl/dwo/apps/player.html?t=19&profile=106&locale=nl#671191"},
+				{ "HELP_1_URL_ANTWOORD" , "https://app.dwo.nl/dwo/apps/player.html?t=20&profile=106&locale=nl#671192"},
+				{ "HELP_1_URL_BEREKENANTWOORD" , "https://app.dwo.nl/dwo/apps/player.html?t=21&profile=106&locale=nl#671193"},
+				{ "HELP_1_URL_STARTVERGELIJKING" , "https://app.dwo.nl/dwo/apps/player.html?t=22&profile=106&locale=nl#671194"},
+				{ "HELP_1_URL_SCORE" , "https://app.dwo.nl/dwo/apps/player.html?t=16&profile=236&locale=nl#671195"},
+				{ "HELP_1_URL_FEEDBACKTITLE" , "https://app.dwo.nl/dwo/apps/player.html?t=24&profile=106&locale=nl#671196"},
+				
 		};
 }
 

@@ -230,7 +230,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		//scrollPane.setColumnHeaderView(new JPanel());
 		
 		tabletButton = new FormuleButton("meer");
-		tabletButton.setBounds(toolbarLeft,142,balkH/2-10,36,20);
+		tabletButton.setBounds(toolbarLeft,142,toolbarLeft ? balkH/2-17 : balkH/2-10,36,20);
 		tabletButton.addActionListener(this);
 		tabletButton.setVisible(false);
 		headerPanel.add(tabletButton);
