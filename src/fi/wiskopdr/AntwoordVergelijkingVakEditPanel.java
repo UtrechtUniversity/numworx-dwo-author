@@ -170,42 +170,53 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     private FormuleEditor antwoordFunctiesVak;
     
  // Helpbuttons
-    private static String HELP_1_URL_3 = WiskOpdr.rb.getString("HELP_0_URL_2");
-    private static String HELP_1_URL_1 = WiskOpdr.rb.getString("HELP_0_URL_0");
-    private static String HELP_1_URL_CHECK = WiskOpdr.rb.getString("HELP_0_URL_CHECK");
-    private static String HELP_1_URL_TELTMEE = WiskOpdr.rb.getString("HELP_0_URL_TELTMEE");
-    private static String HELP_1_URL_LOGID = WiskOpdr.rb.getString("HELP_0_URL_LOGID");
-    
+    private static String HELP_1_URL_3 = WiskOpdr.rb.getString("HELP_1_URL_3");
+    private static String HELP_1_URL_1 = WiskOpdr.rb.getString("HELP_1_URL_1");
+    private static String HELP_1_URL_CHECK = WiskOpdr.rb.getString("HELP_1_URL_CHECK");
+    private static String HELP_1_URL_TELTMEE = WiskOpdr.rb.getString("HELP_1_URL_TELTMEE");
+    private static String HELP_1_URL_LOGID = WiskOpdr.rb.getString("HELP_1_URL_LOGID");
     private static String HELP_1_URL_FEEDBACK = WiskOpdr.rb.getString("HELP_1_URL_FEEDBACK");
-    private static String HELP_1_URL_REKENMACHINE = WiskOpdr.rb.getString("HELP_1_URL_REKENMACHINE");
+    private static String HELP_1_URL_LINSTRATEGIEVERSIE = WiskOpdr.rb.getString("HELP_1_URL_LINSTRATEGIEVERSIE");
+    private static String HELP_1_URL_LINSTARTEGIEOEFENVERSIE = WiskOpdr.rb.getString("HELP_1_URL_LINSTARTEGIEOEFENVERSIE");
+    private static String HELP_1_URL_BORDJESVERSIE = WiskOpdr.rb.getString("HELP_1_URL_BORDJESVERSIE");
+    private static String HELP_1_URL_BEWERKINGSKNOPPEN = WiskOpdr.rb.getString("HELP_1_URL_BEWERKINGSKNOPPEN");
+    private static String HELP_1_URL_UITWERKINGSKNOPPENEXTRA = WiskOpdr.rb.getString("HELP_1_URL_UITWERKINGSKNOPPENEXTRA");
     private static String HELP_1_URL_SUBSTITUTIES = WiskOpdr.rb.getString("HELP_1_URL_SUBSTITUTIES");
+    private static String HELP_1_URL_ABC = WiskOpdr.rb.getString("HELP_1_URL_ABC");
     private static String HELP_1_URL_CONTEXTVAR = WiskOpdr.rb.getString("HELP_1_URL_CONTEXTVAR");
     private static String HELP_1_URL_EIGENOPDR = WiskOpdr.rb.getString("HELP_1_URL_EIGENOPDR");
     private static String HELP_1_URL_FORMINVOER = WiskOpdr.rb.getString("HELP_1_URL_FORMINVOER");
     private static String HELP_1_URL_UITWERKING = WiskOpdr.rb.getString("HELP_1_URL_UITWERKING");
     private static String HELP_1_URL_RAND = WiskOpdr.rb.getString("HELP_1_URL_RAND");
+    private static String HELP_1_URL_PIJL = WiskOpdr.rb.getString("HELP_1_URL_PIJL");
     private static String HELP_1_URL_VERIFICATIE = WiskOpdr.rb.getString("HELP_1_URL_VERIFICATIE");
     private static String HELP_1_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_1_URL_ANTWOORD");
-    private static String HELP_1_URL_STARTEXPRESSIE = WiskOpdr.rb.getString("HELP_1_URL_STARTEXPRESSIE");
+    private static String HELP_1_URL_BEREKENANTWOORD = WiskOpdr.rb.getString("HELP_1_URL_BEREKENANTWOORD");
+    private static String HELP_1_URL_STARTVERGELIJKING = WiskOpdr.rb.getString("HELP_1_URL_STARTVERGELIJKING");
     private static String HELP_1_URL_SCORE = WiskOpdr.rb.getString("HELP_1_URL_SCORE");
     private static String HELP_1_URL_FEEDBACKTITLE = WiskOpdr.rb.getString("HELP_1_URL_FEEDBACKTITLE");
-    
-   
     
     private HelpButton hbCheck;
     private HelpButton hbTeltMee;
     private HelpButton hbLogID;
     private HelpButton hbFeedback;
-    private HelpButton hbRekenmach;
+    private HelpButton hbLinStrategieVersie;
+    private HelpButton hbLinOefenVersie;
+    private HelpButton hbBordjesVersie;
+    private HelpButton hbBewerkingsKnoppen;
+    private HelpButton hbBewerkingsKnoppenExtra;
     private HelpButton hbSubstituties;
+    private HelpButton hbAbc;
     private HelpButton hbContextvar;
     private HelpButton hbEigenOpdr;
     private HelpButton hbFormInvoer;
     private HelpButton hbUitwerking;
     private HelpButton hbRand;
+    private HelpButton hbPijl;
     private HelpButton hbVerificatie;
     private HelpButton hbAntwoord;
-    private HelpButton hbStartExpressie;
+    private HelpButton hbBerekenAntwoord;
+    private HelpButton hbStartVergelijking;
     private HelpButton hbScore;
     private HelpButton hbFeedbackTitel;
      
@@ -496,7 +507,35 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	
     	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
     	pijlCB = makeCheckBox(500,95,130,20,WiskOpdr.rb.getString("pijlCBLabel"),true,true);
-		 
+    	
+		hbCheck = makeHelpButton(HELP_1_URL_CHECK);
+	    hbTeltMee = makeHelpButton(HELP_1_URL_TELTMEE);
+	    hbLogID = makeHelpButton(HELP_1_URL_LOGID);
+	    hbFeedback = makeHelpButton(HELP_1_URL_FEEDBACK);
+	    hbLinStrategieVersie = makeHelpButton(HELP_1_URL_LINSTRATEGIEVERSIE);
+	    hbLinOefenVersie = makeHelpButton(HELP_1_URL_LINSTARTEGIEOEFENVERSIE);
+	    hbBordjesVersie = makeHelpButton(HELP_1_URL_BORDJESVERSIE);
+	    hbBewerkingsKnoppen = makeHelpButton(HELP_1_URL_BEWERKINGSKNOPPEN);
+	    hbBewerkingsKnoppenExtra = makeHelpButton(HELP_1_URL_UITWERKINGSKNOPPENEXTRA);
+	    hbSubstituties = makeHelpButton(HELP_1_URL_SUBSTITUTIES);
+	    hbAbc = makeHelpButton(HELP_1_URL_ABC);
+	    hbContextvar = makeHelpButton(HELP_1_URL_CONTEXTVAR);
+	    hbEigenOpdr = makeHelpButton(HELP_1_URL_EIGENOPDR);
+	    hbFormInvoer = makeHelpButton(HELP_1_URL_FORMINVOER);
+	    hbUitwerking = makeHelpButton(HELP_1_URL_UITWERKING);
+	    hbRand = makeHelpButton(HELP_1_URL_RAND);
+	    hbPijl = makeHelpButton(HELP_1_URL_PIJL);
+	    hbVerificatie = makeHelpButton(HELP_1_URL_VERIFICATIE);
+	    hbAntwoord = makeHelpButton(HELP_1_URL_ANTWOORD);
+	    hbBerekenAntwoord = makeHelpButton(HELP_1_URL_BEREKENANTWOORD);
+	    hbStartVergelijking = makeHelpButton(HELP_1_URL_STARTVERGELIJKING);
+	    hbScore = makeHelpButton(HELP_1_URL_SCORE);
+	    hbFeedbackTitel = makeHelpButton(HELP_1_URL_FEEDBACKTITLE);
+	    
+	    hbAntwoord.setBounds(140,-2,18,18);
+    	antwoordEditorPanel.add(hbAntwoord,0);
+	    
+	    
     	removeAll();
         plaatsGUI();
         add(mainPanel); 
@@ -504,7 +543,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     
     public void plaatsGUI() {
     	//plaats componenten startbox
-        Component[] r11 = {titleStartLabel, 	hgl()};
+        Component[] r11 = {titleStartLabel, ra(5,5), hbStartVergelijking,	hgl()};
 		Component[] r12 = {ra(0,110), 			startEditorPanel};
 		
 		Component[] k1 = {hb(r11), ra(5,5), hb(r12)};
@@ -532,29 +571,29 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		
 		// plaatsComponenten settingBox
 		Component[] r41 = {titleLoggingLabel, 	hgl()};
-		Component[] r42 = {checkCB, 			hgl()};
-		Component[] r43 = {teltMeeCB, 			hgl()};
-		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r42 = {checkCB, 			hgl(),	hbCheck};
+		Component[] r43 = {teltMeeCB, 			hgl(),	hbTeltMee};
+		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl(),	hbLogID};
 		Component[] r45 = {logObjectivesButton, hgl()};
 		Component[] r46 = {titleHulpLabel, 		hgl()};
-		Component[] r47 = {feedbackCB, 			hgl()};
-		Component[] r48 = {formuleToolBijFocusCB, hgl()};
-		Component[] r49 = {uitwCB, 				hgl()};
-		Component[] r410 = {linStrategieVersieCB, hgl()};
-		Component[] r411 = {linOefenVersieCB, 	hgl()};
-		Component[] r412 = {bordjesMethodeCB, 	hgl()};
-		Component[] r413 = {bewerkingKnoppenCB, hgl()};
-		Component[] r414 = {bewerkingKnoppenExtraCB,hgl()};
-		Component[] r415 = {abcKnopCB, 			hgl()};
-		Component[] r416 = {subKnopCB, 			hgl()};
+		Component[] r47 = {feedbackCB, 			hgl(),	hbFeedback};
+		Component[] r48 = {formuleToolBijFocusCB, hgl(),	hbFormInvoer};
+		Component[] r49 = {uitwCB, 				hgl(),	hbUitwerking};
+		Component[] r410 = {linStrategieVersieCB, hgl(),	hbLinStrategieVersie};
+		Component[] r411 = {linOefenVersieCB, 	hgl(),	hbLinOefenVersie};
+		Component[] r412 = {bordjesMethodeCB, 	hgl(),	hbBordjesVersie};
+		Component[] r413 = {bewerkingKnoppenCB, hgl(),	hbBewerkingsKnoppen};
+		Component[] r414 = {bewerkingKnoppenExtraCB,hgl(),	hbBewerkingsKnoppenExtra};
+		Component[] r415 = {abcKnopCB, 			hgl(),    hbAbc};
+		Component[] r416 = {subKnopCB, 			hgl(),	hbSubstituties};
 		Component[] r417 = {subKnopExtraCB, 	hgl()};
-		Component[] r418 = {contextVarCB, 		hgl()};
-		Component[] r419 = {casAntwCB, 			hgl()};
+		Component[] r418 = {contextVarCB, 		hgl(),	hbContextvar};
+		Component[] r419 = {casAntwCB, 			hgl(),	hbEigenOpdr};
 		Component[] r420 = {tipsCB, 			ideasButton,	hgl()};
 		Component[] r421 = {contextBox, 		hgl()};
 		Component[] r422 = {titleOpmaakLabel, 	hgl()};
-		Component[] r423 = {pijlCB, 			hgl()};
-		Component[] r424 = {boxMetRandCB, 		hgl()};
+		Component[] r423 = {pijlCB, 			hgl(),	hbPijl};
+		Component[] r424 = {boxMetRandCB, 		hgl(),	hbRand};
 		Box settingsBox;
 		if(soort==1) {
 			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
@@ -568,7 +607,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		}
 		
 		// plaats componenten feedback box
-		Component[] r51 = {titleFeedbackLabel, 		hgl()};
+		Component[] r51 = {titleFeedbackLabel, 		ra(5,10),	hgl(), hbFeedbackTitel};
 		Component[] r52 = {goedFoutIP,				hgl()};
 		
 		Component[] r53 = {titleFeedbackTekstLabel, hgl()};
@@ -581,7 +620,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		feedbackBox = hb(h5);
 		
 		//plaats componenten scoringbox 
-        Component[] r70 = {titleScoreLabel, 	ra(10,10), 		feedbackPV, hgl()};
+        Component[] r70 = {titleScoreLabel, 	ra(10,10), 		feedbackPV, ra(5,10), hbScore, hgl()};
         //Component[] r71 = {ra(10,10), 		feedbackPV, 	hgl()};
 		//Component[] r72 = {goedFoutIP, 		hgl()};
 		
@@ -589,7 +628,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		scoringBox = vb(k7);
 		
 		// plaats componenten verificatie box
-		Component[] r61 = {titleVerificatieLabel, 	ra(10,10),		hgl(),				titleVerificatieScoreLabel};
+		Component[] r61 = {titleVerificatieLabel, 	ra(5,10),	hbVerificatie,	hgl(),	ra(5,10),					titleVerificatieScoreLabel};
 		Component[] r62 = {gelijkwaardigCB,			ra(10,10),		hgl(),  		gelijkwaardigPV};
 		Component[] r63 = {vormCB,					hgl(),  		vormPV};
 		Component[] r64 = {eindOplossingCB,			hgl(),  		eindOplossingPV};
@@ -1664,6 +1703,11 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     
     public void actionPerformed(ActionEvent e)
     {   
+    	if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+			System.out.println(((HelpButton)e.getSource()).getURL());
+		}
         if(e.getSource() == tabbladTab)
         {   int nr = Integer.parseInt(e.getActionCommand())-1;
             if(answerModelNr != nr) 
@@ -2363,13 +2407,37 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     }
 	@Override
 	public void showHelpButtons(boolean b) {
-		// TODO Auto-generated method stub
+		hbCheck.setVisible(b);
+	    hbTeltMee.setVisible(b);
+	    hbLogID.setVisible(b);
+	    hbFeedback.setVisible(b);
+	    if(soort==1) hbLinStrategieVersie.setVisible(b);
+	    if(soort==1) hbLinOefenVersie.setVisible(b);
+	    if(soort==1) hbBordjesVersie.setVisible(b);
+	    if(soort==1) hbBewerkingsKnoppen.setVisible(b);
+	    if(soort==1) hbBewerkingsKnoppenExtra.setVisible(b);
+	    if(soort==1) hbSubstituties.setVisible(b);
+	    if(soort==1) hbAbc.setVisible(b);
+	    hbContextvar.setVisible(b);
+	    if(soort==1) hbEigenOpdr.setVisible(b);
+	    if(soort==3) hbFormInvoer.setVisible(b);
+	    if(soort==3) hbUitwerking.setVisible(b);
+	    hbRand.setVisible(b);
+	    if(soort==1) hbPijl.setVisible(b);
+	    hbVerificatie.setVisible(b);
+	    hbAntwoord.setVisible(b);
+	    hbBerekenAntwoord.setVisible(b);
+	    hbStartVergelijking.setVisible(b);;
+	    hbScore.setVisible(b);
+	    hbFeedbackTitel.setVisible(b);
 		
 	}
 
 	@Override
 	public String geefHelpURL() {
-		// TODO Auto-generated method stub
-		return null;
+		if(soort==3)
+			return HELP_1_URL_3;
+		else
+			return HELP_1_URL_1;
 	}
 }

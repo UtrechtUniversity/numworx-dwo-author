@@ -1639,7 +1639,6 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	{	
 		if(e.getSource() instanceof HelpButton)
 		{
-			//OpdrNavStructEdit.helpBrowser.loadURL(null);
 			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
 		}
 		if(e.getSource() == tabbladTab)
