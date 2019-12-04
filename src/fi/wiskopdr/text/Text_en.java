@@ -922,19 +922,25 @@ public class Text_en extends java.util.ListResourceBundle
                 { "TCOMP_decompose" , "Decompose"},
                 
              // Helpteksten (URL's)
-				{ "HELP_0_URL_0" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670371"},
-				{ "HELP_0_URL_2" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670370"},
-				{ "HELP_0_URL_CHECK" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670372"},
-				{ "HELP_0_URL_TELTMEE" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670373"},
-				{ "HELP_0_URL_LOGID" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670374"},
-				{ "HELP_0_URL_FEEDBACK" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670375"},
-				{ "HELP_0_URL_REKENMACHINE" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670376"},
-				{ "HELP_0_URL_SUBSTITUTIES" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670377"},
-				{ "HELP_0_URL_CONTEXTVAR" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670378"},
-				{ "HELP_0_URL_EIGENOPDR" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670379"},
-				{ "HELP_0_URL_FORMINVOER" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670380"},
-				{ "HELP_0_URL_UITWERKING" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670381"},
-				{ "HELP_0_URL_RAND" , "https://app.dwo.nl/dwo/apps/player.html?profile=106&locale=nl#670382"},
+				{ "HELP_0_URL_0" , "https://app.dwo.nl/dwo/apps/player.html?t=0&profile=106&locale=nl#670371"},
+				{ "HELP_0_URL_2" , "https://app.dwo.nl/dwo/apps/player.html?t=1&profile=106&locale=nl#670370"},
+				{ "HELP_0_URL_CHECK" , "https://app.dwo.nl/dwo/apps/player.html?t=2&profile=106&locale=nl#670372"},
+				{ "HELP_0_URL_TELTMEE" , "https://app.dwo.nl/dwo/apps/player.html?t=3&profile=106&locale=nl#670373"},
+				{ "HELP_0_URL_LOGID" , "https://app.dwo.nl/dwo/apps/player.html?t=4&profile=106&locale=nl#670374"},
+				{ "HELP_0_URL_FEEDBACK" , "https://app.dwo.nl/dwo/apps/player.html?t=5&profile=106&locale=nl#670375"},
+				{ "HELP_0_URL_REKENMACHINE" , "https://app.dwo.nl/dwo/apps/player.html?t=6&profile=106&locale=nl#670376"},
+				{ "HELP_0_URL_SUBSTITUTIES" , "https://app.dwo.nl/dwo/apps/player.html?t=7&profile=106&locale=nl#670377"},
+				{ "HELP_0_URL_CONTEXTVAR" , "https://app.dwo.nl/dwo/apps/player.html?t=8&profile=106&locale=nl#670378"},
+				{ "HELP_0_URL_EIGENOPDR" , "https://app.dwo.nl/dwo/apps/player.html?t=9&profile=106&locale=nl#670379"},
+				{ "HELP_0_URL_FORMINVOER" , "https://app.dwo.nl/dwo/apps/player.html?t=10&profile=106&locale=nl#670380"},
+				{ "HELP_0_URL_UITWERKING" , "https://app.dwo.nl/dwo/apps/player.html?t=11&profile=106&locale=nl#670381"},
+				{ "HELP_0_URL_RAND" , "https://app.dwo.nl/dwo/apps/player.html?t=12&profile=106&locale=nl#670382"},
+				{ "HELP_0_URL_VERIFICATIE" , "https://app.dwo.nl/dwo/apps/player.html?t=13&profile=106&locale=nl#671068"},
+				{ "HELP_0_URL_ANTWOORD" , "https://app.dwo.nl/dwo/apps/player.html?t=14&profile=106&locale=nl#671069"},
+				{ "HELP_0_URL_STARTEXPRESSIE" , "https://app.dwo.nl/dwo/apps/player.html?t=15&profile=106&locale=nl#671070"},
+				{ "HELP_0_URL_SCORE" , "https://app.dwo.nl/dwo/apps/player.html?t=16&profile=106&locale=nl#671071"},
+				{ "HELP_0_URL_FEEDBACKTITLE" , "https://app.dwo.nl/dwo/apps/player.html?t=17&profile=106&locale=nl#671072"},
+				
 		};
 }
 

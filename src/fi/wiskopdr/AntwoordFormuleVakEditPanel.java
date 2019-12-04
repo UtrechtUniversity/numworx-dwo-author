@@ -165,6 +165,13 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     private static String HELP_0_URL_FORMINVOER = WiskOpdr.rb.getString("HELP_0_URL_FORMINVOER");
     private static String HELP_0_URL_UITWERKING = WiskOpdr.rb.getString("HELP_0_URL_UITWERKING");
     private static String HELP_0_URL_RAND = WiskOpdr.rb.getString("HELP_0_URL_RAND");
+    private static String HELP_0_URL_VERIFICATIE = WiskOpdr.rb.getString("HELP_0_URL_VERIFICATIE");
+    private static String HELP_0_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_0_URL_ANTWOORD");
+    private static String HELP_0_URL_STARTEXPRESSIE = WiskOpdr.rb.getString("HELP_0_URL_STARTEXPRESSIE");
+    private static String HELP_0_URL_SCORE = WiskOpdr.rb.getString("HELP_0_URL_SCORE");
+    private static String HELP_0_URL_FEEDBACKTITLE = WiskOpdr.rb.getString("HELP_0_URL_FEEDBACKTITLE");
+    
+   
     
     private HelpButton hbCheck;
     private HelpButton hbTeltMee;
@@ -177,12 +184,14 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     private HelpButton hbFormInvoer;
     private HelpButton hbUitwerking;
     private HelpButton hbRand;
+    private HelpButton hbVerificatie;
+    private HelpButton hbAntwoord;
+    private HelpButton hbStartExpressie;
+    private HelpButton hbScore;
+    private HelpButton hbFeedbackTitel;
     
-    void h(){
-    	
-   
     
-    }
+    
 	
 	
     
@@ -491,6 +500,14 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	hbFormInvoer = makeHelpButton(HELP_0_URL_FORMINVOER);
     	hbUitwerking = makeHelpButton(HELP_0_URL_UITWERKING);
     	hbRand = makeHelpButton(HELP_0_URL_RAND);	
+    	hbVerificatie = makeHelpButton(HELP_0_URL_VERIFICATIE);
+    	hbAntwoord = makeHelpButton(HELP_0_URL_ANTWOORD);
+    	hbStartExpressie = makeHelpButton(HELP_0_URL_STARTEXPRESSIE);
+    	hbScore = makeHelpButton(HELP_0_URL_SCORE);
+    	hbFeedbackTitel = makeHelpButton(HELP_0_URL_FEEDBACKTITLE);
+    	
+    	hbAntwoord.setBounds(140,-2,18,18);
+    	antwoordEditorPanel.add(hbAntwoord,0);
     	
     	hbFormInvoer.setVisible(false);
     	hbUitwerking.setVisible(false);
@@ -525,7 +542,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	
 	public void plaatsGUI() {
 		//plaats componenten startbox
-        Component[] r11 = {titleStartLabel, 	hgl()};
+        Component[] r11 = {titleStartLabel, ra(5,5), hbStartExpressie, 	hgl()};
 		Component[] r12 = {ra(0,110), 			startEditorPanel};
 		
 		Component[] k1 = {hb(r11), ra(5,5), hb(r12)};
@@ -588,7 +605,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	Box kolomBox = Box.createHorizontalBox();
     	
     	// plaats componenten feedback box
-		Component[] r51 = {titleFeedbackLabel, 		hgl()};
+		Component[] r51 = {titleFeedbackLabel, 	ra(5,10),	hgl(), hbFeedbackTitel};
 		Component[] r52 = {goedFoutIP,				hgl()};
 		
 		Component[] r53 = {titleFeedbackTekstLabel, 		hgl()};
@@ -601,7 +618,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		feedbackBox = hb(h5);
 		
 		//plaats componenten scoringbox 
-        Component[] r70 = {titleScoreLabel, 	ra(10,10), 		feedbackPV, hgl()};
+        Component[] r70 = {titleScoreLabel, 	ra(10,10), 		feedbackPV, ra(5,10), hbScore, hgl()};
         //Component[] r71 = {ra(10,10), 		feedbackPV, 	hgl()};
 		//Component[] r72 = {goedFoutIP, 		hgl()};
 		
@@ -610,7 +627,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		
 		
 		// plaats componenten verificatie box
-		Component[] r61 = {titleVerificatieLabel, 	ra(10,10),		hgl(),		titleVerificatieScoreLabel	};
+		Component[] r61 = {titleVerificatieLabel, 	ra(5,10),	hbVerificatie,	hgl(),	ra(5,10),	titleVerificatieScoreLabel,ra(5,10)	};
 		Component[] r62 = {gelijkwaardigCB,			ra(10,10),	hgl(),  		gelijkwaardigPV};
 		Component[] r63 = {herleidingCB,			hgl(),  		herleidingPV};
 		Component[] r65 = {significantCB,			hgl(),  		significantPV};
@@ -2262,6 +2279,11 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	if(soort==2)hbFormInvoer.setVisible(b);
     	if(soort==2)hbUitwerking.setVisible(b);
     	hbRand.setVisible(b);	
+    	hbVerificatie.setVisible(b);
+    	hbAntwoord.setVisible(b);
+    	hbStartExpressie.setVisible(b);
+    	hbScore.setVisible(b);
+    	hbFeedbackTitel.setVisible(b);
     	//validate();
      	//((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
         

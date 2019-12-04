@@ -169,6 +169,45 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     private JButton functiesButton;
     private FormuleEditor antwoordFunctiesVak;
     
+ // Helpbuttons
+    private static String HELP_1_URL_3 = WiskOpdr.rb.getString("HELP_0_URL_2");
+    private static String HELP_1_URL_1 = WiskOpdr.rb.getString("HELP_0_URL_0");
+    private static String HELP_1_URL_CHECK = WiskOpdr.rb.getString("HELP_0_URL_CHECK");
+    private static String HELP_1_URL_TELTMEE = WiskOpdr.rb.getString("HELP_0_URL_TELTMEE");
+    private static String HELP_1_URL_LOGID = WiskOpdr.rb.getString("HELP_0_URL_LOGID");
+    
+    private static String HELP_1_URL_FEEDBACK = WiskOpdr.rb.getString("HELP_1_URL_FEEDBACK");
+    private static String HELP_1_URL_REKENMACHINE = WiskOpdr.rb.getString("HELP_1_URL_REKENMACHINE");
+    private static String HELP_1_URL_SUBSTITUTIES = WiskOpdr.rb.getString("HELP_1_URL_SUBSTITUTIES");
+    private static String HELP_1_URL_CONTEXTVAR = WiskOpdr.rb.getString("HELP_1_URL_CONTEXTVAR");
+    private static String HELP_1_URL_EIGENOPDR = WiskOpdr.rb.getString("HELP_1_URL_EIGENOPDR");
+    private static String HELP_1_URL_FORMINVOER = WiskOpdr.rb.getString("HELP_1_URL_FORMINVOER");
+    private static String HELP_1_URL_UITWERKING = WiskOpdr.rb.getString("HELP_1_URL_UITWERKING");
+    private static String HELP_1_URL_RAND = WiskOpdr.rb.getString("HELP_1_URL_RAND");
+    private static String HELP_1_URL_VERIFICATIE = WiskOpdr.rb.getString("HELP_1_URL_VERIFICATIE");
+    private static String HELP_1_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_1_URL_ANTWOORD");
+    private static String HELP_1_URL_STARTEXPRESSIE = WiskOpdr.rb.getString("HELP_1_URL_STARTEXPRESSIE");
+    private static String HELP_1_URL_SCORE = WiskOpdr.rb.getString("HELP_1_URL_SCORE");
+    private static String HELP_1_URL_FEEDBACKTITLE = WiskOpdr.rb.getString("HELP_1_URL_FEEDBACKTITLE");
+    
+   
+    
+    private HelpButton hbCheck;
+    private HelpButton hbTeltMee;
+    private HelpButton hbLogID;
+    private HelpButton hbFeedback;
+    private HelpButton hbRekenmach;
+    private HelpButton hbSubstituties;
+    private HelpButton hbContextvar;
+    private HelpButton hbEigenOpdr;
+    private HelpButton hbFormInvoer;
+    private HelpButton hbUitwerking;
+    private HelpButton hbRand;
+    private HelpButton hbVerificatie;
+    private HelpButton hbAntwoord;
+    private HelpButton hbStartExpressie;
+    private HelpButton hbScore;
+    private HelpButton hbFeedbackTitel;
      
 	public static void zetSignificantieAan(boolean b) {	
 		significantieAan = b;
@@ -699,6 +738,17 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         add(textField,0);
         return textField;
     }
+    
+    public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
+	}
     
     public void showHelp(boolean b) {
     }
