@@ -5,7 +5,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -25,8 +27,9 @@ import nl.numworx.geodefiner.InstanceViewer;
 import nl.numworx.geodefiner.ToolboxPanel;
 import nl.numworx.geodefiner.WiskOpdrRandomizer;
 import nl.numworx.geodefiner.common.Randomizer;
+import nl.numworx.geodefiner.merge.MergeModule;
 
-@Module()
+@Module(includes= {MergeModule.class})
 public abstract class EditModule {
 
 	@Provides @Singleton static Instance instance(WiskOpdrRandomizer r, JToolBar toolbar) {
@@ -65,12 +68,16 @@ public abstract class EditModule {
 		return instance.getToolboxPanel();
 	}
 	
-	@Provides @Singleton @Named("context") static  Optional<JPopupMenu> popup() {
+	@Provides @Singleton @Named("context") static  Optional<JPopupMenu> popup(
+	    @Named("open") Provider<Action> safeAction,
+	    @Named("safe") Provider<Action> openAction,
+	    @Named("merge") Provider<Action> mergeAction
+	    ) {
 	  if (GeoDefiner.isPremium && GeoDefiner.isExperimental) {
 	    JPopupMenu popup = new JPopupMenu();
-	    popup.add(new JMenuItem("Safe..."));
-	    popup.add(new JMenuItem("Restore..."));
-	    popup.add(new JMenuItem("Merge..."));	    
+	    popup.add(new JMenuItem(openAction.get()));
+	    popup.add(new JMenuItem(safeAction.get()));
+	    popup.add(new JMenuItem(mergeAction.get()));	    
 	    return Optional.of(popup);
 	  }
 	  return Optional.empty();

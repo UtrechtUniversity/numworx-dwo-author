@@ -21,6 +21,7 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -74,6 +75,7 @@ geteditstate
 163	                }
 */
 @SuppressWarnings("serial")
+@Singleton
 public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF , TabletOwner, ActionListener, PropertyChangeListener {
 
   static class MousePopupListener extends MouseAdapter {

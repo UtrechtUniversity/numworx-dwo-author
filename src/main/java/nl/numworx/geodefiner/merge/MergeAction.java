@@ -1,0 +1,181 @@
+package nl.numworx.geodefiner.merge;
+
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import javax.swing.AbstractAction;
+import javax.swing.JFileChooser;
+
+import dagger.Lazy;
+import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.formuleobjects.ParseException;
+import fi.euclides.model.Model;
+import fi.euclides.openmath.OMConstants;
+import nl.numworx.geodefiner.Editor;
+import nl.tue.win.riaca.openmath.lang.OMApplication;
+import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.tue.win.riaca.openmath.lang.OMVariable;
+
+import javax.inject.*;
+
+@SuppressWarnings("serial")
+public class MergeAction extends AbstractAction implements Constants {
+
+  enum QueryType { REPLACE, KEEP, RENAME };
+    
+  static interface Query {
+    String name();
+    QueryType ask(String name);
+  }
+  
+  
+  static class Ask implements Query {
+
+    String name;
+    QueryType type;
+
+    public Ask(Component parent) {
+      type = QueryType.KEEP;
+    }
+
+    @Override
+    public String name() {
+      return name;
+    }
+
+    @Override
+    public QueryType ask(String name) {
+      this.name = name;
+      // TODO ask user to keep/rename/replace name
+      return type;
+    }
+
+  }
+
+  private final Logger LOG = Logger.getLogger(getClass().getName());
+
+  @Inject MergeAction() {
+    super("Merge...");
+  }
+
+  @Inject JFileChooser chooser;
+  @Inject Lazy<Editor> editor;
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void actionPerformed(ActionEvent e) {    
+    Component parent = (Component) e.getSource();
+    if (JFileChooser.APPROVE_OPTION == chooser.showOpenDialog(parent)) {
+      File f = chooser.getSelectedFile();
+      try {
+        ZipFile in = new ZipFile(f);
+        ZipEntry entry = in.getEntry(CONTENTS);
+        ObjectInputStream dis = new ObjectInputStream(in.getInputStream(entry));
+        Object o = dis.readObject();
+        dis.close();
+        in.close();
+        if (o instanceof Map) {
+          Map<String, ?> data = editor.get().getLaunchData();
+          data = merge(data, (Map<String, ?>) o, new Ask(parent));
+          editor.get().setLaunchData(data);
+        }
+      } catch (IOException | ClassNotFoundException e1) {
+        LOG.log(Level.SEVERE, "open selected file " + f, e1);
+      }
+    }
+
+  }
+
+  @SuppressWarnings("unchecked")
+  Map<String, ?> merge(Map<String,?> org, Map<String, ?> merge, Query query) {
+    Map<String, String> rename;
+    Collection<String> orderOrg, orderMerge;
+    orderOrg = new HashSet<>((List<String>) org.get("order"));
+    orderMerge = (List<String>) merge.get("order");
+    rename = new LinkedHashMap<>();
+    for(String item: orderMerge) {
+      if (orderOrg.contains(item)) {
+        switch(query.ask(item)) {
+          case KEEP: /*rename.put(item, null);*/ break;
+          case REPLACE: rename.put(item, item); break;
+          case RENAME: rename.put(item, query.name());
+        }} else {
+          rename.put(item, item);
+        }
+      }
+    org = new TreeMap<>(org);
+    List<String> defMerge = (List<String>) merge.get("definitions");
+    List<String> defOrg = (List<String>) org.get("definitions");
+    Map<String,String> mapMerge = new LinkedHashMap<>();
+    for(String item: defMerge) {
+      String key = key(item);
+      if (rename.containsKey(key))
+        mapMerge.put(rename.get(key), rename(item, rename));
+    }
+    for(String item: mapMerge.keySet()) {
+      String def = mapMerge.get(item);
+      remove(defOrg, item);
+      if(def != null) defOrg.add(def);
+    }
+    return org;
+  }
+
+  private void remove(List<String> defOrg, String item) {
+    Iterator<String> i = defOrg.iterator();
+    while (i.hasNext()) {
+      String string = (String) i.next();
+      String key = key(string);
+      if (key.equals(item)) i.remove();
+      else {
+        Set<String> vars = vars(string);
+        if(vars.contains(item)) i.remove();
+      }
+    }
+    
+  }
+
+  private Set<String> vars(String string) {
+    // TODO zie LocusModelIF.varsof
+    return Collections.emptySet();
+  }
+
+  private String rename(String item, Map<String, String> rename) {
+    // TODO Auto-generated method stub
+    return item;
+  }
+
+  private String key(String item) {
+    try {
+      OMObject object = new FormuleParser(item.substring(2)).parse();
+      if(object instanceof OMApplication) {
+        OMApplication oma = (OMApplication) object;
+        OMObject first = oma.firstElement();
+        if( first.isSame(OMConstants.PROG1_ASSIGN))
+        {
+            OMVariable var = (OMVariable) oma.getElementAt(1);
+            return var.getName();
+        }
+      }
+    } catch (ParseException e) {
+      LOG.warning(e.toString());
+    }
+
+    return item;
+  }
+}
