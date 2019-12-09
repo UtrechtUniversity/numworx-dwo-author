@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import dagger.Lazy;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
+import fi.euclides.formuleobjects.Token;
 import fi.euclides.model.Model;
 import fi.euclides.openmath.OMConstants;
 import nl.numworx.geodefiner.Editor;
@@ -156,7 +157,21 @@ public class MergeAction extends AbstractAction implements Constants {
   }
 
   private String rename(String item, Map<String, String> rename) {
-    // TODO Auto-generated method stub
+    FormuleParser p = new FormuleParser(item.substring(2));
+    try {
+      List<Token> t = p.tokens();
+      StringBuilder sb = new StringBuilder(item.length()+10);
+      sb.append("$f");
+      for(Token i: t) {
+        String s = i.image;
+        if (i.kind == FormuleParser.VARIABLE)
+          s = rename.getOrDefault(s, s);
+        sb.append(s);
+      }
+      return sb.append('@').toString();
+    } catch (ParseException e) {
+      LOG.warning(e.toString());
+    }
     return item;
   }
 

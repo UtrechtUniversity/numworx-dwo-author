@@ -106,6 +106,7 @@ public class MergeActionTest {
     List definitions = (List) result.get("definitions");
     assertEquals(4, definitions.size());
   }
+
   @Test
   public void testMergeRename() throws IOException, ParseException {
     Map<String, ?> org = getData("launch_data");   
