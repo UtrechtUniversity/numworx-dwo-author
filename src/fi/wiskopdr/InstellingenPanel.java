@@ -17,6 +17,7 @@ import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.*;
+import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.ShareAction;
 //import fi.wiskopdr.tekstobjects.VoorwaardelijkeLinkButton;
 import fi.wiskopdr.expressies.*;
@@ -111,6 +112,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JLabel writeMathLabel;
 	private JComboBox writeMathCombobox;
 	
+	HelpButton helpButton;
+	private JPanel helpPanel;
+    private Box helpBox;
+    private Box helpTitelBox;
+	
 	private String[] fontNames = {
 			"SansSerif",
 			"Verdana",
@@ -149,13 +155,65 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		setLayout(new BorderLayout());
 		setBackground(WiskOpdr.bgcolorEditor);
 		
-		JPanel topPanel = new JPanel();
+		 JLabel headerTitle = new JLabel("Instellingen Activiteit");
+	        headerTitle.setForeground(WiskOpdr.colorGray3);
+	        headerTitle.setFont(new Font("SansSerif",Font.PLAIN, 24));
+	        //headerPanel.add(headerTitle);
+	        
+	        String HELP_URL1 = "https://app.dwo.nl/public/?header=less&hash=#s:670047";
+			 helpButton = new HelpButton(HELP_URL1);
+			//helpButton.setFont(new Font("SansSerif",Font.BOLD,14));
+			helpButton.setPreferredSize(new Dimension(22,22));
+			helpButton.setMinimumSize(new Dimension(22,22));
+			helpButton.setMaximumSize(new Dimension(22,22));
+			helpButton.addActionListener(this);
+			//headerPanel.add(helpButton);
+			helpPanel = new JPanel(new BorderLayout());
+			helpPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, WiskOpdr.colorBlue4));
+			helpPanel.setBackground(WiskOpdr.colorBlue5);
+			helpPanel.setPreferredSize(new Dimension(300,400));
+			JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
+	    	bp.setPreferredSize(new Dimension(300,400));
+	    	
+	    	helpPanel.add(bp);
+			
+			helpBox = Box.createVerticalBox();
+			helpBox.add(Box.createRigidArea(new Dimension(300,0)));
+			helpBox.add(helpPanel);
+			helpBox.setVisible(false);
+			
+			JLabel helpTitleLabel = new JLabel("Help");
+			helpTitleLabel.setForeground(WiskOpdr.colorBlue5);
+			helpTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+		        
+			helpTitelBox = Box.createVerticalBox();
+			helpTitelBox.add(Box.createRigidArea(new Dimension(300,0)));
+			Box helpheader = Box.createHorizontalBox();
+			helpheader.add(helpTitleLabel);
+			helpTitelBox.setPreferredSize(new Dimension(300,30));
+			helpTitelBox.add(helpheader);
+			helpTitelBox.setVisible(false);
+			
+			Box headerbox = Box.createHorizontalBox();
+			headerbox.add(Box.createHorizontalGlue());
+			headerbox.add(headerTitle);
+			headerbox.add(Box.createHorizontalGlue());
+			
+			headerbox.add(helpButton);
+			headerbox.add(helpTitelBox);
+			
+			
+	        
+		JPanel topPanel = new JPanel(new BorderLayout());
+		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
 		topPanel.setOpaque(true);
 		topPanel.setBackground(new Color(49,71,112));
-		JLabel topLabel = new JLabel("Instellingen Activiteit");
-		topLabel.setFont(new Font("SansSerif",Font.BOLD, 28));
-		topLabel.setForeground(new Color(237,239,241));
-		topPanel.add(topLabel);
+//		JLabel topLabel = new JLabel("Instellingen Activiteit");
+//		topLabel.setFont(new Font("SansSerif",Font.BOLD, 28));
+//		topLabel.setForeground(new Color(237,239,241));
+//		topPanel.add(topLabel);
+		
+		topPanel.add(headerbox);
 		
 		add(BorderLayout.NORTH,topPanel);
 		
@@ -163,6 +221,15 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		mainPanel.setLayout(new GridLayout(2,2));
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		mainPanel.setOpaque(false);
+		
+		Box hb = Box.createHorizontalBox();
+        hb.add(mainPanel);
+        hb.add(helpBox);
+        
+        add(hb);
+		//add(bottomPanel,BorderLayout.SOUTH);
+		add(topPanel,BorderLayout.NORTH);
+        
 		JPanel bottomPanel = new JPanel();
 		
 		stylesExportTekstArea = new JTextArea();
@@ -197,7 +264,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		//add(mainPanel);
 		add(bottomPanel,BorderLayout.SOUTH);
-		add(mainPanel);
+		add(hb);
 		
 		this.dialog = dialog;
 		this.opdrNavStruct = opdrNavStruct;
@@ -273,7 +340,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		voortgangCB = maakCheckBox(WiskOpdr.rb.getString("OPT_voortgangKnop"), boxv2, false);
 		condNavCB = maakCheckBox(WiskOpdr.rb.getString("OPT_conditionalNav"), boxv2, false);
 		condNavCB.addActionListener(this);
-		combinedComponentsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_combCompNav"), boxv2, false);
+		
 		
 		
 		//Box boxh;
@@ -284,7 +351,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		//condNavCB.setSelected(false);
 		//boxh.add(condNavCB);
 		
-		boxh.add(Box.createHorizontalStrut(20));
+		boxh.add(Box.createRigidArea(new Dimension(20,0)));
 		
 		condNavPercentageRB = new WiskOpdrRadioButton(WiskOpdr.rb.getString("OPT_conditionalPercLabel"));
 		condNavPercentageRB.addActionListener(this);
@@ -294,22 +361,22 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		condNavPercentageRB.setVisible(false);
 		condNavPercentageRB.setSelected(true);
 		boxh.add(condNavPercentageRB);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		condPercTF = new WiskOpdrTextField(""+condPerc);
 		condPercTF.setFont(font);
 		//condPercTF.setBorder(BorderFactory.createLineBorder(new Color(120,150,202)));
 		condPercTF.setForeground(WiskOpdr.fgcolorEditor);
-		condPercTF.setPreferredSize(new Dimension(50,24));
-		condPercTF.setMaximumSize(new Dimension(50,24));
+		condPercTF.setPreferredSize(new Dimension(50,22));
+		condPercTF.setMaximumSize(new Dimension(50,22));
 		condPercTF.setVisible(false);
 		boxh.add(condPercTF);
-		boxh.add(Box.createGlue());
+		boxh.add(Box.createHorizontalGlue());
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
 		boxv2.add(boxh);
 		
 		boxh = Box.createHorizontalBox();
-		boxh.add(Box.createHorizontalStrut(20));
+		boxh.add(Box.createRigidArea(new Dimension(20,0)));
 		
 		condNavVoorwaardenRB = new WiskOpdrRadioButton(WiskOpdr.rb.getString("OPT_voorwaarden"));
 		condNavVoorwaardenRB.addActionListener(this);
@@ -320,7 +387,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		condNavVoorwaardenRB.setVisible(false);
 		boxh.add(condNavVoorwaardenRB);
 		
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		condButton = new VoorwaardelijkeNavigatieButton();
 		//condButton.setFont(font);
@@ -328,7 +395,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		condButton.setMaximumSize(new Dimension(100,24));
 		condButton.setVisible(false);
 		boxh.add(condButton);
-		boxh.add(Box.createGlue());
+		boxh.add(Box.createHorizontalGlue());
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
 		boxv2.add(boxh);
 		
@@ -337,7 +404,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	    group.add(condNavVoorwaardenRB);
 		
 	    boxh = Box.createHorizontalBox();
-		boxh.add(Box.createHorizontalStrut(20));
+	    boxh.add(Box.createRigidArea(new Dimension(20,0)));
 		
 		allesCorrectCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_allesCorrect"));
 		allesCorrectCB.setOpaque(false);
@@ -348,8 +415,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(allesCorrectCB);
 		boxh.add(Box.createHorizontalGlue());
 		boxv2.add(boxh);
+		
+		combinedComponentsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_combCompNav"), boxv2, false);
 	    
-	    boxv2.add(Box.createVerticalStrut(130));
+	    //boxv2.add(Box.createVerticalStrut(130));
 	    
 		
 		
@@ -363,28 +432,30 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		pageLabel.setFont(font);
 		pageLabel.setForeground(WiskOpdr.fgcolorEditor);
         boxh.add(pageLabel);
-        boxh.add(Box.createHorizontalStrut(10));
+        boxh.add(Box.createRigidArea(new Dimension(10,0)));
         
         docWidthLabel = new JLabel(WiskOpdr.rb.getString("OPT_docWidthLabel"));
         docWidthLabel.setFont(font);
         docWidthLabel.setForeground(WiskOpdr.fgcolorEditor);
         boxh.add(docWidthLabel);
-        boxh.add(Box.createHorizontalStrut(10));
+        boxh.add(Box.createRigidArea(new Dimension(10,0)));
         
         docWidthTF = new WiskOpdrTextField(""+docWidth);
         docWidthTF.setFont(font);
+        docWidthTF.setPreferredSize(new Dimension(50,22));
         docWidthTF.setForeground(WiskOpdr.fgcolorEditor);
         boxh.add(docWidthTF);
-        boxh.add(Box.createHorizontalStrut(10));
+        boxh.add(Box.createRigidArea(new Dimension(10,0)));
         
         docHeightLabel = new JLabel(WiskOpdr.rb.getString("OPT_docHeightLabel"));
         docHeightLabel.setFont(font);
         docHeightLabel.setForeground(WiskOpdr.fgcolorEditor);
         boxh.add(docHeightLabel);
-        boxh.add(Box.createHorizontalStrut(10));
+        boxh.add(Box.createRigidArea(new Dimension(10,0)));
         
         docHeightTF = new WiskOpdrTextField(""+docHeight);
         docHeightTF.setFont(font);
+        docHeightTF.setPreferredSize(new Dimension(50,22));
         docHeightTF.setForeground(WiskOpdr.fgcolorEditor);
         boxh.add(docHeightTF);
         
@@ -397,7 +468,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		margesLabel.setFont(font);
 		margesLabel.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(margesLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		
 		//boxv3.add(boxh);
@@ -408,14 +479,15 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		margeLinksLabel.setFont(font);
 		margeLinksLabel.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(margeLinksLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		margeLinksTF = new WiskOpdrTextField(""+margeLinks);
 		margeLinksTF.setFont(font);
+		margeLinksTF.setPreferredSize(new Dimension(50,22));
 		margeLinksTF.setForeground(WiskOpdr.fgcolorEditor);
 		//margeLinksTF.setSize(new Dimension(50,24));
 		boxh.add(margeLinksTF);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		margeRechtsLabel = new JLabel(WiskOpdr.rb.getString("OPT_margeRechtsLabel")+" ");
 		margeRechtsLabel.setFont(font);
@@ -424,6 +496,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		margeRechtsTF = new WiskOpdrTextField(""+margeRechts);
 		margeRechtsTF.setFont(font);
+		margeRechtsTF.setPreferredSize(new Dimension(50,22));
 		margeRechtsTF.setForeground(WiskOpdr.fgcolorEditor);
 		//margeRechtsTF.setSize(new Dimension(50,24));
 		//boxh.add(margeRechtsTF);
@@ -433,10 +506,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		margeBovenLabel.setFont(font);
 		margeBovenLabel.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(margeBovenLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		 
 		margeBovenTF = new WiskOpdrTextField(""+margeBoven);
 		margeBovenTF.setFont(font);
+		margeBovenTF.setPreferredSize(new Dimension(50,22));
 		margeBovenTF.setForeground(WiskOpdr.fgcolorEditor);
 		//margeBovenTF.setSize(new Dimension(50,24));
 		boxh.add(margeBovenTF);
@@ -449,6 +523,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		margeOnderTF = new WiskOpdrTextField(""+margeOnder);
 		margeOnderTF.setFont(font);
+		margeOnderTF.setPreferredSize(new Dimension(50,22));
 		margeOnderTF.setForeground(WiskOpdr.fgcolorEditor);
 		//margeOnderTF.setSize(new Dimension(50,24));
 		//boxh.add(margeOnderTF);
@@ -464,7 +539,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		fontLabel.setFont(font);
 		fontLabel.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(fontLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		fontNameCO = new WiskOpdrComboBox();
 		fontNameCO.setFont(font);
@@ -472,22 +547,23 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		for(int i=0 ; i<fontNames.length ; i++)
 		{	fontNameCO.addItem(fontNames[i]);
 		}
-		fontNameCO.setPreferredSize(new Dimension(100,24));
+		fontNameCO.setPreferredSize(new Dimension(100,22));
 		boxh.add(fontNameCO);
 		
 		boxv3.add(boxh);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		fontSizeLabel = new JLabel(WiskOpdr.rb.getString("OPT_fontFormaat"));
 		fontSizeLabel.setFont(font);
 		fontSizeLabel.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(fontSizeLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 				
 		fontSizeTF = new WiskOpdrTextField(""+fontSize);
 		fontSizeTF.setFont(font);
+		fontSizeTF.setPreferredSize(new Dimension(50,22));
 		fontSizeTF.setForeground(WiskOpdr.fgcolorEditor);
-		fontSizeTF.setSize(new Dimension(50,24));
+		//fontSizeTF.setSize(new Dimension(50,24));
 		boxh.add(fontSizeTF);
 		
 		boxv3.add(boxh);
@@ -500,11 +576,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		navigatieSizeLabel.setForeground(WiskOpdr.fgcolorEditor);
 		navigatieSizeLabel.setForeground(WiskOpdr.fgcolorEditor);
 		//boxh.add(navigatieSizeLabel);
-		//boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		navigatieSizeTF = new WiskOpdrTextField(""+navigatieSize);
 		navigatieSizeTF.setFont(font);
-		navigatieSizeTF.setSize(new Dimension(50,24));
+		navigatieSizeTF.setPreferredSize(new Dimension(50,22));
+		//navigatieSizeTF.setSize(new Dimension(50,24));
 		//boxh.add(navigatieSizeTF);
 		//boxh.add(Box.createGlue());
 		//boxv3.add(boxh);
@@ -520,41 +597,42 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean manageStyles = TekstVakPanel.styles!=null;
 		stylesCB = maakCheckBox(WiskOpdr.rb.getString("OPT_styles"), boxh, manageStyles);
 		stylesCB.addActionListener(this);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		importStylesButton = new WiskOpdrButton(WiskOpdr.rb.getString("OPT_importStyles"));
 		importStylesButton.addActionListener(this);
 		//importStylesButton.setFont(font);
-		importStylesButton.setPreferredSize(new Dimension(100,24));
-		importStylesButton.setMaximumSize(new Dimension(100,24));
+		importStylesButton.setPreferredSize(new Dimension(100,22));
+		importStylesButton.setMaximumSize(new Dimension(100,22));
 		boxh.add(importStylesButton);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		exportStylesButton = new WiskOpdrButton(WiskOpdr.rb.getString("OPT_exportStyles"));
 		exportStylesButton.addActionListener(this);
 		//exportStylesButton.setFont(font);
-		exportStylesButton.setPreferredSize(new Dimension(100,24));
-		exportStylesButton.setMaximumSize(new Dimension(100,24));
+		exportStylesButton.setPreferredSize(new Dimension(100,22));
+		exportStylesButton.setMaximumSize(new Dimension(100,22));
 		boxh.add(exportStylesButton);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		boxv3.add(boxh);
-		boxv3.add(Box.createVerticalStrut(10));
+		//boxv3.add(Box.createVerticalStrut(10));
 		
 		
 		boxh = Box.createHorizontalBox();
 		layersCB = maakCheckBox(WiskOpdr.rb.getString("OPT_layers"), boxh, false);
 		layersCB.addActionListener(this);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		layersButton = new LayersButton();
 		//layersButton.setFont(font);
 		layersButton.setVisible(false);
-		layersButton.setPreferredSize(new Dimension(100,24));
-		layersButton.setMaximumSize(new Dimension(100,24));
+		layersButton.setPreferredSize(new Dimension(100,22));
+		layersButton.setMaximumSize(new Dimension(100,22));
 		boxh.add(layersButton);
-		boxh.add(Box.createGlue());
+		boxh.add(Box.createHorizontalGlue());
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
 		boxv3.add(boxh);
-		
-		boxv3.add(Box.createVerticalStrut(70));
+		boxv3.add(Box.createVerticalStrut(10));
+		boxv3.add(Box.createVerticalGlue());
+		//boxv3.add(Box.createVerticalStrut(70));
 		
 		//Nakijk-opties
 		Box boxv4 = Box.createVerticalBox();
@@ -569,7 +647,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh = Box.createHorizontalBox();
 		zelftoetsGeschiedenisCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsGeschiedenis"), boxh, false);//zelftoets geschiedenis tonen of niet"
 		zelftoetsGeschiedenisCB.addActionListener(this);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		zelftoetsHighScoreCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsHighScore"), boxh, false);
 		zelftoetsHighScoreCB.setVisible(false);
 		boxv4.add(boxh);
@@ -577,10 +655,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh = Box.createHorizontalBox();
 		aftrekCorrectieZelftoetsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsCorrAftrek"), boxh, true);
 		aftrekCorrectieZelftoetsCB.addActionListener(this);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		aftrekCorrectieZelftoetsTF = new WiskOpdrTextField(""+aftrekCorrectieZelftoets);
-		aftrekCorrectieZelftoetsTF.setPreferredSize(new Dimension(50,24));
-		aftrekCorrectieZelftoetsTF.setMaximumSize(new Dimension(50,24));
+		aftrekCorrectieZelftoetsTF.setPreferredSize(new Dimension(50,22));
+		aftrekCorrectieZelftoetsTF.setMaximumSize(new Dimension(50,22));
 		aftrekCorrectieZelftoetsTF.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(aftrekCorrectieZelftoetsTF);
 		
@@ -597,14 +675,14 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		timerCB.setSelected(false);
 		boxh.add(timerCB);
 		
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		timerLabel = new JLabel(WiskOpdr.rb.getString("OPT_tijdsLimiet"));//"Tijdslimiet(sec)"
 		timerLabel.setFont(font);
 		timerLabel.setForeground(WiskOpdr.fgcolorEditor);
 		timerLabel.setVisible(false);
 		boxh.add(timerLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		timerTF = new WiskOpdrTextField("" + timeLimit);
 		timerTF.setFont(font);
@@ -612,7 +690,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		timerTF.setPreferredSize(new Dimension(50,24));
 		timerTF.setVisible(false);
 		boxh.add(timerTF);
-		boxh.add(Box.createGlue());
+		boxh.add(Box.createHorizontalGlue());
 		
 		boxv4.add(boxh);
 		
@@ -627,7 +705,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		objectivesCB.setSelected(false);
 		boxh.add(objectivesCB);
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
-		boxh.add(Box.createGlue());
+		boxh.add(Box.createHorizontalGlue());
 		
 		pilotObjectivesCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_pilotObjectives"));
 		pilotObjectivesCB.setVisible(false);
@@ -637,14 +715,14 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		pilotObjectivesCB.setForeground(WiskOpdr.fgcolorEditor);
 		pilotObjectivesCB.setSelected(false);
 		boxh.add(pilotObjectivesCB);
-		boxh.add(Box.createHorizontalStrut(20));
+		boxh.add(Box.createRigidArea(new Dimension(20,0)));
 		
 		objectivesButton = new ObjectiveSettingsButton();
 		objectivesButton.setPreferredSize(new Dimension(100,24));
 		objectivesButton.setMaximumSize(new Dimension(100,24));
 		objectivesButton.setVisible(false);
 		boxh.add(objectivesButton);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		boxv4.add(boxh);
 		
 		boxh = Box.createHorizontalBox();
@@ -658,16 +736,18 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		misconceptionsCB.setSelected(false);
 		boxh.add(misconceptionsCB);
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
-		boxh.add(Box.createGlue());
+		boxh.add(Box.createHorizontalGlue());
 		
 		misconceptionsButton = new ObjectiveSettingsButton(WiskOpdr.rb.getString("OPT_misconceptions"), WiskOpdr.rb.getString("MCC_misconception"), WiskOpdr.rb.getString("MCC_categorie"));
 		misconceptionsButton.setVisible(false);
 		misconceptionsButton.setPreferredSize(new Dimension(140,24));
 		misconceptionsButton.setMaximumSize(new Dimension(140,24));
 		boxh.add(misconceptionsButton);
-		boxh.add(Box.createHorizontalStrut(70));
+		boxh.add(Box.createHorizontalGlue());
 		//boxv4.add(boxh);
-		boxv4.add(Box.createVerticalStrut(60));
+		//boxv4.add(Box.createVerticalStrut(60));
+		
+		boxv4.createVerticalGlue();
 		
 		
 		
@@ -1394,6 +1474,31 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{
 			layersButton.setVisible(layersCB.isSelected());
 		}
+		else if (e.getSource() == helpButton) {
+        	//if(interactieEditPanel!=null && interactieEditPanel instanceof AntwoordVergelijkingVakEditPanel) 
+			//{
+        		//((AntwoordVergelijkingVakEditPanel)interactieEditPanel).showHelp(true);
+        		
+    		helpBox.setVisible(!helpBox.isVisible());
+    		helpTitelBox.setVisible(helpBox.isVisible());
+    		if(helpBox.isVisible()) {
+    			 
+    			helpBox.validate();
+    			//OpdrNavStructEdit.helpBrowser.loadURL(((HelpButtonPanelIF)interactieEditPanel).geefHelpURL());
+            	
+            	//packWidth(1100);
+    			dialog.pack();
+    		}
+    		else {
+    			helpBox.validate(); 
+    			OpdrNavStructEdit.helpBrowser.loadURL(null);
+            	
+    			//pack();
+    			dialog.pack();
+    		}	
+			//}
+            
+        }
 		
 	}
 	//Eenvoudige parser voor styles van Strings naar Objects

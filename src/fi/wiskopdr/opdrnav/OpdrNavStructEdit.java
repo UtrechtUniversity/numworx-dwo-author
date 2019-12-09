@@ -304,7 +304,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		instellingenPanel = new InstellingenPanel(instellingenDialog, this);
 		instellingenPanel.addActionListener(this);
-		instellingenPanel.setBounds(0, 0, 750, 740);
+		instellingenPanel.validate();
+		instellingenPanel.setBounds(0, 0, 750, 640);
 		instellingenPanel.zetInstellingen(instellingen);
 
 		instellingenDialog.getContentPane().add(instellingenPanel);
@@ -883,6 +884,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public void actionPerformed(ActionEvent e) {
 	    if (e.getSource() == instellingenKnop) {
 	    	instellingenDialog.setVisible(true);
+	    	instellingenPanel.validate();
+	    	instellingenDialog.pack();
 		}
 		if (e.getSource() == instellingenPanel) {
 			setFont(WiskOpdr.tekstFont);

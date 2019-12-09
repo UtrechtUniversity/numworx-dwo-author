@@ -1031,7 +1031,22 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "HELP_53_URL_VARIABELEN" , "https://app.dwo.nl/dwo/apps/player.html?t=11&profile=106&locale=nl#671219"},
 				{ "HELP_53_URL_ANTWOORD" , "https://app.dwo.nl/dwo/apps/player.html?t=12&profile=106&locale=nl#671220"},
 				
-	    
+				{ "HELP_13_URL" , "https://app.dwo.nl/dwo/apps/player.html?t=17&profile=106&locale=nl#671323"},
+				{ "HELP_13_URL_CHECK" , "https://app.dwo.nl/dwo/apps/player.html?t=2&profile=106&locale=nl#671307"},
+				{ "HELP_13_URL_TELTMEE" , "https://app.dwo.nl/dwo/apps/player.html?t=3&profile=106&locale=nl#671308"},
+				{ "HELP_13_URL_LOGID" , "https://app.dwo.nl/dwo/apps/player.html?t=4&profile=106&locale=nl#671309"},
+				{ "HELP_13_URL_FEEDBACK" , "https://app.dwo.nl/dwo/apps/player.html?t=5&profile=106&locale=nl#671310"},
+				{ "HELP_53_URL_FORMINVOER" , "https://app.dwo.nl/dwo/apps/player.html?t=8&profile=106&locale=nl#671311"},
+				{ "HELP_53_URL_RAND" , "https://app.dwo.nl/dwo/apps/player.html?t=9&profile=106&locale=nl#671312"},
+				{ "HELP_13_URL_ANTWOORD" , "https://app.dwo.nl/dwo/apps/player.html?t=10&profile=106&locale=nl#671313"},
+				{ "HELP_13_URL_FEEDBACKTITLE" , "https://app.dwo.nl/dwo/apps/player.html?t=12&profile=106&locale=nl#671314"},
+				
+				{ "HELP_4_URL" , "https://app.dwo.nl/dwo/apps/player.html?t=17&profile=106&locale=nl#671325"},
+				{ "HELP_4_URL_CHECK" , "https://app.dwo.nl/dwo/apps/player.html?t=2&profile=106&locale=nl#671326"},
+				{ "HELP_4_URL_LOGID" , "https://app.dwo.nl/dwo/apps/player.html?t=4&profile=106&locale=nl#671327"},
+				{ "HELP_4_URL_FORMINVOER" , "https://app.dwo.nl/dwo/apps/player.html?t=8&profile=106&locale=nl#671328"},
+				{ "HELP_4_URL_REKENMACHINE" , "https://app.dwo.nl/dwo/apps/player.html?t=12&profile=106&locale=nl#671329"},
+				{ "HELP_4_URL_RAND" , "https://app.dwo.nl/dwo/apps/player.html?t=9&profile=106&locale=nl#671330"},
 		};
 }
 

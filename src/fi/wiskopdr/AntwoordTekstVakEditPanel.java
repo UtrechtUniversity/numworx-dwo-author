@@ -92,15 +92,29 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
   	private JLabel titleOpmaakLabel;
   	private JCheckBox boxMetRandCB;
     
+  	// Helpbuttons
+    private static String HELP_13_URL = WiskOpdr.rb.getString("HELP_13_URL");
+    private static String HELP_13_URL_CHECK = WiskOpdr.rb.getString("HELP_13_URL_CHECK");
+    private static String HELP_13_URL_TELTMEE = WiskOpdr.rb.getString("HELP_13_URL_TELTMEE");
+    private static String HELP_13_URL_LOGID = WiskOpdr.rb.getString("HELP_13_URL_LOGID");
+    private static String HELP_13_URL_FEEDBACK = WiskOpdr.rb.getString("HELP_13_URL_FEEDBACK");
+    private static String HELP_13_URL_FORMINVOER = WiskOpdr.rb.getString("HELP_13_URL_FORMINVOER");
+    private static String HELP_13_URL_RAND = WiskOpdr.rb.getString("HELP_13_URL_RAND");
+    private static String HELP_13_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_13_URL_ANTWOORD");
+    private static String HELP_13_URL_FEEDBACKTITLE = WiskOpdr.rb.getString("HELP_13_URL_FEEDBACKTITLE");
     
-	
-  	
-  	
+    private HelpButton hbCheck;
+    private HelpButton hbTeltMee;
+    private HelpButton hbLogID;
+    private HelpButton hbFeedback;
+    private HelpButton hbFormInvoer;
+    private HelpButton hbRand;
+    private HelpButton hbAntwoord;
+    private HelpButton hbFeedbackTitel; 
+    
   	//Overige (wellicht overbodig geworden)
 	private JLabel antwoordLabel,  feedbackLabel;
 	private JLabel  checkTotaalLabel;
-	
-	
 		
 	
 	public AntwoordTekstVakEditPanel()
@@ -231,7 +245,18 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		checkTotaalLabel = makeLabel(620,385,160,20,WiskOpdr.rb.getString("checkTotaalLabel"),false);
 		checkTotaalLabel.setForeground(Color.red);
 		
+		hbCheck = makeHelpButton(HELP_13_URL_CHECK);
+	    hbTeltMee = makeHelpButton(HELP_13_URL_TELTMEE);
+	    hbLogID = makeHelpButton(HELP_13_URL_LOGID);
+	    hbFeedback = makeHelpButton(HELP_13_URL_FEEDBACK);
+	    hbFormInvoer = makeHelpButton(HELP_13_URL_FORMINVOER);
+	    hbRand = makeHelpButton(HELP_13_URL_RAND);
+	    hbAntwoord = makeHelpButton(HELP_13_URL_ANTWOORD);
+	    hbFeedbackTitel = makeHelpButton(HELP_13_URL_FEEDBACKTITLE); 
 		
+	    hbAntwoord.setBounds(140,-2,18,18);
+    	antwoordEditorPanel.add(hbAntwoord,0);
+    	
 		removeAll();
 	    plaatsGUI();
 	    add(mainPanel);		
@@ -245,23 +270,23 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		
 		// plaatsComponenten settingBox
 		Component[] r41 = {titleLoggingLabel, 	hgl()};
-		Component[] r42 = {checkCB, 			hgl()};
-		Component[] r43 = {teltMeeCB, 			hgl()};
-		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
+		Component[] r43 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
 		Component[] r45 = {logObjectivesButton, hgl()};
 		Component[] r46 = {titleHulpLabel, 		hgl()};
-		Component[] r47 = {feedbackCB, 			hgl()};
-		Component[] r48 = {formuleModeCB, hgl()};
+		Component[] r47 = {feedbackCB, 			ra(5,0),	hgl(),	hbFeedback};
+		Component[] r48 = {formuleModeCB, 		ra(5,0),	hgl(),	hbFormInvoer};
 		Component[] r49 = {formuleToolBijFocusCB, hgl()};
 		Component[] r422 = {titleOpmaakLabel, 	hgl()};
-		Component[] r424 = {boxMetRandCB, 		hgl()};
+		Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand};
 		
 		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
 					 vst(20), hb(r422),vst(5),hb(r424), vgl()};
 		Box settingsBox = vb(k4);
 		
 		// plaats componenten feedback box
-		Component[] r51 = {titleFeedbackTekstLabel, 		hgl()};
+		Component[] r51 = {titleFeedbackTekstLabel, 		ra(5,10),	hgl(), hbFeedbackTitel};
 		Component[] r52 = {ra(0,110),				hgl(),  		feedbackEditor};
 		
 		Component[] k5 = {hb(r51),vst(5),hb(r52), vgl()};
@@ -284,35 +309,35 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 				
 		
 		// boxes plaatsen
-				Box boxh = Box.createHorizontalBox();
-				mainPanel.add(boxh);
-				
-				Box boxv1 = Box.createVerticalBox();
-				boxh.add(boxv1);
-				boxh.add(Box.createHorizontalStrut(20));
-				boxh.add(settingsBox);
-				
-				//scoringBox.setVisible(false);
-				feedbackBox.setVisible(false);
-				
-				Box boxh1 = Box.createHorizontalBox();
-				Box boxh2 = Box.createHorizontalBox();
-				Box boxh3 = Box.createHorizontalBox();
-				
-				
-				boxv1.add(boxh2);
-				boxv1.add(Box.createVerticalStrut(20));
-				boxv1.add(boxh3);
-				
-				
-				boxh2.add(antwoordBox);
-				
-				boxh3.add(verificatieBox);
-				boxh3.add(Box.createHorizontalStrut(5));
-				boxh3.add(scoringBox);
-				boxh3.add(Box.createHorizontalStrut(10));
-				boxh3.add(Box.createHorizontalGlue());
-				boxh3.add(feedbackBox);
+		Box boxh = Box.createHorizontalBox();
+		mainPanel.add(boxh);
+		
+		Box boxv1 = Box.createVerticalBox();
+		boxh.add(boxv1);
+		boxh.add(Box.createHorizontalStrut(20));
+		boxh.add(settingsBox);
+		
+		//scoringBox.setVisible(false);
+		feedbackBox.setVisible(false);
+		
+		Box boxh1 = Box.createHorizontalBox();
+		Box boxh2 = Box.createHorizontalBox();
+		Box boxh3 = Box.createHorizontalBox();
+		
+		
+		boxv1.add(boxh2);
+		boxv1.add(Box.createVerticalStrut(20));
+		boxv1.add(boxh3);
+		
+		
+		boxh2.add(antwoordBox);
+		
+		boxh3.add(verificatieBox);
+		boxh3.add(Box.createHorizontalStrut(5));
+		boxh3.add(scoringBox);
+		boxh3.add(Box.createHorizontalStrut(10));
+		boxh3.add(Box.createHorizontalGlue());
+		boxh3.add(feedbackBox);
 	}
 	
 	private Box hb(Component[] c) {
@@ -381,6 +406,17 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		textField.setVisible(visible);
 		add(textField,0);
 		return textField;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
 	}
 	
 	private void updateFeedbackTitelLabel()
@@ -651,7 +687,11 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 	
 	public void actionPerformed(ActionEvent e)
 	{	
-		if(e.getSource() == tabbladTab)
+		if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
+		else if(e.getSource() == tabbladTab)
 		{	int nr = Integer.parseInt(e.getActionCommand())-1;
 			if(answerModelNr != nr) 
 			{
@@ -907,16 +947,21 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 	        
 	      }
 	}
-	@Override
+ 	@Override
 	public void showHelpButtons(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
+		hbCheck.setVisible(b);
+    	hbTeltMee.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbFeedback.setVisible(b);
+    	hbFormInvoer.setVisible(b);
+    	hbRand.setVisible(b);	
+    	hbAntwoord.setVisible(b);
+    	hbFeedbackTitel.setVisible(b);
+  	}
 
 	@Override
 	public String geefHelpURL() {
-		// TODO Auto-generated method stub
-		return null;
+		return HELP_13_URL;
 	}
 }
 

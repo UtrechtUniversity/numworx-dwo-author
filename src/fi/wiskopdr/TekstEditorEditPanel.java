@@ -15,6 +15,7 @@ import javax.swing.*;
 import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.AntwoordTekstVakEditPanel.EditorComponentListener;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.wiskopdr.tekstobjects.*;
 
 public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel , ActionListener, HelpButtonPanelIF
@@ -59,7 +60,20 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
   	private JCheckBox boxMetRandCB;
 	private boolean formuleEditorAan, rekenTool, grafTool;
 	
-	
+	// Helpbuttons
+    private static String HELP_4_URL = WiskOpdr.rb.getString("HELP_4_URL");
+    private static String HELP_4_URL_CHECK = WiskOpdr.rb.getString("HELP_4_URL_CHECK");
+    private static String HELP_4_URL_LOGID = WiskOpdr.rb.getString("HELP_4_URL_LOGID");
+    private static String HELP_4_URL_FORMINVOER = WiskOpdr.rb.getString("HELP_4_URL_FORMINVOER");
+    private static String HELP_4_URL_REKENMACHINE = WiskOpdr.rb.getString("HELP_4_URL_REKENMACHINE");
+    private static String HELP_4_URL_RAND = WiskOpdr.rb.getString("HELP_4_URL_RAND");
+    
+    private HelpButton hbCheck;
+    private HelpButton hbLogID;
+    private HelpButton hbFormInvoer;
+    private HelpButton hbRekenmachine;
+    private HelpButton hbRand;
+    
 	
 	public TekstEditorEditPanel()
 	{	
@@ -125,6 +139,11 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
     	
     	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
     	
+    	hbCheck = makeHelpButton(HELP_4_URL_CHECK);
+	    hbLogID = makeHelpButton(HELP_4_URL_LOGID);
+	    hbFormInvoer = makeHelpButton(HELP_4_URL_FORMINVOER);
+	    hbRekenmachine = makeHelpButton(HELP_4_URL_REKENMACHINE);
+	    hbRand = makeHelpButton(HELP_4_URL_RAND);
     	
     	removeAll();
 	    plaatsGUI();
@@ -140,14 +159,14 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		
 		// plaatsComponenten settingBox
 		Component[] r41 = {titleLoggingLabel, 	hgl()};
-		Component[] r42 = {checkCB, 			hgl()};
+		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
 		Component[] r43 = {ra(25,0), 			maxScoreLabel, 		ra(5,0),	maxScoreField,	hgl()};
-		Component[] r44 = {logCB, 				ra(5,0), logIDField, ra(5,0), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r44 = {logCB, 				ra(5,0), logIDField, ra(5,0), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
 		Component[] r45 = {titleHulpLabel, 		hgl()};
-		Component[] r46 = {formuleEditorCB, 	hgl()};
-		Component[] r47 = {rekenToolCB, 		hgl()};
+		Component[] r46 = {formuleEditorCB, 	ra(5,0),	hgl(),	hbFormInvoer};
+		Component[] r47 = {rekenToolCB, 		ra(5,0),	hgl(),	hbRekenmachine};
 		Component[] r48 = {titleOpmaakLabel, 	hgl()};
-		Component[] r49 = {boxMetRandCB, 		hgl()};
+		Component[] r49 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand};
 		
 		Component[] k4 = {hb(r41),vst(10),hb(r42),hb(r43),hb(r44),vst(20),hb(r45),vst(10),hb(r46),hb(r47),
 				vst(20),hb(r48),vst(10),hb(r49), vgl()};
@@ -241,6 +260,17 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		label.setVisible(visible);
 		add(label,0);
 		return label;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
 	}
 	
 	public Hashtable getEditState()
@@ -371,8 +401,11 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 	
 	public void actionPerformed(ActionEvent e)
 	{	
-		
-		if(e.getSource().equals(formuleEditorCB))
+		if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
+		else if(e.getSource().equals(formuleEditorCB))
 		{	formuleEditorAan = formuleEditorCB.isSelected();
 			startEditor.zetBalkZichtbaar(formuleEditorAan);
 			if(!formuleEditorAan) {
@@ -500,15 +533,18 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 	        
 	      }
 	}
-	@Override
+ 	@Override
 	public void showHelpButtons(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
+		hbCheck.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbFormInvoer.setVisible(b);
+    	hbRekenmachine.setVisible(b);
+    	hbRand.setVisible(b);	
+    	
+  	}
 
 	@Override
 	public String geefHelpURL() {
-		// TODO Auto-generated method stub
-		return null;
+		return HELP_4_URL;
 	}
 }
