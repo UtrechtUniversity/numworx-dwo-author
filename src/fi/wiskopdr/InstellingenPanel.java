@@ -150,6 +150,66 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private Font boldFont = new Font("SansSerif", Font.BOLD, 16);
 	private OpdrNavStructEdit opdrNavStruct;
 	
+	private static String HELP_INST_URL = WiskOpdr.rb.getString("HELP_INST_URL"); 
+	private static String HELP_INST_URL_MAALTEKEN = WiskOpdr.rb.getString("HELP_INST_URL_MAALTEKEN");
+	private static String HELP_INST_URL_WOORDFORMULE = WiskOpdr.rb.getString("HELP_INST_URL_WOORDFORMULE");
+	private static String HELP_INST_URL_TWEEHLVAR = WiskOpdr.rb.getString("HELP_INST_URL_TWEEHLVAR");
+	private static String HELP_INST_URL_HOEKGRADEN = WiskOpdr.rb.getString("HELP_INST_URL_HOEKGRADEN");
+	private static String HELP_INST_URL_SIGNIFICANTIE = WiskOpdr.rb.getString("HELP_INST_URL_SIGNIFICANTIE");
+	private static String HELP_INST_URL_GLOBAALPARAM = WiskOpdr.rb.getString("HELP_INST_URL_GLOBAALPARAM");
+	private static String HELP_INST_URL_DIFFOPERATOREN = WiskOpdr.rb.getString("HELP_INST_URL_DIFFOPERATOREN");
+	private static String HELP_INST_URL_BOLLETJES = WiskOpdr.rb.getString("HELP_INST_URL_BOLLETJES");
+	private static String HELP_INST_URL_VOLGENDEKNOP = WiskOpdr.rb.getString("HELP_INST_URL_VOLGENDEKNOP");
+	private static String HELP_INST_URL_VORIGEKNOP = WiskOpdr.rb.getString("HELP_INST_URL_VORIGEKNOP");
+	private static String HELP_INST_URL_VOORTGANG = WiskOpdr.rb.getString("HELP_INST_URL_VOORTGANG");
+	private static String HELP_INST_URL_CONDNAV = WiskOpdr.rb.getString("HELP_INST_URL_CONDNAV");
+	private static String HELP_INST_URL_COMBINEDCOMPONENTS = WiskOpdr.rb.getString("HELP_INST_URL_COMBINEDCOMPONENTS");
+	private static String HELP_INST_URL_FORMTIMES = WiskOpdr.rb.getString("HELP_INST_URL_FORMTIMES");
+	private static String HELP_INST_URL_FONTOVERERVING = WiskOpdr.rb.getString("HELP_INST_URL_FONTOVERERVING");
+	private static String HELP_INST_URL_FONTOVERERVINGFORM = WiskOpdr.rb.getString("HELP_INST_URL_FONTOVERERVINGFORM");
+	private static String HELP_INST_URL_TEMPLATEEDIT = WiskOpdr.rb.getString("HELP_INST_URL_TEMPLATEEDIT");
+	private static String HELP_INST_URL_STYLES = WiskOpdr.rb.getString("HELP_INST_URL_STYLES");
+	private static String HELP_INST_URL_LAYERS = WiskOpdr.rb.getString("HELP_INST_URL_LAYERS");
+	private static String HELP_INST_URL_SCORESZICHTBAAR = WiskOpdr.rb.getString("HELP_INST_URL_SCORESZICHTBAAR");
+	private static String HELP_INST_URL_OPNIEUW = WiskOpdr.rb.getString("HELP_INST_URL_OPNIEUW");
+	private static String HELP_INST_URL_ITEMOPNIEUW = WiskOpdr.rb.getString("HELP_INST_URL_ITEMOPNIEUW");
+	private static String HELP_INST_URL_ZELFTOETSGEENCORR = WiskOpdr.rb.getString("HELP_INST_URL_ZELFTOETSGEENCORR");
+	private static String HELP_INST_URL_ZELFTOETSGESCHIEDENIS = WiskOpdr.rb.getString("HELP_INST_URL_ZELFTOETSGESCHIEDENIS");
+	private static String HELP_INST_URL_AFTREKCORRZELFTOETS = WiskOpdr.rb.getString("HELP_INST_URL_AFTREKCORRZELFTOETS");
+	private static String HELP_INST_URL_EERDERGEENCORR = WiskOpdr.rb.getString("HELP_INST_URL_EERDERGEENCORR");
+	private static String HELP_INST_URL_TIMER = WiskOpdr.rb.getString("HELP_INST_URL_TIMER");
+	private static String HELP_INST_URL_OBJECTIVES = WiskOpdr.rb.getString("HELP_INST_URL_OBJECTIVES");
+	
+	private HelpButton hbMaalTeken = makeHelpButton(HELP_INST_URL_MAALTEKEN);
+	private HelpButton hbWoordFormule = makeHelpButton(HELP_INST_URL_WOORDFORMULE);
+	private HelpButton hbTweeHLVar = makeHelpButton(HELP_INST_URL_TWEEHLVAR);
+	private HelpButton hbHoekGraden = makeHelpButton(HELP_INST_URL_HOEKGRADEN);
+	private HelpButton hbSignifacantie = makeHelpButton(HELP_INST_URL_SIGNIFICANTIE);
+	private HelpButton hbGlobaalParam = makeHelpButton(HELP_INST_URL_GLOBAALPARAM);
+	private HelpButton hbDiffOperatoren = makeHelpButton(HELP_INST_URL_DIFFOPERATOREN);
+	private HelpButton hbBolletjes = makeHelpButton(HELP_INST_URL_BOLLETJES);
+	private HelpButton hbVolgendeKnop = makeHelpButton(HELP_INST_URL_VOLGENDEKNOP);
+	private HelpButton hbVorigeKnop = makeHelpButton(HELP_INST_URL_VORIGEKNOP);
+	private HelpButton hbVoortgang = makeHelpButton(HELP_INST_URL_VOORTGANG);
+	private HelpButton hbCondNav = makeHelpButton(HELP_INST_URL_CONDNAV);
+	private HelpButton hbCombinedComponents = makeHelpButton(HELP_INST_URL_COMBINEDCOMPONENTS);
+	private HelpButton hbFormTimes = makeHelpButton(HELP_INST_URL_FORMTIMES);
+	private HelpButton hbFontOvererving = makeHelpButton(HELP_INST_URL_FONTOVERERVING);
+	private HelpButton hbFontOverervingForm = makeHelpButton(HELP_INST_URL_FONTOVERERVINGFORM);
+	private HelpButton hbTemplateEdit = makeHelpButton(HELP_INST_URL_TEMPLATEEDIT);
+	private HelpButton hbStyles = makeHelpButton(HELP_INST_URL_STYLES);
+	private HelpButton hbLayers = makeHelpButton(HELP_INST_URL_LAYERS);
+	private HelpButton hbScoresZichtbaar = makeHelpButton(HELP_INST_URL_SCORESZICHTBAAR);
+	private HelpButton hbOpnieuw = makeHelpButton(HELP_INST_URL_OPNIEUW);
+	private HelpButton hbItemOpnieuw = makeHelpButton(HELP_INST_URL_ITEMOPNIEUW);
+	private HelpButton hbZelftoetsGeenCorr = makeHelpButton(HELP_INST_URL_ZELFTOETSGEENCORR);
+	private HelpButton hbZelftoetsGeschiedenis = makeHelpButton(HELP_INST_URL_ZELFTOETSGESCHIEDENIS);
+	private HelpButton hbAftrekCorrZelftoets = makeHelpButton(HELP_INST_URL_AFTREKCORRZELFTOETS);
+	private HelpButton hEerderGeenCorr = makeHelpButton(HELP_INST_URL_EERDERGEENCORR);
+	private HelpButton hbTimer = makeHelpButton(HELP_INST_URL_TIMER);
+	private HelpButton hbObjectives = makeHelpButton(HELP_INST_URL_OBJECTIVES);
+	
+	
 	public InstellingenPanel(DialogFacade dialog, OpdrNavStructEdit opdrNavStruct)
 	{	
 		setLayout(new BorderLayout());
@@ -273,18 +333,19 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		//Wiskunde-opties
 		Box boxv1 = Box.createVerticalBox();
+		boxv1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 40));
 		//boxv1.add(Box.createHorizontalStrut(10));
 		//boxv1.add(Box.createVerticalStrut(20));
 		wiskundeLabel = maakLabel(WiskOpdr.rb.getString("OPT_wiskundeLabel"), boxv1);
-		maalTekenCB = maakCheckBox(WiskOpdr.rb.getString("OPT_vermenigvTeken"), boxv1, false);//"Vermenigvuldigingsteken X"
-		woordFormuleCB = maakCheckBox(WiskOpdr.rb.getString("OPT_woordformules"), boxv1, false);//"Woordformules"
-		tweeHLVarCB = maakCheckBox(WiskOpdr.rb.getString("OPT_tweeHoofdletterVars"), boxv1, false);//"Twee-hoofdletter variabelen "
-		hoekGradenCB = maakCheckBox(WiskOpdr.rb.getString("OPT_hoekInGraden"),boxv1, false);//"Hoekberekeningen in graden"
+		maalTekenCB = maakCheckBoxHelp(hbMaalTeken,WiskOpdr.rb.getString("OPT_vermenigvTeken"), boxv1, false);//"Vermenigvuldigingsteken X"
+		woordFormuleCB = maakCheckBoxHelp(hbWoordFormule,WiskOpdr.rb.getString("OPT_woordformules"), boxv1, false);//"Woordformules"
+		tweeHLVarCB = maakCheckBoxHelp(hbTweeHLVar,WiskOpdr.rb.getString("OPT_tweeHoofdletterVars"), boxv1, false);//"Twee-hoofdletter variabelen "
+		hoekGradenCB = maakCheckBoxHelp(hbHoekGraden,WiskOpdr.rb.getString("OPT_hoekInGraden"),boxv1, false);//"Hoekberekeningen in graden"
 		fToetsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fToets"), boxv1, true);//"F-toetsen gebruiken of niet"
 		boxv1.remove(boxv1.getComponentCount()-1);
-		significantieCB = maakCheckBox(WiskOpdr.rb.getString("OPT_significantie"), boxv1, false); //"Checkmogelijkheid significante getallen"
-		globalParamCB = maakCheckBox(WiskOpdr.rb.getString("OPT_globalParam"), boxv1, false);//"Globale parameters"
-		diffOperatorenCB = maakCheckBox(WiskOpdr.rb.getString("OPT_diffOperatoren"), boxv1, false);
+		significantieCB = maakCheckBoxHelp(hbSignifacantie,WiskOpdr.rb.getString("OPT_significantie"), boxv1, false); //"Checkmogelijkheid significante getallen"
+		globalParamCB = maakCheckBoxHelp(hbGlobaalParam,WiskOpdr.rb.getString("OPT_globalParam"), boxv1, false);//"Globale parameters"
+		diffOperatorenCB = maakCheckBoxHelp(hbDiffOperatoren,WiskOpdr.rb.getString("OPT_diffOperatoren"), boxv1, false);
 		//diffOperatorenCB.setVisible(false);
 		
 		Box boxh = Box.createHorizontalBox();
@@ -333,12 +394,14 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		//Navigatie-opties
 		Box boxv2 = Box.createVerticalBox();
+		boxv2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 40));
+		
 		navigatieLabel = maakLabel(WiskOpdr.rb.getString("OPT_navigatieLabel"), boxv2);
-		bolletjesCB = maakCheckBox(WiskOpdr.rb.getString("OPT_opdrachtBolletjes"), boxv2, true);//"Opdrachtbolletjes"
-		volgendeKnopCB = maakCheckBox(WiskOpdr.rb.getString("OPT_volgendeKnop"), boxv2, false);//"volgende-knop zichtbaar"
-		vorigeKnopCB = maakCheckBox(WiskOpdr.rb.getString("OPT_VorigeKnop"), boxv2, false);//"vorige-knop zichtbaar"
-		voortgangCB = maakCheckBox(WiskOpdr.rb.getString("OPT_voortgangKnop"), boxv2, false);
-		condNavCB = maakCheckBox(WiskOpdr.rb.getString("OPT_conditionalNav"), boxv2, false);
+		bolletjesCB = maakCheckBoxHelp(hbBolletjes,WiskOpdr.rb.getString("OPT_opdrachtBolletjes"), boxv2, true);//"Opdrachtbolletjes"
+		volgendeKnopCB = maakCheckBoxHelp(hbVolgendeKnop,WiskOpdr.rb.getString("OPT_volgendeKnop"), boxv2, false);//"volgende-knop zichtbaar"
+		vorigeKnopCB = maakCheckBoxHelp(hbVorigeKnop,WiskOpdr.rb.getString("OPT_VorigeKnop"), boxv2, false);//"vorige-knop zichtbaar"
+		voortgangCB = maakCheckBoxHelp(hbVoortgang,WiskOpdr.rb.getString("OPT_voortgangKnop"), boxv2, false);
+		condNavCB = maakCheckBoxHelp(hbCondNav,WiskOpdr.rb.getString("OPT_conditionalNav"), boxv2, false);
 		condNavCB.addActionListener(this);
 		
 		
@@ -416,7 +479,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(Box.createHorizontalGlue());
 		boxv2.add(boxh);
 		
-		combinedComponentsCB = maakCheckBox(WiskOpdr.rb.getString("OPT_combCompNav"), boxv2, false);
+		combinedComponentsCB = maakCheckBoxHelp(hbCombinedComponents,WiskOpdr.rb.getString("OPT_combCompNav"), boxv2, false);
 	    
 	    //boxv2.add(Box.createVerticalStrut(130));
 	    
@@ -586,12 +649,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		//boxh.add(Box.createGlue());
 		//boxv3.add(boxh);
 		
-		formTimesCB = maakCheckBox(WiskOpdr.rb.getString("OPT_formTimes"), boxv3, true);//"formules in Times Roman"
+		formTimesCB = maakCheckBoxHelp(hbFormTimes,WiskOpdr.rb.getString("OPT_formTimes"), boxv3, true);//"formules in Times Roman"
 		//paginaCB = maakCheckBox(WiskOpdr.rb.getString("OPT_paginaIpvOpdracht"), boxv3, false);//"pagina ipv opdracht"
 		//abcDeelOpdrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_deelOpdr"), boxv3, false);//"F-toetsen gebruiken of niet"
-		fontOverervingCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOvererving"), boxv3, false);//"Font-overerving tekstvakken"
-		fontOverervingFormCB = maakCheckBox(WiskOpdr.rb.getString("OPT_fontOverervingForm"), boxv3, false);
-		templateEditCB = maakCheckBox(WiskOpdr.rb.getString("OPT_templateEditor"), boxv3, false);
+		fontOverervingCB = maakCheckBoxHelp(hbFontOvererving,WiskOpdr.rb.getString("OPT_fontOvererving"), boxv3, false);//"Font-overerving tekstvakken"
+		fontOverervingFormCB = maakCheckBoxHelp(hbFontOverervingForm,WiskOpdr.rb.getString("OPT_fontOverervingForm"), boxv3, false);
+		templateEditCB = maakCheckBoxHelp(hbTemplateEdit,WiskOpdr.rb.getString("OPT_templateEditor"), boxv3, false);
 		
 		boxh = Box.createHorizontalBox();
 		boolean manageStyles = TekstVakPanel.styles!=null;
@@ -612,6 +675,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		exportStylesButton.setMaximumSize(new Dimension(100,22));
 		boxh.add(exportStylesButton);
 		boxh.add(Box.createRigidArea(new Dimension(10,0)));
+		boxh.add(hbStyles);
 		boxv3.add(boxh);
 		//boxv3.add(Box.createVerticalStrut(10));
 		
@@ -628,7 +692,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		layersButton.setMaximumSize(new Dimension(100,22));
 		boxh.add(layersButton);
 		boxh.add(Box.createHorizontalGlue());
-		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
+		boxh.add(hbLayers);
+		//boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
 		boxv3.add(boxh);
 		boxv3.add(Box.createVerticalStrut(10));
 		boxv3.add(Box.createVerticalGlue());
@@ -637,12 +702,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		//Nakijk-opties
 		Box boxv4 = Box.createVerticalBox();
 		nakijkenLabel = maakLabel(WiskOpdr.rb.getString("OPT_nakijkenLabel"), boxv4);
-		scoresZichtbaarCB = maakCheckBox(WiskOpdr.rb.getString("OPT_scoreZichtbaar"), boxv4, true);//"formules in Times Roman"
-		opnieuwCB = maakCheckBox(WiskOpdr.rb.getString("OPT_opnieuwKnop"),boxv4, false);//"'Opnieuw' mogelijk"
-		itemOpnieuwCB = maakCheckBox(WiskOpdr.rb.getString("OPT_itemOpnieuwKnop"),boxv4, false);//"'Opnieuw' mogelijk"
+		scoresZichtbaarCB = maakCheckBoxHelp(hbScoresZichtbaar,WiskOpdr.rb.getString("OPT_scoreZichtbaar"), boxv4, true);//"formules in Times Roman"
+		opnieuwCB = maakCheckBoxHelp(hbOpnieuw,WiskOpdr.rb.getString("OPT_opnieuwKnop"),boxv4, false);//"'Opnieuw' mogelijk"
+		itemOpnieuwCB = maakCheckBoxHelp(hbItemOpnieuw,WiskOpdr.rb.getString("OPT_itemOpnieuwKnop"),boxv4, false);//"'Opnieuw' mogelijk"
 		checkPerOpdrachtCB = maakCheckBox(WiskOpdr.rb.getString("OPT_checkPerOpdracht"), boxv4, false);//"Check-knop per opdracht"
 		checkPerOpdrachtCB.setVisible(false);
-		zelftoetsGeenCorrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsGeenCorr"), boxv4, false);//"F-toetsen gebruiken of niet"
+		zelftoetsGeenCorrCB = maakCheckBoxHelp(hbZelftoetsGeenCorr,WiskOpdr.rb.getString("OPT_zelftoetsGeenCorr"), boxv4, false);//"F-toetsen gebruiken of niet"
 		
 		boxh = Box.createHorizontalBox();
 		zelftoetsGeschiedenisCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsGeschiedenis"), boxh, false);//zelftoets geschiedenis tonen of niet"
@@ -650,6 +715,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		zelftoetsHighScoreCB = maakCheckBox(WiskOpdr.rb.getString("OPT_zelftoetsHighScore"), boxh, false);
 		zelftoetsHighScoreCB.setVisible(false);
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
+		boxh.add(hbZelftoetsGeschiedenis);
 		boxv4.add(boxh);
 		
 		boxh = Box.createHorizontalBox();
@@ -661,10 +728,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		aftrekCorrectieZelftoetsTF.setMaximumSize(new Dimension(50,22));
 		aftrekCorrectieZelftoetsTF.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(aftrekCorrectieZelftoetsTF);
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
+		boxh.add(hbAftrekCorrZelftoets);
 		
 		boxv4.add(boxh);
 		
-		eerderGeenCorrCB = maakCheckBox(WiskOpdr.rb.getString("OPT_eerderGeenCorr"), boxv4, false);
+		eerderGeenCorrCB = maakCheckBoxHelp(hEerderGeenCorr,WiskOpdr.rb.getString("OPT_eerderGeenCorr"), boxv4, false);
 		
 		boxh = Box.createHorizontalBox();
 		timerCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_tempoToets"));
@@ -675,7 +744,6 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		timerCB.setSelected(false);
 		boxh.add(timerCB);
 		
-		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		timerLabel = new JLabel(WiskOpdr.rb.getString("OPT_tijdsLimiet"));//"Tijdslimiet(sec)"
 		timerLabel.setFont(font);
@@ -691,7 +759,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		timerTF.setVisible(false);
 		boxh.add(timerTF);
 		boxh.add(Box.createHorizontalGlue());
-		
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
+		boxh.add(hbTimer);
 		boxv4.add(boxh);
 		
 		boxh = Box.createHorizontalBox();
@@ -723,6 +792,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		objectivesButton.setVisible(false);
 		boxh.add(objectivesButton);
 		boxh.add(Box.createRigidArea(new Dimension(10,0)));
+		boxh.add(hbObjectives);
+		
 		boxv4.add(boxh);
 		
 		boxh = Box.createHorizontalBox();
@@ -794,6 +865,25 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		return checkbox;
 	}
+	
+	private JCheckBox maakCheckBoxHelp(HelpButton hb,String s, Container c, boolean selected)
+	{	
+		Box boxh = Box.createHorizontalBox();
+		//boxh.setPreferredSize(new Dimension(300,24));
+		JCheckBox checkbox = new WiskOpdrCheckbox(s);
+		checkbox.setOpaque(false);
+		checkbox.setFont(font);
+		checkbox.setForeground(WiskOpdr.fgcolorEditor);
+		checkbox.setSelected(selected);
+		
+		boxh.add(checkbox);
+		boxh.add(Box.createHorizontalGlue());
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
+		boxh.add(hb);
+		c.add(boxh);
+		
+		return checkbox;
+	}
 
 	private JLabel maakLabel(String s, Container c)
 	{
@@ -824,6 +914,17 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		c.add(Box.createVerticalStrut(10));
 		
 		return label;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
 	}
 	
 	public Hashtable geefInstellingen()
@@ -1336,7 +1437,11 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	
 	public void actionPerformed(ActionEvent e)
 	{	
-		if(e.getSource().equals(okButton))
+		if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
+		else if(e.getSource().equals(okButton))
 		{	confirm();
 			WiskOpdr.setLaunchDataChanged();
 			produceAction("confirmed");
@@ -1482,9 +1587,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
     		helpBox.setVisible(!helpBox.isVisible());
     		helpTitelBox.setVisible(helpBox.isVisible());
     		if(helpBox.isVisible()) {
-    			 
+    			showHelpButtons(true) ;
     			helpBox.validate();
-    			//OpdrNavStructEdit.helpBrowser.loadURL(((HelpButtonPanelIF)interactieEditPanel).geefHelpURL());
+    			OpdrNavStructEdit.helpBrowser.loadURL(geefHelpURL());
             	
             	//packWidth(1100);
     			dialog.pack();
@@ -1492,7 +1597,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
     		else {
     			helpBox.validate(); 
     			OpdrNavStructEdit.helpBrowser.loadURL(null);
-            	
+    			showHelpButtons(false);
     			//pack();
     			dialog.pack();
     		}	
@@ -1576,7 +1681,39 @@ public class InstellingenPanel extends JPanel implements ActionListener
  	}
  	//end ActionProducer
 	
+ 	public void showHelpButtons(boolean b) {
+ 		hbMaalTeken.setVisible(b);
+ 		hbWoordFormule.setVisible(b);
+ 		hbTweeHLVar.setVisible(b);
+ 		hbHoekGraden.setVisible(b);
+ 		hbSignifacantie.setVisible(b);
+ 		hbGlobaalParam.setVisible(b);
+ 		hbDiffOperatoren.setVisible(b);
+ 		hbBolletjes.setVisible(b);
+ 		hbVolgendeKnop.setVisible(b);
+ 		hbVorigeKnop.setVisible(b);
+ 		hbVoortgang.setVisible(b);
+ 		hbCondNav.setVisible(b);
+ 		hbCombinedComponents.setVisible(b);
+ 		hbFormTimes.setVisible(b);
+ 		hbFontOvererving.setVisible(b);
+ 		hbFontOverervingForm.setVisible(b);
+ 		hbTemplateEdit.setVisible(b);
+ 		hbStyles.setVisible(b);
+ 		hbLayers.setVisible(b);
+ 		hbScoresZichtbaar.setVisible(b);
+ 		hbOpnieuw.setVisible(b);
+ 		hbItemOpnieuw.setVisible(b);
+ 		hbZelftoetsGeenCorr.setVisible(b);
+ 		hbZelftoetsGeschiedenis.setVisible(b);
+ 		hbAftrekCorrZelftoets.setVisible(b);
+ 		hEerderGeenCorr.setVisible(b);
+ 		hbTimer.setVisible(b);
+ 		hbObjectives.setVisible(b);
+ 	}
 	
-	
+ 	public String geefHelpURL() {
+ 		return HELP_INST_URL;
+ 	}
 	
 }

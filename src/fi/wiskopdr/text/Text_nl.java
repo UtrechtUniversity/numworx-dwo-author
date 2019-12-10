@@ -4,6 +4,7 @@ import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
+import fi.wiskopdr.HelpButton;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.tekstobjects.ShareAction;
 
@@ -1047,6 +1048,38 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "HELP_4_URL_FORMINVOER" , "https://app.dwo.nl/dwo/apps/player.html?t=8&profile=106&locale=nl#671328"},
 				{ "HELP_4_URL_REKENMACHINE" , "https://app.dwo.nl/dwo/apps/player.html?t=12&profile=106&locale=nl#671329"},
 				{ "HELP_4_URL_RAND" , "https://app.dwo.nl/dwo/apps/player.html?t=9&profile=106&locale=nl#671330"},
+				
+				{ "HELP_INST_URL" , "https://app.dwo.nl/dwo/apps/player.html?t=1&profile=106&locale=nl#671367"},
+				{ "HELP_INST_URL_MAALTEKEN" , "https://app.dwo.nl/dwo/apps/player.html?t=2&profile=106&locale=nl#671368"},
+				{ "HELP_INST_URL_WOORDFORMULE" , "https://app.dwo.nl/dwo/apps/player.html?t=3&profile=106&locale=nl#671369"},
+				{ "HELP_INST_URL_TWEEHLVAR" , "https://app.dwo.nl/dwo/apps/player.html?t=4&profile=106&locale=nl#671370"},
+				{ "HELP_INST_URL_HOEKGRADEN" , "https://app.dwo.nl/dwo/apps/player.html?t=5&profile=106&locale=nl#671371"},
+				{ "HELP_INST_URL_SIGNIFICANTIE" , "https://app.dwo.nl/dwo/apps/player.html?t=6&profile=106&locale=nl#671372"},
+				{ "HELP_INST_URL_GLOBAALPARAM" , "https://app.dwo.nl/dwo/apps/player.html?t=7&profile=106&locale=nl#671373"},
+				{ "HELP_INST_URL_DIFFOPERATOREN" , "https://app.dwo.nl/dwo/apps/player.html?t=8&profile=106&locale=nl#671374"},
+				{ "HELP_INST_URL_BOLLETJES" , "https://app.dwo.nl/dwo/apps/player.html?t=9&profile=106&locale=nl#671375"},
+				{ "HELP_INST_URL_VOLGENDEKNOP" , "https://app.dwo.nl/dwo/apps/player.html?t=10&profile=106&locale=nl#671376"},
+				{ "HELP_INST_URL_VORIGEKNOP" , "https://app.dwo.nl/dwo/apps/player.html?t=11&profile=106&locale=nl#671377"},
+				{ "HELP_INST_URL_VOORTGANG" , "https://app.dwo.nl/dwo/apps/player.html?t=12&profile=106&locale=nl#671378"},
+				{ "HELP_INST_URL_CONDNAV" , "https://app.dwo.nl/dwo/apps/player.html?t=13&profile=106&locale=nl#671379"},
+				{ "HELP_INST_URL_COMBINEDCOMPONENTS" , "https://app.dwo.nl/dwo/apps/player.html?t=14&profile=106&locale=nl#671380"},
+				{ "HELP_INST_URL_FORMTIMES" , "https://app.dwo.nl/dwo/apps/player.html?t=15&profile=106&locale=nl#671381"},
+				{ "HELP_INST_URL_FONTOVERERVING" , "https://app.dwo.nl/dwo/apps/player.html?t=16&profile=106&locale=nl#671382"},
+				{ "HELP_INST_URL_FONTOVERERVINGFORM" , "https://app.dwo.nl/dwo/apps/player.html?t=17&profile=106&locale=nl#671383"},
+				{ "HELP_INST_URL_TEMPLATEEDIT" , "https://app.dwo.nl/dwo/apps/player.html?t=18&profile=106&locale=nl#671384"},
+				{ "HELP_INST_URL_STYLES" , "https://app.dwo.nl/dwo/apps/player.html?t=19&profile=106&locale=nl#671385"},
+				{ "HELP_INST_URL_LAYERS" , "https://app.dwo.nl/dwo/apps/player.html?t=20&profile=106&locale=nl#671386"},
+				{ "HELP_INST_URL_SCORESZICHTBAAR" , "https://app.dwo.nl/dwo/apps/player.html?t=21&profile=106&locale=nl#671387"},
+				{ "HELP_INST_URL_OPNIEUW" , "https://app.dwo.nl/dwo/apps/player.html?t=22&profile=106&locale=nl#671388"},
+				{ "HELP_INST_URL_ITEMOPNIEUW" , "https://app.dwo.nl/dwo/apps/player.html?t=23&profile=106&locale=nl#671389"},
+				{ "HELP_INST_URL_ZELFTOETSGEENCORR" , "https://app.dwo.nl/dwo/apps/player.html?t=24&profile=106&locale=nl#671390"},
+				{ "HELP_INST_URL_ZELFTOETSGESCHIEDENIS" , "https://app.dwo.nl/dwo/apps/player.html?t=25&profile=106&locale=nl#671391"},
+				{ "HELP_INST_URL_AFTREKCORRZELFTOETS" , "https://app.dwo.nl/dwo/apps/player.html?t=26&profile=106&locale=nl#671392"},
+				{ "HELP_INST_URL_EERDERGEENCORR" , "https://app.dwo.nl/dwo/apps/player.html?t=27&profile=106&locale=nl#671393"},
+				{ "HELP_INST_URL_TIMER" , "https://app.dwo.nl/dwo/apps/player.html?t=28&profile=106&locale=nl#671394"},
+				{ "HELP_INST_URL_OBJECTIVES" , "https://app.dwo.nl/dwo/apps/player.html?t=29&profile=106&locale=nl#671395"},
+				
+			
 		};
 }
 
