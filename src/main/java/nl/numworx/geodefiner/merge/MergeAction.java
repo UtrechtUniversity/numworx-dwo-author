@@ -123,16 +123,34 @@ public class MergeAction extends AbstractAction implements Constants {
     org = new TreeMap<>(org);
     List<String> defMerge = (List<String>) merge.get("definitions");
     List<String> defOrg = (List<String>) org.get("definitions");
+    Map<String,Map<String,Object>> configOrg   = (Map<String,Map<String,Object>>) org.get("configuration");
+    Map<String,Map<String,Object>> configMerge = (Map<String,Map<String,Object>>) merge.get("configuration");
+ 
+    Map<String,Object> posOrg   = (Map<String,Object>) org.get("positions");
+    Map<String,Object> posMerge = (Map<String,Object>) merge.get("positions");
+    
     Map<String,String> mapMerge = new LinkedHashMap<>();
     for(String item: defMerge) {
       String key = key(item);
       if (rename.containsKey(key))
-        mapMerge.put(rename.get(key), rename(item, rename));
+        mapMerge.put(key, rename(item, rename));
     }
     for(String item: mapMerge.keySet()) {
+      String newItem = rename.get(item);
       String def = mapMerge.get(item);
-      remove(defOrg, item);
-      if(def != null) defOrg.add(def);
+      remove(defOrg, newItem);
+      if(def != null) {
+        defOrg.add(def);
+        Map<String, Object> config = configMerge.get(item);
+        if(config != null) {
+          // TODO rename visibility
+          configOrg.put(newItem, config);
+        } else configOrg.remove(newItem);
+        Object position = posMerge.get(item);
+        if (position != null) {
+          posOrg.put(newItem, position);
+        } else posOrg.remove(newItem);        
+      }
     }
     return org;
   }
@@ -166,6 +184,8 @@ public class MergeAction extends AbstractAction implements Constants {
         String s = i.image;
         if (i.kind == FormuleParser.VARIABLE)
           s = rename.getOrDefault(s, s);
+        else if(i.kind == FormuleParser.STRING)
+          sb.append('"'); // prefix "
         sb.append(s);
       }
       return sb.append('@').toString();
