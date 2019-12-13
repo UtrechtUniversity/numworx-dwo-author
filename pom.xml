@@ -76,7 +76,7 @@
 							<mainClass>fi.wiskopdr.WiskOpdr</mainClass>
 						</manifest>
 						<manifestEntries>
-							<Class-Path>balansfruitapplet.jar doorziendwo.jar flowdiagrams.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar</Class-Path>
+							<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar</Class-Path>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -286,8 +286,7 @@
 	</properties>
 	<dependencies>
 		<!-- #fi.verknippen #fi.mozarch #fi.tegels #fi.geomalgebra #fi.stroomdiagrammen 
-			#fi.statistiek #fi.doorziendwo.DoorzienDWO: doorziendwo.jar #fi.flowdiagrams.FlowDiagrams: 
-			flowdiagrams.jar #fi.dataplot.DataPlot: -->
+			#fi.statistiek #fi.doorziendwo.DoorzienDWO: doorziendwo.jar #fi.dataplot.DataPlot: -->
 		<dependency>
 			<groupId>fi.verknippen</groupId>
 			<artifactId>verknippen</artifactId>
@@ -345,27 +344,11 @@
 			<systemPath>${project.basedir}/output/jar/doorziendwo.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>fi.flowdiagrams</groupId>
-			<artifactId>flowdiagrams</artifactId>
-			<version>0.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/output/jar/flowdiagrams.jar</systemPath>
-		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>fi.dataplot</groupId> -->
-		<!-- <artifactId>dataplot</artifactId> -->
-		<!-- <version>0.0.0</version> -->
-		<!-- <scope>system</scope> -->
-		<!-- <systemPath>${project.basedir}/output/jar/dataplot.jar</systemPath> -->
-		<!-- </dependency> -->
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra3</artifactId>
@@ -408,17 +391,11 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/output/jar/geogebra3_export.jar</systemPath>
 		</dependency>
-
 		<dependency>
 			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra</artifactId>
 			<version>${geogebraVersion}</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.geogebra</groupId> -->
-<!-- 			<artifactId>geogebra_gui</artifactId> -->
-<!-- 			<version>4.0.29</version> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra_cas</artifactId>
@@ -429,18 +406,6 @@
 			<artifactId>geogebra_main</artifactId>
 			<version>${geogebraVersion}</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.geogebra</groupId> -->
-<!-- 			<artifactId>geogebra_properties</artifactId> -->
-<!-- 			<version>4.0.29</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.geogebra</groupId> -->
-<!-- 			<artifactId>geogebra_export</artifactId> -->
-<!-- 			<version>4.0.29</version> -->
-<!-- 		</dependency> -->
-
-
 		<dependency>
 			<groupId>fi.balansfruitapplet</groupId>
 			<artifactId>balansfruitapplet</artifactId>
@@ -470,7 +435,7 @@
 		</dependency>
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
-			<artifactId>swingbrowser-jfx</artifactId>
+			<artifactId>swingbrowser-jxb</artifactId>
 			<version>0.0.2</version>
 			<scope>runtime</scope>
 		</dependency>
@@ -486,15 +451,6 @@
 		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
-<!-- 	<dependencyManagement> -->
-<!-- 		<dependencies> -->
-<!-- 			<dependency> -->
-<!-- 				<groupId>fi.euclides</groupId> -->
-<!-- 				<artifactId>euclides-core</artifactId> -->
-<!-- 				<version>0.0.5-SNAPSHOT</version> -->
-<!-- 			</dependency> -->
-<!-- 		</dependencies> -->
-<!-- 	</dependencyManagement> -->
 	<profiles>
 		<profile>
 			<id>devel</id>
