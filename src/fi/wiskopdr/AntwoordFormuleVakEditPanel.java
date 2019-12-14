@@ -164,9 +164,11 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     private static String HELP_0_URL_EIGENOPDR = WiskOpdr.rb.getString("HELP_0_URL_EIGENOPDR");
     private static String HELP_0_URL_FORMINVOER = WiskOpdr.rb.getString("HELP_0_URL_FORMINVOER");
     private static String HELP_0_URL_UITWERKING = WiskOpdr.rb.getString("HELP_0_URL_UITWERKING");
-    private static String HELP_0_URL_RAND = WiskOpdr.rb.getString("HELP_0_URL_RAND");
+    private static String HELP_0_URL_RAND_0 = WiskOpdr.rb.getString("HELP_0_URL_RAND_0");
+    private static String HELP_0_URL_RAND_2 = WiskOpdr.rb.getString("HELP_0_URL_RAND_2");
     private static String HELP_0_URL_VERIFICATIE = WiskOpdr.rb.getString("HELP_0_URL_VERIFICATIE");
-    private static String HELP_0_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_0_URL_ANTWOORD");
+    private static String HELP_0_URL_ANTWOORD_0 = WiskOpdr.rb.getString("HELP_0_URL_ANTWOORD_0");
+    private static String HELP_0_URL_ANTWOORD_2 = WiskOpdr.rb.getString("HELP_0_URL_ANTWOORD_2");
     private static String HELP_0_URL_STARTEXPRESSIE = WiskOpdr.rb.getString("HELP_0_URL_STARTEXPRESSIE");
     private static String HELP_0_URL_SCORE = WiskOpdr.rb.getString("HELP_0_URL_SCORE");
     private static String HELP_0_URL_FEEDBACKTITLE = WiskOpdr.rb.getString("HELP_0_URL_FEEDBACKTITLE");
@@ -183,9 +185,11 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     private HelpButton hbEigenOpdr;
     private HelpButton hbFormInvoer;
     private HelpButton hbUitwerking;
-    private HelpButton hbRand;
+    private HelpButton hbRand_0;
+    private HelpButton hbRand_2;
     private HelpButton hbVerificatie;
-    private HelpButton hbAntwoord;
+    private HelpButton hbAntwoord_0;
+    private HelpButton hbAntwoord_2;
     private HelpButton hbStartExpressie;
     private HelpButton hbScore;
     private HelpButton hbFeedbackTitel;
@@ -498,15 +502,19 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	hbEigenOpdr = makeHelpButton(HELP_0_URL_EIGENOPDR);
     	hbFormInvoer = makeHelpButton(HELP_0_URL_FORMINVOER);
     	hbUitwerking = makeHelpButton(HELP_0_URL_UITWERKING);
-    	hbRand = makeHelpButton(HELP_0_URL_RAND);	
+    	hbRand_0 = makeHelpButton(HELP_0_URL_RAND_0);
+    	hbRand_2 = makeHelpButton(HELP_0_URL_RAND_2);
     	hbVerificatie = makeHelpButton(HELP_0_URL_VERIFICATIE);
-    	hbAntwoord = makeHelpButton(HELP_0_URL_ANTWOORD);
+    	hbAntwoord_0 = makeHelpButton(HELP_0_URL_ANTWOORD_0);
+    	hbAntwoord_2 = makeHelpButton(HELP_0_URL_ANTWOORD_2);
     	hbStartExpressie = makeHelpButton(HELP_0_URL_STARTEXPRESSIE);
     	hbScore = makeHelpButton(HELP_0_URL_SCORE);
     	hbFeedbackTitel = makeHelpButton(HELP_0_URL_FEEDBACKTITLE);
     	
-    	hbAntwoord.setBounds(140,-2,18,18);
-    	antwoordEditorPanel.add(hbAntwoord,0);
+    	hbAntwoord_0.setBounds(140,-2,18,18);
+    	hbAntwoord_2.setBounds(140,-2,18,18);
+    	if(soort==0)antwoordEditorPanel.add(hbAntwoord_0,0);
+    	if(soort==2)antwoordEditorPanel.add(hbAntwoord_2,0);
     	
     	hbFormInvoer.setVisible(false);
     	hbUitwerking.setVisible(false);
@@ -587,15 +595,17 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		Component[] r420 = {tipsCB, 			ideasButton,	hgl()};
 		Component[] r421 = {contextBox, 		hgl()};
 		Component[] r422 = {titleOpmaakLabel, 	hgl()};
-		Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand};
+		
 		Box settingsBox;
 		if(soort==0) {
+			Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand_0};
 			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
 					hb(r410),hb(r411),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20), hb(r422),vst(5),hb(r424), vgl()};
 			settingsBox = vb(k4);
 		}
 		else {
-		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
+			Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand_2};
+			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
 				hb(r410),hb(r411),hb(r416),hb(r417),hb(r418),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r424), vgl()};
 			settingsBox = vb(k4);
 		}		
@@ -2274,9 +2284,11 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	if(soort==0)hbEigenOpdr.setVisible(b);
     	if(soort==2)hbFormInvoer.setVisible(b);
     	if(soort==2)hbUitwerking.setVisible(b);
-    	hbRand.setVisible(b);	
+    	hbRand_0.setVisible(b);	
+    	hbRand_2.setVisible(b);
     	hbVerificatie.setVisible(b);
-    	hbAntwoord.setVisible(b);
+    	hbAntwoord_0.setVisible(b);
+    	hbAntwoord_2.setVisible(b);
     	hbStartExpressie.setVisible(b);
     	hbScore.setVisible(b);
     	hbFeedbackTitel.setVisible(b);
