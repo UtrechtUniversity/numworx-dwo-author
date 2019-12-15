@@ -99,6 +99,28 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	
 	private int aantalKeuzes = 4;
 	
+	// Helpbuttons
+    private static String HELP_14_URL = WiskOpdr.rb.getString("HELP_14_URL");
+    private static String HELP_14_URL_CHECK = WiskOpdr.rb.getString("HELP_14_URL_CHECK");
+    private static String HELP_14_URL_TELTMEE = WiskOpdr.rb.getString("HELP_14_URL_TELTMEE");
+    private static String HELP_14_URL_LOGID = WiskOpdr.rb.getString("HELP_14_URL_LOGID");
+    private static String HELP_14_URL_FEEDBACK = WiskOpdr.rb.getString("HELP_14_URL_FEEDBACK");
+    private static String HELP_14_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_14_URL_ANTWOORD");
+    private static String HELP_14_URL_SCORE = WiskOpdr.rb.getString("HELP_14_URL_SCORE");
+    private static String HELP_14_URL_KEUZE = WiskOpdr.rb.getString("HELP_14_URL_KEUZE");
+    private static String HELP_14_URL_EXTERN = WiskOpdr.rb.getString("HELP_14_URL_EXTERN");
+    private static String HELP_14_URL_FEEDBACKTITLE = WiskOpdr.rb.getString("HELP_14_URL_FEEDBACKTITLE");
+    
+    private HelpButton hbCheck = makeHelpButton(HELP_14_URL_CHECK);
+    private HelpButton hbTeltMee = makeHelpButton(HELP_14_URL_TELTMEE);
+    private HelpButton hbLogID = makeHelpButton(HELP_14_URL_LOGID);
+    private HelpButton hbFeedback = makeHelpButton(HELP_14_URL_FEEDBACK);
+    private HelpButton hbAntwoord = makeHelpButton(HELP_14_URL_ANTWOORD);
+    private HelpButton hbScore = makeHelpButton(HELP_14_URL_SCORE);
+    private HelpButton hbKeuze = makeHelpButton(HELP_14_URL_KEUZE);
+    private HelpButton hbExtern = makeHelpButton(HELP_14_URL_EXTERN);
+    private HelpButton hbFeedbackTitel = makeHelpButton(HELP_14_URL_FEEDBACKTITLE); 
+   
 	
 	//Overige (wellicht overbodig geworden)
 	private JLabel antwoordLabel,  feedbackLabel;
@@ -247,6 +269,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
     	feedbackCB = makeCheckBox(140,-2,80,20,WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
     	checkExternalCB = makeCheckBox(250,120,200,20,WiskOpdr.rb.getString("checkExternalCBLabel"),false,true);
         
+    	
         
     	//Overige zaken, wellicht overbodig
         antwoordLabel = makeLabel(250,160,520,20,WiskOpdr.rb.getString("antwoordLabel"),true);
@@ -262,8 +285,12 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	}
 	
 	private void plaatsGUI() {
+		
+		hbAntwoord.setBounds(140,-2,18,18);
+    	antwoordEditorPanel.add(hbAntwoord,0);
+    	
 		// plaats compoenenten keuzeTekstenBox
-		Component[] r11 = {titleKeuzeTekstenLabel, 	hgl()};
+		Component[] r11 = {titleKeuzeTekstenLabel, 	ra(5,5), hbKeuze, 	hgl()};
 		Component[] r12 = {basisKeuzeVeldenPanel, 	hgl()};
 		Component[] k1 = {hb(r11), vst(10),hb(r12)};
 		keuzeTekstenBox = vb(k1);
@@ -271,16 +298,16 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 		// plaatsComponenten settingBox
 		Component[] r21 = {titleSettingsLabel, 	hgl()};
 		Component[] r22 = {aantalKeuzesLabel, 	ra(10,10),	aantalKeuzesTF,		hgl()};
-		Component[] r23 = {feedbackCB, 			hgl()};
-		Component[] r24 = {checkExternalCB, 	hgl()};
+		Component[] r23 = {feedbackCB, 			ra(5,0),	hgl(),	hbFeedback};
+		Component[] r24 = {checkExternalCB, 	ra(5,0),	hgl(),	hbExtern};
 		Component[] k2 = {hb(r21), vst(20),hb(r22),vst(5), hb(r23),hb(r24), vgl()};	
 		settingsBox = vb(k2);
 		
 		// plaatsComponenten loggingBox
 		Component[] r41 = {titleLoggingLabel, 	hgl()};
-		Component[] r42 = {checkCB, 			hgl()};
-		Component[] r43 = {teltMeeCB, 			hgl()};
-		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
+		Component[] r43 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField,  ra(5,0),	hgl(),	hbLogID};
 		Component[] r45 = {logObjectivesButton, hgl()};
 		Component[] k4 = {hb(r41),vst(20),hb(r42),hb(r43),hb(r44),hb(r45), vgl()};
 		Box loggingBox = vb(k4);	
@@ -306,7 +333,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 		verificatieBox = hb(h6);
 		    			
 		//plaats componenten scoringbox
-        Component[] r71 = {ra(10,10), 		feedbackPV, 	hgl()};
+        Component[] r71 = {ra(10,10), 		feedbackPV, 	ra(5,10), hbScore, hgl()};
         Component[] r73 = {goedFoutIP, 		hgl()};
 		
 		Component[] k7 = {hb(r71),  vst(20), hb(r73), vgl()};
@@ -473,6 +500,17 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 		textField.setVisible(visible);
 		add(textField,0);
 		return textField;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
 	}
 	
 	public void zetBreedte(int b)
@@ -762,7 +800,11 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	
 	public void actionPerformed(ActionEvent e)
 	{	
-	    if(e.getSource()==aantalKeuzesTF)
+		if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
+		else if(e.getSource()==aantalKeuzesTF)
         {
             aantalKeuzes = Math.min(20, Integer.parseInt(aantalKeuzesTF.getText()));
             maakKeuzeVelden();
@@ -1022,16 +1064,23 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	        
 	      }
 	}
-	@Override
+ 	@Override
 	public void showHelpButtons(boolean b) {
-		// TODO Auto-generated method stub
-		
+		hbCheck.setVisible(b);
+    	hbTeltMee.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbFeedback.setVisible(b);
+    	hbKeuze.setVisible(b);
+    	hbExtern.setVisible(b);
+    	hbAntwoord.setVisible(b);
+    	hbScore.setVisible(b);
+    	hbFeedbackTitel.setVisible(b);
+        
 	}
 
 	@Override
 	public String geefHelpURL() {
-		// TODO Auto-generated method stub
-		return null;
+		return HELP_14_URL;
 	}
 }
 

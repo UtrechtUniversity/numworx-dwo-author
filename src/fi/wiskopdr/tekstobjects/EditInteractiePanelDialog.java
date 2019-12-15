@@ -225,7 +225,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		helpTitelBox.add(Box.createRigidArea(new Dimension(300,0)));
 		Box helpheader = Box.createHorizontalBox();
 		helpheader.add(helpTitleLabel);
-		helpTitelBox.setPreferredSize(new Dimension(300,40));
+		helpTitelBox.setPreferredSize(new Dimension(300,30));
 		helpTitelBox.add(helpheader);
 		helpTitelBox.setVisible(false);
 		

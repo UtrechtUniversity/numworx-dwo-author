@@ -21,6 +21,7 @@ import javax.swing.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
 
@@ -79,7 +80,36 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
  	// Hulp
  	private JLabel titleHulpLabel;
  	private JCheckBox viewCB;
+ 	
+ 	// Helpbuttons
+    private static String HELP_16_URL = WiskOpdr.rb.getString("HELP_16_URL");
+    private static String HELP_16_URL_CHECK = WiskOpdr.rb.getString("HELP_16_URL_CHECK");
+    private static String HELP_16_URL_TELTMEE = WiskOpdr.rb.getString("HELP_16_URL_TELTMEE");
+    private static String HELP_16_URL_LOGID = WiskOpdr.rb.getString("HELP_16_URL_LOGID");
+    private static String HELP_16_URL_RANDOM = WiskOpdr.rb.getString("HELP_16_URL_RANDOM");
+    private static String HELP_16_URL_SNAP = WiskOpdr.rb.getString("HELP_16_URL_SNAP");
+    private static String HELP_16_URL_RELOCATE = WiskOpdr.rb.getString("HELP_16_URL_RELOCATE");
+    private static String HELP_16_URL_VAST = WiskOpdr.rb.getString("HELP_16_URL_VAST");
+    private static String HELP_16_URL_CHECKFORMULE = WiskOpdr.rb.getString("HELP_16_URL_CHECKFORMULE");
+    private static String HELP_16_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_16_URL_ANTWOORD");
+    private static String HELP_16_URL_VERZAMEL = WiskOpdr.rb.getString("HELP_16_URL_VERZAMEL");
+    private static String HELP_16_URL_KNOPIMAGE = WiskOpdr.rb.getString("HELP_16_URL_KNOPIMAGE");
+    private static String HELP_16_URL_VIEW = WiskOpdr.rb.getString("HELP_16_URL_VIEW");
+    
+    private HelpButton hbCheck = makeHelpButton(HELP_16_URL_CHECK);
+    private HelpButton hbTeltMee = makeHelpButton(HELP_16_URL_TELTMEE);
+    private HelpButton hbLogID = makeHelpButton(HELP_16_URL_LOGID);
+    private HelpButton hbRandom = makeHelpButton(HELP_16_URL_RANDOM);
+    private HelpButton hbSnap = makeHelpButton(HELP_16_URL_SNAP);
+    private HelpButton hbRelocate = makeHelpButton(HELP_16_URL_RELOCATE);
+    private HelpButton hbVast = makeHelpButton(HELP_16_URL_VAST);
+    private HelpButton hbCheckFormule = makeHelpButton(HELP_16_URL_CHECKFORMULE);
+    private HelpButton hbAntwoord = makeHelpButton(HELP_16_URL_ANTWOORD);
+    private HelpButton hbVerzamel = makeHelpButton(HELP_16_URL_VERZAMEL);
+    private HelpButton hbKnopImage = makeHelpButton(HELP_16_URL_KNOPIMAGE);
+    private HelpButton hbView = makeHelpButton(HELP_16_URL_VIEW);
   	
+    private boolean helpVisible = false;
 	
 	public CheckSleepUnitEditPanel()
 	{
@@ -154,34 +184,34 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 	
 	public void plaatsGUI() {
 		//plaats componenten mainPanel
-		Component[] r11 = {titleAntwoordLabel, 	hgl()};
+		Component[] r11 = {titleAntwoordLabel, 	ra(10,0),	hbAntwoord, 	hgl()};
 		Component[] r12 = {formuleEditor, 	hgl()};
 			
 		Component[] k1 = {hb(r11), vst(15), hb(r12),  vst(15), vgl()};
         
 		Component[] r21 = {titleSettingsLabel, 		hgl()};
-		Component[] r22 = {aantalSleepObjectsLabel, 			ra(10,10), 	hgl(), aantalSleepObjectsTF	};
-		Component[] r23 = {aantalDoelObjectsLabel, 			ra(10,10), 	hgl(), aantalDoelObjectsTF	};
-		Component[] r24 = {randomizePositionsCB, 	hgl()};
-		Component[] r25 = {snapToTargetCB, 			hgl()};
+		Component[] r22 = {aantalSleepObjectsLabel, ra(10,10), 	hgl(), aantalSleepObjectsTF	};
+		Component[] r23 = {aantalDoelObjectsLabel, 	ra(10,10), 	hgl(), aantalDoelObjectsTF	};
+		Component[] r24 = {randomizePositionsCB, 	ra(5,0),	hgl(),	hbRandom};
+		Component[] r25 = {snapToTargetCB, 			ra(5,0),	hgl(),	hbSnap};
 		Component[] r26 = {acceptedMargeLabel, 		ra(10,10), 	hgl(), acceptedMargeTF	};
-		Component[] r27 = {relocateCB, 				hgl()};
-		Component[] r28 = {checkVastCB, 			hgl()};
-		Component[] r29 = {checkFormuleCB, 		hgl()};
-		Component[] r210 = {verzamelDoelCB, 			hgl()};
-		Component[] r211 = {imageKnopLabel, 			ra(5,5), 	hgl(), 	knopImageButton};
+		Component[] r27 = {relocateCB, 				ra(5,0),	hgl(),	hbRelocate};
+		Component[] r28 = {checkVastCB, 			ra(5,0),	hgl(),	hbVast};
+		Component[] r29 = {checkFormuleCB, 			ra(5,0),	hgl(),	hbCheckFormule};
+		Component[] r210 = {verzamelDoelCB, 		ra(5,0),	hgl(),	hbVerzamel};
+		Component[] r211 = {imageKnopLabel, 		ra(5,5), 	knopImageButton,ra(5,0),	hgl(),	hbKnopImage};
 		
 		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), 
 				hb(r25), vst(5), hb(r26), vst(5), hb(r27), vst(5), hb(r28), vst(5), hb(r29), vst(5), hb(r210), vst(5), hb(r211), vst(5), vgl()};
 		
 		Component[] r31 = {titleLoggingLabel, 	hgl()};
 		Component[] r32 = {maxScoreLabel, 		ra(5,10), maxScoreTF, hgl()};
-		Component[] r33 = {checkCB, 			hgl()};
-		Component[] r34 = {teltMeeCB, 			hgl()};
-		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r33 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
+		Component[] r34 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
 		Component[] r36 = {logObjectivesButton, hgl()};
 		Component[] r37 = {titleHulpLabel, 		hgl()};
-		Component[] r38 = {viewCB, 				hgl()};
+		Component[] r38 = {viewCB, 				ra(5,0),	hgl(),	hbView};
 		
 		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vst(30), hb(r37), vst(15), hb(r38),vgl()};
 		
@@ -303,6 +333,17 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 			tf.addFocusListener(this);
 		}
 		return tf;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
 	}
 	
 	private Box hb(Component[] c) {
@@ -471,7 +512,11 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
     
     public void actionPerformed(ActionEvent e)
 	{
-		if(e.getSource()==aantalSleepObjectsTF)
+    	if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
+		else if(e.getSource()==aantalSleepObjectsTF)
 		{	aantalSleepObjects = Integer.parseInt(aantalSleepObjectsTF.getText());
 		}
 		else if(e.getSource()==aantalDoelObjectsTF)
@@ -484,12 +529,16 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 			viewCB.setVisible(checkVastCB.isSelected());
 			titleHulpLabel.setVisible(checkVastCB.isSelected());
 			if(!checkVastCB.isSelected())viewCB.setSelected(false);
+			hbView.setVisible(helpVisible && !checkFormuleCB.isSelected());
+			hbAntwoord.setVisible(helpVisible && checkFormuleCB.isSelected());
 			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 
 		}
 		else if(e.getSource()==checkFormuleCB)
 		{	checkVastCB.setSelected(!checkFormuleCB.isSelected());
 			formuleEditor.setVisible(!checkVastCB.isSelected());
+			hbAntwoord.setVisible(helpVisible && checkFormuleCB.isSelected());
+			hbView.setVisible(helpVisible && !checkFormuleCB.isSelected());
 			titleAntwoordLabel.setVisible(!checkVastCB.isSelected());
 			viewCB.setVisible(checkVastCB.isSelected());
 			titleHulpLabel.setVisible(checkVastCB.isSelected());
@@ -616,14 +665,26 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 
 	@Override
 	public void showHelpButtons(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
+		helpVisible = b;
+		hbCheck.setVisible(b);
+    	hbTeltMee.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbRandom.setVisible(b);
+    	hbSnap.setVisible(b);
+    	hbRelocate.setVisible(b);
+    	hbVast.setVisible(b);
+    	hbCheckFormule.setVisible(b);
+    	if(checkFormuleCB.isSelected())hbAntwoord.setVisible(b);
+    	hbVerzamel.setVisible(b);
+    	hbKnopImage.setVisible(b);
+    	hbView.setVisible(b);
+    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+
+   }
 
 	@Override
 	public String geefHelpURL() {
-		// TODO Auto-generated method stub
-		return null;
+		return HELP_16_URL;
 	}
     
     // einde methode TabletOwner

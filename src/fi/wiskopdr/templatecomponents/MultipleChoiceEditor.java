@@ -20,14 +20,18 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import fi.beans.iconan.Iconan;
 import fi.wiskopdr.DialogFacade;
+import fi.wiskopdr.HelpButton;
+import fi.wiskopdr.HelpButtonPanelIF;
 import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrButton;
@@ -36,10 +40,12 @@ import fi.wiskopdr.WiskOpdrComboBox;
 import fi.wiskopdr.WiskOpdrTextField;
 import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.formuleobjects.FormuleButton;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
+import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
-public class MultipleChoiceEditor implements TComponentEditor, ActionListener, FocusListener {
+public class MultipleChoiceEditor implements TComponentEditor, ActionListener, FocusListener, HelpButtonPanelIF {
 
 	private TekstVak tekstVak;
 	private Font font = new Font("SansSerif",Font.PLAIN,12);
@@ -98,7 +104,31 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	private JTextField breedteTF, hoogteTF;
     private JLabel breedteLabel, hoogteLabel;
     private JCheckBox volledigeBreedteCB;
-	
+    
+    private HelpButton helpButton;
+	private JPanel helpPanel;
+    private Box helpBox;
+    private Box helpTitelBox;
+    
+ // Helpbuttons
+    private static String HELP_MULTIPLECHOICE_URL = WiskOpdr.rb.getString("HELP_MULTIPLECHOICE_URL");
+    private static String HELP_MULTIPLECHOICE_URL_CHECK = WiskOpdr.rb.getString("HELP_MULTIPLECHOICE_URL_CHECK");
+    private static String HELP_MULTIPLECHOICE_URL_TELTMEE = WiskOpdr.rb.getString("HELP_MULTIPLECHOICE_URL_TELTMEE");
+    private static String HELP_MULTIPLECHOICE_URL_LOGID = WiskOpdr.rb.getString("HELP_MULTIPLECHOICE_URL_LOGID");
+    private static String HELP_MULTIPLECHOICE_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_MULTIPLECHOICE_URL_ANTWOORD");
+    private static String HELP_MULTIPLECHOICE_URL_MEERVOUDIG = WiskOpdr.rb.getString("HELP_MULTIPLECHOICE_URL_MEERVOUDIG");
+    private static String HELP_MULTIPLECHOICE_URL_RANDOM = WiskOpdr.rb.getString("HELP_MULTIPLECHOICE_URL_RANDOM");
+    private static String HELP_MULTIPLECHOICE_URL_KNOPIMAGE = WiskOpdr.rb.getString("HELP_MULTIPLECHOICE_URL_KNOPIMAGE");
+    
+    private HelpButton hbCheck = makeHelpButton(HELP_MULTIPLECHOICE_URL_CHECK);
+    private HelpButton hbTeltMee = makeHelpButton(HELP_MULTIPLECHOICE_URL_TELTMEE);
+    private HelpButton hbLogID = makeHelpButton(HELP_MULTIPLECHOICE_URL_LOGID);
+    private HelpButton hbAntwoord = makeHelpButton(HELP_MULTIPLECHOICE_URL_ANTWOORD);
+    private HelpButton hbMeervoudig = makeHelpButton(HELP_MULTIPLECHOICE_URL_MEERVOUDIG);
+    private HelpButton hbRandom = makeHelpButton(HELP_MULTIPLECHOICE_URL_RANDOM);
+    private HelpButton hbKnopImage = makeHelpButton(HELP_MULTIPLECHOICE_URL_KNOPIMAGE);
+    
+   
     
 	public MultipleChoiceEditor(TekstVak tekstVak) {
 		this.tekstVak = tekstVak;
@@ -113,7 +143,8 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	private void makeGUI() {
 		preferencesPanel = new JPanel(new BorderLayout());
 		
-		topPanel = new JPanel();
+		topPanel = new JPanel(new BorderLayout());
+		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
 		topPanel.setBackground(WiskOpdr.colorBlue1);
 		
 		mainPanel = new JPanel(new BorderLayout());
@@ -127,7 +158,49 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		//topPanel
 		titleLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_multip_settings"), new Font("SansSerif",Font.PLAIN, 24));
 		titleLabel.setForeground(WiskOpdr.colorGray3);
-		topPanel.add(titleLabel);
+		
+		
+		helpButton = new HelpButton(HELP_MULTIPLECHOICE_URL);
+		helpButton.setPreferredSize(new Dimension(22,22));
+		helpButton.setMinimumSize(new Dimension(22,22));
+		helpButton.setMaximumSize(new Dimension(22,22));
+		helpButton.addActionListener(this);
+		
+		helpPanel = new JPanel(new BorderLayout());
+		helpPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, WiskOpdr.colorBlue4));
+		helpPanel.setBackground(WiskOpdr.colorBlue5);
+		helpPanel.setPreferredSize(new Dimension(300,400));
+		
+		JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
+    	bp.setPreferredSize(new Dimension(300,400));
+    	helpPanel.add(bp);
+		
+		helpBox = Box.createVerticalBox();
+		helpBox.add(Box.createRigidArea(new Dimension(300,0)));
+		helpBox.add(helpPanel);
+		helpBox.setVisible(false);
+		
+		JLabel helpTitleLabel = new JLabel("Help");
+		helpTitleLabel.setForeground(WiskOpdr.colorBlue5);
+		helpTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+	        
+		helpTitelBox = Box.createVerticalBox();
+		helpTitelBox.add(Box.createRigidArea(new Dimension(300,0)));
+		Box helpheader = Box.createHorizontalBox();
+		helpheader.add(helpTitleLabel);
+		helpTitelBox.setPreferredSize(new Dimension(300,30));
+		helpTitelBox.add(helpheader);
+		helpTitelBox.setVisible(false);
+		
+		Box headerbox = Box.createHorizontalBox();
+		headerbox.add(Box.createHorizontalGlue());
+		headerbox.add(titleLabel);
+		headerbox.add(Box.createHorizontalGlue());
+		
+		headerbox.add(helpButton);
+		headerbox.add(helpTitelBox);
+		
+		topPanel.add(headerbox);
 		
 		//mainPanel  //juiste antwoord
 		titleAntwoordLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"), font.deriveFont(Font.BOLD, 16));
@@ -178,34 +251,38 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
                 
         //plaats componenten mainPanel
-        Component[] r11 = {titleAntwoordLabel, 	hgl()};
+        Component[] r11 = {titleAntwoordLabel, 	ra(10,0),	hbAntwoord, 	hgl()};
 		Component[] r12 = {selectableCBBox, 	hgl()};
 		
 		Component[] k1 = {hb(r11), vst(15), hb(r12), vst(15)};
 		
 		Component[] r21 = {titleSettingsLabel, 	hgl()};
 		Component[] r22 = {itemCountLabel, 		ra(10,10), 	hgl(), 	itemCountTF};
-		Component[] r23 = {multiSelectionsCB, 	hgl()};
+		Component[] r23 = {multiSelectionsCB, 	ra(5,0),	hgl(),	hbMeervoudig};
 		Component[] r24 = {hasPrefixCB, 		hgl()};
 		Component[] r25 = {listNumberTypeLabel, ra(10,10), 	hgl(), 	listNumberTypeComboBox};
 		Component[] r26 = {tabWidthLabel, 		ra(10,10), 	hgl(), 	tabWidthTF};
 		Component[] r27 = {rowSpaceLabel, 		ra(10,10), 	hgl(), 	rowSpaceTF};
-		Component[] r28 = {imageKnopLabel, 		ra(5,5), 	hgl(), 	knopImageButton};
+		Component[] r28 = {imageKnopLabel, 		ra(5,5), 	 	knopImageButton,	ra(5,0),	hgl(),	hbKnopImage};
 		
 		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), 
 				hb(r25), vst(5), hb(r26), vst(5), hb(r27), vst(5), hb(r28), vst(5), vgl()};
 		
 		Component[] r31 = {titleLoggingLabel, 	hgl()};
 		Component[] r32 = {maxScoreLabel, 		ra(5,10), maxScoreTF, hgl()};
-		Component[] r33 = {checkCB, 			hgl()};
-		Component[] r34 = {teltMeeCB, 			hgl()};
-		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r33 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
+		Component[] r34 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
 		Component[] r36 = {logObjectivesButton, hgl()};
 		
 		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vgl()};
 		
 		Component[] main = {vb(k1), hst(50), vb(k2), hst(50), vb(k3)};
 		mainPanel.add(hb(main));
+		
+		Box hb = Box.createHorizontalBox();
+        hb.add(mainPanel);
+        hb.add(helpBox);
 		
 		// bottomPanel
 		okButton = makeButton("Ok",this);//
@@ -232,7 +309,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		
 		preferencesPanel.add(topPanel,BorderLayout.NORTH);
 		preferencesPanel.add(bottomPanel,BorderLayout.SOUTH);
-		preferencesPanel.add(mainPanel,BorderLayout.CENTER);
+		preferencesPanel.add(hb,BorderLayout.CENTER);
 	}
 	
 	private JCheckBox makeCheckBox (String text, boolean selected, ActionListener al) {
@@ -263,6 +340,17 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 			tf.addFocusListener(this);
 		}
 		return tf;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
 	}
 	
 	private Box hb(Component[] c) {
@@ -677,7 +765,35 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    else if(e.getSource()==volledigeBreedteCB) {   
 	    	breedteTF.setEnabled(!volledigeBreedteCB.isSelected());
 	    }
-		
+	    else if (e.getSource() == helpButton) {
+        	//if(interactieEditPanel!=null && interactieEditPanel instanceof AntwoordVergelijkingVakEditPanel) 
+			//{
+        		//((AntwoordVergelijkingVakEditPanel)interactieEditPanel).showHelp(true);
+        		
+    		helpBox.setVisible(!helpBox.isVisible());
+    		helpTitelBox.setVisible(helpBox.isVisible());
+    		if(helpBox.isVisible()) {
+    			showHelpButtons(true) ;
+    			helpBox.validate();
+    			OpdrNavStructEdit.helpBrowser.loadURL(geefHelpURL());
+            	
+            	//packWidth(1100);
+    			frame.pack();
+    		}
+    		else {
+    			helpBox.validate(); 
+    			OpdrNavStructEdit.helpBrowser.loadURL(null);
+    			showHelpButtons(false);
+    			//pack();
+    			frame.pack();
+    		}	
+			//}
+            
+        }
+	    else if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
 	    //if(imageDialog!=null)
 	    //    imageDialog.setVisible(false);
 		
@@ -698,5 +814,22 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 				maakCheckboxes();
 			}
 		}
+	}
+
+	@Override
+	public void showHelpButtons(boolean b) {
+		hbCheck.setVisible(b);
+    	hbTeltMee.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbRandom.setVisible(b);
+    	hbMeervoudig.setVisible(b);
+    	hbAntwoord.setVisible(b);
+    	hbKnopImage.setVisible(b);
+    	frame.pack();
+    }
+
+	@Override
+	public String geefHelpURL() {
+		return HELP_MULTIPLECHOICE_URL;
 	}
 }

@@ -21,6 +21,7 @@ import javax.swing.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
 
@@ -69,6 +70,27 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
   	private JLabel titleHulpLabel;
   	private JCheckBox viewCB;
 	
+  	// Helpbuttons
+    private static String HELP_33_URL = WiskOpdr.rb.getString("HELP_33_URL");
+    private static String HELP_33_URL_CHECK = WiskOpdr.rb.getString("HELP_33_URL_CHECK");
+    private static String HELP_33_URL_TELTMEE = WiskOpdr.rb.getString("HELP_33_URL_TELTMEE");
+    private static String HELP_33_URL_LOGID = WiskOpdr.rb.getString("HELP_33_URL_LOGID");
+    private static String HELP_33_URL_CHECKAFZONDERLIJK = WiskOpdr.rb.getString("HELP_33_URL_CHECKAFZONDERLIJK");
+    private static String HELP_33_URL_CHECKSAMEN = WiskOpdr.rb.getString("HELP_33_URL_CHECKSAMEN");
+    private static String HELP_33_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_33_URL_ANTWOORD");
+    private static String HELP_33_URL_KNOPIMAGE = WiskOpdr.rb.getString("HELP_33_URL_KNOPIMAGE");
+    private static String HELP_33_URL_VIEW = WiskOpdr.rb.getString("HELP_33_URL_VIEW");
+    
+    private HelpButton hbCheck = makeHelpButton(HELP_33_URL_CHECK);
+    private HelpButton hbTeltMee = makeHelpButton(HELP_33_URL_TELTMEE);
+    private HelpButton hbLogID = makeHelpButton(HELP_33_URL_LOGID);
+    private HelpButton hbCheckAfzonderlijk = makeHelpButton(HELP_33_URL_CHECKAFZONDERLIJK);
+    private HelpButton hbCheckSamen = makeHelpButton(HELP_33_URL_CHECKSAMEN);
+    private HelpButton hbAntwoord = makeHelpButton(HELP_33_URL_ANTWOORD);
+    private HelpButton hbKnopImage = makeHelpButton(HELP_33_URL_KNOPIMAGE);
+    private HelpButton hbView = makeHelpButton(HELP_33_URL_VIEW);
+    
+    private boolean helpVisible = false;
 	
 //	private boolean checkSamen;
 //	private String formuleString;
@@ -92,7 +114,6 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		
 		//mainPanel  //juiste antwoord
 		titleAntwoordLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"), font.deriveFont(Font.BOLD, 16));
-		titleAntwoordLabel.setVisible(false);
 		formuleEditor = new FormuleEditor(true);
 		formuleEditor.setMultiLine(true);
 		formuleEditor.setPreferredSize(new Dimension(340,200));
@@ -130,10 +151,8 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
         
         // mainPanel    //Hulp
         titleHulpLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"), font.deriveFont(Font.BOLD, 16));
-        titleHulpLabel.setVisible(false);
         viewCB = makeCheckBox(WiskOpdr.rb.getString("viewCBLabel"), false, this);
-        viewCB.setVisible(false);		
-		
+        
 
         
         removeAll();
@@ -143,27 +162,27 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 	
 	private void plaatsGUI() {
 		//plaats componenten mainPanel
-		Component[] r11 = {titleAntwoordLabel, 	hgl()};
+		Component[] r11 = {titleAntwoordLabel, 	ra(10,0),	hbAntwoord, 	hgl()};
 		Component[] r12 = {formuleEditor, 	hgl()};
 			
 		Component[] k1 = {hb(r11), vst(15), hb(r12),  vst(15), vgl()};
         
 		Component[] r21 = {titleSettingsLabel, 		hgl()};
 		Component[] r22 = {aantalValueObjectsLabel, 			ra(10,10), 	hgl(), aantalValueObjectsTF	};
-		Component[] r23 = {checkAfzonderlijkCB, 			hgl()};
-		Component[] r24 = {checkSamenCB, 		hgl()};
-		Component[] r25 = {imageKnopLabel, 			ra(5,5), 	hgl(), 	knopImageButton};
+		Component[] r23 = {checkAfzonderlijkCB, 			ra(5,0),	hgl(),	hbCheckAfzonderlijk};
+		Component[] r24 = {checkSamenCB, 		ra(5,0),	hgl(),	hbCheckSamen};
+		Component[] r25 = {imageKnopLabel, 			ra(5,5), 	 knopImageButton, ra(5,0),	hgl(),	hbKnopImage};
 		
 		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), hb(r25), vst(5), vgl()};
 		
 		Component[] r31 = {titleLoggingLabel, 	hgl()};
 		Component[] r32 = {maxScoreLabel, 		ra(5,10), maxScoreTF, hgl()};
-		Component[] r33 = {checkCB, 			hgl()};
-		Component[] r34 = {teltMeeCB, 			hgl()};
-		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r33 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
+		Component[] r34 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
 		Component[] r36 = {logObjectivesButton, hgl()};
 		Component[] r37 = {titleHulpLabel, 		hgl()};
-		Component[] r38 = {viewCB, 				hgl()};
+		Component[] r38 = {viewCB, 				ra(5,0),	hgl(),	hbView};
 		
 		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vst(30), hb(r37), vst(15), hb(r38),vgl()};
 		
@@ -199,6 +218,17 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 			tf.addFocusListener(this);
 		}
 		return tf;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
 	}
 	
 	private Box hb(Component[] c) {
@@ -280,13 +310,14 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 	    aantalValueObjectsTF.setText(""+aantalValueObjects);
 	    maxScoreTF.setText(""+scoreMax);
 	    checkAfzonderlijkCB.setSelected(!checkSamen);
-	    viewCB.setVisible(!checkSamen);
+	    viewCB.setVisible(checkSamen);
         viewCB.setSelected(view && !checkSamen);
-        titleHulpLabel.setVisible(!checkSamen);
+        titleHulpLabel.setVisible(checkSamen);
 	    checkSamenCB.setSelected(checkSamen);
 	    formuleEditor.geefFormuleVak().vulVak(formuleString);
 	    if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
 	    formuleEditor.setVisible(checkSamen);
+	    titleAntwoordLabel.setVisible(checkSamen);
 	    
 	    logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
@@ -416,23 +447,33 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
     
     public void actionPerformed(ActionEvent e)
 	{
-		if(e.getSource()==aantalValueObjectsTF)
+    	if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
+		else if(e.getSource()==aantalValueObjectsTF)
 		{	aantalValueObjects = Integer.parseInt(aantalValueObjectsTF.getText());
 		}
 		else if(e.getSource()==checkAfzonderlijkCB)
 		{	checkSamenCB.setSelected(!checkAfzonderlijkCB.isSelected());
+			titleAntwoordLabel.setVisible(!checkAfzonderlijkCB.isSelected());
 			formuleEditor.setVisible(!checkAfzonderlijkCB.isSelected());
-			viewCB.setVisible(checkAfzonderlijkCB.isSelected());
-			titleHulpLabel.setVisible(checkAfzonderlijkCB.isSelected());
+			viewCB.setVisible(!checkAfzonderlijkCB.isSelected());
+			hbView.setVisible(helpVisible && !checkAfzonderlijkCB.isSelected());
+			hbAntwoord.setVisible(helpVisible && !checkAfzonderlijkCB.isSelected());
+			titleHulpLabel.setVisible(!checkAfzonderlijkCB.isSelected());
 			if(!checkAfzonderlijkCB.isSelected())viewCB.setSelected(false);
 			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 
 		}
 		else if(e.getSource()==checkSamenCB)
 		{	checkAfzonderlijkCB.setSelected(!checkSamenCB.isSelected());
+			titleAntwoordLabel.setVisible(!checkAfzonderlijkCB.isSelected());
 			formuleEditor.setVisible(!checkAfzonderlijkCB.isSelected());
-			viewCB.setVisible(checkAfzonderlijkCB.isSelected());
-			titleHulpLabel.setVisible(checkAfzonderlijkCB.isSelected());
+			viewCB.setVisible(!checkAfzonderlijkCB.isSelected());
+			hbView.setVisible(helpVisible && !checkAfzonderlijkCB.isSelected());
+			hbAntwoord.setVisible(helpVisible && !checkAfzonderlijkCB.isSelected());
+			titleHulpLabel.setVisible(!checkAfzonderlijkCB.isSelected());
 			if(!checkAfzonderlijkCB.isSelected())viewCB.setSelected(false);
 			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 
@@ -533,14 +574,23 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 
 	@Override
 	public void showHelpButtons(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
+		helpVisible = b;
+		hbCheck.setVisible(b);
+    	hbTeltMee.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbCheckAfzonderlijk.setVisible(b);
+    	hbCheckSamen.setVisible(b);
+    	if(checkSamenCB.isSelected())hbAntwoord.setVisible(b);
+    	hbKnopImage.setVisible(b);
+    	if(checkSamenCB.isSelected())hbView.setVisible(b);
+    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+
+  	}
+	
 
 	@Override
 	public String geefHelpURL() {
-		// TODO Auto-generated method stub
-		return null;
+		return HELP_33_URL;
 	}
     
     // einde methode TabletOwner

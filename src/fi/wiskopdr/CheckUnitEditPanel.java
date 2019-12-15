@@ -18,6 +18,7 @@ import javax.swing.*;
 
 import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
@@ -71,6 +72,26 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
  	private JLabel logIDLabelLabel;
  	private ObjectiveChoiceButton logObjectivesButton;
  	
+ 	// Helpbuttons
+    private static String HELP_12_URL = WiskOpdr.rb.getString("HELP_12_URL");
+    private static String HELP_12_URL_CHECK = WiskOpdr.rb.getString("HELP_12_URL_CHECK");
+    private static String HELP_12_URL_TELTMEE = WiskOpdr.rb.getString("HELP_12_URL_TELTMEE");
+    private static String HELP_12_URL_LOGID = WiskOpdr.rb.getString("HELP_12_URL_LOGID");
+    private static String HELP_12_URL_ANTWOORD = WiskOpdr.rb.getString("HELP_12_URL_ANTWOORD");
+    private static String HELP_12_URL_MEERVOUDIG = WiskOpdr.rb.getString("HELP_12_URL_MEERVOUDIG");
+    private static String HELP_12_URL_RANDOM = WiskOpdr.rb.getString("HELP_12_URL_RANDOM");
+    private static String HELP_12_URL_CHECKFORMULE = WiskOpdr.rb.getString("HELP_12_URL_CHECKFORMULE");
+    private static String HELP_12_URL_KNOPIMAGE = WiskOpdr.rb.getString("HELP_12_URL_KNOPIMAGE");
+    
+    private HelpButton hbCheck = makeHelpButton(HELP_12_URL_CHECK);
+    private HelpButton hbTeltMee = makeHelpButton(HELP_12_URL_TELTMEE);
+    private HelpButton hbLogID = makeHelpButton(HELP_12_URL_LOGID);
+    private HelpButton hbAntwoord = makeHelpButton(HELP_12_URL_ANTWOORD);
+    private HelpButton hbMeervoudig = makeHelpButton(HELP_12_URL_MEERVOUDIG);
+    private HelpButton hbRandom = makeHelpButton(HELP_12_URL_RANDOM);
+    private HelpButton hbCheckFormule = makeHelpButton(HELP_12_URL_CHECKFORMULE);
+    private HelpButton hbKnopImage = makeHelpButton(HELP_12_URL_KNOPIMAGE); 
+   
  	
 	//private InteractiePanel[] selectables;
 	//private JLabel[] selectableLabels;
@@ -212,7 +233,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
         
    private void plaatsGUI() {   
         //plaats componenten mainPanel
-        Component[] r11 = {titleAntwoordLabel, 	hgl()};
+        Component[] r11 = {titleAntwoordLabel, 	ra(10,0),	hbAntwoord, 	hgl()};
 		Component[] r12 = {selectableCBBox, 	hgl()};
 		Component[] r13 = {formuleEditor, 	hgl()};
 		
@@ -220,19 +241,19 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		
 		Component[] r21 = {titleSettingsLabel, 	hgl()};
 		Component[] r22 = {itemCountLabel, 		ra(10,10), 	hgl(), 	itemCountTF};
-		Component[] r23 = {multiSelectionsCB, 	hgl()};
-		Component[] r24 = {randomizePositionsCB, 		hgl()};
-		Component[] r25 = {checkFormuleCB,  		hgl()};
-		Component[] r26 = {imageKnopLabel, 		ra(5,5), 	hgl(), 	knopImageButton};
+		Component[] r23 = {multiSelectionsCB, 	ra(5,0),	hgl(),	hbMeervoudig};
+		Component[] r24 = {randomizePositionsCB, 		ra(5,0),	hgl(),	hbRandom};
+		Component[] r25 = {checkFormuleCB,  		ra(5,0),	hgl(),	hbCheckFormule};
+		Component[] r26 = {imageKnopLabel, 		ra(5,5),  	knopImageButton,ra(5,0),	hgl(),	hbKnopImage};
 		
 		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), 
 				hb(r25), vst(5), hb(r26), vst(5), vgl()};
 		
 		Component[] r31 = {titleLoggingLabel, 	hgl()};
 		Component[] r32 = {maxScoreLabel, 		ra(5,10), maxScoreTF, hgl()};
-		Component[] r33 = {checkCB, 			hgl()};
-		Component[] r34 = {teltMeeCB, 			hgl()};
-		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl()};
+		Component[] r33 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
+		Component[] r34 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
 		Component[] r36 = {logObjectivesButton, hgl()};
 		
 		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vgl()};
@@ -269,6 +290,17 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 			tf.addFocusListener(this);
 		}
 		return tf;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
 	}
 	
 	private Box hb(Component[] c) {
@@ -591,7 +623,11 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
     
 	public void actionPerformed(ActionEvent e)
 	{
-		if(e.getSource()==itemCountTF)
+		if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
+		else if(e.getSource()==itemCountTF)
 		{
 			int aantal = Math.min(aantalSelectablesMax, Integer.parseInt(itemCountTF.getText()));
 			if(aantal != aantalSelectables)
@@ -683,13 +719,20 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 
 	@Override
 	public void showHelpButtons(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
+		hbCheck.setVisible(b);
+    	hbTeltMee.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbRandom.setVisible(b);
+    	hbMeervoudig.setVisible(b);
+    	hbCheckFormule.setVisible(b);
+    	hbAntwoord.setVisible(b);
+    	hbKnopImage.setVisible(b);
+    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+
+    }
 
 	@Override
 	public String geefHelpURL() {
-		// TODO Auto-generated method stub
-		return null;
+		return HELP_12_URL;
 	}
 }
