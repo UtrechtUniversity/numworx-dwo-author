@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
@@ -44,7 +46,7 @@ import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
-public class DragDropEditor implements TComponentEditor, ActionListener, FocusListener, HelpButtonPanelIF {
+public class DragDropEditor implements TComponentEditor, ActionListener, FocusListener, HelpButtonPanelIF, WindowListener {
 
 	private TekstVak tekstVak;
 	private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
@@ -395,7 +397,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 
 	public void makeFrame(){
 	   	frame = DialogFacade.newInstance(tekstVak, WiskOpdr.rb.getString("TCOMP_drag"), true);
-	    frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	    frame.addWindowListener(this);
 	    frame.getContentPane().setLayout(new BorderLayout());
 	    frame.getContentPane().add(preferencesPanel);
 	    frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
@@ -658,9 +660,19 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 
 		if(e.getSource().equals(okButton)) {
 			produceAction("ok");
+			helpBox.setVisible(false);
+    		helpTitelBox.setVisible(false);
+    		helpBox.validate(); 
+			OpdrNavStructEdit.helpBrowser.loadURL(null);
+			showHelpButtons(false);
 			frame.setVisible(false);
 		}
 		else if(e.getSource().equals(cancelButton)) {
+			helpBox.setVisible(false);
+    		helpTitelBox.setVisible(false);
+    		helpBox.validate(); 
+			OpdrNavStructEdit.helpBrowser.loadURL(null);
+			showHelpButtons(false);
 			frame.setVisible(false);
 		}
 		else if(e.getSource()==knopImageButton) {   
@@ -757,5 +769,52 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 	@Override
 	public String geefHelpURL() {
 		return HELP_DRAGDROP_URL;
+	}
+	
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		helpBox.setVisible(false);
+		helpTitelBox.setVisible(false);
+		helpBox.validate(); 
+		OpdrNavStructEdit.helpBrowser.loadURL(null);
+		showHelpButtons(false);
+		frame.setVisible(false);
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
