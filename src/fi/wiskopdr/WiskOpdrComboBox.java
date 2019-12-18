@@ -23,8 +23,8 @@ public class WiskOpdrComboBox extends JComboBox {
   public WiskOpdrComboBox() {
     super();
     setForeground(WiskOpdr.colorBlue1);
-    setPreferredSize(new Dimension(50,22));
-    setMaximumSize(new Dimension(250,22));
+    //setPreferredSize(new Dimension(50,22));
+    //setMaximumSize(new Dimension(250,22));
     setOpaque(false);
     setFont(font);
     Component c0 = this.getComponent(0);
@@ -37,6 +37,12 @@ public class WiskOpdrComboBox extends JComboBox {
       popup.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue3));
       popup.setBackground(WiskOpdr.colorGray3);
     }
+  }
+  
+  public void addItem(Object item) {
+	  super.addItem(item);
+	  setPreferredSize(new Dimension(super.getPreferredSize().width , 22));
+	  setMaximumSize(new Dimension(250 , 22));
   }
   
   @Override

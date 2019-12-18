@@ -20,7 +20,7 @@ public class WiskOpdrButton extends JButton {
   public WiskOpdrButton(String label) {
     super(label);
     setMaximumSize(new Dimension(250,22));
-    setMinimumSize(new Dimension(50,22));
+    setMinimumSize(new Dimension(50,20));
     setFont(font);
   }
   
@@ -31,7 +31,7 @@ public class WiskOpdrButton extends JButton {
       ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
     
       super.paintComponent(g);
-      g.setColor(bgColor);
+      g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
       g.fillRect(0, 0, getWidth(), getHeight());
       
       fm = this.getFontMetrics(getFont());

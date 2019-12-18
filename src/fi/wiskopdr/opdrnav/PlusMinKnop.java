@@ -22,7 +22,8 @@ public class PlusMinKnop extends JPanel implements MouseListener
 	
 	
 	public PlusMinKnop(int x, int y, int b, int h,int soort)
-	{	setBounds(x,y,b,h);
+	{	setLayout(null);
+		setBounds(x,y,b,h);
 		addMouseListener(this);
 		if(soort==PlusMinKnop.VERTIKAAL)
 		{	pijlPlus = new Polygon();

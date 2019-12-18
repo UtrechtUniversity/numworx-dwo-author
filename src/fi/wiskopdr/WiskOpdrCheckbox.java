@@ -36,11 +36,11 @@ public class WiskOpdrCheckbox extends JCheckBox {
         int m = (getHeight() - 24)/2-1;
         g.setColor(Color.white);
         g.fillRect(6, m+5, 15, 15);
-        g.setColor(bgColor);
+        g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
         g.drawRect(6, m+5, 15, 15);
         
         if(isSelected()) {
-          g.setColor(bgColor);
+          g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
           g.fillRect(6, m+5, 15, 15);
           g.setColor(Color.white);
           g.setFont(font);
@@ -51,11 +51,11 @@ public class WiskOpdrCheckbox extends JCheckBox {
         int m = (getHeight() - 24)/2-1;
         g.setColor(Color.white);
         g.fillRect(4, m+6, 13, 13);
-        g.setColor(bgColor);
+        g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
         g.drawRect(4, m+6, 13, 13);
         
         if(isSelected()) {
-          g.setColor(bgColor);
+          g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
           g.fillRect(4, m+6, 13, 13);
           g.setColor(Color.white);
           g.setFont(font);

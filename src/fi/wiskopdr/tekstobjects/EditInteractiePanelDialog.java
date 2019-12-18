@@ -235,9 +235,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		headerbox.add(Box.createHorizontalGlue());
 		
 		// Nog niet alle interactieEditPanel zijn klaar voor een helppanel
-		boolean geschikt = setNr==0 && soort<13 && soort!=8	|| 
+		boolean geschikt = setNr==0 && soort<13 && soort!=8	|| setNr==3 ||
 				( soortInteractiePanel>-1 && 
 						(soortInteractiePanel<5
+								|| soortInteractiePanel==9
 								|| soortInteractiePanel==12
 								|| soortInteractiePanel==16
 								|| soortInteractiePanel==33
@@ -1013,7 +1014,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
             OpdrNavStructEdit.helpBrowser.loadURL(null);
             
         }
-        else if (e.getSource() == helpButton) {
+        else if (e.getSource() == helpButton && interactieEditPanel instanceof HelpButtonPanelIF) {
         	//if(interactieEditPanel!=null && interactieEditPanel instanceof AntwoordVergelijkingVakEditPanel) 
 			//{
         		//((AntwoordVergelijkingVakEditPanel)interactieEditPanel).showHelp(true);
