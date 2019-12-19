@@ -65,6 +65,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "misconceptionsKnopLabel", "Error analysis"},
 				{ "imagesButtonLabel", "Images"},
 				{ "settingsLabel", "Settings"},
+				{ "helpTitelLabel", "Help"},
 								
 				{ "choiceOefenen" , "Practice" },
 				{ "choiceOefenenEindloos" , "Practice endless" },
@@ -344,6 +345,7 @@ public class Text_en extends java.util.ListResourceBundle
                 
 				
 				//InstellingenPanel
+                {"OPT_instellingenActiviteitTitel", "Settings activity"},
 				{"OPT_wiskundeLabel" , "Mathematics"},
                 {"OPT_navigatieLabel" , "Navigation"},
                 {"OPT_layoutLabel" , "Layout"},
@@ -534,6 +536,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_styleSettingsLabel", "Settings"},
                 {"TVEP_stylesLabel", "Style:"},
                 {"TVEP_editStylesButton", "Edit"},
+                {"TVEP_bewerkStijlLabel", "Edit style"},
                 
                 //Style Manager
                 {"SM_titelLabel", "Manage Styles"},

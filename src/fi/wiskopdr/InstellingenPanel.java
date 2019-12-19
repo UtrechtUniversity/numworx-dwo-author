@@ -116,6 +116,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JPanel helpPanel;
     private Box helpBox;
     private Box helpTitelBox;
+    private JButton hideHelpButton;
 	
 	private String[] fontNames = {
 			"SansSerif",
@@ -215,7 +216,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		setLayout(new BorderLayout());
 		setBackground(WiskOpdr.bgcolorEditor);
 		
-		 JLabel headerTitle = new JLabel("Instellingen Activiteit");
+		 JLabel headerTitle = new JLabel(WiskOpdr.rb.getString("OPT_instellingenActiviteitTitel"));
 	        headerTitle.setForeground(WiskOpdr.colorGray3);
 	        headerTitle.setFont(new Font("SansSerif",Font.PLAIN, 24));
 	        //headerPanel.add(headerTitle);
@@ -245,11 +246,24 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			JLabel helpTitleLabel = new JLabel("Help");
 			helpTitleLabel.setForeground(WiskOpdr.colorBlue5);
 			helpTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+			
+			hideHelpButton = new WiskOpdrButton("<");
+			hideHelpButton.setBackground(WiskOpdr.colorBlue1);
+			hideHelpButton.setForeground(WiskOpdr.colorBlue5);
+			hideHelpButton.setPreferredSize(new Dimension(20,20));
+			hideHelpButton.setFont(new Font("SansSerif",Font.BOLD, 24));
+			hideHelpButton.addActionListener(this);
+			
+			
 		        
 			helpTitelBox = Box.createVerticalBox();
 			helpTitelBox.add(Box.createRigidArea(new Dimension(300,0)));
 			Box helpheader = Box.createHorizontalBox();
+			helpheader.add(Box.createRigidArea(new Dimension(140,0)));
 			helpheader.add(helpTitleLabel);
+			helpheader.add(Box.createRigidArea(new Dimension(80,0)));
+			helpheader.add(hideHelpButton);
+			//helpheader.setMaximumSize(new Dimension(300,0));
 			helpTitelBox.setPreferredSize(new Dimension(300,30));
 			helpTitelBox.add(helpheader);
 			helpTitelBox.setVisible(false);
@@ -1600,10 +1614,18 @@ public class InstellingenPanel extends JPanel implements ActionListener
     			showHelpButtons(false);
     			//pack();
     			dialog.pack();
+    			
     		}	
 			//}
             
         }
+		if(e.getSource() == hideHelpButton) {
+			helpBox.setVisible(false);
+			helpTitelBox.setVisible(false);
+			OpdrNavStructEdit.helpBrowser.loadURL(null);
+			showHelpButtons(false);
+			dialog.pack();
+		}
 		
 	}
 	//Eenvoudige parser voor styles van Strings naar Objects

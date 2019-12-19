@@ -217,7 +217,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		helpBox.add(helpPanel);
 		helpBox.setVisible(false);
 		
-		JLabel helpTitleLabel = new JLabel("Help");
+		JLabel helpTitleLabel = new JLabel(WiskOpdr.rb.getString("helpTitelLabel"));
 		helpTitleLabel.setForeground(WiskOpdr.colorBlue5);
 		helpTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
 	        

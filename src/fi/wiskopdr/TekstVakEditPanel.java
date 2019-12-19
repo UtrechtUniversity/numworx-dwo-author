@@ -155,7 +155,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean checkUitklapVak;
 	
 	private JCheckBox stylesCB;
-	//private boolean styles;
+	private boolean manageStylesOn;
 	private JComboBox kiesStyleChoice;
 	private Box styleChoiceBox = Box.createVerticalBox()
 ;	private StyleManager styleManager;
@@ -305,6 +305,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private HelpButton hbzichtbaarNa = makeHelpButton(HELP_9_URL_ZICHTBAARNA);
 	private HelpButton hbAftrekPopup = makeHelpButton(HELP_9_URL_AFTREKPOPUP);
 	private HelpButton hblog = makeHelpButton(HELP_9_URL_LOG);
+	
+	private boolean helpActief;
+	
+	private Box selectionObjectBoxLP = Box.createHorizontalBox();
+	private Box selectionObjectBoxIP = Box.createHorizontalBox();
 	
 	public TekstVakEditPanel(XWidgetManager manager)
 	{	
@@ -933,7 +938,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         
 	}
 	
-	private Box selectionObjectBox = Box.createHorizontalBox();
+	
 	
 	private void createNewGUI() {
 		layoutOptionsPanel.removeAll();
@@ -1016,7 +1021,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component space = ((TekstVakPanel.styles!=null) ? ra(0,10) : ra(0,0));
 		Component spaceTest = ((WiskOpdr.isExperimental()) ? ra(0,vd) : ra(0,0));
 		
-		Component[] k1 = {hb(r11),space, hb(r12), ra(0,vd), hb(r13), ra(0,vd), hb(r14), selectionObjectBox, ra(0,vd), hb(r15), 
+		Component[] k1 = {hb(r11),space, hb(r12), ra(0,vd), hb(r13), ra(0,vd), hb(r14), selectionObjectBoxLP, ra(0,vd), hb(r15), 
 				ra(0,vd), hb(r16), ra(0,vd), hb(r17), ra(0,vd), hb(r18), ra(0,vd), hb(r19), ra(0,vd), hb(r110), 
 				ra(0,vd), hb(r111), ra(0,vd), hb(r112),ra(0,vd), hb(r113),ra(0,vd), hb(r114),ra(0,vd), hb(r115),
 				ra(0,vd), hb(styleMComp), hb(r116),ra(0,vd), hb(r117),ra(0,vd), hb(r118),hb(r119),hb(r120),hb(r121),ra(0,vd), hb(r122),
@@ -1035,6 +1040,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		checkExpressieFormuleVak.setMaximumSize(new Dimension(20,20));
 		logIDLabelField.setPreferredSize(new Dimension(60,20));
 		
+		
+		
 		Component[] r21 = {interactiePanelIdLabel,		ra(5,0),	interactiePanelIdTF, hgl(),hbInteractiePID};
 		Component[] r22 = {selectieWaardeLabel, ra(5,0),	defaultBijNullCB, hgl(), 	checkExpressieFormuleVak,  ra(10,0),hbWaarde};
 		Component[] r23 = {selectableCB, ra(10,0),colorSelectionCB,ra(10,0), selectieColorButton, hgl() ,hbSelectable};
@@ -1047,9 +1054,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component[] r210 = {ra(20,0),aftrekPopupLabel,ra(10,0),aftrekPopupTF, 	 hgl() };
 		Component[] r211 = {logCB, ra(10,0),	logIDField,	ra(10,0), hgl(),   hblog};
 		Component[] r212 = {ra(35,0),	logIDLabelLabel, ra(5,0),logIDLabelField,	 hgl()  };
-			
+		
+		selectionObjectBoxIP = hb(r23);	
 		vd = 3;
-		Component[] k2 = {hb(r21), ra(0,vd), hb(r22), ra(0,15), hb(r23), ra(0,vd), hb(r24), selectionObjectBox, ra(0,vd), hb(r25), 
+		Component[] k2 = {hb(r21), ra(0,vd), hb(r22), ra(0,15), selectionObjectBoxIP, ra(0,vd), hb(r24), ra(0,vd), hb(r25), 
 				ra(0,vd), hb(r26), ra(0,vd), hb(r27), ra(0,15), hb(r28), ra(0,vd), hb(r29), ra(0,vd), hb(r210), 
 				ra(0,15), hb(r211), ra(0,vd), hb(r212), vgl()};
 		
@@ -1062,8 +1070,6 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	public void maakStyleEditorPopupFrame()
 	{	
 		styleEditorPopupFrame = DialogFacade.newInstance(this, "", false);
-		
-		
 		styleEditorPopupFrame.getContentPane().setLayout(new BorderLayout());
 		styleEditorPopupFrame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e)
@@ -1081,6 +1087,15 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				revalidate();
 			}
 		});
+		JPanel topPanel = new JPanel();
+		topPanel.setBackground(WiskOpdr.colorBlue1);
+		topPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+		JLabel titleLabel = makeLabel(WiskOpdr.rb.getString("TVEP_bewerkStijlLabel"), true);
+		titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+		titleLabel.setForeground(WiskOpdr.colorGray3);
+		topPanel.add(titleLabel);
+		styleEditorPopupFrame.getContentPane().add(topPanel, BorderLayout.NORTH);
+		
 		/*styleEditorPopupFrame.addComponentListener(new ComponentAdapter(){
 			public void componentResized(ComponentEvent e)
 			{   int x = 0;
@@ -1874,7 +1889,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		tabPositieKnop.setVisible(random);
 		
 		if(random)
-		{	remove(randomTab);
+		{	tekstEditorPanel.remove(randomTab);
 			randomTab = new OpdrachtNrRij(aantalRandom, 380,20);
 			randomTab.setTab(true);
 			randomTab.setScoresVisible(false);
@@ -1882,7 +1897,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			randomTab.addActionListener(this);
 			randomTab.setBackground(new Color(210,210,210));
 			randomTab.setSelected(1);
-			add(randomTab,0);
+			tekstEditorPanel.add(randomTab,0);
 			aantalTabsKnop.setLocation(380+25*aantalRandom+5 ,22);
 			
 			randomNr = 0;
@@ -2841,8 +2856,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	
 	void setStyleManageMode(boolean b)
 	{
+		manageStylesOn = b;
 		enableStyleSettings(b || kiesStyleChoice.getSelectedIndex()==0);
 		
+		stylesLabel.setVisible(!b);
 		zwevendCB.setVisible(!b);
 		locationXTF.setVisible(!b && zwevend);
 		locationYTF.setVisible(!b && zwevend);
@@ -2858,6 +2875,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		templateModeFillCB.setVisible(!b && WiskOpdr.isExperimental());
 		responsiveCB.setVisible(!b && WiskOpdr.isExperimental());
 		//stylesCB.setVisible(!b);
+		
+		hbStyles.setVisible(!b && helpActief);
+		hbZwevend.setVisible(!b && helpActief);
+		hbVulHoogte.setVisible(!b && helpActief);
+		hbCallOut.setVisible(!b && helpActief);
+		hbUitklap.setVisible(!b && helpActief);
+		hbZichtbaar.setVisible(!b && helpActief);
 		
 		knopImageButton1.setVisible(!b && inklapbaarCB.isSelected());
 		knopImageButton2.setVisible(!b && inklapbaarCB.isSelected());
@@ -2878,14 +2902,16 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 //			layoutOptionsPanel.add(colorSelectionCB);
 //			layoutOptionsPanel.add(selectieColorButton);
 			
-			selectionObjectBox.add(selectableCB);
-			selectionObjectBox.add(ra(5,0));
-			selectionObjectBox.add(colorSelectionCB);
-			selectionObjectBox.add(ra(5,0));
-			selectionObjectBox.add(selectieColorButton);
-			selectionObjectBox.add(ra(5,0));
-			selectionObjectBox.add(hgl());
-			selectionObjectBox.add(selectedCB);
+			selectionObjectBoxLP.removeAll();
+			
+			selectionObjectBoxLP.add(selectableCB);
+			selectionObjectBoxLP.add(ra(5,0));
+			selectionObjectBoxLP.add(colorSelectionCB);
+			selectionObjectBoxLP.add(ra(5,0));
+			selectionObjectBoxLP.add(selectieColorButton);
+			selectionObjectBoxLP.add(ra(5,0));
+			selectionObjectBoxLP.add(hgl());
+			selectionObjectBoxLP.add(selectedCB);
 		}
 		else
 		{
@@ -2893,17 +2919,16 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 //			selectedCB.setLocation(selectedCB.getLocation().x, selectedCB.getLocation().y-5 );
 //			colorSelectionCB.setLocation(colorSelectionCB.getLocation().x, colorSelectionCB.getLocation().y-5 );
 //			selectieColorButton.setLocation(selectieColorButton.getLocation().x, selectieColorButton.getLocation().y-5 );
-			selectionObjectBox.removeAll();
+			selectionObjectBoxIP.removeAll();
 			
-			selectableCB.setBounds(10, 70,140,20);
-			selectedCB.setBounds(250, 70,20,20 );
-			colorSelectionCB.setBounds(150, 70,20,20 );
-			selectieColorButton.setBounds(170, 70,70,20 );
-			
-			interactionOptionsPanel.add(selectableCB);
-			interactionOptionsPanel.add(selectedCB);
-			interactionOptionsPanel.add(colorSelectionCB);
-			interactionOptionsPanel.add(selectieColorButton);
+			selectionObjectBoxIP.add(selectableCB);
+			selectionObjectBoxIP.add(ra(5,0));
+			selectionObjectBoxIP.add(colorSelectionCB);
+			selectionObjectBoxIP.add(ra(5,0));
+			selectionObjectBoxIP.add(selectieColorButton);
+			selectionObjectBoxIP.add(ra(5,0));
+			selectionObjectBoxIP.add(hgl());
+			selectionObjectBoxIP.add(selectedCB);
 		}
 	}
 	void enableStyleSettings(boolean b)
@@ -3138,10 +3163,12 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 
 	@Override
 	public void showHelpButtons(boolean b) {
-		hbStyles.setVisible(b && TekstVakPanel.styles!=null);
+		helpActief = b;
+		
+		hbStyles.setVisible(!manageStylesOn && b && TekstVakPanel.styles!=null);
         hbRand.setVisible(b);
         hbBGColor.setVisible(b);
-        hbZwevend.setVisible(b);
+        hbZwevend.setVisible(!manageStylesOn && b);
         hbFont.setVisible(b);
         hbRonding.setVisible(b);
         hbHoek.setVisible(b);
@@ -3153,10 +3180,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         hbTableBorders.setVisible(b);
         hbMarges.setVisible(b);
         hbInterlinie.setVisible(b);
-        hbVulHoogte.setVisible(b);
-        hbUitklap.setVisible(b);
-        hbCallOut.setVisible(b);
-        hbZichtbaar.setVisible(b);
+        hbVulHoogte.setVisible(!manageStylesOn && b);
+        hbUitklap.setVisible(!manageStylesOn && b);
+        hbCallOut.setVisible(!manageStylesOn && b);
+        hbZichtbaar.setVisible(!manageStylesOn && b);
         
         hbInteractiePID.setVisible(b);
         hbWaarde.setVisible(b);
