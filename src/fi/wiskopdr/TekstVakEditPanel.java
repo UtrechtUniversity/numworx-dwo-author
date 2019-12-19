@@ -7,9 +7,12 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.*;
 import java.util.*;
 
@@ -22,6 +25,8 @@ import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.opdrnav.*;
+
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , ActionListener, FocusListener, TabletOwner, HelpButtonPanelIF
 {
@@ -360,6 +365,33 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		tabbedPane = new JTabbedPane();
 		tabbedPane.setBackground(getBackground());
+		tabbedPane.setUI(new BasicTabbedPaneUI() {
+            @Override
+            protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected)  {
+            	if(isSelected)g.setColor(WiskOpdr.colorBlue3);
+            	else g.setColor(Color.white);
+            	g.fillRect(x, y, w,h);
+            }
+            @Override
+            protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
+            	//g.setColor(WiskOpdr.colorBlue4);
+            	//g.drawRect(0, this.getTabBounds(selectedIndex,new Rectangle()).height, tabbedPane.getWidth()-1, tabbedPane.getHeight()-this.getTabBounds(0,new Rectangle()).height-1);
+            }
+            @Override
+            protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
+            	g.setColor(WiskOpdr.colorBlue4);
+            	//if(isSelected)g.drawRect(0, 0, tabbedPane.getWidth()-1, tabbedPane.getHeight()-1);
+            	//else g.drawRect(0, 0, tabbedPane.getWidth()-1, tabbedPane.getHeight()-1);
+            }
+            @Override
+            protected void paintText(Graphics g, int tabPlacement, Font font, FontMetrics metrics, int tabIndex, String title, Rectangle textRect, boolean isSelected) {
+            	if(isSelected)g.setColor(Color.white);
+            	else g.setColor(WiskOpdr.colorBlue3);
+            	g.setFont(font);
+            	g.drawString(title, textRect.x, textRect.y+textRect.height-2);
+            }
+
+        });
 		tabbedPane.setForeground(WiskOpdr.colorBlue1);
 		tabbedPane.setBounds(0, 0, defaultOpWidth, defaultOpHeight);
 		tabbedPane.setMaximumSize(new Dimension(400,1200));
