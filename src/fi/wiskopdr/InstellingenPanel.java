@@ -243,15 +243,16 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			helpBox.add(helpPanel);
 			helpBox.setVisible(false);
 			
-			JLabel helpTitleLabel = new JLabel("Help");
+			JLabel helpTitleLabel = new JLabel(WiskOpdr.rb.getString("helpTitelLabel"));
 			helpTitleLabel.setForeground(WiskOpdr.colorBlue5);
 			helpTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
 			
-			hideHelpButton = new WiskOpdrButton("<");
+			hideHelpButton = new WiskOpdrButton("\u276e");
+			hideHelpButton.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue1));
 			hideHelpButton.setBackground(WiskOpdr.colorBlue1);
 			hideHelpButton.setForeground(WiskOpdr.colorBlue5);
 			hideHelpButton.setPreferredSize(new Dimension(20,20));
-			hideHelpButton.setFont(new Font("SansSerif",Font.BOLD, 24));
+			hideHelpButton.setFont(new Font("SansSerif",Font.PLAIN, 24));
 			hideHelpButton.addActionListener(this);
 			
 			

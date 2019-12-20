@@ -605,7 +605,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				hb(r410),hb(r411),hb(r412),hb(r413),hb(r414),hb(r415),hb(r416),hb(r417),hb(r418),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r423),hb(r424), vgl()};
 			settingsBox = vb(k4);
 		}
-		
+		settingsBox.setMaximumSize(new Dimension(500,800));
 		// plaats componenten feedback box
 		Component[] r51 = {titleFeedbackLabel, 		ra(5,10),	hgl(), hbFeedbackTitel};
 		Component[] r52 = {goedFoutIP,				hgl()};
@@ -1250,7 +1250,10 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 feedbackSizeCB.setSelected(feedbackSize);
 				feedbackEditor.setResizable(feedbackSize);
 				
-                if(hasFeedback)return;
+				if(hasFeedback) {
+					((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+					return;
+				}
                 
                 eindOplossingCB.setSelected(eindOplossingNodig);
                 eindOplossingPV.setVisible(eindOplossingNodig);
@@ -1277,6 +1280,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 exactCB.setSelected(exact);
                 exactPV.setVisible(exact);
                 exactPV.setText(""+puntenExact);
+                
+                ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
     }
     
     public Hashtable getEditState()

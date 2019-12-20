@@ -314,6 +314,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	public TekstVakEditPanel(XWidgetManager manager)
 	{	
 		setLayout(new BorderLayout());
+		//setBorder(BorderFactory.createEmptyBorder(-20, 0, 0, 0));
 		Box hb = Box.createHorizontalBox();
 		Box vb =  Box.createVerticalBox();
 		setBackground(WiskOpdr.bgcolor);
@@ -324,9 +325,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		tekstEditor.setBackground(getBackground());
 		tekstEditor.remove(tekstEditor.crosswidgetKnop);
 		tekstEditor.remove(tekstEditor.opsommingKnop);
-		tekstEditor.setBounds(0,20,480,23);
+		tekstEditor.setBounds(0,20,500,23);
 		//if(!tableMode)
+		
 		tekstEditorPanel = new JPanel(null);
+		
 		tekstEditorPanel.setPreferredSize(new Dimension(500,450));
 		tekstEditorPanel.add(tekstEditor);
 		tekstEditorPanel.addComponentListener(new EditorComponentListener());
@@ -343,6 +346,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		//vb.add
 		//vb.add(vgl());
 		hb.add(vb);
+		hb.add(ra(20,0));
 		
 		
 		
@@ -379,6 +383,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
             }
             @Override
             protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
+            	g.setColor(WiskOpdr.colorBlue4);
+            	g.drawLine(0, 20, 0, tabbedPane.getHeight());
             	//g.setColor(WiskOpdr.colorBlue4);
             	//g.drawRect(0, this.getTabBounds(selectedIndex,new Rectangle()).height, tabbedPane.getWidth()-1, tabbedPane.getHeight()-this.getTabBounds(0,new Rectangle()).height-1);
             }
@@ -398,6 +404,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 
         });
 		tabbedPane.setForeground(WiskOpdr.colorBlue1);
+		tabbedPane.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 		tabbedPane.setBounds(0, 0, defaultOpWidth, defaultOpHeight);
 		tabbedPane.setMaximumSize(new Dimension(400,1200));
 		tabbedPane.setOpaque(false);
@@ -1979,6 +1986,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     	responsiveCB.setSelected(responsive);
     	responsiveToggleWidthTF.setVisible(responsive);
     	responsiveToggleWidthTF.setText(""+responsiveToggleWidth);
+    	
+    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)this)).pack();
 	}
 	
 	
@@ -1992,7 +2001,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			tekstVakPanel.setEditState(getEditState());
 			
 		}
-		else tekstEditor.setSize(b,tekstEditor.getSize().height);
+		//else tekstEditor.setSize(b,tekstEditor.getSize().height);
 	}
 	
 	public int geefTekstVakPanelHoogte()
@@ -2017,14 +2026,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		{	tekstVakPanel.zetHoogte(h);//setSize(tekstVakPanel.getSize().width, h);
 			
 		}
-		else tekstEditor.setSize(tekstEditor.getSize().width, h+23);
+		//else tekstEditor.setSize(tekstEditor.getSize().width, h+23);
 	}
 	
 	public void setBounds(int x, int y, int b, int h)
 	{	//cp.setLocation(b - cp.getWidth(),0);
-		tekstEditor.setSize(getWidth()-defaultOpWidth-40, tekstEditor.getHeight());
-		optionsPanel.setBounds(getWidth()-defaultOpWidth-10,20,defaultOpWidth, getHeight() - 30);
-		tabbedPane.setSize(defaultOpWidth, getHeight() - 30);
+		//tekstEditor.setSize(getWidth()-defaultOpWidth-40, tekstEditor.getHeight());
+		//optionsPanel.setBounds(getWidth()-defaultOpWidth-10,20,defaultOpWidth, getHeight() - 30);
+		//tabbedPane.setSize(defaultOpWidth, getHeight() - 30);
 		super.setBounds(x,y,b,h);
 	}
 	
@@ -3137,9 +3146,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	      @Override
 	      public void componentResized(ComponentEvent e) {
 	    	  if(e.getSource()==tekstEditorPanel) {
-	    		  int w = tekstEditorPanel.getWidth()-20;
+	    		  int w = tekstEditorPanel.getWidth();
 	    		  int h = tekstEditorPanel.getHeight();
-	    		  tekstEditor.setBounds(0,20,w,23);
+	    		  tekstEditor.setSize(w,23);
 	    	  }
 	      }
 	     @Override

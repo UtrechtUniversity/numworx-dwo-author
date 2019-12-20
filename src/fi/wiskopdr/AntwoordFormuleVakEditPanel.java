@@ -284,7 +284,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         startEditorPanel.setLayout(null);
         startEditorPanel.add(startEditor);
         startEditorPanel.addComponentListener(new EditorComponentListener());
-        startEditorPanel.setPreferredSize(new Dimension(600,110));
+        startEditorPanel.setPreferredSize(new Dimension(450,110));
         startEditorPanel.setMaximumSize(new Dimension(2870,150));
         
         // GUI antwoordBox
@@ -303,7 +303,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         antwoordEditorPanel.add(titleAntwoordLabel);
         antwoordEditorPanel.add(antwoordvak);
         antwoordEditorPanel.addComponentListener(new EditorComponentListener());
-        antwoordEditorPanel.setPreferredSize(new Dimension(600,140));
+        antwoordEditorPanel.setPreferredSize(new Dimension(450,140));
         antwoordEditorPanel.setMaximumSize(new Dimension(2835,170));
         
         tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
@@ -333,14 +333,14 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         vormEditor.setResizable(true);
         vormEditor.setMultiLine(true);
         vormEditor.setScrollHorizontal(true);
-        vormEditor.setBounds(0,0,260,110);
+        vormEditor.setBounds(0,0,200,110);
         vormEditor.setFont(font);
         vormEditor.addActionListener(this);
         vormEditor.setVisible(false);
         
         vormEditorPanel = new JPanel();
         vormEditorPanel.setLayout(null);
-        vormEditorPanel.setPreferredSize(new Dimension(450,160));
+        vormEditorPanel.setPreferredSize(new Dimension(200,120));
         vormEditorPanel.setMaximumSize(new Dimension(2860,160));
         vormEditorPanel.add(vormEditor);
         vormEditorPanel.addComponentListener(new EditorComponentListener());
@@ -359,7 +359,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		goedFoutIP.setPreferredSize(new Dimension(100,80));
     	
         feedbackEditor = new TekstEditor(false,true,true);
-        feedbackEditor.setPreferredSize(new Dimension(400,110));
+        feedbackEditor.setPreferredSize(new Dimension(200,120));
         feedbackEditor.setMaximumSize(new Dimension(2280,160));
         feedbackEditor.setBounds(5,350,280,110);
         feedbackEditor.setFont(font);
@@ -609,7 +609,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				hb(r410),hb(r411),hb(r416),hb(r417),hb(r418),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r424), vgl()};
 			settingsBox = vb(k4);
 		}		
-				
+		settingsBox.setMaximumSize(new Dimension(500,800));
+		
     	Box regelBox = Box.createHorizontalBox();
     	Box kolomBox = Box.createHorizontalBox();
     	
@@ -652,7 +653,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		
 		//plaats componenten vormbox
         Component[] r81 = {titleVormLabel, 		hgl()};
-		Component[] r82 = {ra(0,110), 			vormEditorPanel, 		hgl()};
+		Component[] r82 = {ra(0,110), 			vormEditorPanel};
 		
 		Component[] k8 = {hb(r81), vst(5), hb(r82), vgl()};
 		vormBox = vb(k8);
@@ -690,11 +691,12 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		boxh2.add(antwoordBox);
 		
 		boxh3.add(verificatieBox);
+		boxh3.add(Box.createHorizontalGlue());
 		//boxh3.add(Box.createHorizontalStrut(5));
 		//boxh3.add(scoringBox);
 		boxh3.add(Box.createHorizontalStrut(10));
 		boxh3.add(vormBox);
-		boxh3.add(Box.createHorizontalGlue());
+		//boxh3.add(Box.createHorizontalGlue());
 		boxh3.add(feedbackBox);
 	}
 	
@@ -1138,7 +1140,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 					
 					answerModelNr = 0;
 					setAnswerModel();
-				}
+					antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,450),140));
+	            }
 				
 				antwoordvak.geefFormuleVak().vulVak(antwoordString);
 				startEditor.geefFormuleVak().vulVak(startString);
@@ -1202,7 +1205,10 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				feedbackCB.setSelected(hasFeedback);
 				feedbackSizeCB.setSelected(feedbackSize);
 				feedbackEditor.setResizable(feedbackSize);
-				if(hasFeedback)return;
+				if(hasFeedback) {
+					 ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+					return;
+				}
 				
                 herleidingCB.setSelected(herleiding);
                 herleidingPV.setVisible(herleiding);
@@ -1219,7 +1225,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
                 significantPV.setVisible(significant && significantieAan);
                 significantPV.setText(""+puntenSignificant);
                 
-                ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+                ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 
 		
 			//// EIND //// Deze code zal moeten worden aangepast als de interface meerdere antwoordvakken ondersteunt
@@ -1724,6 +1730,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				answerModels = answerModelsNew;
 				repaint();
 			}
+			antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,450),140));
+			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 		}
 		else if(e.getSource()==feedbackCB)
 		{	setFeedbackOption(feedbackCB.isSelected());
@@ -1771,6 +1779,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			{	herleidingPV.setText("0");
 				puntenHerleiding = 0;
 			}
+			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 			
 		}
 		else if(e.getSource()==exactCB)
