@@ -370,15 +370,15 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	
         // GUI Verificatie box
         titleVerificatieLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleVerificatieLabel"));
-    	titleVerificatieLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleVerificatieLabel.setFont(font.deriveFont(Font.BOLD, 16));
-    	
-    	titleVerificatieScoreLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
-    	titleVerificatieScoreLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleVerificatieScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
-    	
-    	gelijkwaardigCB = makeCheckBox(320,410,120,20,WiskOpdr.rb.getString("gelijkwaardigCBLabel"),true,true);
-		gelijkwaardigCB.addMouseListener(this);
+      	titleVerificatieLabel.setForeground(WiskOpdr.colorBlue1);
+      	titleVerificatieLabel.setFont(font.deriveFont(Font.BOLD, 16));
+      	
+      	titleVerificatieScoreLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+      	titleVerificatieScoreLabel.setForeground(WiskOpdr.colorBlue1);
+      	titleVerificatieScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
+      	
+      	gelijkwaardigCB = makeCheckBox(320,410,120,20,WiskOpdr.rb.getString("gelijkwaardigCBLabel"),true,true);
+  		gelijkwaardigCB.addMouseListener(this);
 		herleidingCB = makeCheckBox(320,435,120,20,WiskOpdr.rb.getString("vormCBLabel"),false,true);
 		significantCB = makeCheckBox(320,460,120,20,WiskOpdr.rb.getString("significantCBLabel"),false,significantieAan?true:false);
 		exactCB = makeCheckBox(320,significantieAan?485:460,120,20,WiskOpdr.rb.getString("exactCBLabel"),false,true);
@@ -389,18 +389,18 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		
 		// GUI Score
 		titleScoreLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
-    	titleScoreLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
+    	    titleScoreLabel.setForeground(WiskOpdr.colorBlue1);
+    	    titleScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	feedbackPV = makeTextField(460,385,30,20,"0",false);
+    	    feedbackPV = makeTextField(460,385,30,20,"0",false);
 		
     	
 		// Logging/Nakijken
 		titleLoggingLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"));
-    	titleLoggingLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleLoggingLabel.setFont(font.deriveFont(Font.BOLD, 16));
+    	    titleLoggingLabel.setForeground(WiskOpdr.colorBlue1);
+    	    titleLoggingLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
+    	    checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
         teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
         logIDField = makeTextField(520,5,60,20,"0",false);
@@ -423,16 +423,16 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         
         // Hulp setting
         titleHulpLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"));
-    	titleHulpLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleHulpLabel.setFont(font.deriveFont(Font.BOLD, 16));
+        titleHulpLabel.setForeground(WiskOpdr.colorBlue1);
+        titleHulpLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
-    	feedbackCB = makeCheckBox(140,-2,80,20,WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
+        feedbackCB = makeCheckBox(140,-2,80,20,WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
 		
-    	rmKnopCB = makeCheckBox(650,105,150,20,WiskOpdr.rb.getString("rmCBLabel"),false,true);
-    	aantalDecRmField = makeTextField(670,135,100,20,"10",false);
+        rmKnopCB = makeCheckBox(650,105,150,20,WiskOpdr.rb.getString("rmCBLabel"),false,true);
+        aantalDecRmField = makeTextField(670,135,100,20,"10",false);
         aantalDecRmLabel = makeLabel(670,135,100,20,WiskOpdr.rb.getString("rmAantalDecLabel"),false);
         
-    	stappenCB = makeCheckBox(630,50,200,20,WiskOpdr.rb.getString("stappenCBLabel"),true,false);
+        stappenCB = makeCheckBox(630,50,200,20,WiskOpdr.rb.getString("stappenCBLabel"),true,false);
 		rekenVakCB = makeCheckBox(630,50,200,20,"Formulevak als calculator",false,false);
 		formuleToolBijFocusCB = makeCheckBox(530,50,270,20,WiskOpdr.rb.getString("formuleToolCBLabel"),false,false);
 		subKnopCB = makeCheckBox(650,55,100,20,WiskOpdr.rb.getString("subKnopCBLabel"),false,true);
@@ -451,8 +451,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	       
 	    // GUI contextVar box
 	    titleContextLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleContextLabel"));
-    	titleContextLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleContextLabel.setFont(font.deriveFont(Font.BOLD, 16));
+	    titleContextLabel.setForeground(WiskOpdr.colorBlue1);
+	    titleContextLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
 		contextVarCB = makeCheckBox(690,115,100,20,WiskOpdr.rb.getString("contextVarCBLabel"),false,true);
 		

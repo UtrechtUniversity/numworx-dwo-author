@@ -110,6 +110,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
    	private JPanel helpPanel;
     private Box helpBox;
     private Box helpTitelBox;
+    private JButton hideHelpButton;
     
     
     // Helpbuttons
@@ -181,19 +182,32 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		helpBox = Box.createVerticalBox();
 		helpBox.add(Box.createRigidArea(new Dimension(300,0)));
 		helpBox.add(helpPanel);
+		helpBox.setMaximumSize(new Dimension(300,800));
 		helpBox.setVisible(false);
 		
 		JLabel helpTitleLabel = new JLabel("Help");
 		helpTitleLabel.setForeground(WiskOpdr.colorBlue5);
 		helpTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
-	        
+	     
+		hideHelpButton = new WiskOpdrButton("\u276e");
+        hideHelpButton.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue1));
+        hideHelpButton.setBackground(WiskOpdr.colorBlue1);
+        hideHelpButton.setForeground(WiskOpdr.colorBlue5);
+        hideHelpButton.setPreferredSize(new Dimension(20,20));
+        hideHelpButton.setFont(new Font("SansSerif",Font.PLAIN, 24));
+        hideHelpButton.addActionListener(this);
+        
 		helpTitelBox = Box.createVerticalBox();
 		helpTitelBox.add(Box.createRigidArea(new Dimension(300,0)));
 		Box helpheader = Box.createHorizontalBox();
-		helpheader.add(helpTitleLabel);
+        helpheader.add(Box.createRigidArea(new Dimension(140,0)));
+        helpheader.add(helpTitleLabel);
+        helpheader.add(Box.createRigidArea(new Dimension(80,0)));
+        helpheader.add(hideHelpButton);
 		helpTitelBox.setPreferredSize(new Dimension(300,30));
 		helpTitelBox.add(helpheader);
 		helpTitelBox.setVisible(false);
+		
 		
 		Box headerbox = Box.createHorizontalBox();
 		headerbox.add(Box.createHorizontalGlue());
@@ -734,6 +748,14 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		{
 			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
 		}
+		
+		if(e.getSource() == hideHelpButton) {
+          helpBox.setVisible(false);
+          helpTitelBox.setVisible(false);
+          OpdrNavStructEdit.helpBrowser.loadURL(null);
+          showHelpButtons(false);
+          frame.pack();
+        }
 		
 		
 //		if(imageDialog!=null)

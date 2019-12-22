@@ -10,9 +10,11 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.*;
 import java.util.*;
 
@@ -384,9 +386,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
             @Override
             protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
             	g.setColor(WiskOpdr.colorBlue4);
-            	g.drawLine(0, 20, 0, tabbedPane.getHeight());
-            	//g.setColor(WiskOpdr.colorBlue4);
-            	//g.drawRect(0, this.getTabBounds(selectedIndex,new Rectangle()).height, tabbedPane.getWidth()-1, tabbedPane.getHeight()-this.getTabBounds(0,new Rectangle()).height-1);
+            	g.drawLine(1, 20, 1, tabbedPane.getHeight());
+            //	g.setColor(WiskOpdr.colorBlue4);
+            //	g.drawRect(0, this.getTabBounds(selectedIndex,new Rectangle()).height, tabbedPane.getWidth()-1, tabbedPane.getHeight()-this.getTabBounds(0,new Rectangle()).height-1);
             }
             @Override
             protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
@@ -395,8 +397,12 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
             	//else g.drawRect(0, 0, tabbedPane.getWidth()-1, tabbedPane.getHeight()-1);
             }
             @Override
-            protected void paintText(Graphics g, int tabPlacement, Font font, FontMetrics metrics, int tabIndex, String title, Rectangle textRect, boolean isSelected) {
-            	if(isSelected)g.setColor(Color.white);
+            protected void paintText(Graphics gr, int tabPlacement, Font font, FontMetrics metrics, int tabIndex, String title, Rectangle textRect, boolean isSelected) {
+              Graphics2D g = (Graphics2D)gr;
+              ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+              ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+            
+              if(isSelected)g.setColor(Color.white);
             	else g.setColor(WiskOpdr.colorBlue3);
             	g.setFont(font);
             	g.drawString(title, textRect.x, textRect.y+textRect.height-2);
@@ -408,29 +414,21 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		tabbedPane.setBounds(0, 0, defaultOpWidth, defaultOpHeight);
 		tabbedPane.setMaximumSize(new Dimension(400,1200));
 		tabbedPane.setOpaque(false);
-		//optionsPanel.add(tabbedPane);
 		hb.add(tabbedPane);
 		
 		
 		layoutOptionsContainer = new JPanel(new BorderLayout());
-		//layoutOptionsContainer.setLayout(null);
 		layoutOptionsContainer.setBackground(new Color(240,240,240));
-		//layoutOptionsContainer.setPreferredSize(new Dimension(defaultOpWidth, defaultOpHeight - 30));
 		
 		layoutOptionsPanel = new JPanel(new BorderLayout());
-		//layoutOptionsPanel.setLayout(null);
 		layoutOptionsPanel.setBackground(new Color(240,240,240));		
 		layoutOptionsPanel.setBounds(0,0,defaultOpWidth, defaultOpHeight - 30);
-		//layoutOptionsPanel.setPreferredSize(new Dimension(defaultOpWidth, defaultOpHeight - 30));
-		//layoutOptionsPanel.setLocation(0,0);
 		
 		layoutOptionsContainer.add(layoutOptionsPanel);
 		tabbedPane.add(WiskOpdr.rb.getString("TVEP_layoutLabel"), layoutOptionsContainer);
 		
 		interactionOptionsPanel = new JPanel(new BorderLayout());
-		//interactionOptionsPanel.setLayout(null);	
 		interactionOptionsPanel.setBackground(new Color(240,240,240));
-		//interactionOptionsPanel.setPreferredSize(new Dimension(defaultOpWidth, defaultOpHeight - 30));
 		tabbedPane.add(WiskOpdr.rb.getString("TVEP_gebruikersInteractieLabel"), interactionOptionsPanel);
 		
 		cp = new JPanel();
@@ -526,11 +524,6 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		kopFunctieLabel.setFont(titelFont);
 		cp.add(kopFunctieLabel);
 		
-//		rondingLabel = new JLabel(WiskOpdr.rb.getString("TVEP_rondingHoeken"));
-//		rondingLabel.setForeground(WiskOpdr.colorBlue1);
-//		rondingLabel.setBounds(10,125,140,20);
-//		rondingLabel.setFont(ifFont);
-//		layoutOptionsPanel.add(rondingLabel);
 		
 		rondingCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_rondingHoeken"),10,125,140,20,false,layoutOptionsPanel);
 		
@@ -541,11 +534,6 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		rondingTF.addFocusListener(this);
 		layoutOptionsPanel.add(rondingTF);
 		
-//		hoekLabel = new JLabel(WiskOpdr.rb.getString("TVEP_rotatieHoek"));
-//		hoekLabel.setForeground(WiskOpdr.colorBlue1);
-//		hoekLabel.setBounds(10,150,140,20);
-//		hoekLabel.setFont(ifFont);
-//		layoutOptionsPanel.add(hoekLabel);
 		
 		hoekCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_rotatieHoek"),10,125,140,20,false,layoutOptionsPanel);
 		
@@ -560,32 +548,20 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		selectieWaardeLabel.setForeground(WiskOpdr.colorBlue1);
 		selectieWaardeLabel.setBounds(10,40,150,20);
 		selectieWaardeLabel.setFont(ifFont);
-		//selectieWaardeLabel.setEnabled(false);
 		interactionOptionsPanel.add(selectieWaardeLabel);
 		
 		defaultBijNullCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_defaultBijNull"), 65,40,80,20, defaultBijNull, interactionOptionsPanel);
-		
-		//scoreMaxTF = new JTextField("");//+scoreMax);
-		//scoreMaxTF.setBounds(880,510,30,20);
-		//scoreMaxTF.setFont(ifFont);
-		//scoreMaxTF.addActionListener(this);
-		//scoreMaxTF.setVisible(false);
-		//add(scoreMaxTF);
-		
+	
 		checkExpressieFormuleVak = new FormuleVak();
 		checkExpressieFormuleVak.setLocation(170,40);
 		checkExpressieFormuleVak.vulVak("$f0@");
-		//checkExpressieFormuleVak.setEnabled(false);
 		interactionOptionsPanel.add(checkExpressieFormuleVak);
 		
 		rondingPlusMin = new PlusMinKnop(2,140,16,20,PlusMinKnop.VERTIKAAL);
 		rondingPlusMin.addActionListener(this);
-		//add(rondingPlusMin);
 		
 		tableBordersCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_tabelRanden"), 10,310,160,20, tableBorders, layoutOptionsPanel);
 		
-		// nog even niet
-		//cp.remove(buttonCB);
 		
 		aantalRijenLabel = new JLabel(WiskOpdr.rb.getString("TVEP_aantalRijen"));
 		aantalRijenLabel.setForeground(WiskOpdr.colorBlue1);
@@ -811,15 +787,15 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		aantalTabsKnop.setVisible(false);
 		tekstEditorPanel.add(aantalTabsKnop,0);
     	
-    	tabPositieKnop = new PlusMinKnop(376+25*randomNr+5 ,2,20,16,PlusMinKnop.HORIZONTAAL);
-    	tabPositieKnop.addActionListener(this);
-    	tabPositieKnop.setVisible(false);
-    	tekstEditorPanel.add(tabPositieKnop,0);
-    	
-    	randomteksten = new String[1][][];
-    	randomIpLaunchdata = new Hashtable[1][];
-    	
-    	knopImageButton1 = new FormuleButton("\u25b8");
+      	tabPositieKnop = new PlusMinKnop(376+25*randomNr+5 ,2,20,16,PlusMinKnop.HORIZONTAAL);
+      	tabPositieKnop.addActionListener(this);
+      	tabPositieKnop.setVisible(false);
+      	tekstEditorPanel.add(tabPositieKnop,0);
+      	
+      	randomteksten = new String[1][][];
+      	randomIpLaunchdata = new Hashtable[1][];
+      	
+      	knopImageButton1 = new FormuleButton("\u25b8");
 		knopImageButton1.setBounds(130,415,20,20);
 		knopImageButton1.addActionListener(this);
 		knopImageButton1.setVisible(false);

@@ -217,6 +217,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		helpBox.add(Box.createRigidArea(new Dimension(300,0)));
 		helpBox.add(helpPanel);
 		helpBox.setVisible(false);
+		helpBox.setMaximumSize(new Dimension(300,800));
 		
 		JLabel helpTitleLabel = new JLabel(WiskOpdr.rb.getString("helpTitelLabel"));
 		helpTitleLabel.setForeground(WiskOpdr.colorBlue5);

@@ -152,27 +152,27 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 		basisKeuzeVeldenPanel.setPreferredSize(new Dimension(210,340));
 		basisKeuzeVeldenPanel.setMinimumSize(new Dimension(210,340));
 		basisKeuzeVeldenPanel.setMaximumSize(new Dimension(300,740));
-		
-		basisKeuzeVeldenPanel.setOpaque(false);
+		//basisKeuzeVeldenPanel.setOpaque(false);
+		basisKeuzeVeldenPanel.setBackground(WiskOpdr.colorGray3);
         
         keuzeVeldenPanel = new JPanel();
 		keuzeVeldenPanel.setLayout(null);
 		//keuzeVeldenPanel.setPreferredSize(new Dimension(200,aantalKeuzes*85));
-    	keuzeVeldenPanel.setOpaque(false);
-    	
-    	scrollPaneKeuzeVelden = new JScrollPane(keuzeVeldenPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    	scrollPaneKeuzeVelden.setBorder(BorderFactory.createEmptyBorder());
-    	basisKeuzeVeldenPanel.add(scrollPaneKeuzeVelden);
-    	scrollPaneKeuzeVelden.setBackground(getBackground());
+		keuzeVeldenPanel.setBackground(WiskOpdr.colorGray3);
+      	
+      	scrollPaneKeuzeVelden = new JScrollPane(keuzeVeldenPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      	scrollPaneKeuzeVelden.setBorder(BorderFactory.createEmptyBorder());
+      	basisKeuzeVeldenPanel.add(scrollPaneKeuzeVelden);
+      	scrollPaneKeuzeVelden.setBackground(WiskOpdr.colorGray3);
     	
         keuzeVelden = new TekstEditor[maxKeuzeVelden];
         maakKeuzeVelden();
         
         // GUI antwoordBox
         titleAntwoordLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
-    	titleAntwoordLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleAntwoordLabel.setFont(font.deriveFont(Font.BOLD, 16));
-    	titleAntwoordLabel.setBounds(0,-3,140,20);
+      	titleAntwoordLabel.setForeground(WiskOpdr.colorBlue1);
+      	titleAntwoordLabel.setFont(font.deriveFont(Font.BOLD, 16));
+      	titleAntwoordLabel.setBounds(0,-3,140,20);
     	
         antwoordvak = new TekstEditor();
         antwoordvak.setBounds(0,20,500,150);
@@ -212,7 +212,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
     	titleFeedbackLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
         feedbackEditor = new TekstEditor(false,true,true);
-        feedbackEditor.setPreferredSize(new Dimension(400,100));
+        feedbackEditor.setPreferredSize(new Dimension(250,100));
         feedbackEditor.setMaximumSize(new Dimension(2280,100));
         feedbackEditor.setBounds(5,350,280,110);
         feedbackEditor.setFont(font);
