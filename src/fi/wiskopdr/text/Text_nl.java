@@ -505,8 +505,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"TVEP_anderFont" , "Ander font"},
 				{"TVEP_rondingHoeken" , "Ronding hoeken"},
 				{"TVEP_rotatieHoek" , "Rotatiehoek"},
-				{"TVEP_centreerHor" , "Centreer horizontaal"},
-				{"TVEP_centreerVert" , "Centreer verticaal"},
+				{"TVEP_centreerLabel" , "Centreren"},
+				{"TVEP_centreerHor" , "Horizontaal"},
+				{"TVEP_centreerVert" , "Verticaal"},
 				{"TVEP_pasAanH" , "Past hoogte aan"},
 				{"TVEP_pasAanB" , "Past breedte aan"},
 				{"TVEP_aantalRijen" , "Aantal rijen"},
@@ -561,6 +562,14 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_stylesLabel", "Stijl:"},
                 {"TVEP_editStylesButton", "Bewerk"},
                 {"TVEP_bewerkStijlLabel", "Bewerk stijl"},
+                
+                {"TVEP_lineText_OpmaakTekst", "Opmaak tekst"},
+                {"TVEP_lineText_OpmaakVak", "Opmaak vak"},
+                {"TVEP_lineText_OpmaakTabel", "Opmaak tabel"},
+                {"TVEP_lineText_OpmaakExtra", "Opmaak extra"},
+                {"TVEP_lineText_InteractieKenmerken", "Interactiekenmerken"},
+                {"TVEP_lineText_InteractieSoorten", "Interactiesoorten"},
+                {"TVEP_lineText_InteractieVerwerking", "Interactieverwerking"},
                 
                 //Style Manager
                 {"SM_titelLabel", "Stijlen beheren"},

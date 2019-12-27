@@ -45,6 +45,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JLabel aantalKolommenLabel;
 	private JLabel cellMargeLabel;
 	private JLabel bovenMargeLabel;
+	private JLabel centreerLabel;
 	//private JLabel rondingLabel;
 	//private JLabel hoekLabel;
 	
@@ -379,22 +380,23 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		tabbedPane.setUI(new BasicTabbedPaneUI() {
             @Override
             protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected)  {
-            	if(isSelected)g.setColor(WiskOpdr.colorBlue3);
+            	if(isSelected)g.setColor(WiskOpdr.colorBlue1);
             	else g.setColor(Color.white);
             	g.fillRect(x, y, w,h);
             }
             @Override
             protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
-            	g.setColor(WiskOpdr.colorBlue4);
-            	g.drawLine(1, 20, 1, tabbedPane.getHeight());
             //	g.setColor(WiskOpdr.colorBlue4);
-            //	g.drawRect(0, this.getTabBounds(selectedIndex,new Rectangle()).height, tabbedPane.getWidth()-1, tabbedPane.getHeight()-this.getTabBounds(0,new Rectangle()).height-1);
+            	//g.drawLine(1, 20, 1, tabbedPane.getHeight());
+            //	g.setColor(WiskOpdr.colorBlue4);
+            //g.drawRect(0, this.getTabBounds(selectedIndex,new Rectangle()).height, tabbedPane.getWidth()-1, tabbedPane.getHeight()-this.getTabBounds(0,new Rectangle()).height-1);
             }
             @Override
             protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
             	g.setColor(WiskOpdr.colorBlue4);
             	//if(isSelected)g.drawRect(0, 0, tabbedPane.getWidth()-1, tabbedPane.getHeight()-1);
-            	//else g.drawRect(0, 0, tabbedPane.getWidth()-1, tabbedPane.getHeight()-1);
+            	//else 
+            	g.drawRect(x, y, w, h);
             }
             @Override
             protected void paintText(Graphics gr, int tabPlacement, Font font, FontMetrics metrics, int tabIndex, String title, Rectangle textRect, boolean isSelected) {
@@ -403,10 +405,22 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
               ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
             
               if(isSelected)g.setColor(Color.white);
-            	else g.setColor(WiskOpdr.colorBlue3);
+            	else g.setColor(WiskOpdr.colorBlue1);
             	g.setFont(font);
             	g.drawString(title, textRect.x, textRect.y+textRect.height-2);
             }
+//            protected void paintContentBorderTopEdge(Graphics g, int tabPlacement,int selectedIndex,int x, int y,int w,int h) {
+//              g.setColor(WiskOpdr.colorBlue4);
+//              g.fillRect(x,y,w+1,1);
+//              g.setColor(WiskOpdr.colorGray3);
+//              g.fillRect(x,y+1,w+1,h);
+//            }
+//            protected void paintContentBorderLeftEdge(Graphics g, int tabPlacement,int selectedIndex,int x, int y,int w,int h) {
+//              g.setColor(WiskOpdr.colorBlue4);
+//              g.fillRect(x,y,1,100);
+//              g.setColor(WiskOpdr.colorGray1);
+//              g.fillRect(x+1,y,5,100+1);
+//            }
 
         });
 		tabbedPane.setForeground(WiskOpdr.colorBlue1);
@@ -641,6 +655,12 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		bovenMargeLabel.setBounds(140,335,70,20);
 		bovenMargeLabel.setFont(ifFont);
 		layoutOptionsPanel.add(bovenMargeLabel);
+		
+		centreerLabel = new JLabel(WiskOpdr.rb.getString("TVEP_centreerLabel"));
+		centreerLabel.setForeground(WiskOpdr.colorBlue1);
+		centreerLabel.setBounds(140,335,70,20);
+		centreerLabel.setFont(ifFont);
+        layoutOptionsPanel.add(centreerLabel);
         
         bovenMargeTF = new WiskOpdrTextField("0");
         bovenMargeTF.setBounds(210,335,50,20);
@@ -972,42 +992,60 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         styleManager.setPreferredSize(new Dimension(260,155));
         styleChoiceBox.add(kiesStyleChoice);
         
+         
+        JLabel opmaakInhLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_OpmaakTekst"),true);
+        opmaakInhLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+        opmaakInhLabel.setForeground(WiskOpdr.colorBlue3);
+        Component[] inhoudLine = {ln(70,10),opmaakInhLabel,ln(10)};
+        
+        JLabel opmaakVakLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_OpmaakVak"),true);
+        opmaakVakLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+        opmaakVakLabel.setForeground(WiskOpdr.colorBlue3);
+        Component[] vakLine = {ln(70,10),opmaakVakLabel,ln(10)};
+        
+        JLabel opmaakTabelLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_OpmaakTabel"),true);
+        opmaakTabelLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+        opmaakTabelLabel.setForeground(WiskOpdr.colorBlue3);
+        Component[] tabelLine = {ln(70,10),opmaakTabelLabel,ln(10)};
+        
+        JLabel opmaakExtraLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_OpmaakExtra"),true);
+        opmaakExtraLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+        opmaakExtraLabel.setForeground(WiskOpdr.colorBlue3);
+        Component[] extraLine = {ln(70,10),opmaakExtraLabel,ln(10)};
+        
         
         Component[] r11 = {stylesLabel,		ra(10,0),	hgl(), 	styleChoiceBox, ra(10,0), editStylesButton, ra(10,0),hbStyles};
-		Component[] r12 = {randZichtbaarCB, ra(10,0),	hgl(), 	randDikteTF, ra(10,0), randColorButton, ra(10,0),hbRand};
-		Component[] r13 = {bgColorZichtbaarCB, ra(10,0),hgl(),  bgColorButton, ra(10,0),hbBGColor};
-		Component[] r14 = {zwevendCB, 		ra(10,0),	hgl(),  locationXTF,ra(5,0),locationYTF, ra(10,0),hbZwevend};
-		Component[] r15 = {anderFontCB, 	ra(10,0),	hgl(),  fgColorButton, ra(10,0),fontButton, ra(10,0),hbFont};
-		Component[] r16 = {rondingCB, 		ra(10,0),	hgl(),  rondingTF, ra(10,0), hbRonding};
-		Component[] r17 = {hoekCB, 			ra(10,0),	hgl(),  hoekTF, ra(10,0), hbHoek};
-		Component[] r18 = {centerHCB,		ra(10,0),	hgl(),  hbCenterH};
-		Component[] r19 = {centerVCB, 		ra(10,0),	hgl(),  hbCenterV};
-		Component[] r110 = {pasAanHCB, 		ra(10,0), 	pasAanBCB,	ra(5,0),hgl(),  hbPasAanHB};
-		Component[] r111 = {aantalRijenLabel,hgl(),		ra(5,0), aantalRijenTF,ra(5,0), rijenPlusMin,	ra(10,0), cellSpaceRowLabel,ra(5,0),cellSpaceRowTF,  ra(5,0),hbRijen};
-		Component[] r112 = {aantalKolommenLabel, hgl(),	ra(5,0), aantalKolommenTF,ra(5,0), kolommenPlusMin,	ra(10,0), cellSpaceColumnLabel,ra(5,0),cellSpaceColumnTF,  ra(5,0),hbKolommen};
-		Component[] r113 = {tableBordersCB, ra(10,0),	hgl(),  hbTableBorders};
-		Component[] r114 = {cellMargeLabel, ra(5,0), 	cellMargeTF,ra(10,0),	hgl(), bovenMargeLabel, ra(5,0), bovenMargeTF,ra(5,0), hbMarges};
-		Component[] r115 = {interlinieLabel,ra(5,0),	interlinieTF,ra(10,0), hgl(), hbInterlinie};
+		Component[] r12 = {anderFontCB,  ra(10,0),   hgl(),  fgColorButton, ra(10,0),fontButton, ra(10,0),hbFont};
+		Component[] r13 = {centreerLabel, ra(10,0),centerHCB,        ra(10,0), centerVCB,  ra(10,0), hgl(),  hbCenterH};
+		//Component[] r14 = {centerVCB,        ra(10,0),   hgl(),  hbCenterV};
+		Component[] r15 = {cellMargeLabel, ra(5,0),   cellMargeTF,ra(10,0),   hgl(), bovenMargeLabel, ra(5,0), bovenMargeTF,ra(5,0), hbMarges};
+		Component[] r16 = {interlinieLabel,ra(5,0),   interlinieTF,ra(10,0), hgl(), hbInterlinie};
+		Component[] r17 = {bgColorZichtbaarCB, ra(10,0),hgl(),  bgColorButton, ra(10,0),hbBGColor};
+		Component[] r18 = {randZichtbaarCB, ra(10,0), hgl(),  randDikteTF, ra(10,0), randColorButton, ra(10,0),hbRand};
+		Component[] r19 = {rondingCB,         ra(10,0),   hgl(),  rondingTF, ra(10,0), hbRonding};
+		Component[] r110 = {hoekCB,           ra(10,0),   hgl(),  hoekTF, ra(10,0), hbHoek};
+		Component[] r111 = {pasAanHCB,        ra(10,0),   pasAanBCB,  ra(5,0),hgl(),  hbPasAanHB};
+		Component[] r112 = {vulHoogteCB,  ra(10,0),   hgl(),  hbVulHoogte};
+		Component[] r113 = {aantalRijenLabel,hgl(),       ra(5,0), aantalRijenTF,ra(5,0), rijenPlusMin,   ra(10,0), cellSpaceRowLabel,ra(5,0),cellSpaceRowTF,  ra(5,0),hbRijen};
+		Component[] r114 = {aantalKolommenLabel, hgl(),   ra(5,0), aantalKolommenTF,ra(5,0), kolommenPlusMin, ra(10,0), cellSpaceColumnLabel,ra(5,0),cellSpaceColumnTF,  ra(5,0),hbKolommen};
+		Component[] r115 = {tableBordersCB, ra(10,0), hgl(),  hbTableBorders};
 		Component[] styleMComp = {styleManager };
-		Component[] r116 = {vulHoogteCB,	ra(10,0),	hgl(),  hbVulHoogte};
-		Component[] r117 = {inklapbaarCB, 	ra(10,0),	knopImageButton1, ra(10,0), knopImageButton2, hgl(), checkUitklapVakCB,ra(5,0), hbUitklap};
-		Component[] r118 = {ra(20,0),		posBeginRB, ra(10,0),	knopIsRegel1RB,hgl()};
-		Component[] r119 = {ra(20,0),		posEindRB, 	ra(10,0),	hgl()};
-		Component[] r120 = {ra(20,0),		posNaTekstRB,ra(10,0),	hgl()};
-		Component[] r121 = {callOutCB, 		ra(10,0),	hgl(),  hbCallOut};
+		Component[] r116 = {zwevendCB,        ra(10,0),   hgl(),  locationXTF,ra(5,0),locationYTF, ra(10,0),hbZwevend};
+		Component[] r117 = {callOutCB,      ra(10,0),   hgl(),  hbCallOut};
+		
 		Component[] r122 = {visibleCB, 		ra(10,0),	hgl(), layerChoice, hbZichtbaar};
 		Component[] r123 = {templateModeEditCB,ra(10,0),hgl()};
 		Component[] r124 = {templateModeFillCB,ra(10,0),hgl()};
 		Component[] r125 = {responsiveCB, 	ra(10,0),	hgl()};
 		
 		int vd = 3;
-		Component space = ((TekstVakPanel.styles!=null) ? ra(0,10) : ra(0,0));
+		Component space = ((TekstVakPanel.styles!=null) ? ra(0,15) : ra(0,0));
 		Component spaceTest = ((WiskOpdr.isExperimental()) ? ra(0,vd) : ra(0,0));
 		
-		Component[] k1 = {hb(r11),space, hb(r12), ra(0,vd), hb(r13), ra(0,vd), hb(r14), selectionObjectBoxLP, ra(0,vd), hb(r15), 
-				ra(0,vd), hb(r16), ra(0,vd), hb(r17), ra(0,vd), hb(r18), ra(0,vd), hb(r19), ra(0,vd), hb(r110), 
-				ra(0,vd), hb(r111), ra(0,vd), hb(r112),ra(0,vd), hb(r113),ra(0,vd), hb(r114),ra(0,vd), hb(r115),
-				ra(0,vd), hb(styleMComp), hb(r116),ra(0,vd), hb(r117),ra(0,vd), hb(r118),hb(r119),hb(r120),hb(r121),ra(0,vd), hb(r122),
+		Component[] k1 = {hb(r11),space, hb(inhoudLine),ra(0,vd),hb(r12), ra(0,vd), hb(r13), ra(0,vd), hb(r15), 
+				ra(0,vd), hb(r16), ra(0,15),hb(vakLine), ra(0,vd), hb(r17), ra(0,vd), hb(r18), selectionObjectBoxLP, ra(0,vd), hb(r19), ra(0,vd), hb(r110), 
+				ra(0,vd), hb(r111), ra(0,vd), hb(r112),ra(0,15), hb(tabelLine), ra(0,vd),hb(r113),ra(0,vd), hb(r114),ra(0,vd), hb(r115),
+				ra(0,15),hb(extraLine), ra(0,vd),hb(styleMComp), hb(r116),ra(0,vd), hb(r117),ra(0,vd),  hb(r122),
 				spaceTest, hb(r123),spaceTest, hb(r124),spaceTest, hb(r125),vgl()};
 		Box layoutOptionsBox = vb(k1);
 		layoutOptionsPanel.add(layoutOptionsBox);
@@ -1024,6 +1062,21 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		logIDLabelField.setPreferredSize(new Dimension(60,20));
 		
 		
+		 JLabel interactieSoortenLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieKenmerken"),true);
+		 interactieSoortenLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+		 interactieSoortenLabel.setForeground(WiskOpdr.colorBlue3);
+	     Component[] soortenLine = {ln(70,10),interactieSoortenLabel,ln(10)};
+	        
+	     JLabel interactieKenmerkenLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieSoorten"),true);
+	     interactieKenmerkenLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+         interactieKenmerkenLabel.setForeground(WiskOpdr.colorBlue3);
+         Component[] kenmerkenLine = {ln(70,10),interactieKenmerkenLabel,ln(10)};
+         
+	     JLabel InteractieVerwerkingLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieVerwerking"),true);
+	     InteractieVerwerkingLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+	     InteractieVerwerkingLabel.setForeground(WiskOpdr.colorBlue3);
+	     Component[] verwerkingLine = {ln(70,10),InteractieVerwerkingLabel,ln(10)};
+		
 		
 		Component[] r21 = {interactiePanelIdLabel,		ra(5,0),	interactiePanelIdTF, hgl(),hbInteractiePID};
 		Component[] r22 = {selectieWaardeLabel, ra(5,0),	defaultBijNullCB, hgl(), 	checkExpressieFormuleVak,  ra(10,0),hbWaarde};
@@ -1032,6 +1085,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component[] r25 = {sleepdoelCB, 	ra(10,0),	hgl(),  hbSleepdoel};
 		Component[] r26 = {draaibaarCB, 		ra(10,0),	hgl(),   hbDraaibaar};
 		Component[] r27 = {linkCB, 		ra(10,0),	linkButton, ra(10,0), hgl(),   hbLink};
+		Component[] r118 = {inklapbaarCB,     ra(10,0),   knopImageButton1, ra(10,0), knopImageButton2, hgl(), checkUitklapVakCB,ra(5,0), hbUitklap}; 
+        Component[] r119 = {ra(20,0),     posBeginRB, ra(10,0),   knopIsRegel1RB,hgl()};
+        Component[] r120 = {ra(20,0),     posEindRB,  ra(10,0),   hgl()};
+        Component[] r121 = {ra(20,0),      posNaTekstRB,ra(10,0),  hgl()};
 		Component[] r28 = {zichtbaarNaNakijkenCB, 		ra(10,0),	 hgl(),   hbzichtbaarNa};
 		Component[] r29 = {aftrekPopupCB, ra(10,0),		 hgl(),   hbAftrekPopup};
 		Component[] r210 = {ra(20,0),aftrekPopupLabel,ra(10,0),aftrekPopupTF, 	 hgl() };
@@ -1040,9 +1097,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		selectionObjectBoxIP = hb(r23);	
 		vd = 3;
-		Component[] k2 = {hb(r21), ra(0,vd), hb(r22), ra(0,15), selectionObjectBoxIP, ra(0,vd), hb(r24), ra(0,vd), hb(r25), 
-				ra(0,vd), hb(r26), ra(0,vd), hb(r27), ra(0,15), hb(r28), ra(0,vd), hb(r29), ra(0,vd), hb(r210), 
-				ra(0,15), hb(r211), ra(0,vd), hb(r212), vgl()};
+		Component[] k2 = {hb(kenmerkenLine), ra(0,vd),hb(r21), ra(0,vd), hb(r22), ra(0,15), hb(soortenLine),ra(0,vd), selectionObjectBoxIP, ra(0,vd), hb(r24), ra(0,vd), hb(r25), 
+				ra(0,vd), hb(r26), ra(0,vd), hb(r27),  ra(0,vd), hb(r118),hb(r119),hb(r120),hb(r121),ra(0,15), hb(verwerkingLine), ra(0,vd),hb(r28), ra(0,vd), hb(r29), ra(0,vd), hb(r210), 
+				ra(0,vd), hb(r211), ra(0,vd), hb(r212), vgl()};
 		
 		Box interactionOptionsBox = vb(k2);
 		interactionOptionsPanel.add(interactionOptionsBox);
@@ -1177,6 +1234,27 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private Component ra(int w, int h) {
 		return Box.createRigidArea(new Dimension(w,h));
 	}
+	
+	private Component ln(int w, int h) {
+	  Component c =  ln(h);
+	  c.setPreferredSize(new Dimension(w,h));
+	  c.setMinimumSize(new Dimension(w,h));
+	  c.setMaximumSize(new Dimension(w,h));
+	  return c;
+	}
+	private Component ln(int h) {
+	  JPanel p = new JPanel() {
+	      public void paintComponent(Graphics g) {
+	        g.setColor(WiskOpdr.colorBlue4);  
+	        g.drawLine(0, getHeight()/2, getWidth(), getHeight()/2);
+	        //g.drawLine(0, getHeight()/2+1, getWidth(), getHeight()/2+1);
+	      }
+	  };
+	  p.setPreferredSize(new Dimension(1,h));
+	  p.setMaximumSize(new Dimension(1000,h));
+	  return p;
+	}
+
 	
 	//public void setTableMode(boolean b)
 	//{	tableMode = b;
