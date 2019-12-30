@@ -288,11 +288,6 @@
 		<!-- #fi.verknippen #fi.mozarch #fi.tegels #fi.geomalgebra #fi.stroomdiagrammen 
 			#fi.statistiek #fi.doorziendwo.DoorzienDWO: doorziendwo.jar #fi.dataplot.DataPlot: -->
 		<dependency>
-			<groupId>fi.verknippen</groupId>
-			<artifactId>verknippen</artifactId>
-			<version>0.0.0</version>
-		</dependency>
-		<dependency>
 			<groupId>fi.mozarch</groupId>
 			<artifactId>mozarch</artifactId>
 			<version>0.0.0</version>
@@ -448,6 +443,11 @@
 			<groupId>fi.beans</groupId>
 			<artifactId>numworxlf</artifactId>
 			<version>2.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fi.verknippen</groupId>
+			<artifactId>verknippen</artifactId>
+			<version>0.0.0</version>
 		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
