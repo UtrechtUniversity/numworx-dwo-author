@@ -994,22 +994,22 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         
          
         JLabel opmaakInhLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_OpmaakTekst"),true);
-        opmaakInhLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+        opmaakInhLabel.setFont(new Font("SansSerif", Font.BOLD,11));
         opmaakInhLabel.setForeground(WiskOpdr.colorBlue3);
         Component[] inhoudLine = {ln(70,10),opmaakInhLabel,ln(10)};
         
         JLabel opmaakVakLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_OpmaakVak"),true);
-        opmaakVakLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+        opmaakVakLabel.setFont(new Font("SansSerif", Font.BOLD,11));
         opmaakVakLabel.setForeground(WiskOpdr.colorBlue3);
         Component[] vakLine = {ln(70,10),opmaakVakLabel,ln(10)};
         
         JLabel opmaakTabelLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_OpmaakTabel"),true);
-        opmaakTabelLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+        opmaakTabelLabel.setFont(new Font("SansSerif", Font.BOLD,11));
         opmaakTabelLabel.setForeground(WiskOpdr.colorBlue3);
         Component[] tabelLine = {ln(70,10),opmaakTabelLabel,ln(10)};
         
         JLabel opmaakExtraLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_OpmaakExtra"),true);
-        opmaakExtraLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+        opmaakExtraLabel.setFont(new Font("SansSerif", Font.BOLD,11));
         opmaakExtraLabel.setForeground(WiskOpdr.colorBlue3);
         Component[] extraLine = {ln(70,10),opmaakExtraLabel,ln(10)};
         
@@ -1034,19 +1034,19 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component[] r117 = {callOutCB,      ra(10,0),   hgl(),  hbCallOut};
 		
 		Component[] r122 = {visibleCB, 		ra(10,0),	hgl(), layerChoice, hbZichtbaar};
-		Component[] r123 = {templateModeEditCB,ra(10,0),hgl()};
-		Component[] r124 = {templateModeFillCB,ra(10,0),hgl()};
-		Component[] r125 = {responsiveCB, 	ra(10,0),	hgl()};
+		
 		
 		int vd = 3;
 		Component space = ((TekstVakPanel.styles!=null) ? ra(0,15) : ra(0,0));
-		Component spaceTest = ((WiskOpdr.isExperimental()) ? ra(0,vd) : ra(0,0));
+		Component spaceTest1 = ((WiskOpdr.isExperimental()) ? ra(0,15) : ra(0,0));
+		Component spaceTest2 = ((WiskOpdr.isExperimental()) ? ra(0,vd) : ra(0,0));
+		Component spaceTest3 = ((WiskOpdr.isExperimental()) ? ra(0,vd) : ra(0,0));
 		
 		Component[] k1 = {hb(r11),space, hb(inhoudLine),ra(0,vd),hb(r12), ra(0,vd), hb(r13), ra(0,vd), hb(r15), 
 				ra(0,5), hb(r16), ra(0,15),hb(vakLine), ra(0,vd), hb(r17), ra(0,vd), hb(r18), selectionObjectBoxLP, ra(0,vd), hb(r19), ra(0,vd), hb(r110), 
 				ra(0,vd), hb(r111), ra(0,vd), hb(r112),ra(0,15), hb(tabelLine), ra(0,vd),hb(r113),ra(0,vd), hb(r114),ra(0,vd), hb(r115),
 				ra(0,15),hb(extraLine), ra(0,vd),hb(styleMComp), hb(r116),ra(0,vd), hb(r117),ra(0,vd),  hb(r122),
-				spaceTest, hb(r123),spaceTest, hb(r124),spaceTest, hb(r125),vgl()};
+				vgl()};
 		Box layoutOptionsBox = vb(k1);
 		layoutOptionsPanel.add(layoutOptionsBox);
 		
@@ -1076,6 +1076,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	     InteractieVerwerkingLabel.setFont(new Font("SansSerif", Font.BOLD,10));
 	     InteractieVerwerkingLabel.setForeground(WiskOpdr.colorBlue3);
 	     Component[] verwerkingLine = {ln(70,10),InteractieVerwerkingLabel,ln(10)};
+	     
+	     JLabel testFeaturesLabel = makeLabel("Test features",WiskOpdr.isExperimental());
+	     testFeaturesLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+	     testFeaturesLabel.setForeground(WiskOpdr.colorBlue3);
+         Component[] testLine = {ln(70,10),testFeaturesLabel,ln(10)};
 		
 		
 		Component[] r21 = {interactiePanelIdLabel,		ra(5,0),	interactiePanelIdTF, hgl(),hbInteractiePID};
@@ -1094,12 +1099,15 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component[] r210 = {ra(20,0),aftrekPopupLabel,ra(10,0),aftrekPopupTF, 	 hgl() };
 		Component[] r211 = {logCB, ra(10,0),	logIDField,	ra(10,0), hgl(),   hblog};
 		Component[] r212 = {ra(35,0),	logIDLabelLabel, ra(5,0),logIDLabelField,	 hgl()  };
+		Component[] r123 = {templateModeEditCB,ra(10,0),hgl()};
+        Component[] r124 = {templateModeFillCB,ra(10,0),hgl()};
+        Component[] r125 = {responsiveCB,   ra(10,0),   hgl()};
 		
 		selectionObjectBoxIP = hb(r23);	
 		vd = 3;
 		Component[] k2 = {hb(kenmerkenLine), ra(0,vd),hb(r21), ra(0,vd), hb(r22), ra(0,15), hb(soortenLine),ra(0,vd), selectionObjectBoxIP, ra(0,vd), hb(r24), ra(0,vd), hb(r25), 
 				ra(0,vd), hb(r26), ra(0,vd), hb(r27),  ra(0,vd), hb(r118),hb(r119),hb(r120),hb(r121),ra(0,15), hb(verwerkingLine), ra(0,vd),hb(r28), ra(0,vd), hb(r29), ra(0,vd), hb(r210), 
-				ra(0,vd), hb(r211), ra(0,vd), hb(r212), vgl()};
+				ra(0,vd), hb(r211), ra(0,vd), hb(r212), spaceTest1, hb(testLine), hb(r123),spaceTest2, hb(r124),spaceTest3, hb(r125),vgl()};
 		
 		Box interactionOptionsBox = vb(k2);
 		interactionOptionsPanel.add(interactionOptionsBox);
