@@ -945,7 +945,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	
 	private void createNewGUI() {
 		layoutOptionsPanel.removeAll();
-        layoutOptionsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        layoutOptionsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
 
         editStylesButton.setPreferredSize(new Dimension(70,20));
@@ -1016,7 +1016,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         
         Component[] r11 = {stylesLabel,		ra(10,0),	hgl(), 	styleChoiceBox, ra(10,0), editStylesButton, ra(10,0),hbStyles};
 		Component[] r12 = {anderFontCB,  ra(10,0),   hgl(),  fgColorButton, ra(10,0),fontButton, ra(10,0),hbFont};
-		Component[] r13 = {centreerLabel, ra(10,0),centerHCB,        ra(10,0), centerVCB,  ra(10,0), hgl(),  hbCenterH};
+		Component[] r13 = {centreerLabel, ra(10,0),centerHCB,        ra(10,0),  hgl(), centerVCB,  ra(10,0), hbCenterH};
 		//Component[] r14 = {centerVCB,        ra(10,0),   hgl(),  hbCenterV};
 		Component[] r15 = {cellMargeLabel, ra(5,0),   cellMargeTF,ra(10,0),   hgl(), bovenMargeLabel, ra(5,0), bovenMargeTF,ra(5,0), hbMarges};
 		Component[] r16 = {interlinieLabel,ra(5,0),   interlinieTF,ra(10,0), hgl(), hbInterlinie};
@@ -1043,7 +1043,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component spaceTest = ((WiskOpdr.isExperimental()) ? ra(0,vd) : ra(0,0));
 		
 		Component[] k1 = {hb(r11),space, hb(inhoudLine),ra(0,vd),hb(r12), ra(0,vd), hb(r13), ra(0,vd), hb(r15), 
-				ra(0,vd), hb(r16), ra(0,15),hb(vakLine), ra(0,vd), hb(r17), ra(0,vd), hb(r18), selectionObjectBoxLP, ra(0,vd), hb(r19), ra(0,vd), hb(r110), 
+				ra(0,5), hb(r16), ra(0,15),hb(vakLine), ra(0,vd), hb(r17), ra(0,vd), hb(r18), selectionObjectBoxLP, ra(0,vd), hb(r19), ra(0,vd), hb(r110), 
 				ra(0,vd), hb(r111), ra(0,vd), hb(r112),ra(0,15), hb(tabelLine), ra(0,vd),hb(r113),ra(0,vd), hb(r114),ra(0,vd), hb(r115),
 				ra(0,15),hb(extraLine), ra(0,vd),hb(styleMComp), hb(r116),ra(0,vd), hb(r117),ra(0,vd),  hb(r122),
 				spaceTest, hb(r123),spaceTest, hb(r124),spaceTest, hb(r125),vgl()};
@@ -1052,7 +1052,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		
 		interactionOptionsPanel.removeAll();
-		interactionOptionsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		interactionOptionsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		
 		interactiePanelIdTF.setPreferredSize(new Dimension(40,20));
 		aftrekPopupTF.setPreferredSize(new Dimension(50,20));
