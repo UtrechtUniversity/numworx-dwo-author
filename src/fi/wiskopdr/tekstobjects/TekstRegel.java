@@ -251,6 +251,16 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	{	return selected;
 	}
 	
+	public boolean hasSelection()
+	{	boolean hasSelection = false;
+		for(int i=0 ; i<getComponentCount()  ; i++)
+		{	hasSelection = ((TekstElement)getComponent(i)).isSelected();
+			if(hasSelection)
+				break;
+		}
+		return hasSelection;
+	}
+	
 	public void setLocation(int x, int y)
     {
 		if(textRtoL)
@@ -635,7 +645,14 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	}*/
 	
 	public void mousePressed(MouseEvent e)
-	{	boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
+	{	
+		if(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
+	    {   
+			tekstVak.showPopup(e.getX(),e.getY());
+	    		return;
+	    }
+		
+	    boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
 		if(selectable && templateEditable)
 		{	tekstVak.zetTekstFocus();
 			startx = e.getX();
@@ -681,6 +698,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				  return;
 				}
 				setSelection(startx,this.getSize().width);
+				tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
 				MouseEvent en = new MouseEvent(volg,e.getID(),e.getWhen(),e.getModifiers(), 0,0,1,false);
 				MouseEvent ed = new MouseEvent(volg,e.getID(),e.getWhen(),e.getModifiers(), e.getX(),e.getY()-getSize().height,1,false);
 				
@@ -696,6 +714,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				TekstRegel vorig = tekstVak.geefVorigeRegel(this);
 				if(vorig == null) return;
 				setSelection(0,startx);
+				tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
 				MouseEvent en = new MouseEvent(vorig,e.getID(),e.getWhen(),e.getModifiers(), vorig.getWidth(),vorig.getHeight(),1,false);
 				MouseEvent ed = new MouseEvent(vorig,e.getID(),e.getWhen(),e.getModifiers(), e.getX(),e.getY()+vorig.getHeight(),1,false);
 				
@@ -715,6 +734,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				tekstVak.zetActieveRegel(this);
 				if(e.getX() < startx)setSelection(e.getX(),startx);
 				else setSelection(startx,e.getX());
+				tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
                 tekstVak.requestFocus();
 			}
 			
@@ -740,7 +760,8 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	
 	public void mouseReleased(MouseEvent e)
 	{	eersteKeer=true;
-	   dragging = false;
+		
+	   	dragging = false;
 		startx = 0;
 		starty = 0;
 	}

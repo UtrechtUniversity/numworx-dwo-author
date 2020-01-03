@@ -69,6 +69,9 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	
 	int minimumHoogte;
 	
+	public PopupMenu popup;
+    private MenuItem miCut, miCopy, miPaste;
+	
 	
 	public TekstVak()
 	{	ID++;
@@ -117,8 +120,32 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		setOpaque(false);
 		
 		//setBorder(BorderFactory.createLineBorder(Color.red));
-		
+		popup = new PopupMenu();
+        popup.setFont(new Font("SansSerif",Font.PLAIN,13));
+        
+        miCopy = new MenuItem(WiskOpdr.rb.getString("copyMenuItem"));
+        miCopy.addActionListener(this);
+        popup.add(miCopy);
+        
+        miCut = new MenuItem(WiskOpdr.rb.getString("cutMenuItem"));
+        miCut.addActionListener(this);
+        popup.add(miCut);
+        
+        miPaste = new MenuItem(WiskOpdr.rb.getString("pasteMenuItem"));
+        miPaste.addActionListener(this);
+        popup.add(miPaste);
+        
+        add(popup);
 	}
+	
+	public void showPopup(int x, int y)
+    {   
+		boolean b = this.getXWidgetManager().getBasisVak().hasStoredSelection();
+		miCopy.setEnabled(b);
+		miCut.setEnabled(b);
+		popup.show(actieveRegel,x,y);
+    
+    }
 	
 	public void paint(Graphics g)
 	{
@@ -1113,6 +1140,17 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	
 	public void actionPerformed(ActionEvent e)
 	{	
+		if(e.getSource()==this.miCopy)
+		{	getXWidgetManager().getBasisVak().copyStoredSelection();
+		}
+		if(e.getSource()==this.miCut)
+		{	getXWidgetManager().getBasisVak().cutStoredSelection();
+		}
+		if(e.getSource()==this.miPaste)
+		{	deleteSelection();
+           	if(!pasteFromSystemClipboard())tekstVak.insertDups(TekstVak.clipboard);
+		}
+		
 		if(e.getActionCommand().equals("tekst"))
 		{	produceThisAction(e);
 		//System.out.println("raak"+e.getSource().toString());
@@ -1126,6 +1164,14 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	}
 	public void mousePressed(MouseEvent e)
 	{	
+		if(e.getModifiers()== e.BUTTON3_MASK || e.isControlDown())
+	    {   
+			
+			if(actieveRegel!=null) 
+				tekstVak.showPopup(e.getX(),0);
+	    		return;
+	    }
+	  
 		boolean templateEditable = !(tekstVak.getParent()instanceof TekstVakPanel && ((TekstVakPanel)tekstVak.getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
 		if(!templateEditable)
 			return;
@@ -1549,6 +1595,17 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
         	  resize();
           }
 	    }
+	}
+	
+	public boolean hasSelection()
+  	{	boolean hasSelections = false;
+	    for(int i=0 ; i<aantalRegels; i++)
+        {   if(regels[i]!=null)
+          		hasSelections = regels[i].hasSelection();
+        		if(hasSelections)
+        			return true;
+        }
+        return false;  
 	}
 	
 	private boolean mouseAtDistance()

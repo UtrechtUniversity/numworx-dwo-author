@@ -2825,7 +2825,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 			else
 			{	setSelected(true);
-				
+				tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
 				
 			}
 		}

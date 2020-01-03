@@ -1063,22 +1063,22 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		
 		 JLabel interactieSoortenLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieKenmerken"),true);
-		 interactieSoortenLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+		 interactieSoortenLabel.setFont(new Font("SansSerif", Font.BOLD,11));
 		 interactieSoortenLabel.setForeground(WiskOpdr.colorBlue3);
 	     Component[] soortenLine = {ln(70,10),interactieSoortenLabel,ln(10)};
 	        
 	     JLabel interactieKenmerkenLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieSoorten"),true);
-	     interactieKenmerkenLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+	     interactieKenmerkenLabel.setFont(new Font("SansSerif", Font.BOLD,11));
          interactieKenmerkenLabel.setForeground(WiskOpdr.colorBlue3);
          Component[] kenmerkenLine = {ln(70,10),interactieKenmerkenLabel,ln(10)};
          
 	     JLabel InteractieVerwerkingLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieVerwerking"),true);
-	     InteractieVerwerkingLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+	     InteractieVerwerkingLabel.setFont(new Font("SansSerif", Font.BOLD,11));
 	     InteractieVerwerkingLabel.setForeground(WiskOpdr.colorBlue3);
 	     Component[] verwerkingLine = {ln(70,10),InteractieVerwerkingLabel,ln(10)};
 	     
 	     JLabel testFeaturesLabel = makeLabel("Test features",WiskOpdr.isExperimental());
-	     testFeaturesLabel.setFont(new Font("SansSerif", Font.BOLD,10));
+	     testFeaturesLabel.setFont(new Font("SansSerif", Font.BOLD,11));
 	     testFeaturesLabel.setForeground(WiskOpdr.colorBlue3);
          Component[] testLine = {ln(70,10),testFeaturesLabel,ln(10)};
 		

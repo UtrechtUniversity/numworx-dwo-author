@@ -4,6 +4,8 @@ import fi.wiskopdr.opdrnav.XWidgetManager;
 
 public class BasisTekstVak extends TekstVak implements XWidgetManager.HasWidgetManager {
 	
+	TekstVak tekstVakMetSelectie;
+	
 	/**
 	 * @param manager
 	 */
@@ -23,6 +25,33 @@ public class BasisTekstVak extends TekstVak implements XWidgetManager.HasWidgetM
 	 */
 	public XWidgetManager getXWidgetManager() {
 		return manager;
+	}
+	
+	public void setTekstVakMetSelectie(TekstVak tv) {
+		tekstVakMetSelectie = tv;
+	}
+	
+	public void showTekstVakPopup(int x, int y) {
+		if(tekstVakMetSelectie!=null)
+			tekstVakMetSelectie.showPopup(x,y);
+	}
+	
+	public void copyStoredSelection() {
+		if(tekstVakMetSelectie!=null)
+			tekstVakMetSelectie.copySelection();
+	}
+	
+	public void cutStoredSelection() {
+		if(tekstVakMetSelectie!=null) {
+			tekstVakMetSelectie.copySelection();
+			tekstVakMetSelectie.deleteSelection();
+		}
+	}
+	
+	public boolean hasStoredSelection() {
+		if(tekstVakMetSelectie!=null)
+			return tekstVakMetSelectie.hasSelection();
+		return false;
 	}
 
 	
