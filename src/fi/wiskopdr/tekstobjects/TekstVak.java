@@ -9,6 +9,7 @@ import java.awt.datatransfer.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.symbolen.SymboolPanel;
+import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.wiskopdr.*;
 import fi.beans.wiskopdrbeans.*;
 
@@ -70,7 +71,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	int minimumHoogte;
 	
 	public PopupMenu popup;
-    private MenuItem miCut, miCopy, miPaste;
+    private MenuItem miCut, miCopy, miPaste, miEdit;
 	
 	
 	public TekstVak()
@@ -135,6 +136,12 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
         miPaste.addActionListener(this);
         popup.add(miPaste);
         
+        popup.addSeparator();
+        
+        miEdit = new MenuItem(WiskOpdr.rb.getString("editMenuItem"));
+        miEdit.addActionListener(this);
+        popup.add(miEdit);
+        
         add(popup);
 	}
 	
@@ -143,6 +150,24 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		boolean b = this.getXWidgetManager().getBasisVak().hasStoredSelection();
 		miCopy.setEnabled(b);
 		miCut.setEnabled(b);
+		miPaste.setEnabled( actieveRegel!=null && actieveRegel.caretVisible);
+		if(this.getParent() instanceof TekstVakPanel) {
+			TekstVakPanel tvp = (TekstVakPanel)getParent(); 
+			boolean template =  (tvp.templateModeEdit || tvp.templateModeFill) && !TekstVakPanel.TEMPLATE_EDITOR ;
+			if(tvp.getParent() instanceof TekstInteractiePanelVak) {
+				TekstInteractiePanelVak tipv = (TekstInteractiePanelVak)tvp.getParent();
+				Hashtable ht = tipv.getEditState();
+				String tComponent = null;
+				if(ht.containsKey("TComponent")) {
+					tComponent = (String)ht.get("TComponent");
+					miEdit.setLabel(WiskOpdr.rb.getString("TCOMP_edit") + " " + TComponentGeneratorFactory.getComponentTypeName(tComponent));
+				}
+				else{
+					miEdit.setLabel(WiskOpdr.rb.getString("editMenuItem"));
+				}
+				miEdit.setEnabled(!template || tComponent!=null);
+			}				
+		}
 		popup.show(actieveRegel,x,y);
     
     }
@@ -1149,6 +1174,16 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		if(e.getSource()==this.miPaste)
 		{	deleteSelection();
            	if(!pasteFromSystemClipboard())tekstVak.insertDups(TekstVak.clipboard);
+		}
+		if(e.getSource()==this.miEdit)
+		{	if(this.getParent() instanceof TekstVakPanel) {
+				TekstVakPanel tvp = (TekstVakPanel)getParent(); 
+				if(tvp.getParent() instanceof TekstInteractiePanelVak) {
+					TekstInteractiePanelVak tipv = (TekstInteractiePanelVak)tvp.getParent();
+					tipv.editInteractiePanel();
+				}
+				
+			}
 		}
 		
 		if(e.getActionCommand().equals("tekst"))

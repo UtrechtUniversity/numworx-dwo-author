@@ -20,7 +20,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	private int ashoogte;
 	
 	private FontMetrics fm;
-	private boolean caretVisible = false;
+	protected boolean caretVisible = false;
 	private KnipperDraad kd;
 	private boolean selectable = true;
 	private boolean editable = true;

@@ -2844,6 +2844,34 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		else super.paintComponent(g);
 	}*/
 	
+	public void editInteractiePanel()
+	{
+		if(tComponent!=null) {
+			TComponentGeneratorFactory.getComponentGenerator(tComponent).edit(this);
+			return;
+		}
+		boolean template = interactiePanel instanceof TekstVakPanel && 
+				(((TekstVakPanel)interactiePanel).templateModeEdit || ((TekstVakPanel)interactiePanel).templateModeFill) && !TekstVakPanel.TEMPLATE_EDITOR && tComponent!=null ;
+		if(template)
+			return;
+		
+		launchData = getEditState();
+//TODO omzetten naar DialogFacade				
+		Component window = WiskOpdr.getWindowForComponent(this);
+		if(window instanceof Frame)editInteractiePanelDialog = new EditInteractiePanelDialog((Frame)window, "", false, currentSetNr, launchData, getXWidgetManager());
+		if(window instanceof Dialog)editInteractiePanelDialog = new EditInteractiePanelDialog((Dialog)window, "", false, currentSetNr, launchData , getXWidgetManager());
+		
+		//editInteractiePanelDialog = new EditInteractiePanelDialog(WiskOpdr.getFrame(), "", false, currentSetNr, launchData);
+		editInteractiePanelDialog.setBackground(WiskOpdr.bgcolor);
+		editInteractiePanelDialog.addActionListener(this);
+		editInteractiePanelDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+	    int x = (screenSize.width-editInteractiePanelDialog.getWidth())/2;
+	    int y = (screenSize.height-editInteractiePanelDialog.getHeight())/2;
+		interactiePanel.start();
+		showDialog(true);
+	}
+	
 	public void mousePressed(MouseEvent e)
 	{	
 //		if(heeftInspringing ) {//|| xe>=xa+8

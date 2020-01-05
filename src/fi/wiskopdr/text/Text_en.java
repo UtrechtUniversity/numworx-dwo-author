@@ -63,6 +63,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "copyMenuItem" ,  "Copy"},
 				{ "cutMenuItem" ,  "Cut"},
 				{ "pasteMenuItem" ,  "Paste"},
+				{ "editMenuItem" ,  "Edit text box"},
 				{ "insertCopyMenuItem" ,  "Copy (insert)"},
 				{ "deelscoresKnopLabel", "Partial scores"},
 				{ "misconceptionsKnopLabel", "Error analysis"},

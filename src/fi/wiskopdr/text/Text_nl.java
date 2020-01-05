@@ -68,6 +68,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "copyMenuItem" ,  "Kopieer"},
 				{ "cutMenuItem" ,  "Knip"},
 				{ "pasteMenuItem" ,  "Plak"},
+				{ "editMenuItem" ,  "Bewerk tekstvak"},
 				{ "insertCopyMenuItem" ,  "Kopie (invoegen)"},
 				{ "deelscoresKnopLabel", "Deelscores"},
 				{ "misconceptionsKnopLabel", "Analyse"},

@@ -17,6 +17,7 @@ import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
+import fi.wiskopdr.HelpButton;
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.TekstEditorEditPanel;
 import fi.wiskopdr.TekstVakPanel;
@@ -105,6 +106,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
 	private boolean toolbarLeft = false;
 	private boolean mainEditor;
+	
+	private HelpButton helpButton;
 
 	
     public TekstEditor()
@@ -241,69 +244,78 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		headerPanel.add(resizeButton);
 		resizeButton.setVisible(false);
 		
+		helpButton = new HelpButton("");
+		//helpButton.setFont(new Font("SansSerif",Font.BOLD,14));
+		helpButton.setPreferredSize(new Dimension(22,22));
+		helpButton.setMinimumSize(new Dimension(22,22));
+		helpButton.setMaximumSize(new Dimension(22,22));
+		helpButton.addActionListener(this);
+		helpButton.setBounds(5,5,22,22);
+		if(toolbarLeft)headerPanel.add(helpButton);	
+		
 		formuleKnop = new FormuleButton("formule");
-		formuleKnop.setBounds(toolbarLeft,12,balkH/2-10,20,20);
+		formuleKnop.setBounds(toolbarLeft,32,balkH/2-10,20,20);
 		formuleKnop.addActionListener(this);
 		if(form)headerPanel.add(formuleKnop);
 		
 		grafiekKnop = new FormuleButton("grafiekcomponent");
-		grafiekKnop.setBounds(toolbarLeft,38,balkH/2-10,20,20);
+		grafiekKnop.setBounds(toolbarLeft,58,balkH/2-10,20,20);
 		grafiekKnop.addActionListener(this);
 		if(form)headerPanel.add(grafiekKnop);
 		
 		linkKnop = new FormuleButton("link");
-		linkKnop.setBounds(toolbarLeft,64,balkH/2-10,20,20);
+		linkKnop.setBounds(toolbarLeft,84,balkH/2-10,20,20);
 		linkKnop.addActionListener(this);
 		if(form)headerPanel.add(linkKnop);
 		
 		plaatjeKnop = new FormuleButton("image");
-		plaatjeKnop.setBounds(toolbarLeft,64+26,balkH/2-10,20,20);
+		plaatjeKnop.setBounds(toolbarLeft,84+26,balkH/2-10,20,20);
 		plaatjeKnop.addActionListener(this);
 		if(form)headerPanel.add(plaatjeKnop);
 		
 		antwoordVakKnop = new FormuleButton("antwoordvak");
-		antwoordVakKnop.setBounds(toolbarLeft,64+26+26,balkH/2-10,20,20);
+		antwoordVakKnop.setBounds(toolbarLeft,84+26+26,balkH/2-10,20,20);
 		antwoordVakKnop.addActionListener(this);
 		if(form)headerPanel.add(antwoordVakKnop);
 		antwoordVakKnopJMenu = new JPopupMenu();
 		TekstInteractiePanelVak.makeJMenu(this,"Antwoordtypes",antwoordVakKnopJMenu, 0);
 		
 		tekstVakKnop = new FormuleButton("tekstvak");
-		tekstVakKnop.setBounds(toolbarLeft,64+26+26+26+26+26,balkH/2-10,20,20);
+		tekstVakKnop.setBounds(toolbarLeft,84+26+26+26+26+26,balkH/2-10,20,20);
 		tekstVakKnop.addActionListener(this);
 		if(form)headerPanel.add(tekstVakKnop);
 		tekstvakKnopJMenu = new JPopupMenu();
 		TekstInteractiePanelVak.makeJMenu(this,"Tekstvakken",tekstvakKnopJMenu, 3);
 		
 		opsommingKnop = new FormuleButton("opsomming");
-		opsommingKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26,balkH/2-10,20,20);
+		opsommingKnop.setBounds(toolbarLeft,84+26+26+26+26+26+26,balkH/2-10,20,20);
 		opsommingKnop.addActionListener(this);
 		if(form)headerPanel.add(opsommingKnop);
 		
 		vormenKnop = new FormuleButton("vormen");
-		vormenKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,20,20);
+		vormenKnop.setBounds(toolbarLeft,84+26+26+26+26+26+26+26,balkH/2-10,20,20);
 		vormenKnop.addActionListener(this);
 		if(form)headerPanel.add(vormenKnop);
 		
 		rmKnop = new FormuleButton("rmvak");
-		rmKnop.setBounds(toolbarLeft,38,balkH/2-10,20,20);
+		rmKnop.setBounds(toolbarLeft,58,balkH/2-10,20,20);
 		rmKnop.addActionListener(this);
 		rmKnop.setVisible(false);
 		headerPanel.add(rmKnop);
 		
 		grafiekToolKnop = new FormuleButton("grafiektool");
-		grafiekToolKnop.setBounds(toolbarLeft,64,balkH/2-10,20,20);
+		grafiekToolKnop.setBounds(toolbarLeft,84,balkH/2-10,20,20);
 		grafiekToolKnop.addActionListener(this);
 		grafiekToolKnop.setVisible(false);
 		headerPanel.add(grafiekToolKnop);
 		
 		geodefinerKnop = new FormuleButton("geodefiner");
-		geodefinerKnop.setBounds(toolbarLeft,64+26+26+26+26,balkH/2-10,20,20);
+		geodefinerKnop.setBounds(toolbarLeft,84+26+26+26+26,balkH/2-10,20,20);
 		geodefinerKnop.addActionListener(this);
 		if(form)headerPanel.add(geodefinerKnop);
 		
 		geogebraKnop = new FormuleButton("geogebra");
-		geogebraKnop.setBounds(toolbarLeft,64+26+26+26+26,balkH/2-10,20,20);
+		geogebraKnop.setBounds(toolbarLeft,84+26+26+26+26,balkH/2-10,20,20);
 		geogebraKnop.addActionListener(this);
 		//if(form)headerPanel.add(geogebraKnop);
 		geogebraKnopJMenu = new JPopupMenu();
@@ -318,19 +330,19 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 		
 		standardComponentChoiceKnop = new FormuleButton("sknop");
-		standardComponentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,22,22);
+		standardComponentChoiceKnop.setBounds(toolbarLeft,84+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		standardComponentChoiceKnop.addActionListener(this);
 		standardComponentChoiceKnop.setVisible(false);
 		//if(form)headerPanel.add(standardComponentChoiceKnop);
 		
 		templateChoiceKnop = new FormuleButton("tknop");
-		templateChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26,balkH/2-10,22,22);
+		templateChoiceKnop.setBounds(toolbarLeft,84+26+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		templateChoiceKnop.addActionListener(this);
 		templateChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(templateChoiceKnop);
 		
 		componentChoiceKnop = new FormuleButton("cknop");
-		componentChoiceKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26+26,balkH/2-10,22,22);
+		componentChoiceKnop.setBounds(toolbarLeft,84+26+26+26+26+26+26+26+26,balkH/2-10,22,22);
 		componentChoiceKnop.addActionListener(this);
 		componentChoiceKnop.setVisible(false);
 		if(form)headerPanel.add(componentChoiceKnop);
@@ -553,8 +565,6 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		    standardComponentChoice.addSeparator();
 		}
 		
-			
-		
 		cbookKnop = new FormuleButton("cbook");
 		cbookKnop.setBounds(toolbarLeft,64+26+26+26+26+26+26+26,balkH/2-10,20,20);
 		cbookKnop.addActionListener(this);
@@ -576,7 +586,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		//if(form)headerPanel.add(epsilonKnop);
 
 		appletKnop = new FormuleButton("interactiecomponent");
-		appletKnop.setBounds(toolbarLeft,64+26+26+26,balkH/2-10,20,20);
+		appletKnop.setBounds(toolbarLeft,84+26+26+26,balkH/2-10,20,20);
 		appletKnop.addActionListener(this);
 		if(form)headerPanel.add(appletKnop);
 		appletKnopJMenu = new JPopupMenu();
@@ -921,7 +931,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	public void zetFormMode(boolean b)
 	{	formMode = b;
 		if(b)
-		{	formuleKnop.setVisible(false);
+		{	helpButton.setVisible(false);
+			formuleKnop.setVisible(false);
 			rmKnop.setVisible(false);
 			grafiekToolKnop.setVisible(false);
 			linkKnop.setVisible(false);
@@ -937,6 +948,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			templateChoiceKnop.setVisible(false);
 			componentChoiceKnop.setVisible(false);
 			standardComponentChoiceKnop.setVisible(false);
+			appletKnop.setVisible(false);
 			cbookKnop.setVisible(false);
 			cindyKnop.setVisible(false);
 			eslateKnop.setVisible(false);
@@ -975,6 +987,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			if(standardComponentOption){
 				standardComponentChoiceKnop.setVisible(true);
 			}
+			helpButton.setVisible(true);
+			appletKnop.setVisible(true);
 			cbookKnop.setVisible(true);
 			cindyKnop.setVisible(true);
 			eslateKnop.setVisible(true);
