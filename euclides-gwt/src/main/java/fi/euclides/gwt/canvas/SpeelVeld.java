@@ -180,7 +180,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		HandlerRegistration set = () -> {};
 		LOG.info("haspointer = " + haspointer);
 		{
-			LOG.info("force pointer events support");
+			LOG.fine("force pointer events support");
 			GWTPointerHandler h = new GWTPointerHandler(new DelayMouse(this));
 			// en nu?
 			canvas.addDomHandler(h, PointerDownEvent.getType());
