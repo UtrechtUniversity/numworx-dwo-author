@@ -13,6 +13,8 @@ import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+import com.google.web.bindery.event.shared.HandlerRegistrations;
 import com.vaadin.pointerevents.client.PointerCancelEvent;
 import com.vaadin.pointerevents.client.PointerDownEvent;
 import com.vaadin.pointerevents.client.PointerEventInitializer;
@@ -174,33 +176,36 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	private void initHandlers(final Canvas canvas) {
 		PointerEventsSupport.init();
 		boolean haspointer = PointerEventsSupport.isSupported();
+		GWTPointerHandler ph;
+		HandlerRegistration set = () -> {};
 		LOG.info("haspointer = " + haspointer);
-		if (haspointer) {
-			LOG.info("pointer events support");
+		{
+			LOG.info("force pointer events support");
 			GWTPointerHandler h = new GWTPointerHandler(new DelayMouse(this));
 			// en nu?
 			canvas.addDomHandler(h, PointerDownEvent.getType());
 			canvas.addDomHandler(h, PointerUpEvent.getType());
 			canvas.addDomHandler(h, PointerMoveEvent.getType());
 			canvas.addDomHandler(h, PointerCancelEvent.getType());
-			return;
+			ph = h;
 		}
-		
-		
 		
 		boolean hastouch = TouchStartEvent.isSupported();
 		if(hastouch) {
 			GWTMultiTouchHandler h = new GWTMultiTouchHandler(new DelayMouse(this));
-			canvas.addTouchCancelHandler(h);
-			canvas.addTouchEndHandler(h);
-			canvas.addTouchMoveHandler(h);
-			canvas.addTouchStartHandler(h);
+			set = HandlerRegistrations.compose(
+			canvas.addTouchCancelHandler(h),
+			canvas.addTouchEndHandler(h),
+			canvas.addTouchMoveHandler(h),
+			canvas.addTouchStartHandler(h));
 		} 
 		{
 			GWTMouseHandler h = new GWTMouseHandler(new DelayMouse(this, 200L, 4)); // testing...
-			canvas.addMouseDownHandler(h);
-			canvas.addMouseUpHandler(h);
-			canvas.addMouseMoveHandler(h);
+			set = HandlerRegistrations.compose(set,
+			canvas.addMouseDownHandler(h),
+			canvas.addMouseUpHandler(h),
+			canvas.addMouseMoveHandler(h));
+			ph.setLegacy(set);
 		}
 		
 		

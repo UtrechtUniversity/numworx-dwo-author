@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.vaadin.pointerevents.client.PointerCancelEvent;
 import com.vaadin.pointerevents.client.PointerCancelHandler;
 import com.vaadin.pointerevents.client.PointerDownEvent;
@@ -22,7 +23,20 @@ public class GWTPointerHandler
 
 	final MouseConsumer viewer;
 	final Set<Integer> bitset = new HashSet<>();
-
+	
+	private HandlerRegistration mouse;
+	
+	public void setLegacy(HandlerRegistration legacy) {
+		mouse = legacy;
+	}
+	private void noLegacy() {
+		if (mouse != null) {
+			mouse.removeHandler();
+			mouse = null;
+		}
+	}
+	
+	
 	private static class CTX implements MouseContext {
 
 		final PointerEvent<?> ev;
@@ -81,6 +95,7 @@ public class GWTPointerHandler
 
 	@Override
 	public void onPointerUp(PointerUpEvent event) {
+		event.preventDefault();
 		if(event.getNativeButton() == NativeEvent.BUTTON_LEFT)
 		{
 			LOG.fine("up " + event+ " " + bitset);
@@ -92,6 +107,7 @@ public class GWTPointerHandler
 
 	@Override
 	public void onPointerMove(PointerMoveEvent event) {
+		event.preventDefault();
 		if (bitset.contains(event.getPointerId())) {
 			CTX ctx = new CTX(event);
 			viewer.processMouseDrag(ctx);			
@@ -100,6 +116,8 @@ public class GWTPointerHandler
 
 	@Override
 	public void onPointerDown(PointerDownEvent event) {
+		event.preventDefault();
+		noLegacy();
 		if(event.getNativeButton() == NativeEvent.BUTTON_LEFT)
 		{
 			LOG.fine("down " + event + " " + bitset);
@@ -111,6 +129,7 @@ public class GWTPointerHandler
 
 	@Override
 	public void onPointerCancel(PointerCancelEvent event) {
+		event.preventDefault();
 		LOG.info("cancel " + event + " " + bitset);
 		bitset.remove(event.getPointerId());
 	}
