@@ -18,6 +18,7 @@ public class WiskOpdrCheckbox extends JCheckBox {
   private Color fgColor = WiskOpdr.colorBlue1;
   private FontMetrics fm;
   private Font font = new Font("SansSerif", Font.PLAIN, 12);
+  private Color disabledColor = new Color(180,187,200);
   
   public WiskOpdrCheckbox(String label) {
     super(label);
@@ -36,11 +37,11 @@ public class WiskOpdrCheckbox extends JCheckBox {
         int m = (getHeight() - 24)/2-1;
         g.setColor(Color.white);
         g.fillRect(6, m+5, 15, 15);
-        g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
+        g.setColor(isEnabled() ? bgColor : disabledColor);
         g.drawRect(6, m+5, 15, 15);
         
         if(isSelected()) {
-          g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
+          g.setColor(isEnabled() ? bgColor : disabledColor);
           g.fillRect(6, m+5, 15, 15);
           g.setColor(Color.white);
           g.setFont(font);
@@ -51,11 +52,11 @@ public class WiskOpdrCheckbox extends JCheckBox {
         int m = (getHeight() - 24)/2-1;
         g.setColor(Color.white);
         g.fillRect(4, m+6, 13, 13);
-        g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
+        g.setColor(isEnabled() ? bgColor : disabledColor);
         g.drawRect(4, m+6, 13, 13);
         
         if(isSelected()) {
-          g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
+          g.setColor(isEnabled() ? bgColor : disabledColor);
           g.fillRect(4, m+6, 13, 13);
           g.setColor(Color.white);
           g.setFont(font);
@@ -83,6 +84,16 @@ public class WiskOpdrCheckbox extends JCheckBox {
   public void setForeground(Color c) {
       fgColor = c;
       super.setForeground(c);
+  }
+  
+  @Override
+  public void setEnabled(boolean b) {
+	  super.setEnabled(b);
+	  if(!b)
+		  setForeground(disabledColor);
+	  else
+		  setForeground(WiskOpdr.colorBlue1);
+		  
   }
   
   

@@ -1057,17 +1057,17 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		interactiePanelIdTF.setPreferredSize(new Dimension(40,20));
 		aftrekPopupTF.setPreferredSize(new Dimension(50,20));
 		logIDField.setPreferredSize(new Dimension(60,20));
-		checkExpressieFormuleVak.setPreferredSize(new Dimension(20,20));
+		checkExpressieFormuleVak.setPreferredSize(new Dimension(80,25));
 		checkExpressieFormuleVak.setMaximumSize(new Dimension(20,20));
 		logIDLabelField.setPreferredSize(new Dimension(60,20));
 		
 		
-		 JLabel interactieSoortenLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieKenmerken"),true);
+		 JLabel interactieSoortenLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieSoorten"),true);
 		 interactieSoortenLabel.setFont(new Font("SansSerif", Font.BOLD,11));
 		 interactieSoortenLabel.setForeground(WiskOpdr.colorBlue3);
 	     Component[] soortenLine = {ln(70,10),interactieSoortenLabel,ln(10)};
 	        
-	     JLabel interactieKenmerkenLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieSoorten"),true);
+	     JLabel interactieKenmerkenLabel = makeLabel(WiskOpdr.rb.getString("TVEP_lineText_InteractieKenmerken"),true);
 	     interactieKenmerkenLabel.setFont(new Font("SansSerif", Font.BOLD,11));
          interactieKenmerkenLabel.setForeground(WiskOpdr.colorBlue3);
          Component[] kenmerkenLine = {ln(70,10),interactieKenmerkenLabel,ln(10)};
@@ -1127,12 +1127,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				styleChoiceBox.add(kiesStyleChoice);
 				editStylesButton.setVisible(true);
 				styleSettingsLabel.setVisible(false);
-				setStyleManageMode(false);
+				
 				{	styleEditorPopupFrame.setVisible(false);
 					layoutOptionsContainer.add(layoutOptionsPanel);
 					styleEditorPopupFrame.dispose();
 				}
-				revalidate();
+				setStyleManageMode(false);
+				//((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)layoutOptionsContainer)).pack();
 			}
 		});
 		JPanel topPanel = new JPanel();
@@ -1159,9 +1160,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	{	JCheckBox checkbox = new WiskOpdrCheckbox(s);
 		checkbox.setBounds(x,y,b,h);
 		checkbox.setPreferredSize(new Dimension(checkbox.getPreferredSize().width,20));
-		checkbox.setFont(ifFont);
+			checkbox.setOpaque(false);
+	checkbox.setFont(ifFont);
 		checkbox.setBackground(getBackground());
-		checkbox.setOpaque(false);
 		checkbox.setSelected(selected);
 		checkbox.addActionListener(this);
 		parent.add(checkbox);
@@ -1171,7 +1172,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	
 	public JCheckBox makeCheckBox(String text, boolean selected, boolean visible)
 	{	JCheckBox checkbox = new WiskOpdrCheckbox(text);
-		checkbox.setFont(font);
+		checkbox.setFont(ifFont);
 		checkbox.setOpaque(false);
 		checkbox.addActionListener(this);
 		checkbox.setSelected(selected);
@@ -2764,10 +2765,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 					add(startEditor);
 					startEditorPopupFrame.dispose();
 				}*/
-				revalidate();
+				//((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)this)).pack();
+				//revalidate();
 	            //repaint();
 			
-			repaint();
+			//repaint();
 		}
 	   
 	    if(e.getSource().equals(kiesStyleChoice))
@@ -2799,12 +2801,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			styleChoiceBox.add(kiesStyleChoice);
 			editStylesButton.setVisible(true);
 			styleSettingsLabel.setVisible(false);
-			setStyleManageMode(false);
+			
 			{	styleEditorPopupFrame.setVisible(false);
 				layoutOptionsContainer.add(layoutOptionsPanel);
 				styleEditorPopupFrame.dispose();
+				setStyleManageMode(false);
+				//((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)this)).pack();
 			}
-			revalidate();
+			//revalidate();
 			tekstVakPanel.setEditState(getEditState());
 		}
 	    if(e.getSource().equals(templateModeEditCB))
@@ -3000,7 +3004,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			selectionObjectBoxIP.add(ra(5,0));
 			selectionObjectBoxIP.add(hgl());
 			selectionObjectBoxIP.add(selectedCB);
+			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)this)).pack();
 		}
+		
 	}
 	void enableStyleSettings(boolean b)
 	{
@@ -3022,6 +3028,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		cellMargeLabel.setEnabled(b);
 		bovenMargeLabel.setEnabled(b);
+		centreerLabel.setEnabled(b);
 		rondingCB.setEnabled(b);
 		hoekCB.setEnabled(b);
 		kopLayoutLabel.setEnabled(b);

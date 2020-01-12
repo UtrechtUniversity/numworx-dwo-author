@@ -16,6 +16,7 @@ public class WiskOpdrButton extends JButton {
   private Color fgColor = Color.white;
   private FontMetrics fm;
   private Font font = new Font("SansSerif", Font.BOLD, 12);
+  private Color disabledColor = new Color(180,187,200);
   
   public WiskOpdrButton(String label) {
     super(label);
@@ -31,7 +32,7 @@ public class WiskOpdrButton extends JButton {
       ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
     
       super.paintComponent(g);
-      g.setColor(isEnabled() ? bgColor : Color.LIGHT_GRAY);
+      g.setColor(isEnabled() ? bgColor : disabledColor);
       g.fillRect(0, 0, getWidth(), getHeight());
       
       fm = this.getFontMetrics(getFont());
