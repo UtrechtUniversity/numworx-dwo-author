@@ -7,6 +7,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
@@ -17,6 +18,8 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel {
 	private JComboBox vaasKeuze;
 	private JCheckBox feedbackVisibleCB;
 	private JCheckBox historyVisibleCB;
+	private JTextField scoreTF;
+	private JLabel scoreLabel;
 	
 	public IVMdrawEditPanel(IVMdrawPanel ivmDrawPanel) {
 		this.ivmDrawPanel = ivmDrawPanel;
@@ -37,6 +40,14 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel {
 		
 		historyVisibleCB = new JCheckBox(IVMdraw.rb.getString("historyVisibleCBLabel"));
 		add(historyVisibleCB);
+		
+		scoreLabel = new JLabel("Score");
+		add(scoreLabel);
+		
+		scoreTF = new JTextField("0");
+		add(scoreTF);
+		
+		
 	}
 
 	public Hashtable getEditState() {
