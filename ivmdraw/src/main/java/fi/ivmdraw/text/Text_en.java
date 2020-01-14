@@ -9,6 +9,7 @@ public class Text_en extends java.util.ListResourceBundle {
 			{ "vaas", "Jar" }, 
 			{ "geenVaas" , "No Jar" },
 			{ "feedbackVisibleCBLabel", "Feedback visible" },
+			{ "historyVisibleCBLabel", "History visible"},
 			{ "CBA_action.correct", "Action: correct answer" }, 
 			{ "CBA_action.false", "Action: incorrect answer" },
 			{ "CBA_action.false_2", "Action: 2x incorrect answer" }, 

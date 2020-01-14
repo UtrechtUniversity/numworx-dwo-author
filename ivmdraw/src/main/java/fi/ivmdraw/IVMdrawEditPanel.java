@@ -16,6 +16,7 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel {
 	
 	private JComboBox vaasKeuze;
 	private JCheckBox feedbackVisibleCB;
+	private JCheckBox historyVisibleCB;
 	
 	public IVMdrawEditPanel(IVMdrawPanel ivmDrawPanel) {
 		this.ivmDrawPanel = ivmDrawPanel;
@@ -33,12 +34,16 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel {
 		
 		feedbackVisibleCB = new JCheckBox(IVMdraw.rb.getString("feedbackVisibleCBLabel"));
 		add(feedbackVisibleCB);
+		
+		historyVisibleCB = new JCheckBox(IVMdraw.rb.getString("historyVisibleCBLabel"));
+		add(historyVisibleCB);
 	}
 
 	public Hashtable getEditState() {
 		Hashtable h = ivmDrawPanel.getEditState();
 		h.put("vaasNummer", new Integer(vaasKeuze.getSelectedIndex()));
 		h.put("feedbackVisible", new Boolean(feedbackVisibleCB.isSelected()));
+		h.put("historyVisible", new Boolean(historyVisibleCB.isSelected()));
 		return h;
 		
 	}
@@ -46,11 +51,14 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel {
 	public void setEditState(Hashtable h) {
 		int vaasNummer = 1;
 		boolean feedbackVisible = false;
+		boolean historyVisible = false;
 		if(h.containsKey("vaasNummer")) vaasNummer = ((Integer)h.get("vaasNummer")).intValue();
 		if(h.containsKey("feedbackVisible")) feedbackVisible = ((Boolean)h.get("feedbackVisible")).booleanValue();
-	
+		if(h.containsKey("historyVisible")) historyVisible = ((Boolean)h.get("historyVisible")).booleanValue();
+		
 		vaasKeuze.setSelectedIndex(vaasNummer);
 		feedbackVisibleCB.setSelected(feedbackVisible);
+		historyVisibleCB.setSelected(historyVisible);
 	}
 
 	public void start() {
