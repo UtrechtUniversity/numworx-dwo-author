@@ -108,6 +108,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private boolean mainEditor;
 	
 	private HelpButton helpButton;
+	private String helpURL = "https://app.dwo.nl/public/?header=less&hash=#s:673121";//WiskOpdr.rb.getString("HELP_9_URL");
 
 	
     public TekstEditor()
@@ -244,7 +245,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		headerPanel.add(resizeButton);
 		resizeButton.setVisible(false);
 		
-		helpButton = new HelpButton("");
+		helpButton = new HelpButton(helpURL, true);
 		//helpButton.setFont(new Font("SansSerif",Font.BOLD,14));
 		helpButton.setPreferredSize(new Dimension(22,22));
 		helpButton.setMinimumSize(new Dimension(22,22));

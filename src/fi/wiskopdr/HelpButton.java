@@ -3,23 +3,40 @@ package fi.wiskopdr;
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Window;
 import java.awt.event.*;
 
 import javax.swing.*;
 
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
+
 
 public class HelpButton extends JButton implements MouseListener
 {
-	String url;
-	FontMetrics fm;
-	String text = "?";
+	private String url;
+	private FontMetrics fm;
+	private String text = "?";
+	private boolean withFrame = false;
 	
+	static JDialog frame;
+	private JPanel helpPanel;
+	
+	
+	public HelpButton(String url, boolean withFrame){
+		this(url);
+		this.withFrame = withFrame;
+		
+		
+		
+	}
 	
 	public HelpButton(String url){	
 		super("?");
@@ -31,6 +48,28 @@ public class HelpButton extends JButton implements MouseListener
 		setHorizontalAlignment(JLabel.CENTER);
 	    setVerticalAlignment(JLabel.CENTER);
 	    setForeground(new Color(50,72,111));
+	}
+	
+	private void makeFrame() {
+		helpPanel = new JPanel(new BorderLayout());
+		helpPanel.setBackground(WiskOpdr.colorBlue5);
+		helpPanel.setPreferredSize(new Dimension(400,400));
+		
+		JPanel helpHeader = new JPanel();
+		helpHeader.setBackground(WiskOpdr.colorBlue1);
+		helpHeader.setPreferredSize(new Dimension(400,50));
+		helpPanel.add(helpHeader,BorderLayout.NORTH);
+		
+		JLabel helpLabel = new JLabel("HELP");
+		helpLabel.setForeground(WiskOpdr.colorGray3);
+		helpLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		helpLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+		helpHeader.add(helpLabel);
+		
+		
+    		Window w = (Window)(WiskOpdr.getWindowForComponent(this));
+		frame = new JDialog(w,Dialog.ModalityType.MODELESS);
+		//frame.setDefaultCloseOperation(Operation.HIDE_ON_CLOSE);
 	}
 	
 	public String getURL() {
@@ -63,6 +102,29 @@ public class HelpButton extends JButton implements MouseListener
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
+	  if(withFrame) {
+		  if(frame==null)
+			  makeFrame();
+		  
+		  JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
+		  bp.setPreferredSize(new Dimension(400,400));
+		  helpPanel.add(bp);
+	    		
+		  Component src = WiskOpdr.getWindowForComponent(this);
+		  Dimension preferredSize = new Dimension(400,src.getHeight());
+		  frame.setPreferredSize(preferredSize);
+		  frame.getContentPane().setLayout(new BorderLayout());
+		  frame.getContentPane().add(helpPanel);
+		  
+		  int x = src.getLocationOnScreen().x + src.getWidth() - 400;
+		  int y = src.getLocationOnScreen().y;
+		  frame.setLocation(x,y); 
+		  
+		  frame.pack();
+		  frame.setVisible(true);
+		  OpdrNavStructEdit.helpBrowser.loadURL(url);
+	  }
+		
 	  produceAction("help");
 	}
 	
