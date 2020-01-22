@@ -19,7 +19,7 @@ import javax.swing.*;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 
 
-public class HelpButton extends JButton implements MouseListener
+public class HelpButton extends JButton implements MouseListener, ActionListener
 {
 	private String url;
 	private FontMetrics fm;
@@ -28,6 +28,7 @@ public class HelpButton extends JButton implements MouseListener
 	
 	static JDialog frame;
 	private JPanel helpPanel;
+	private JButton hideHelpButton;
 	
 	
 	public HelpButton(String url, boolean withFrame){
@@ -55,7 +56,7 @@ public class HelpButton extends JButton implements MouseListener
 		helpPanel.setBackground(WiskOpdr.colorBlue5);
 		helpPanel.setPreferredSize(new Dimension(400,400));
 		
-		JPanel helpHeader = new JPanel();
+		JPanel helpHeader = new JPanel(new BorderLayout());
 		helpHeader.setBackground(WiskOpdr.colorBlue1);
 		helpHeader.setPreferredSize(new Dimension(400,50));
 		helpPanel.add(helpHeader,BorderLayout.NORTH);
@@ -64,7 +65,23 @@ public class HelpButton extends JButton implements MouseListener
 		helpLabel.setForeground(WiskOpdr.colorGray3);
 		helpLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		helpLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
-		helpHeader.add(helpLabel);
+		
+		hideHelpButton = new WiskOpdrButton("\u2715");
+		hideHelpButton.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue1));
+		hideHelpButton.setBackground(WiskOpdr.colorBlue1);
+		hideHelpButton.setForeground(WiskOpdr.colorBlue5);
+		hideHelpButton.setPreferredSize(new Dimension(20,20));
+		hideHelpButton.setFont(new Font("SansSerif",Font.PLAIN, 24));
+		hideHelpButton.addActionListener(this);
+		
+		Box hb = Box.createHorizontalBox();
+		hb.add(Box.createRigidArea(new Dimension(30,0)));
+		hb.add(Box.createHorizontalGlue());
+		hb.add(helpLabel);
+		hb.add(Box.createHorizontalGlue());
+		hb.add(hideHelpButton);
+		hb.add(Box.createRigidArea(new Dimension(10,0)));
+		helpHeader.add(hb);
 		
 		
     		Window w = (Window)(WiskOpdr.getWindowForComponent(this));
@@ -157,4 +174,12 @@ public class HelpButton extends JButton implements MouseListener
       }
   }
   //end ActionProducer
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==hideHelpButton) {
+			frame.setVisible(false);
+		}
+		
+	}
 }

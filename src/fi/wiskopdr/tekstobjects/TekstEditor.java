@@ -108,7 +108,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private boolean mainEditor;
 	
 	private HelpButton helpButton;
-	private String helpURL = "https://app.dwo.nl/public/?header=less&hash=#s:673121";//WiskOpdr.rb.getString("HELP_9_URL");
+	private String helpURL = WiskOpdr.rb.getString("HELP_EDITOR_URL");
 
 	
     public TekstEditor()

@@ -1191,6 +1191,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "HELP_9_URL_AFTREKPOPUP" , "https://app.dwo.nl/dwo/apps/player.html?t=29&profile=106&locale=nl#672065"},
 				{ "HELP_9_URL_LOG" , "https://app.dwo.nl/dwo/apps/player.html?t=30&profile=106&locale=nl#672066"},
 				
+				{ "HELP_EDITOR_URL" , "https://app.dwo.nl/dwo/apps/player.html?t=99&profile=106&locale=nl#673121"},
+				
 		};
 }
 

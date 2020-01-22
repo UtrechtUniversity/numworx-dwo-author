@@ -47,7 +47,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "totaal", "Total: " },
 				{ "voortgang" , "Progress: "},
 				{ "deelscores", "Partial scores"},
-				{ "optiesButtonLabel" , "Options" },
+				{ "optiesButtonLabel" , "Activity settings" },
 				{ "standaardActiviteitNaam" , "Level" },
 				{ "standaardOpdrachtNaam" , "Problem" },
 				{ "opnieuwPanelTekstMW" , "You will lose your scores if you start again.\n\nAre you sure you want to start again?"},
@@ -1139,6 +1139,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "HELP_9_URL_ZICHTBAARNA" , "https://app.dwo.nl/dwo/apps/player.html?t=28&profile=106&locale=nl#672152"},
 				{ "HELP_9_URL_AFTREKPOPUP" , "https://app.dwo.nl/dwo/apps/player.html?t=29&profile=106&locale=nl#672153"},
 				{ "HELP_9_URL_LOG" , "https://app.dwo.nl/dwo/apps/player.html?t=30&profile=106&locale=nl#672154"},
+				
+				{ "HELP_EDITOR_URL" , "https://app.dwo.nl/dwo/apps/player.html?t=99&profile=106&locale=nl#673124"},
 				
 		};
 }
