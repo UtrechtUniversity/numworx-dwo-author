@@ -169,6 +169,18 @@ public class Stroke {
 		return parsePoints;
 	}
 	
+	public ArrayList<Point> getIntParsePoints() {
+		ArrayList<Point> points = new ArrayList<Point>();
+		if(parsePoints!=null) {
+			for(int i=0 ; i<parsePoints.size() ; i++) {
+				DoublePoint dp = parsePoints.get(i);
+				points.add(new Point((int)dp.x , (int)dp.y));
+			}
+			return points;
+		}
+		return null;
+	}
+	
 	public String getTestCode() {
 		String text = "{";
 		for(int i = 0 ; i < parsePoints.size() ; i++) {

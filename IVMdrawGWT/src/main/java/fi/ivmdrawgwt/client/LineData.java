@@ -36,6 +36,8 @@ public class LineData {
             ysInput[this.size++] = (double) IVMdrawGWT.hoogte - p.getY();
         }
     }
+    
+    
 
     public LineData(Matrix m) {
         this.xsInput = m.transpose().values()[0];

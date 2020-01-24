@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -60,10 +61,16 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	
 	OpdrNavIF comRoot;
 	int vaasNummer = 0;
+	boolean jarFeedbackVisible = false;
 	boolean feedbackVisible = false;
 	boolean historyVisible = false;
+	int scoreMax = 0;
+	int deelScore1 = 0;
+	int deelScore2 = 0;
+	int attemptsToCorrect = 999;
 	
 	boolean correctGraph = false;
+	int mode = 0;
 	
 	ListBox historyList;
 
@@ -166,7 +173,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		
 		historyList = new ListBox();
 		topPanel.add(historyList);
-		topPanel.setWidgetLeftWidth(historyList.asWidget(), breedte/4-60, Style.Unit.PX, 120, Style.Unit.PX);
+		topPanel.setWidgetLeftWidth(historyList.asWidget(), breedte/4-80, Style.Unit.PX, 160, Style.Unit.PX);
 		
 		
 		
@@ -196,11 +203,20 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 			feedbackVisible = launchState.getBoolean("feedbackVisible");
 		if(launchState.containsKey("historyVisible")) 
 			historyVisible = launchState.getBoolean("historyVisible");
-			
+		if(launchState.containsKey("scoreMax")) 
+			scoreMax = launchState.getInt("scoreMax");
+		if(launchState.containsKey("deelScore1")) 
+			deelScore1 = launchState.getInt("deelScore1");
+		if(launchState.containsKey("deelScore2")) 
+			deelScore2 = launchState.getInt("deelScore2");
+		
+		boolean jarFeedbackSelected = true;
+		if(launchState.containsKey("jarFeedbackVisible")) 
+			jarFeedbackSelected = launchState.getBoolean("jarFeedbackVisible");
+		jarFeedbackVisible = jarFeedbackSelected && vaasNummer!=0;
 		
 		
-		
-		this.ivmDrawGWTField.correctVaasNummer = vaasNummer;
+		this.ivmDrawGWTField.setCorrectVaasNummer(vaasNummer);
 		label.setVisible(feedbackVisible);
 		historyList.setVisible(historyVisible);
 		
@@ -225,19 +241,41 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 	@Override
 	public HashMap<String, Object> getState() {
-		return ivmDrawGWTField.getState();
+		HashMap h = ivmDrawGWTField.getState();
+		
+		int historySelection = historyList.getSelectedIndex();
+		h.put("historySelection", historySelection);
+		h.put("attemptsToCorrect", attemptsToCorrect);
+		
+		return h;
 	}
 
 	@Override
 	public void setState(HashMap<String, Object> h) {
 		if(h == null||h.isEmpty()) return;
+		
 		ivmDrawGWTField.setState(h);
+		
+		int historySelection = -1;
+		ObjectMap launchState = JSONUtilities.wrapMap(h);
+		if(launchState.containsKey("historySelection"))
+			historySelection = launchState.getInt("historySelection");
+		if(historySelection>-1)
+			historyList.setItemSelected(historySelection, true);
+		if(launchState.containsKey("attemptsToCorrect"))
+			attemptsToCorrect = launchState.getInt("attemptsToCorrect");
 	}
 
 	@Override
 	public int getScore() {
-		// TODO Auto-generated method stub
-		return 0;
+		int score = 0;
+		if(attemptsToCorrect<3)
+			score = scoreMax;
+		else if(attemptsToCorrect<999 && attemptsToCorrect>2)
+			score = deelScore1;
+		else if(ivmDrawGWTField.getAttemptCount()>2)
+			score = deelScore2;
+		return score;
 	}
 
 	@Override
@@ -248,8 +286,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 	@Override
 	public Boolean isCorrect() {
-		// TODO Auto-generated method stub
-		return null;
+		return correctGraph;
 	}
 
 	@Override
@@ -265,14 +302,29 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	}
 
 	@Override
-	public void setCommunicationRoot(OpdrNavIF comRoot) {
+	public void setCommunicationRoot(OpdrNavIF comRoot)
+	{
 		this.comRoot = comRoot;
+		zetMode(comRoot.getMode());
+		
+
+	}
 	
+	public void zetMode(int mode)
+	{
+		this.mode = mode;
+		
 	}
 	
 	public void setChanged() {
 		if(comRoot==null)
 			return;
+		
+		if(correctGraph && attemptsToCorrect==999)
+			attemptsToCorrect = ivmDrawGWTField.getAttemptCount();
+		
+		comRoot.setChanged(true);
+				
 		String feedback = label.getText(); //Hier laatste feedback opvragen
 		Map map = new HashMap<String,Object>();
 		map.put("content", feedback);
@@ -282,6 +334,8 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 			comRoot.fireEvent(new CBookEvent(this,"action.correct"));
 		else
 			comRoot.fireEvent(new CBookEvent(this,"action.false"));
+		
+		
 	}
 
 	@Override
