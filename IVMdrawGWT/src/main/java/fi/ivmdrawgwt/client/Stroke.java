@@ -18,7 +18,7 @@ public class Stroke {
 	private static Logger logger = Logger.getLogger("Stroke");
 	
 	protected ArrayList<DoublePoint> parsePoints;
-	protected int standardizeLengthNumber = 80;
+	protected int standardizeLengthNumber = 100;
 	protected DoubleRectangle parsePointsBox;
 	protected double[] angles;
 	protected double[] dAngles;
@@ -64,6 +64,7 @@ public class Stroke {
 		}
 		length = getLength(doublePoints);
 
+		doublePoints = averageSmooth(doublePoints);
 		doublePoints = averageSmooth(doublePoints);
 		parsePoints = standardizeToLength(standardizeLengthNumber,doublePoints);
 		parsePointsBox = makeParsingBox(parsePoints);

@@ -203,8 +203,9 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		dlp.addNorth(topPanel, 24);
 		
 		historyList = new ListBox();
+		historyList.setVisible(false);
 		topPanel.add(historyList);
-		topPanel.setWidgetLeftWidth(historyList.asWidget(), breedte/4-80, Style.Unit.PX, 160, Style.Unit.PX);
+		topPanel.setWidgetLeftWidth(historyList.asWidget(), 30, Style.Unit.PX, 160, Style.Unit.PX);
 		
 		
 		

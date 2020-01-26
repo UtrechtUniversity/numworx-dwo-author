@@ -215,6 +215,7 @@ public class IVMdrawGWTField {
 				processIVM();
 			}
 		}
+		historyList.setVisible(owner.historyVisible && strokeContainerList.size()>0);
 		paint();
 	}
 
