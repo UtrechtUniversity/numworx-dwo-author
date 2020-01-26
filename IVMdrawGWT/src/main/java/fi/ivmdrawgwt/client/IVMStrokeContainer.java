@@ -23,7 +23,31 @@ public class IVMStrokeContainer {
 	}
 	
 	public void draw(Context2d g) {
-		g.setStrokeStyle(CssColor.make(80, 80, 80));
+		if(strokes.size()==3) {
+			g.setStrokeStyle(CssColor.make(211,229,244));
+			g.setLineWidth(2.0);
+			Stroke stroke0 = strokes.get(0);
+			Stroke stroke1 = strokes.get(1);
+			g.beginPath();
+			double x0 = (int)stroke0.getParsePoints().get(0).x;
+			double y0 = (int)stroke0.getParsePoints().get(0).y;
+			
+			g.moveTo(x0, y0);
+			
+				for(int j = 0 ; j < stroke0.getParsePoints().size()-1 ; j++) {
+					double x = stroke1.getParsePoints().get(j).x ;
+					double y = stroke1.getParsePoints().get(j).y;
+					g.lineTo(x, y);
+					x = (int)stroke0.getParsePoints().get(j+1).x;
+					y = (int)stroke0.getParsePoints().get(j+1).y;
+					g.moveTo(x, y);
+				}
+				//g.moveTo(x0, y0);
+				g.closePath();
+				g.stroke();
+		}
+		
+		g.setStrokeStyle(CssColor.make(49,71,112));
 		if(isJar)
 			g.setLineWidth(4.0);
 		for(int i = 0 ; i < strokes.size() ; i++) {
@@ -48,6 +72,7 @@ public class IVMStrokeContainer {
 				g.stroke();
 			}
 		}
+		
 	}
 	
 	public int getStrokeCount() {

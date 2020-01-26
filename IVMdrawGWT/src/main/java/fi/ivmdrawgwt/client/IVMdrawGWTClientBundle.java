@@ -10,5 +10,18 @@ public interface IVMdrawGWTClientBundle extends ClientBundle {
 
 	@Source("fi/ivmdrawgwt/client/css/IVMdrawGWT.css")
 	public  IVMdrawCssResource getKladjeGWTCSS();
+	
+	@Source("fi/ivmdrawgwt/client/images/goedvink-new.png")
+  	public ImageResource goedvinkResource();
+   
+    
+  	@Source("fi/ivmdrawgwt/client/images/foutkruis-new.png")
+  	public ImageResource foutkruisResource();
+  	
+  	@Source("fi/ivmdrawgwt/client/images/bin.png")
+  	public ImageResource binResource();
+  	
+  	@Source("fi/ivmdrawgwt/client/images/feedback.png")
+  	public ImageResource feedbackResource();
 
 }

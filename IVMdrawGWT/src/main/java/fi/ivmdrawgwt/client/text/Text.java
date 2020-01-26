@@ -10,4 +10,5 @@ public interface Text extends Constants {
 	String correctTekst();
 	String vaasVolumeTekst();
 	String vaasHoogteTekst();
+	String vaasLabel();
 }

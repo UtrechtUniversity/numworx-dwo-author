@@ -18,7 +18,7 @@ public class Stroke {
 	private static Logger logger = Logger.getLogger("Stroke");
 	
 	protected ArrayList<DoublePoint> parsePoints;
-	protected int standardizeLengthNumber = 40;
+	protected int standardizeLengthNumber = 80;
 	protected DoubleRectangle parsePointsBox;
 	protected double[] angles;
 	protected double[] dAngles;
@@ -65,7 +65,7 @@ public class Stroke {
 		length = getLength(doublePoints);
 
 		doublePoints = averageSmooth(doublePoints);
-		parsePoints = standardizeToLength(40,doublePoints);
+		parsePoints = standardizeToLength(standardizeLengthNumber,doublePoints);
 		parsePointsBox = makeParsingBox(parsePoints);
 		angles = new double[parsePoints.size()-1];
 		makeAngles();
@@ -105,7 +105,7 @@ public class Stroke {
 		length = getLength(doublePoints);
 
 		//doublePoints = averageSmooth(doublePoints);
-		parsePoints = standardizeToLength(40,doublePoints);
+		parsePoints = standardizeToLength(standardizeLengthNumber,doublePoints);
 		parsePointsBox = makeParsingBox(parsePoints);
 		angles = new double[parsePoints.size()-1];
 		makeAngles();
@@ -140,7 +140,7 @@ public class Stroke {
 			doublePoints.add(extension.parsePoints.get(i));
 		}
 		doublePoints = averageSmooth(doublePoints);
-		parsePoints = standardizeToLength(40,doublePoints);
+		parsePoints = standardizeToLength(standardizeLengthNumber,doublePoints);
 		parsePointsBox = makeParsingBox(parsePoints);
 		angles = new double[parsePoints.size()-1];
 		makeAngles();
@@ -157,7 +157,7 @@ public class Stroke {
 			doublePoints.add(parsePoints.get(i));
 		}
 		doublePoints = averageSmooth(doublePoints);
-		parsePoints = standardizeToLength(40,doublePoints);
+		parsePoints = standardizeToLength(standardizeLengthNumber,doublePoints);
 		parsePointsBox = makeParsingBox(parsePoints);
 		angles = new double[parsePoints.size()-1];
 		makeAngles();
@@ -371,7 +371,7 @@ public class Stroke {
 	}
 	
 	private void makeDAngles() {
-		dAngles = new double[40];
+		dAngles = new double[standardizeLengthNumber];
 		dAngles[0] = 0.0;
 		for(int i=1 ; i<standardizeLengthNumber-1 ; i++) {
 			double dx = parsePoints.get(i).getX() - parsePoints.get(i-1).getX();

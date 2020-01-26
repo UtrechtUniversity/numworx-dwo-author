@@ -20,8 +20,10 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -53,6 +55,8 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 
 public class IVMdrawGWTField {
+	
+	private static Logger logger = Logger.getLogger("IVMdrawGWT");
 	final int GAUSSIAN = 0;
 	final int AVERAGE = 1;
 	final int AVERAGE2 = 2;
@@ -85,14 +89,19 @@ public class IVMdrawGWTField {
 	
 	private ArrayList<IVMStrokeContainer> strokeContainerHistory = new ArrayList<IVMStrokeContainer>();
 	private ListBox historyList;
+	
 
 	public IVMdrawGWTField(int w, int h, IVMdrawGWT owner) {
 		this.owner = owner;
 		historyList = owner.getHistoryListBox();
 		historyList.addChangeHandler(new ListHandler());
+		historyList.getElement().getStyle().setBackgroundColor(""+CssColor.make(38,115,182));
+		historyList.getElement().getStyle().setColor("white");
+		historyList.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);;
 		
 		ivmDrawGWTCanvas = Canvas.createIfSupported();
-		ivmDrawGWTCanvas.setStyleName(owner.ivmDrawCss.canvas());
+		//ivmDrawGWTCanvas.setStyleName(owner.ivmDrawCss.canvas());
+		ivmDrawGWTCanvas.getElement().getStyle().setProperty("touchAction", "none");
 		
 		backgroundCanvas = Canvas.createIfSupported();
 		//strokeContainerCanvas = Canvas.createIfSupported();
@@ -141,12 +150,16 @@ public class IVMdrawGWTField {
 		gIm = ivmDrawGWTCanvas.getContext2d();
 		backgroundgIm = backgroundCanvas.getContext2d();
 	}
+	
+	public void setState(Map<String, Object> map) {
+		setState(map,true);
+	}
 
 	/**
 	 * Function used for the 'auteursomgeving'.
 	 * @param map launchdata
 	 */
-	public void setState(Map<String, Object> map) {
+	public void setState(Map<String, Object> map, boolean start) {
 		if(map == null || map.isEmpty())
 			return;
 		ObjectMap launchState = JSONUtilities.wrapMap(map);
@@ -155,9 +168,9 @@ public class IVMdrawGWTField {
 		
 		if (launchState.containsKey("ivmStrokeContainer"))
 			ivmStrokeContainer = launchState.getMap("ivmStrokeContainer");
-		currentStrokeContainer = new IVMStrokeContainer();
+		IVMStrokeContainer currentContainer = new IVMStrokeContainer();
 		try {
-			currentStrokeContainer.setState(ivmStrokeContainer);
+			currentContainer.setState(ivmStrokeContainer);
 		}
 		catch(Exception e) {
 		}
@@ -167,19 +180,41 @@ public class IVMdrawGWTField {
 		List<Map<String,Object>> strokeContainerList = new ArrayList<Map<String,Object>>();
 		if (launchState.containsKey("strokeContainerList"))
 			strokeContainerList = launchState.getMapList("strokeContainerList");
+		
+		//historyList.setVisible(owner.historyVisible && strokeContainerList.size()>0);
+		//historyList.setSelectedIndex(historyList.getItemCount()-1);
+		
+		strokeContainerHistory.clear();
 		for (int sCnt = 0; sCnt < strokeContainerList.size(); sCnt++)
 		{	
 			IVMStrokeContainer sc = new IVMStrokeContainer();
 			sc.setState(strokeContainerList.get(sCnt));
 			strokeContainerHistory.add(sc);
-			if(correctVaasNummer!=0)
-				handleClassification(new LineData(sc.getLastStroke().getIntParsePoints()));
+			if((owner.check||owner.feedbackVisible) && correctVaasNummer!=0) // "owner.feedbackVisible" voor backward compatibiliteit (check werd pas later ingevoerd)
+				handleClassification(new LineData(sc.getLastStroke().getIntParsePoints()), false);
 			historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (sCnt+1) + " " + (owner.correctGraph ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : ""));
 		}
-		historyList.setVisible(strokeContainerList.size()>0);
-		historyList.setSelectedIndex(historyList.getItemCount()-1);
-		lastStroke = currentStrokeContainer.getLastStroke();
-		processIVM();
+		
+		int historySelection = -1;
+		if(launchState.containsKey("historySelection"))
+			historySelection = launchState.getInt("historySelection");
+		if(historySelection>-1) {
+			logger.info("histaryList>-1");
+			historyList.setSelectedIndex(historySelection);
+			currentStrokeContainer = strokeContainerHistory.get(historySelection);
+			lastStroke = currentStrokeContainer.getLastStroke();
+			if(owner.check && correctVaasNummer!=0)
+				handleClassification(new LineData(lastStroke.getIntParsePoints()), false);
+			processIVM();
+		}
+		else {
+			currentStrokeContainer = currentContainer;
+			lastStroke = currentStrokeContainer.getLastStroke();
+			if(lastStroke!=null && owner.check && correctVaasNummer!=0) {
+				handleClassification(new LineData(lastStroke.getIntParsePoints()), false);
+				processIVM();
+			}
+		}
 		paint();
 	}
 
@@ -202,21 +237,24 @@ public class IVMdrawGWTField {
 		}
 		h.put("strokeContainerList", strokeContainerList);
 		
+		int historySelection = historyList.getSelectedIndex();
+		h.put("historySelection", new Integer(historySelection));
+		
 		return h;
 	}
 	
 	public void paint()	{
 		paint(gIm);
 	}
-
-
+	
+	
 	public void paint(Context2d g) {
 		g.clearRect(0, 0, breedte, hoogte);
 
 		/* Draws the labels for the coordinate system */
 		int xAsLengte = owner.jarFeedbackVisible ? (breedte-60)/2 : breedte-60;
 		int yAsLengte = hoogte-60;
-		
+		g.setStrokeStyle(CssColor.make(49,71,112));
 		g.setLineWidth(1.5d);
 		g.beginPath();
 		g.moveTo(30, 30);
@@ -230,15 +268,32 @@ public class IVMdrawGWTField {
 		g.lineTo(30 + xAsLengte, 30 + yAsLengte);
 		g.lineTo(25 + xAsLengte, 35 + yAsLengte);
 		if(correctVaasNummer!=0) {
+			g.setFillStyle(CssColor.make(49,71,112));
 			g.setFont("15px arial");
 			g.fillText(IVMdrawGWT.rb.vaasHoogteTekst(), 7, 17);
 			g.fillText(IVMdrawGWT.rb.vaasVolumeTekst(), xAsLengte/2, 50+yAsLengte);
 		}
 		g.stroke();
 		g.closePath();
-
+		
+		g.drawImage(ImageElement.as(owner.binImage.getElement()),xAsLengte, 30);
+		if(currentStrokeContainer.getStrokeCount()>0) {
+			if(owner.feedbackVisible)
+					g.drawImage(ImageElement.as(owner.feedbackImage.getElement()),xAsLengte-30, 30);
+			if(owner.feedbackVisible && owner.correctGraph)
+				g.drawImage(ImageElement.as(owner.goedkrulImage.getElement()),55, 35);
+			else if(owner.feedbackVisible)
+				g.drawImage(ImageElement.as(owner.foutkruisImage.getElement()),55, 35);
+		}
+		
 		if(owner.jarFeedbackVisible) {
-			g.setStrokeStyle(CssColor.make(80, 80, 80));
+			g.setFillStyle(CssColor.make(239, 241, 243));
+			g.fillRect(xAsLengte+50, 30, xAsLengte-20, yAsLengte);
+			
+			g.setFillStyle(CssColor.make(49,71,112));
+			g.setFont("15px arial");
+			g.fillText(IVMdrawGWT.rb.vaasLabel(), 3*xAsLengte/2+30, 50+yAsLengte);
+			
 			jarStrokeContainer.draw(g);
 		}
 		
@@ -262,7 +317,8 @@ public class IVMdrawGWTField {
 			g.stroke();
 		}
 	}
-
+	
+	
 
 	/**
 	 * Build the jar by using three ArrayList. A drawn jar will always have a bottom and a left
@@ -394,10 +450,27 @@ public class IVMdrawGWTField {
 	 */
 	public void mouseDownTouchStartAction(int eventX, int eventY) {
 		//if(currentStrokeContainer==null)
+		//	currentStrokeContainer = new IVMStrokeContainer();
+		
+		owner.closeFeedback();
+		int xAsLengte = owner.jarFeedbackVisible ? (breedte-60)/2 : breedte-60;
+		
+		if(owner.feedbackVisible && eventX>xAsLengte-30 && eventX<xAsLengte && eventY>30 && eventY<60) {
+			logger.info("In mouseDownAction");
+			handleClassification(new LineData(currentStrokeContainer.getLastStroke().getIntParsePoints()), true);
+			return;
+		}
+		if(eventX>xAsLengte && eventX<xAsLengte+30 && eventY>30 && eventY<60) {
 			currentStrokeContainer = new IVMStrokeContainer();
+			jarStrokeContainer.clear();
+			paint();
+			return;
+		}
+			
+			
 		
 		formulaStrokePoints.clear();
-		mouseDown = true;
+		//mouseDown = true;
 		formulaStrokePoints.add(new Point(eventX, eventY));
 		paint();
 	}
@@ -409,26 +482,22 @@ public class IVMdrawGWTField {
 	 * @param eventY
 	 * @param shiftPressed
 	 */
-	public void mouseMoveTouchMoveAction(int eventX, int eventY, boolean shiftPressed) {
-//		eventX = (int)(eventX/scale -translation.x);
-//		eventY = (int)(eventY/scale -translation.y);
-
-		if (!mouseDown)
-			return;
+	public void mouseMoveTouchMoveAction(int eventX, int eventY) {
 
 		this.allDrawnPoints.add(new Point(eventX, eventY));
-
-
 		if(formulaStrokePoints.size()>0) {
 				int dx = (int)(formulaStrokePoints.get(formulaStrokePoints.size()-1).x) - eventX;
 				int dy = (int)(formulaStrokePoints.get(formulaStrokePoints.size()-1).y) - eventY;
-				if(dx*dx+dy*dy>30)
+				if(dx*dx+dy*dy>3)
 					formulaStrokePoints.add(new Point(eventX, eventY));
 		}
 		paint();
 		
 	}
 
+	private void handleClassification(LineData inputPoints) {
+		handleClassification(inputPoints,true);
+	}
 
 	/**
 	 * Handle the classification by:
@@ -437,7 +506,7 @@ public class IVMdrawGWTField {
 	 * - communicating the feedback to the user.
 	 * @param inputPoints
 	 */
-	private void handleClassification(LineData inputPoints) {
+	private void handleClassification(LineData inputPoints, boolean geefFeedback) {
 		String feedback;
 		String color = "white";
 
@@ -464,9 +533,13 @@ public class IVMdrawGWTField {
 			}
 
 		}
-
-		this.owner.ivmFeedbackGWTField.mouseUpEvent(feedback);
-		this.owner.label.getElement().getStyle().setBackgroundColor(color);
+		if(geefFeedback) {
+			logger.info("handleClassifcation");
+			this.owner.setFeedback(feedback);
+		}
+			
+		//this.owner.ivmFeedbackGWTField.mouseUpEvent(feedback);
+		//this.owner.label.getElement().getStyle().setBackgroundColor(color);
 	}
 
 
@@ -476,12 +549,30 @@ public class IVMdrawGWTField {
 	 * @param eventY
 	 */
 	public void mouseUpTouchEndAction(int eventX, int eventY) {
-		LineData inputPoints = new LineData(this.allDrawnPoints);
+		if(formulaStrokePoints.size()==0) {
+			paint();
+			return;
+		}
+			
+		int x0 = formulaStrokePoints.get(0).x;
+		int y0 = formulaStrokePoints.get(0).y;
+		int x1 = formulaStrokePoints.get(formulaStrokePoints.size()-1).x;
+		int y1 = formulaStrokePoints.get(formulaStrokePoints.size()-1).y;
+		if((x0-x1)*(x0-x1)+(y0-y1)*(y0-y1)<1600) {
+			this.allDrawnPoints.clear();
+			formulaStrokePoints.clear();
+			paint();
+			return;
+		}
 		
-		if(correctVaasNummer!=0)
-			handleClassification(inputPoints);
-
-		this.allDrawnPoints.clear();
+//		LineData inputPoints = new LineData(this.allDrawnPoints);
+//		
+//		if(owner.check && correctVaasNummer!=0)
+//			handleClassification(inputPoints);
+//
+//		this.allDrawnPoints.clear();
+		
+		
 
 		currentStrokeContainer = new IVMStrokeContainer(); //.clear();
 		lastStroke = new Stroke(formulaStrokePoints);
@@ -489,15 +580,22 @@ public class IVMdrawGWTField {
 		formulaStrokePoints.clear();
 		strokeContainerHistory.add(currentStrokeContainer);
 		
+		LineData inputPoints = new LineData(lastStroke.getIntParsePoints());
+		
+		if(owner.check && correctVaasNummer!=0)
+			handleClassification(inputPoints);
 
-		if (correctVaasNummer!=0 && !inputPoints.validInput()) {
+		this.allDrawnPoints.clear();
+		
+
+		if (owner.check && correctVaasNummer!=0 && !inputPoints.validInput()) {
 			return;
 		}
 
 		processIVM();
 		paint();
 		historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (historyList.getItemCount()+1) + " " + (owner.correctGraph ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : "") );
-		historyList.setVisible(strokeContainerHistory.size()>0);
+		historyList.setVisible(owner.historyVisible && strokeContainerHistory.size()>0);
 		historyList.setSelectedIndex(historyList.getItemCount()-1);
 		
 		owner.setChanged();
@@ -515,7 +613,7 @@ public class IVMdrawGWTField {
 			if(selectedIndex>-1) {
 				currentStrokeContainer = strokeContainerHistory.get(selectedIndex);
 				lastStroke = currentStrokeContainer.getLastStroke();
-				if(correctVaasNummer!=0)
+				if(owner.check && correctVaasNummer!=0)
 					handleClassification(new LineData(lastStroke.getIntParsePoints()));
 				processIVM();
 				owner.setChanged();
@@ -535,6 +633,8 @@ public class IVMdrawGWTField {
 			
 			if(hasPointerSupport)
 				return;
+			
+			mouseDown = true;
 			
 			int eventX = e.getX();
 			int eventY = e.getY();
@@ -556,9 +656,8 @@ public class IVMdrawGWTField {
 
 			int eventX = e.getX();
 			int eventY = e.getY();
-			boolean shiftPressed = e.isShiftKeyDown();
 			
-			mouseMoveTouchMoveAction(eventX, eventY, shiftPressed);
+			mouseMoveTouchMoveAction(eventX, eventY);
 			
 		} // onMouseMove
 
@@ -576,7 +675,6 @@ public class IVMdrawGWTField {
 			
 			int eventX = e.getX();
 			int eventY = e.getY();
-			
 			
 			mouseDown = false;
 			if (e.getNativeButton() == NativeEvent.BUTTON_RIGHT) {
@@ -596,38 +694,39 @@ public class IVMdrawGWTField {
 		public void onPointerDown(PointerDownEvent e) {
 			e.preventDefault();
 			e.stopPropagation();
-			
+			logger.info("PointerDown");
 			hasPointerSupport = true;
+			mouseDown = true;
 			
 			int eventX = e.getRelativeX(ivmDrawGWTCanvas.getElement());
 			int eventY = e.getRelativeY(ivmDrawGWTCanvas.getElement());
 			
-			if (!moving ) {
-				writing = true;
-				mouseDownTouchStartAction(eventX, eventY);
-			}
+			mouseDownTouchStartAction(eventX, eventY);
 		}
 		
 		@Override
 		public void onPointerMove(PointerMoveEvent e) {
 			e.preventDefault();
 			e.stopPropagation();
-				
-		    boolean shiftPressed = false;
+			
+			if (!mouseDown)
+				return;
+			
 		    int eventX = e.getRelativeX(ivmDrawGWTCanvas.getElement());
 			int eventY = e.getRelativeY(ivmDrawGWTCanvas.getElement());	
 			lastTouchX = eventX;
 			lastTouchY = eventY;
 		    
-			mouseMoveTouchMoveAction(eventX, eventY, shiftPressed);
+			mouseMoveTouchMoveAction(eventX, eventY);
 		}
 		
 		@Override
 		public void onPointerUp(PointerUpEvent e) {
 			e.preventDefault();
 			e.stopPropagation();
+			logger.info("PointerUp");
+			mouseDown = false;
 			
-			moving = false;
 			mouseUpTouchEndAction(lastTouchX, lastTouchY);
 		}
 	}
@@ -645,6 +744,8 @@ public class IVMdrawGWTField {
 			if(hasPointerSupport)
 				return;
 			
+			mouseDown = true;
+			
 			if (e.getTouches().length() == 0)
 				return;
 			
@@ -653,24 +754,16 @@ public class IVMdrawGWTField {
 			int eventX = touch.getPageX() - ivmDrawGWTCanvas.getAbsoluteLeft();
 			int eventY = touch.getPageY() - ivmDrawGWTCanvas.getAbsoluteTop();
 			
-			
 				
-			if (e.getTouches().length() == 1 && !moving ) {
-				writing = true;
+			if (e.getTouches().length() == 1 ) {
 				mouseDownTouchStartAction(eventX, eventY);
 			}
-			if ( (e.getTouches().length() > 2) ) {
-				moving = false;
-				writing = false;
-				
-			}			
-
+			
 			e.preventDefault();
 			e.stopPropagation();
 		}
 		public void onTouchMove(TouchMoveEvent e)
 		{
-
 			e.preventDefault();
 			e.stopPropagation();
 			
@@ -681,15 +774,13 @@ public class IVMdrawGWTField {
 			{
 				Touch touch = e.getTouches().get(0);
 				
-			    boolean shiftPressed = false;
 			    int eventX = touch.getPageX() - ivmDrawGWTCanvas.getAbsoluteLeft();
 				int eventY = touch.getPageY() - ivmDrawGWTCanvas.getAbsoluteTop();	
 				lastTouchX = eventX;
 				lastTouchY = eventY;
 			    
-				mouseMoveTouchMoveAction(eventX, eventY, shiftPressed);
-				
-		    }
+				mouseMoveTouchMoveAction(eventX, eventY);
+			}
 			
 			e.preventDefault();
 			e.stopPropagation();
@@ -697,15 +788,12 @@ public class IVMdrawGWTField {
 		}
 		public void onTouchEnd(TouchEndEvent e)
 		{
+			e.preventDefault();
+			e.stopPropagation();
+			
 			if(hasPointerSupport)
 				return;
 			
-//			Touch touch = e.getTouches().get(0);
-//			
-//		    int eventX = touch.getPageX() - kladjeHWTCanvas.getAbsoluteLeft();
-//			int eventY = touch.getPageY() - kladjeHWTCanvas.getAbsoluteTop();
-			
-			moving = false;
 			mouseUpTouchEndAction(lastTouchX, lastTouchY);
 		}
 

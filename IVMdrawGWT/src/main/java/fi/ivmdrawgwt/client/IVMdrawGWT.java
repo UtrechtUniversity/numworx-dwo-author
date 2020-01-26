@@ -17,6 +17,8 @@ import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.BorderStyle;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
 
 import fi.ivmdrawgwt.client.text.Text;
@@ -28,7 +30,9 @@ import nl.uu.fi.dwo.interaction.client.event.CBookEvent;
 import nl.uu.fi.dwo.interaction.client.event.CBookEventListener;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
+
 public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub, CBookEventListener {
+	private static Logger logger = Logger.getLogger("IVMdrawGWTField");
 	public HorizontalPanel mainPanel = new HorizontalPanel();
     public Label label = new Label("Teken een grafiek!");
     public PopupPanel popUp = new PopupPanel();
@@ -71,9 +75,21 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	
 	boolean correctGraph = false;
 	int mode = 0;
+	boolean check;
 	
 	ListBox historyList;
-
+	PopupPanel feedbackPanel = new PopupPanel(true);
+	LayoutPanel feedbackTekst = new LayoutPanel();
+	
+	ImageResource goedkrulResource;
+	ImageResource foutkruisResource;
+	ImageResource binResource;
+	ImageResource feedbackResource;
+	
+	Image goedkrulImage;
+	Image foutkruisImage;
+	Image binImage;
+	Image feedbackImage;
 
 	/**
 	 * The GWT entry point method, called automatically by loading a module that declares an implementing class as an
@@ -85,7 +101,9 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		ivmDrawGWTClientBundle = GWT.create(IVMdrawGWTClientBundle.class);
 		ivmDrawCss = ivmDrawGWTClientBundle.getKladjeGWTCSS();
 		ivmDrawCss.ensureInjected();
-
+		
+		
+		
 		dlp = new DockLayoutPanel(Style.Unit.PX);
 		dlp.addStyleName(ivmDrawCss.dock());
 		dlp.setPixelSize(breedte,hoogte);
@@ -135,6 +153,19 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		ivmDrawGWTClientBundle = GWT.create(IVMdrawGWTClientBundle.class);
 		ivmDrawCss = ivmDrawGWTClientBundle.getKladjeGWTCSS();
 		ivmDrawCss.ensureInjected();
+		
+		goedkrulResource = ivmDrawGWTClientBundle.goedvinkResource();
+		foutkruisResource = ivmDrawGWTClientBundle.foutkruisResource();
+		binResource = ivmDrawGWTClientBundle.binResource();
+		feedbackResource = ivmDrawGWTClientBundle.feedbackResource();
+		
+		goedkrulImage = new Image(goedkrulResource);
+		foutkruisImage = new Image(foutkruisResource);
+		binImage = new Image(binResource);
+		feedbackImage = new Image(feedbackResource);
+		
+		goedkrulImage.setVisible(false);
+		foutkruisImage.setVisible(false);
 
 		dlp = new DockLayoutPanel(Style.Unit.PX);
 		dlp.addStyleName(ivmDrawCss.dock());
@@ -192,6 +223,12 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		ivmDrawGWTField.initContext2d();
 		
 		dlp.add(ivmDrawGWTCanvas);
+		
+		
+		
+		
+		
+		
 
 		
 		ivmDrawGWTField.setState(launchData);
@@ -199,6 +236,8 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		ObjectMap launchState = JSONUtilities.wrapMap(launchData);
 		if(launchState.containsKey("vaasNummer")) 
 			vaasNummer = launchState.getInt("vaasNummer");
+		if(launchState.containsKey("check")) 
+			check = launchState.getBoolean("check");
 		if(launchState.containsKey("feedbackVisible")) 
 			feedbackVisible = launchState.getBoolean("feedbackVisible");
 		if(launchState.containsKey("historyVisible")) 
@@ -209,6 +248,8 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 			deelScore1 = launchState.getInt("deelScore1");
 		if(launchState.containsKey("deelScore2")) 
 			deelScore2 = launchState.getInt("deelScore2");
+		
+		check = check || feedbackVisible; // voor backwards comp
 		
 		boolean jarFeedbackSelected = true;
 		if(launchState.containsKey("jarFeedbackVisible")) 
@@ -224,11 +265,48 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 		//makeBottom();
 		
-		dlp.forceLayout();
+		
 		//bottomPanel.forceLayout();
 		
 		ivmDrawGWTField.paint();
+		
+		feedbackTekst.getElement().setInnerText("Hier de feedback die ik wil laten zien");
+		feedbackTekst.getElement().getStyle().setColor(""+CssColor.make(49,71,112));
+		
+		VerticalPanel vp = new VerticalPanel();
+		vp.add(goedkrulImage);	
+		vp.add(foutkruisImage);
+		vp.add(feedbackTekst);
+		
+		feedbackPanel.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
+		feedbackPanel.getElement().getStyle().setBorderColor(""+CssColor.make(38,115,182));
+		feedbackPanel.getElement().getStyle().setBorderWidth(1, Style.Unit.PX);
+		feedbackPanel.getElement().getStyle().setPadding(5, Style.Unit.PX);
+		feedbackPanel.getElement().getStyle().setBackgroundColor(""+CssColor.make(239,241,243));
+		feedbackPanel.getElement().getStyle().setProperty("boxShadow", "3px 3px 3px #96A1BD");
+		feedbackPanel.add(vp);
+		
+		feedbackPanel.setWidth("180px");
+		
+		dlp.forceLayout();
 
+	}
+	
+	public void setFeedback(String feedback) {
+		feedbackTekst.getElement().setInnerText(feedback);
+		feedbackPanel.setPopupPosition(ivmDrawGWTField.getCanvas().getAbsoluteLeft()+50, ivmDrawGWTField.getCanvas().getAbsoluteTop()+30);
+		if(feedbackVisible) {
+			logger.info("setFeedback");
+			goedkrulImage.setVisible(correctGraph);
+			foutkruisImage.setVisible(!correctGraph);
+			feedbackPanel.show();
+			feedbackPanel.setVisible(true);
+		}
+	}
+	
+	public void closeFeedback() {
+		logger.info("closeFeedback");
+		feedbackPanel.hide();
 	}
 	
 	public Widget asWidget() {
@@ -243,8 +321,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	public HashMap<String, Object> getState() {
 		HashMap h = ivmDrawGWTField.getState();
 		
-		int historySelection = historyList.getSelectedIndex();
-		h.put("historySelection", historySelection);
+		
 		h.put("attemptsToCorrect", attemptsToCorrect);
 		
 		return h;
@@ -256,12 +333,9 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		
 		ivmDrawGWTField.setState(h);
 		
-		int historySelection = -1;
+		
 		ObjectMap launchState = JSONUtilities.wrapMap(h);
-		if(launchState.containsKey("historySelection"))
-			historySelection = launchState.getInt("historySelection");
-		if(historySelection>-1)
-			historyList.setItemSelected(historySelection, true);
+		
 		if(launchState.containsKey("attemptsToCorrect"))
 			attemptsToCorrect = launchState.getInt("attemptsToCorrect");
 	}
@@ -307,7 +381,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		this.comRoot = comRoot;
 		zetMode(comRoot.getMode());
 		
-
+		comRoot.addCBookEventListener("graph", this);
 	}
 	
 	public void zetMode(int mode)
@@ -329,6 +403,9 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		Map map = new HashMap<String,Object>();
 		map.put("content", feedback);
 		comRoot.fireEvent(new CBookEvent(this,"text.feedback",map));
+		
+		Map<String,Object> mapGraph = ivmDrawGWTField.getState();
+		comRoot.fireEvent(new CBookEvent(this,"graph",mapGraph));
 		
 		if(correctGraph)
 			comRoot.fireEvent(new CBookEvent(this,"action.correct"));
@@ -366,7 +443,15 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 	@Override
 	public void acceptCBookEvent(CBookEvent event) {
-		// TODO Auto-generated method stub
+		String command = event.getCommand();
+		if (command.startsWith("graph"))
+		{
+			Map map = (Map)event.getParameters();
+			if (map!=null)
+			{	ivmDrawGWTField.setState(map);
+				
+			}
+		}
 		
 	}
 	
