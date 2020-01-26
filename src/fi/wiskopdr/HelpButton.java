@@ -120,7 +120,7 @@ public class HelpButton extends JButton implements MouseListener, ActionListener
 	@Override
 	public void mousePressed(MouseEvent e) {
 	  if(withFrame) {
-		  if(frame==null)
+		  if(frame==null || helpPanel==null)
 			  makeFrame();
 		  
 		  JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
