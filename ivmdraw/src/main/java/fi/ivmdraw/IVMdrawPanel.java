@@ -136,7 +136,8 @@ public class IVMdrawPanel extends JPanel implements InteractiePanel, CBookAware 
 
 	@Override
 	public String[] getAcceptedCmds() {
-		return null;
+		String[] commands = { "graph" };
+		return commands;
 	}
 
 	@Override
@@ -149,7 +150,7 @@ public class IVMdrawPanel extends JPanel implements InteractiePanel, CBookAware 
 
 	@Override
 	public String[] getSendCmds() {
-		String[] commands = { "action.correct", "action.false", "text.feedback" };
+		String[] commands = { "action.correct", "action.false", "text.feedback", "graph" };
 		return commands;
 	}
 

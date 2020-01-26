@@ -33,7 +33,9 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 	private JLabel opdrachtLabel;
 	private JLabel vaasOpdrachtLabel;
 	private JLabel vaas1Label, vaas2Label, vaas3Label, vaas4Label, vaas5Label;
+	private JCheckBox jarFeedbackVisibleCB;
 	private JCheckBox feedbackVisibleCB;
+	private JCheckBox checkCB;
 	private JCheckBox historyVisibleCB;
 	private JLabel scoreLabel;
 	private JLabel scoreLabel0;
@@ -77,33 +79,45 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 		vaasKeuze.setMaximumSize(new Dimension(520,26));
 		vaasKeuze.setForeground(Constants.COLOR15);
 		
-		feedbackVisibleCB = new JCheckBox(IVMdraw.rb.getString("feedbackVisibleCBLabel"));
+		jarFeedbackVisibleCB = new JCheckBox(IVMdraw.rb.getString("jarFeedbackVisibleCBLabel"));
+		jarFeedbackVisibleCB.setSelected(true);
 		historyVisibleCB = new JCheckBox(IVMdraw.rb.getString("historyVisibleCBLabel"));
+		checkCB = new JCheckBox(IVMdraw.rb.getString("checkCBLabel"));
+		checkCB.addActionListener(this);
+		feedbackVisibleCB = new JCheckBox(IVMdraw.rb.getString("feedbackVisibleCBLabel"));
+		feedbackVisibleCB.setVisible(false);
 		
 		scoreLabel = new JLabel(IVMdraw.rb.getString("scoreLabel"));
 		scoreLabel.setFont(titelFont);
 		scoreLabel.setForeground(Constants.COLOR15);
+		scoreLabel.setVisible(false);
 		
 		scoreLabel0 = new JLabel(IVMdraw.rb.getString("scoreLabel0"));
 		scoreLabel0.setForeground(Constants.COLOR15);
+		scoreLabel0.setVisible(false);
 		
 		scoreLabel1 = new JLabel(IVMdraw.rb.getString("scoreLabel1"));
 		scoreLabel1.setForeground(Constants.COLOR15);
+		scoreLabel1.setVisible(false);
 		
 		scoreLabel2 = new JLabel(IVMdraw.rb.getString("scoreLabel2"));
 		scoreLabel2.setForeground(Constants.COLOR15);
+		scoreLabel2.setVisible(false);
 		
 		scoreTF = new JTextField("3");
 		scoreTF.setPreferredSize(new Dimension(50,20));
 		scoreTF.setMaximumSize(new Dimension(50,20));
+		scoreTF.setVisible(false);
 		
 		scoreTF1 = new JTextField("2");
 		scoreTF1.setPreferredSize(new Dimension(50,20));
 		scoreTF1.setMaximumSize(new Dimension(50,20));
+		scoreTF1.setVisible(false);
 		
 		scoreTF2 = new JTextField("1");
 		scoreTF2.setPreferredSize(new Dimension(50,20));
 		scoreTF2.setMaximumSize(new Dimension(50,20));
+		scoreTF2.setVisible(false);
 		
 		vaas1Label.setVisible(true);
 		vaas2Label.setVisible(false);
@@ -127,13 +141,27 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 		vb.add(Box.createRigidArea(new Dimension(0,15)));
 		
 		hb = Box.createHorizontalBox();
-		hb.add(feedbackVisibleCB);
+		hb.add(jarFeedbackVisibleCB);
+		hb.add(Box.createHorizontalGlue());
+		vb.add(hb);
+		vb.add(Box.createRigidArea(new Dimension(0,5)));
+		
+		
+		
+		hb = Box.createHorizontalBox();
+		hb.add(historyVisibleCB);
 		hb.add(Box.createHorizontalGlue());
 		vb.add(hb);
 		vb.add(Box.createRigidArea(new Dimension(0,5)));
 		
 		hb = Box.createHorizontalBox();
-		hb.add(historyVisibleCB);
+		hb.add(checkCB);
+		hb.add(Box.createHorizontalGlue());
+		vb.add(hb);
+		vb.add(Box.createRigidArea(new Dimension(0,5)));
+		
+		hb = Box.createHorizontalBox();
+		hb.add(feedbackVisibleCB);
 		hb.add(Box.createHorizontalGlue());
 		vb.add(hb);
 		vb.add(Box.createRigidArea(new Dimension(0,15)));
@@ -199,12 +227,14 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 	public Hashtable getEditState() {
 		Hashtable h = ivmDrawPanel.getEditState();
 		h.put("vaasNummer", new Integer(vaasKeuze.getSelectedIndex()));
+		h.put("jarFeedbackVisible", new Boolean(jarFeedbackVisibleCB.isSelected()));
 		h.put("feedbackVisible", new Boolean(feedbackVisibleCB.isSelected()));
 		h.put("historyVisible", new Boolean(historyVisibleCB.isSelected()));
+		h.put("check", new Boolean(checkCB.isSelected() || feedbackVisibleCB.isSelected()));//"feedbackVisibleCB.isSelected()" voor backwards compatibiliteit
 		int scoreMax = 0;
 		int deelScore1 = 0;
 		int deelScore2 = 0;
-		if(vaasKeuze.getSelectedIndex()!=0) {
+		if(checkCB.isSelected() && vaasKeuze.getSelectedIndex()!=0) {
 			try {
 				scoreMax = Integer.parseInt(scoreTF.getText());
 			}catch(Exception e) {}
@@ -224,24 +254,33 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 
 	public void setEditState(Hashtable h) {
 		int vaasNummer = 1;
+		boolean jarFeedbackVisible = true;
 		boolean feedbackVisible = false;
 		boolean historyVisible = false;
+		boolean check = false;
+		
 		int scoreMax = 0;
 		int deelScore1 = 0;
 		int deelScore2 = 0;
 		if(h.containsKey("vaasNummer")) vaasNummer = ((Integer)h.get("vaasNummer")).intValue();
+		if(h.containsKey("jarFeedbackVisible")) jarFeedbackVisible = ((Boolean)h.get("jarFeedbackVisible")).booleanValue();
 		if(h.containsKey("feedbackVisible")) feedbackVisible = ((Boolean)h.get("feedbackVisible")).booleanValue();
 		if(h.containsKey("historyVisible")) historyVisible = ((Boolean)h.get("historyVisible")).booleanValue();
 		if(h.containsKey("scoreMax")) scoreMax = ((Integer)h.get("scoreMax")).intValue();
 		if(h.containsKey("deelScore1")) deelScore1 = ((Integer)h.get("deelScore1")).intValue();
 		if(h.containsKey("deelScore2")) deelScore2 = ((Integer)h.get("deelScore2")).intValue();
+		if(h.containsKey("check")) check = ((Boolean)h.get("check")).booleanValue();
+		
+		check = check || feedbackVisible; // Voor backwards Compatibiliteit
 		
 		vaasKeuze.setSelectedIndex(vaasNummer);
+		jarFeedbackVisibleCB.setSelected(jarFeedbackVisible);
 		feedbackVisibleCB.setSelected(feedbackVisible);
 		historyVisibleCB.setSelected(historyVisible);
 		scoreTF.setText(""+scoreMax);
 		scoreTF1.setText(""+deelScore1);
 		scoreTF2.setText(""+deelScore2);
+		checkCB.setSelected(check);
 		
 		if(vaasKeuze.getSelectedIndex()==1)
 			vaas1Label.setVisible(true);
@@ -254,15 +293,20 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 		if(vaasKeuze.getSelectedIndex()==5)
 			vaas5Label.setVisible(true);
 		
+		boolean u = checkCB.isSelected();
 		boolean v = vaasKeuze.getSelectedIndex()!=0;
-		feedbackVisibleCB.setVisible(v);
-		scoreLabel.setVisible(v);
-		scoreLabel0.setVisible(v);
-		scoreLabel1.setVisible(v);
-		scoreLabel2.setVisible(v);
-		scoreTF.setVisible(v);
-		scoreTF1.setVisible(v);
-		scoreTF2.setVisible(v);
+		jarFeedbackVisibleCB.setVisible(v);
+		checkCB.setVisible(v);
+		feedbackVisibleCB.setVisible(u && v);
+		scoreLabel.setVisible(u && v);
+		scoreLabel0.setVisible(u && v);
+		scoreLabel1.setVisible(u && v);
+		scoreLabel2.setVisible(u && v);
+		scoreTF.setVisible(u && v);
+		scoreTF1.setVisible(u && v);
+		scoreTF2.setVisible(u && v);
+		
+		((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
 	}
 
 	public void start() {
@@ -305,15 +349,40 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 			if(vaasKeuze.getSelectedIndex()==5)
 				vaas5Label.setVisible(true);
 			
+			boolean u = checkCB.isSelected();
 			boolean v = vaasKeuze.getSelectedIndex()!=0;
-			feedbackVisibleCB.setVisible(v);
-			scoreLabel.setVisible(v);
-			scoreLabel0.setVisible(v);
-			scoreLabel1.setVisible(v);
-			scoreLabel2.setVisible(v);
-			scoreTF.setVisible(v);
-			scoreTF1.setVisible(v);
-			scoreTF2.setVisible(v);
+			jarFeedbackVisibleCB.setVisible(v);
+			checkCB.setVisible(v);
+			feedbackVisibleCB.setVisible(u && v);
+			scoreLabel.setVisible(u && v);
+			scoreLabel0.setVisible(u && v);
+			scoreLabel1.setVisible(u && v);
+			scoreLabel2.setVisible(u && v);
+			scoreTF.setVisible(u && v);
+			scoreTF1.setVisible(u && v);
+			scoreTF2.setVisible(u && v);
+			
+			if(!v) {
+				checkCB.setSelected(false);
+				feedbackVisibleCB.setSelected(false);
+			}
+			
+			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
+		}
+		if(e.getSource()==checkCB) {
+			boolean u = checkCB.isSelected();
+			boolean v = vaasKeuze.getSelectedIndex()!=0;
+			feedbackVisibleCB.setVisible(u && v);
+			scoreLabel.setVisible(u && v);
+			scoreLabel0.setVisible(u && v);
+			scoreLabel1.setVisible(u && v);
+			scoreLabel2.setVisible(u && v);
+			scoreTF.setVisible(u && v);
+			scoreTF1.setVisible(u && v);
+			scoreTF2.setVisible(u && v);
+			
+			if(!u)
+				feedbackVisibleCB.setSelected(false);
 			
 			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
 		}
