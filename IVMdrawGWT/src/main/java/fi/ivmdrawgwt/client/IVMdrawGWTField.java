@@ -703,6 +703,8 @@ public class IVMdrawGWTField {
 			int eventY = e.getRelativeY(ivmDrawGWTCanvas.getElement());
 			
 			mouseDownTouchStartAction(eventX, eventY);
+			e.preventDefault();
+			e.stopPropagation();
 		}
 		
 		@Override

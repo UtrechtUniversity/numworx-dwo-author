@@ -286,6 +286,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		feedbackPanel.getElement().getStyle().setBackgroundColor(""+CssColor.make(239,241,243));
 		feedbackPanel.getElement().getStyle().setProperty("boxShadow", "3px 3px 3px #96A1BD");
 		feedbackPanel.add(vp);
+		feedbackPanel.setAutoHideEnabled(false);
 		
 		feedbackPanel.setWidth("180px");
 		
