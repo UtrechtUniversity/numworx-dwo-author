@@ -12,6 +12,7 @@
 
   <!-- Other module inherits                                      -->
    <inherits name="nl.uu.fi.dwo.interaction.Interaction" />
+   <inherits name='com.vaadin.pointerevents.PointerEvents' />
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='fi.ivmdrawgwt.client.IVMdrawGWT' />
