@@ -84,8 +84,7 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 		hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("TextPane.4")));
 		hbox.add(alwaysF);
-		if(true || GeoDefiner.isExperimental)
-			hbox.add(herleid);
+		hbox.add(herleid);
 		hbox.add(Box.createGlue());
 		add(hbox);
 	}

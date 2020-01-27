@@ -42,8 +42,7 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		Box hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("ColorPane.1")));
 		hbox.add(Box.createGlue());
-		if (GeoDefiner.isExperimental) 
-		  hbox.add(log);
+		hbox.add(log);
 		hbox.add(trails);
 		add(hbox);
 		add(visibilityEditor);
