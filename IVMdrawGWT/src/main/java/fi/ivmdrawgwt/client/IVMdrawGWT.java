@@ -188,6 +188,19 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	public void init(int width, int height, Map<String, Object> launchData,	Map<String, Number> values) {
 		//initWidget(new Label("IVMdraw"));
 		
+		goedkrulResource = ivmDrawGWTClientBundle.goedvinkResource();
+		foutkruisResource = ivmDrawGWTClientBundle.foutkruisResource();
+		binResource = ivmDrawGWTClientBundle.binResource();
+		feedbackResource = ivmDrawGWTClientBundle.feedbackResource();
+		
+		goedkrulImage = new Image(goedkrulResource);
+		foutkruisImage = new Image(foutkruisResource);
+		binImage = new Image(binResource);
+		feedbackImage = new Image(feedbackResource);
+		
+		goedkrulImage.setVisible(false);
+		foutkruisImage.setVisible(false);
+		
 		breedte = width;
 		hoogte = height;
 		
