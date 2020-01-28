@@ -306,7 +306,7 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 		scoreTF1.setVisible(u && v);
 		scoreTF2.setVisible(u && v);
 		
-		((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
+		((JDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
 	}
 
 	public void start() {
@@ -367,7 +367,7 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 				feedbackVisibleCB.setSelected(false);
 			}
 			
-			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
+			((JDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
 		}
 		if(e.getSource()==checkCB) {
 			boolean u = checkCB.isSelected();
@@ -384,7 +384,7 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 			if(!u)
 				feedbackVisibleCB.setSelected(false);
 			
-			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
+			((JDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
 		}
 		
 	}
