@@ -63,9 +63,9 @@ public class Stroke {
 			doublePoints = insertPoints(doublePoints);
 		}
 		length = getLength(doublePoints);
-
+		doublePoints = standardizeToLength(40,doublePoints);
 		doublePoints = averageSmooth(doublePoints);
-		doublePoints = averageSmooth(doublePoints);
+		//doublePoints = averageSmooth(doublePoints);
 		parsePoints = standardizeToLength(standardizeLengthNumber,doublePoints);
 		parsePointsBox = makeParsingBox(parsePoints);
 		angles = new double[parsePoints.size()-1];

@@ -23,19 +23,19 @@ public class Feedback {
 
         switch (randomInt) {
             case 0:
-                feedback = "En dat is correct voor deze vaas!";
+                feedback = IVMdrawGWT.rb.randomCorrect0();
                 break;
             case 1:
-                feedback = "Dit resulteert inderdaad in deze vaas!";
+                feedback = IVMdrawGWT.rb.randomCorrect1();
                 break;
             case 2:
-                feedback = "En dat is correct!";
+                feedback = IVMdrawGWT.rb.randomCorrect2();
                 break;
             case 3:
-                feedback = "Zo krijg je inderdaad de vaas in het plaatje!";
+                feedback = IVMdrawGWT.rb.randomCorrect3();
                 break;
             case 4:
-                feedback = "Dat is juist!";
+                feedback = IVMdrawGWT.rb.randomCorrect4();
                 break;
         }
 
@@ -53,19 +53,19 @@ public class Feedback {
 
         switch (randomInt) {
             case 0:
-                feedback = "En dat is niet correct voor deze vaas.";
+                feedback = IVMdrawGWT.rb.randomIncorrect0();
                 break;
             case 1:
-                feedback = "Dit resulteert niet in deze vaas!";
+                feedback = IVMdrawGWT.rb.randomIncorrect1();
                 break;
             case 2:
-                feedback = "En dat is niet correct.";
+                feedback = IVMdrawGWT.rb.randomIncorrect2();
                 break;
             case 3:
-                feedback = "Zo krijg je niet de vaas in het plaatje.";
+                feedback = IVMdrawGWT.rb.randomIncorrect3();
                 break;
             case 4:
-                feedback = "Dit is niet juist";
+                feedback = IVMdrawGWT.rb.randomIncorrect4();
                 break;
         }
 
@@ -88,41 +88,41 @@ public class Feedback {
 
         switch (degree) {
             case 1:
-                feedback += "Bij jouw grafiek neemt de hoogte van de vaas met gelijke stappen toe. ";
+                feedback += IVMdrawGWT.rb.defaultFeedbackCase1();
                 break;
             case 2:
-                feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas steeds";
+                //feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas steeds";
 
                 if (convex) {
-                    feedback += " toe. ";
+                    feedback += IVMdrawGWT.rb.defaultFeedbackCase2a();
                 } else {
-                    feedback += " af. ";
+                    feedback += IVMdrawGWT.rb.defaultFeedbackCase2b();
                 }
                 break;
             case 3:
-                feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas eerst";
+                //feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas eerst";
 
-                if (convex) {
-                    feedback += " toe en vervolgens langzaam af. ";
+            	if (convex) {
+                    feedback += IVMdrawGWT.rb.defaultFeedbackCase3a();
                 } else {
-                    feedback += " af en vervolgens langzaam toe. ";
+                    feedback += IVMdrawGWT.rb.defaultFeedbackCase3b();
                 }
                 break;
             case 4:
-                feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas ";
+                //feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas ";
 
-                if (convex) {
-                    feedback += "eerst toe, dan af en daarna weer toe. ";
+            	if (convex) {
+                    feedback += IVMdrawGWT.rb.defaultFeedbackCase4a();
                 } else {
-                    feedback += "eerst af, dan toe en daarna weer af. ";
+                    feedback += IVMdrawGWT.rb.defaultFeedbackCase4b();
                 }
                 break;
         }
 
         if (correct) {
-            feedback += randomCorrect();
+            feedback += " "+randomCorrect();
         } else {
-            feedback += randomIncorrect();
+            feedback += " "+randomIncorrect();
         }
 
         return feedback;
@@ -134,8 +134,7 @@ public class Feedback {
      * @return String containing the feedback.
      */
     public static String decreasingLine() {
-        String feedback = "Bij jouw grafiek neemt de hoogte van het water af als er meer water in de vaas komt. " +
-                          "Dat is niet correct!";
+        String feedback = IVMdrawGWT.rb.defaultFeedbackCase5();
 
         return feedback;
     }
@@ -146,7 +145,7 @@ public class Feedback {
      * @return String containing the feedback.
      */
     public static String decreasingXs() {
-        String feedback = "Bij jouw grafiek geef je aan dat dezelfde volume meerdere hoogtes representeert.";
+        String feedback = IVMdrawGWT.rb.defaultFeedbackCase6();
 
         return feedback;
     }
