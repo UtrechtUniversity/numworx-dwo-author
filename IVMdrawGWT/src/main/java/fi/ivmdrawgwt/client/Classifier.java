@@ -105,6 +105,10 @@ public class Classifier {
     public String getFeedback() {
         return Feedback.feedback(this.inputDegree, this.inputConvexity, this.classify());
     }
+    
+    public String getFeedback(boolean goedFoutVisible) {
+        return Feedback.feedback(this.inputDegree, this.inputConvexity, this.classify(), goedFoutVisible);
+    }
 
 
     /**

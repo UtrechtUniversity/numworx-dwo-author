@@ -67,11 +67,23 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	int vaasNummer = 0;
 	boolean jarFeedbackVisible = false;
 	boolean feedbackVisible = false;
+	boolean goedFoutVisible = false;
 	boolean historyVisible = false;
 	int scoreMax = 0;
 	int deelScore1 = 0;
 	int deelScore2 = 0;
 	int attemptsToCorrect = 999;
+	
+	static String feedbackCase1 = IVMdrawGWT.rb.defaultFeedbackCase1();
+	static String feedbackCase2a = IVMdrawGWT.rb.defaultFeedbackCase2a();
+	static String feedbackCase2b = IVMdrawGWT.rb.defaultFeedbackCase2b();
+	static String feedbackCase3a = IVMdrawGWT.rb.defaultFeedbackCase3a();
+	static String feedbackCase3b = IVMdrawGWT.rb.defaultFeedbackCase3b();
+	static String feedbackCase4a = IVMdrawGWT.rb.defaultFeedbackCase4a();
+	static String feedbackCase4b = IVMdrawGWT.rb.defaultFeedbackCase4b();
+	static String feedbackCase5 = IVMdrawGWT.rb.defaultFeedbackCase5();
+	static String feedbackCase6 = IVMdrawGWT.rb.defaultFeedbackCase6();
+	static String feedbackCase7 = IVMdrawGWT.rb.defaultFeedbackCase7();
 	
 	boolean correctGraph = false;
 	int mode = 0;
@@ -254,6 +266,8 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 			check = launchState.getBoolean("check");
 		if(launchState.containsKey("feedbackVisible")) 
 			feedbackVisible = launchState.getBoolean("feedbackVisible");
+		if(launchState.containsKey("goedFoutVisible")) 
+			goedFoutVisible = launchState.getBoolean("goedFoutVisible");
 		if(launchState.containsKey("historyVisible")) 
 			historyVisible = launchState.getBoolean("historyVisible");
 		if(launchState.containsKey("scoreMax")) 
@@ -262,6 +276,16 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 			deelScore1 = launchState.getInt("deelScore1");
 		if(launchState.containsKey("deelScore2")) 
 			deelScore2 = launchState.getInt("deelScore2");
+		if(launchState.containsKey("feedbackCase1")) feedbackCase1 = (String)launchState.get("feedbackCase1");
+		if(launchState.containsKey("feedbackCase2a")) feedbackCase2a = (String)launchState.get("feedbackCase2a");
+		if(launchState.containsKey("feedbackCase2b")) feedbackCase2b = (String)launchState.get("feedbackCase2b");
+		if(launchState.containsKey("feedbackCase3a")) feedbackCase3a = (String)launchState.get("feedbackCase3a");
+		if(launchState.containsKey("feedbackCase3b")) feedbackCase3b = (String)launchState.get("feedbackCase3b");
+		if(launchState.containsKey("feedbackCase4a")) feedbackCase4a = (String)launchState.get("feedbackCase4a");
+		if(launchState.containsKey("feedbackCase4b")) feedbackCase4b = (String)launchState.get("feedbackCase4b");
+		if(launchState.containsKey("feedbackCase5")) feedbackCase5 = (String)launchState.get("feedbackCase6");
+		if(launchState.containsKey("feedbackCase6")) feedbackCase6 = (String)launchState.get("feedbackCase6");
+		if(launchState.containsKey("feedbackCase7")) feedbackCase7 = (String)launchState.get("feedbackCase7");
 		
 		check = check || feedbackVisible; // voor backwards comp
 		
@@ -301,6 +325,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		feedbackPanel.add(vp);
 		feedbackPanel.setAutoHideEnabled(false);
 		
+		
 		feedbackPanel.setWidth("180px");
 		
 		dlp.forceLayout();
@@ -312,16 +337,25 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		feedbackPanel.setPopupPosition(ivmDrawGWTField.getCanvas().getAbsoluteLeft()+50, ivmDrawGWTField.getCanvas().getAbsoluteTop()+30);
 		if(feedbackVisible) {
 			logger.info("setFeedback");
-			goedkrulImage.setVisible(correctGraph);
-			foutkruisImage.setVisible(!correctGraph);
+			if(goedFoutVisible) {
+				goedkrulImage.setVisible(correctGraph);
+				foutkruisImage.setVisible(!correctGraph);
+			}
+			else {
+				goedkrulImage.setVisible(false);
+				foutkruisImage.setVisible(false);
+			}
 			feedbackPanel.show();
 			feedbackPanel.setVisible(true);
+			feedbackPanel.setAutoHideEnabled(true);
+			
 		}
 	}
 	
 	public void closeFeedback() {
 		logger.info("closeFeedback");
 		feedbackPanel.hide();
+		feedbackPanel.setAutoHideEnabled(false);
 	}
 	
 	public Widget asWidget() {
@@ -335,7 +369,6 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	@Override
 	public HashMap<String, Object> getState() {
 		HashMap h = ivmDrawGWTField.getState();
-		
 		
 		h.put("attemptsToCorrect", attemptsToCorrect);
 		

@@ -192,7 +192,7 @@ public class IVMdrawGWTField {
 			strokeContainerHistory.add(sc);
 			if((owner.check||owner.feedbackVisible) && correctVaasNummer!=0) // "owner.feedbackVisible" voor backward compatibiliteit (check werd pas later ingevoerd)
 				handleClassification(new LineData(sc.getLastStroke().getIntParsePoints()), false);
-			historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (sCnt+1) + " " + (owner.correctGraph ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : ""));
+			historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (sCnt+1) + " " + (owner.goedFoutVisible && owner.correctGraph ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : ""));
 		}
 		
 		int historySelection = -1;
@@ -281,9 +281,10 @@ public class IVMdrawGWTField {
 		if(currentStrokeContainer.getStrokeCount()>0) {
 			if(owner.feedbackVisible)
 					g.drawImage(ImageElement.as(owner.feedbackImage.getElement()),xAsLengte-30, 30);
-			if(owner.feedbackVisible && owner.correctGraph)
+			
+			if(owner.goedFoutVisible && owner.feedbackVisible && owner.correctGraph)
 				g.drawImage(ImageElement.as(owner.goedkrulImage.getElement()),55, 35);
-			else if(owner.feedbackVisible)
+			else if(owner.goedFoutVisible && owner.feedbackVisible)
 				g.drawImage(ImageElement.as(owner.foutkruisImage.getElement()),55, 35);
 		}
 		
@@ -515,7 +516,7 @@ public class IVMdrawGWTField {
 			Matrix mPoints = new Matrix(inputPoints.getXs(), inputPoints.getYs());
 			Classifier classifier = new Classifier(mPoints, this.correctVaasNummer);
 
-			feedback = classifier.getFeedback();
+			feedback = classifier.getFeedback(owner.goedFoutVisible);
 
 
 			if (classifier.classify()) {
@@ -537,6 +538,7 @@ public class IVMdrawGWTField {
 		if(geefFeedback) {
 			logger.info("handleClassifcation");
 			this.owner.setFeedback(feedback);
+			
 		}
 			
 		//this.owner.ivmFeedbackGWTField.mouseUpEvent(feedback);
@@ -595,7 +597,7 @@ public class IVMdrawGWTField {
 
 		processIVM();
 		paint();
-		historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (historyList.getItemCount()+1) + " " + (owner.correctGraph ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : "") );
+		historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (historyList.getItemCount()+1) + " " + (owner.goedFoutVisible && owner.correctGraph ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : "") );
 		historyList.setVisible(owner.historyVisible && strokeContainerHistory.size()>0);
 		historyList.setSelectedIndex(historyList.getItemCount()-1);
 		

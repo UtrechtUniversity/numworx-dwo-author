@@ -83,58 +83,62 @@ public class Feedback {
      * @param correct Boolean for if the drawn line is correct or incorrect (determined by the classifier).
      * @return
      */
-    public static String feedback(int degree, boolean convex, boolean correct) {
+    public static String feedback(int degree, boolean convex, boolean correct, boolean goedFoutVisible) {
         String feedback = "";
 
         switch (degree) {
             case 1:
-                feedback += IVMdrawGWT.rb.defaultFeedbackCase1();
+                feedback += IVMdrawGWT.feedbackCase1;
                 break;
             case 2:
                 //feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas steeds";
 
                 if (convex) {
-                    feedback += IVMdrawGWT.rb.defaultFeedbackCase2a();
+                    feedback += IVMdrawGWT.feedbackCase2a;
                 } else {
-                    feedback += IVMdrawGWT.rb.defaultFeedbackCase2b();
+                    feedback += IVMdrawGWT.feedbackCase2b;
                 }
                 break;
             case 3:
                 //feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas eerst";
 
             	if (convex) {
-                    feedback += IVMdrawGWT.rb.defaultFeedbackCase3a();
+                    feedback += IVMdrawGWT.feedbackCase3a;
                 } else {
-                    feedback += IVMdrawGWT.rb.defaultFeedbackCase3b();
+                    feedback += IVMdrawGWT.feedbackCase3b;
                 }
                 break;
             case 4:
                 //feedback += "Bij jouw grafiek neemt de stijging van de hoogte van het water in de vaas ";
 
             	if (convex) {
-                    feedback += IVMdrawGWT.rb.defaultFeedbackCase4a();
+                    feedback += IVMdrawGWT.feedbackCase4a;
                 } else {
-                    feedback += IVMdrawGWT.rb.defaultFeedbackCase4b();
+                    feedback += IVMdrawGWT.feedbackCase4b;
                 }
                 break;
         }
-
-        if (correct) {
-            feedback += " "+randomCorrect();
-        } else {
-            feedback += " "+randomIncorrect();
+        if(goedFoutVisible) {
+	        if (correct) {
+	            feedback += " "+randomCorrect();
+	        } else {
+	            feedback += " "+randomIncorrect();
+	        }
         }
 
         return feedback;
     }
 
+    public static String feedback(int degree, boolean convex, boolean correct) {
+    		return feedback( degree,  convex,  correct, true);
+    }
 
     /**
      * States that the feedback is incorrect since the drawn input is a decreasing line.
      * @return String containing the feedback.
      */
     public static String decreasingLine() {
-        String feedback = IVMdrawGWT.rb.defaultFeedbackCase5();
+        String feedback = IVMdrawGWT.feedbackCase5;
 
         return feedback;
     }
@@ -145,7 +149,7 @@ public class Feedback {
      * @return String containing the feedback.
      */
     public static String decreasingXs() {
-        String feedback = IVMdrawGWT.rb.defaultFeedbackCase6();
+        String feedback = IVMdrawGWT.feedbackCase6;
 
         return feedback;
     }
