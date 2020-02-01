@@ -443,7 +443,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		if (h.containsKey("interactiePanelLaunchData"))
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
 
-		this.scheidingX = scheidingX;
+		this.scheidingX = defaultDocWidth;
 		this.scheidingXOud = scheidingX;
 		this.eindX = eindX;
 		this.hasTitle = hasTitle;
