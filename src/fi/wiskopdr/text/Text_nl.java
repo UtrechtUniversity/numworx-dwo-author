@@ -967,6 +967,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "TCOMP_first_list_number" , "Startnummer"},
 				
 				{ "TCOMP_multip" , "Meerkeuzeopdracht"},
+				
+				{ "TCOMP_multip_0" , "Meerkeuzeopdracht"},// nog aanpassen ...
 				{ "TCOMP_multip_settings" , "Instellingen meerkeuzeopdracht"},
 				{ "TCOMP_multip_rowCount" , "Aantal keuzes"},
                 { "TCOMP_multip_numberType" , "Type opsommingsteken"},
@@ -975,13 +977,23 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "TCOMP_multip_rowSpace" , "Afstand items"},
 				{ "TCOMP_multip_hasPrefix" , "Opsommingsteken"},
 				
+				{ "TCOMP_multip_1" , "Meerkeuzeopdracht (horizontaal)"},
+				{ "TCOMP_multip_1_settings" , "Instellingen meerkeuzeopdracht"},
+				
 				{ "TCOMP_drag" , "Sleepopdracht"},
-				{ "TCOMP_drag_settings" , "Instellingen sleepopdracht"},
+				
+				{ "TCOMP_drag_0" , "Sleepopdracht (verticaal)"},
+				{ "TCOMP_drag_settings" , "Instellingen sleepopdracht (verticaal)"},
 				{ "TCOMP_drag_rowCount" , "Aantal sleepobjecten"},
 				{ "TCOMP_drag_itemWidth" , "Breedte sleepobject"},
 				{ "TCOMP_drag_itemHeight" , "Hoogte sleepobject"},
 				{ "TCOMP_drag_rowSpace" , "Afstand items"},
-				{ "TCOMP_drag_descrWidth" , "Breedte tekst"},
+				{ "TCOMP_drag_descrWidth" , "Breedte tekst links"},
+				
+				{ "TCOMP_drag_1" , "Sleepopdracht (horizontaal)"},
+				{ "TCOMP_drag_1_settings" , "Instellingen sleepopdracht (horizontaal)"},
+				{ "TCOMP_drag_1_descrWidth" , "Hoogte itemtekst onder"},
+				{ "TCOMP_drag_1_rowSpace" , "Afstand doel-/sleepobjecten"},
 				
 				{ "TCOMP_edit" , "Bewerk"},
 				{ "TCOMP_addItem" , "Item toevoegen"},

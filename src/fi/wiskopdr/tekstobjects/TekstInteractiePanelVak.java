@@ -540,6 +540,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	          
 	          menu.add(item);
 	          
+	          JMenu dragDropSubMenu = new JMenu(WiskOpdr.rb.getString("TCOMP_drag"));
+	          dragDropSubMenu.setForeground(new Color(49,71,112));
+	          dragDropSubMenu.setBackground(new Color(237,239,241));
+	          dragDropSubMenu.setFont(new Font("SansSerif",Font.PLAIN,13));
+	    	  
 	          type = "DragDrop";
 	          typeName = TComponentGeneratorFactory.getComponentTypeName(type);
 	          item = new JMenuItem(te.new TComponentAction(typeName,type));
@@ -547,7 +552,18 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	          item.setForeground(new Color(49,71,112));
 	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
 	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
-	          menu.add(item);
+	          dragDropSubMenu.add(item);
+	          
+	          
+	          type = "DragDrop_1";
+	          typeName = TComponentGeneratorFactory.getComponentTypeName(type);
+	          item = new JMenuItem(te.new TComponentAction(typeName,type));
+	          item.setBackground(new Color(237,239,241));
+	          item.setForeground(new Color(49,71,112));
+	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
+	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
+	          dragDropSubMenu.add(item);
+	          menu.add(dragDropSubMenu);
 	      }
 	      
           if(separators[0][i])

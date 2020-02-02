@@ -75,6 +75,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	private JLabel itemCountLabel;
 	private JTextField itemCountTF;
 	private JCheckBox multiSelectionsCB;
+	private JCheckBox randomizePositionsCB;
 	private JCheckBox hasPrefixCB;
 	private JLabel listNumberTypeLabel;
 	private JComboBox listNumberTypeComboBox;
@@ -229,6 +230,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		itemCountLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_multip_rowCount"), font);
 		itemCountTF = makeTextField("", 30, 22, this);
 		multiSelectionsCB = makeCheckBox(WiskOpdr.rb.getString("meervSelectiesLabel"), false, this);//("Meervoudige selecties mogelijk");
+		randomizePositionsCB = makeCheckBox(WiskOpdr.rb.getString("randomPosLabel"), false, this);
 		hasPrefixCB = makeCheckBox(WiskOpdr.rb.getString("TCOMP_multip_hasPrefix"), true, this);
 		listNumberTypeLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_multip_numberType"), font);
 		
@@ -274,13 +276,14 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		Component[] r21 = {titleSettingsLabel, 	hgl()};
 		Component[] r22 = {itemCountLabel, 		ra(10,10), 	hgl(), 	itemCountTF};
 		Component[] r23 = {multiSelectionsCB, 	ra(5,0),	hgl(),	hbMeervoudig};
+		Component[] r23a = {randomizePositionsCB, 	ra(5,0),	hgl()};
 		Component[] r24 = {hasPrefixCB, 		hgl()};
 		Component[] r25 = {listNumberTypeLabel, ra(10,10), 	hgl(), 	listNumberTypeComboBox};
 		Component[] r26 = {tabWidthLabel, 		ra(10,10), 	hgl(), 	tabWidthTF};
 		Component[] r27 = {rowSpaceLabel, 		ra(10,10), 	hgl(), 	rowSpaceTF};
 		Component[] r28 = {imageKnopLabel, 		ra(5,5), 	 	knopImageButton,	ra(5,0),	hgl(),	hbKnopImage};
 		
-		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), 
+		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r23a), vst(5), hb(r24), vst(5), 
 				hb(r25), vst(5), hb(r26), vst(5), hb(r27), vst(5), hb(r28), vst(5), vgl()};
 		
 		Component[] r31 = {titleLoggingLabel, 	hgl()};
@@ -510,7 +513,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    }
 	    
 	    scoreMax = intFromText(scoreMax, maxScoreTF.getText());
-	    //randomizePositions = randomizePositionsCB.isSelected();
+	    randomizePositions = randomizePositionsCB.isSelected();
 	    multiSelections = multiSelectionsCB.isSelected();
 	    logOption = logCB.isSelected();
 		logID = logIDField.getText();
@@ -638,7 +641,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    
 		verwijderCheckboxes();
 	    aantalSelectables = juisteSelecties.length;
-	  //randomizePositionsCB.setSelected(randomizePositions);
+	    randomizePositionsCB.setSelected(randomizePositions);
 	    multiSelectionsCB.setSelected(multiSelections);
 	    this.logMisconceptions = logMisconceptions;
 	    

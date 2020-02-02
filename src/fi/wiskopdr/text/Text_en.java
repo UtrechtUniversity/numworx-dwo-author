@@ -916,6 +916,8 @@ public class Text_en extends java.util.ListResourceBundle
                 { "TCOMP_first_list_number" , "Start number"},
                 
                 { "TCOMP_multip" , "Multiple Choice"},
+                
+                { "TCOMP_multip_0" , "Multiple Choice vertical"},
                 { "TCOMP_multip_settings" , "Multiple Choice settings"},
                 { "TCOMP_multip_rowCount" , "Number of items"},
                 { "TCOMP_multip_numberType" , "Item number type"},
@@ -924,13 +926,23 @@ public class Text_en extends java.util.ListResourceBundle
                 { "TCOMP_multip_rowSpace" , "Space between items"},
                 { "TCOMP_multip_hasPrefix" , "Item number"},
                 
+                { "TCOMP_multip_1" , "Multiple Choice horizontal"},
+                { "TCOMP_multip_1_settings" , "Multiple Choice settings"},
+                
                 { "TCOMP_drag" , "Drag and Drop"},
+                
+                { "TCOMP_drag_0" , "Drag and Drop (vertical)"},
                 { "TCOMP_drag_settings" , "Drag and drop settings"},
                 { "TCOMP_drag_rowCount" , "Number of drag objects"},
                 { "TCOMP_drag_itemWidth" , "Width drag object"},
                 { "TCOMP_drag_itemHeight" , "Height drag object"},
                 { "TCOMP_drag_rowSpace" , "Distance items"},
                 { "TCOMP_drag_descrWidth" , "Text width"},
+                
+                { "TCOMP_drag_1" , "Drag and Drop (horizontal)"},
+				{ "TCOMP_drag_1_settings" , "Drag and drop settings"},
+				{ "TCOMP_drag_1_descrWidth" , "Height item-text bottom"},
+				{ "TCOMP_drag_1_rowSpace" , "Distance target-/dragobjects"},
                 
                 { "TCOMP_edit" , "Edit"},
                 { "TCOMP_addItem" , "Add item"},

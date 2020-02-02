@@ -277,7 +277,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		Component[] r211 = {imageKnopLabel, 			ra(5,5),  	knopImageButton,ra(5,0),	hgl(),	hbKnopImage};
 		
 		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), 
-				hb(r25), vst(5), hb(r26), vst(5), hb(r27), vst(5), hb(r28), vst(5), hb(r29), vst(5), hb(r210), vst(5), hb(r211), vst(5), vgl()};
+				hb(r25), vst(5), hb(r26), vst(15), hb(r27), vst(5), hb(r28), vst(5), hb(r29), vst(5), hb(r210), vst(5), hb(r211), vst(5), vgl()};
 		
 		Component[] r31 = {titleLoggingLabel, 	hgl()};
 		Component[] r32 = {maxScoreLabel, 		ra(5,10), maxScoreTF, hgl()};
@@ -451,7 +451,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		
 		boolean randomizePositions = false;
 		boolean snapToTarget = true;
-		int acceptedMarge = 10;
+		int acceptedMarge = 20;
 		boolean view = false;
 		boolean relocate = false;
 		int scoreMax = 0;
@@ -546,7 +546,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		
 		boolean randomizePositions = false;
 		boolean snapToTarget = true;
-		int acceptedMarge = 10;
+		int acceptedMarge = 20;
 		boolean view = false;
 		boolean relocate = false;
 		int scoreMax = 0;
