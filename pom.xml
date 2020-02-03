@@ -280,8 +280,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.test.skip>true</maven.test.skip>
 		<geogebraVersion>4.0.29-r2017</geogebraVersion>
-		<extras.phase>package</extras.phase>
-		<extras.verify>verify</extras.verify>
+		<extras.phase>none</extras.phase>
+		<extras.verify>none</extras.verify>
 		<extras.process>process-classes</extras.process>
 	</properties>
 	<dependencies>
