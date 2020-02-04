@@ -425,7 +425,7 @@
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
 			<artifactId>DWOJClient</artifactId>
-			<version>2.4.1-SNAPSHOT</version>
+			<version>2.4.1-p1</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -449,6 +449,12 @@
 			<artifactId>verknippen</artifactId>
 			<version>0.0.0</version>
 		</dependency>
+    	<dependency> <!-- when running under openjdk zonder javafx -->
+    		<groupId>netscape.javascript</groupId>
+    		<artifactId>mayscript</artifactId>
+    		<version>1.0.0</version>
+    		<scope>provided</scope>
+    	</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
 	<profiles>
