@@ -530,6 +530,12 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    	menu.add(item);
 	    if(setNr==0) {
 	      if(i==7) {
+	    	  		
+	    	  	JMenu dragDropSubMenu = new JMenu(WiskOpdr.rb.getString("TCOMP_multip"));
+	          dragDropSubMenu.setForeground(new Color(49,71,112));
+	          dragDropSubMenu.setBackground(new Color(237,239,241));
+	          dragDropSubMenu.setFont(new Font("SansSerif",Font.PLAIN,13));
+	          
 		      String type = "MultipleChoice";
 	          String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
 	          item = new JMenuItem(te.new TComponentAction(typeName,type));
@@ -537,13 +543,22 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	          item.setForeground(new Color(49,71,112));
 	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
+	          dragDropSubMenu.add(item);
 	          
-	          menu.add(item);
+	          type = "MultipleChoice_1";
+	          typeName = TComponentGeneratorFactory.getComponentTypeName(type);
+	          item = new JMenuItem(te.new TComponentAction(typeName,type));
+	          item.setBackground(new Color(237,239,241));
+	          item.setForeground(new Color(49,71,112));
+	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
+	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
+	          dragDropSubMenu.add(item);
+	          menu.add(dragDropSubMenu);
 	          
-	          JMenu dragDropSubMenu = new JMenu(WiskOpdr.rb.getString("TCOMP_drag"));
-	          dragDropSubMenu.setForeground(new Color(49,71,112));
-	          dragDropSubMenu.setBackground(new Color(237,239,241));
-	          dragDropSubMenu.setFont(new Font("SansSerif",Font.PLAIN,13));
+	          JMenu dragDropSubMenuDD = new JMenu(WiskOpdr.rb.getString("TCOMP_drag"));
+	          dragDropSubMenuDD.setForeground(new Color(49,71,112));
+	          dragDropSubMenuDD.setBackground(new Color(237,239,241));
+	          dragDropSubMenuDD.setFont(new Font("SansSerif",Font.PLAIN,13));
 	    	  
 	          type = "DragDrop";
 	          typeName = TComponentGeneratorFactory.getComponentTypeName(type);
@@ -552,7 +567,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	          item.setForeground(new Color(49,71,112));
 	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
 	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
-	          dragDropSubMenu.add(item);
+	          dragDropSubMenuDD.add(item);
 	          
 	          
 	          type = "DragDrop_1";
@@ -562,8 +577,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	          item.setForeground(new Color(49,71,112));
 	          item.setFont(new Font("SansSerif",Font.PLAIN,13));
 	          item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
-	          dragDropSubMenu.add(item);
-	          menu.add(dragDropSubMenu);
+	          dragDropSubMenuDD.add(item);
+	          menu.add(dragDropSubMenuDD);
 	      }
 	      
           if(separators[0][i])

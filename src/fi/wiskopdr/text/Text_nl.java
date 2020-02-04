@@ -968,7 +968,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "TCOMP_multip" , "Meerkeuzeopdracht"},
 				
-				{ "TCOMP_multip_0" , "Meerkeuzeopdracht"},// nog aanpassen ...
+				{ "TCOMP_multip_0" , "Meerkeuzeopdracht (verticaal)"},
 				{ "TCOMP_multip_settings" , "Instellingen meerkeuzeopdracht"},
 				{ "TCOMP_multip_rowCount" , "Aantal keuzes"},
                 { "TCOMP_multip_numberType" , "Type opsommingsteken"},

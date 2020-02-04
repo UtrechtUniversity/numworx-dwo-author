@@ -78,14 +78,14 @@ public class MultipleChoiceGenerator_1 implements TComponentGenerator, ActionLis
 		TekstInteractiePanelVak tComponent = new TekstInteractiePanelVak(tekstVak, makeTComponentLD(initPreferences));
 		
 		TekstVak tComponentTV = ((TekstVakPanel)tComponent.getInteractiePanel()).geefTekstVak(0, 0);		
-		TekstInteractiePanelVak list = new TekstInteractiePanelVak(tComponentTV, makeListLD(initPreferences));
+		TekstInteractiePanelVak list = new TekstInteractiePanelVak(tComponentTV, makeListLD(initPreferences, tComponentTV));
 		
 		for(int i=0 ; i<initialItemCount ; i++) {
-			TekstVak listTV1 = ((TekstVakPanel)list.getInteractiePanel()).geefTekstVak(i, 0);
+			TekstVak listTV1 = ((TekstVakPanel)list.getInteractiePanel()).geefTekstVak(0, i);
 			TekstInteractiePanelVak listNr = new TekstInteractiePanelVak(listTV1, makeListNrLD(initPreferences,i));
 			listTV1.insert(listNr.toCompleteString());
 			
-			TekstVak listTV2 = ((TekstVakPanel)list.getInteractiePanel()).geefTekstVak(i, 1);
+			TekstVak listTV2 = ((TekstVakPanel)list.getInteractiePanel()).geefTekstVak(1, i);
 			TekstInteractiePanelVak listItem = new TekstInteractiePanelVak(listTV2, makeListItemLD(i));
 			listTV2.insert(listItem.toCompleteString());
 		}
@@ -104,30 +104,30 @@ public class MultipleChoiceGenerator_1 implements TComponentGenerator, ActionLis
 	public void editComponent(TekstInteractiePanelVak oldComponent, Hashtable<String,Object> preferences) {
 		boolean hasPrefix = ((Boolean)preferences.get("hasPrefix")).booleanValue();
 		boolean hasPrefixOld = ((Boolean)((Hashtable)oldComponent.getEditState().get("TComponentPreferences")).get("hasPrefix")).booleanValue();
-		int oldColumnCount = hasPrefixOld ? 2 : 1;
-		int columnCount = hasPrefix ? 2 : 1	;
+		int oldRowCount = hasPrefixOld ? 2 : 1;
+		int rowCount = hasPrefix ? 2 : 1	;
 		
 		TekstVak tekstVak = oldComponent.getTekstVak();
 		
 		TekstInteractiePanelVak tComponent = new TekstInteractiePanelVak(tekstVak, makeTComponentLD(preferences));
 		
 		TekstVak tComponentTV = ((TekstVakPanel)tComponent.getInteractiePanel()).geefTekstVak(0, 0);		
-		TekstInteractiePanelVak list = new TekstInteractiePanelVak(tComponentTV, makeListLD(preferences));
+		TekstInteractiePanelVak list = new TekstInteractiePanelVak(tComponentTV, makeListLD(preferences, tComponentTV));
 		
 		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		for(int i=0 ; i<itemCount ; i++) {
-			if(columnCount > 1)	{			
-				TekstVak listTV1 = ((TekstVakPanel)list.getInteractiePanel()).geefTekstVak(i, 0);
+			if(rowCount > 1)	{			
+				TekstVak listTV1 = ((TekstVakPanel)list.getInteractiePanel()).geefTekstVak(0, i);
 				TekstInteractiePanelVak listNr = new TekstInteractiePanelVak(listTV1, makeListNrLD(preferences,i));
 				listTV1.insert(listNr.toCompleteString());
 			}
-			TekstVak listTV2 = ((TekstVakPanel)list.getInteractiePanel()).geefTekstVak(i, columnCount-1);
+			TekstVak listTV2 = ((TekstVakPanel)list.getInteractiePanel()).geefTekstVak(rowCount-1, i);
 			TekstInteractiePanelVak listItem = new TekstInteractiePanelVak(listTV2, makeListItemLD(i));
 			
 			
 			TekstVakPanel oldComponentTVP = (TekstVakPanel)oldComponent.getInteractiePanel();
 			TekstInteractiePanelVak oldList = (TekstInteractiePanelVak)oldComponentTVP.geefInteractiePanels().elementAt(0);
-			TekstVak oldItemTV = ((TekstVakPanel)oldList.getInteractiePanel()).geefTekstVak(i, oldColumnCount-1);
+			TekstVak oldItemTV = ((TekstVakPanel)oldList.getInteractiePanel()).geefTekstVak(oldRowCount-1, i);
 			if(oldItemTV!=null) {
 				TekstInteractiePanelVak oldItemTVP = (TekstInteractiePanelVak)oldItemTV.geefInteractiePanels().elementAt(0);
 				TekstVak tvOld = ((TekstVakPanel)oldItemTVP.getInteractiePanel()).geefTekstVak(0,0);
@@ -172,32 +172,32 @@ public class MultipleChoiceGenerator_1 implements TComponentGenerator, ActionLis
 		launchData.put("interactiePanelLaunchState", ipLaunchState);
 		launchData.put("volledigeBreedte", new Boolean(volledigeBreedte));
 		launchData.put("breedte", new Integer(breedte));
-		if(!decompose) launchData.put("TComponent", "MultipleChoice");
+		if(!decompose) launchData.put("TComponent", "MultipleChoice_1");
 		if(!decompose) launchData.put("TComponentPreferences", preferences);
 		
 		return launchData;
 	}
 	
-	private Hashtable<String,Object> makeListLD(Hashtable<String,Object> preferences) {
+	private Hashtable<String,Object> makeListLD(Hashtable<String,Object> preferences, TekstVak tv) {
 		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		int tabWidth = ((Integer)preferences.get("tabWidth")).intValue();
 		int rowSpace = ((Integer)preferences.get("rowSpace")).intValue();
 		boolean hasPrefix = ((Boolean)preferences.get("hasPrefix")).booleanValue();
-		int columnCount = hasPrefix ? 2 : 1	;
+		int rowCount = hasPrefix ? 2 : 1	;
 		
-		double[] breedtes = new double[columnCount];
-		for(int i=0 ; i<columnCount ; i++) {
-			breedtes[i] = tabWidth;
+		double[] breedtes = new double[itemCount];
+		for(int i=0 ; i<itemCount ; i++) {
+			breedtes[i] = (tv.getWidth() - (itemCount-1)*rowSpace)/itemCount;
 		} 
 		
-		double[] hoogtes = new double[itemCount];
+		double[] hoogtes = new double[rowCount];
 		for(int i=0 ; i<itemCount ; i++) {
 			hoogtes[0] = 1; // maakt niet uit
 		}
 		
-		String[][] teksten = new String[itemCount][columnCount];
-		for(int i=0 ; i<itemCount ; i++) {
-			for(int j=0 ; j<columnCount ; j++) {
+		String[][] teksten = new String[rowCount][itemCount];
+		for(int i=0 ; i<rowCount ; i++) {
+			for(int j=0 ; j<itemCount ; j++) {
 				teksten[i][j] = "";
 			}
 		}
@@ -206,8 +206,10 @@ public class MultipleChoiceGenerator_1 implements TComponentGenerator, ActionLis
 		ipLaunchState.put("hoogtes", hoogtes);
 		ipLaunchState.put("teksten", teksten);
 		ipLaunchState.put("pasAanH", new Boolean(true));
-		ipLaunchState.put("cellSpaceRow", new Integer(rowSpace));
+		ipLaunchState.put("cellSpaceColumn", new Integer(rowSpace));
+		ipLaunchState.put("cellSpaceRow", new Integer(5));
 		if(!decompose) ipLaunchState.put("templateModeEdit", new Boolean(true));
+		if(!decompose) ipLaunchState.put("templateModeFill", new Boolean(true));
 				
 		Hashtable<String,Object> launchData = new Hashtable<String,Object>();
 		launchData.put("soortInteractiePanel", new Integer(9));
@@ -223,8 +225,10 @@ public class MultipleChoiceGenerator_1 implements TComponentGenerator, ActionLis
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
 		ipLaunchState.put("tekst", listNumbers[listNumberType][i]);
-		ipLaunchState.put("bovenMarge", new Integer(5));
+		ipLaunchState.put("cellMarge", new Integer(5));
+		ipLaunchState.put("bovenMarge", new Integer(0));
 		ipLaunchState.put("pasAanH", new Boolean(true));
+		ipLaunchState.put("centerH", new Boolean(true));
 		ipLaunchState.put("styleString", "mc-prefix");
 		if(!decompose) ipLaunchState.put("templateModeEdit", new Boolean(true));
 		if(!decompose) ipLaunchState.put("templateModeFill", new Boolean(true));
@@ -244,7 +248,7 @@ public class MultipleChoiceGenerator_1 implements TComponentGenerator, ActionLis
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
 		ipLaunchState.put("tekst", "");
-		ipLaunchState.put("cellMarge", new Integer(10));
+		ipLaunchState.put("cellMarge", new Integer(5));
 		ipLaunchState.put("bovenMarge", new Integer(5));
 		ipLaunchState.put("pasAanH", new Boolean(true));
 		ipLaunchState.put("styleString", "mc-item");
