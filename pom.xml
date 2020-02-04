@@ -207,7 +207,7 @@
                         <executions>
                             <execution>
                                 <id>normalize-jars</id>
-                                <phase>${extras.phase}</phase>
+                                <phase>${extras.sign}</phase>
                                 <goals>
                                     <goal>pack</goal>
                                 </goals>
@@ -251,7 +251,7 @@
                         <version>1.4</version>
                         <executions>
                             <execution>
-                                <phase>${extras.phase}</phase>
+                                <phase>${extras.sign}</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
@@ -280,9 +280,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.test.skip>true</maven.test.skip>
 		<geogebraVersion>4.0.29-r2017</geogebraVersion>
-		<extras.phase>none</extras.phase>
-		<extras.verify>none</extras.verify>
+		<extras.phase>package</extras.phase>
+		<extras.verify>verify</extras.verify>
 		<extras.process>process-classes</extras.process>
+		<extras.sign>none</extras.sign>
 	</properties>
 	<dependencies>
 		<!-- #fi.verknippen #fi.mozarch #fi.tegels #fi.geomalgebra #fi.stroomdiagrammen 
