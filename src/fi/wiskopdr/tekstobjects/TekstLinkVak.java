@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
-import javafx.embed.swing.JFXPanel;
-
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
