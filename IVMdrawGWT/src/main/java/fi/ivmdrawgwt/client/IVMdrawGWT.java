@@ -18,9 +18,32 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.BorderStyle;
+import com.google.gwt.dom.client.Style.TextAlign;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.TouchEndEvent;
+import com.google.gwt.event.dom.client.TouchEndHandler;
+import com.google.gwt.event.dom.client.TouchMoveEvent;
+import com.google.gwt.event.dom.client.TouchMoveHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.*;
+import com.vaadin.pointerevents.client.PointerDownEvent;
+import com.vaadin.pointerevents.client.PointerDownHandler;
+import com.vaadin.pointerevents.client.PointerMoveEvent;
+import com.vaadin.pointerevents.client.PointerMoveHandler;
+import com.vaadin.pointerevents.client.PointerUpEvent;
+import com.vaadin.pointerevents.client.PointerUpHandler;
 
+import fi.ivmdrawgwt.client.IVMdrawGWTField.MGWTTouchHandler;
+import fi.ivmdrawgwt.client.IVMdrawGWTField.MouseHandler;
+import fi.ivmdrawgwt.client.IVMdrawGWTField.PointerHandler;
 import fi.ivmdrawgwt.client.text.Text;
 import nl.uu.fi.dwo.interaction.client.InteractionStub;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
@@ -67,7 +90,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 	int vaasNummer = 0;
 	boolean jarFeedbackVisible = false;
 	boolean feedbackVisible = false;
-	boolean goedFoutVisible = false;
+	boolean goedFoutVisible = true;
 	boolean historyVisible = false;
 	int scoreMax = 0;
 	int deelScore1 = 0;
@@ -311,9 +334,22 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		feedbackTekst.getElement().setInnerText("Hier de feedback die ik wil laten zien");
 		feedbackTekst.getElement().getStyle().setColor(""+CssColor.make(49,71,112));
 		
+		Label closeButton = new Label("×");
+		closeButton.getElement().getStyle().setColor(""+CssColor.make(49,71,112));
+		closeButton.getElement().getStyle().setTextAlign(TextAlign.RIGHT);
+		closeButton.getElement().getStyle().setFontSize(20, Unit.PX);
+		closeButton.getElement().getStyle().setMarginTop(-6, Unit.PX);
+		
+		
 		VerticalPanel vp = new VerticalPanel();
-		vp.add(goedkrulImage);	
-		vp.add(foutkruisImage);
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(goedkrulImage);	
+		hp.add(foutkruisImage);
+		hp.add(closeButton);
+		
+		hp.setWidth("100%");
+		//hp.setWidgetLeftWidth(closeButton, 160, Unit.PX, 20, Unit.PX);
+		vp.add(hp);
 		vp.add(feedbackTekst);
 		
 		feedbackPanel.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);
@@ -325,6 +361,21 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		feedbackPanel.add(vp);
 		feedbackPanel.setAutoHideEnabled(false);
 		
+
+		MousePopupHandler mousePopupHandler = new MousePopupHandler();
+		feedbackPanel.addDomHandler((MouseMoveHandler)mousePopupHandler, MouseMoveEvent.getType()); 
+		feedbackPanel.addDomHandler((MouseDownHandler)mousePopupHandler, MouseDownEvent.getType()); 
+		feedbackPanel.addDomHandler((MouseUpHandler)mousePopupHandler, MouseUpEvent.getType()); 
+		
+		TouchPopupHandler touchPopupHandler = new TouchPopupHandler();
+		feedbackPanel.addDomHandler((TouchMoveHandler)touchPopupHandler, TouchMoveEvent.getType()); 
+		feedbackPanel.addDomHandler((TouchStartHandler)touchPopupHandler,TouchStartEvent.getType()); 
+		feedbackPanel.addDomHandler((TouchEndHandler)touchPopupHandler, TouchEndEvent.getType()); 
+		
+		PointerPopupHandler pointerPopupHandler = new PointerPopupHandler();
+		feedbackPanel.addDomHandler((PointerMoveHandler)pointerPopupHandler, PointerMoveEvent.getType()); 
+		feedbackPanel.addDomHandler((PointerUpHandler)pointerPopupHandler, PointerUpEvent.getType()); 
+		feedbackPanel.addDomHandler((PointerDownHandler)pointerPopupHandler, PointerDownEvent.getType()); 
 		
 		feedbackPanel.setWidth("180px");
 		
@@ -503,4 +554,70 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		
 	}
 	
+	class MousePopupHandler implements MouseDownHandler, MouseMoveHandler, MouseUpHandler
+	{
+
+		@Override
+		public void onMouseUp(MouseUpEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onMouseMove(MouseMoveEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onMouseDown(MouseDownEvent event) {
+			closeFeedback();
+			
+		}
+		
+	}
+	class PointerPopupHandler implements PointerDownHandler, PointerMoveHandler, PointerUpHandler
+	{
+
+		@Override
+		public void onPointerUp(PointerUpEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onPointerMove(PointerMoveEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onPointerDown(PointerDownEvent event) {
+			closeFeedback();
+			
+		}
+		
+	}
+	class TouchPopupHandler implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
+	{
+
+		@Override
+		public void onTouchEnd(TouchEndEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onTouchMove(TouchMoveEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onTouchStart(TouchStartEvent event) {
+			closeFeedback();
+			
+		}
+		
+	}
 }
