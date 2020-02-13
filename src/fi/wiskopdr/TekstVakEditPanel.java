@@ -30,7 +30,7 @@ import fi.wiskopdr.opdrnav.*;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
-public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , ActionListener, FocusListener, TabletOwner, HelpButtonPanelIF
+public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , ActionListener, FocusListener,  HelpButtonPanelIF
 {
 	private TekstEditor tekstEditor;
 	private JPanel tekstEditorPanel;
