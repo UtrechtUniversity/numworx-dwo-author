@@ -70,7 +70,6 @@ public class IVMdrawGWTField {
 
 	private int correctVaasNummer=1;
 
-
 	private int breedte, hoogte;
 
 	private ArrayList<Point> formulaStrokePoints = new ArrayList<Point>();
@@ -100,12 +99,10 @@ public class IVMdrawGWTField {
 		historyList.getElement().getStyle().setBorderStyle(BorderStyle.SOLID);;
 		
 		ivmDrawGWTCanvas = Canvas.createIfSupported();
-		//ivmDrawGWTCanvas.setStyleName(owner.ivmDrawCss.canvas());
 		ivmDrawGWTCanvas.getElement().getStyle().setProperty("touchAction", "none");
 		
 		backgroundCanvas = Canvas.createIfSupported();
-		//strokeContainerCanvas = Canvas.createIfSupported();
-
+		
 		setSize(w, h);
 		
 		MouseHandler mouseHandler = new MouseHandler();
@@ -141,8 +138,6 @@ public class IVMdrawGWTField {
 		this.correctVaasNummer = correctVaasNummer;
 	}
 	
-
-
 	/**
 	 * Initializes the context2d.
 	 */
@@ -181,18 +176,14 @@ public class IVMdrawGWTField {
 		if (launchState.containsKey("strokeContainerList"))
 			strokeContainerList = launchState.getMapList("strokeContainerList");
 		
-		//historyList.setVisible(owner.historyVisible && strokeContainerList.size()>0);
-		//historyList.setSelectedIndex(historyList.getItemCount()-1);
-		
 		strokeContainerHistory.clear();
-		for (int sCnt = 0; sCnt < strokeContainerList.size(); sCnt++)
-		{	
+		for (int sCnt = 0; sCnt < strokeContainerList.size(); sCnt++) 	{	
 			IVMStrokeContainer sc = new IVMStrokeContainer();
 			sc.setState(strokeContainerList.get(sCnt));
 			strokeContainerHistory.add(sc);
-			if((owner.check||owner.feedbackVisible) && correctVaasNummer!=0) // "owner.feedbackVisible" voor backward compatibiliteit (check werd pas later ingevoerd)
+			if((owner.getCheck()||owner.getFeedbackVisible()) && correctVaasNummer!=0) // "owner.feedbackVisible" voor backward compatibiliteit (check werd pas later ingevoerd)
 				handleClassification(new LineData(sc.getLastStroke().getIntParsePoints()), false);
-			historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (sCnt+1) + " " + (owner.goedFoutVisible && owner.correctGraph ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : ""));
+			historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (sCnt+1) + " " + (owner.getGoedFoutVisible() && owner.getCorrectGraph() ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : ""));
 		}
 		
 		int historySelection = -1;
@@ -203,19 +194,19 @@ public class IVMdrawGWTField {
 			historyList.setSelectedIndex(historySelection);
 			currentStrokeContainer = strokeContainerHistory.get(historySelection);
 			lastStroke = currentStrokeContainer.getLastStroke();
-			if(owner.check && correctVaasNummer!=0)
+			if(owner.getCheck() && correctVaasNummer!=0)
 				handleClassification(new LineData(lastStroke.getIntParsePoints()), false);
 			processIVM();
 		}
 		else {
 			currentStrokeContainer = currentContainer;
 			lastStroke = currentStrokeContainer.getLastStroke();
-			if(lastStroke!=null && owner.check && correctVaasNummer!=0) {
+			if(lastStroke!=null && owner.getCheck() && correctVaasNummer!=0) {
 				handleClassification(new LineData(lastStroke.getIntParsePoints()), false);
 				processIVM();
 			}
 		}
-		historyList.setVisible(owner.historyVisible && strokeContainerList.size()>0);
+		historyList.setVisible(owner.getHistoryVisible() && strokeContainerList.size()>0);
 		paint();
 	}
 
@@ -231,8 +222,8 @@ public class IVMdrawGWTField {
 		h.put("ivmStrokeContainer", ivmStrokeContainer);
 		
 		List<Map<String,Object>> strokeContainerList = new ArrayList<Map<String,Object>>();
-		for (int i = 0; i < strokeContainerHistory.size(); i++)
-		{	IVMStrokeContainer sc = strokeContainerHistory.get(i);
+		for (int i = 0; i < strokeContainerHistory.size(); i++) {
+			IVMStrokeContainer sc = strokeContainerHistory.get(i);
 			//if(sc != currentStrokeContainer)
 				strokeContainerList.add(sc.getState());
 		}
@@ -253,7 +244,7 @@ public class IVMdrawGWTField {
 		g.clearRect(0, 0, breedte, hoogte);
 
 		/* Draws the labels for the coordinate system */
-		int xAsLengte = owner.jarFeedbackVisible ? (breedte-60)/2 : breedte-60;
+		int xAsLengte = owner.getJarFeedbackVisible() ? (breedte-60)/2 : breedte-60;
 		int yAsLengte = hoogte-60;
 		g.setStrokeStyle(CssColor.make(49,71,112));
 		g.setLineWidth(1.5d);
@@ -277,18 +268,18 @@ public class IVMdrawGWTField {
 		g.stroke();
 		g.closePath();
 		
-		g.drawImage(ImageElement.as(owner.binImage.getElement()),xAsLengte, 30);
+		g.drawImage(owner.binImageElement,xAsLengte, 30);
 		if(currentStrokeContainer.getStrokeCount()>0) {
-			if(owner.feedbackVisible)
-					g.drawImage(ImageElement.as(owner.feedbackImage.getElement()),xAsLengte-30, 30);
+			if(owner.getFeedbackVisible())
+					g.drawImage(owner.feedbackImageElement,xAsLengte-30, 30);
 			
-			if(owner.goedFoutVisible && owner.feedbackVisible && owner.correctGraph)
+			if(owner.getGoedFoutVisible() && owner.getFeedbackVisible() && owner.getCorrectGraph())
 				g.drawImage(ImageElement.as(owner.goedkrulImage.getElement()),55, 35);
-			else if(owner.goedFoutVisible && owner.feedbackVisible)
+			else if(owner.getGoedFoutVisible() && owner.getFeedbackVisible())
 				g.drawImage(ImageElement.as(owner.foutkruisImage.getElement()),55, 35);
 		}
 		
-		if(owner.jarFeedbackVisible) {
+		if(owner.getJarFeedbackVisible()) {
 			g.setFillStyle(CssColor.make(239, 241, 243));
 			g.fillRect(xAsLengte+50, 30, xAsLengte-20, yAsLengte);
 			
@@ -301,26 +292,22 @@ public class IVMdrawGWTField {
 		
 		g.setLineWidth(1.5d);
 		currentStrokeContainer.draw(g);
-		if (formulaStrokePoints.size() == 1)
-		{	Point p =  formulaStrokePoints.get(0);
+		if (formulaStrokePoints.size() == 1)	{	
+			Point p =  formulaStrokePoints.get(0);
 			g.strokeRect(p.x, p.y, 1, 1);
 		}
-		if (formulaStrokePoints.size() > 1)
-		{	
+		if (formulaStrokePoints.size() > 1) {	
 			Point p1 = formulaStrokePoints.get(0);
 			g.beginPath();
 			g.moveTo(p1.x, p1.y);
-			for (int pCnt = 1; pCnt < formulaStrokePoints.size(); pCnt++)
-			{	Point p2 = formulaStrokePoints.get(pCnt);
+			for (int pCnt = 1; pCnt < formulaStrokePoints.size(); pCnt++) {	
+				Point p2 = formulaStrokePoints.get(pCnt);
 				g.lineTo(p2.x, p2.y);
 				p1 = p2;
 			}
-
 			g.stroke();
 		}
 	}
-	
-	
 
 	/**
 	 * Build the jar by using three ArrayList. A drawn jar will always have a bottom and a left
@@ -455,9 +442,9 @@ public class IVMdrawGWTField {
 		//	currentStrokeContainer = new IVMStrokeContainer();
 		
 		owner.closeFeedback();
-		int xAsLengte = owner.jarFeedbackVisible ? (breedte-60)/2 : breedte-60;
+		int xAsLengte = owner.getJarFeedbackVisible() ? (breedte-60)/2 : breedte-60;
 		
-		if(owner.feedbackVisible && eventX>xAsLengte-30 && eventX<xAsLengte && eventY>30 && eventY<60) {
+		if(owner.getFeedbackVisible() && eventX>xAsLengte-30 && eventX<xAsLengte && eventY>30 && eventY<60) {
 			logger.info("In mouseDownAction");
 			handleClassification(new LineData(currentStrokeContainer.getLastStroke().getIntParsePoints()), true);
 			return;
@@ -516,15 +503,15 @@ public class IVMdrawGWTField {
 			Matrix mPoints = new Matrix(inputPoints.getXs(), inputPoints.getYs());
 			Classifier classifier = new Classifier(mPoints, this.correctVaasNummer);
 
-			feedback = classifier.getFeedback(owner.goedFoutVisible);
+			feedback = classifier.getFeedback(owner.getGoedFoutVisible());
 
 
 			if (classifier.classify()) {
 				color = "#33cc33";
-				this.owner.correctGraph = true;
+				this.owner.setCorrectGraph(true);
 			} else {
 				color = "white";
-				this.owner.correctGraph = false;
+				this.owner.setCorrectGraph(false);
 			}
 
 		} else {
@@ -585,20 +572,20 @@ public class IVMdrawGWTField {
 		
 		LineData inputPoints = new LineData(lastStroke.getIntParsePoints());
 		
-		if(owner.check && correctVaasNummer!=0)
+		if(owner.getCheck() && correctVaasNummer!=0)
 			handleClassification(inputPoints);
 
 		this.allDrawnPoints.clear();
 		
 
-		if (owner.check && correctVaasNummer!=0 && !inputPoints.validInput()) {
+		if (owner.getCheck() && correctVaasNummer!=0 && !inputPoints.validInput()) {
 			return;
 		}
 
 		processIVM();
 		paint();
-		historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (historyList.getItemCount()+1) + " " + (owner.goedFoutVisible && owner.correctGraph ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : "") );
-		historyList.setVisible(owner.historyVisible && strokeContainerHistory.size()>0);
+		historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (historyList.getItemCount()+1) + " " + (owner.getGoedFoutVisible() && owner.getCorrectGraph() ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : "") );
+		historyList.setVisible(owner.getHistoryVisible() && strokeContainerHistory.size()>0);
 		historyList.setSelectedIndex(historyList.getItemCount()-1);
 		
 		owner.setChanged();
@@ -616,7 +603,7 @@ public class IVMdrawGWTField {
 			if(selectedIndex>-1) {
 				currentStrokeContainer = strokeContainerHistory.get(selectedIndex);
 				lastStroke = currentStrokeContainer.getLastStroke();
-				if(owner.check && correctVaasNummer!=0)
+				if(owner.getCheck() && correctVaasNummer!=0)
 					handleClassification(new LineData(lastStroke.getIntParsePoints()));
 				processIVM();
 				owner.setChanged();

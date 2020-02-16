@@ -19,7 +19,7 @@ public class IVMfeedbackGWTField {
 
 
     public void mouseUpEvent(String msg) {
-        this.owner.label.setText(msg);
+        //this.owner.label.setText(msg);
     }
 
 }
