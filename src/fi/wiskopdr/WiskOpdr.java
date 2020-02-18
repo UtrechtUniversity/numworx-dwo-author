@@ -487,6 +487,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	  language = locale;
 	  WiskOpdr wiskOpdr = new WiskOpdr();
 	  wiskOpdr.setStub(stub);
+	  if (launchDataString == null || launchDataString.isEmpty()) launchDataChanged = true;
 	  return new WiskOpdrEditPanel(launchDataString, wiskOpdr, ew, eh, dw, dh);
 	}
 	

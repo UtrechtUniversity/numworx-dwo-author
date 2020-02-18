@@ -124,6 +124,8 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
     		return launchData;
     	}
 		Hashtable h = onsEdit.getEditState();
+		ShareAction.prepareShareMap(h);
+		
     	String language = getParameter("language");
     	String bgcolor = getParameter("bgcolor");
     

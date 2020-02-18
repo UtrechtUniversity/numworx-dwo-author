@@ -271,8 +271,13 @@ public class ShareAction extends AbstractAction {
 		
 		
 		
+		public static void prepareShareMap(Map<?,?> launchdata) {
+		  if (shareMap != null && !shareMap.isEmpty()) {
+		    prepareLaunchData(new DeepIterator(launchdata));
+		  }
+		}
 		
-		public static void prepareLaunchData(Iterator<? extends Map<?,?>> set) {
+		static void prepareLaunchData(Iterator<? extends Map<?,?>> set) {
 			Collection<String> keys = new HashSet<String>();
 			while (set.hasNext()) {
 				Map<?, ?> map = set.next();
