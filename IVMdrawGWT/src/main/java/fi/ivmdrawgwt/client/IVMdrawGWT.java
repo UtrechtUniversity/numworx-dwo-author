@@ -266,7 +266,7 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 		
 		this.ivmDrawGWTField.setCorrectVaasNummer(vaasNummer);
 		historyList.setVisible(historyVisible);
-		//ivmDrawGWTField.paint();
+		ivmDrawGWTField.paint();
 		
 		feedbackTekst.getElement().setInnerText("");
 		feedbackTekst.getElement().getStyle().setColor(""+CssColor.make(49,71,112));
