@@ -391,7 +391,10 @@ public class IVMdrawGWT extends Composite implements EntryPoint, InteractionStub
 
 	@Override
 	public void setState(HashMap<String, Object> h) {
-		if(h == null||h.isEmpty()) return;
+		if(h == null||h.isEmpty()) {
+			ivmDrawGWTField.paint();
+			return;
+		}
 		
 		ivmDrawGWTField.setState(h);
 		

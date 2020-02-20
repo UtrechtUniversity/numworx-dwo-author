@@ -155,8 +155,10 @@ public class IVMdrawGWTField {
 	 * @param map launchdata
 	 */
 	public void setState(Map<String, Object> map, boolean start) {
-		if(map == null || map.isEmpty())
+		if(map == null || map.isEmpty()) {
+			paint();
 			return;
+		}
 		ObjectMap launchState = JSONUtilities.wrapMap(map);
 		
 		Map<String,Object> ivmStrokeContainer = new HashMap<String,Object>();
