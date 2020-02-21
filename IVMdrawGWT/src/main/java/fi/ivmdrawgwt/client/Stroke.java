@@ -62,8 +62,8 @@ public class Stroke {
 		}
 		else if(parsePointsIntX!=null) {
 			for (int i = 0; i < parsePointsIntX.size(); i++) {
-				double x = ((Number)(parsePointsIntX.get(i)/10)).doubleValue();
-				double y = ((Number)(parsePointsIntY.get(i)/10)).doubleValue();
+				double x = ((Number)((double)parsePointsIntX.get(i)/10)).doubleValue();
+				double y = ((Number)((double)parsePointsIntY.get(i)/10)).doubleValue();
 				parsePoints.add(new DoublePoint(x,y));
 			}
 		}
