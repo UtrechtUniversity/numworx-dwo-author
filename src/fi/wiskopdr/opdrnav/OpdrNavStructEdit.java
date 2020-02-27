@@ -110,6 +110,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public OpdrNavStructEdit(MyOpdrEditContainer opdrEditContainer, int x, int y, int b, int h, Hashtable launchData) {
 		setLayout(null);
 		setBounds(x, y, b, h);
+	
 		setBackground(WiskOpdr.colorGray3);
 		instance = this; // FIXME hoe kom ik hierachter?
 		helpBrowser = new HelpBrowser(instance);
@@ -162,6 +163,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 
 		opdrEditContainer.setEditState(opdrachten[0][0]);
 		opdrEditContainer.zetMode(mode);
+		opdrEditContainer.addActionListener(this);
 
 		add(opdrEditContainer);
 		
@@ -883,9 +885,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	
 	public void actionPerformed(ActionEvent e) {
 	    if (e.getSource() == instellingenKnop) {
-	    	instellingenDialog.setVisible(true);
-	    	instellingenPanel.validate();
-	    	instellingenDialog.pack();
+		    	instellingenDialog.setVisible(true);
+		    	instellingenPanel.validate();
+		    	instellingenDialog.pack();
 		}
 		if (e.getSource() == instellingenPanel) {
 			setFont(WiskOpdr.tekstFont);
@@ -1202,6 +1204,12 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 //	        }
 //	       
 //	        imageDialog.setVisible(true);
+		}
+		if(e.getSource()==opdrEditContainer && e.getActionCommand().equals("instellingen"))
+		{
+			instellingenDialog.setVisible(true);
+		    	instellingenPanel.validate();
+		    	instellingenDialog.pack();
 		}
 
 	}

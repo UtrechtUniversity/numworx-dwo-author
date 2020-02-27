@@ -109,6 +109,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
 	private HelpButton helpButton;
 	private String helpURL = WiskOpdr.rb.getString("HELP_EDITOR_URL");
+	
+	private JPopupMenu instellingenPopup;
+	private JMenuItem instellingenButton;
 
 	
     public TekstEditor()
@@ -138,9 +141,6 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			super.focusLost(e);
 			fireLogging();
 		}
-    
-    	
-    	
     
     }
     
@@ -200,6 +200,11 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		basisPanel.setLayout(new BorderLayout());
 		basisPanel.setBackground(new Color(210,210,210));
 		super.add(basisPanel);
+	
+		instellingenPopup = new JPopupMenu();
+		instellingenButton = new JMenuItem("Instellingen");
+		instellingenButton.addActionListener(this);
+		instellingenPopup.add(instellingenButton);
 		
 		headerPanel = new JPanel(){
 //			public void paintComponent(Graphics g)
@@ -364,6 +369,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	    
 		componentChoice = new JPopupMenu();
 		componentChoice.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, new Color(120,150,202)));
+		componentChoice.setBackground(new Color(237,239,241));
+		componentChoice.setForeground(new Color(49,71,112));
+		componentChoice.setFont(new Font("SansSerif",Font.PLAIN,12));
 		titel = new JLabel("Componenten in template-opmaak");
 	    titel.setOpaque(true);
 	    titel.setForeground(new Color(237,239,241));
@@ -690,6 +698,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
       setNewScrollSize();
       contentPane.setShadow(true);
       contentPane.setBackground(new Color(206,207,208));//Color.lightGray);//Color.lightGray);//new Color(206,207,208));
+      //contentPane.addMouseListener(this);
 	}
 	
 	
@@ -1261,6 +1270,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 			}
 					
 		}
+		if(e.getSource()==instellingenButton) {
+			produceAction("instellingen");
+		}
 	}
 	
 	public void setEnlarged(boolean b)
@@ -1299,9 +1311,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	}
 	
 	public void mousePressed(MouseEvent e)
-	{	if(tekstVak!=null)tekstVak.setCaretPositionEnd();
+	{	
+		if(tekstVak!=null)tekstVak.setCaretPositionEnd();
 		if(tekstVak!=null)tekstVak.requestFocus();
 		if(tekstVak!=null)tekstVak.setSelected(false);
+		
+		if(e.getSource()==contentPane && (e.getModifiers()== e.BUTTON3_MASK || e.isControlDown()))
+	    {   
+			instellingenPopup.show(this, e.getX(), e.getY());
+		}
 		
 	}
 	public void mouseReleased(MouseEvent e){;}

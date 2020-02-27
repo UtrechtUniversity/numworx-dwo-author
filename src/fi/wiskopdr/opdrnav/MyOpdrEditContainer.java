@@ -1100,12 +1100,17 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		if (e.getSource() == tekstEditor) {
 			if (e.getActionCommand().equals("vergroot")) {
 				showTekstVakLayout();
+				revalidate();
+				repaint();
 			}
 			if (e.getActionCommand().equals("verklein")) {
 				hideTekstVakLayout();
+				revalidate();
+				repaint();
 			}
-			revalidate();
-			repaint();
+			if (e.getActionCommand().equals("instellingen")) {
+				produceAction("instellingen");
+			}
 		}
 		if (e.getSource() == randomVarEditor) {
 			if (e.getActionCommand().equals("vergroot")) {

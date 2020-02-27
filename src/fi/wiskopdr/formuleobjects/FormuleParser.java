@@ -1183,6 +1183,8 @@ public class FormuleParser
 						Expressie e2 = parse(s.substring(i + 1));
 						if (e1 == null || e2 == null)
 							return null;
+						if("(0-1)".equals(s.substring(4, i)))
+							return new ArcSinus(e2);
 						return new Macht(new Sinus(e2), e1);
 					}
 
@@ -1209,6 +1211,8 @@ public class FormuleParser
 						Expressie e2 = parse(s.substring(i + 1));
 						if (e1 == null || e2 == null)
 							return null;
+						if("(0-1)".equals(s.substring(4, i)))
+							return new ArcCosinus(e2);
 						return new Macht(new Cosinus(e2), e1);
 					}
 
@@ -1235,6 +1239,8 @@ public class FormuleParser
 						Expressie e2 = parse(s.substring(i + 1));
 						if (e1 == null || e2 == null)
 							return null;
+						if("(0-1)".equals(s.substring(4, i)))
+							return new ArcTangens(e2);
 						return new Macht(new Tangens(e2), e1);
 					}
 
