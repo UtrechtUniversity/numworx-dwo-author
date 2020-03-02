@@ -27,6 +27,7 @@ import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.opdrnav.*;
+import fi.beans.numworxlf.JScrollPane;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
@@ -212,6 +213,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JPanel optionsPanel;
 	private JPanel layoutOptionsPanel, layoutOptionsContainer, interactionOptionsPanel; 
 	private JTabbedPane tabbedPane;
+	private JScrollPane tabScrollPane;
 	
 	private int defaultWidth = 1000;
 	private int defaultIpHeight = 450;
@@ -376,7 +378,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		//add(optionsPanel,0);
 		
 		tabbedPane = new JTabbedPane();
-		tabbedPane.setBackground(getBackground());
+		//tabbedPane.setBackground(getBackground());
 		tabbedPane.setUI(new BasicTabbedPaneUI() {
             @Override
             protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected)  {
@@ -428,7 +430,16 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		tabbedPane.setBounds(0, 0, defaultOpWidth, defaultOpHeight);
 		tabbedPane.setMaximumSize(new Dimension(400,1200));
 		tabbedPane.setOpaque(false);
-		hb.add(tabbedPane);
+		
+		tabScrollPane = new JScrollPane(tabbedPane, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		tabScrollPane.getComponent(0).setBackground(WiskOpdr.colorGray3);
+		tabScrollPane.setBackground(WiskOpdr.colorGray3);
+		tabScrollPane.setMinimumSize(new Dimension(340,500));
+		tabScrollPane.setMaximumSize(new Dimension(400,1200));
+		//tabScrollPane.setPreferredSize(new Dimension(340,550));
+        
+		tabScrollPane.setBorder(BorderFactory.createEmptyBorder());
+		hb.add(tabScrollPane);
 		
 		
 		layoutOptionsContainer = new JPanel(new BorderLayout());
@@ -3273,6 +3284,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     	hbzichtbaarNa.setVisible(b);
     	hbAftrekPopup.setVisible(b);
     	hblog.setVisible(b);
+    	tabScrollPane.getComponent(0).validate();
 	}
 
 	@Override

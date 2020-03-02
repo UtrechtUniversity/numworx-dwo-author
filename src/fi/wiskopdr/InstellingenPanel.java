@@ -21,6 +21,7 @@ import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.ShareAction;
 //import fi.wiskopdr.tekstobjects.VoorwaardelijkeLinkButton;
 import fi.wiskopdr.expressies.*;
+import fi.beans.numworxlf.JScrollPane;
 
 
 public class InstellingenPanel extends JPanel implements ActionListener
@@ -298,8 +299,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		mainPanel.setOpaque(false);
 		
+		JScrollPane scrollPane = new JScrollPane(mainPanel);
+		scrollPane.setMinimumSize(new Dimension(780,400));
+		scrollPane.getComponent(0).setBackground(WiskOpdr.colorGray3);
+		
 		Box hb = Box.createHorizontalBox();
-        hb.add(mainPanel);
+        hb.add(scrollPane);
         hb.add(helpBox);
         
         add(hb);

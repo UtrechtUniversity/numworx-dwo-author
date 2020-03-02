@@ -632,12 +632,27 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     public void pack()
     {
     	if(interactieEditPanel!=null) {
-	    	int w = Math.min(((Component)interactieEditPanel).getPreferredSize().width,950);
+    	  Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+         
+	    	int w = ((Component)interactieEditPanel).getPreferredSize().width;
 	    	int h = ((Component)interactieEditPanel).getPreferredSize().height;
 	    	
-	    	((Component)interactieEditPanel).setPreferredSize(new Dimension(w,h));
+	    	int widthThis = 40+w+(helpBox.isVisible() ? 300 : 0);
+	    	int heightThis = 145+h;
+	    	
+	    	widthThis = Math.min(widthThis, screenSize.width);
+	    	heightThis = Math.min(heightThis, screenSize.height);
+	    	
+	    	//int helpWidth = Math.min((helpBox.isVisible() ? w+320 : w), screenSize.width);
+	    	//((Component)interactieEditPanel).setPreferredSize(new Dimension(Math.min(screenSize.width-320,  helpWidth),h));
+	    	
 	    	super.pack();
-	    	((Component)interactieEditPanel).setPreferredSize(null);
+	    	this.setSize(widthThis, heightThis);
+	    	 int x = (screenSize.width-widthThis)/2;
+             int y = (screenSize.height-heightThis)/2;
+             this.setLocation(x , y);
+             
+	            ((Component)interactieEditPanel).setPreferredSize(null);
     	}
     	else
     		super.pack();
@@ -1042,7 +1057,8 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     			helpBox.validate();
     			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButtonPanelIF)interactieEditPanel).geefHelpURL());
             	
-            	packWidth(1100);
+            	//packWidth(1100);
+    			pack();
     		}
     		else {
     			helpBox.validate(); 
