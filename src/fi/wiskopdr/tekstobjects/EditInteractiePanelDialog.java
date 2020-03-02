@@ -637,8 +637,9 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	    	int w = ((Component)interactieEditPanel).getPreferredSize().width;
 	    	int h = ((Component)interactieEditPanel).getPreferredSize().height;
 	    	
+	    	System.out.println("insets:"+this.getInsets().top);
 	    	int widthThis = 40+w+(helpBox.isVisible() ? 300 : 0);
-	    	int heightThis = 145+h;
+	    	int heightThis = getInsets().top + 123 + h;
 	    	
 	    	widthThis = Math.min(widthThis, screenSize.width);
 	    	heightThis = Math.min(heightThis, screenSize.height);
