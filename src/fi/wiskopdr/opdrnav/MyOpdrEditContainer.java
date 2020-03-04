@@ -1358,4 +1358,12 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		}
 	}
 	// end ActionProducer
+
+  public void setEditPanelSize() {
+    int w = getWidth();
+    int h = getHeight();
+    tekstEditor.setBounds(0, 0, w, h);
+
+    
+  }
 }
