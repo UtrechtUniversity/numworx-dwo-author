@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.swing.JComboBox;
@@ -132,11 +133,25 @@ public class StappenKeuzeVak extends JLayeredPane implements ActionListener
     stepContents = new String[aantalKeuzes];
     for (int i = 0; i < aantalKeuzes; i++)
     {
-      String content = (String) steps[i].get("stepContent");
-      if(content.startsWith("H4sIAAAAAAAAA"))
-      {   content = "$V"+content+"@";
-      }
-      stepContents[i] = content;
+        ArrayList<String> content = (ArrayList<String>) steps[i].get("stepContent");
+        for(int j = 0; j < content.size(); j++)
+        {
+          if(content.get(j).startsWith("H4sIAAAAAAAAA"))
+          {  String toReplace = content.get(j);
+             content.set(j, "$V" + toReplace + "@");
+          }
+        }
+        String stepContent = "";
+        for(int j = 0; j < content.size(); j++)
+          stepContent = stepContent + content.get(j);
+        stepContents[i] = stepContent;
+      
+      
+//      String content = (String) steps[i].get("stepContent");
+//      if(content.startsWith("H4sIAAAAAAAAA"))
+//      {   content = "$V"+content+"@";
+//      }
+//      stepContents[i] = content;
     }
     
   }

@@ -12,6 +12,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ import fi.wiskopdr.opdrnav.PlusMinKnop;
 import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.tekstobjects.BasisTekstVak;
 import fi.wiskopdr.tekstobjects.TekstEditor;
+import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class SamengesteldeStappenEditPanel extends JPanel implements InteractieEditPanel, ActionListener, FocusListener, MouseListener{
 
@@ -62,7 +64,8 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
     
     private TekstEditor inhoudvak;
     private OpdrachtNrRij tabbladTab;
-    private String[] stepContents;
+    //private String[] stepContents;
+    private ArrayList<String>[] stepContents;
     private boolean[] stepRequired;
     private int keuzeNr = 0;
     private int maxAantalKeuzes = 20;
@@ -177,9 +180,9 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
         inhoudvak.setResizable(true);
         
         
-        stepContents = new String[aantalKeuzes];
+        stepContents = new ArrayList[aantalKeuzes];
         for(int i = 0; i < aantalKeuzes; i++)
-        { stepContents[i] = "";
+        { stepContents[i] = new ArrayList<String>();
         }
         stepRequired = new boolean[maxAantalKeuzes];
         for(int i = 0; i < maxAantalKeuzes; i++)
@@ -203,12 +206,15 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
         return label;
     }
 	
-	private void setStepContent(String content)
+	private void setStepContent(ArrayList<String> content)
 	{
+	    String contentString = "";
+	    for(int i = 0; i < content.size(); i++)
+	      contentString = contentString + content.get(i);
         inhoudvak.zetTekst("");  
         inhoudvak.geefTekstVak().setCaret(0);
-        inhoudvak.geefTekstVak().insert(content);
-        inhoudvak.geefTekstVak().setCaret(content.length());
+        inhoudvak.geefTekstVak().insert(contentString);
+        inhoudvak.geefTekstVak().setCaret(contentString.length());
         inhoudvak.layoutTekst();
             
     }
@@ -218,7 +224,37 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
           return;
         else if(keuzeNr >= stepContents.length)
           return;
-        stepContents[keuzeNr] = inhoudvak.getCompleteText().trim(); 
+        //stepContents[keuzeNr] = inhoudvak.getCompleteText().trim();
+        String content = inhoudvak.getCompleteText().trim();
+        //hier de grote kniptruc
+        
+        stepContents[keuzeNr] = getArrayListContentsFromString(content);
+    }
+    
+    private ArrayList<String> getArrayListContentsFromString(String s)
+    {
+      System.out.println("input: " + s);
+      
+      ArrayList<String> list = new ArrayList<String>();
+      
+      int startingPoint = 0;
+      for(int i = 1; i < s.length(); i++)
+      { if(s.charAt(i) == '$' && i < s.length() && s.charAt(i + 1) == 'V')
+        {  list.add(s.substring(startingPoint, i));
+           startingPoint = i;
+        }
+        if(s.charAt(i) == '@')
+        {
+            if(s.charAt(startingPoint) == '$' && s.charAt(startingPoint + 1) == 'V')
+            {
+              list.add(s.substring(startingPoint, i + 1));
+              startingPoint = i + 1;
+            }
+        }
+      }
+      if(startingPoint < s.length())
+        list.add(s.substring(startingPoint, s.length()));
+      return list;
     }
 	
     private void setStepContent()
@@ -248,7 +284,8 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
             if(e.getActionCommand().equals("min") && keuzeNr<aantalKeuzes-1) 
             {   
                 resKeuze = keuzeVelden[keuzeNr].getCompleteText();
-                String resStepContent = inhoudvak.getCompleteText().trim();
+                //String resStepContent = inhoudvak.getCompleteText().trim();
+                ArrayList<String> resStepContent = getArrayListContentsFromString(inhoudvak.getCompleteText().trim());
                 boolean resRequired = stepRequired[keuzeNr];
                 
                 keuzeVelden[keuzeNr].zetTekst(keuzeVelden[keuzeNr + 1].getCompleteText());
@@ -271,7 +308,8 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
             }
             if(e.getActionCommand().equals("plus") && keuzeNr>0) 
             {   resKeuze = keuzeVelden[keuzeNr].getCompleteText();
-                String resStepContent = inhoudvak.getCompleteText().trim();
+                //String resStepContent = inhoudvak.getCompleteText().trim();
+                ArrayList<String> resStepContent = getArrayListContentsFromString(inhoudvak.getCompleteText().trim());
                 boolean resRequired = stepRequired[keuzeNr];
             
                 keuzeVelden[keuzeNr].zetTekst(keuzeVelden[keuzeNr - 1].getCompleteText());
@@ -397,9 +435,9 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
       tabbladTab.setBackground(new Color(210,210,210));
       tabbladTab.setSelected(keuzeNr+1);
       add(tabbladTab,0);
-      String[] stepContentsNew = new String[aantalKeuzes];
+      ArrayList<String>[] stepContentsNew = new ArrayList[aantalKeuzes];
       for(int i = 0; i < stepContentsNew.length; i++)
-        stepContentsNew[i] = "";
+        stepContentsNew[i] = new ArrayList<String>();
       for(int i = 0; i < Math.min(aantalKeuzes, stepContents.length); i++)
       {
         stepContentsNew[i] = stepContents[i];
@@ -443,13 +481,28 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
             keuzeVelden[i].zetTekst(keuze);
             keuzeVelden[i].layoutTekst();
         }
-        this.stepContents = new String[steps.length];
+        this.stepContents = new ArrayList[steps.length];
         
         for(int i = 0; i < aantalKeuzes; i++)
         {
-          String content = ((String) steps[i].get("stepContent"));
-          if(content.startsWith("H4sIAAAAAAAAA"))
-          {   content = "$V"+content+"@";
+          ArrayList<String> content = new ArrayList<String>();
+          try{
+           content = (ArrayList<String>) steps[i].get("stepContent");
+          }
+          catch(Exception e)
+          {
+            String contentString = (String) steps[i].get("stepContent");
+            content = getArrayListContentsFromString(contentString);
+          }
+          for(int j = 0; j < content.size(); j++)
+          {
+            if(content.get(j).startsWith("H4sIAAAAAAAAA"))
+            {   
+              String toReplace = content.get(j);
+              content.set(j, "$V" + toReplace + "@");
+              //content = "$V"+content+"@";
+            }
+            
           }
           this.stepContents[i] = content;
           vereistCB[i].setSelected(stepRequired[i]);
@@ -467,7 +520,7 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
 	@Override
 	public Hashtable getEditState() {
 		
-	    String[] stepContents = null;
+	    ArrayList<String>[] stepContents = null;
 	    boolean ideasStatistiek = false;
 	    int scoreMax = 10;
         
@@ -477,8 +530,27 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
         
         for(int i = 0; i < stepContents.length; i++)
         {
-          if(stepContents[i].startsWith("$V"))
-            stepContents[i] = stepContents[i].substring(2, stepContents[i].length() - 1);
+          //poging over andere boeg
+          setStepContent(stepContents[i]);
+          TekstVakPanel tvp = new TekstVakPanel();
+          tvp.zetTekst(inhoudvak.geefTekstVak().toString());
+          String tvpString = tvp.toString();
+          System.out.println("tvpString: " + tvpString); // dat is niet de string die ik wil hebben. Ik heb geen idee hoe ik die wel krijg.. ($V ..)
+          
+          
+          //einde poging over andere boeg
+          
+          
+          
+          for(int j = 0; j < stepContents[i].size(); j++)
+          {
+            if(stepContents[i].get(j).startsWith("$V"))
+            {
+              String toReplace = stepContents[i].get(j);
+              stepContents[i].set(j, toReplace.substring(2, toReplace.length() - 1));
+            }
+              //stepContents[i] = stepContents[i].substring(2, stepContents[i].length() - 1);
+          }
         }
         Hashtable[] steps = new Hashtable[aantalKeuzes];
         for(int i = 0; i < aantalKeuzes; i++)
