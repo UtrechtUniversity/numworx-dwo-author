@@ -8,6 +8,8 @@
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+	<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+	<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
   </properties>
   <dependencies>
   	<dependency>
@@ -36,12 +38,8 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-					<Trusted-Only>true</Trusted-Only>
-					<Permissions>all-permissions</Permissions>
-					<Codebase>*.uu.nl spindle.fisme.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl localhost dme.mathhouse.org</Codebase>
-					<Caller-Allowable-Codebase>*.uu.nl spindle.fisme.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl localhost dme.mathhouse.org</Caller-Allowable-Codebase>
-					<Application-Name>Preview HTML</Application-Name>
-					<Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>
+					<_snapshot>${osgi.qualifier}</_snapshot>
+					<Main-Class>${project.groupId}.${project.artifactId}</Main-Class>
 					<Export-Package>fi.previewhtml</Export-Package>
           </instructions>
         </configuration>
