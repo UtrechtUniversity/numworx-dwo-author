@@ -74,12 +74,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>netscape.javascript</groupId>
-			<artifactId>mayscript</artifactId>
-			<version>1.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.c-book</groupId>
 			<artifactId>cbookif</artifactId>
 			<version>1.0.2</version>
