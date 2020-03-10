@@ -2,7 +2,6 @@ package fi.wiskopdr.tekstobjects;
 
 import fi.wiskopdr.SimpleSwingBrowser;
 import fi.wiskopdr.WiskOpdr;
-import netscape.javascript.JSObject;
 
 public class Link 
 {
@@ -86,8 +85,6 @@ public class Link
         args[3] = ""+height;
         args[4] = "yes";
         String result = null;
-		if(wiskOpdr.getJSObject()!=null) result = (String)((JSObject) wiskOpdr.getJSObject()).call("NewPopUp", args);
-		else
 		{
 			SimpleSwingBrowser browser = new SimpleSwingBrowser();
 			browser.setSize(width, height);

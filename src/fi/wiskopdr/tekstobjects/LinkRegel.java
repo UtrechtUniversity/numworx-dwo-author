@@ -8,8 +8,6 @@ import java.util.Vector;
 
 import javax.swing.*;
 
-import netscape.javascript.JSObject;
-
 import fi.wiskopdr.WiskOpdr;
 
 
@@ -97,7 +95,7 @@ public class LinkRegel extends JPanel implements TekstElement, MouseListener, Mo
 		}
 
 		try
-		{	if(ap!=null) linkif.setJSObject(JSObject.getWindow(ap));
+		{	if(ap!=null) linkif.setJSObject(null);
 		} 
 		catch( Exception e )
 		{	e.printStackTrace(); 
