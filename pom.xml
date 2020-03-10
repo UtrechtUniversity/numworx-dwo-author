@@ -450,12 +450,6 @@
 			<artifactId>verknippen</artifactId>
 			<version>0.0.0</version>
 		</dependency>
-    	<dependency> <!-- when running under openjdk zonder javafx -->
-    		<groupId>netscape.javascript</groupId>
-    		<artifactId>mayscript</artifactId>
-    		<version>1.0.0</version>
-    		<scope>provided</scope>
-    	</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
 	<profiles>
