@@ -55,14 +55,12 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.ideas.IdeasClient;
 import fi.beans.ideas.IdeasIF;
-import fi.beans.scorm.JSScormAPI;
 import fi.beans.scorm.Parameter;
 import fi.beans.scorm.PartialScoreIF;
 import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.scorm.Scorm;
 import fi.beans.scorm.ScormAppletIF;
 import fi.beans.scorm.ScormEditComponentIF;
-import fi.beans.scorm.WNScormAPI;
 import fi.beans.wnwidgets.NWButtonUI;
 import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.copyright.FIButton;
@@ -723,7 +721,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 */
 	public static void setLMSState() {
 		if ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant)) {
-			if (((WiskOpdr) applet).api instanceof WNScormAPI) {
+			if (false) {
 				String s = ((WiskOpdr) applet).getState();
 				((WiskOpdr) applet).api.LMSSetValue(CMI_SUSPEND_DATA, s);
 			}
@@ -734,7 +732,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 * Schrijft de variabele 'completed'  weg naar het LMS (gebruikt binnen het LMS van de uitgevers).
 	 */
 	public static void setCompleted(boolean b) {
-		if (((WiskOpdr) applet).api instanceof WNScormAPI && !COMPLETED) {
+		if (false && !COMPLETED) {
 			COMPLETED = b;
 			if (COMPLETED)
 				((WiskOpdr) applet).api.LMSSetValue(CMI_CORE_LESSON_STATUS, LESSON_STATUS_completed);
@@ -835,7 +833,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 		if ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant)) {
 			deployDwoGrading = false;
-			api = new WNScormAPI(this);
+			api = null;
 		}
 
 		String s = super.getParameter("deployVariantDWO");
@@ -1207,9 +1205,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	//boolean writing = false;
 	
 	public void updateResults() {
-		if (api instanceof JSScormAPI)
+		if (false)
 			return;
-		if (api instanceof WNScormAPI)
+		if (false)
 			return;
 
 		final String s = doJSON ? getJSONState() : getState();
