@@ -2,7 +2,6 @@ package fi.euclides.formuleobjects;
 
 import static org.junit.Assert.*;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
-import nl.tue.win.riaca.openmath.lang.OMBinding;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
 
