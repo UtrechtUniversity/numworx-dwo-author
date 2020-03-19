@@ -162,7 +162,7 @@ public class FormuleParser implements OMConstants{
 
   
 }  
-PARSER_END(FormuleParser)SPECIAL_TOKEN :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : ("*"|"\u00B7"|"\u00D7"|"\u2062") >| < DIVIDE : ("/"|":") >
+PARSER_END(FormuleParser)SPECIAL_TOKEN :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : ("*"|"\u00B7"|"\u00D7"|"\u2062") >| < DIVIDE : ("/"|":"|"\u00F7") >
 | < KOMMA :  "," >
 }
 
