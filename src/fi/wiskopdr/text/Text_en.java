@@ -888,9 +888,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{ ShareAction.SHARE_KEY, "Shared key" },
 				{ ShareAction.SHARE_MAP, "Shared components" },
 // tablet opties
-				{ "Tablet keyboard", "Tablet keyboard" },
-				{ "Onderbouw-keyboard", "Middle school keyboard" },
-				{ "Algebra-keyboard", "Algebra keyboard" },
+				{ "Tablet keyboard", "Math keyboard" },
+				{ "Onderbouw-keyboard", "Simple" },
+				{ "Algebra-keyboard", "Extended" },
 				{ "Gonio-keyboard", "Gonio keyboard" },
 				{ "Statistiek-keyboard", "Statistics keyboard" },
 				{ "Meetkunde-keyboard", "Geometry keyboard" },

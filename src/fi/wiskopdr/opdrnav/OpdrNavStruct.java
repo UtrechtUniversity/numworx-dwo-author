@@ -1040,6 +1040,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		boolean maalTeken = false;
 		boolean diffOperatoren = false;
 		int keyBoardNr = 0;
+		int soortKeyboard = 0;
 		int writeMathSetNr = 0;
 		boolean woordFormule = false;
 		boolean tweeHoofdletterVar = false;
@@ -1110,6 +1111,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			diffOperatoren = ((Boolean) h.get("diffOperatoren")).booleanValue();
 		if (h != null && h.containsKey("keyBoardNr"))
 			keyBoardNr = ((Integer) h.get("keyBoardNr")).intValue();
+		if (h != null && h.containsKey("soortKeyboard"))
+			soortKeyboard = ((Integer) h.get("soortKeyboard")).intValue();
 		if (h != null && h.containsKey("writeMathSetNr"))
 			writeMathSetNr = ((Integer) h.get("writeMathSetNr")).intValue();
 		if (h != null && h.containsKey("woordFormule"))

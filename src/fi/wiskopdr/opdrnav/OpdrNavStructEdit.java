@@ -11,6 +11,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicMenuBarUI;
+import javax.swing.plaf.basic.BasicMenuItemUI;
+import javax.swing.plaf.basic.BasicMenuUI;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.iconan.Iconan;
@@ -104,6 +107,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	private static String HELP_URL1 = "https://app.dwo.nl/wisweb/?header=less&hash=#s:610861";
 	public static String defaultTemplatePage = "";
 	
+	private JMenuBar menuBar;
+	public static boolean hasMenuBar = true;
+	
 	/**
 	 * Maakt nieuwe Opdrachtnavigatie-editor op basis van de aangeleverde launchData
 	 */
@@ -165,7 +171,53 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		opdrEditContainer.zetMode(mode);
 		opdrEditContainer.addActionListener(this);
 
+		opdrEditContainer.setLocation(0,hasMenuBar ? 26 : 0);
+		
 		add(opdrEditContainer);
+		
+		menuBar = new JMenuBar();
+		menuBar.setUI(new BasicMenuBarUI() {
+			public void paintComponent(Graphics g) {
+			}
+		});
+		menuBar.setOpaque(true);
+		menuBar.setBounds(10,0,getSize().width-20, 26);
+		menuBar.setBackground(WiskOpdr.colorGray2);
+		menuBar.setBorder(BorderFactory.createMatteBorder(1, 1, 0, 1, WiskOpdr.colorBlue4));
+		if(hasMenuBar) add(menuBar);
+		
+		JMenu instellingenMenu = new JMenu("Instellingen");
+		instellingenMenu.setUI(new BasicMenuUI() {
+			public void paint(Graphics g) {
+			}
+		});
+		instellingenMenu.setOpaque(true);
+		instellingenMenu.setBackground(WiskOpdr.colorGray2);
+		instellingenMenu.setForeground(WiskOpdr.colorBlue1);
+		instellingenMenu.addActionListener(this);
+		menuBar.add(instellingenMenu);
+		
+		JMenu scoreMenu = new JMenu("Score-opties");
+		scoreMenu.setUI(new BasicMenuUI() {
+			public void paint(Graphics g) {
+			}
+		});
+		scoreMenu.setOpaque(true);
+		scoreMenu.setBackground(WiskOpdr.colorGray2);
+		scoreMenu.setForeground(WiskOpdr.colorBlue1);
+		menuBar.add(scoreMenu);
+		
+		JMenu analyseMenu = new JMenu("Toetsanalyse");
+		analyseMenu.setUI(new BasicMenuUI() {
+			public void paint(Graphics g) {
+			}
+		});
+		analyseMenu.setOpaque(true);
+		analyseMenu.setBackground(WiskOpdr.colorGray2);
+		analyseMenu.setForeground(WiskOpdr.colorBlue1);
+		menuBar.add(analyseMenu);
+		
+		
 		
 //		HelpButton helpButton = new HelpButton(HELP_URL1);
 //        helpButton.setBounds(360,27,20,20);
@@ -382,6 +434,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		int fontSize = 12;
 		boolean maalTeken = false;
 		boolean diffOperatoren = false;
+		int keyBoardNr = 0;
+		int soortKeyboard = 0;
 		boolean woordFormule = false;
 		boolean tweeHoofdletterVar = false;
 		boolean hoekGraden = false;
@@ -421,6 +475,10 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			maalTeken = ((Boolean) h.get("maalTeken")).booleanValue();
 		if (h != null && h.containsKey("diffOperatoren"))
 			diffOperatoren = ((Boolean) h.get("diffOperatoren")).booleanValue();
+		if (h != null && h.containsKey("keyBoardNr"))
+			keyBoardNr = ((Integer) h.get("keyBoardNr")).intValue();
+		if (h != null && h.containsKey("soortKeyboard"))
+			soortKeyboard = ((Integer) h.get("soortKeyboard")).intValue();
 		if (h != null && h.containsKey("woordFormule"))
 			woordFormule = ((Boolean) h.get("woordFormule")).booleanValue();
 		if (h != null && h.containsKey("tweeHoofdletterVar"))
@@ -579,7 +637,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	 */
 	public void setSize(int b, int h) {
 		super.setSize(b, h);
-		opdrEditContainer.setSize(b, h);
+		menuBar.setSize(b-20,26);
+		opdrEditContainer.setSize(b, h-(hasMenuBar ? 26 : 0));
 		orPosY = h - 90;//(2 * orSize);
 		
 		opdrEditContainer.setControlPanelHeight(2 * orSize);

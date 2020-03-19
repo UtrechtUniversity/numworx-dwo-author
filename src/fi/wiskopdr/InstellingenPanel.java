@@ -108,8 +108,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private int margeBoven = 10;
 	private int margeOnder = 10;
 	
-	private JLabel keyboardLabel;
 	private JComboBox keyboardCombobox;
+	private JLabel keyboardLabel;
+	private JComboBox keyboardVersionCombobox;
+	private JLabel keyboardVersionLabel;
 	private JLabel writeMathLabel;
 	private JComboBox writeMathCombobox;
 	
@@ -300,6 +302,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		mainPanel.setOpaque(false);
 		
 		JScrollPane scrollPane = new JScrollPane(mainPanel);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setMinimumSize(new Dimension(780,400));
 		scrollPane.getComponent(0).setBackground(WiskOpdr.colorGray3);
 		
@@ -374,23 +377,53 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		keyboardLabel.setFont(font);
 		keyboardLabel.setForeground(WiskOpdr.fgcolorEditor);
 		boxh.add(keyboardLabel);
-		boxh.add(Box.createHorizontalStrut(10));
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
+		boxh.add(Box.createHorizontalGlue());
 		
 		keyboardCombobox = new WiskOpdrComboBox();
 		keyboardCombobox.setFont(font);
-		
+		keyboardCombobox.setPreferredSize(new Dimension(180,24));
 		keyboardCombobox.setForeground(WiskOpdr.fgcolorEditor);
-		keyboardCombobox.addItem(WiskOpdr.rb.getString("Onderbouw-keyboard"));
-		keyboardCombobox.addItem(WiskOpdr.rb.getString("Algebra-keyboard"));
-		keyboardCombobox.addItem(WiskOpdr.rb.getString("Gonio-keyboard"));
-		keyboardCombobox.addItem(WiskOpdr.rb.getString("Statistiek-keyboard"));
-		keyboardCombobox.addItem(WiskOpdr.rb.getString("Meetkunde-keyboard"));
+		
 		if("GR".equals(WiskOpdr.deployVariant) || "MW".equals(WiskOpdr.deployVariant)) {
-			boxh.add(keyboardCombobox);
-			boxh.add(Box.createHorizontalStrut(80));
-			boxv1.add(boxh);
-			boxv1.add(Box.createVerticalStrut(5));
+			keyboardCombobox.addItem(WiskOpdr.rb.getString("Onderbouw-keyboard"));
+			keyboardCombobox.addItem(WiskOpdr.rb.getString("Algebra-keyboard"));
+			keyboardCombobox.addItem(WiskOpdr.rb.getString("Gonio-keyboard"));
+			keyboardCombobox.addItem(WiskOpdr.rb.getString("Statistiek-keyboard"));
+			keyboardCombobox.addItem(WiskOpdr.rb.getString("Meetkunde-keyboard"));
 		}
+		else {
+			keyboardCombobox.addItem(WiskOpdr.rb.getString("Algebra-keyboard"));
+			keyboardCombobox.addItem(WiskOpdr.rb.getString("Onderbouw-keyboard"));
+		}
+		boxh.add(keyboardCombobox);
+		//boxh.add(Box.createHorizontalStrut(80));
+		boxv1.add(Box.createVerticalStrut(5));
+		boxv1.add(boxh);
+		//boxv1.add(Box.createVerticalStrut(5));
+		
+		boxh = Box.createHorizontalBox();
+		keyboardVersionLabel = new JLabel(WiskOpdr.rb.getString("versionKeyboard")+" ");
+		keyboardVersionLabel.setFont(font);
+		keyboardVersionLabel.setForeground(WiskOpdr.fgcolorEditor);
+		boxh.add(keyboardVersionLabel);
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
+		boxh.add(Box.createHorizontalGlue());
+		
+		keyboardVersionCombobox = new WiskOpdrComboBox();
+		keyboardVersionCombobox.setFont(font);
+		keyboardVersionCombobox.setPreferredSize(new Dimension(180,24));
+		keyboardVersionCombobox.setForeground(WiskOpdr.fgcolorEditor);
+		
+		keyboardVersionCombobox.addItem(WiskOpdr.rb.getString("keyBoardAutomatisch"));
+		keyboardVersionCombobox.addItem(WiskOpdr.rb.getString("keyBoardDesktop"));
+		keyboardVersionCombobox.addItem(WiskOpdr.rb.getString("keyBoardTablet"));
+		
+		boxh.add(keyboardVersionCombobox);
+		//boxh.add(Box.createHorizontalStrut(80));
+		boxv1.add(Box.createVerticalStrut(5));
+		boxv1.add(boxh);
+		boxv1.add(Box.createVerticalStrut(5));
 		
 		boxh = Box.createHorizontalBox();
 		writeMathLabel = new JLabel(WiskOpdr.rb.getString("Tablet handschriftset")+" ");
@@ -979,6 +1012,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean globalParam = false;
 		boolean diffOperatoren = false;
 		int keyboardNr = 0;
+		int soortKeyboard = 0;
 		int writeMathSetNr = 0;
 		boolean voortgang = false;
 		boolean condNav = false;
@@ -1042,6 +1076,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		globalParam = globalParamCB.isSelected();
 		diffOperatoren = diffOperatorenCB.isSelected();
 		keyboardNr = keyboardCombobox.getSelectedIndex();
+		soortKeyboard = keyboardVersionCombobox.getSelectedIndex();
 		writeMathSetNr = writeMathCombobox.getSelectedIndex();
 		voortgang = voortgangCB.isSelected();
 		condNav = condNavCB.isSelected();
@@ -1116,6 +1151,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("globalParam", new Boolean(globalParam));
 		h.put("diffOperatoren", new Boolean(diffOperatoren));
 		h.put("keyboardNr", new Integer(keyboardNr));
+		h.put("soortKeyboard", new Integer(soortKeyboard));
 		h.put("writeMathSetNr", new Integer(writeMathSetNr));
 		h.put("voortgang", new Boolean(voortgang));
 		h.put("condNav", new Boolean(condNav));
@@ -1195,6 +1231,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean globalParam = false;
 		boolean diffOperatoren = false;
 		int keyboardNr = 0;
+		int soortKeyboard = 0;
 		int writeMathSetNr = 0;
 		boolean voortgang = false;
 		boolean condNav = false;
@@ -1254,6 +1291,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("globalParam")) globalParam = ((Boolean)h.get("globalParam")).booleanValue();
 		if(h.containsKey("diffOperatoren")) diffOperatoren = ((Boolean)h.get("diffOperatoren")).booleanValue();
 		if(h.containsKey("keyboardNr")) keyboardNr = ((Integer)h.get("keyboardNr")).intValue();
+		if(h.containsKey("soortKeyboard")) soortKeyboard = ((Integer)h.get("soortKeyboard")).intValue();
 		if(h.containsKey("writeMathSetNr")) writeMathSetNr = ((Integer)h.get("writeMathSetNr")).intValue();
 		if(h.containsKey("voortgang")) voortgang = ((Boolean)h.get("voortgang")).booleanValue();
 		if(h.containsKey("condNav")) condNav = ((Boolean)h.get("condNav")).booleanValue();
@@ -1326,6 +1364,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		globalParamCB.setSelected(globalParam);
 		diffOperatorenCB.setSelected(diffOperatoren);
 		keyboardCombobox.setSelectedIndex(keyboardNr);
+		keyboardVersionCombobox.setSelectedIndex(soortKeyboard);
 		writeMathCombobox.setSelectedIndex(writeMathSetNr);
 		voortgangCB.setSelected(voortgang);
 		condNavCB.setSelected(condNav);
