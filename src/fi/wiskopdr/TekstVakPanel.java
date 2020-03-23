@@ -213,10 +213,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	
 	private boolean visible = true;
 
-	int callOutMargeX0 = 15;
-	int callOutMargeY0 = 15;
-	int callOutMargeX1 = 5;
-	int callOutMargeY1 = 5;
+	int callOutMargeX0 = 6;
+	int callOutMargeY0 = 6;
+	int callOutMargeX1 = 6;
+	int callOutMargeY1 = 6;
 	int callOutPointX = 0;
 	int callOutPointY = 0;
 	private int dragStartX = 0;
@@ -294,6 +294,21 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		*/
 	}
 
+	@Override
+	public boolean contains(int x, int y) {
+		if(callOut) {
+			int x0 = callOutMargeX0-6;
+			int x1 = getWidth() - callOutMargeX1+6;
+			int y0 = callOutMargeY0-6;
+			int y1 = getHeight() - callOutMargeY1+6;
+			boolean inRectangle = new Rectangle(x0,y0,x1-x0,y1-y0).contains(x,y);
+			boolean inPoint = new Rectangle(callOutPointX-3,callOutPointY-3,7,7).contains(x,y);
+			boolean inMovePoint = new Rectangle(0,0,7,7).contains(x,y);
+			return inRectangle || inPoint || inMovePoint;
+		}
+		return super.contains(x,y);
+	}
+	
 	public TekstVakPanel(int aantalRijen, int aantalKolommen)
 	{
 		setLayout(null);
@@ -447,6 +462,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	public boolean hasSleepHandle()
 	{
 		return sleepHandle;
+	}
+	
+	public boolean isCallOut()
+	{
+		return callOut;
 	}
 
 	public void setIpSelected(boolean b)
@@ -734,10 +754,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean aftrekPopup = false;
 		int puntenAftrekPopup = 5;
 		boolean callOut = false;
-		int callOutMargeX0 = 15;
-		int callOutMargeY0 = 15;
-		int callOutMargeX1 = 5;
-		int callOutMargeY1 = 5;
+		int callOutMargeX0 = 6;
+		int callOutMargeY0 = 6;
+		int callOutMargeX1 = 6;
+		int callOutMargeY1 = 6;
 		int callOutPointX = 0;
 		int callOutPointY = 0;
 		boolean vulHoogte = false;
@@ -1279,11 +1299,15 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			setForeground(fgColorOvererving);
 			layoutTekst();
 		}
+		else {
+			layoutTekst();
+		}
 		if(TekstVakPanel.layerVisible!=null && TekstVakPanel.layerVisible.length>layerNr-1 && layerNr > 0)
 			thisLayerVisible = TekstVakPanel.layerVisible[layerNr-1];
 		else
 			layerNr = 0;
 		setVisible(visible && thisLayerVisible);
+		
 	}
 	
 	public void initConnections(XWidgetManager manager)
@@ -1412,6 +1436,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		//int dBreedte = b - bOud;
 		//int dHoogte = h - hOud;
 		super.setSize(b, h);
+		if (callOut)
+			setCallOutBox(callOutMargeX0, callOutMargeY0, callOutMargeX1, callOutMargeY1);
 		//if(breedtes==null)initializeTableBounds(b, h);
 		//else 
 		//{	//breedtes[aantalKolommen-1] += dBreedte;
@@ -3159,6 +3185,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			((TekstInteractiePanelVak)getParent()).setLocation(locationX, locationY);
 		}
 		
+		layoutTekst();
+		
 	}
 
 	//public boolean contains(int x, int y)
@@ -3186,87 +3214,225 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		{
 			callOutMargeX0 = dragX;
 			callOutMargeY0 = dragY;
+			if(getParent() instanceof TekstInteractiePanelVak && dragY<callOutPointY+3){
+				((TekstInteractiePanelVak) getParent()).setSize(getWidth(), getHeight()-dragY+3);
+				int tvpX = ((TekstInteractiePanelVak) getParent()).getLocation().x;
+				int tvpY = ((TekstInteractiePanelVak) getParent()).getLocation().y;
+				((TekstInteractiePanelVak) getParent()).setLocation(tvpX, tvpY+dragY-3);
+				callOutPointY = callOutPointY + 3-dragY;
+			}
+			if(getParent() instanceof TekstInteractiePanelVak && dragX<callOutPointX+3){
+				((TekstInteractiePanelVak) getParent()).setSize(getWidth()-dragX+3, getHeight());
+				int tvpX = ((TekstInteractiePanelVak) getParent()).getLocation().x;
+				int tvpY = ((TekstInteractiePanelVak) getParent()).getLocation().y;
+				((TekstInteractiePanelVak) getParent()).setLocation(tvpX+dragX-3, tvpY);
+				callOutPointX = callOutPointX + 3-dragX;
+			}
 		}
 		else if (dragType == 1)
 		{
 			callOutMargeY0 = dragY;
+			if(getParent() instanceof TekstInteractiePanelVak && dragY<callOutPointY+3){
+				((TekstInteractiePanelVak) getParent()).setSize(getWidth(), getHeight()-dragY+3);
+				int tvpX = ((TekstInteractiePanelVak) getParent()).getLocation().x;
+				int tvpY = ((TekstInteractiePanelVak) getParent()).getLocation().y;
+				((TekstInteractiePanelVak) getParent()).setLocation(tvpX, tvpY+dragY-3);
+				callOutPointY = callOutPointY + 3-dragY;
+			}
 		}
 		else if (dragType == 2)
 		{
 			callOutMargeX1 = getWidth() - dragX;
 			callOutMargeY0 = dragY;
+			if(getParent() instanceof TekstInteractiePanelVak){
+				int xMax = Math.max(dragX+3, callOutPointX+3);
+				((TekstInteractiePanelVak) getParent()).setSize(xMax, getHeight());
+			}
+			callOutMargeY0 = dragY;
+			if(getParent() instanceof TekstInteractiePanelVak && dragY<callOutPointY+3){
+				((TekstInteractiePanelVak) getParent()).setSize(getWidth(), getHeight()-dragY+3);
+				int tvpX = ((TekstInteractiePanelVak) getParent()).getLocation().x;
+				int tvpY = ((TekstInteractiePanelVak) getParent()).getLocation().y;
+				((TekstInteractiePanelVak) getParent()).setLocation(tvpX, tvpY+dragY-3);
+				callOutPointY = callOutPointY + 3-dragY;
+			}
 		}
 		else if (dragType == 3)
 		{
 			callOutMargeX1 = getWidth() - dragX;
+			if(getParent() instanceof TekstInteractiePanelVak){
+				int xMax = Math.max(dragX+3, callOutPointX+3);
+				((TekstInteractiePanelVak) getParent()).setSize(xMax, getHeight());
+			}
 		}
 		else if (dragType == 4)
 		{
 			callOutMargeX1 = getWidth() - dragX;
 			callOutMargeY1 = getHeight() - dragY;
+			if(getParent() instanceof TekstInteractiePanelVak){
+				int xMax = Math.max(dragX+3, callOutPointX+3);
+				int yMax = Math.max(dragY+3, callOutPointY+3);
+				((TekstInteractiePanelVak) getParent()).setSize(xMax, yMax);
+			}
 		}
 		else if (dragType == 5)
 		{
 			callOutMargeY1 = getHeight() - dragY;
+			if(getParent() instanceof TekstInteractiePanelVak){
+				int yMax = Math.max(dragY+3, callOutPointY+3);
+				((TekstInteractiePanelVak) getParent()).setSize(getWidth(), yMax);
+			}
 		}
 		else if (dragType == 6)
 		{
 			callOutMargeX0 = dragX;
 			callOutMargeY1 = getHeight() - dragY;
+			if(getParent() instanceof TekstInteractiePanelVak && dragX<callOutPointX+3){
+				((TekstInteractiePanelVak) getParent()).setSize(getWidth()-dragX+3, getHeight());
+				int tvpX = ((TekstInteractiePanelVak) getParent()).getLocation().x;
+				int tvpY = ((TekstInteractiePanelVak) getParent()).getLocation().y;
+				((TekstInteractiePanelVak) getParent()).setLocation(tvpX+dragX-3, tvpY);
+				callOutPointX = callOutPointX + 3-dragX;
+			}
+			if(getParent() instanceof TekstInteractiePanelVak){
+				int yMax = Math.max(dragY+3, callOutPointY+3);
+				((TekstInteractiePanelVak) getParent()).setSize(getWidth(), yMax);
+			}
 		}
 		else if (dragType == 7)
 		{
 			callOutMargeX0 = dragX;
+			if(getParent() instanceof TekstInteractiePanelVak && dragX<callOutPointX+3){
+				((TekstInteractiePanelVak) getParent()).setSize(getWidth()-dragX+3, getHeight());
+				int tvpX = ((TekstInteractiePanelVak) getParent()).getLocation().x;
+				int tvpY = ((TekstInteractiePanelVak) getParent()).getLocation().y;
+				((TekstInteractiePanelVak) getParent()).setLocation(tvpX+dragX-3, tvpY);
+				callOutPointX = callOutPointX + 3-dragX;
+			}
 		}
 		else if (dragType == 8)
 		{
-			if (dragX < dragY && dragX < getHeight() - dragY && dragX < getWidth() / 2)
-			{
-				callOutPointX = 0;
-				callOutPointY = dragY;
+			int x0 = callOutMargeX0-3;
+			int x1 = getWidth() - callOutMargeX1+3;
+			int y0 = callOutMargeY0-3;
+			int y1 = getHeight() - callOutMargeY1+3;
+			int midX = (x0 + x1)/2;
+			int midY = (y0 + y1)/2;
+			
+			callOutPointX = dragX;
+			callOutPointY = dragY;
+			if(dragX > x0 && dragX < x1 && dragY > y0 && dragY < y1) {
+				int dx0 = dragX - x0;
+				int dx1 = x1 - dragX;
+				int dy0 = dragY - y0;
+				int dy1 = y1 - dragY;
+				if(dragX > x0 && dragX < x1) {
+					if(dragX<midX && dx0 < dy0 && dx0 < dy1)
+						callOutPointX = x0;
+					else if(dx1 < dy0 && dx1 < dy1)
+						callOutPointX = x1;
+					else
+						callOutPointX = dragX;
+				}
+				if(dragY > y0 && dragY < y1) {
+					if(dragY<midY  && dy0 < dx0 && dy0 < dx1)
+						callOutPointY = y0;
+					else if(dy1 < dx0 && dy1 < dx1)
+						callOutPointY = y1;
+					else
+						callOutPointY = dragY;
+				}
 			}
-			else if (dragX > dragY && getWidth() - dragX > dragY && dragY < getHeight() / 2)
-			{
-				callOutPointX = dragX;
-				callOutPointY = 0;
+			else if(getParent() instanceof TekstInteractiePanelVak){
+				if(dragX > x1 ) {
+					int height = Math.max(y1, dragY);
+					((TekstInteractiePanelVak) getParent()).setSize(dragX+3, height+3);
+					callOutMargeX1 = getWidth() - x1+3;
+					callOutMargeY1 =getHeight()+3 - y1;
+				}
+				if(dragY > y1) {
+					int width = Math.max(x1, dragX);
+					((TekstInteractiePanelVak) getParent()).setSize(width+3, dragY+3);
+					callOutMargeY1 = getHeight() - y1+3;
+					callOutMargeX1 =getWidth()+3 - x1;
+				}
+				if(dragX <x0 && dragY <y0) {
+					((TekstInteractiePanelVak) getParent()).setSize(getWidth()-dragX+3,  getHeight()-dragY+3);
+					int tvpX = ((TekstInteractiePanelVak) getParent()).getLocation().x;
+					int tvpY = ((TekstInteractiePanelVak) getParent()).getLocation().y;
+					((TekstInteractiePanelVak) getParent()).setLocation(tvpX+dragX-3, tvpY+dragY-3);
+					callOutMargeX0 = callOutMargeX0-dragX+3;
+					callOutMargeY1 =3;
+					callOutMargeY0 = callOutMargeY0-dragY+3;
+					callOutMargeX1 = 3;
+				}
+				else if(dragX <x0 ) {
+					int height = Math.max(y1, dragY);
+					((TekstInteractiePanelVak) getParent()).setSize(getWidth()-dragX+3, height+3);
+					int tvpX = ((TekstInteractiePanelVak) getParent()).getLocation().x;
+					int tvpY = ((TekstInteractiePanelVak) getParent()).getLocation().y;
+					((TekstInteractiePanelVak) getParent()).setLocation(tvpX+dragX-3, tvpY);
+					callOutMargeX0 = callOutMargeX0-dragX+3;
+					callOutMargeY1 =getHeight()+3 - y1;
+				}
+				else if(dragY <y0 ) {
+					int width = Math.max(x1, dragX);
+					((TekstInteractiePanelVak) getParent()).setSize(width+3, getHeight()-dragY+3);
+					int tvpX = ((TekstInteractiePanelVak) getParent()).getLocation().x;
+					int tvpY = ((TekstInteractiePanelVak) getParent()).getLocation().y;
+					((TekstInteractiePanelVak) getParent()).setLocation(tvpX, tvpY+dragY-3);
+					callOutMargeY0 = callOutMargeY0-dragY+3;
+					callOutMargeX1 = getWidth()+3 - x1;
+				}
 			}
-			else if (getWidth() - dragX < dragY && getWidth() - dragX < getHeight() - dragY && dragX > getWidth() / 2)
-			{
-				callOutPointX = getWidth();
-				callOutPointY = dragY;
-			}
-			else if (getWidth() - dragX > getHeight() - dragY && dragX > getHeight() - dragY && dragY > getHeight() / 2)
-			{
-				callOutPointX = dragX;
-				callOutPointY = getHeight();
-			}
+			
+//			if (dragX < dragY && dragX < getHeight() - dragY && dragX < getWidth() / 2)
+//			{
+//				callOutPointX = Math.min(dragX, callOutMargeX0);
+//				callOutPointY = dragY;
+//			}
+//			else if (dragX > dragY && getWidth() - dragX > dragY && dragY < getHeight() / 2)
+//			{
+//				callOutPointX = dragX;
+//				callOutPointY = 0;
+//			}
+//			else if (getWidth() - dragX < dragY && getWidth() - dragX < getHeight() - dragY && dragX > getWidth() / 2)
+//			{
+//				callOutPointX = getWidth();
+//				callOutPointY = dragY;
+//			}
+//			else if (getWidth() - dragX > getHeight() - dragY && dragX > getHeight() - dragY && dragY > getHeight() / 2)
+//			{
+//				callOutPointX = dragX;
+//				callOutPointY = getHeight();
+//			}
 		}
 
-		if (callOutMargeX0 < 5)
-			callOutMargeX0 = 5;
-		if (callOutMargeY0 < 5)
-			callOutMargeY0 = 5;
-		if (callOutMargeX1 < 5)
-			callOutMargeX1 = 5;
-		if (callOutMargeY1 < 5)
-			callOutMargeY1 = 5;
-		if (callOutMargeX0 > getWidth() - 5)
-			callOutMargeX0 = getWidth() - 5;
-		if (callOutMargeY0 > getHeight() - 5)
-			callOutMargeY0 = getHeight() - 5;
-		if (callOutMargeX1 > getWidth() - 5)
-			callOutMargeX1 = getWidth() - 5;
-		if (callOutMargeY1 > getHeight() - 5)
-			callOutMargeY1 = getHeight() - 5;
+		if (callOutMargeX0 < 6)
+			callOutMargeX0 = 6;
+		if (callOutMargeY0 < 6)
+			callOutMargeY0 = 6;
+		if (callOutMargeX1 < 6)
+			callOutMargeX1 = 6;
+		if (callOutMargeY1 < 6)
+			callOutMargeY1 = 6;
+		if (callOutMargeX0 > getWidth() - 6)
+			callOutMargeX0 = getWidth() - 6;
+		if (callOutMargeY0 > getHeight() - 6)
+			callOutMargeY0 = getHeight() - 6;
+		if (callOutMargeX1 > getWidth() - 6)
+			callOutMargeX1 = getWidth() - 6;
+		if (callOutMargeY1 > getHeight() - 6)
+			callOutMargeY1 = getHeight() - 6;
 
-		if (callOutPointX < 0)
-			callOutPointX = 0;
-		if (callOutPointY < 0)
-			callOutPointY = 0;
-		if (callOutPointX > getWidth())
-			callOutPointX = getWidth();
-		if (callOutPointY > getHeight())
-			callOutPointY = getHeight();
+		if (callOutPointX < 3)
+			callOutPointX = 3;
+		if (callOutPointY < 3)
+			callOutPointY = 3;
+		if (callOutPointX > getWidth()-3)
+			callOutPointX = getWidth()-3;
+		if (callOutPointY > getHeight()-3)
+			callOutPointY = getHeight()-3;
 
 		setCallOutBox();
 	}
@@ -3280,6 +3446,48 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			super.setCallOutBox(callOutMargeX0, callOutMargeY0, callOutMargeX1, callOutMargeY1);
 
 		}
+	}
+	
+	// resize naar nieuwe maten tekstvak ??
+	public void resizeCallOutH(int h) {
+		if(callOutPointY > h) {
+			callOutMargeY0 = 6;
+			callOutMargeY1 = callOutPointY - h - 3;
+		}
+		h += callOutMargeY0 + callOutMargeY1;
+		
+		setSize(getWidth(),h);
+		//layoutTekst();
+	}
+	
+	public void resizeCallOutHB(int w, int h) {
+		if(callOutPointY > h) {
+			callOutMargeY0 = 6;
+			callOutMargeY1 = callOutPointY - h - 3;
+		}
+		h += callOutMargeY0 + callOutMargeY1;
+		
+		if(callOutPointX > w) {
+			callOutMargeX0 = 6;
+			callOutMargeX1 = callOutPointX - w - 3;
+		}
+		w += callOutMargeX0 + callOutMargeX1;
+		
+		setSize(w,h);
+		//layoutTekst();
+	}
+	
+	public void resizeCallOutB(int w) {
+		int oldWidth = getWidth();
+		int oldHeight = getHeight();
+		
+		if(callOutPointX > w) {
+			callOutMargeX0 = 6;
+			callOutMargeX1 = callOutPointX - w - 3;
+		}
+		w += callOutMargeX0 + callOutMargeX1;
+		
+		setSize(w,getHeight());
 	}
 
 	public void setCallOutBox(int callOutMargeX0, int callOutMargeY0, int callOutMargeX1, int callOutMargeY1)
@@ -3306,9 +3514,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	public int getCallOutDragType(int x, int y)
 	{
 		Point[] stippen = getCallOutDots();
-		for (int i = 0; i < 9; i++)
+		for (int i = 8; i >-1; i--)
 		{
-			if (new Rectangle(stippen[i].x - 3, stippen[i].y - 3, 5, 5).contains(x, y))
+			if (new Rectangle(stippen[i].x - 3, stippen[i].y - 3, 7, 7).contains(x, y))
 			{
 				return i;
 			}
@@ -3408,7 +3616,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			g.setColor(Color.green);
 			for (int i = 0; i < 8; i++)
 			{
-				g.fillOval(stippen[i].x - 3, stippen[i].y - 3, 5, 5);
+				g.fillOval(stippen[i].x - 4, stippen[i].y - 4, 7, 7);
 			}
 			int x = callOutPointX;
 			int y = callOutPointY;
@@ -3421,7 +3629,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if (callOutPointY == getHeight())
 				y -= 3;
 			g.setColor(Color.red);
-			g.fillOval(x - 3, y - 3, 6, 6);
+			g.fillOval(x - 3, y - 3, 7, 7);
 		}
 		if (!tableBorders)
 			return;
@@ -3496,24 +3704,37 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 					hoogteCum = hoogteCum + hoogtes[i] + cellSpaceRow;
 			}
 			hoogteCum -= cellSpaceRow;
-			if(callOut)
-				hoogteCum += this.callOutMargeY0 + this.callOutMargeY1;
+//			if(callOut) {
+//				hoogteCum += this.callOutMargeY0 + this.callOutMargeY1;//TODO 
+//			}
 			for (int j = 0; j < aantalKolommen; j++)
 			{
 				breedteCum = breedteCum + breedtes[j] + cellSpaceColumn;
 			}
 			breedteCum -= cellSpaceColumn;
-			if(callOut)
-				breedteCum += this.callOutMargeX0 + this.callOutMargeX1;
+//			if(callOut)
+//				breedteCum += this.callOutMargeX0 + this.callOutMargeX1;
 			if (pasAanB && pasAanH)
-			{	setSize((int) Math.round(breedteCum) - 1, (int) Math.round(hoogteCum));
+			{	
+				if(callOut)
+					resizeCallOutHB((int) Math.round(breedteCum) - 1, (int) Math.round(hoogteCum));
+				else
+					setSize((int) Math.round(breedteCum) - 1, (int) Math.round(hoogteCum));
 			}
 			else if (pasAanB)
-			{	setSize((int) Math.round(breedteCum) - 1, getSize().height);
+			{	
+				if(callOut)
+					resizeCallOutB((int) Math.round(breedteCum) - 1);
+				else
+					setSize((int) Math.round(breedteCum) - 1, getSize().height);
 			}
 			else if (pasAanH)
-			{	setSize(getSize().width, (int) Math.round(hoogteCum));
-
+			{	
+				if(callOut)
+					resizeCallOutH((int) Math.round(hoogteCum));
+				else
+					setSize(getSize().width, (int) Math.round(hoogteCum));
+				
 			}
 			
 			for (int i = 0; i < aantalRijen; i++)
@@ -4109,6 +4330,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void mouseReleased(MouseEvent e)
 	{
+		if(callOut && callOutDrag)
+			tekstVakken[0][0].layoutTekst();
 		if (dragModeColoms || dragModeRows)
 			WiskOpdr.setLaunchDataChanged();
 		dragModeColoms = false;

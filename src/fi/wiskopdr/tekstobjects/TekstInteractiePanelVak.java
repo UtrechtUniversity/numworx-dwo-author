@@ -1045,6 +1045,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				resizePanel.setBounds(getSize().width-24,getSize().height-24,24,24);
 				resizePanel.setBackground(new Color(150,150,150,150));
 			}
+			if(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isCallOut())
+				 resizePanel.setBounds(getSize().width,getSize().height,0,0);
 			
 		}
 		if(interactiePanel!=null && !popup)((Component)interactiePanel).setSize(b,h);
@@ -1668,7 +1670,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
     				resizePanel.setBounds(getSize().width-24,getSize().height-24,24,24);
     				resizePanel.setBackground(new Color(38, 115, 182,100));
     			}
-    			
+    			 if(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isCallOut())
+    				 resizePanel.setBounds(getSize().width,getSize().height,0,0);
     			add(resizePanel,0);
     			
     			boolean templateEdit = ((TekstVakPanel)interactiePanel).templateModeEdit && !TekstVakPanel.TEMPLATE_EDITOR;
@@ -2606,7 +2609,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public void zetMaat()
 	{	if(interactiePanel!=null)
-		{	if(!popup)setSize(((Component)interactiePanel).getSize().width, ((Component)interactiePanel).getSize().height);
+		{	if(!popup)
+				setSize(((Component)interactiePanel).getSize().width, ((Component)interactiePanel).getSize().height);
 			else if("MW".equals(WiskOpdr.deployVariant) 
 					&& (interactiePanel instanceof GrafiekPanel || interactiePanel instanceof GeogebraPanel))setSize(50,50);
 			else setSize(popupJButton.getSize());
@@ -2901,6 +2905,14 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    int y = (screenSize.height-editInteractiePanelDialog.getHeight())/2;
 		interactiePanel.start();
 		showDialog(true);
+	}
+	
+	@Override
+	public boolean contains(int x, int y) {
+		if(interactiePanel!=null && interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isCallOut()) {
+			return ((TekstVakPanel)interactiePanel).contains(x,y);
+		}
+		return super.contains(x,y);
 	}
 	
 	public void mousePressed(MouseEvent e)

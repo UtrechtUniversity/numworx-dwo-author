@@ -933,6 +933,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		responsiveToggleWidthTF = new WiskOpdrTextField("");
 		responsiveToggleWidthTF.setBounds(170,640,30,20);
+		responsiveToggleWidthTF.setPreferredSize(new Dimension(50,20));
 		responsiveToggleWidthTF.setFont(ifFont);
 		responsiveToggleWidthTF.addActionListener(this);
 		responsiveToggleWidthTF.addFocusListener(this);
@@ -1112,7 +1113,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component[] r212 = {ra(35,0),	logIDLabelLabel, ra(5,0),logIDLabelField,	 hgl()  };
 		Component[] r123 = {templateModeEditCB,ra(10,0),hgl()};
         Component[] r124 = {templateModeFillCB,ra(10,0),hgl()};
-        Component[] r125 = {responsiveCB,   ra(10,0),   hgl()};
+        Component[] r125 = {responsiveCB,   ra(10,0), responsiveToggleWidthTF,   hgl()};
 		
 		selectionObjectBoxIP = hb(r23);	
 		vd = 3;
