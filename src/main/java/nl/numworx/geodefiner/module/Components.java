@@ -6,6 +6,7 @@ import javax.swing.JToolBar;
 import dagger.BindsInstance;
 import dagger.Component;
 import nl.numworx.geodefiner.Instance;
+import nl.numworx.geodefiner.common.DefaultRandomizer;
 import nl.numworx.geodefiner.common.Randomizer;
 
 @Component(modules=Modules.class)
@@ -16,7 +17,7 @@ public interface Components {
 	@Component.Builder
 	interface Builder {
 		@BindsInstance Builder instance(nl.numworx.geodefiner.common.Instance instance);
-		@BindsInstance Builder randomizer(Randomizer random);
+		@BindsInstance Builder randomizer(DefaultRandomizer random);
 		@BindsInstance Builder toolbox(JToolBar toolbox);
 		Components build();
 	}

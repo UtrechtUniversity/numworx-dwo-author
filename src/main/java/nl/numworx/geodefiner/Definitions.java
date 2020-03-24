@@ -36,9 +36,9 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
     protected EventListenerList listenerList = new EventListenerList();
 
 	
-	public Definitions(Tracker viewer) {
+	public Definitions(Tracker viewer, UIModelFactory factory) {
 		super(viewer);
-		factory  = new UIModelFactory(viewer);
+		this.factory  = factory;
 
 	}
 
@@ -71,7 +71,7 @@ public class Definitions extends nl.numworx.geodefiner.common.Definitions implem
 			fireIntervalRemoved(this, 0, s);
 	}
 
-	Iterator<CELL> elements() {
+	public Iterator<CELL> elements() {
 		return delegate.iterator();
 	}
 

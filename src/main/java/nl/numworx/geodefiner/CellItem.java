@@ -4,15 +4,19 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+
 import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JOptionPane;
 import javax.swing.JPanel;
@@ -62,6 +66,7 @@ public class CellItem extends JPanel {
 				name = "point(1,0)";
 			else if ("$#@".equals(name))
 				name = "grid";
+			editor.setName(name);
 			int ok = 
 					canDelete ?
 							JOptionPane.showOptionDialog(CellItem.this, editor, name, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, icon, options, defaultOption)
@@ -128,9 +133,12 @@ public class CellItem extends JPanel {
 	JButton potlood;
 	FormuleVak center;
 	boolean canDelete;
-
-	public CellItem(CELL cell, AbstractViewer viewer, int i0) {
+	final UIModelFactory factory;
+	
+	
+	public CellItem(CELL cell, AbstractViewer viewer, int i0, UIModelFactory factory) {
 		super(new BorderLayout());
+		this.factory = factory;
 		setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 10));
 		canDelete = true;
 		setBackground(Color.WHITE);
@@ -182,8 +190,8 @@ public class CellItem extends JPanel {
 		parent.repaint();
 	}
 	
-	public CellItem(CELL o, AWTViewer viewer2, boolean b) {
-		this(o, viewer2, -1);
+	public CellItem(CELL o, AWTViewer viewer2, UIModelFactory factory, boolean b) {
+		this(o, viewer2, -1, factory);
 		canDelete = b;
 	}
 
@@ -223,7 +231,7 @@ public class CellItem extends JPanel {
 	private UIModel<?, UIEditor> getCellConfig() {
 		if(getCell().config == null) 
 		{
-			getCell().config = new UIModelFactory(viewer).build(getCell().item);
+			getCell().config = factory.build(getCell().item);
 		}
 		return (UIModel<?, UIEditor>) getCell().config;
 	}

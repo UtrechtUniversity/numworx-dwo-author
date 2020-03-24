@@ -1,9 +1,14 @@
 package nl.numworx.geodefiner.ui;
 
 import java.util.Map;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import nl.numworx.geodefiner.common.PointType;
 import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.merge.RenameAction;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Groep;
@@ -62,4 +67,13 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 	public String toString() {
 		return "point";
 	}
+	
+	@Inject PointModel(@Named("p") Destroyable p, Optional<RenameAction> ra) {
+	  this();
+	  rename = ra;
+	  init(p);
+	}
+
+    protected PointModel() {
+    }
 }

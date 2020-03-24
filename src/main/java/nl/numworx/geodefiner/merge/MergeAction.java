@@ -20,9 +20,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import dagger.Lazy;
+import fi.beans.numworxlf.JRadioButton;
+import fi.beans.numworxlf.JTextField;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.Token;
@@ -48,28 +54,45 @@ public class MergeAction extends AbstractAction implements Constants {
   
   static class Ask implements Query {
 
-    String name;
     QueryType type;
-
+    Component parent;
+    JTextField name;
+    JRadioButton replace, keep, rename;
+    ButtonGroup group;
+    
     public Ask(Component parent) {
       type = QueryType.KEEP;
+      this.parent = parent;
+      group = new ButtonGroup();
+      replace = new JRadioButton("replace"); group.add(replace);
+      keep = new JRadioButton("keep", true); group.add(keep);
+      rename = new JRadioButton("rename"); group.add(rename);      
     }
 
     @Override
     public String name() {
-      return name;
+      return name.getText();
     }
 
     @Override
     public QueryType ask(String name) {
-      this.name = name;
+      this.name = new JTextField(name);
       // TODO ask user to keep/rename/replace name
+      Box message = Box.createVerticalBox();
+      message.add(keep);
+      Box h = Box.createHorizontalBox();
+       h.add(rename); h.add(this.name);
+      message.add(h);
+      message.add(replace);
+      JOptionPane.showMessageDialog(parent, message, "?", JOptionPane.PLAIN_MESSAGE);
+      if (rename.isSelected()) return QueryType.RENAME;
+      if (replace.isSelected()) return QueryType.REPLACE;
       return type;
     }
 
   }
 
-  private final Logger LOG = Logger.getLogger(getClass().getName());
+  private static final Logger LOG = Logger.getLogger(MergeAction.class.getName());
 
   @Inject MergeAction() {
     super("Merge...");
@@ -174,7 +197,7 @@ public class MergeAction extends AbstractAction implements Constants {
     return Collections.emptySet();
   }
 
-  private String rename(String item, Map<String, String> rename) {
+  static String rename(String item, Map<String, String> rename) {
     FormuleParser p = new FormuleParser(item.substring(2));
     try {
       List<Token> t = p.tokens();

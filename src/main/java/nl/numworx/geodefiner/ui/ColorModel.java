@@ -3,9 +3,11 @@ package nl.numworx.geodefiner.ui;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.merge.RenameAction;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMSymbol;
@@ -22,12 +24,13 @@ import fi.euclides.util.DefaultAdapter;
 public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 
 	private static final OMObject EUCLIDES_VISIBLE = new OMSymbol("euclides", "visible");
-	Destroyable item;
+	public Destroyable item;
 	Color color = Color.black, trailColor = Color.LIGHT_GRAY;
 	boolean visible, trail,log;
 	Label visibility = new Label();
 	Tracker tracker;
 	Integer zOrder;
+	Optional<RenameAction> rename = Optional.empty();
 	
 	public  void setVisible(boolean visible) {
 		this.visible = visible;

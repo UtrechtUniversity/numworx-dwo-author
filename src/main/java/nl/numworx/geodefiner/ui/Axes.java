@@ -6,24 +6,23 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.swing.Box;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import dagger.Lazy;
 import nl.numworx.geodefiner.CellItem;
 import nl.numworx.geodefiner.common.CELL;
 import fi.euclides.model.Destroyable;
 import fi.euclides.swing.AWTViewer;
 
+@SuppressWarnings("serial")
 public class Axes extends JPanel implements ChangeListener {
 
 	CellItem o,u,x,y,g;
 	Box content;
 	AWTViewer viewer;
+	@Inject Lazy<UIModelFactory> factory;
 	@Inject public Axes(AWTViewer viewer) {
 		super(new BorderLayout());
 		Box h = Box.createVerticalBox();
@@ -39,7 +38,7 @@ public class Axes extends JPanel implements ChangeListener {
 		CELL O = d.adapt(CELL.class);
 		CELL O1 = new CELL(text, d, var);
 		if(O != null) O1.config = O.config;
-		return new CellItem(O1, viewer, false);
+		return new CellItem(O1, viewer, factory.get(), false);
 	}
 	
 	public void init() {

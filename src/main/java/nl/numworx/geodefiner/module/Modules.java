@@ -2,11 +2,13 @@ package nl.numworx.geodefiner.module;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.WeakHashMap;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEventHandler;
 
 import dagger.Binds;
@@ -23,13 +25,20 @@ import fi.euclides.swing.AWTViewer;
 import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.HerleidList;
 import nl.numworx.geodefiner.InstanceViewer;
+import nl.numworx.geodefiner.WiskOpdrRandomizer;
 import nl.numworx.geodefiner.common.CheckObjectList;
+import nl.numworx.geodefiner.common.DefaultRandomizer;
 import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.NamingModel;
+import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.math.Expression;
 import nl.numworx.geodefiner.common.math.ToC;
+import nl.numworx.geodefiner.merge.RenameAction;
+import nl.numworx.geodefiner.ui.Models;
+import nl.numworx.geodefiner.ui.UIModelFactory;
 
-@Module(includes= {Modules.Conversions.class, DelegateModule.class, ToolBoxModule.class})
+@Module(includes= {Modules.Conversions.class, DelegateModule.class, ToolBoxModule.class},
+        subcomponents = { Models.class })
 public abstract class Modules {
 	
 	@Module
@@ -37,6 +46,7 @@ public abstract class Modules {
 		@Binds Tracker tracker(InstanceViewer viewer);
 		@Binds AWTViewer awtviewer(InstanceViewer viewer);
 		@Binds @IntoSet LabelDelegate toc(ToC toc);
+	    @Binds Randomizer defaultRandomizer(DefaultRandomizer p);
 	}
 		
 	@Provides @Singleton static
@@ -72,9 +82,25 @@ public abstract class Modules {
 		return c;
 	}
 	
+	@Provides @Singleton static CBookContext nocontext() {
+	  return new CBookContext() {
+        
+        @Override
+        public Object getProperty(String arg0) {
+          // TODO Auto-generated method stub
+          return null;
+        }
+      };
+	}
+	
+	@Provides static Optional<RenameAction>  noRename() {
+	  return Optional.empty();
+	}
+	
+	
 	@Provides @Singleton static
-	Definitions definitions(InstanceViewer tracker) {
-		return new Definitions(tracker);
+	Definitions definitions(InstanceViewer tracker, UIModelFactory fac) {
+		return new Definitions(tracker, fac);
 	}
 	
 	@Provides @Named("expressions") static
@@ -85,4 +111,5 @@ public abstract class Modules {
 	@Provides static Instance.Selector selector(Instance instance) {
 		return instance.selector;
 	}
+
   }

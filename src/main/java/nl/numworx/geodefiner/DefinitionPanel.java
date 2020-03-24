@@ -20,10 +20,12 @@ import fi.beans.numworxlf.JScrollPane;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import dagger.Lazy;
 import nl.numworx.geodefiner.Definitions.PosConvert;
 import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.model.AbstractViewer;
 
@@ -76,7 +78,7 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener, PosConve
 
 			CELL cell = model.getElementAt(i0);
 			Object i1 = cell.extra;
-			CellItem cellItem = new CellItem(cell,viewer, i0);
+			CellItem cellItem = new CellItem(cell,viewer, i0, factory.get());
 			cellItem.addPropertyChangeListener("item", DefinitionPanel.this);
 // where to start?
 			cellItem.center.formuleVak.geefKind1().addMouseListener(new Click(cellItem));
@@ -122,6 +124,8 @@ class DefinitionPanel extends JPanel implements PropertyChangeListener, PosConve
 		public String randomize(String input) { return input; }
 	};
 	private Map<String, Object> config = Collections.EMPTY_MAP;
+	
+	@Inject Lazy<UIModelFactory> factory;
 	
 	@Inject DefinitionPanel(Definitions model, AbstractViewer viewer, Randomizer randomizer) {
 		super(new BorderLayout());

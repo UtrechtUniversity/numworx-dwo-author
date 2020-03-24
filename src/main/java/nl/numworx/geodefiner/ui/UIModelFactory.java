@@ -4,6 +4,7 @@ import nl.numworx.geodefiner.common.Grid;
 import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.merge.RenameAction;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,11 +29,16 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 
 	private UIModel<? extends Destroyable, UIEditor> model;
 	private Tracker tracker;
-	@Inject public UIModelFactory(Tracker viewer) {
+	private Models.Builder builder;
+	private transient Models models;
+	
+	@Inject public UIModelFactory(Tracker viewer, Models.Builder builder) {
+	    this.builder = builder;
 		this.tracker = viewer;
 	}
-
+		
 	public UIModel<?, UIEditor> build(Destroyable d) {
+	    models = builder.init(d).build();
 		model = null;
 		if(d instanceof Groep) {
 			Groep g = (Groep)d;
@@ -45,11 +51,11 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 	
 	public void visitPunt(Punt p) {
 		if(p == tracker.getModel().getO())
-			model = new OModel().init(p);
+			model = models.omodel();
 		else if (p == tracker.getModel().getU())
-			model = new UModel().init(p);
+			model = models.umodel();
 		else
-			model = new PointModel().init(p);
+			model = models.pointmodel();
 	}
 
 	public void visitLijn(Lijn l) {

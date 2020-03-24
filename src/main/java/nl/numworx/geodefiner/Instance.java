@@ -26,17 +26,12 @@ import javax.swing.ToolTipManager;
 import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Check_DWO;
 import nl.numworx.geodefiner.common.DefaultRandomizer;
-import nl.numworx.geodefiner.common.LocusModelFX;
-import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.locus.Builder;
 import nl.numworx.geodefiner.module.Components;
 import nl.numworx.geodefiner.module.DaggerComponents;
-import nl.numworx.geodefiner.ui.TextModel;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.numworx.geodefiner.ui.UserConfig;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
-import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
-
 import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
@@ -47,20 +42,14 @@ import org.cbook.cbookif.LessonMode;
 import org.cbook.cbookif.SuccessStatus;
 
 import dagger.Lazy;
+import dagger.MembersInjector;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Locus;
-import fi.euclides.model.Model;
-import fi.euclides.model.Punt;
-import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
-import fi.euclides.proof.LabelDelegate;
-import fi.euclides.swing.HitTester2;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
-import fi.wiskopdr.WiskOpdr;
-import fi.wiskopdr.formuleobjects.FormuleParser;
 
 
 public class Instance extends nl.numworx.geodefiner.common.Instance implements CBookWidgetInstanceIF, CBookEventListener, PropertyChangeListener  {
@@ -89,7 +78,9 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	@Inject void setUiModelFactory(UIModelFactory factory) {
 		this.uiModelFactory = factory;
 	}
-	
+	@Inject void setRandomizer(DefaultRandomizer r) {
+	  random = r;
+	}
 	
 	void inject(WiskOpdrRandomizer r, JToolBar toolbar)
 	{
@@ -116,7 +107,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		return (InstanceViewer) viewer;
 	}
 
-	JToolBar toolbox;
+	@Inject JToolBar toolbox;
 
 	private KijkNaAction action;
 
@@ -124,7 +115,10 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 	
 	public Instance(WiskOpdrRandomizer command, JToolBar toolbar) {
 		inject(command, toolbar);
-		//content.setBackground(Color.white);
+		afterInject();
+	}
+  private void afterInject() {
+    //content.setBackground(Color.white);
 		panel.setOpaque(false);panel.setBackground(null);
 		//content.setBorder(BorderFactory.createEtchedBorder());
 		selector.setTracker(viewer);
@@ -150,12 +144,15 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		if(GeoDefiner.isExperimental) {
 		  
 		}
-	}
+  }
 
 	public Instance() {
 		this(new WiskOpdrRandomizer(new HashMap<String, Number>()), new JToolBar());
 	}
 
+	public Instance(Void v) {}
+	
+	
 	public void addCBookEventListener(CBookEventListener listener, final String command) {
 		handler.addCBookEventListener(listener, command);
 		// command is double.NAAM
@@ -429,6 +426,10 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 			action.nofeedback();
 		super.setNagekeken(nagekeken);
 	}
+  public void inject(MembersInjector<Instance> injector) {
+      injector.injectMembers(this);
+      afterInject();
+  }
 
 	
 }
