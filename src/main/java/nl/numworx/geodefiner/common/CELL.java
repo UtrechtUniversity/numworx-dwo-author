@@ -5,10 +5,10 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.util.DefaultAdapter;
 
 public class CELL {
-	public final String text;
+	public String text;
 	public Destroyable item;
 	public UIModel<?, ?> config;
-	public final String var;
+	public String var;
 	public Object extra;
 	
 	public CELL(String text, Destroyable item, OMVariable var) {
