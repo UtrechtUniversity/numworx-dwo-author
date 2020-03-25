@@ -4,8 +4,6 @@ import nl.numworx.geodefiner.common.Grid;
 import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
 import nl.numworx.geodefiner.common.UIModel;
-import nl.numworx.geodefiner.merge.RenameAction;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -29,16 +27,14 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 
 	private UIModel<? extends Destroyable, UIEditor> model;
 	private Tracker tracker;
-	private Models.Builder builder;
-	private transient Models models;
+	private Models models;
 	
 	@Inject public UIModelFactory(Tracker viewer, Models.Builder builder) {
-	    this.builder = builder;
+	    this.models = builder.build();
 		this.tracker = viewer;
 	}
 		
-	public UIModel<?, UIEditor> build(Destroyable d) {
-	    models = builder.init(d).build();
+	public UIModel<? extends Destroyable, UIEditor> build(Destroyable d) {
 		model = null;
 		if(d instanceof Groep) {
 			Groep g = (Groep)d;
@@ -55,60 +51,68 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 		else if (p == tracker.getModel().getU())
 			model = models.umodel();
 		else
-			model = models.pointmodel();
+			model = models.pointmodel().init(p);
 	}
 
 	public void visitLijn(Lijn l) {
 		if (l instanceof Ray) {
-			model = new RayModel().init(l);
+			model = models.raymodel().init(l);
 			return;
 		}
 		String name = tracker.getMapper().toString(l);
 		if("x".equals(name) || "y".equals(name))
-			model = new AxesModel().init(l);
+			model = models.axesmodel().init(l);
 		else
-			model = new LineModel().init(l);
+			model = models.linemodel().init(l);
 	}
 
 	public void visitCirkel(Cirkel c) {
-		model = new CircleModel().init(c);
+		model = models.circlemodel().init(c);
 	}
 
 	public void visitSegment(Segment s) {
-		model = new SegmentModel().init(s);
+		model = models.segmentmodel().init(s);
 	}
 
 	public void visitLabel(Label label) {
 		//model = new ColorModel<Label>().init(label);
 		if(label.getRegistered() instanceof Interval) {
-			model = new IntervalModel().init(label);
+			model = models.intervalmodel().init(label);
 			return;
 		}
 
-		model = new TextModel().init(label);
+		model = models.textmodel().init(label);
 	}
 
 	public void visitTriangle(Triangle t) {
-		model = new CircleModel().init(t);
+		model = models.circlemodel().init(t);
 	}
 
 	public void visitKegelsnede(Kegelsnede2 k) {
-		model = new LineModel().init(k);
+		model = models.linemodel().init(k);
 	}
 
-	public void visitLocus(Locus l) {
+	public void visitLocus(Locus l) {		
 		if (l instanceof Grid) {
-			model = new GridModel().init(l);
-		} else
-		
+			model = models.gridmodel().init(l);
+		} else		
 		if (l instanceof Integral) {
-			model = new ColorModel<Locus>().init(l);
-		} else
-			model = new LineModel().init(l);
+			if (isVgl(l))
+				model = models.inequalitymodel().init(l);
+			else
+				model = models.integralmodel().init(l);
+		} else if (isVgl(l)) 
+			model = models.vglmodel().init(l);
+		else
+			model = models.linemodel().init(l);
+	}
+
+	private boolean isVgl(Locus l) {
+		return tracker.getMapper().toString(l).startsWith("$");
 	}
 
 	public void visitBoog(Boog b) {
-		model = new CircleModel().init(b);
+		model = models.circlemodel().init(b);
 	}
 
 }

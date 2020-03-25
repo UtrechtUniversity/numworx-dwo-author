@@ -12,9 +12,9 @@ public class UModel extends PointModel {
 		return new UPane(this);
 	}
 
-	@Inject UModel(Tracker model) {
+	@Inject UModel(Tracker tracker) {
 	  super();
-	  set(model);
-	  init(model.getModel().getU());
+	  set(tracker);
+	  init(tracker.getModel().getU());
 	}
 }

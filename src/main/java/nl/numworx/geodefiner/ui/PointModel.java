@@ -10,6 +10,7 @@ import nl.numworx.geodefiner.common.PointType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.merge.RenameAction;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Groep;
 import fi.euclides.model.Punt;
@@ -52,7 +53,7 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 	}
 	
 	public UIEditor editor() {
-		return new PointPane(this);
+		return new PointPane<>(this);
 	}
 
 	public UIModel<Destroyable, UIEditor> init(Punt item) {
@@ -68,10 +69,10 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 		return "point";
 	}
 	
-	@Inject PointModel(@Named("p") Destroyable p, Optional<RenameAction> ra) {
+	@Inject PointModel(Optional<RenameAction> ra, Tracker tracker) {
 	  this();
+	  set(tracker);
 	  rename = ra;
-	  init(p);
 	}
 
     protected PointModel() {

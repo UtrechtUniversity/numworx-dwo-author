@@ -1,7 +1,13 @@
 package nl.numworx.geodefiner.ui;
 
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 import nl.numworx.geodefiner.common.Tips;
+import nl.numworx.geodefiner.merge.RenameAction;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 public class RayModel extends SegmentModel {
@@ -36,5 +42,8 @@ public class RayModel extends SegmentModel {
 		super.install(item);
 	}
 
+	@Inject RayModel(Tracker tracker, Optional<RenameAction> ra) {
+		super(tracker, ra);
+	}
 
 }

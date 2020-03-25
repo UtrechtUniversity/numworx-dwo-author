@@ -4,13 +4,18 @@ import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.Stroke;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.inject.Inject;
 
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.Animate;
 import nl.numworx.geodefiner.common.Animator;
 import nl.numworx.geodefiner.common.StepValue;
 import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.merge.RenameAction;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.Label;
@@ -26,8 +31,8 @@ public class IntervalModel extends TextModel {
 	Number step;
 	Float  width = Float.valueOf(1f);
 	
-	public IntervalModel() {
-		super();
+	@Inject IntervalModel(Tracker tracker, Optional<RenameAction> rename) {
+		super(tracker, rename);
 		align = Align.TOP;
 	}
 

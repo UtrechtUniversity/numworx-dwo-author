@@ -3,11 +3,14 @@ package nl.numworx.geodefiner.ui;
 import java.awt.Color;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import nl.numworx.geodefiner.Instance;
 import nl.numworx.geodefiner.Snapper;
 import nl.numworx.geodefiner.common.LineType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Locus;
@@ -49,5 +52,9 @@ public class GridModel extends LineModel {
 		}
 		if(color == null) color = Color.gray;
 		return this;
+	}
+	
+	@Inject GridModel(Tracker t) {
+		set(t);
 	}
 }

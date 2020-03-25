@@ -2,20 +2,29 @@ package nl.numworx.geodefiner.ui;
 
 import javax.inject.Named;
 
-import dagger.BindsInstance;
 import dagger.Subcomponent;
-import fi.euclides.model.Destroyable;
+import fi.euclides.model.Locus;
 
 @Subcomponent(modules = { ModelsModule.class })
 public interface Models {
   OModel omodel();
   UModel umodel();
   PointModel pointmodel();
-
-  @Subcomponent.Builder
-  interface Builder {
-    Models build();
-    @BindsInstance Builder init(@Named("p") Destroyable p);
+  LineModel linemodel();
+  RayModel raymodel();
+  AxesModel axesmodel();
+  SegmentModel segmentmodel();
+  CircleModel circlemodel();
+  @Named("locus") ColorModel<Locus> integralmodel();
+  @Named("vgl")   LineModel vglmodel();
+  @Named("ivgl")  ColorModel<Locus> inequalitymodel();
+  GridModel gridmodel();
+  
+  TextModel textmodel();
+  IntervalModel intervalmodel();
+  
+  @Subcomponent.Builder interface Builder {
+	  Models build();
   }
 
 }

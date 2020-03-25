@@ -3,11 +3,16 @@ package nl.numworx.geodefiner.ui;
 import java.awt.Font;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.inject.Inject;
 
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.common.Volgpunt;
+import nl.numworx.geodefiner.merge.RenameAction;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
@@ -121,5 +126,10 @@ public class TextModel extends ColorModel<Label> {
 	
 	public String sample() {
 		return item.getString();
+	}
+	
+	@Inject TextModel(Tracker t, Optional<RenameAction> ra) {
+		set(t);
+		rename = ra;
 	}
 }

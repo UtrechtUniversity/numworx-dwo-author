@@ -52,7 +52,7 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		if (model.rename.isPresent()) {
 		  RenameAction action = model.rename.get();
 		  action.setPane(this);
-		  hbox.add(new JLabel("Name:"));
+		  hbox.add(new JLabel(Messages.getString("Euclides.103")));
 		  name = new JTextField(action.getName());
 		  name.addActionListener(action);
 		  hbox.add(name);

@@ -2,7 +2,10 @@ package nl.numworx.geodefiner.ui;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 
 public class AxesModel extends LineModel {
@@ -32,5 +35,8 @@ public class AxesModel extends LineModel {
 		super.install(item);
 	}
 
+	@Inject AxesModel(Tracker t) {
+		set(t);
+	}
 
 }

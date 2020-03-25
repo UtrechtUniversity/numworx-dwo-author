@@ -3,9 +3,14 @@ package nl.numworx.geodefiner.ui;
 import java.awt.Color;
 import java.awt.Paint;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.inject.Inject;
 
 import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.merge.RenameAction;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
@@ -75,5 +80,10 @@ public class CircleModel extends LineModel {
 		super.install(item);	
 		DefaultAdapter.getDefault(item)
 		.put(Paint.class, fill.equals(TRANSPARANT)? null : fill);
+	}
+	
+	@Inject CircleModel(Tracker t, Optional<RenameAction> ra) {
+		set(t);
+		rename = ra;
 	}
 }

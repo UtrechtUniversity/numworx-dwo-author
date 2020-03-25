@@ -3,10 +3,15 @@ package nl.numworx.geodefiner.ui;
 import java.awt.BasicStroke;
 import java.awt.Stroke;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.inject.Inject;
 
 import nl.numworx.geodefiner.common.LineType;
 import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.merge.RenameAction;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Lijn;
 import fi.euclides.util.DefaultAdapter;
@@ -66,4 +71,11 @@ public class LineModel extends ColorModel<Destroyable> {
 		super.install(item);
 	}
 
+	LineModel() {}
+
+	@Inject LineModel(Tracker tracker, Optional<RenameAction> ra) {
+		this();
+		set(tracker);
+		rename = ra;
+	}
 }

@@ -1,15 +1,20 @@
 package nl.numworx.geodefiner.ui;
 
 import java.util.Map;
+import java.util.Optional;
 
+import javax.inject.Inject;
+
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Lijn;
 import fi.euclides.util.DefaultAdapter;
 import nl.numworx.geodefiner.common.Tips;
 import nl.numworx.geodefiner.common.UIModel;
+import nl.numworx.geodefiner.merge.RenameAction;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
-class SegmentModel extends LineModel {
+public class SegmentModel extends LineModel {
 
 	Tips tip = Tips.NOTIP;
 
@@ -57,4 +62,9 @@ class SegmentModel extends LineModel {
 		}
 	}
 
+	@Inject SegmentModel(Tracker t, Optional<RenameAction> ra) {
+		set(t);
+		rename = ra;
+	}
+	
 }
