@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -79,10 +80,12 @@ public class MergeAction extends AbstractAction implements Constants {
       this.name = new JTextField(name);
       // TODO ask user to keep/rename/replace name
       Box message = Box.createVerticalBox();
-      message.add(keep);
+      message.add(keep); keep.setAlignmentX(Component.LEFT_ALIGNMENT);
       Box h = Box.createHorizontalBox();
-       h.add(rename); h.add(this.name);
+      h.add(rename); h.add(this.name);
+      h.setAlignmentX(Component.LEFT_ALIGNMENT);
       message.add(h);
+      replace.setAlignmentX(Component.LEFT_ALIGNMENT);
       message.add(replace);
       JOptionPane.showMessageDialog(parent, message, "?", JOptionPane.PLAIN_MESSAGE);
       if (rename.isSelected()) return QueryType.RENAME;
@@ -135,7 +138,7 @@ public class MergeAction extends AbstractAction implements Constants {
     rename = new LinkedHashMap<>();
     for(String item: orderMerge) {
       if (orderOrg.contains(item)) {
-        switch(query.ask(item)) {
+        switch(query.ask(suggest(item, orderOrg, rename.values()))) {
           case KEEP: /*rename.put(item, null);*/ break;
           case REPLACE: rename.put(item, item); break;
           case RENAME: rename.put(item, query.name());
@@ -178,7 +181,22 @@ public class MergeAction extends AbstractAction implements Constants {
     return org;
   }
 
-  private void remove(List<String> defOrg, String item) {
+  private String suggest(String item, Collection<String> orderOrg, Collection<String> values) {
+	int l = item.length();
+	while(l > 0 && Character.isDigit(item.charAt(l-1))) l--;
+	String pre = item.substring(0, l);
+	String post = item.substring(l);
+	if (post.isEmpty()) post = "1";
+	int n = Integer.parseInt(post);
+	Set<String> items = new TreeSet<>(values); items.addAll(orderOrg);
+	do { 
+		n++;
+		item = pre + n;
+	} while(items.contains(item));
+	return item;
+}
+
+private void remove(List<String> defOrg, String item) {
     Iterator<String> i = defOrg.iterator();
     while (i.hasNext()) {
       String string = (String) i.next();
