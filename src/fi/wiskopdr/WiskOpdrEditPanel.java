@@ -97,7 +97,7 @@ public class WiskOpdrEditPanel extends JPanel
 	{	super.setSize(b,h);
 		if (opdrContainer!=null) {
 		  
-		  opdrContainer.setSize(b,h);
+		  opdrContainer.setBounds(0,0,b,h);
 		  opdrContainer.setEditPanelSize();
 		}
 	}
