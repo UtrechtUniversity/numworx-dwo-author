@@ -26,14 +26,14 @@ public class SimpleSwingBrowser extends JPanel implements Status, ConsoleListene
     public static boolean debug;
     
     static final SwingBrowserProvider PROVIDER = new SwingBrowserProvider();
-    final SwingBrowserFactory FACTORY = PROVIDER.getFactory();    
-    final SwingBrowser browser = FACTORY.newBrowser();
+    private final SwingBrowserFactory FACTORY;    
+    private final SwingBrowser browser;
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private final JComponent jfxPanel = browser.asComponent();
+	private final JComponent jfxPanel;
  
 	public JComponent getJfxPanel() {
 		return jfxPanel;
@@ -86,8 +86,16 @@ public class SimpleSwingBrowser extends JPanel implements Status, ConsoleListene
 
 	private final JLabel lblStatus = new JLabel();
  
-    public SimpleSwingBrowser() {
+	
+	public SimpleSwingBrowser() {
+		this(PROVIDER.getFactory());
+	}
+	
+    public SimpleSwingBrowser(SwingBrowserFactory factory) {
         super(new BorderLayout());
+        FACTORY = factory;
+        browser = FACTORY.newBrowser();
+        jfxPanel = browser.asComponent();
         initComponents();
         browser.addStatusListener(e -> status.showStatus(e.getStatus()));
     }
