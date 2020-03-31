@@ -14,12 +14,15 @@ import fi.beans.browser.SimpleSwingBrowser;
 import fi.beans.browser.Status;
 import fi.beans.scorm.SAMLLoginIF;
 import fi.previewhtml.DefaultAPI;
+import nl.numworx.swingbrowser.api.SwingBrowserProvider;
 
 @SuppressWarnings("serial")
 public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     
     static final Logger LOG = Logger.getLogger(SamlLoginPanel.class.getName());
   
+    static SwingBrowserProvider provider = new SwingBrowserProvider();
+    
     public static final class PrintStatus extends Console implements Status {
         @Override
         public void showStatus(String message) {
@@ -95,6 +98,7 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     API api = new API();
 
   public SamlLoginPanel() {
+	super(provider.getFactory());
     newSession();
     PrintStatus status = new PrintStatus();
     setConsole(status);
@@ -109,3 +113,5 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     return this;
   }
 }
+
+
