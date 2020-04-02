@@ -23,6 +23,7 @@ import fi.euclides.util.DefaultAdapter;
 
 public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 
+	public static final String VISIBILITY = "visibility";
 	private static final OMObject EUCLIDES_VISIBLE = new OMSymbol("euclides", "visible");
 	public Destroyable item;
 	Color color = Color.black, trailColor = Color.LIGHT_GRAY;
@@ -82,7 +83,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		map.put("visible", visible);
 		if(getVisibility() != null && !getVisibility().isEmpty())
 		{
-			map.put("visibility", getVisibility());
+			map.put(VISIBILITY, getVisibility());
 		}
 		if(trail) {
 		  map.put("trail", Boolean.TRUE);
@@ -97,7 +98,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		if(map.containsKey("color"))
 			color = new Color( map.getInt("color"), true);
 		visible = map.getBoolean("visible", visible);
-		visibility.setString(map.getString("visibility"));
+		visibility.setString(map.getString(VISIBILITY));
 		trail = map.getBoolean("trail", false);
 		log = map.getBoolean("log", false);
 	}

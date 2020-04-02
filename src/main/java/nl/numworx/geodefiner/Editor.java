@@ -107,7 +107,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	private Instance instance;
 	private DefinitionPanel definition;
 	private RandomPanel random;
-	private CheckDWOPanel checkDWO;
+	private final CheckDWOPanel checkDWO;
 	
 	void setChoices(boolean[][] choices) {
 		checkDWO.setChoices(choices);
@@ -117,7 +117,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		return checkDWO.getChoices();
 	}
 
-	private CheckObjectsPanel checkObjects;
+	private final CheckObjectsPanel checkObjects;
 	private ToolboxPanel toolbox;
 	private CommandPanel command;
 	private CBookContext context;
@@ -421,5 +421,13 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 			}
 			setFeedback(command, evt.getSource());
 		}
+	}
+
+	public CheckDWOPanel getCheckDWO() {
+		return checkDWO;
+	}
+
+	public CheckObjectsPanel getCheckObjects() {
+		return checkObjects;
 	}
 }

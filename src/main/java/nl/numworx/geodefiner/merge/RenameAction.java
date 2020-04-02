@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -16,14 +18,23 @@ import javax.swing.JOptionPane;
 import dagger.Lazy;
 import dagger.Reusable;
 import fi.euclides.event.NameMapper;
+import fi.euclides.formuleobjects.Token;
 import fi.euclides.model.Destroyable;
 import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.Editor;
 import nl.numworx.geodefiner.common.CELL;
+import nl.numworx.geodefiner.common.CheckObject;
+import nl.numworx.geodefiner.common.CheckObjectList;
+import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.NamingModel;
+import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.ui.ColorModel;
 import nl.numworx.geodefiner.ui.ColorPane;
+import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 
+import static nl.numworx.geodefiner.merge.MergeAction.rename;
+
+@SuppressWarnings("serial")
 @Reusable
 public class RenameAction extends AbstractAction {
 
@@ -32,6 +43,7 @@ public class RenameAction extends AbstractAction {
   }
   
   @Inject Lazy<Editor> editor;
+  @Inject Lazy<Instance> instance;
   @Inject NamingModel mapper;
   @Inject Definitions definitions;
   
@@ -39,7 +51,6 @@ public class RenameAction extends AbstractAction {
   
   @Override
   public void actionPerformed(ActionEvent e) {
-    System.err.println(e.getActionCommand());
     pane.setName(e.getActionCommand());
     putValue(NAME,e.getActionCommand());
     Container parent = (Container) pane;
@@ -60,16 +71,45 @@ public class RenameAction extends AbstractAction {
       Map<String,String> map = Collections.singletonMap(oldName, newName);
       while (iter.hasNext()) {
         CELL cell = iter.next();
+
+        if (cell.config != null) {
+        	UIModel<?, ?> config = cell.config;
+        	Map<String, Object> cfg = config.toMap();
+        	if (cfg.containsKey(ColorModel.VISIBILITY)) {
+        		String visibility = (String) cfg.get(ColorModel.VISIBILITY);
+        		String visibility2 = rename(visibility, map, true);
+        		if (visibility != visibility2) {
+        			cfg.put(ColorModel.VISIBILITY, visibility2);
+        			config.fromMap(JSONUtilities.wrapMap(cfg));
+        		}        		
+        	}
+        	
+        }
         if (cell.item == p) {
-          System.err.println(cell.text);
-          cell.text = MergeAction.rename(cell.text, map);
+          cell.text = rename(cell.text, map, false);
           cell.var = newName;
           definitions.update(cell);
         } else {
-          cell.text = MergeAction.rename(cell.text, map);
+          cell.text = rename(cell.text, map, false);
           definitions.update(cell);        
         }       
       }
+      
+      Map<String, Object> checkDWO = editor.get().getCheckDWO().toMap();
+      checkDWO.put("formule", rename((String) checkDWO.get("formule"), map, true));
+      editor.get().getCheckDWO().fromMap(JSONUtilities.wrapMap(checkDWO));
+      
+      CheckObjectList checkObjects = instance.get().checkObjects;
+      int size = checkObjects.getSize();
+      for(int i = 0; i < size; i++) {
+    	  CheckObject obj = checkObjects.getElementAt(i);
+    	  String formule = obj.getFormule();
+    	  String formule2 = rename(formule, map, true);
+    	  if (formule != formule2)
+    		  obj.setFormule(formule2);
+      }
+      editor.get().getCheckObjects().fireTableDataChanged();
+      
       editor.get().repaint();         
     }
   }

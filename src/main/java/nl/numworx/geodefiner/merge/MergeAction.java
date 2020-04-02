@@ -159,7 +159,7 @@ public class MergeAction extends AbstractAction implements Constants {
     for(String item: defMerge) {
       String key = key(item);
       if (rename.containsKey(key))
-        mapMerge.put(key, rename(item, rename));
+        mapMerge.put(key, rename(item, rename, false));
     }
     for(String item: mapMerge.keySet()) {
       String newItem = rename.get(item);
@@ -215,10 +215,12 @@ private void remove(List<String> defOrg, String item) {
     return Collections.emptySet();
   }
 
-  static String rename(String item, Map<String, String> rename) {
+  static String rename(String item, Map<String, String> rename, boolean expr) {
+	if("$f@".equals(item)) return item;
     FormuleParser p = new FormuleParser(item.substring(2));
     try {
-      List<Token> t = p.tokens();
+      List<Token> t = expr ? p.tokens_expr() : p.tokens();
+      t = p.insertSpecials(t);
       StringBuilder sb = new StringBuilder(item.length()+10);
       sb.append("$f");
       for(Token i: t) {

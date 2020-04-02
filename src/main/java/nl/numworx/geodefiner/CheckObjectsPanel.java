@@ -43,6 +43,9 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 	CheckObjectList checkObjects;
 	private CheckObjectsModel model;
 	
+	public void fireTableDataChanged() {
+		model.fireTableDataChanged();
+	}
 	
 	class CheckObjectsModel extends AbstractTableModel {
 

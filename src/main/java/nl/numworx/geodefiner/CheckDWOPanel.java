@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import fi.beans.numworxlf.JCheckBox;
@@ -35,7 +36,7 @@ import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
-class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
+public class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 
 	private static final Integer DEFAULT_SCORE = Integer.valueOf(10);
 	private JFormattedTextField score;
@@ -184,7 +185,7 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 		return null;
 	}
 
-	Map<String,Object> toMap() {
+	public Map<String,Object> toMap() {
 		Map<String,Object> result = new TreeMap<String,Object>();
 		result.put("check", checkDWO.isSelected());
 		result.put("score", score.getValue());
@@ -193,7 +194,7 @@ class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 		return result;
 	}
 	
-	void fromMap(ObjectMap map) {
+	public void fromMap(ObjectMap map) {
 		if(map.containsKey("score"))
 			score.setValue(map.getInt("score"));
 		else
