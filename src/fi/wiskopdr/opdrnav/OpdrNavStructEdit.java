@@ -108,7 +108,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public static String defaultTemplatePage = "";
 	
 	private JMenuBar menuBar;
-	public static boolean hasMenuBar = true;
+	public static boolean hasMenuBar = false;
 	
 	/**
 	 * Maakt nieuwe Opdrachtnavigatie-editor op basis van de aangeleverde launchData
