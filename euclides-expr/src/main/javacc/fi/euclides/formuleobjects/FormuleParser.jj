@@ -111,6 +111,23 @@ public class FormuleParser implements OMConstants{
     return arglist;
   }
 
+  public List<Token> insertSpecials(List<Token> tokens) {
+		List<Token> result = new LinkedList<Token>();
+		//tokens.forEach(t -> collect(result,t));
+		for(Token t:tokens) collect(result,t);
+// spaces at end.
+		Token last = result.listIterator(result.size()).previous();
+		collect(result,last.next.specialToken);
+		return result;
+	}
+
+	private void collect(List<Token> result, Token t) {
+		if(t == null) return;
+		collect(result, t.specialToken);
+		result.add(t);
+		return;
+	}
+
   public OMSymbol relation(Token tok) {
     char ch = tok.toString().charAt(0);
     switch(ch) {
@@ -275,7 +292,33 @@ List<Token> tokens() :
 		return result; 
 	}
 }
+
+List<Token> tokens_expr() :
+{
+	Token head,tail;
+}
+{
+	{ head = getToken(1); }
+	exprAt()
+	{ 
+		tail = getToken(0);
+		List<Token> result = new ArrayList<Token>();
+		do { 
+			result.add(head);
+			head = head.next;
+		} while( head != tail );
+		return result; 
+	}
+}
+
 	
+OMObject exprAt() :
+{ OMObject o; }
+{
+  o = expr() ( "@" | < EOF >)
+  { return o; }
+}
+  
 OMObject parse() :{OMObject o;}{  o = assign() ( "@" | < EOF >)  {    return o;  }| "@" { return null; }
 | < EOF > { return null; }}
 

@@ -53,7 +53,7 @@ public class TokenTest {
 	        List<Token> tokens = p.tokens();
 	        assertEquals("size tokens", 5, tokens.size());
 	        System.out.println(tokens);
-	        tokens = insertSpecials(tokens);
+	        tokens = p.insertSpecials(tokens);
 	        assertEquals("size + specials" , 9, tokens.size()) ;
 	        System.out.println(tokens);
 	        assertEquals("toString", source, toString(tokens));
@@ -171,7 +171,7 @@ public class TokenTest {
 		List<Token> tokens = p.tokens();
 		assertEquals("size tokens", 5, tokens.size());
 		System.out.println(tokens);
-		tokens = insertSpecials(tokens);
+		tokens = p.insertSpecials(tokens);
 		assertEquals("size + specials" , 8, tokens.size()) ;
 		System.out.println(tokens);
 		assertEquals("toString", source, toString(tokens));
@@ -193,22 +193,6 @@ public class TokenTest {
 	}
 	
 	
-	private List<Token> insertSpecials(List<Token> tokens) {
-		List<Token> result = new LinkedList<Token>();
-		tokens.forEach(t -> collect(result,t));
-// spaces at end.
-		Token last = result.listIterator(result.size()).previous();
-		collect(result,last.next.specialToken);
-		return result;
-	}
-
-	private void collect(List<Token> result, Token t) {
-		if(t == null) return;
-		collect(result, t.specialToken);
-		result.add(t);
-		return;
-	}
-
 	public String toString(List<Token> tokens) {
 		StringBuilder sb = new StringBuilder();
 		for(Token t: tokens) {
