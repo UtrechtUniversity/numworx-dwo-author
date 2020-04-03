@@ -36,6 +36,7 @@ import fi.euclides.formuleobjects.Token;
 import fi.euclides.model.Model;
 import fi.euclides.openmath.OMConstants;
 import nl.numworx.geodefiner.Editor;
+import nl.numworx.geodefiner.ui.ColorModel;
 import nl.tue.win.riaca.openmath.lang.OMApplication;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.tue.win.riaca.openmath.lang.OMVariable;
@@ -169,7 +170,10 @@ public class MergeAction extends AbstractAction implements Constants {
         defOrg.add(def);
         Map<String, Object> config = configMerge.get(item);
         if(config != null) {
-          // TODO rename visibility
+          String visibility = (String) config.get(ColorModel.VISIBILITY);
+          visibility = rename(visibility, rename, true);
+          config.put(ColorModel.VISIBILITY, visibility);
+        	
           configOrg.put(newItem, config);
         } else configOrg.remove(newItem);
         Object position = posMerge.get(item);
@@ -186,7 +190,7 @@ public class MergeAction extends AbstractAction implements Constants {
 	while(l > 0 && Character.isDigit(item.charAt(l-1))) l--;
 	String pre = item.substring(0, l);
 	String post = item.substring(l);
-	if (post.isEmpty()) post = "1";
+	if (post.isEmpty()) post = "0";
 	int n = Integer.parseInt(post);
 	Set<String> items = new TreeSet<>(values); items.addAll(orderOrg);
 	do { 
