@@ -7,7 +7,7 @@ import fi.euclides.util.DefaultAdapter;
 public class CELL {
 	public String text;
 	public Destroyable item;
-	public UIModel<?, ?> config;
+	public UIModel<? extends Destroyable, ?> config;
 	public String var;
 	public Object extra;
 	
