@@ -1,6 +1,9 @@
 package nl.numworx.samllogin;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Properties;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
 import javax.swing.JComponent;
@@ -22,6 +25,7 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     static final Logger LOG = Logger.getLogger(SamlLoginPanel.class.getName());
   
     static SwingBrowserProvider provider = new SwingBrowserProvider();
+    static BiConsumer<SamlLoginPanel, API> strategy = (p, api) -> p.setApi(api);
     
     public static final class PrintStatus extends Console implements Status {
         @Override
@@ -40,7 +44,7 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
      * @author wim
      *
      */
-  public static class API extends DefaultAPI
+  public static class API extends DefaultAPI implements PropertyChangeListener
   {
     private Properties map = new Properties();
     private Deferred<Properties> defer = new Deferred<>();
@@ -59,6 +63,14 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     public Promise<Properties> getPromise() {
         return defer.getPromise();
     }
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if ("Terminate".equals(evt.getPropertyName()))
+			LMSFinish((String) evt.getOldValue());
+		else if (evt.getNewValue() instanceof String)
+			LMSSetValue(evt.getPropertyName(), (String) evt.getNewValue());			
+	}
   }
     
     void cleanup() {
@@ -85,15 +97,17 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
       }
       return p;
     }
-    
+    String extra = "";    
+
     @Override
 	public void loadURL(String url) {
-		super.loadURL(url);
+		super.loadURL(url + extra);
 	}
 
 	public SamlLoginPanel(String url) {
       this();
       loadURL(url);
+      getJfxPanel().setName("Aanmelden");
     }
     API api = new API();
 
@@ -102,7 +116,7 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     newSession();
     PrintStatus status = new PrintStatus();
     setConsole(status);
-    setApi(api);
+    strategy.accept(this, api);
     setStatus(status);
     setSize(320,446); // UU 
     setPreferredSize(getSize());
