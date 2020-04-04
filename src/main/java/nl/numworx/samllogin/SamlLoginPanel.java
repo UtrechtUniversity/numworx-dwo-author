@@ -102,12 +102,12 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     @Override
 	public void loadURL(String url) {
 		super.loadURL(url + extra);
+	    getJfxPanel().setName("Aanmelden");
 	}
 
 	public SamlLoginPanel(String url) {
       this();
       loadURL(url);
-      getJfxPanel().setName("Aanmelden");
     }
     API api = new API();
 
