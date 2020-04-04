@@ -220,7 +220,7 @@ private void remove(List<String> defOrg, String item) {
   }
 
   static String rename(String item, Map<String, String> rename, boolean expr) {
-	if("$f@".equals(item)) return item;
+	if(item == null || "$f@".equals(item)) return item;
     FormuleParser p = new FormuleParser(item.substring(2));
     try {
       List<Token> t = expr ? p.tokens_expr() : p.tokens();
