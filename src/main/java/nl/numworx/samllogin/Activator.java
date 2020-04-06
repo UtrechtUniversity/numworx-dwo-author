@@ -37,7 +37,7 @@ public class Activator extends SwingBrowserProvider implements BundleActivator, 
 
 	@Override
 	public void accept(SamlLoginPanel t, API u) {
-		t.extra = "?r=8686"; // tracker.getPort();
+		t.extra = "?r=" + tracker.getPort();
 		t.getJfxPanel().addPropertyChangeListener(u);
 	}
 

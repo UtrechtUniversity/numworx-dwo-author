@@ -2,6 +2,7 @@ package nl.numworx.samllogin;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
+import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 import nl.numworx.swingbrowser.api.SwingBrowser;
@@ -33,5 +34,13 @@ public class FactoryTracker extends ServiceTracker<SwingBrowserFactory, SwingBro
 		
 	}
 
+	public int getPort() {
+		ServiceReference<SwingBrowserFactory> reference = getServiceReference();
+		if (reference == null) return 0;
+		Number port = (Number) reference.getProperty("org.osgi.service.http.port");
+		if (port == null) return 0;
+		return port.intValue();
+		
+	}
 
 }
