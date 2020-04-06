@@ -1,5 +1,6 @@
 package nl.numworx.samllogin;
 
+import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Properties;
@@ -110,6 +111,7 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
       loadURL(url);
     }
     API api = new API();
+    Color COLOR15 = new Color(49,71,112);   // color 15 (color of menu text, body text)
 
   public SamlLoginPanel() {
 	super(provider.getFactory());
@@ -121,6 +123,7 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     setSize(320,446); // UU 
     setPreferredSize(getSize());
     setMinimumSize(getSize());
+    setBackground(COLOR15);
   }
     
   public JComponent asComponent() {
