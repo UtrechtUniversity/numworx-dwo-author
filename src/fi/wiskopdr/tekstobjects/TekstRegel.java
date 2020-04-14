@@ -665,7 +665,10 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 			if(e.getSource()instanceof TekstInteractiePanelVak)setCaretPosition(e.getX());
 		}
 		if(!dragging) {
-		    getTekstVak().getXWidgetManager().getBasisVak().setSelected(false);
+			try {
+				getTekstVak().getXWidgetManager().getBasisVak().setSelected(false);
+			}
+			catch(Exception exc) {}
 		}
 	}
 	
@@ -698,7 +701,10 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				  return;
 				}
 				setSelection(startx,this.getSize().width);
-				tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
+				try {
+					tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
+				}
+				catch(Exception exc) {}
 				MouseEvent en = new MouseEvent(volg,e.getID(),e.getWhen(),e.getModifiers(), 0,0,1,false);
 				MouseEvent ed = new MouseEvent(volg,e.getID(),e.getWhen(),e.getModifiers(), e.getX(),e.getY()-getSize().height,1,false);
 				
@@ -714,7 +720,10 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				TekstRegel vorig = tekstVak.geefVorigeRegel(this);
 				if(vorig == null) return;
 				setSelection(0,startx);
-				tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
+				try {
+					tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
+				}
+				catch(Exception exc) {}
 				MouseEvent en = new MouseEvent(vorig,e.getID(),e.getWhen(),e.getModifiers(), vorig.getWidth(),vorig.getHeight(),1,false);
 				MouseEvent ed = new MouseEvent(vorig,e.getID(),e.getWhen(),e.getModifiers(), e.getX(),e.getY()+vorig.getHeight(),1,false);
 				
@@ -734,7 +743,10 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				tekstVak.zetActieveRegel(this);
 				if(e.getX() < startx)setSelection(e.getX(),startx);
 				else setSelection(startx,e.getX());
-				tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
+				try {
+					tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
+				}
+				catch(Exception exc) {}
                 tekstVak.requestFocus();
 			}
 			

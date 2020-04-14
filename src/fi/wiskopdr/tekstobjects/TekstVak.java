@@ -1237,7 +1237,10 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		{   setCaretPosition(regels[aantalRegels-1],regels[aantalRegels-1].getComponentCount()-1);
 		}
 		zetTekstFocus();
-		getXWidgetManager().getBasisVak().setSelected(false);
+		try {
+			getTekstVak().getXWidgetManager().getBasisVak().setSelected(false);
+		}
+		catch(Exception exc) {}
 	}
 	
 	public void mouseClicked(MouseEvent e){;}
@@ -1771,7 +1774,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 					ip.initConnections(getXWidgetManager()); // FIXME!!!!
 				}
 			}
-			updateCrossWidgetView();
+			updateCrossWidgetView();;
+			
 		}
 		crossWidgetView.setVisible(b);
 	}
@@ -1781,8 +1785,9 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		do {
 			parent = parent.getParent();
 		} while(parent != null && ! (parent instanceof XWidgetManager.HasWidgetManager));
-		if(parent == null)
+		if(parent == null) {
 			throw new IllegalArgumentException( this + " without manager");
+		}
 		return ((XWidgetManager.HasWidgetManager) parent).getXWidgetManager();
 	}
 

@@ -2860,8 +2860,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 			else
 			{	setSelected(true);
+			try {
 				tekstVak.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tekstVak);
-				
+			}
+			catch(Exception exc) {}
 			}
 		}
 		
