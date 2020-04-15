@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import dagger.Lazy;
 import dagger.Reusable;
@@ -51,6 +52,11 @@ public class RenameAction extends AbstractAction {
   
   @Override
   public void actionPerformed(ActionEvent e) {
+	Object source = e.getSource();
+	if (source instanceof JTextField && ((JTextField) source).getInputVerifier() != null) {
+		JTextField f = (JTextField) source;
+		if (! f.getInputVerifier().verify(f)) return;		
+	}
     pane.setName(e.getActionCommand());
     putValue(NAME,e.getActionCommand());
     Container parent = (Container) pane;

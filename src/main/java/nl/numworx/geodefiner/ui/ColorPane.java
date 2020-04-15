@@ -1,21 +1,29 @@
 package nl.numworx.geodefiner.ui;
 
 import java.awt.Dimension;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
+import java.util.Objects;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.InputVerifier;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 
 import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JCheckBox;
-import fi.beans.numworxlf.JTextField;
 
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.merge.RenameAction;
 import nl.numworx.geodefiner.ui.color.ColorChooser;
 import fi.euclides.event.NameMapper;
+import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.formuleobjects.Token;
 import fi.euclides.util.Messages;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
@@ -26,6 +34,23 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 	FormuleEditor  visibilityEditor;
 	JCheckBox trails, log;
 	JTextField name;
+	Format  formatter = new Format() {
+		
+		@Override
+		public Object parseObject(String source, ParsePosition pos) {
+			if (!verifier.verify(name)) {
+				pos.setErrorIndex(0);
+				return null;
+			}
+			pos.setIndex(source.length());
+			return source;
+		}
+		
+		@Override
+		public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+			return toAppendTo.append(Objects.toString(obj, ""));
+		}
+	};
 	
 	public String toString() {
 		return "*";
@@ -46,6 +71,23 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		addComponents();
 	}
 
+	static InputVerifier verifier = new InputVerifier() {
+
+		@Override
+		public boolean verify(JComponent input) {
+			JTextField field = (JTextField) input;
+			String text = field.getText();
+			if (text.isEmpty()) return true;
+			FormuleParser parser = new FormuleParser(text);
+			try {
+				Token t = parser.variableAt();
+				return true;
+			} catch(Exception e) {}
+			return false;
+		} 
+		
+	};
+	
 	void addComponents() {
 		Box hbox = Box.createHorizontalBox();
 
@@ -53,7 +95,10 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		  RenameAction action = model.rename.get();
 		  action.setPane(this);
 		  hbox.add(new JLabel(Messages.getString("Euclides.103")));
-		  name = new JTextField(action.getName());
+		  JFormattedTextField n;
+		  name = n = new JFormattedTextField(formatter);
+		  n.setValue(action.getName());
+		  name.setInputVerifier(verifier);
 		  name.addActionListener(action);
 		  hbox.add(name);
 		  hbox.add(Box.createGlue());
