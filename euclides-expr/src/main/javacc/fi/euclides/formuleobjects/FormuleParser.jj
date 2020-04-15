@@ -311,6 +311,14 @@ List<Token> tokens_expr() :
 	}
 }
 
+Token variableAt() :
+{ Token t; }
+{
+  t = < VARIABLE > < EOF >
+  {
+    return t;
+  }
+}
 	
 OMObject exprAt() :
 { OMObject o; }
