@@ -31,25 +31,45 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
       </plugin>
+        <plugin>   
+		  <groupId>org.apache.felix</groupId>
+		  <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.5.3</version>
+		  <executions>
+		    <execution>
+		      <id>bundle-manifest</id>
+		      <phase>process-classes</phase>
+		      <goals>    
+		        <goal>manifest</goal>
+		      </goals>   
+		    </execution>
+		  </executions>
+       	  <configuration>
+       	    <niceManifest>true</niceManifest>
+          	<instructions>
+          		<Bundle-SymbolicName>fi.statistiek.Statistiek</Bundle-SymbolicName>
+ 				<Main-Class>fi.statistiek.Statistiek</Main-Class>
+				<Trusted-Only>true</Trusted-Only>
+				<Permissions>all-permissions</Permissions>
+				<Codebase>*.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org</Codebase>
+				<Application-Name>Statistiek</Application-Name>
+				<Bundle-Name>Statistiek Widget</Bundle-Name>
+				<Caller-Allowable-Codebase>*.science.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org</Caller-Allowable-Codebase>
+				<Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>
+ 				<Private-Package>*</Private-Package>
+ 				<Export-Package>fi.statistiek,fi.statistiek.types</Export-Package>
+ 				<Import-Package>fi.beans.wiskopdrbeans,!org.knowm.*,*</Import-Package>
+ 				<Fragment-Host>fi.wiskopdr.WiskOpdr</Fragment-Host>
+          	</instructions>
+          </configuration>
+         </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                        <manifestEntries>
-                            <Main-Class>fi.statistiek.Statistiek</Main-Class>
-                            <Trusted-Only>true</Trusted-Only>
-                            <Permissions>all-permissions</Permissions>
-                            <Codebase>*.uu.nl spindle.fisme.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl localhost dme.mathhouse.org</Codebase>
-                            <Caller-Allowable-Codebase>*.uu.nl spindle.fisme.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl localhost dme.mathhouse.org</Caller-Allowable-Codebase>
-                            <Application-Name>Statistiek</Application-Name>
-                            <Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>                       		
-                        </manifestEntries>
-                    </archive>
+					<archive>
+						<manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
