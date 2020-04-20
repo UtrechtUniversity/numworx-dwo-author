@@ -149,7 +149,7 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 		String scoreCorrectieString = scoreCorrectieTF.getText();
 		this.scoreCorrectie = Integer.parseInt(scoreCorrectieString);
 		correctieColor = scoreCorrectie==0 ? geenCorrectieKleur : heeftCorrectieKleur ;
-		repaint();
+		getParent().repaint();
 	}
 	
 	   
