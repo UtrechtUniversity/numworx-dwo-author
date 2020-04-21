@@ -55,7 +55,12 @@ public class RenameAction extends AbstractAction {
 	Object source = e.getSource();
 	if (source instanceof JTextField && ((JTextField) source).getInputVerifier() != null) {
 		JTextField f = (JTextField) source;
-		if (! f.getInputVerifier().verify(f)) return;		
+		if (! f.getInputVerifier().verify(f)) return;
+		String newname = f.getText();
+		Destroyable pp = mapper.fromString(newname);
+		if (pp != null && pp != pane.model.item)
+			return;
+			
 	}
     pane.setName(e.getActionCommand());
     putValue(NAME,e.getActionCommand());
@@ -70,7 +75,8 @@ public class RenameAction extends AbstractAction {
     Destroyable p = pane.model.item;
     String oldName = mapper.toString(p);
     String newName = getName();
-    if (!oldName .equals( newName) )
+    Destroyable pp = mapper.fromString(newName);
+    if (!oldName .equals( newName) && (pp == null || pp == p))
     {
       mapper.rename(p, newName);
       Iterator<CELL> iter = definitions.elements();

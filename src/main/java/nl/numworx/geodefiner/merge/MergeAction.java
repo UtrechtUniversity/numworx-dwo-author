@@ -25,15 +25,12 @@ import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 import dagger.Lazy;
 import fi.beans.numworxlf.JRadioButton;
 import fi.beans.numworxlf.JTextField;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.Token;
-import fi.euclides.model.Model;
 import fi.euclides.openmath.OMConstants;
 import nl.numworx.geodefiner.Editor;
 import nl.numworx.geodefiner.ui.ColorModel;
@@ -233,6 +230,8 @@ private void remove(List<String> defOrg, String item) {
           s = rename.getOrDefault(s, s);
         else if(i.kind == FormuleParser.STRING)
           sb.append('"'); // prefix "
+        else if (i.kind == FormuleParser.RANDOM) // duplicate, random suffix == random prefix
+        	sb.append(s.charAt(s.length()-1));
         sb.append(s);
       }
       return sb.append('@').toString();
