@@ -3,37 +3,33 @@ package nl.numworx.geodefiner.merge;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.inject.Inject;
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import dagger.Lazy;
 import dagger.Reusable;
-import fi.euclides.event.NameMapper;
-import fi.euclides.formuleobjects.Token;
 import fi.euclides.model.Destroyable;
+import fi.euclides.openmath.OMConstants;
 import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.Editor;
 import nl.numworx.geodefiner.common.CELL;
-import nl.numworx.geodefiner.common.CheckObject;
-import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.NamingModel;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.ui.ColorModel;
 import nl.numworx.geodefiner.ui.ColorPane;
+import nl.tue.win.riaca.openmath.lang.OMBinding;
+import nl.tue.win.riaca.openmath.lang.OMObject;
+import nl.tue.win.riaca.openmath.lang.OMVariable;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
-
-import static nl.numworx.geodefiner.merge.MergeAction.rename;
 
 @SuppressWarnings("serial")
 @Reusable
@@ -94,9 +90,14 @@ public class RenameAction extends AbstractAction {
         			cfg.put(ColorModel.VISIBILITY, visibility2);
         			config.fromMap(JSONUtilities.wrapMap(cfg));
         		}        		
-        	}
-        	
+        	}       	
         }
+//        OMObject obj = cell.item.adapt(OMObject.class);
+//        if (obj != null) {
+//        	OMObject obj1 = rename(obj, oldName, newName);
+//        	if (obj != obj1) 
+//        		DefaultAdapter.getDefault(cell.item).put(OMObject.class, obj1);
+//        }
         if (cell.item == p) {
           cell.text = rename(cell.text, map, false);
           cell.var = newName;
@@ -111,22 +112,41 @@ public class RenameAction extends AbstractAction {
       checkDWO.put("formule", rename((String) checkDWO.get("formule"), map, true));
       editor.get().getCheckDWO().fromMap(JSONUtilities.wrapMap(checkDWO));
       
-      CheckObjectList checkObjects = instance.get().checkObjects;
-      int size = checkObjects.getSize();
+      List checkObjects = editor.get().getCheckObjects().toList();
+      int size = checkObjects.size();
       for(int i = 0; i < size; i++) {
-    	  CheckObject obj = checkObjects.getElementAt(i);
-    	  String formule = obj.getFormule();
+    	  Map obj = (Map) checkObjects.get(i);
+    	  String formule = (String) obj.get("value");
     	  String formule2 = rename(formule, map, true);
     	  if (formule != formule2)
-    		  obj.setFormule(formule2);
+    		  obj.put("value",formule2);
       }
+      editor.get().getCheckObjects().fromList(JSONUtilities.wrapList(checkObjects));
       editor.get().getCheckObjects().fireTableDataChanged();
-      
+
+      Map<String, ?> data = editor.get().getLaunchData();
+      editor.get().setLaunchData(data);      
       editor.get().repaint();         
     }
   }
   
-  public ColorPane<?> getPane() {
+  private String rename(String text, Map<String, String> map, boolean b) {
+	return MergeAction.rename(text, map, b);
+  }
+
+
+	private OMObject rename(OMObject obj, String oldname, String newname) {
+		OMVariable oldvar = new OMVariable(oldname);
+		OMVariable newvar = new OMVariable(newname);
+		Vector vars = new Vector();
+		vars.add(oldvar);
+		OMBinding bind = new OMBinding(OMConstants.FNS1_LAMBDA, vars, obj);
+		bind.alphaConvert(oldvar, newvar);
+		return bind.getBody();
+	}
+
+
+public ColorPane<?> getPane() {
     return pane;
   }
 
