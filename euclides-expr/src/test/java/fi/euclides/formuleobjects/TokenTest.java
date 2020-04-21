@@ -203,4 +203,20 @@ public class TokenTest {
 		}
 		return sb.toString();
 	}
+	
+	@Test
+	public void testRandom() throws ParseException {
+		String source= "#a#21";
+		FormuleParser p = new FormuleParser(source);
+		OMObject n = p.element();
+		assertEquals( "OMI", n.getType());
+		p = new FormuleParser(source);
+		List<Token> tokens = p.tokens_expr();
+		assertEquals(2, tokens.size());
+		assertEquals(FormuleParserConstants.RANDOM, tokens.get(0).kind);
+		p = new FormuleParser("\u00A9oops\u00A9");
+		n = p.element();
+		assertEquals("OME", n.getType());
+		
+	}
 }

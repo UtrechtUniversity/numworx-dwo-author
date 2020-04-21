@@ -25,6 +25,7 @@ public class FormuleParser implements OMConstants{
     private static OMSymbol LINALG3_VECTOR = new OMSymbol("linalg3", "vector");
     private static OMSymbol LINALG2_MATRIX = new OMSymbol("linalg2", "matrix");
     private static OMSymbol LINALG2_MATRIXROW = new OMSymbol("linalg2", "matrixrow");
+    private static OMSymbol ERROR_RANDOM = new OMSymbol("error", "unhandled_symbol");
     private static OMApplication MINUS_ONE = binop(ARITH1_UNARYMINUS, new OMInteger(1), null);
     
   private static OMApplication binop(OMObject symbol, OMObject a, OMObject b)
@@ -235,7 +236,8 @@ TOKEN:
 | < IDENTITY: "identity" >
 }
 
-TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >
+TOKEN :{
+  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >
 | < RATIONAL : (< CONSTANT >)? < BREUK > <CONSTANT > < N > < CONSTANT > < AT > < AT >>
 | < FLOAT : < CONSTANT > (".") < CONSTANT > >
 | < BOOL : ("true" | "false" ) >
@@ -273,6 +275,21 @@ SKIP: /* Strings */
 <WithinString> MORE :
 {
 	<~[]>
+}
+
+
+SKIP: /* #random# */
+{
+    "#" : StartRandom
+  | "\u00A9"  : StartRandom
+}
+< StartRandom > TOKEN:
+{
+  < RANDOM: ("#"|"\u00A9") > : DEFAULT
+}
+< StartRandom > MORE:
+{
+  < ~[] >
 }
 
 List<Token> tokens() :
@@ -589,16 +606,28 @@ Token variable() :
 |   < VECTORNOTATIE> tok = <VARIABLE> <AT> { return tok; }
 }
 
-
-OMObject element() :{ OMObject expr, expr2 = null, expr3; OMApplication oma; Token tok, breuk; }{  tok = < CONSTANT > {  return new OMInteger(tok.toString()); }
-| tok = < RATIONAL > {  return rational(tok); }
-
+OMObject numbers() :
+{
+   OMObject n;
+   Token tok;
+}
+{ ( tok = < CONSTANT > { n = new OMInteger(tok.toString()); }
+  | tok = < RATIONAL > { n = rational(tok); }
+  | tok = < FLOAT > {  n = floating(tok); }
+  | tok = < RANDOM > {  n = new OMError(ERROR_RANDOM); }
+  )+
+{
+  return n;
+}
+} 
+  
+OMObject element() :{ OMObject expr, expr2 = null, expr3; OMApplication oma; Token tok, breuk; }{
+  expr = numbers() {  return expr; }
 | tok = variable() {  expr =  new OMVariable(tok.toString()); }
   (     oma = arglist() { oma.setElementAt(expr,0); expr = oma; }
   )? { return expr; }
 | tok = < X > {  return new OMVariable(tok.toString()); }
 | tok = < Y > {  return new OMVariable(tok.toString()); }
-| tok = < FLOAT > {  return floating(tok); }
 | < E > {  return OMConstants.NUMS1_E; }
 | < PI > {  return OMConstants.NUMS1_PI; }
 | < INFINITY > {  return OMConstants.NUMS1_INFINITY; }
