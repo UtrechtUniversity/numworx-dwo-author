@@ -1363,7 +1363,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		fToetsCB.setSelected(fToets);
 		globalParamCB.setSelected(globalParam);
 		diffOperatorenCB.setSelected(diffOperatoren);
-		keyboardCombobox.setSelectedIndex(keyboardNr);
+		if(keyboardNr<keyboardCombobox.getItemCount())
+			keyboardCombobox.setSelectedIndex(keyboardNr);
 		keyboardVersionCombobox.setSelectedIndex(soortKeyboard);
 		writeMathCombobox.setSelectedIndex(writeMathSetNr);
 		voortgangCB.setSelected(voortgang);
