@@ -41,10 +41,10 @@ public interface Tools {
 	int RESET = 27;
 	
 	int CIRCLE_WITH_RADIUS = 28;
+	int COLOR_PALETTE = 29;
 // NOT YET
-	int UNDO = 29;
-	int REDO = 30;
-	
-	
-	int TOOL_SIZE = 29;
+	int UNDO = 30;
+	int REDO = 31;
+		
+	int TOOL_SIZE = 30;
 }
