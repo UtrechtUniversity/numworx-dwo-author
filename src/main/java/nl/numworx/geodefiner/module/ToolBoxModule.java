@@ -187,6 +187,12 @@ public abstract class ToolBoxModule implements Tools {
 		return new XXXAction(Messages.getString("Euclides.104"), "/fixedcircle.png", new CirkelRadiusHandler(Messages.getString("AddCirkelHandler.0")), viewer);
 	}
 	
+	@Provides @Singleton @IntoMap @IntKey(COLOR_PALETTE) static
+	Action color_palette(AWTViewer viewer) {
+		EventHandler handler = new EventHandler("colorpalette") {};		
+		return new XXXAction("Kleurenpalet", "/colorpalette-active.png", handler, viewer);
+	}
+	
 /* 		actions.set(DISTANCE,new XXXAction(, viewer));
 		actions.set(AREA,new XXXAction(, viewer));
 
