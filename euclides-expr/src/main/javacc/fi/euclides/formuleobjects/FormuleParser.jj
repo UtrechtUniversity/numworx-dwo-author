@@ -180,7 +180,7 @@ public class FormuleParser implements OMConstants{
 
   
 }  
-PARSER_END(FormuleParser)SPECIAL_TOKEN :{  " "| "\r"| "\t"| "\n"}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : ("*"|"\u00B7"|"\u00D7"|"\u2062") >| < DIVIDE : ("/"|":"|"\u00F7") >
+PARSER_END(FormuleParser)SPECIAL_TOKEN :{ < SPACE : (  " "| "\r"| "\t"| "\n" ) >}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : ("*"|"\u00B7"|"\u00D7"|"\u2062") >| < DIVIDE : ("/"|":"|"\u00F7") >
 | < KOMMA :  "," >
 }
 
@@ -191,6 +191,7 @@ TOKEN : /* VAKKEN */
 | < WORTEL : "$w" >
 | < CONJUG : "$c" >
 | < HAAKJES: "$h" >
+| < HAAKJE: "(" >
 | < N : "$n" >
 | < L : "$l" >
 | < K : "$k" >
@@ -351,7 +352,7 @@ OMObject assign() :
 { Token var, x; OMObject expr; }
 {
   var = < VARIABLE >
-  ( "(" (x=< X >|x=<Y>|x=<VARIABLE>) ")" <  EQ > expr = expr() { return assign(var, lambda(x, expr)); }
+  ( < HAAKJE > (x=< X >|x=<Y>|x=<VARIABLE>) ")" <  EQ > expr = expr() { return assign(var, lambda(x, expr)); }
   | < EQ > expr = expr() { return assign(var, expr); }
   | "_" x = < VARIABLE > < EQ > expr = expr() { return assign(var, lambda(x, expr)); }
   | < SUB > x = < VARIABLE > < AT >< EQ > expr = expr() { return assign(var, lambda(x, expr)); }
@@ -490,7 +491,7 @@ OMObject power() :
 
 void invisible() :
 {}
-{  < X > | < Y > | < "(" > | < VARIABLE > | < PI > | < E > | < HAAKJES >
+{  < X > | < Y > | < HAAKJE > | < VARIABLE > | < PI > | < E > | < HAAKJES >
 }
 
 void noterm() :
@@ -515,7 +516,7 @@ OMApplication arglist() :
 { OMApplication list = new OMApplication(); list.addElement(null);
   OMObject expr;
 }
-{  "(" 
+{  < HAAKJE > 
   	 (
   	  ( expr = expr() { list.addElement(expr); })
 	  ( < KOMMA > expr = expr() { list.addElement(expr); })*
@@ -567,7 +568,7 @@ OMApplication matrix() :
 
 void lookforhaakjes() :
 { }
-{ "("
+{ < HAAKJE >
 | < HAAKJES >
 }  
   
@@ -631,7 +632,7 @@ OMObject numbers() :
 | < E > {  return OMConstants.NUMS1_E; }
 | < PI > {  return OMConstants.NUMS1_PI; }
 | < INFINITY > {  return OMConstants.NUMS1_INFINITY; }
-| tok = < BOOL > { return bool(tok); }| "(" expr = expr() ")" { return expr; }
+| tok = < BOOL > { return bool(tok); }| < HAAKJE > expr = expr() ")" { return expr; }
 | expr = bracket() {  return expr; }
 | < HAAKJES > expr = expr() < AT > { return expr; }
 | < ABS > expr = sum() < AT > {  return binop(ARITH1_ABS, expr, null); }
@@ -668,7 +669,7 @@ OMObject numbers() :
 	
 | < CHECKED > { return GEODEFINER_CHECKED; } 
 | < OBJECT > { return GEODEFINER_OBJECT; }
-| < IF > "(" expr = relation() < KOMMA > expr2 = sum() < KOMMA > expr3 = sum() ")" {
+| < IF > < HAAKJE > expr = relation() < KOMMA > expr2 = sum() < KOMMA > expr3 = sum() ")" {
   oma = binop(PROG1_IF, expr, expr2); oma.addElement(expr3); return oma; }
 | LOOKAHEAD( < TRANSC > noterm() )
 	tok = < TRANSC > { return transc(tok); }
@@ -689,12 +690,12 @@ OMObject numbers() :
 	    return expr;
 
 	}
-| < MAP > ( "(" expr = expr() < KOMMA > expr2 = interval() ")" |
+| < MAP > ( < HAAKJE > expr = expr() < KOMMA > expr2 = interval() ")" |
 			< HAAKJES > expr = expr() < KOMMA > expr2=interval() < AT > )
 {
        return binop(LIST1_MAP, expr, expr2);
     }
-| < SUCHTHAT > ( "(" expr = interval() < KOMMA > expr2 = expr() ")" |
+| < SUCHTHAT > ( < HAAKJE > expr = interval() < KOMMA > expr2 = expr() ")" |
 			< HAAKJES > expr = expr() < KOMMA > expr2=interval() < AT > )
 {
        return binop(LIST1_SUCHTHAT, expr, expr2);
