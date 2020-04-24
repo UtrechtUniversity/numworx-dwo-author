@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -117,4 +118,23 @@ public class MergeActionTest {
     assertEquals(8, definitions.size());
   }
 
+  @Test
+  public void testBracesInString() throws Exception {
+	Map<String, String> rename = Collections.singletonMap("A", "replaced");	  
+	String item = "$ftext(\"A={A}\",A)@";
+	String result = MergeAction.rename(item, rename, true);
+	assertEquals("rename A to replaced", "$ftext(\"A={replaced}\",replaced)@", result);
+
+	item = "$ftext ( \"A={A}\",A)@";
+	result = MergeAction.rename(item, rename, true);
+	assertEquals("rename A to replaced", "$ftext ( \"A={replaced}\",replaced)@", result);
+	item = "$f( \"A={A}\")@";
+	result = MergeAction.rename(item, rename, true);
+	assertEquals("rename A to replaced", "$f( \"A={A}\")@", result);
+
+  
+  
+  }
+  
+  
 }

@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -129,7 +130,7 @@ public class MergeAction extends AbstractAction implements Constants {
 
   @SuppressWarnings("unchecked")
   Map<String, ?> merge(Map<String,?> org, Map<String, ?> merge, Query query) {
-    Map<String, String> rename;
+	Map<String, String> rename;
     Collection<String> orderOrg, orderMerge;
     orderOrg = new HashSet<>((List<String>) org.get("order"));
     orderMerge = (List<String>) merge.get("order");
@@ -179,6 +180,15 @@ public class MergeAction extends AbstractAction implements Constants {
         } else posOrg.remove(newItem);        
       }
     }
+// Random set add:
+    String orgRandom = (String) org.get("random");
+	if (orgRandom == null) ((Map)org).put("random", merge.get("random"));
+	else {
+		String mergeRandom = (String) merge.get("random");
+		if (mergeRandom != null && !mergeRandom.trim().isEmpty()) {
+			((Map)org).put("random", orgRandom +"\n" + mergeRandom);
+		}
+	}
     return org;
   }
 
@@ -219,6 +229,7 @@ private void remove(List<String> defOrg, String item) {
   static String rename(String item, Map<String, String> rename, boolean expr) {
 	if(item == null || "$f@".equals(item)) return item;
     FormuleParser p = new FormuleParser(item.substring(2));
+    int state = 0;
     try {
       List<Token> t = expr ? p.tokens_expr() : p.tokens();
       t = p.insertSpecials(t);
@@ -226,10 +237,48 @@ private void remove(List<String> defOrg, String item) {
       sb.append("$f");
       for(Token i: t) {
         String s = i.image;
+// State machine voor text ( "string"
+        if (i.kind == FormuleParser.SPACE) {
+        	// state = state
+        } else
+        if (i.kind == FormuleParser.GEODEFINER && "text".equals(s))
+        	state = 1;
+        else if (state == 1) {
+        	if (i.kind == FormuleParser.HAAKJES || i.kind == FormuleParser.HAAKJE)
+        		state = 2;
+        	else
+        		state = 0;
+        } else if (state == 2) {
+        	if (i.kind == FormuleParser.STRING)
+        		state = 3;
+        	else 
+        		state = 0;
+        }
+               
         if (i.kind == FormuleParser.VARIABLE)
           s = rename.getOrDefault(s, s);
         else if(i.kind == FormuleParser.STRING)
-          sb.append('"'); // prefix "
+        {
+        	sb.append('"'); // prefix "
+        	if (s.contains("{") && s.contains("}") && state == 3) {
+        		StringTokenizer st = new StringTokenizer(s, "{", true);
+        		while( st.hasMoreTokens()) {
+        			String token = st.nextToken("{");
+        			if (!"{".equals(token)) {
+        				sb.append(token);
+        				token = st.nextToken("{");
+        			}
+        			sb.append(token);
+        			token = st.nextToken("}");
+        			token = rename("$f"+token+"@", rename, true);
+        			sb.append( token.substring(2, token.length()-1));
+        			token = st.nextToken("{");
+        			sb.append(token);
+        		}
+        		s = "";
+        	}
+        	state = 0;
+        }
         else if (i.kind == FormuleParser.RANDOM) // duplicate, random suffix == random prefix
         	sb.append(s.charAt(s.length()-1));
         sb.append(s);

@@ -33,6 +33,7 @@ import fi.euclides.swing.PuntAction;
 import fi.euclides.swing.XXXAction;
 import fi.euclides.util.Messages;
 import nl.numworx.geodefiner.CirkelRadiusHandler;
+import nl.numworx.geodefiner.ColorHandler;
 import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.FormuleHandler;
 import nl.numworx.geodefiner.TextHandler;
@@ -189,7 +190,7 @@ public abstract class ToolBoxModule implements Tools {
 	
 	@Provides @Singleton @IntoMap @IntKey(COLOR_PALETTE) static
 	Action color_palette(AWTViewer viewer) {
-		EventHandler handler = new EventHandler("colorpalette") {};		
+		EventHandler handler = new ColorHandler("Selecteer eerst");		
 		return new XXXAction("Kleurenpalet", "/colorpalette-active.png", handler, viewer);
 	}
 	
