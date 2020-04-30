@@ -1646,6 +1646,15 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 		formuleVak.addState();
 	}
 	
+	/**
+	 * Op de mac gebruikt iedereen het appeltje.
+	 * @param e
+	 * @return
+	 */
+	private boolean isControlDown(KeyEvent e) {
+		return  e.isControlDown()|| (WiskOpdr.mac && e.isMetaDown());
+	}
+	
 	public void keyPressed(KeyEvent e)
 	{   kc = e.getKeyCode();
 	
@@ -1654,7 +1663,7 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
 	    	return;
 	    }
 	
-		if (e.isControlDown() && kc == KeyEvent.VK_C)
+		if (isControlDown(e) && kc == KeyEvent.VK_C)
         {	copySelection();
         }
                 
@@ -1662,11 +1671,11 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
             {   if (kc == KeyEvent.VK_CONTROL)
                 {	return;
                 }
-            	if (e.isControlDown() && kc == KeyEvent.VK_Z)
+            	if (isControlDown(e) && kc == KeyEvent.VK_Z)
                 {	formuleVak.undo();
                 	return;
                 }
-                if (e.isControlDown() && kc == KeyEvent.VK_Y)
+                if (isControlDown(e) && kc == KeyEvent.VK_Y)
                 {	formuleVak.redo();
                 	return;
                 }
@@ -1723,13 +1732,13 @@ public class FormuleRegel extends FormuleElement implements MouseListener, Mouse
                 //{	formuleVak.finish();
 				//	formuleVak.requestFocus();
 				//}
-				if (e.isControlDown() && kc == KeyEvent.VK_V)
+				if (isControlDown(e) && kc == KeyEvent.VK_V)
                 {	deleteSelection();
                 	insert(formuleVak.clipboard);
                 	formuleVak.addState();
          
                 }
-                else if (e.isControlDown() && kc == KeyEvent.VK_X)
+                else if (isControlDown(e) && kc == KeyEvent.VK_X)
                 {	copySelection();
                 	deleteSelection();
                 	formuleVak.addState();
