@@ -2,16 +2,18 @@ package nl.numworx.geodefiner;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.util.Optional;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import fi.beans.numworxlf.JOptionPane;
 import fi.beans.numworxlf.JRadioButton;
 import fi.euclides.event.EventHandler;
 import fi.euclides.model.Destroyable;
@@ -25,7 +27,7 @@ public class ColorHandler extends EventHandler {
 		@Override
 		public void paintIcon(Component c, Graphics g, int x, int y) {
 			g.setColor(col);
-			g.fillRect(x, y, getIconWidth(), getIconHeight());
+			g.fillRoundRect(x, y, getIconWidth(), getIconHeight(),5,5);
 			if ( ((JRadioButton)c).isSelected()) {
 				g.setColor(Color.BLACK);
 				g.drawRect(x, y, getIconWidth()-1, getIconHeight()-1);
@@ -41,31 +43,35 @@ public class ColorHandler extends EventHandler {
 		}		
 	}
 	
-	
+
 	JPanel panel;
 	JRadioButton[] radios = new JRadioButton[8];
 	Color colors[]= {
-			Color.RED,
-			Color.GREEN,
-			Color.CYAN,
-			Color.BLUE,
-			Color.GRAY,
-			Color.YELLOW,
-			Color.WHITE,
-			Color.black
+			new Color(69,123,59),
+			new Color(49,100,186),
+			new Color(194,62,56),
+			new Color(204,104,46),
+			new Color(99,89,203),
+			new Color(100,100,100),
+			Color.black,
+			new Color(180,180,180),
 	};
 	private ButtonGroup group;
 	
 	public ColorHandler(String string) {
 		super(string);
 		group = new ButtonGroup();
-		panel = new JPanel(new GridLayout(2, 4));
+		panel = new JPanel(new GridLayout(2,4,4,4));
 		for(int i = 0; i < radios.length; i++) {
-			radios[i] = new JRadioButton(new ColorIcon(colors[i]));
+			radios[i] = new JRadioButton(null, new ColorIcon(colors[i]));
+			radios[i].setText(null);
+			radios[i].setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+			radios[i].getPreferredSize();
 			panel.add(radios[i]);
 			group.add(radios[i]);
 		}
 		radios[0].setSelected(true);
+		panel.setMaximumSize(panel.getPreferredSize());
 	}
 
 	@Override
@@ -86,7 +92,8 @@ public class ColorHandler extends EventHandler {
 
 	private Optional<Color> getColor() {
 		Component c = getTracker().adapt(Component.class);
-		int ok = JOptionPane.showConfirmDialog(c, panel, string, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.CENTER)); p.add(panel);
+		int ok = JOptionPane.showConfirmDialog(c, p, string, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (ok == JOptionPane.OK_OPTION)
 		{
 			for(int i = 0; i < radios.length; i++) {
