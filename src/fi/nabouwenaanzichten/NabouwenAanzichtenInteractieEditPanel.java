@@ -62,6 +62,8 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel implements Int
 
 	JLabel maxScoreLabel;
 	JTextField maxScoreVeld;
+	JCheckBox logCB;
+	JTextField logIDTF;
 
 	JTabbedPane tabbedPane;
 
@@ -465,6 +467,22 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel implements Int
 		maxScoreVeld.addKeyListener(new InputKL(maxScoreVeld, false, true));
 		maxScoreVeld.addActionListener(new TextAL(maxScoreVeld));
 		maxScoreVeld.addFocusListener(new TextFL(maxScoreVeld));
+		
+		currentY += height + offset;
+		
+		logCB = new JCheckBox(NabouwenAanzichten.rb.getString("logCBLabel"));
+		logCB.setFont(theFont);
+		width = theFM.stringWidth(logCB.getText()) + 40;
+		logCB.setBounds(currentX2, currentY, width, height);
+		nakijkOptiesPanel.add(logCB);
+		logCB.addActionListener(this);
+		
+		logIDTF = new JTextField("");
+		logIDTF.setFont(theFont);
+		width = theFM.stringWidth("XXXXXX");
+		logIDTF.setBounds(currentX2 + 80, currentY, width, height);
+		logIDTF.setVisible(false);
+		nakijkOptiesPanel.add(logIDTF);
 
 		componentsCreated = true;
 	}
@@ -670,6 +688,17 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel implements Int
 		if (b.containsKey("scoreMax"))
 			scoreMax = ((Integer) b.get("scoreMax")).intValue();
 		maxScoreVeld.setText("" + scoreMax);
+		
+		boolean log = false;
+		if (b.containsKey("log"))
+			log = ((Boolean) b.get("log")).booleanValue();
+		logCB.setSelected(log);
+		logIDTF.setVisible(log);
+		
+		String logID = "";
+		if (b.containsKey("logID"))
+			logID = (String) b.get("logID");
+		logIDTF.setText(logID);
 
 		naip.setEditState(b);
 
@@ -687,6 +716,9 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel implements Int
 
 		h.put("naipBreedte", new Integer(naipBreedte));
 		h.put("naipHoogte", new Integer(naipHoogte));
+		
+		h.put("log", new Boolean(logCB.isSelected()));
+		h.put("logID", logIDTF.getText());
 
 		return h;
 	}
@@ -1186,6 +1218,12 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel implements Int
 		else if (e.getSource() == aantalKubusBox)
 		{
 			naip.zetCheckAantalKubus(aantalKubusBox.isSelected());
+		}
+		else if (e.getSource() == logCB)
+		{
+			logIDTF.setVisible(logCB.isSelected());
+			if(!logCB.isSelected())
+				logIDTF.setText("");
 		}
 	}
 
