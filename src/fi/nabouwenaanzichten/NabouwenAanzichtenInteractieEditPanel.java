@@ -18,7 +18,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel implements Int
 	 */
 	private static final long serialVersionUID = 1L;
 	NabouwenAanzichtenInteractiePanel naip;
-	int editWidth = 180;
+	int editWidth = 250;
 	int editHeight = 550;
 	int naipBreedte = 500;
 	int naipHoogte = 450;
