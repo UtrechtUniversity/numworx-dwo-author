@@ -73,6 +73,10 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		install(item);
 	}
 
+	public void installLight() {
+		DefaultAdapter.getDefault(item).put(color);
+	}
+	
 	public UIModel<T, UIEditor> init(T item) {
 		return init2(item);
 	}

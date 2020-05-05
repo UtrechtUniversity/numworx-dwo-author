@@ -189,8 +189,8 @@ public abstract class ToolBoxModule implements Tools {
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(COLOR_PALETTE) static
-	Action color_palette(AWTViewer viewer) {
-		EventHandler handler = new ColorHandler("Selecteer eerst");		
+	Action color_palette(Instance instance, AWTViewer viewer) {
+		EventHandler handler = new ColorHandler("Selecteer eerst", instance.getStateConfiguration());		
 		return new XXXAction("Kleurenpalet", "/colorpalette-active.png", handler, viewer);
 	}
 	

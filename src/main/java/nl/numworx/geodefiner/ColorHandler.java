@@ -5,7 +5,9 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -57,9 +59,11 @@ public class ColorHandler extends EventHandler {
 			new Color(180,180,180),
 	};
 	private ButtonGroup group;
+	private Map<String, Map<String, Object>> state;
 	
-	public ColorHandler(String string) {
+	public ColorHandler(String string, Map<String, Map<String, Object>> state) {
 		super(string);
+		this.state = state;
 		group = new ButtonGroup();
 		panel = new JPanel(new GridLayout(2,4,4,4));
 		for(int i = 0; i < radios.length; i++) {
@@ -85,6 +89,9 @@ public class ColorHandler extends EventHandler {
 		get.ifPresent(value -> {
 			for(Destroyable p: selection) {
 				DefaultAdapter.getDefault(p).put(Color.class, value);
+				String name = getTracker().getMapper().toString(p);
+				Map<String,Object> pstate = state.computeIfAbsent(name, k -> new TreeMap<>());
+				pstate.put("color", value.getRGB());
 			}
 			getModel().clearSelection();
 		});
