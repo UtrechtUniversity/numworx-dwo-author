@@ -16,4 +16,5 @@ public interface UIModel<T extends Destroyable, U> {
 	U editor();
 	void setVisible(boolean visible);
 	UIModel<T, U> set(Tracker tracker);
+	default void installLight() { }
 }

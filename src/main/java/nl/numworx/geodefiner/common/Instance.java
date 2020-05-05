@@ -338,6 +338,7 @@ public abstract class Instance /*implements Observer*/ {
 	}
 
 	private void installConfiguration() {
+		getStateConfiguration().clear();
 		if (!this.launchData.containsKey("configuration")) return;
 		ObjectMap configuration = this.launchData.getObjectMap("configuration");
 		install(configuration);
@@ -371,6 +372,27 @@ public abstract class Instance /*implements Observer*/ {
 			}
 		}
 	}
+	
+	/** Light weight version of install(ObjectMap)
+	 * 
+	 * @param configuration config.
+	 * @see #install(ObjectMap)
+	 */
+	protected void installLight(ObjectMap configuration) {
+		if (configuration != null) {
+			NameMapper mapper = viewer.getMapper();
+			for (String name: configuration.keySet()) {
+				Destroyable d = mapper.fromString(name);
+				if (d == null) continue;
+				ObjectMap value = configuration.getObjectMap(name);
+				UIModel<?,?> model = uiModelFactory.build(d);
+				model.fromMap(value);
+				model.installLight();
+				getStateConfiguration().put(name, model.toMap());
+			}
+		}
+	}
+	
 	
 	private void createDefinitions() {
 		if(!this.launchData.containsKey("definitions")) return;
@@ -538,12 +560,22 @@ public abstract class Instance /*implements Observer*/ {
 		if(toolbox != null && toolbox.size() > 0 || hasTrail) {
 			List modelState = getModelState();
 			if(modelState != null) map.put("model", modelState);
+			
+			Map configuration = getStateConfiguration();
+			if (!configuration.isEmpty())
+				map.put("configuration", configuration);
 		}
 		}
 		if (nagekeken != null) 
 			map.put("nagekeken", nagekeken);
 		if(errorCount > 0) map.put("errorCount", errorCount);
 		return map;
+	}
+
+	final Map<String,Map<String,Object>> stateConfiguration = new HashMap<>();
+	
+	public Map<String,Map<String,Object>> getStateConfiguration() {		
+		return stateConfiguration;
 	}
 
 	List getModelState() {
@@ -615,6 +647,11 @@ public abstract class Instance /*implements Observer*/ {
 			m.readModel(viewer);
 		} catch (IOException e) {
 			// TODO should not happen
+		}
+		getStateConfiguration().clear();
+		ObjectMap configuration = state.getObjectMap("configuration");
+		if (configuration != null) {
+			installLight(configuration); // lightweight implementation of configuration
 		}
 	}
 	
