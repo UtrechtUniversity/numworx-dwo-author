@@ -243,11 +243,22 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JCheckBox responsiveCB;
 	private JLabel responsiveTFLabel;
 	private JTextField responsiveToggleWidthTF;
+	private JLabel responsiveMinLabel;
+	private JLabel responsiveMaxLabel;
+	private JLabel responsiveConstantLabel;
+	private JLabel responsiveFactorLabel;
+	private JTextField responsiveMinWidthTF;
+	private JTextField responsiveMaxWidthTF;
+	private JTextField responsiveConstantTF;
+	private JTextField responsiveFactorTF;
 	
 	private boolean responsive;
 	private String responsiveCode = "w2";
     private int responsiveConstant = 0;
+    private double responsiveFactor = 0.5;
 	private int responsiveToggleWidth;
+	private int responsiveMinWidth = 400;
+	private int responsiveMaxWidth = 980;
 	
 	private static String HELP_9_URL = WiskOpdr.rb.getString("HELP_9_URL");
 	private static String HELP_9_URL_STYLES = WiskOpdr.rb.getString("HELP_9_URL_STYLES");
@@ -932,14 +943,60 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		layoutOptionsPanel.add(layerChoice);
 		
 		responsiveToggleWidthTF = new WiskOpdrTextField("");
-		responsiveToggleWidthTF.setBounds(170,640,30,20);
 		responsiveToggleWidthTF.setPreferredSize(new Dimension(50,20));
 		responsiveToggleWidthTF.setFont(ifFont);
 		responsiveToggleWidthTF.addActionListener(this);
 		responsiveToggleWidthTF.addFocusListener(this);
 		responsiveToggleWidthTF.setVisible(false);
-        layoutOptionsPanel.add(responsiveToggleWidthTF);
+        
+		responsiveMinLabel = new JLabel(WiskOpdr.rb.getString("TVEP_respMinLabel"));
+		responsiveMinLabel.setForeground(WiskOpdr.colorBlue1);
+		responsiveMinLabel.setFont(ifFont);
+		responsiveMinLabel.setVisible(false);
 		
+		responsiveMinWidthTF = new WiskOpdrTextField(""+responsiveMinWidth);
+		responsiveMinWidthTF.setPreferredSize(new Dimension(40,20));
+		responsiveMinWidthTF.setFont(ifFont);
+		responsiveMinWidthTF.addActionListener(this);
+		responsiveMinWidthTF.addFocusListener(this);
+		responsiveMinWidthTF.setVisible(false);
+		
+		responsiveMaxLabel = new JLabel(WiskOpdr.rb.getString("TVEP_respMaxLabel"));
+		responsiveMaxLabel.setForeground(WiskOpdr.colorBlue1);
+		responsiveMaxLabel.setFont(ifFont);
+		responsiveMaxLabel.setVisible(false);
+        
+        responsiveMaxWidthTF = new WiskOpdrTextField(""+responsiveMaxWidth);
+        responsiveMaxWidthTF.setPreferredSize(new Dimension(40,20));
+        responsiveMaxWidthTF.setFont(ifFont);
+        responsiveMaxWidthTF.addActionListener(this);
+        responsiveMaxWidthTF.addFocusListener(this);
+        responsiveMaxWidthTF.setVisible(false);
+        
+        responsiveConstantLabel = new JLabel(WiskOpdr.rb.getString("TVEP_respConstantLabel"));
+        responsiveConstantLabel.setForeground(WiskOpdr.colorBlue1);
+        responsiveConstantLabel.setFont(ifFont);
+        responsiveConstantLabel.setVisible(false);
+		
+		responsiveConstantTF = new WiskOpdrTextField(""+responsiveConstant);
+		responsiveConstantTF.setPreferredSize(new Dimension(40,20));
+		responsiveConstantTF.setFont(ifFont);
+		responsiveConstantTF.addActionListener(this);
+		responsiveConstantTF.addFocusListener(this);
+		responsiveConstantTF.setVisible(false);
+		
+		responsiveFactorLabel = new JLabel(WiskOpdr.rb.getString("TVEP_respFactorLabel"));
+		responsiveFactorLabel.setForeground(WiskOpdr.colorBlue1);
+		responsiveFactorLabel.setFont(ifFont);
+		responsiveFactorLabel.setVisible(false);
+        
+        responsiveFactorTF = new WiskOpdrTextField(""+responsiveFactor);
+        responsiveFactorTF.setPreferredSize(new Dimension(40,20));
+        responsiveFactorTF.setFont(ifFont);
+        responsiveFactorTF.addActionListener(this);
+        responsiveFactorTF.addFocusListener(this);
+        responsiveFactorTF.setVisible(false);
+        
 		//JSONTextField = new JTextField();
 		//JSONTextField.setBounds(10,500,240,20);
 		//interactionOptionsPanel.add(JSONTextField);
@@ -1113,13 +1170,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component[] r212 = {ra(35,0),	logIDLabelLabel, ra(5,0),logIDLabelField,	 hgl()  };
 		Component[] r123 = {templateModeEditCB,ra(10,0),hgl()};
         Component[] r124 = {templateModeFillCB,ra(10,0),hgl()};
-        Component[] r125 = {responsiveCB,   ra(10,0), responsiveToggleWidthTF,   hgl()};
+        Component[] r125 = {responsiveCB,  ra(10,0),   hgl(), responsiveMinLabel, ra(5,0), responsiveMinWidthTF,  ra(10,0), responsiveMaxLabel, ra(5,0), responsiveMaxWidthTF};
+        Component[] r126 = {  hgl(), responsiveFactorLabel, ra(5,0), responsiveFactorTF,  ra(10,0), responsiveConstantLabel, ra(5,0), responsiveConstantTF};
 		
 		selectionObjectBoxIP = hb(r23);	
 		vd = 3;
 		Component[] k2 = {hb(kenmerkenLine), ra(0,vd),hb(r21), ra(0,vd), hb(r22), ra(0,15), hb(soortenLine),ra(0,vd), selectionObjectBoxIP, ra(0,vd), hb(r24), ra(0,vd), hb(r25), 
 				ra(0,vd), hb(r26), ra(0,vd), hb(r27),  ra(0,vd), hb(r118),hb(r119),hb(r120),hb(r121),ra(0,15), hb(verwerkingLine), ra(0,vd),hb(r28), ra(0,vd), hb(r29), ra(0,vd), hb(r210), 
-				ra(0,vd), hb(r211), ra(0,vd), hb(r212), spaceTest1, hb(testLine), hb(r123),spaceTest2, hb(r124),spaceTest3, hb(r125),vgl()};
+				ra(0,vd), hb(r211), ra(0,vd), hb(r212), spaceTest1, hb(testLine), hb(r123),spaceTest2, hb(r124),spaceTest3, hb(r125),ra(0,vd), hb(r126),vgl()};
 		
 		Box interactionOptionsBox = vb(k2);
 		interactionOptionsPanel.add(interactionOptionsBox);
@@ -1373,8 +1431,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		int layerNr = 0;
 		boolean responsive = false;
 		String responsiveCode;
-        int responsiveConstant;
+        int responsiveConstant = 0; 
 		int responsiveToggleWidth = 800;
+		int responsiveMinWidth = 400;
+		int responsiveMaxWidth = 980;
+		double responsiveFactor = 0.5;
 		
 		int locationX = Integer.parseInt(locationXTF.getText());
 		int locationY = Integer.parseInt(locationYTF.getText());
@@ -1451,7 +1512,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		responsive = this.responsive;
 		responsiveCode = this.responsiveCode;
         responsiveConstant = this.responsiveConstant;
+        responsiveFactor = this.responsiveFactor;
         responsiveToggleWidth = this.responsiveToggleWidth;
+        responsiveMinWidth = this.responsiveMinWidth;
+		responsiveMaxWidth = this.responsiveMaxWidth;
 			
 		Hashtable h = null;
 		 
@@ -1552,7 +1616,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(responsive) {
           h.put("responsiveCode", responsiveCode);
           h.put("responsiveConstant", new Integer(responsiveConstant));
+          h.put("responsiveFactor", new Double(responsiveFactor));
           h.put("responsiveToggleWidth", new Integer(responsiveToggleWidth));
+          h.put("responsiveMinWidth", new Integer(responsiveMinWidth));
+          h.put("responsiveMaxWidth", new Integer(responsiveMaxWidth));
         }
 		return h;
 	}
@@ -1699,7 +1766,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		boolean responsive = false;
 		String responsiveCode = "w2";
         int responsiveConstant = 0;
+        double responsiveFactor = 0.5;
         int responsiveToggleWidth = 800;
+        int responsiveMinWidth = 400;
+		int responsiveMaxWidth = 980;
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -1831,8 +1901,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
           responsiveCode = (String)h.get("responsiveCode");
         if (responsive && h.containsKey("responsiveConstant"))
           responsiveConstant = ((Integer) h.get("responsiveConstant")).intValue();
+        if (responsive && h.containsKey("responsiveFactor"))
+            responsiveFactor = ((Double) h.get("responsiveFactor")).doubleValue();
         if (responsive && h.containsKey("responsiveToggleWidth"))
           responsiveToggleWidth = ((Integer) h.get("responsiveToggleWidth")).intValue();
+        if (responsive && h.containsKey("responsiveMinWidth"))
+        		responsiveMinWidth = ((Integer) h.get("responsiveMinWidth")).intValue();
+        if (responsive && h.containsKey("responsiveMaxWidth"))
+        		responsiveMaxWidth = ((Integer) h.get("responsiveMaxWidth")).intValue();
         
         //System.out.println("logOption: "+logOption);
 
@@ -1895,7 +1971,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.responsive = responsive;
 		this.responsiveCode = responsiveCode;
 	    this.responsiveConstant = responsiveConstant;
+	    this.responsiveFactor = responsiveFactor;
         this.responsiveToggleWidth = responsiveToggleWidth;
+        this.responsiveMinWidth = responsiveMinWidth;
+        this.responsiveMaxWidth = responsiveMaxWidth;
 		
 		if(isLink)
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
@@ -2061,6 +2140,18 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     	responsiveCB.setSelected(responsive);
     	responsiveToggleWidthTF.setVisible(responsive);
     	responsiveToggleWidthTF.setText(""+responsiveToggleWidth);
+    	responsiveMinLabel.setVisible(responsive);
+    	responsiveMinWidthTF.setVisible(responsive);
+    	responsiveMinWidthTF.setText(""+responsiveMinWidth);
+    	responsiveMaxLabel.setVisible(responsive);
+    	responsiveMaxWidthTF.setVisible(responsive);
+    	responsiveMaxWidthTF.setText(""+responsiveMaxWidth);
+    	responsiveConstantLabel.setVisible(responsive);
+    	responsiveConstantTF.setVisible(responsive);
+    	responsiveConstantTF.setText(""+responsiveConstant);
+    	responsiveFactorLabel.setVisible(responsive);
+    	responsiveFactorTF.setVisible(responsive);
+    	responsiveFactorTF.setText(""+responsiveFactor);
     	
     	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)this)).pack();
 	}
@@ -2188,6 +2279,22 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
         if(e.getSource().equals(responsiveToggleWidthTF))
         {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
+            tekstVakPanel.setEditState(getEditState());
+        }
+        if(e.getSource().equals(responsiveMinWidthTF))
+        {   responsiveMinWidth = Integer.parseInt(responsiveMinWidthTF.getText());
+            tekstVakPanel.setEditState(getEditState());
+        }
+        if(e.getSource().equals(responsiveMaxWidthTF))
+        {   responsiveMaxWidth = Integer.parseInt(responsiveMaxWidthTF.getText());
+            tekstVakPanel.setEditState(getEditState());
+        }
+        if(e.getSource().equals(responsiveConstantTF))
+        {   responsiveConstant = Integer.parseInt(responsiveConstantTF.getText());
+            tekstVakPanel.setEditState(getEditState());
+        }
+        if(e.getSource().equals(responsiveFactorTF))
+        {   responsiveFactor = Double.parseDouble(responsiveFactorTF.getText());
             tekstVakPanel.setEditState(getEditState());
         }
     }
@@ -2837,11 +2944,34 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 	    if(e.getSource().equals(responsiveCB))
         {   responsive = responsiveCB.isSelected();
-            responsiveToggleWidthTF.setVisible(responsive);
+            responsiveMinLabel.setVisible(responsive);
+            responsiveMinWidthTF.setVisible(responsive);
+            responsiveMaxLabel.setVisible(responsive);
+            responsiveMaxWidthTF.setVisible(responsive);
+            responsiveConstantLabel.setVisible(responsive);
+            responsiveConstantTF.setVisible(responsive);
+            responsiveFactorLabel.setVisible(responsive);
+            responsiveFactorTF.setVisible(responsive);
             tekstVakPanel.setEditState(getEditState());
         }
 	    if(e.getSource().equals(responsiveToggleWidthTF))
         {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
+            tekstVakPanel.setEditState(getEditState());
+        }
+	    if(e.getSource().equals(responsiveMinWidthTF))
+        {  	responsiveMinWidth = Integer.parseInt(responsiveMinWidthTF.getText());
+       		tekstVakPanel.setEditState(getEditState());
+        }
+	    if(e.getSource().equals(responsiveMaxWidthTF))
+        {   responsiveMaxWidth = Integer.parseInt(responsiveMaxWidthTF.getText());
+       		tekstVakPanel.setEditState(getEditState());
+        }
+	    if(e.getSource().equals(responsiveConstantTF))
+        {   responsiveConstant = Integer.parseInt(responsiveConstantTF.getText());
+       		tekstVakPanel.setEditState(getEditState());
+        }
+	    if(e.getSource().equals(responsiveFactorTF))
+        {   responsiveFactor = Double.parseDouble(responsiveFactorTF.getText());
             tekstVakPanel.setEditState(getEditState());
         }
 	}

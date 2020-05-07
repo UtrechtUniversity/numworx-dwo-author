@@ -273,7 +273,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private boolean responsive;
 	private String responsiveCode = "w2";
 	private int responsiveConstant = 0;
+	private double responsiveFactor = 0.5;
 	private int responsiveToggleWidth;
+	private int responsiveMinWidth;
+	private int responsiveMaxWidth;
 	
 	public TekstVakPanel()
 	{
@@ -790,8 +793,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		int layerNr = 0;
 		boolean responsive = false;
 		String responsiveCode = "w2";
-	    int responsiveConstant = 0;
+		int responsiveConstant = 0;
+	    double responsiveFactor = 0.5;
 		int responsiveToggleWidth = 800;
+		int responsiveMinWidth = 400;
+		int responsiveMaxWidth = 980;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) 
@@ -996,8 +1002,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
           responsiveCode = (String)h.get("responsiveCode");
         if (responsive && h.containsKey("responsiveConstant"))
           responsiveConstant = ((Integer) h.get("responsiveConstant")).intValue();
+        if (responsive && h.containsKey("responsiveFactor"))
+            responsiveFactor = ((Double) h.get("responsiveFactor")).doubleValue();
         if (responsive && h.containsKey("responsiveToggleWidth"))
           responsiveToggleWidth = ((Integer) h.get("responsiveToggleWidth")).intValue();
+        if (responsive && h.containsKey("responsiveMinWidth"))
+    		responsiveMinWidth = ((Integer) h.get("responsiveMinWidth")).intValue();
+	    if (responsive && h.containsKey("responsiveMaxWidth"))
+	    		responsiveMaxWidth = ((Integer) h.get("responsiveMaxWidth")).intValue();
         
 		this.zichtbaarNaNakijken = zichtbaarNaNakijken;
 		this.balansVergCom = balansVergCom;
@@ -1082,7 +1094,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.responsive = responsive;
 	    this.responsiveCode = responsiveCode;
 	    this.responsiveConstant = responsiveConstant;
+	    this.responsiveFactor = responsiveFactor;
 	    this.responsiveToggleWidth = responsiveToggleWidth;
+	    this.responsiveMinWidth = responsiveMinWidth;
+        this.responsiveMaxWidth = responsiveMaxWidth;
 	    
 		if (isLink) {
 			if(!linkUrl.equals("")) {
@@ -1876,7 +1891,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean responsive = false;
 		String responsiveCode = "w2";
         int responsiveConstant = 0;
+        double responsiveFactor = 0.5;
         int responsiveToggleWidth = 800;
+        int responsiveMinWidth = 400;
+		int responsiveMaxWidth = 980;
 
 		styleString = this.styleString;
 		randZichtbaar = this.randZichtbaar;
@@ -1955,7 +1973,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		responsive = this.responsive;
 		responsiveCode = this.responsiveCode;
 		responsiveConstant = this.responsiveConstant;
+		responsiveFactor = this.responsiveFactor;
 		responsiveToggleWidth = this.responsiveToggleWidth;
+		responsiveMinWidth = this.responsiveMinWidth;
+		responsiveMaxWidth = this.responsiveMaxWidth;
 
 		if (WiskOpdr.objectives != null)
 		{
@@ -2104,7 +2125,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if(responsive) {
 		  h.put("responsiveCode", responsiveCode);
 		  h.put("responsiveConstant", new Integer(responsiveConstant));
+		  h.put("responsiveFactor", new Double(responsiveFactor));
 		  h.put("responsiveToggleWidth", new Integer(responsiveToggleWidth));
+		  h.put("responsiveMinWidth", new Integer(responsiveMinWidth));
+          h.put("responsiveMaxWidth", new Integer(responsiveMaxWidth));
 		}
        
 //		for (int i = 0; i < aantalRijen && inklapbaar; i++)
@@ -2723,7 +2747,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean responsive = false;
 		String responsiveCode = "w2";
         int responsiveConstant = 0;
+        double responsiveFactor = 0.5;
         int responsiveToggleWidth = 800;
+        int responsiveMinWidth = 400;
+		int responsiveMaxWidth = 980;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
@@ -2918,9 +2945,15 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
           responsiveCode = (String)h.get("responsiveCode");
         if (responsive && h.containsKey("responsiveConstant"))
           responsiveConstant = ((Integer) h.get("responsiveConstant")).intValue();
+        if (responsive && h.containsKey("responsiveFactor"))
+            responsiveFactor = ((Double) h.get("responsiveFactor")).doubleValue();
         if (responsive && h.containsKey("responsiveToggleWidth"))
           responsiveToggleWidth = ((Integer) h.get("responsiveToggleWidth")).intValue();
-       
+        if (responsive && h.containsKey("responsiveMinWidth"))
+    		responsiveMinWidth = ((Integer) h.get("responsiveMinWidth")).intValue();
+	    if (responsive && h.containsKey("responsiveMaxWidth"))
+	    		responsiveMaxWidth = ((Integer) h.get("responsiveMaxWidth")).intValue();
+	       
         
        	this.styleString = styleString;
         this.randZichtbaar = randZichtbaar;
@@ -3021,7 +3054,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.responsive = responsive;
 	    this.responsiveCode = responsiveCode;
 	    this.responsiveConstant = responsiveConstant;
+	    this.responsiveFactor = responsiveFactor;
         this.responsiveToggleWidth = responsiveToggleWidth;
+        this.responsiveMinWidth = responsiveMinWidth;
+        this.responsiveMaxWidth = responsiveMaxWidth;
 
 		tekstVakken = new TekstVak[aantalRijen][aantalKolommen];
 		removeAll();
@@ -3554,6 +3590,26 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 		return stippen;
 
+	}
+	
+	public boolean isResponsive() {
+		return responsive;
+	}
+	
+	public int getResponsiveMinWidth() {
+		return responsiveMinWidth;
+	}
+	
+	public int getResponsiveMaxWidth() {
+		return responsiveMaxWidth;
+	}
+	
+	public int getResponsiveConstant() {
+		return responsiveConstant;
+	}
+	
+	public double getResponsiveFactor() {
+		return responsiveFactor;
 	}
 
 	public void paintComponent(Graphics gr)

@@ -336,6 +336,7 @@ public class Text_en extends java.util.ListResourceBundle
                 
                 {"kiesKoppelingLabel", "Choose linkage"},
                 {"koppelingLabel", "Linkage"},
+                {"popupTitelLabel", "Title"},
                 
 
 	            //CheckButtonEditor
@@ -550,6 +551,11 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_lineText_InteractieKenmerken", "Interaction attributes"},
                 {"TVEP_lineText_InteractieSoorten", "Interaction types"},
                 {"TVEP_lineText_InteractieVerwerking", "Interaction processing"},
+                
+                {"TVEP_respMinLabel", "min"},
+                {"TVEP_respMaxLabel", "max"},
+                {"TVEP_respConstantLabel", "constant"},
+                {"TVEP_respFactorLabel", "factor"},
                 
                 //Style Manager
                 {"SM_titelLabel", "Manage Styles"},

@@ -308,6 +308,10 @@ public class Text_fa extends java.util.ListResourceBundle
 
                 {"checkButtonsMenuLabel", "Check buttons"},
 
+                {"kiesKoppelingLabel", "Choose linkage"},
+                {"koppelingLabel", "Linkage"},
+                {"popupTitelLabel", "Title"},
+                
 	            //CheckButtonEditor
                 {"CB_kijkNaOptieLabel", "Check" },
                 {"CB_bewaarOptieLabel", "Save" },
@@ -497,6 +501,19 @@ public class Text_fa extends java.util.ListResourceBundle
                 {"TVEP_styleSettingsLabel", "Settings"},
                 {"TVEP_stylesLabel", "Style:"},
                 {"TVEP_editStylesButton", "Edit"},
+                
+                {"TVEP_lineText_OpmaakTekst", "Layout text"},
+                {"TVEP_lineText_OpmaakVak", "Layout box"},
+                {"TVEP_lineText_OpmaakTabel", "Layout table"},
+                {"TVEP_lineText_OpmaakExtra", "Layout extra"},
+                {"TVEP_lineText_InteractieKenmerken", "Interaction attributes"},
+                {"TVEP_lineText_InteractieSoorten", "Interaction types"},
+                {"TVEP_lineText_InteractieVerwerking", "Interaction processing"},
+                
+                {"TVEP_respMinLabel", "min"},
+                {"TVEP_respMaxLabel", "max"},
+                {"TVEP_respConstantLabel", "constant"},
+                {"TVEP_respFactorLabel", "factor"},
                 
                 //Style Manager
                 {"SM_titelLabel", "Manage Styles"},

@@ -269,6 +269,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private JPanel sleepPanel;
 	private JPanel callOutPosPanel;
 	private boolean popup;
+	private String popupTitel;
 	private int soortInteractiePanel;
 	private String tComponent;
 	
@@ -970,7 +971,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	
 	public void maakPopupFrame()
 	{	
-		String title = "";//interactiePanelDescriptions[soortInteractiePanel];
+		String title = popupTitel;//interactiePanelDescriptions[soortInteractiePanel];
 		popupFrame = DialogFacade.newInstance(this, title);
 		popupFrame.setContentPane(new PopupContainer());
 		popupFrame.getContentPane().setBackground(Color.white);
@@ -1177,6 +1178,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         int locationY = 0;
         boolean volledigeBreedte = false;
         boolean popup = false;
+        String popupTitel = "Popup";
         int setNr = 0;
         boolean studentEditor = false;
         String popupImageString = null;
@@ -1192,6 +1194,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         if(h.containsKey("locationY")) locationY = ((Integer)h.get("locationY")).intValue();
         if(h.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)h.get("volledigeBreedte")).booleanValue();
         if(h.containsKey("popup")) popup = ((Boolean)h.get("popup")).booleanValue();
+        if(h.containsKey("popupTitel")) popupTitel = (String)h.get("popupTitel");
         if(h.containsKey("setNr")) setNr = ((Integer)h.get("setNr")).intValue();
         if(h.containsKey("studentEditor")) studentEditor = ((Boolean)h.get("studentEditor")).booleanValue();
         if(h.containsKey("popupImageString")) popupImageString = (String)h.get("popupImageString");
@@ -1201,6 +1204,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         
         this.currentSetNr = setNr;
         this.popup = popup;
+        this.popupTitel = popupTitel;
         this.soortInteractiePanel = soortInteractiePanel;
         this.studentEditor = studentEditor;
         this.popupImageString = popupImageString;
@@ -1497,9 +1501,28 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
         
         //pas hier setSize om te zorgen dat maat vh interactiePanel ook meteen goed wordt gezet 
-        //(bijv belangrijk voor volledige breedte tekstvakpanel). 
+        //(bijv belangrijk voor volledige breedte tekstvakpanel).
+        
         if(volledigeBreedte)setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte);        
-        else setSize(breedte, hoogte);
+        else {
+        		if(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isResponsive()) {
+        			
+        			
+        			int minWidth = ((TekstVakPanel)interactiePanel).getResponsiveMinWidth();
+        			int maxWidth = ((TekstVakPanel)interactiePanel).getResponsiveMaxWidth();
+        			int constant = ((TekstVakPanel)interactiePanel).getResponsiveConstant();
+        			double factor = ((TekstVakPanel)interactiePanel).getResponsiveFactor();
+        			
+        			int w = tekstVak.getSize().width-2*tekstVak.geefMarge();
+        			
+        			breedte = (int)(factor*w + constant);
+        			if(factor*w < minWidth)
+        				breedte = w;
+        			if(breedte > maxWidth)
+        				breedte = maxWidth;
+        		}
+        		setSize(breedte, hoogte);
+        }
         
         setLocation(locationX,locationY);
         
@@ -1565,11 +1588,40 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         			add((Component)interactiePanel,0);
         			if(volledigeBreedte)
         				setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte);
-        			else
+        			else {
+        				if(interactiePanel instanceof TekstVakPanel) {
+        					boolean responsive = ((TekstVakPanel)interactiePanel).isResponsive();
+        					int minWidth = ((TekstVakPanel)interactiePanel).getResponsiveMinWidth();
+                			int maxWidth = ((TekstVakPanel)interactiePanel).getResponsiveMaxWidth();
+                			int constant = ((TekstVakPanel)interactiePanel).getResponsiveConstant();
+                			double factor = ((TekstVakPanel)interactiePanel).getResponsiveFactor();
+                			
+        					if(interactiePanelLaunchState.containsKey("responsive"))
+        				          responsive = ((Boolean)interactiePanelLaunchState.get("responsive")).booleanValue();
+        					
+        				    if(responsive)  {
+        				    	 	if (responsive && interactiePanelLaunchState.containsKey("responsiveConstant"))
+        				    	 		constant = ((Integer) interactiePanelLaunchState.get("responsiveConstant")).intValue();
+       				        if (responsive && interactiePanelLaunchState.containsKey("responsiveFactor"))
+       				        		factor = ((Double) interactiePanelLaunchState.get("responsiveFactor")).doubleValue();
+       				        if (responsive && interactiePanelLaunchState.containsKey("responsiveMinWidth"))
+       				        		minWidth = ((Integer) interactiePanelLaunchState.get("responsiveMinWidth")).intValue();
+       					    if (responsive && interactiePanelLaunchState.containsKey("responsiveMaxWidth"))
+       					    		maxWidth = ((Integer) interactiePanelLaunchState.get("responsiveMaxWidth")).intValue();
+       					    
+       					    int w = tekstVak.getSize().width-2*tekstVak.geefMarge();
+             			
+       					    breedte = (int)Math.round(factor*w + constant);
+       					    if(factor*w + constant< minWidth)
+       					    		breedte = w;
+       					    if(breedte > maxWidth)
+       					    		breedte = maxWidth;
+       					    breedte = breedte-2;
+        				     }
+        				 }
         				setSize(breedte, hoogte);
+        			}
         			interactiePanel.setEditState(interactiePanelLaunchState);
-        			
-        			
         		}	
         	}
 			//interactiePanel.start();
@@ -1822,6 +1874,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         int locationY = 0;
         boolean volledigeBreedte = false;
         boolean popup = false;
+        String popupTitel = "Popup";
         int setNr = 0;
         boolean studentEditor = false;
         String popupImageString = null;
@@ -1838,6 +1891,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         if(h.containsKey("locationY")) locationY = ((Integer)h.get("locationY")).intValue();
         if(h.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)h.get("volledigeBreedte")).booleanValue();
         if(h.containsKey("popup")) popup = ((Boolean)h.get("popup")).booleanValue();
+        if(h.containsKey("popupTitel")) popupTitel = (String)h.get("popupTitel");
         if(h.containsKey("setNr")) setNr = ((Integer)h.get("setNr")).intValue();
         if(h.containsKey("studentEditor")) studentEditor = ((Boolean)h.get("studentEditor")).booleanValue();
         if(h.containsKey("popupImageString")) popupImageString = (String)h.get("popupImageString");
@@ -1847,12 +1901,30 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         //System.out.println("in zetopdracht: crossWidgetId: "+ crossWidgetId);
         if(crossWidgetId != null)
         	tekstVak.getXWidgetManager().updateCrossWidgetId(this);
-        if(volledigeBreedte)setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte);        
-        else setSize(breedte, hoogte);
+        if(volledigeBreedte)
+        		setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte); 
+    		else {
+	    		if(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isResponsive()) {
+	    			int minWidth = ((TekstVakPanel)interactiePanel).getResponsiveMinWidth();
+	    			int maxWidth = ((TekstVakPanel)interactiePanel).getResponsiveMaxWidth();
+	    			int constant = ((TekstVakPanel)interactiePanel).getResponsiveConstant();
+	    			double factor = ((TekstVakPanel)interactiePanel).getResponsiveFactor();
+	    			
+	    			int w = tekstVak.getSize().width-2*tekstVak.geefMarge();
+	    			
+	    			breedte = (int)(factor*w + constant);
+	    			if(factor*w < minWidth)
+	    				breedte = w;
+	    			if(breedte > maxWidth)
+	    				breedte = maxWidth;
+	    		}
+	    		setSize(breedte, hoogte);
+    		}
         
         setLocation(locationX,locationY);
         
         this.popup = popup;
+        this.popupTitel = popupTitel;
         this.soortInteractiePanel = soortInteractiePanel;
         this.studentEditor = studentEditor;
         this.connections = connections;
@@ -2182,14 +2254,32 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         	}
         	else
         	{	if(volledigeBreedte)interactiePanel.setBounds(0,0,tekstVak.getSize().width-2*tekstVak.geefMarge(), hoogte);
-	        	else interactiePanel.setBounds(0,0,breedte,hoogte);
-		        add((Component)interactiePanel,0);
-		        try {
-					interactiePanel.zetOpdracht(interactiePanelLaunchState,randomVars,randomValues);
-					interactiePanel.start();
-				} catch (Exception e) {
-					LOG.log(Level.WARNING, "zetOpdracht " + interactiePanel, e);
-				}
+	        	else {
+	        		if(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).isResponsive()) {
+	        			int minWidth = ((TekstVakPanel)interactiePanel).getResponsiveMinWidth();
+	        			int maxWidth = ((TekstVakPanel)interactiePanel).getResponsiveMaxWidth();
+	        			int constant = ((TekstVakPanel)interactiePanel).getResponsiveConstant();
+	        			double factor = ((TekstVakPanel)interactiePanel).getResponsiveFactor();
+	        			
+	        			int w = tekstVak.getSize().width-2*tekstVak.geefMarge();
+	        			
+	        			breedte = (int)(factor*w + constant);
+	        			if(factor*w < minWidth)
+	        				breedte = w;
+	        			if(breedte > maxWidth)
+	        				breedte = maxWidth;
+	        		}
+	        		
+	        		
+	        		interactiePanel.setBounds(0,0,breedte,hoogte);
+	        	}
+	        add((Component)interactiePanel,0);
+	        try {
+				interactiePanel.zetOpdracht(interactiePanelLaunchState,randomVars,randomValues);
+				interactiePanel.start();
+			} catch (Exception e) {
+				LOG.log(Level.WARNING, "zetOpdracht " + interactiePanel, e);
+			}
         	}
         }
         if(afdekPanel!=null) remove(afdekPanel);
@@ -3129,6 +3219,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		// inhoud die op 'volle breedte' is ingesteld wordt aangepast
 		if (editMode && interactiePanel instanceof TekstVakPanel)
 			setEditState(getEditState());
+		
 		
 		sleepModus = false;
 		draaiModus = false;

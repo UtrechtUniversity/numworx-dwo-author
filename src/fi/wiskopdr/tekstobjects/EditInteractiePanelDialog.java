@@ -90,6 +90,7 @@ import fi.wiskopdr.symbolen.SymboolPanel;
 public class EditInteractiePanelDialog extends JDialog implements ActionListener,  WindowListener , FocusListener, XWidgetManager.HasWidgetManager
 {
 	private JPanel mainPanel;
+	private JPanel bottomPanel;
 	private InteractieEditPanel interactieEditPanel;
 	private int huidigSoortInteractiePanel = -1;
 	private JButton okButton;
@@ -99,12 +100,14 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     private JTextField breedteTF, hoogteTF;
     private JLabel breedteLabel, hoogteLabel;
     private JCheckBox volledigeBreedteCB, popupCB;
+    private JLabel popupTitleLabel;
+    private JTextField popupTitleTF;
+    private FormuleButton imageButton;
     
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
     private int widthEditPanel = 900;
     private int heightEditPanel = 600;
-    
-    private FormuleButton imageButton;
+   
     private Dialog imageDialog;
     private Iconan iconman;
     private String popupImageString = "";
@@ -265,7 +268,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		headerPanel.add(headerbox);
 		
         
-        JPanel bottomPanel = new JPanel();
+        bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         bottomPanel.setBackground(WiskOpdr.colorGray2);
@@ -400,7 +403,27 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		imageButton.addActionListener(this);
 		imageButton.setVisible(false);
 		boxh.add(imageButton);
-		boxh.add(Box.createHorizontalGlue());
+		boxh.add(Box.createHorizontalStrut(5));
+		
+		popupTitleLabel = new JLabel(WiskOpdr.rb.getString("popupTitelLabel"));
+		popupTitleLabel.setForeground(WiskOpdr.colorBlue1);
+		popupTitleLabel.setBounds(465,20,50,22);
+		popupTitleLabel.setFont(font);
+		popupTitleLabel.setVisible(false);
+	    boxh.add(popupTitleLabel);
+	    boxh.add(Box.createHorizontalStrut(5));
+	    
+	    popupTitleTF = new WiskOpdrTextField("Popup");
+	    popupTitleTF.setBounds(510,20,40,22);
+	    popupTitleTF.setPreferredSize(new Dimension(60,22));
+	    popupTitleTF.setFont(font);
+	    popupTitleTF.addActionListener(this);
+	    popupTitleTF.addFocusListener(this);
+	    popupTitleTF.setVisible(false);
+	    boxh.add(popupTitleTF);
+	    boxh.add(Box.createHorizontalStrut(5));
+		
+	    boxh.add(Box.createHorizontalGlue());
 		shareButton = new JButton(shareAction);
 		shareButton.setVisible(ShareAction.getSharingPossible() || ShareAction.getSharingIsUsed());
 		//shareButton.setBounds((int)size.getWidth()-45,20,24,20);
@@ -516,6 +539,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 
         boolean volledigeBreedte = false;
         boolean popup = false;
+        String popupTitel = "Popup";
         int setNr = 0;
         String popupImageString = "";
         
@@ -527,6 +551,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         if(launchData.containsKey("locationY")) locationY = ((Integer)launchData.get("locationY")).intValue();
         if(launchData.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)launchData.get("volledigeBreedte")).booleanValue();
         if(launchData.containsKey("popup")) popup = ((Boolean)launchData.get("popup")).booleanValue();
+        if(launchData.containsKey("popupTitel")) popupTitel = (String)launchData.get("popupTitel");
         if(launchData.containsKey("setNr")) setNr = ((Integer)launchData.get("setNr")).intValue();
         if(launchData.containsKey("popupImageString")) popupImageString = (String)launchData.get("popupImageString");       
 // WIM TODO is dit okay?
@@ -579,6 +604,9 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         volledigeBreedteCB.setSelected(volledigeBreedte);
         popupCB.setSelected(popup);
         imageButton.setVisible(popup);
+	    	popupTitleLabel.setVisible(popup);
+	    	popupTitleTF.setVisible(popup);
+	    	popupTitleTF.setText(popupTitel);
         //breedteTF.setVisible(!volledigeBreedte);
     	//breedteLabel.setVisible(!volledigeBreedte);
     	breedteTF.setEnabled(!volledigeBreedte);
@@ -602,12 +630,15 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     	
     	if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(breedte);
     	if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(hoogte);
-        
+      
+    	pack();
+    	
     }
     
     public void packWidth()
     {
     	if(interactieEditPanel!=null) {
+    		
 	    	int w = ((Component)interactieEditPanel).getWidth();
 	    	int h = ((Component)interactieEditPanel).getPreferredSize().height;
 	    	((Component)interactieEditPanel).setPreferredSize(new Dimension(w,h));
@@ -631,13 +662,28 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     
     public void pack()
     {
-    	if(interactieEditPanel!=null) {
-    	  Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
-         
-	    	int w = ((Component)interactieEditPanel).getPreferredSize().width;
-	    	int h = ((Component)interactieEditPanel).getPreferredSize().height;
-	    	
-	    	System.out.println("insets:"+this.getInsets().top);
+    		if(interactieEditPanel!=null) {
+	    		int w =((Component)interactieEditPanel).getPreferredSize().width;
+	    	 	int h = ((Component)interactieEditPanel).getPreferredSize().height;
+	    		if(h==1) {
+	    			if(setNr==3) {
+	    				w=900; h=610;
+	    			}
+	    			else if(setNr==2) {
+	    				w=880; h=500;
+	    			}
+	    			else {
+	    				w=800; h=500;
+	    			}
+	    			((Component)interactieEditPanel).setPreferredSize(new Dimension(w,h));
+	    		}
+    		Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+    		System.out.println(""+((Component)interactieEditPanel).getPreferredSize());
+    		System.out.println(""+((Component)interactieEditPanel).getPreferredSize().width);
+    	  	int wBottom = bottomPanel.getPreferredSize().width;
+	    	w = Math.max(wBottom,w);
+	    
+	    //	System.out.println("insets:"+this.getInsets().top);
 	    	int widthThis = 40+w+(helpBox.isVisible() ? 300 : 0);
 	    	int heightThis = getInsets().top + 123 + h;
 	    	
@@ -927,6 +973,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         int locationY = 0;
 		boolean volledigeBreedte = false;
 		boolean popup = false;
+		String popupTitel = "Popup";
 		int setNr = 0;
 		String popupImageString = "";
 		
@@ -972,6 +1019,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         }
         volledigeBreedte = volledigeBreedteCB.isSelected();
         popup = popupCB.isSelected();
+        popupTitel = popupTitleTF.getText();
         setNr = this.setNr;
         locationX = this.locationX;
         locationY = this.locationY;
@@ -987,6 +1035,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         h.put("locationY", new Integer(locationY));
         h.put("volledigeBreedte", new Boolean(volledigeBreedte));
         h.put("popup", new Boolean(popup));
+        h.put("popupTitel", popupTitel);
         h.put("setNr", new Integer(setNr));
         h.put("popupImageString", popupImageString);
 // if Logging, enable xwid for LA transport
@@ -1133,8 +1182,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	if(interactieEditPanel!=null) interactieEditPanel.zetHoogte(Integer.parseInt(hoogteTF.getText()));
         }
         else if (e.getSource() == popupCB) {
-        	imageButton.setVisible(popupCB.isSelected());
-            
+	        	imageButton.setVisible(popupCB.isSelected());
+	        	popupTitleLabel.setVisible(popupCB.isSelected());
+	        	popupTitleTF.setVisible(popupCB.isSelected());
+	        pack();
         }
         else if(e.getSource()==imageButton)
         {   editImage();

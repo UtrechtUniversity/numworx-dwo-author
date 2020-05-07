@@ -356,6 +356,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 
                 {"kiesKoppelingLabel", "Kies een koppeling"},
                 {"koppelingLabel", "Koppeling"},
+                {"popupTitelLabel", "Titel"},
                 
                 //CheckButtonEditor
                 {"CB_kijkNaOptieLabel", "Kijk na" },
@@ -574,6 +575,11 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_lineText_InteractieKenmerken", "Interactiekenmerken"},
                 {"TVEP_lineText_InteractieSoorten", "Interactiesoorten"},
                 {"TVEP_lineText_InteractieVerwerking", "Interactieverwerking"},
+                
+                {"TVEP_respMinLabel", "min"},
+                {"TVEP_respMaxLabel", "max"},
+                {"TVEP_respConstantLabel", "constante"},
+                {"TVEP_respFactorLabel", "factor"},
                 
                 //Style Manager
                 {"SM_titelLabel", "Stijlen beheren"},
