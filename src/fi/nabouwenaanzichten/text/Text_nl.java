@@ -116,6 +116,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "kijkNaTekst" , "Kijk na" },
 				
 				{ "maxScoreTekst" , "Maximale score" },
+				{ "logCBLabel", "LogID" },
 				
 				{ "blokjesTekst" , "blokje(s)" },
 				

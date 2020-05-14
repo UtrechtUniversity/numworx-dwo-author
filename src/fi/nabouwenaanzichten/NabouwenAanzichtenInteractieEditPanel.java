@@ -690,8 +690,8 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel implements Int
 		maxScoreVeld.setText("" + scoreMax);
 		
 		boolean log = false;
-		if (b.containsKey("log"))
-			log = ((Boolean) b.get("log")).booleanValue();
+		if (b.containsKey("logOption"))
+			log = ((Boolean) b.get("logOption")).booleanValue();
 		logCB.setSelected(log);
 		logIDTF.setVisible(log);
 		
@@ -717,7 +717,7 @@ public class NabouwenAanzichtenInteractieEditPanel extends JPanel implements Int
 		h.put("naipBreedte", new Integer(naipBreedte));
 		h.put("naipHoogte", new Integer(naipHoogte));
 		
-		h.put("log", new Boolean(logCB.isSelected()));
+		h.put("logOption", new Boolean(logCB.isSelected()));
 		h.put("logID", logIDTF.getText());
 
 		return h;
