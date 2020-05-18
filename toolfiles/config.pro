@@ -1,12 +1,12 @@
--injars ..\output\classes
--outjars ..\output\jar\nabouwenaanzichten.jar
+#-injars ..\output\classes
+#-outjars ..\output\jar\nabouwenaanzichten.jar
 
--libraryjars <java.home>/lib/rt.jar
--libraryjars ..\lib\mayscript.jar
--libraryjars ..\lib\cbookif-1.0.2.jar
+#-libraryjars <java.home>/lib/rt.jar
+#-libraryjars ..\lib\mayscript.jar
+#-libraryjars ..\lib\cbookif-1.0.2.jar
 
 
--target 1.6
+-target 1.8
 
 -keeppackagenames
 
