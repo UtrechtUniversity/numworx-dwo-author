@@ -269,8 +269,8 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 			scoreCorrectie = 0;
 			scoreCorrectieTF.setText("");
 		}
-		if(scoreCorrectie<score-scoreMax) {
-			scoreCorrectie = score-scoreMax;
+		if(scoreCorrectie<-score) {
+			scoreCorrectie = -score;
 			scoreCorrectieTF.setText(""+scoreCorrectie);
 		}
 		if(scoreCorrectie>scoreMax-score) {
