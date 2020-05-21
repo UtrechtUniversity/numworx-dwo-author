@@ -782,6 +782,43 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	public void mouseMoved(MouseEvent e){;}
 	public void mouseExited(MouseEvent e){;}
 	
+	public boolean backSpaceAction() {
+		if(caretVisible)
+		{	if(caretPos>0)
+			{	caretPos--;
+				caretX -= getComponent(caretPos) .getSize().width;
+				remove(caretPos);
+				zetMaat();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean deleteAction() {
+		if(caretVisible)
+		{	if(caretPos<getComponentCount() )
+			{	remove(caretPos);
+				zetMaat();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public int geefBreedteStartWoord() {
+		int breedte = 0;
+		for(int i=0 ; i<getComponentCount(); i++)
+		{	Component c = getComponent(i);
+			if(c!=null && !" ".equals(((TekstElement)c).toString())) {
+				breedte += c.getWidth();
+			}
+			else
+				break;
+		}
+		return breedte;
+	}
+	
 	public void keyPressed(KeyEvent e)
 	{   if (editable)
         {   kc = e.getKeyCode();

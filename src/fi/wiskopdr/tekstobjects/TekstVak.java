@@ -9,6 +9,7 @@ import java.awt.datatransfer.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.symbolen.SymboolPanel;
+import fi.wiskopdr.tekstobjects.TekstRegel.KnipperDraad;
 import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.wiskopdr.*;
 import fi.beans.wiskopdrbeans.*;
@@ -676,7 +677,44 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	//public void paint(Graphics g)
 	//{	super.paint(g);
 	//}
+	LayoutTekstDraad layoutTekstDraad; 
+	boolean layoutDone;
 	
+	private void layoutInBackground() {
+		if(layoutTekstDraad!=null)
+		{	layoutTekstDraad.maakDood();
+			layoutTekstDraad=null;
+		}
+		layoutTekstDraad = new LayoutTekstDraad();
+		layoutDone = false;
+		layoutTekstDraad.start();
+		
+	}
+	
+	class LayoutTekstDraad extends Thread 
+	{	boolean dood = false;
+		public void run()
+		{	//if(!dood && !layoutDone)
+			{	int delay = 1000;
+				long t = System.currentTimeMillis();
+				try
+				{	t = t+delay;
+					sleep(delay);
+				}
+    				catch(InterruptedException e)    // geen ;
+				{   };
+				if(!dood && !layoutDone) {
+					vulVak(tekst.toString());
+		            //produceAction("resize");
+		            	setCaret(caretPos);
+		            	layoutDone = true;
+				}
+			}
+		}
+		public void maakDood()
+		{	dood = true;
+		}
+	}
 	
 	//private boolean layouting = false;
 	public void layoutTekst()
@@ -1382,32 +1420,37 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 			}
             else if (kc == KeyEvent.VK_DELETE)
             {	boolean b = deleteSelection();
-            	if(!b){
-            		addState();
-            		tekst.deleteCharAt(caretPos);
-            		if(WiskOpdr.mac)
-        	    	{	keyStrokeUpdated = true;
-            			vulVak(tekst.toString());
-        	    		setCaret(caretPos);
-        	    	}
-            	}
-            	produceAction("resize");
-            	e.consume();
+	            	if(!b){
+	            		addState();
+	            		tekst.deleteCharAt(caretPos);
+	            		if(WiskOpdr.mac)
+		        	    	{	keyStrokeUpdated = true;
+		        	    		if(!actieveRegel.deleteAction() || deleteNeedsLayout())
+	            	    		{	vulVak(tekst.toString());
+			        	    		setCaret(caretPos);
+			        	    	}
+		        	    	}
+	            	}
+	            	produceAction("resize");
+	            	e.consume();
             } 
 			else if (kc == KeyEvent.VK_BACK_SPACE)
             {   boolean b = deleteSelection();  
                 if (caretPos > 0 )
                 {   if(!b)
-            		{	addState();
-            			tekst.deleteCharAt(caretPos-1);
-                		caretPos--;
-                		if(WiskOpdr.mac)
-            	    	{	keyStrokeUpdated = true;
-                			vulVak(tekst.toString());
-            	    		setCaret(caretPos);
-            	    	}
-                	}
-                	produceAction("resize");
+	            		{	addState();
+	            			tekst.deleteCharAt(caretPos-1);
+	                		caretPos--;
+	                		if(WiskOpdr.mac)
+		            	    	{	keyStrokeUpdated = true;
+		            	    		//System.out.println(tekst.toString().substring(caretPos).replace('\n', '\\'));
+		            	    		if(!actieveRegel.backSpaceAction() || backSpaceNeedsLayout())
+		            	    		{	vulVak(tekst.toString());
+		            	    			setCaret(caretPos);
+		            	    		}
+		            	    	}
+	                	}
+                		produceAction("resize");
                 }
                 e.consume();
 	  		} else if ( kc == KeyEvent.VK_ENTER) 
@@ -1418,6 +1461,21 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
          	repaint();
          	
 		}
+	}
+	
+	private boolean backSpaceNeedsLayout() {
+		boolean b1 = tekst.toString().substring(caretPos).length() < 1; // cursor achter laatste teken
+		boolean b2 = tekst.toString().substring(caretPos).startsWith("\n"); // cursor voor newLine
+		boolean b3 = actieveRegel.toString().contains("\n"); // newLine in actieve regel
+		boolean b4 = actieveRegel.getWidth() + geefVolgendeRegel(actieveRegel).geefBreedteStartWoord() > breedte-2*marge;
+		return !b1 && !b2 && !b3 && !b4;
+	}
+	
+	private boolean deleteNeedsLayout() {
+		boolean b2 = tekst.toString().substring(caretPos).startsWith("\n"); // cursor voor newLine
+		boolean b3 = actieveRegel.toString().contains("\n"); // newLine in actieve regel
+		boolean b4 = actieveRegel.getWidth() + geefVolgendeRegel(actieveRegel).geefBreedteStartWoord() > breedte-2*marge;
+		return b2 || !b3 && !b4;
 	}
 
 	/**
@@ -1449,23 +1507,44 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
     }
     public void keyTyped(KeyEvent e)
     {	int kt = e.getKeyChar();
-    	boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
-    	if (editable && templateEditable)
+    		boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
+    		if (editable && templateEditable)
 		{   if (kt == KeyEvent.VK_ENTER)
             {	if(tekst.charAt(caretPos)==' ')tekst.replace(caretPos,'\n');
-            	else if(caretPos>0 && tekst.charAt(caretPos-1)==' ')tekst.replace(caretPos-1,'\n');
-            	else 
-            	{	tekst.insert(caretPos,'\n');
+	            	else if(caretPos>0 && tekst.charAt(caretPos-1)==' ')tekst.replace(caretPos-1,'\n');
+	            	else 
+	            	{	tekst.insert(caretPos,'\n');
+	            	}
             		caretPos++;
             		vulVak(tekst.toString());
-            	}
-            	produceAction("resize");
-            	e.consume();
+	            	produceAction("resize");
+	            	setCaret(caretPos);
+				keyStrokeUpdated = true;
+	            	e.consume();
+	            	return;
 			}
-			else if (kt == KeyEvent.VK_BACK_SPACE || kt == KeyEvent.VK_DELETE)
+			else if (kt == KeyEvent.VK_BACK_SPACE)
 	        {
-				vulVak(tekst.toString());
+				if(!keyStrokeUpdated)
+				{	if(!actieveRegel.backSpaceAction() || backSpaceNeedsLayout())
+	    				{	vulVak(tekst.toString());
+						setCaret(caretPos);
+	    				}
+				}
 				e.consume();
+				return;
+	        }
+			else if (kt == KeyEvent.VK_DELETE)
+	        {
+				if(!keyStrokeUpdated)
+				{	
+					if(!actieveRegel.deleteAction() || deleteNeedsLayout())
+		    	    		{	vulVak(tekst.toString());
+		        	    		setCaret(caretPos);
+		        	    	}
+	    			}
+				e.consume();
+				return;
 	        }
     		
 			else if ((kt != KeyEvent.VK_ESCAPE) &&
@@ -1480,59 +1559,62 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
                		(kt != '@')
                     && !isControlDown(e)
                     && !(e.isAltDown() && kc == KeyEvent.VK_F)
-                    
                    )
       		{	
 			    if(e.isAltDown())
 	            {
-
-			    	 if(kc == KeyEvent.VK_A) kt = '\u03b1';
-				        else if (kc == KeyEvent.VK_B) kt = '\u03b2';
-				        else if (kc == KeyEvent.VK_G) kt = '\u03b3';
-				        else if (kc == KeyEvent.VK_D) kt = '\u03b4';
-				        else if (kc == KeyEvent.VK_E) kt = '\u03b5';
-				        else if (kc == KeyEvent.VK_Z) kt = '\u03b6';
-				        else if (kc == KeyEvent.VK_H) kt = '\u03b7';
-				        else if (kc == KeyEvent.VK_Q) kt = '\u03b8';
-				        else if (kc == KeyEvent.VK_I) kt = '\u03b9';
-				        else if (kc == KeyEvent.VK_K) kt = '\u03ba';
-				        else if (kc == KeyEvent.VK_L) kt = '\u03bb';
-				        else if (kc == KeyEvent.VK_M) kt = '\u03bc';
-				        else if (kc == KeyEvent.VK_N) kt = '\u03bd';
-				        else if (kc == KeyEvent.VK_X) kt = '\u03be';
-				        else if (kc == KeyEvent.VK_O) kt = '\u03bf';
-				        else if (kc == KeyEvent.VK_P) kt = '\u03c0';
-				        else if (kc == KeyEvent.VK_R) kt = '\u03c1';
-				        else if (kc == KeyEvent.VK_R) kt = '\u03c2';
-				        else if (kc == KeyEvent.VK_S) kt = '\u03c3';
-				        else if (kc == KeyEvent.VK_T) kt = '\u03c4';
-				        else if (kc == KeyEvent.VK_U) kt = '\u03c5';
-				        else if (kc == KeyEvent.VK_V) kt = '\u03c6';
-				        else if (kc == KeyEvent.VK_C) kt = '\u03c7';
-				        else if (kc == KeyEvent.VK_Y) kt = '\u03c8';
-				        else if (kc == KeyEvent.VK_W) kt = '\u03c9';
-	                
-
-	            }
+				    	if(kc == KeyEvent.VK_A) kt = '\u03b1';
+			        else if (kc == KeyEvent.VK_B) kt = '\u03b2';
+			        else if (kc == KeyEvent.VK_G) kt = '\u03b3';
+			        else if (kc == KeyEvent.VK_D) kt = '\u03b4';
+			        else if (kc == KeyEvent.VK_E) kt = '\u03b5';
+			        else if (kc == KeyEvent.VK_Z) kt = '\u03b6';
+			        else if (kc == KeyEvent.VK_H) kt = '\u03b7';
+			        else if (kc == KeyEvent.VK_Q) kt = '\u03b8';
+			        else if (kc == KeyEvent.VK_I) kt = '\u03b9';
+			        else if (kc == KeyEvent.VK_K) kt = '\u03ba';
+			        else if (kc == KeyEvent.VK_L) kt = '\u03bb';
+			        else if (kc == KeyEvent.VK_M) kt = '\u03bc';
+			        else if (kc == KeyEvent.VK_N) kt = '\u03bd';
+			        else if (kc == KeyEvent.VK_X) kt = '\u03be';
+			        else if (kc == KeyEvent.VK_O) kt = '\u03bf';
+			        else if (kc == KeyEvent.VK_P) kt = '\u03c0';
+			        else if (kc == KeyEvent.VK_R) kt = '\u03c1';
+			        else if (kc == KeyEvent.VK_R) kt = '\u03c2';
+			        else if (kc == KeyEvent.VK_S) kt = '\u03c3';
+			        else if (kc == KeyEvent.VK_T) kt = '\u03c4';
+			        else if (kc == KeyEvent.VK_U) kt = '\u03c5';
+			        else if (kc == KeyEvent.VK_V) kt = '\u03c6';
+			        else if (kc == KeyEvent.VK_C) kt = '\u03c7';
+			        else if (kc == KeyEvent.VK_Y) kt = '\u03c8';
+			        else if (kc == KeyEvent.VK_W) kt = '\u03c9';
+                }
 			    
 			    deleteSelection();
       			tekst.insert(caretPos,(char)kt);
 				caretPos++;
+				
+				TekstTeken tt = new TekstTeken((char)kt);
+				tt.setForeground(getForeground());
+				if(textRtoL)actieveRegel.insertZZ(tt);
+				else actieveRegel.insert(tt);
+				
 				e.consume();
 				
             } 
 			if(!keyStrokeUpdated)
-			{	vulVak(tekst.toString());
-	    		setCaret(caretPos);
-	    		keyStrokeUpdated = true;
-	    		e.consume();
+			{
+				if(actieveRegel.getWidth() > breedte-2*marge)
+				{
+					vulVak(tekst.toString());
+					setCaret(caretPos);
+					//layoutInBackground();
+					keyStrokeUpdated = true;
+				}
+		    		e.consume();
 			}
-            
-            //repaint();
-            
 		}
-    	
-	}
+    	}
 	
 	public void copySelection()
 	{	int firstIndex = -1;
