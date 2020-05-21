@@ -677,44 +677,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	//public void paint(Graphics g)
 	//{	super.paint(g);
 	//}
-	LayoutTekstDraad layoutTekstDraad; 
-	boolean layoutDone;
 	
-	private void layoutInBackground() {
-		if(layoutTekstDraad!=null)
-		{	layoutTekstDraad.maakDood();
-			layoutTekstDraad=null;
-		}
-		layoutTekstDraad = new LayoutTekstDraad();
-		layoutDone = false;
-		layoutTekstDraad.start();
-		
-	}
 	
-	class LayoutTekstDraad extends Thread 
-	{	boolean dood = false;
-		public void run()
-		{	//if(!dood && !layoutDone)
-			{	int delay = 1000;
-				long t = System.currentTimeMillis();
-				try
-				{	t = t+delay;
-					sleep(delay);
-				}
-    				catch(InterruptedException e)    // geen ;
-				{   };
-				if(!dood && !layoutDone) {
-					vulVak(tekst.toString());
-		            //produceAction("resize");
-		            	setCaret(caretPos);
-		            	layoutDone = true;
-				}
-			}
-		}
-		public void maakDood()
-		{	dood = true;
-		}
-	}
 	
 	//private boolean layouting = false;
 	public void layoutTekst()
