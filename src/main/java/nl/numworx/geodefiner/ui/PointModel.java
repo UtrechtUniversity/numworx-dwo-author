@@ -75,6 +75,12 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 	  rename = ra;
 	}
 
+	public PointModel(Tracker tracker) {
+		this();
+		set(tracker);
+		rename = Optional.empty();
+	}
+	
     protected PointModel() {
     }
 }

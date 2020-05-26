@@ -253,7 +253,13 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		launchdata.put("positions", filterCoordinaten((Map)instance.getState().get("positions")));
 		launchdata.put("random", random.getText());
 		launchdata.put("checkDWO", checkDWO.toMap());
-		launchdata.put("toolbox", toolbox.toList());
+		List<Integer> toolList = toolbox.toList();
+		launchdata.put("toolbox", toolList);
+		if (!toolList.isEmpty()) {
+			List<?> toolConfig = toolbox.toConfig();
+			if (!toolConfig.isEmpty())
+			launchdata.put("toolboxConfig", toolConfig);
+		}
 		launchdata.put("checkObjects", checkObjects.toList());
 		int div = split.getDividerLocation();
 		if(div>0)launchdata.put("split", div);
@@ -339,7 +345,8 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		  checkDWO.setLogOption(map.getBoolean("logOption"));
 		if (map.containsKey("logID"))
 		  checkDWO.setLogID(map.getString("logID"));
-		
+		if (map.containsKey("toolboxConfig"))
+			toolbox.fromConfig(map.getObjectList("toolboxConfig"));
 		
 	}
 

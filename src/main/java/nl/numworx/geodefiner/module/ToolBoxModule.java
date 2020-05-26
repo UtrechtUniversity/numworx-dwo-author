@@ -29,7 +29,6 @@ import fi.euclides.proof.VectorHandler;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.swing.CirkelAction;
 import fi.euclides.swing.PanHandler;
-import fi.euclides.swing.PuntAction;
 import fi.euclides.swing.XXXAction;
 import fi.euclides.util.Messages;
 import nl.numworx.geodefiner.CirkelRadiusHandler;
@@ -45,6 +44,7 @@ import nl.numworx.geodefiner.common.FilteredDestroyHandler;
 import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.ResetHandler;
 import nl.numworx.geodefiner.common.Tools;
+import nl.numworx.geodefiner.tools.PuntAction;
 
 @Module
 public abstract class ToolBoxModule implements Tools {

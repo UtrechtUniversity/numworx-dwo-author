@@ -12,23 +12,33 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+
+import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import fi.beans.numworxlf.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
+
+import dagger.Lazy;
 import nl.numworx.geodefiner.common.Tools;
+import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 
 @SuppressWarnings("serial")
@@ -98,6 +108,22 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		return panel;
 	}
 	
+	JComponent createCheckBox(String label, Icon icon, AbstractAction config) {
+		JComponent panel = createCheckBox(label, icon);
+		if (config != null) {
+			Component check = panel.getComponent(0);
+			panel.remove(check);
+			panel.setLayout(new BorderLayout());
+			JButton btn = new JButton(config);
+			btn.setContentAreaFilled(false);
+			panel.add(check, BorderLayout.CENTER);
+			ButtonModel model = ((JCheckBox) check).getModel();
+			config.putValue("checkModel", model);
+			panel.add(btn, BorderLayout.EAST);
+		}
+		return panel;
+	}
+	
 	private Icon selectedIcon(final Icon icon) {
 		return new Icon() {
 
@@ -156,7 +182,8 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	private Component createCheckBox(Action action) {
 		Icon icon = (Icon) action.getValue(Action.LARGE_ICON_KEY);
 		String name = (String) action.getValue(Action.NAME);
-		return createCheckBox(name, icon);
+		AbstractAction config = (AbstractAction) action.getValue("config");
+		return createCheckBox(name, icon, config);
 	}
 
 	public JToolBar getToolbox() {
@@ -241,5 +268,34 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 			hold = false;
 			insertActions();
 		}
+	}
+
+	public void fromConfig(ObjectList objectList) {
+		
+		
+	}
+	public List<?> toConfig() {
+		Vector<Object> list = new Vector<Object>(Tools.TOOL_SIZE);
+		list.setSize(Tools.TOOL_SIZE);
+		int max = 0;
+		List<?> result = Collections.emptyList();
+		for(int i = 0; i < TOOL_SIZE; i++) {
+			JCheckBox box = ((ToolPanel) vbox.getComponent(i)).getCheck();
+			if(box.isSelected())
+			{
+				int item = boxes.indexOf(box);
+				Action action = actionsMap.get(item).get();
+				UIModel model = (UIModel) action.getValue("model");
+				if (model != null) {
+					Object map = model.toMap();
+					list.set(item, map);
+					result = list;
+					if(item > max) max = item;
+				}
+				
+			}
+		}
+		list.setSize(max+1);
+		return result;
 	}
 }
