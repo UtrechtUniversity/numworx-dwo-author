@@ -130,6 +130,6 @@ public class TextModel extends ColorModel<Label> {
 	
 	@Inject TextModel(Tracker t, Optional<RenameAction> ra) {
 		set(t);
-		rename = ra;
+		setRename(ra);
 	}
 }

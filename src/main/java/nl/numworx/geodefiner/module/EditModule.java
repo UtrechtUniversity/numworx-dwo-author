@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
 
+import javax.annotation.Nullable;
 import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -18,6 +19,7 @@ import javax.swing.JToolBar;
 import org.cbook.cbookif.CBookEventHandler;
 
 import dagger.Binds;
+import dagger.BindsOptionalOf;
 import dagger.MembersInjector;
 import dagger.Module;
 import dagger.Provides;
@@ -45,10 +47,12 @@ import nl.numworx.geodefiner.common.math.Expression;
 import nl.numworx.geodefiner.common.math.ToC;
 import nl.numworx.geodefiner.merge.MergeModule;
 import nl.numworx.geodefiner.merge.RenameAction;
+import nl.numworx.geodefiner.ui.EditModels;
 import nl.numworx.geodefiner.ui.Models;
+import nl.numworx.geodefiner.ui.RenameModule;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
-@Module(includes= {MergeModule.class, ToolBoxModule.class, DelegateModule.class}, subcomponents = {Models.class})
+@Module(includes= {MergeModule.class, ToolBoxModule.class, DelegateModule.class}, subcomponents = {EditModels.class})
 public abstract class EditModule {
   
   
@@ -66,11 +70,9 @@ public abstract class EditModule {
 //		return new Instance(r, toolbar);
 //	}
 
-	@Provides static Optional<RenameAction> rename(RenameAction ra) {
-	  if (GeoDefiner.isExperimental && GeoDefiner.isPremium)
-	    return Optional.of(ra);
-	  return Optional.empty();
-	}
+	@BindsOptionalOf abstract RenameAction rename();
+	@Binds abstract Models.Builder builder(EditModels.Builder builder);
+
 	
 	@Binds abstract Randomizer randomizer(WiskOpdrRandomizer p);
     @Binds abstract DefaultRandomizer defaultRandomizer(WiskOpdrRandomizer p);

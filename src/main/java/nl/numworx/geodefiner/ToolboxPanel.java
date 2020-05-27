@@ -40,6 +40,7 @@ import dagger.Lazy;
 import nl.numworx.geodefiner.common.Tools;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 @SuppressWarnings("serial")
 public class ToolboxPanel extends JPanel implements ItemListener, Tools {
@@ -271,13 +272,25 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 	}
 
 	public void fromConfig(ObjectList objectList) {
+		if (objectList == null) return;
+		int len = Math.min(Tools.TOOL_SIZE, objectList.size());
+		for(int i = 0; i < len; i ++ ) {
+			ObjectMap map = objectList.getObjectMap(i);
+			if (map != null) {
+				Action action = actionsMap.get(i).get();
+				UIModel model = (UIModel) action.getValue("model");
+				if(model != null) 
+					model.fromMap(map);
+			}
+		}
+		
 		
 		
 	}
 	public List<?> toConfig() {
 		Vector<Object> list = new Vector<Object>(Tools.TOOL_SIZE);
 		list.setSize(Tools.TOOL_SIZE);
-		int max = 0;
+		int max = -1;
 		List<?> result = Collections.emptyList();
 		for(int i = 0; i < TOOL_SIZE; i++) {
 			JCheckBox box = ((ToolPanel) vbox.getComponent(i)).getCheck();
@@ -290,7 +303,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 					Object map = model.toMap();
 					list.set(item, map);
 					result = list;
-					if(item > max) max = item;
+					if(item > max && map != null) max = item;
 				}
 				
 			}

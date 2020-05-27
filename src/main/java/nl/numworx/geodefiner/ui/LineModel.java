@@ -76,6 +76,6 @@ public class LineModel extends ColorModel<Destroyable> {
 	@Inject LineModel(Tracker tracker, Optional<RenameAction> ra) {
 		this();
 		set(tracker);
-		rename = ra;
+		setRename(ra);
 	}
 }

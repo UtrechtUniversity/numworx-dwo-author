@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.merge.RenameAction;
@@ -27,11 +28,11 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 	private static final OMObject EUCLIDES_VISIBLE = new OMSymbol("euclides", "visible");
 	public Destroyable item;
 	Color color = Color.black, trailColor = Color.LIGHT_GRAY;
-	boolean visible, trail,log;
+	boolean visible = true, trail,log;
 	Label visibility = new Label();
 	Tracker tracker;
 	Integer zOrder;
-	Optional<RenameAction> rename = Optional.empty();
+	private Optional<RenameAction> rename = Optional.empty();
 	
 	public  void setVisible(boolean visible) {
 		this.visible = visible;
@@ -70,7 +71,8 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 	}
 
 	public void install() {
-		install(item);
+		if(item != null)
+			install(item);
 	}
 
 	public void installLight() {
@@ -132,6 +134,15 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		}
 		if(color == null) color = Color.black;
 		return this;
+	}
+
+	public Optional<RenameAction> getRename() {
+		return rename;
+	}
+
+	public void setRename(Optional<RenameAction> rename) {
+		if (GeoDefiner.isExperimental && GeoDefiner.isPremium)
+			this.rename = rename;
 	}
 
 }

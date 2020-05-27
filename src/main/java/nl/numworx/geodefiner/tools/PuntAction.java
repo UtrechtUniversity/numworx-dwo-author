@@ -16,6 +16,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.VrijPunt;
 import fi.euclides.swing.AWTViewer;
 import nl.numworx.geodefiner.GeoDefiner;
+import nl.numworx.geodefiner.common.UIShim;
 import nl.numworx.geodefiner.ui.PointModel;
 import nl.numworx.geodefiner.ui.UIEditor;
 
@@ -36,6 +37,7 @@ public class PuntAction extends fi.euclides.swing.PuntAction {
 					
 			if(ok == JOptionPane.YES_OPTION) {
 				editor.commit();
+				pointModel.set = true;
 			}
 		}
 
@@ -66,16 +68,12 @@ public class PuntAction extends fi.euclides.swing.PuntAction {
 		
 	}
 
-	PointModel pointModel;
-	public PuntAction(String name, String icon, EventHandler handler, AWTViewer viewer) {
+	UIShim<Destroyable, UIEditor> pointModel;
+	public PuntAction(String name, String icon, EventHandler handler, AWTViewer viewer, UIShim<Destroyable, UIEditor> model) {
 		super(name, icon, handler, viewer);
-		if (GeoDefiner.isExperimental) {
+		if (GeoDefiner.isExperimental && GeoDefiner.isPremium) {
 			putValue("config", new PuntConfig(editImage));
-			pointModel = new PointModel(viewer);
-			pointModel.init(new VrijPunt() {
-				public Destroyable trail() {
-					return null;
-				} } );
+			pointModel = (model);
 			putValue("model", pointModel);
 		}
 	}

@@ -28,8 +28,10 @@ public enum UserConfig implements Observer, Visitor {
 	
 	@Override
 	public void visitPunt(Punt p) {
-		DefaultAdapter adapter = DefaultAdapter.getDefault(p);
-		adapter.put(USER_POINT_SIZE);
+		if ( p.adapt(Float.class) == null) 
+		{
+			DefaultAdapter.getDefault(p).put(USER_POINT_SIZE);
+		}
 	}
 
 	@Override

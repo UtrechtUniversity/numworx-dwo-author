@@ -64,7 +64,7 @@ public class SegmentModel extends LineModel {
 
 	@Inject SegmentModel(Tracker t, Optional<RenameAction> ra) {
 		set(t);
-		rename = ra;
+		setRename(ra);
 	}
 	
 }

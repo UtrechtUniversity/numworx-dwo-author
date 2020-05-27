@@ -91,8 +91,8 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 	void addComponents() {
 		Box hbox = Box.createHorizontalBox();
 
-		if (model.rename.isPresent()) {
-		  RenameAction action = model.rename.get();
+		if (model.getRename().isPresent()) {
+		  RenameAction action = model.getRename().get();
 		  action.setPane(this);
 		  hbox.add(new JLabel(Messages.getString("Euclides.103")));
 		  JFormattedTextField n;
@@ -105,13 +105,15 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		  add(hbox);
 		  hbox = Box.createHorizontalBox();
 		}
-		hbox.add(new JLabel(Messages.getString("ColorPane.1")));
-		hbox.add(Box.createGlue());
-		hbox.add(log);
-		hbox.add(trails);
-		add(hbox);
-		add(visibilityEditor);
-		add(Box.createVerticalStrut(10));
+		if (model.item != null) { 
+			hbox.add(new JLabel(Messages.getString("ColorPane.1")));
+			hbox.add(Box.createGlue());
+			hbox.add(log);
+			hbox.add(trails);
+			add(hbox);
+			add(visibilityEditor);
+			add(Box.createVerticalStrut(10));
+		}
 		hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("ColorPane.2")));hbox.add(Box.createGlue());
 		add(hbox);
@@ -125,7 +127,7 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		model.trail = trails.isSelected();
 		model.log = log.isSelected();
 		model.install();
-        model.rename.ifPresent(RenameAction::doRename);
+        model.getRename().ifPresent(RenameAction::doRename);
 	}
 
 }

@@ -405,6 +405,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		if(statusLabel.isVisible())
 		{ 	ToolboxPanel p = getToolboxPanel();
 			p.fromList(tools);
+			p.fromConfig(launchData.getObjectList("toolboxConfig"));
 		} else {
 			toolbox.removeAll();
 			toolbox.setVisible(false);

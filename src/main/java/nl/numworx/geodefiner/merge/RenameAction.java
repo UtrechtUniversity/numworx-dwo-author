@@ -32,10 +32,9 @@ import nl.tue.win.riaca.openmath.lang.OMVariable;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 
 @SuppressWarnings("serial")
-@Reusable
-public class RenameAction extends AbstractAction {
+public abstract class RenameAction extends AbstractAction {
 
-  @Inject public RenameAction() {
+  public RenameAction() {
     super("rename");
   }
   

@@ -44,7 +44,9 @@ import nl.numworx.geodefiner.common.FilteredDestroyHandler;
 import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.ResetHandler;
 import nl.numworx.geodefiner.common.Tools;
+import nl.numworx.geodefiner.common.UIShim;
 import nl.numworx.geodefiner.tools.PuntAction;
+import nl.numworx.geodefiner.ui.PointModel;
 
 @Module
 public abstract class ToolBoxModule implements Tools {
@@ -71,8 +73,9 @@ public abstract class ToolBoxModule implements Tools {
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(POINT) static 
-	Action point(AWTViewer viewer) {
-		return new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddSnapPuntHandler(),viewer);
+	Action point(AWTViewer viewer, PointModel model, Instance instance) {
+		UIShim shim = new UIShim(model, instance.getStateConfiguration(), viewer);
+		return new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddSnapPuntHandler(shim),viewer, shim);
 	}
 	@Provides @Singleton @IntoMap @IntKey(LINE) static 
 	Action line(AWTViewer viewer) {

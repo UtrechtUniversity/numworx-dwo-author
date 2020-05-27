@@ -3,9 +3,11 @@ package nl.numworx.geodefiner.ui;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.common.PointType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.merge.RenameAction;
@@ -18,9 +20,9 @@ import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.DefaultAdapter;
 
 public class PointModel extends ColorModel<Destroyable> implements UIModel<Destroyable, UIEditor> {
-	int   size = 5;
+	Float size;
 	PointType  type = PointType.DISK;
-	boolean rigid = true;
+	boolean rigid = false;
 
 	public void install(Destroyable item) {
 		if(item instanceof FreePoint) {
@@ -39,7 +41,7 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 
 	public Map<String, Object> toMap() {
 		Map<String, Object> map = super.toMap();
-		map.put("size", size);
+		if (size != null) map.put("size", size);
 		map.put("type", type.name());
 		map.put("rigid", rigid);
 		return map;
@@ -47,7 +49,7 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 	
 	public void fromMap(ObjectMap map) {
 		super.fromMap(map);
-		if(map.containsKey("size")) size  = map.getInt("size");
+		if(map.containsKey("size")) size  = Float.valueOf(map.getInt("size"));
 		if(map.containsKey("type")) type  = PointType.valueOf( map.getString("type"));
 		rigid = map.getBoolean("rigid", true);
 	}
@@ -72,15 +74,16 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 	@Inject PointModel(Optional<RenameAction> ra, Tracker tracker) {
 	  this();
 	  set(tracker);
-	  rename = ra;
-	}
-
-	public PointModel(Tracker tracker) {
-		this();
-		set(tracker);
-		rename = Optional.empty();
+	  setRename(ra) ;
 	}
 	
     protected PointModel() {
     }
+
+	@Override
+	public void installLight() {
+		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
+		if (size != null) adapter.put(size);
+		super.installLight();
+	}
 }

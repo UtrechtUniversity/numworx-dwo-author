@@ -30,7 +30,7 @@ class PointPane<T extends PointModel> extends ColorPane<T> {
 		type.setSelectedItem(model.type);
 		NumberFormat format = NumberFormat.getIntegerInstance(Locale.US);
 		sizeField = new JFormattedTextField(format);sizeField.setUI(NumworxTextFieldUI.createUI(sizeField));
-		sizeField.setValue(Integer.valueOf(model.size));
+		sizeField.setValue(Integer.valueOf(model.size == null ? 5 : model.size.intValue()));
 		sizeField.setColumns(5);
 		sizeField.setMaximumSize(sizeField.getPreferredSize());
 		rigid = new JCheckBox(Messages.getString("rigid"));
@@ -38,7 +38,7 @@ class PointPane<T extends PointModel> extends ColorPane<T> {
 		if (item instanceof Groep) {
 		  item = ((Groep)item).prototype();
 		}
-        rigid.setEnabled(item instanceof FreePoint);
+        rigid.setEnabled(item instanceof FreePoint||item == null);
 		rigid.setSelected(!model.rigid);			
 		Box panel = Box.createHorizontalBox();
 		panel.add( new JLabel(Messages.getString("PointPane.1"))); panel.add(sizeField);panel.add(new JLabel("px"));panel.add(Box.createGlue());
@@ -57,8 +57,7 @@ class PointPane<T extends PointModel> extends ColorPane<T> {
 		commitFields(sizeField);
 		model.type = (PointType) type.getSelectedItem();
 		model.rigid = !rigid.isSelected();
-
-		model.size  = ((Number) sizeField.getValue()).intValue();
+		model.size  = ((Number) sizeField.getValue()).floatValue();
 		super.commit();
 	}
 }

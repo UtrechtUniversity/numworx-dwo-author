@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
 
+import javax.annotation.Nullable;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -12,6 +13,7 @@ import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEventHandler;
 
 import dagger.Binds;
+import dagger.BindsOptionalOf;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
@@ -34,6 +36,7 @@ import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.math.Expression;
 import nl.numworx.geodefiner.common.math.ToC;
 import nl.numworx.geodefiner.merge.RenameAction;
+import nl.numworx.geodefiner.merge.RenameActionImpl;
 import nl.numworx.geodefiner.ui.Models;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
@@ -92,11 +95,8 @@ public abstract class Modules {
         }
       };
 	}
-	
-	@Provides static Optional<RenameAction>  noRename() {
-	  return Optional.empty();
-	}
-	
+
+	@BindsOptionalOf abstract RenameAction rename();
 	
 	@Provides @Singleton static
 	Definitions definitions(InstanceViewer tracker, UIModelFactory fac) {

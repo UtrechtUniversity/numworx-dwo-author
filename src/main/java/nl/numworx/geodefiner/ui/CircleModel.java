@@ -84,6 +84,6 @@ public class CircleModel extends LineModel {
 	
 	@Inject CircleModel(Tracker t, Optional<RenameAction> ra) {
 		set(t);
-		rename = ra;
+		setRename(ra);
 	}
 }
