@@ -9,7 +9,7 @@ import fi.euclides.model.Destroyable;
 public interface UIModel<T extends Destroyable, U> {
 	
 	UIModel<T, U> init(T item);
-	UIModel<T, U> init2(Destroyable item);
+	UIModel<T, U> init2(Destroyable d);
 	void install();
 	Map<String, Object> toMap();
 	void fromMap(ObjectMap value);
@@ -17,4 +17,5 @@ public interface UIModel<T extends Destroyable, U> {
 	void setVisible(boolean visible);
 	UIModel<T, U> set(Tracker tracker);
 	default void installLight() { }
+	void install(Destroyable buildPunt);
 }
