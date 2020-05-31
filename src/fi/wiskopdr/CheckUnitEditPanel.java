@@ -152,7 +152,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
 		
 		
 		
@@ -254,7 +254,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		Component[] r33 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
 		Component[] r34 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
 		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
-		Component[] r36 = {logObjectivesButton, hgl()};
+		Component[] r36 = {ra(6,0),			logObjectivesButton, hgl()};
 		
 		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vgl()};
 		

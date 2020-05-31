@@ -171,7 +171,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
         
         // mainPanel    //Hulp
         titleHulpLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"), font.deriveFont(Font.BOLD, 16));
@@ -209,7 +209,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		Component[] r33 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
 		Component[] r34 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
 		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
-		Component[] r36 = {logObjectivesButton, hgl()};
+		Component[] r36 = {ra(6,0),			logObjectivesButton, hgl()};
 		Component[] r37 = {titleHulpLabel, 		hgl()};
 		Component[] r38 = {viewCB, 				ra(5,0),	hgl(),	hbView};
 		

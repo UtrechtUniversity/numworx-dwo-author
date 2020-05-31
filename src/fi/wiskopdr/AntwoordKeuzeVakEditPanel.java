@@ -250,7 +250,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
         logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
 		
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
@@ -308,8 +308,8 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
 		Component[] r43 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
 		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField,  ra(5,0),	hgl(),	hbLogID};
-		Component[] r45 = {logObjectivesButton, hgl()};
-		Component[] k4 = {hb(r41),vst(20),hb(r42),hb(r43),hb(r44),hb(r45), vgl()};
+		Component[] r45 = {ra(6,0),			logObjectivesButton, hgl()};
+		Component[] k4 = {hb(r41),vst(20),hb(r42),hb(r43),hb(r44),vst(3),hb(r45), vgl()};
 		Box loggingBox = vb(k4);	
 		
 		// plaats componenten antwoordbox

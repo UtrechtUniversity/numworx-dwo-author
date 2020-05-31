@@ -284,7 +284,7 @@ public class DragDropEditor_1 implements TComponentEditor, ActionListener, Focus
 		Component[] r33 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
 		Component[] r34 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
 		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0), hgl(),	hbLogID};
-		Component[] r36 = {logObjectivesButton, hgl()};
+		Component[] r36 = {ra(6,0),			logObjectivesButton, hgl()};
 		Component[] r37 = {titleHulpLabel, 		hgl()};
 		Component[] r38 = {viewCB, 				ra(5,0),	hgl(),	hbView};
 		
@@ -611,7 +611,7 @@ public class DragDropEditor_1 implements TComponentEditor, ActionListener, Focus
         logObjectivesButton.setObjectives(smObjectives);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
         knopImageButton.setPopupButtonImage(knopImage);
     	iconman = new Iconan(WiskOpdr.applet, (Component)mainPanel, (Hashtable)TekstImageVak.getImageMap());
     	if(knopImageString!=null && !"".equals(knopImageString)) {

@@ -433,7 +433,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
         
@@ -574,7 +574,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		Component[] r42 = {checkCB, 			hgl(),	hbCheck};
 		Component[] r43 = {teltMeeCB, 			hgl(),	hbTeltMee};
 		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, hgl(),	hbLogID};
-		Component[] r45 = {logObjectivesButton, hgl()};
+		Component[] r45 = {ra(6,0),			logObjectivesButton, hgl()};
 		Component[] r46 = {titleHulpLabel, 		hgl()};
 		Component[] r47 = {feedbackCB, 			hgl(),	hbFeedback};
 		Component[] r48 = {formuleToolBijFocusCB, hgl(),	hbFormInvoer};
@@ -596,12 +596,12 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		Component[] r424 = {boxMetRandCB, 		hgl(),	hbRand};
 		Box settingsBox;
 		if(soort==1) {
-			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
+			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),vst(3),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
 					hb(r410),hb(r411),hb(r412),hb(r413),hb(r414),hb(r415),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20), hb(r422),vst(5),hb(r423),hb(r424)};
 			settingsBox = vb(k4);
 		}
 		else {
-		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
+		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),vst(3),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
 				hb(r410),hb(r411),hb(r412),hb(r413),hb(r414),hb(r415),hb(r416),hb(r417),hb(r418),hb(r420), vst(20),hb(r421), hb(r422),vst(5),hb(r423),hb(r424), vgl()};
 			settingsBox = vb(k4);
 		}

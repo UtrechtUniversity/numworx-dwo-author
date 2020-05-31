@@ -2243,6 +2243,12 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			tekstVakPanel.setEditState(getEditState());
 			
 		}
+		if(e.getSource().equals(interlinieTF))
+		{	
+			interlinie = Integer.parseInt(interlinieTF.getText());
+			tekstVakPanel.setEditState(getEditState());
+			
+		}
         if(e.getSource().equals(rondingTF))
         {   
             ronding = Integer.parseInt(rondingTF.getText());

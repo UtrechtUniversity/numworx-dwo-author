@@ -311,7 +311,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
         logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
         logObjectivesButton.setBounds(600,5,120,20);
         if(WiskOpdr.objectives!=null)add(logObjectivesButton);
         
@@ -421,7 +421,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
 		Component[] r43 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
 		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField,ra(5,0),	hgl(),	hbLogID};
-		Component[] r45 = {logObjectivesButton, hgl()};
+		Component[] r45 = {ra(6,0),			logObjectivesButton, hgl()};
 		Component[] r46 = {titleHulpLabel, 		hgl()};
 		Component[] r47 = {rekenVakZichtbaarCB, ra(5,0),		hgl(), hbRekenVakZichtbaar};
 		Component[] r48 = {oplossingenRegelZichtbaarCB, ra(5,0),		hgl(), hbOplossingRegel};
@@ -432,7 +432,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 		Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand};
 		Box settingsBox;
 		
-		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
+		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),vst(3),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
 				hb(r418),vst(20),hb(r421), hb(r422),vst(5),hb(r424), vgl()};
 		settingsBox = vb(k4);
 				
