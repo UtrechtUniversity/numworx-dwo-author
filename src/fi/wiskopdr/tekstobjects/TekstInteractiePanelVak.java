@@ -1612,11 +1612,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
        					    int w = tekstVak.getSize().width-2*tekstVak.geefMarge();
              			
        					    breedte = (int)Math.round(factor*w + constant);
-       					    if(factor*w + constant< minWidth)
+       					    if(factor*w + constant< minWidth) {
        					    		breedte = w;
+       					    	}
+       					    else
+       					    		breedte = breedte-2;
+       					    
        					    if(breedte > maxWidth)
        					    		breedte = maxWidth;
-       					    breedte = breedte-2;
+       					   
         				     }
         				 }
         				setSize(breedte, hoogte);
