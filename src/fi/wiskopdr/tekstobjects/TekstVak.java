@@ -1431,14 +1431,14 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		boolean b1 = tekst.toString().substring(caretPos).length() < 1; // cursor achter laatste teken
 		boolean b2 = tekst.toString().substring(caretPos).startsWith("\n"); // cursor voor newLine
 		boolean b3 = actieveRegel.toString().contains("\n"); // newLine in actieve regel
-		boolean b4 = actieveRegel.getWidth() + geefVolgendeRegel(actieveRegel).geefBreedteStartWoord() > breedte-2*marge;
+		boolean b4 = actieveRegel.getWidth() + geefVolgendeRegel(actieveRegel).geefBreedteStartWoord() - 1 > breedte-2*marge;
 		return !b1 && !b2 && !b3 && !b4;
 	}
 	
 	private boolean deleteNeedsLayout() {
 		boolean b2 = tekst.toString().substring(caretPos).startsWith("\n"); // cursor voor newLine
 		boolean b3 = actieveRegel.toString().contains("\n"); // newLine in actieve regel
-		boolean b4 = actieveRegel.getWidth() + geefVolgendeRegel(actieveRegel).geefBreedteStartWoord() > breedte-2*marge;
+		boolean b4 = actieveRegel.getWidth() + geefVolgendeRegel(actieveRegel).geefBreedteStartWoord() - 8 > breedte-2*marge;
 		return b2 || !b3 && !b4;
 	}
 
@@ -1702,7 +1702,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	int inspringing = 0;
 	boolean heeftInspr;
 	public boolean zetInspringing(boolean b, int inspr) {
-		if(centerH || !(regels[0].getComponent(0) instanceof TekstInteractiePanelVak))
+		if(centerH || regels[0].getComponentCount()==0 || !(regels[0].getComponent(0) instanceof TekstInteractiePanelVak))
 			return false;
 		if(b) {
 			this.inspringing = inspr;
