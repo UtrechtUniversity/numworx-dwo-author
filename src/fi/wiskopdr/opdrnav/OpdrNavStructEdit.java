@@ -441,6 +441,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		boolean hoekGraden = false;
 		boolean formTimes = true;
 		String fontName = "SansSerif";
+		boolean fontOvererving = false;
 		boolean fToets = true;
 		boolean abcDeelOpdr = false;
 		boolean globalParam = false;
@@ -489,6 +490,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			formTimes = ((Boolean) h.get("formTimes")).booleanValue();
 		if (h != null && h.containsKey("fontName"))
 			fontName = (String) h.get("fontName");
+		if (h != null && h.containsKey("fontOvererving"))
+			fontOvererving = ((Boolean) h.get("fontOvererving")).booleanValue();
 		if (h != null && h.containsKey("fToets"))
 			fToets = ((Boolean) h.get("fToets")).booleanValue();
 		if (h != null && h.containsKey("globalParam"))
@@ -554,6 +557,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		
         MyOpdrEditContainer.setDefaultDocSizes(margeLinks, margeBoven, docWidth, docHeight);
        
+        TekstVakPanel.zetFontOvererving(fontOvererving);
       //if(styles != null)
         TekstVakPanel.styles = styles;
     
