@@ -2,15 +2,33 @@ package fi.wiskopdr;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.*;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+//import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.opdrnav.PlusMinKnop;
+import fi.beans.numworxlf.JScrollPane;
+import fi.beans.numworxlf.JComboBox;
 
 public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionListener
 {
+	private Font font = new Font("SansSerif",Font.PLAIN,13);
+	
 	private DialogFacade frame;
 	private JTextField[][] objectiveTextFields;
 	private JLabel[] objectiveLabels;
@@ -30,13 +48,23 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 	private JButton importButton;
 	
 	JPanel objectivesPanel = new JPanel();
+	JPanel mainPanel = new JPanel();
 	JPanel bottomPanel = new JPanel();
+	JPanel topPanel = new JPanel();
 	JScrollPane scrollPane;
+	
+	private JLabel titleLabel;
+	private JRadioButton studentModelRB;
+	private JRadioButton eigenLeerdoelenRB;
+	private ButtonGroup buttonGroep;
 	
 	private String buttonLabel;
 	private String rowLabel;
 	private String columnLabel;
 	private StudentModel studentModel;
+	
+	private JComboBox<StudentModel> leerdomeinCombobox = new JComboBox<>(WiskOpdr.applet.getStudentModels());
+	
 		
 	public ObjectiveSettingsButton(){	
 		this(WiskOpdr.rb.getString("OPT_objectives"), WiskOpdr.rb.getString("OBJ_leerdoel"), WiskOpdr.rb.getString("OBJ_categorie"));
@@ -65,6 +93,11 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 			if( s != null && s.id.equals(id))
 			{
 				studentModel = s;
+				objectives = null;
+				leerdomeinCombobox.setSelectedItem(studentModel);
+				//leerdomeinCombobox.setVisible(true);
+				//studentModelRB.setSelected(true);
+				//eigenLeerdoelenRB.setSelected(true);
 				break;
 			}
 		}
@@ -132,21 +165,48 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 	    categoryTextFields = new JTextField[maxCategories];
 	    for(int j = 0; j < maxCategories; j++)
 	    {	categoryTextFields[j] = new JTextField(columnLabel + " "  + (j+1));
-	    	categoryTextFields[j].setPreferredSize(new Dimension(180,20));
+		    	categoryTextFields[j].setPreferredSize(new Dimension(180,20));
+		    	categoryTextFields[j].setForeground(WiskOpdr.colorBlue1);
 	    }
 	    for(int i=0 ; i<maxObjectives ; i++)
 	    {	objectiveLabels[i] = new JLabel(rowLabel + " " +(i+1));
+	    		objectiveLabels[i].setForeground(WiskOpdr.colorBlue1);
 	   		objectiveLabels[i].setPreferredSize(new Dimension(100,20));
 	   		for(int j = 0; j<maxCategories; j++)
 	        {	objectiveTextFields[j][i] = new JTextField("");
-	        	objectiveTextFields[j][i].setPreferredSize(new Dimension(180,20));
+	        		objectiveTextFields[j][i].setForeground(WiskOpdr.colorBlue1);
+	    			objectiveTextFields[j][i].setPreferredSize(new Dimension(180,20));
 	        }
 	    }
     }
     
     public void makeGUI(int aantalRijen, int aantalKolommen){
-    	objectivesPanel = new JPanel();
-		bottomPanel = new JPanel();
+    		objectivesPanel = new JPanel();
+    		objectivesPanel.setBackground(WiskOpdr.colorGray3);
+    		objectivesPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 50, 30));
+    		
+    		mainPanel = new JPanel(new BorderLayout());
+    		mainPanel.setBackground(WiskOpdr.colorGray3);
+    		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+    		
+		bottomPanel = new JPanel(new BorderLayout());
+		bottomPanel.setBackground(WiskOpdr.colorGray2);
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		
+		topPanel = new JPanel(new BorderLayout());
+		topPanel.setBackground(WiskOpdr.colorBlue1);
+		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
+		
+		titleLabel = new JLabel("Instellingen leerdoelen");
+		titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+		titleLabel.setForeground(WiskOpdr.colorGray3);
+		
+		Box headerBox = Box.createHorizontalBox();		
+		headerBox.add(Box.createHorizontalGlue());
+		headerBox.add(titleLabel);
+		headerBox.add(Box.createHorizontalGlue());
+		topPanel.add(headerBox, BorderLayout.NORTH);
+		
         
 		Box boxh1 = Box.createHorizontalBox();
 		Box boxv = Box.createVerticalBox();
@@ -172,6 +232,21 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
         boxh = Box.createHorizontalBox();
         boxh.add(Box.createHorizontalStrut(20));
         
+        buttonGroep = new ButtonGroup();
+        
+        studentModelRB = new WiskOpdrRadioButton("Gebruik een aanwezig leerdomein");
+        studentModelRB.setFont(font);
+        studentModelRB.setSelected(studentModel!=null);
+        studentModelRB.addActionListener(this);
+        buttonGroep.add(studentModelRB);
+        
+        eigenLeerdoelenRB = new WiskOpdrRadioButton("Gebruik eigen leerdoelen");
+        eigenLeerdoelenRB.setFont(font);
+        eigenLeerdoelenRB.setSelected(studentModel==null);
+        eigenLeerdoelenRB.addActionListener(this);
+        
+        buttonGroep.add(eigenLeerdoelenRB);
+        
         aantalRijenKnop = new PlusMinKnop(0, 0, 16, 20, PlusMinKnop.VERTIKAAL);
         aantalRijenKnop.setPreferredSize(new Dimension(16, 20));
         aantalRijenKnop.setSize(getPreferredSize());
@@ -189,20 +264,62 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
         
         objectivesPanel.add(boxh1);
         
-        okButton = new JButton("Ok");
+        Box hb = Box.createHorizontalBox();
+        hb.add(Box.createHorizontalGlue());
+        
+        okButton = new WiskOpdrButton("Ok");
+        okButton.setPreferredSize(new Dimension(70,24));
+		okButton.setBackground(WiskOpdr.colorBlue1);
+		okButton.setForeground(WiskOpdr.colorGray3);
         okButton.addActionListener(this);
-        bottomPanel.add(okButton);
+        hb.add(okButton);
+        hb.add(Box.createHorizontalStrut(20));
         
-        cancelButton = new JButton("Cancel");
+        cancelButton = new WiskOpdrButton("Cancel");
+        cancelButton.setPreferredSize(new Dimension(70,24));
+		cancelButton.setBackground(WiskOpdr.colorBlue1);
+		cancelButton.setForeground(WiskOpdr.colorGray3);
         cancelButton.addActionListener(this);
-        bottomPanel.add(cancelButton);
-        
-        importButton = new JButton("Import");
+        hb.add(cancelButton);
+         
+        importButton = new WiskOpdrButton("Import");
         importButton.addActionListener(this);
         if (WiskOpdr.isExperimental() && WiskOpdr.isPremium())
-        		bottomPanel.add(importButton);
+        		//hb.add(importButton);
+        
+        hb.add(Box.createHorizontalGlue());
+        bottomPanel.add(hb);
         
 		scrollPane = new JScrollPane(objectivesPanel);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setBackground(WiskOpdr.colorGray3);
+		scrollPane.setVisible(studentModel==null);
+		
+		leerdomeinCombobox.setVisible(studentModel!=null);
+		leerdomeinCombobox.setForeground(WiskOpdr.colorBlue1);
+		leerdomeinCombobox.setPreferredSize(new Dimension(360,22));
+		leerdomeinCombobox.setMaximumSize(new Dimension(360,22));
+		leerdomeinCombobox.setMinimumSize(new Dimension(360,22));
+		leerdomeinCombobox.addActionListener(this);
+		Box vb = Box.createVerticalBox();
+		//if (WiskOpdr.isExperimental() && WiskOpdr.isPremium()) {
+		hb = Box.createHorizontalBox();
+		hb.add(studentModelRB) ; hb.add(Box.createHorizontalGlue());
+		vb.add(hb);
+		hb = Box.createHorizontalBox();
+		hb.add(eigenLeerdoelenRB) ; hb.add(Box.createHorizontalGlue());
+		vb.add(hb);
+		vb.add(Box.createVerticalStrut(20));
+		hb = Box.createHorizontalBox();
+		hb.add(leerdomeinCombobox) ; hb.add(Box.createHorizontalGlue());
+		    //vb.add(Box.createVerticalStrut(20));
+		    vb.add(hb);
+		//}
+	    vb.add(Box.createVerticalStrut(20));
+	    vb.add(scrollPane);
+	    vb.add(Box.createVerticalGlue());
+	    
+	    mainPanel.add(vb);
     }
     
     
@@ -224,8 +341,9 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
         frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         //frame.setSize(preferredSize);
         frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(scrollPane);
+        frame.getContentPane().add(mainPanel);
         frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+        frame.getContentPane().add(topPanel,BorderLayout.NORTH);
        
        
 		frame.pack();
@@ -269,16 +387,18 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 					objectiveTextFields[j][aantalRijen].setText("");
 				
 				frame.getContentPane().removeAll();
-				frame.getContentPane().add(scrollPane);
+				frame.getContentPane().add(mainPanel);
 				frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+				frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 				frame.pack();
 			}
 			if(e.getActionCommand().equals("min") && aantalRijen < maxObjectives)
 			{	makeGUI(aantalRijen + 1, aantalKolommen);
 				aantalRijen++;
 				frame.getContentPane().removeAll();
-				frame.getContentPane().add(scrollPane);
+				frame.getContentPane().add(mainPanel);
 				frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+				frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 				frame.pack();
 			}
 		}
@@ -290,16 +410,18 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 					objectiveTextFields[aantalKolommen][i].setText("");
 				
 				frame.getContentPane().removeAll();
-				frame.getContentPane().add(scrollPane);
+				frame.getContentPane().add(mainPanel);
 				frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+				frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 				frame.pack();
 			}
 			if(e.getActionCommand().equals("plus") && aantalKolommen < maxCategories)
 			{	makeGUI(aantalRijen, aantalKolommen + 1);
 				aantalKolommen++;
 				frame.getContentPane().removeAll();
-				frame.getContentPane().add(scrollPane);
+				frame.getContentPane().add(mainPanel);
 				frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+				frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 				frame.pack();
 			}
 		}
@@ -315,6 +437,27 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
             frame.dispose();
             frame=null;
         }
+		else if(e.getSource().equals(studentModelRB)) {
+			scrollPane.setVisible(!studentModelRB.isSelected());
+			leerdomeinCombobox.setVisible(studentModelRB.isSelected());
+			if(studentModelRB.isSelected())
+				objectives = null;
+			frame.pack();
+		}
+		else if(e.getSource().equals(eigenLeerdoelenRB)) {
+			scrollPane.setVisible(eigenLeerdoelenRB.isSelected());
+			leerdomeinCombobox.setVisible(!eigenLeerdoelenRB.isSelected());
+			if(eigenLeerdoelenRB.isSelected()) {
+				studentModel = null;
+				aantalKolommenKnop.setEnabled(true);
+				aantalRijenKnop.setEnabled(true);
+				leerdomeinCombobox.setSelectedIndex(0);
+			}
+			frame.pack();
+		}
+		else if(e.getSource().equals(leerdomeinCombobox)) {
+			studentModel = (StudentModel) leerdomeinCombobox.getSelectedItem();
+		}
 		else if(e.getSource().equals(importButton)) {
 			JComboBox<StudentModel> combo = new JComboBox<>(WiskOpdr.applet.getStudentModels());
 			combo.setSelectedItem(studentModel);
@@ -353,8 +496,9 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 					}
 				}
 				frame.getContentPane().removeAll();
-				frame.getContentPane().add(scrollPane);
+				frame.getContentPane().add(mainPanel);
 				frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+				frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 				frame.pack();
 						
 			} else {

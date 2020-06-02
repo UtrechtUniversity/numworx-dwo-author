@@ -1176,9 +1176,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	h.put("objectives", objectives);
 			h.put("categorieString", categorieString);
 			h.put("pilotObjectives", new Boolean(pilotObjectives));
-			if(studentModelId != null) {
-				h.put("studentModelId", studentModelId);
-			}
+		}
+		if(hasObjectives && studentModelId!=null)
+		{	h.put("studentModelId", studentModelId);
 		}
 		h.put("hasMisconceptions", new Boolean(hasMisconceptions));
 		if(hasMisconceptions && misconceptions!=null)
