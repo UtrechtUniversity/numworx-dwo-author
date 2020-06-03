@@ -544,6 +544,19 @@ public class FormuleParser
 			teller = index+2;
 		}
 		
+		//voor delta (increment operator)
+		index = 0;
+		teller = 0;
+		while(index >-1 && index>teller)
+		{	index = s.substring(teller).indexOf("\u2206");
+			if(index >-1 && s.substring(index+teller+1).length()>0)
+			{
+				if(Character.isLetter(s.charAt(index+teller+1)))
+				s = s.substring(0,index+teller) + "(" + "\u2206" + s.charAt(index+teller+1) + ")" + s.substring(index+teller+2);
+			}
+			teller = index+2;
+		}
+		
 		//vervangt -- door +
 		index = 0;
 		while(index >-1)
@@ -653,7 +666,7 @@ public class FormuleParser
         }
 		else if(!(woordformule || FormuleParser.woordFormule))
 		{	for(int i=0 ; i<s.length()-1 ; i++)
-			{	if((Character.isLetter(s.charAt(i)) || Character.isDigit(s.charAt(i)) || s.charAt(i)==')') && (Character.isLetter(s.charAt(i+1)) || s.charAt(i+1)=='(' || s.charAt(i+1)=='\u2220'))
+			{	if((Character.isLetter(s.charAt(i)) || Character.isDigit(s.charAt(i)) || s.charAt(i)==')') && (Character.isLetter(s.charAt(i+1)) || s.charAt(i+1)=='(' || s.charAt(i+1)=='\u2220' || s.charAt(i+1)=='\u2206'))
 				{	s = s.substring(0,i+1) + '*' +  s.substring(i+1);
 				}
 				else if(s.charAt(i)==')' && Character.isDigit(s.charAt(i+1)))
@@ -996,6 +1009,14 @@ public class FormuleParser
 					exp = new BasisExpressie(s);
 					return exp;
 				}
+				
+				//delta (increment operator)
+				if (s.length() == 2 && '\u2206'==s.charAt(0) && Character.isLetter(s.charAt(1)))
+				{
+					exp = new BasisExpressie(s);
+					return exp;
+				}
+				
 				// is het een letter?
 				if (s.length() == 1 && Character.isLetter(s.charAt(0)))
 				{
