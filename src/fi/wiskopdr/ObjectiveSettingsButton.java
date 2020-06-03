@@ -302,19 +302,19 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 		leerdomeinCombobox.setMinimumSize(new Dimension(360,22));
 		leerdomeinCombobox.addActionListener(this);
 		Box vb = Box.createVerticalBox();
-		//if (WiskOpdr.isExperimental() && WiskOpdr.isPremium()) {
-		hb = Box.createHorizontalBox();
-		hb.add(studentModelRB) ; hb.add(Box.createHorizontalGlue());
-		vb.add(hb);
-		hb = Box.createHorizontalBox();
-		hb.add(eigenLeerdoelenRB) ; hb.add(Box.createHorizontalGlue());
-		vb.add(hb);
-		vb.add(Box.createVerticalStrut(20));
-		hb = Box.createHorizontalBox();
-		hb.add(leerdomeinCombobox) ; hb.add(Box.createHorizontalGlue());
-		    //vb.add(Box.createVerticalStrut(20));
-		    vb.add(hb);
-		//}
+		if (WiskOpdr.isExperimental() && WiskOpdr.isPremium()) {
+			hb = Box.createHorizontalBox();
+			hb.add(studentModelRB) ; hb.add(Box.createHorizontalGlue());
+			vb.add(hb);
+			hb = Box.createHorizontalBox();
+			hb.add(eigenLeerdoelenRB) ; hb.add(Box.createHorizontalGlue());
+			vb.add(hb);
+			vb.add(Box.createVerticalStrut(20));
+			hb = Box.createHorizontalBox();
+			hb.add(leerdomeinCombobox) ; hb.add(Box.createHorizontalGlue());
+			    //vb.add(Box.createVerticalStrut(20));
+			    vb.add(hb);
+		}
 	    vb.add(Box.createVerticalStrut(20));
 	    vb.add(scrollPane);
 	    vb.add(Box.createVerticalGlue());
