@@ -531,6 +531,19 @@ public class FormuleParser
 			if(index >-1)s = s.substring(0,index) + s.substring(index+1);
 		}
 		
+		//voor hoeken
+		index = 0;
+		int teller = 0;
+		while(index >-1 && index>teller)
+		{	index = s.substring(teller).indexOf("\u2220");
+			if(index >-1 && s.substring(index+teller+1).length()>0)
+			{
+				if(Character.isLetter(s.charAt(index+teller+1)) && Character.isUpperCase(s.charAt(index+teller+1)))
+				s = s.substring(0,index+teller) + "(" + "\u2220" + s.charAt(index+teller+1) + ")" + s.substring(index+teller+2);
+			}
+			teller = index+2;
+		}
+		
 		//vervangt -- door +
 		index = 0;
 		while(index >-1)
@@ -640,7 +653,7 @@ public class FormuleParser
         }
 		else if(!(woordformule || FormuleParser.woordFormule))
 		{	for(int i=0 ; i<s.length()-1 ; i++)
-			{	if((Character.isLetter(s.charAt(i)) || Character.isDigit(s.charAt(i)) || s.charAt(i)==')') && (Character.isLetter(s.charAt(i+1)) || s.charAt(i+1)=='('))
+			{	if((Character.isLetter(s.charAt(i)) || Character.isDigit(s.charAt(i)) || s.charAt(i)==')') && (Character.isLetter(s.charAt(i+1)) || s.charAt(i+1)=='(' || s.charAt(i+1)=='\u2220'))
 				{	s = s.substring(0,i+1) + '*' +  s.substring(i+1);
 				}
 				else if(s.charAt(i)==')' && Character.isDigit(s.charAt(i+1)))
@@ -977,6 +990,12 @@ public class FormuleParser
 			}
 			else
 			{
+				//hoek
+				if (s.length() == 2 && '\u2220'==s.charAt(0) && Character.isLetter(s.charAt(1)) && Character.isUpperCase(s.charAt(1)))
+				{
+					exp = new BasisExpressie(s);
+					return exp;
+				}
 				// is het een letter?
 				if (s.length() == 1 && Character.isLetter(s.charAt(0)))
 				{

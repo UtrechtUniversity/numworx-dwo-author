@@ -54,7 +54,10 @@ public class BasisExpressie extends Expressie
 	}
 	
 	public boolean isVar()
-	{	return Character.isLetter(basisString.charAt(0));
+	{	
+		boolean letterVar = Character.isLetter(basisString.charAt(0));
+		boolean hoekVar = basisString.length()>1 && '\u2220'== basisString.charAt(0) && Character.isLetter(basisString.charAt(1));
+		return letterVar||hoekVar;
 	}
 	
 	public double geefWaarde()
