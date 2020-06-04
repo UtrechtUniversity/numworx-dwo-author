@@ -9,18 +9,16 @@ import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.common.UIShim;
 import nl.numworx.geodefiner.ui.UIEditor;
 
-@SuppressWarnings("serial")
-public class PuntAction extends fi.euclides.swing.PuntAction {
-
+public class CirkelAction extends fi.euclides.swing.CirkelAction {
 	private ImageIcon editImage = new ImageIcon(getClass().getResource("/nl/numworx/geodefiner/resources/edit.gif"));
 
-	public PuntAction(String name, String icon, EventHandler handler, AWTViewer viewer, UIShim<Destroyable, UIEditor> model) {
+	public CirkelAction(String name, String icon, EventHandler handler, AWTViewer viewer, UIShim<Destroyable, UIEditor> uimodel) {
 		super(name, icon, handler, viewer);
 		if (GeoDefiner.isExperimental && GeoDefiner.isPremium) {
-			putValue("model", model);
+			putValue("model", uimodel);
 			putValue("config", new PuntConfig(editImage, this));
 		}
+		
 	}
-
 
 }
