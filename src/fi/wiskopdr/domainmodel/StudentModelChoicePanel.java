@@ -131,9 +131,9 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         leafRenderer.setFocusPainted((booleanValue != null) && (booleanValue.booleanValue()));
         nonLeafRenderer.setFocusPainted((booleanValue != null) && (booleanValue.booleanValue()));
         selectionBorderColor = UIManager.getColor("Tree.selectionBorderColor");
-        selectionForeground = UIManager.getColor("Tree.selectionForeground");
-        selectionBackground = UIManager.getColor("Tree.selectionBackground");
-        textForeground = UIManager.getColor("Tree.textForeground");
+        selectionForeground = Color.WHITE;//UIManager.getColor("Tree.selectionForeground");
+        selectionBackground = WiskOpdr.colorBlue2;//UIManager.getColor("Tree.selectionBackground");
+        textForeground = WiskOpdr.colorBlue1;//UIManager.getColor("Tree.textForeground");
         textBackground = UIManager.getColor("Tree.textBackground");
     }
 
