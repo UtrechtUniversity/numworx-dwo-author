@@ -1,11 +1,5 @@
 package fi.wiskopdr;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JTable;
-
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.domainmodel.StudentModelChoicePanel;
 import fi.wiskopdr.domainmodel.StudentObjective;
@@ -13,6 +7,7 @@ import fi.wiskopdr.domainmodel.StudentObjective;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -158,6 +153,8 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	
 	private JPanel objectivesPanel = new JPanel();
 	private JPanel bottomPanel = new JPanel();
+	private JPanel topPanel = new JPanel();
+	private JLabel titleLabel;
 	private Component scrollPane;
 	private String labelString;
 	
@@ -192,16 +189,54 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
     
     
     public void makeGUI(){
-        bottomPanel = new JPanel();
+    		bottomPanel = new JPanel(new BorderLayout());
+		bottomPanel.setBackground(WiskOpdr.colorGray2);
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		
+		topPanel = new JPanel(new BorderLayout());
+		topPanel.setBackground(WiskOpdr.colorBlue1);
+		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
+		
+		titleLabel = new JLabel("Koppel aan leerdoelen");
+		titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+		titleLabel.setForeground(WiskOpdr.colorGray3);
+		
+		Box headerBox = Box.createHorizontalBox();		
+		headerBox.add(Box.createHorizontalGlue());
+		headerBox.add(titleLabel);
+		headerBox.add(Box.createHorizontalGlue());
+		topPanel.add(headerBox, BorderLayout.NORTH);
 
         scrollPane = strategy.makeGUI();
-        okButton = new JButton("Ok");
-        okButton.addActionListener(this);
-        bottomPanel.add(okButton);
         
-        cancelButton = new JButton("Cancel");
+//        okButton = new JButton("Ok");
+//        okButton.addActionListener(this);
+//        bottomPanel.add(okButton);
+//        
+//        cancelButton = new JButton("Cancel");
+//        cancelButton.addActionListener(this);
+//        bottomPanel.add(cancelButton);
+        
+        Box hb = Box.createHorizontalBox();
+        hb.add(Box.createHorizontalGlue());
+        
+        okButton = new WiskOpdrButton("Ok");
+        okButton.setPreferredSize(new Dimension(70,24));
+		okButton.setBackground(WiskOpdr.colorBlue1);
+		okButton.setForeground(WiskOpdr.colorGray3);
+        okButton.addActionListener(this);
+        hb.add(okButton);
+        hb.add(Box.createHorizontalStrut(20));
+        
+        cancelButton = new WiskOpdrButton("Cancel");
+        cancelButton.setPreferredSize(new Dimension(70,24));
+		cancelButton.setBackground(WiskOpdr.colorBlue1);
+		cancelButton.setForeground(WiskOpdr.colorGray3);
         cancelButton.addActionListener(this);
-        bottomPanel.add(cancelButton);
+        hb.add(cancelButton);
+         
+        hb.add(Box.createHorizontalGlue());
+        bottomPanel.add(hb);
         
     }
     
@@ -213,6 +248,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
         //frame.setSize(preferredSize);
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(scrollPane);
+        frame.getContentPane().add(topPanel,BorderLayout.NORTH);
         frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
        
 		frame.pack();

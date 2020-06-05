@@ -17,11 +17,11 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
+//import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
+//import javax.swing.JRadioButton;
+//import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JTree;
@@ -40,6 +40,10 @@ import fi.wiskopdr.ObjectiveChoices;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrPanel;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
+
+import fi.beans.numworxlf.JScrollPane;
+import fi.beans.numworxlf.JRadioButton;
+import fi.beans.numworxlf.JCheckBox;
 
 public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices, TreeSelectionListener {
   private class LeafNodeEditor extends AbstractCellEditor implements TreeCellEditor {
@@ -170,7 +174,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   JTree tree;
   DefaultTreeModel model;
   DynamicUtilTreeNode root;
-  JLabel title;
+  JLabel leerdoelTitelLabel;
   JTextArea description;
   final StudentModel studentModel;
   static final String WISKOPDR_SIG = "H4sIAAAAAA";
@@ -179,7 +183,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     super(null);
     this.studentModel = studentModel;
     setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-    setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     NodeVector v = new NodeVector(studentModel);
     root = new DynamicUtilTreeNode(v, v);
     model = new DefaultTreeModel(root);   
@@ -191,33 +195,55 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     tree.setCellRenderer(new ChoiceCellRenderer());
     Box leftBox = Box.createVerticalBox();
     add(leftBox);
-    leftBox.add(new JLabel(v.toString()));
-    leftBox.add(Box.createVerticalStrut(10));
+    //leftBox.add(new JLabel(v.toString()));
+    //leftBox.add(Box.createVerticalStrut(10));
     JScrollPane sp = new JScrollPane(tree);
+    sp.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue3));
     leftBox.add(sp);
-    sp.setMinimumSize(new Dimension(200,100));
+    sp.setMinimumSize(new Dimension(400,300));
     sp.setPreferredSize(sp.getMinimumSize());
 
     add(Box.createHorizontalStrut(10));
     Box rightBox = Box.createVerticalBox();
     add(rightBox);
     
-    title = new JLabel(v.toString());
+    //title = new JLabel(v.toString());
+    
+    
+	
     String descr = v.getDescription();
     description = new JTextArea(descr, 10, 30);
     description.setLineWrap(true);
     description.setWrapStyleWord(true);
     description.setEditable(false);
     scroll = new JScrollPane(description);
+    scroll.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue3));
+    //scroll.setMinimumSize(new Dimension(450,300));
+    scroll.setMaximumSize(new Dimension(450,500));
+    scroll.setPreferredSize(new Dimension(450,300));
     if (descr!=null && descr.startsWith(WISKOPDR_SIG))
     {
       WiskOpdrPanel panel = getWiskOpdrPanel(descr);
+      //panel.setPreferredSize(new Dimension(400,300));
       scroll.setViewportView(panel);
     }
     
-    
-    rightBox.add(title);
-    rightBox.add(Box.createVerticalStrut(10));
+    leerdoelTitelLabel = new JLabel(" ");
+	leerdoelTitelLabel.setForeground(Color.WHITE);
+	leerdoelTitelLabel.setBorder(BorderFactory.createEmptyBorder(4, 20, 4, 20));
+	leerdoelTitelLabel.setFont(new Font("SansSerif",Font.BOLD, 14));
+	leerdoelTitelLabel.setMaximumSize(new Dimension(450,30));
+	
+	Box hb = Box.createHorizontalBox();
+	hb.setOpaque(true);
+	hb.setBackground(WiskOpdr.colorBlue3);
+	hb.setMinimumSize(new Dimension(450,30));
+	hb.setMaximumSize(new Dimension(450,30));
+	
+	hb.add(leerdoelTitelLabel);
+	hb.add(Box.createHorizontalGlue());
+	
+    rightBox.add(hb);
     rightBox.add(scroll);
     
     tree.addTreeSelectionListener(this);
@@ -317,14 +343,14 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     if (e.isAddedPath()) {
       TreePath path = tree.getSelectionPath();
       if (path == null) {
-        title.setText("");
+    	  leerdoelTitelLabel.setText("");
         description.setText("");
         scroll.setViewportView(description);
         return;
       }
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
       Object u = node.getUserObject();
-      title.setText(u.toString());
+      leerdoelTitelLabel.setText(u.toString());
       if (u instanceof Node) {
         String descr = ((Node) u).getDescription();
         if (descr == null) descr = "";
