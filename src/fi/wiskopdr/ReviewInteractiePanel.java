@@ -263,7 +263,9 @@ public class ReviewInteractiePanel extends JPanel implements ActionListener, Mou
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		try {
-			scoreCorrectie = Integer.parseInt(scoreCorrectieTF.getText());
+			String text = scoreCorrectieTF.getText(); 
+			if ("-".equals(text)) scoreCorrectie = 0;
+			else scoreCorrectie = Integer.parseInt(text);
 		}
 		catch(Exception ex) {
 			scoreCorrectie = 0;
