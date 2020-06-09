@@ -3,10 +3,20 @@ package nl.numworx.geodefiner.common;
 import java.util.Map;
 
 import fi.euclides.event.Tracker;
+import fi.euclides.model.Boog;
+import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Kegelsnede2;
+import fi.euclides.model.Label;
+import fi.euclides.model.Lijn;
+import fi.euclides.model.Locus;
+import fi.euclides.model.Punt;
+import fi.euclides.model.Segment;
+import fi.euclides.model.Triangle;
+import fi.euclides.model.Visitor;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
-public class  UIShim<D extends Destroyable, T> implements UIModel<D, T> {
+public class  UIShim<D extends Destroyable, T> implements UIModel<D, T>, Visitor {
 	final UIModel<D, T> delegate;
 	final private Map<String, Map<String, Object>> state;
 	final private Tracker tracker;
@@ -65,6 +75,67 @@ public class  UIShim<D extends Destroyable, T> implements UIModel<D, T> {
 			String name = tracker.getMapper().toString(buildPunt);
 			state.put(name, delegate.toMap());
 		}
+	}
+
+	@Override
+	public void visitPunt(Punt p) {
+		try {
+			install(p);
+		} catch(Exception oops) {}
+		
+	}
+
+	@Override
+	public void visitLijn(Lijn l) {
+		try {
+			install(l);
+		} catch(Exception oops) {}
+	}
+
+	@Override
+	public void visitCirkel(Cirkel c) {
+		try {
+			install(c);
+		} catch(Exception oops) {}
+	}
+
+	@Override
+	public void visitSegment(Segment s) {
+		try {
+			install(s);
+		} catch(Exception oops) {}
+	}
+
+	@Override
+	public void visitLabel(Label label) {
+	}
+
+	@Override
+	public void visitTriangle(Triangle t) {
+		try {
+			install(t);
+		} catch(Exception oops) {}
+	}
+
+	@Override
+	public void visitKegelsnede(Kegelsnede2 k) {
+		try {
+			install(k);
+		} catch(Exception oops) {}
+	}
+
+	@Override
+	public void visitLocus(Locus l) {
+		try {
+			install(l);
+		} catch(Exception oops) {}
+	}
+
+	@Override
+	public void visitBoog(Boog b) {
+		try {
+			install(b);
+		} catch(Exception oops) {}
 	}
 	
 }

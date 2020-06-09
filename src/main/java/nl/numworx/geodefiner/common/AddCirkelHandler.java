@@ -15,7 +15,6 @@ import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
-import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 
 public class AddCirkelHandler extends EventHandler {
@@ -67,13 +66,16 @@ public class AddCirkelHandler extends EventHandler {
 					Volgpunt p2;
 					p1 = p2 = new Volgpunt((Punt) p);
 					p2.moveTo(x, y);
+					visit(p1);
 					model.add(p1);
 				} else
-					p1 = model.buildPunt(x, y);
+				{
+					p1 = visit(model.buildPunt(x, y));
+				}
 			}
 			model.toggle(p);
 			model.toggle(p1);
-			model.buildCirkel();
+			visit(model.buildCirkel());
 			command();
 		} else if(state == 0)
 		{
@@ -82,6 +84,7 @@ public class AddCirkelHandler extends EventHandler {
 							!(select.size() == 1 && select.firstElement() instanceof Segment))
 				) {
 					Destroyable p = model.buildPunt(x, y);
+					visit(p);
 					model.toggle(p);
 				} 
 
@@ -126,7 +129,7 @@ public class AddCirkelHandler extends EventHandler {
 			super.command();
 			return;				
 		}
-		getModel().buildCirkel();
+		visit(getModel().buildCirkel());
 	}
 
 	/* (non-Javadoc)
