@@ -61,7 +61,7 @@ public class AddSpiegelHandler extends EventHandler {
 	 * 
 	 */
 	private void build() {
-		getModel().buildSpiegel();
+		visit(getModel().buildSpiegel());
 	}
 	/* (non-Javadoc)
 	 * @see fi.euclides.model.event.EventHandler#pointerPressed(double, double)

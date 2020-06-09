@@ -95,7 +95,9 @@ public class AddPuntHandler extends EventHandler {
 	}
 
 	protected Punt buildPunt(Numbers x, Numbers y) {
-		return getModel().buildPunt(x, y);
+		Punt punt = getModel().buildPunt(x, y);
+		punt.visit(decorator);
+		return punt;
 	}
 
 	private void findOther(PuntOp2 p2) {

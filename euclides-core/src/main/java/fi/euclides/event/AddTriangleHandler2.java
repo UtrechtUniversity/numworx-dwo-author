@@ -15,7 +15,7 @@ public class AddTriangleHandler2 extends AddBissectriceHandler {
 	}
 
 	protected void build() {
-		getModel().buildTriangle();
+		visit(getModel().buildTriangle());
 	}
 
 }

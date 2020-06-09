@@ -78,7 +78,7 @@ public class AddLoodLijnHandler extends EventHandler {
 			command();
 			return;
 		}
-		build();
+		visit(build());
         getModel().clearSelection();
 		command();
 	}
@@ -123,11 +123,11 @@ public class AddLoodLijnHandler extends EventHandler {
 			if(select.size()==1 && select.firstElement() instanceof Punt)
 				p1 = select.elementAt(0);
 			else {
-				p1 = getModel().buildPunt(x, y);
+				p1 = visit(getModel().buildPunt(x, y));
 				getModel().toggle(p1);
 			}
 			getModel().toggle(o1);
-			build();
+			visit(build());
 			getModel().clearSelection();
 			command();
 		} else if(state == 0)

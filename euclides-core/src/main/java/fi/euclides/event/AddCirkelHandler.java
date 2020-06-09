@@ -57,13 +57,11 @@ public class AddCirkelHandler extends EventHandler {
 			{	p1 = select.firstElement();
 				model.toggle(p1);
 			} else {
-//				if(select.isEmpty() && p instanceof Punt) 
-//					model.toggle(p);
-				p1 = model.buildPunt(x, y);
+				p1 = visit(model.buildPunt(x, y));
 			}
 			model.toggle(p);
 			model.toggle(p1);
-			model.buildCirkel();
+			visit(model.buildCirkel());;
 			command();
 		} else if(state == 0)
 		{
@@ -71,7 +69,7 @@ public class AddCirkelHandler extends EventHandler {
 					|| (select.firstElement() instanceof OpObject && 
 							!(select.size() == 1 && select.firstElement() instanceof Segment))
 				) {
-					Destroyable p = model.buildPunt(x, y);
+					Destroyable p = visit(model.buildPunt(x, y));
 					model.toggle(p);
 				} 
 
@@ -116,7 +114,7 @@ public class AddCirkelHandler extends EventHandler {
 			super.command();
 			return;				
 		}
-		getModel().buildCirkel();
+		getModel().buildCirkel().visit(decorator);;
 	}
 
 	/* (non-Javadoc)

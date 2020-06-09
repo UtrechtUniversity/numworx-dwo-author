@@ -24,7 +24,7 @@ public class AddTriangleHandler extends EventHandler {
 		state = select.size();
 		switch(state) {
 		case 3: 
-			getModel().buildTriangle();
+			visit(getModel().buildTriangle());
 			state = 0;
 			break;		
 		case 0:	super.command();

@@ -18,7 +18,7 @@ public class AddBoogHandler2 extends AddBissectriceHandler {
 	}
 
 	protected void build() {
-		getModel().buildBoog();
+		visit(getModel().buildBoog());
 	}
 
 }

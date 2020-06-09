@@ -18,7 +18,7 @@ public class AddBoogHandler extends EventHandler {
 	public void command() {
 		int size = getModel().getSelect().size();
 		if(size == 3||size == 4) {
-			getModel().buildBoog();
+			visit(getModel().buildBoog());
 		}
 	}
 

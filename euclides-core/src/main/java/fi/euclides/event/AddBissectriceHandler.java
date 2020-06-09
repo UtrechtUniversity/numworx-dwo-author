@@ -76,7 +76,7 @@ public class AddBissectriceHandler extends EventHandler {
 	}
 
 	protected void build() {
-		getModel().buildBissectrice();
+		visit(getModel().buildBissectrice());
 		state = 0;
 	}
 

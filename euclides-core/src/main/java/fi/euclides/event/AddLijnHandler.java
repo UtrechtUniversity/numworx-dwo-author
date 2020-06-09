@@ -8,12 +8,10 @@ import fi.euclides.model.LijnTrack;
 import fi.euclides.model.Model;
 import fi.euclides.model.OpObject;
 import fi.euclides.model.Punt;
-import fi.euclides.model.PuntOp;
 import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
-import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.math.Numbers;
 
 public class AddLijnHandler extends EventHandler {
@@ -74,7 +72,7 @@ public class AddLijnHandler extends EventHandler {
 			else {
 //				if(s == SEGMENT && select.isEmpty())
 //					model.toggle(p);
-				p1 = model.buildPunt(x, y);
+				p1 = visit(model.buildPunt(x, y));
 				model.toggle(p1);
 			}
 			model.clearSelection();
@@ -99,13 +97,13 @@ public class AddLijnHandler extends EventHandler {
 	private void build() {
 		switch(s) {
 		case SEGMENT:
-			getModel().buildSegment();
+			visit(getModel().buildSegment());;
 			return;
 		case RAY:
-			getModel().buildRay();
+			visit(getModel().buildRay());
 			return;
 		default:
-			getModel().buildLijn();
+			visit(getModel().buildLijn());
 		}
 		testLijn = true;
 	}

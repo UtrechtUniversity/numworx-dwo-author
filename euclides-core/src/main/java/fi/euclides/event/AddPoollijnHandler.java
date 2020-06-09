@@ -17,7 +17,7 @@ public class AddPoollijnHandler extends EventHandler {
 	}
 
 	public void command() {
-		getModel().buildPoollijn();
+		getModel().buildPoollijn() /*.visit(getBuilder())*/;
 	}
 
 	public boolean allowSelection(Vector selection) {

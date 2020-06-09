@@ -15,7 +15,7 @@ public class AddKegelsnedeHandler extends EventHandler {
 		super(Messages.getString("Kegelsnede"));
 	}
 	public void command() {
-		getTracker().getModel().buildKegelsnede();
+		visit(getTracker().getModel().buildKegelsnede());
 	}
 	/* (non-Javadoc)
 	 * @see fi.euclides.event.EventHandler#allowSelection(java.util.Vector)

@@ -22,6 +22,7 @@ import fi.euclides.model.math.Numbers;
 public abstract class EventHandler {
 
 	Tracker tracker;
+	protected Visitor decorator = AbstractDecorator.NULL;
 	//Track track;
 	protected boolean testPunt;
 	protected boolean testLijn;
@@ -144,13 +145,18 @@ public abstract class EventHandler {
 		return tracker.getModel();
 	}
 
-//	public void setTrack(Track track) {
-//		this.track = track;
-//	}
-//
-//	public Track getTrack() {
-//		return track;
-//	}
+	public Visitor getDecorator() {
+		return decorator;
+	}
+
+	public <T extends Destroyable> T visit(T t) {
+		if (t != null) t.visit(getDecorator());
+		return t;
+	}
+	
+	public void setDecorator(Visitor decorator) {
+		this.decorator = decorator;
+	}
 
 	public void setTracker(Tracker tracker) {
 		this.tracker = tracker;

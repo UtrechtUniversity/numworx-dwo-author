@@ -57,7 +57,7 @@ public class AddMiddelPuntHandler extends EventHandler {
 			}
 		}
 
-		getModel().buildMiddelPunt();
+		visit(getModel().buildMiddelPunt());
 		state = 0;
 	}
 
@@ -89,11 +89,11 @@ public class AddMiddelPuntHandler extends EventHandler {
 			if(select.size()==1 && select.firstElement() instanceof Punt)
 				p1 = (Destroyable) select.firstElement();
 			else {
-				p1 = getModel().buildPunt(x, y);
+				p1 = visit(getModel().buildPunt(x, y));
 				getModel().toggle(p1);
 			}
 			getModel().toggle(p);
-			getModel().buildMiddelPunt();
+			visit(getModel().buildMiddelPunt());
 			command();
 		} else if(state == 0)
 		{
