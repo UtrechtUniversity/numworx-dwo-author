@@ -73,9 +73,22 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
 			LMSSetValue(evt.getPropertyName(), (String) evt.getNewValue());			
 	}
   }
+
+	private boolean inited = true;
     
     void cleanup() {
       if (SwingUtilities.isEventDispatchThread()) {
+  		super.loadURL(null);
+  		int cnt = 3;
+  		synchronized(this) {
+  			while( cnt-- > 0 && inited )
+  				try {
+  					wait(1000);
+  				} catch (InterruptedException e) {
+  				}
+  		}
+        setApi(null);
+        setConsole(null);
         removeMembers();
       } else {
         SwingUtilities.invokeLater(this::cleanup);
@@ -84,7 +97,7 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
   
     public Promise<Properties> getPromise() {
       Promise<Properties> result = api.getPromise().map(this::getCookie);
-      result.onResolve(this::cleanup);
+      result = result.then(p -> { cleanup(); return p; }, p -> cleanup());
       return result;
     }
 
