@@ -17,8 +17,10 @@ public class XXXXAction extends fi.euclides.swing.XXXAction {
 		super(name, icon, handler, viewer);
 		if (GeoDefiner.isExperimental && GeoDefiner.isPremium) {
 			putValue("model", uimodel);
+			handler.setDecorator(uimodel);
 			putValue("config", new PuntConfig(editImage, this));
 		}
 	}
+	
 
 }
