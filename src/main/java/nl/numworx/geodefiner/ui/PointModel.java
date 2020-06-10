@@ -3,11 +3,7 @@ package nl.numworx.geodefiner.ui;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Named;
-
-import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.common.PointType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.merge.RenameAction;
@@ -34,7 +30,7 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 		    g.setFree(!rigid);
 		}
 		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
-		adapter.put(Float.valueOf(size));
+		if(size != null) adapter.put(size);
 		adapter.put(type);
 		super.install(item);
 	}
