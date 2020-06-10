@@ -12,8 +12,12 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -669,7 +673,7 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		Hashtable waarden = null;
 
 		if (state.containsKey("RandomVarNamen"))
-			RandomVarNamen = OpdrNavStruct.toStringArray(state.get("RandomVarNamen"));
+		  RandomVarNamen = stripEmptyRandomVars(OpdrNavStruct.toStringArray(state.get("RandomVarNamen")));
 		if (state.containsKey("RandomVarWaarden"))
 			RandomVarWaarden = OpdrNavStruct.toHashtable(state.get("RandomVarWaarden"));
 
@@ -826,7 +830,22 @@ public class MyOpdrContainer extends JPanel implements ActionListener
 		setNewScrollSize();
 	}
 
-	public Hashtable getState()
+	/**
+	 * parser has "":null values
+	 * @param strings
+	 * @return strings without null/""
+	 */
+	private String[] stripEmptyRandomVars(String[] strings) {
+    List<String> l = new ArrayList<>(Arrays.asList(strings));
+    Iterator<String> it = l.iterator();
+    while (it.hasNext()) {
+      String type = it.next();
+      if (type == null || type.isEmpty()) it.remove();
+    }
+    return l.toArray(new String[l.size()]);
+  }
+
+  public Hashtable getState()
 	{
 		Hashtable[] interactiePanelStates = null;
 		String[] RandomVarNamen;
