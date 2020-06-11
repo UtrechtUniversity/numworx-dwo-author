@@ -101,6 +101,8 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel
 
 	JLabel maxScoreLabel;
 	JTextField maxScoreVeld;
+	JCheckBox logCB;
+	JTextField logIDTF;
 
 	int scoreMax = 10;
 
@@ -404,6 +406,22 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel
 		maxScoreVeld.addActionListener(new TextAL2(maxScoreVeld));
 		maxScoreVeld.addFocusListener(new TextFL2(maxScoreVeld));
 
+		currentY += height + offSet;
+
+		logCB = new JCheckBox(TekenVeelvlakOpdr.rb.getString("logCBLabel"));
+		logCB.setFont(theFont);
+		width = theFM.stringWidth(logCB.getText()) + 40;
+		logCB.setBounds(currentX, currentY, width, height);
+		nakijkOptiesPanel.add(logCB);
+		logCB.addActionListener(this);
+		
+		logIDTF = new JTextField(6);
+		logIDTF.setFont(theFont);
+		width = theFM.stringWidth("XXXXXX");
+		logIDTF.setBounds(currentX + 80, currentY, width, height);
+		logIDTF.setVisible(false);
+		nakijkOptiesPanel.add(logIDTF);
+		
 		componentsCreated = true;
 		
 		zetKijkNaTab();
@@ -955,6 +973,12 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel
 		{
 			tvip.toonVooraanzichtPijl(frontArrowCB.isSelected());
 		}
+		else if (e.getSource() == logCB)
+		{
+			logIDTF.setVisible(logCB.isSelected());
+			if(!logCB.isSelected())
+				logIDTF.setText("");
+		}
 
 		/*
 		 * else if (e.getSource() == vlakkenKleurenCB) {
@@ -1201,6 +1225,9 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel
 		else
 			h.put("scoreMax", new Integer(0));
 
+		h.put("logOption", new Boolean(logCB.isSelected()));
+		h.put("logID", logIDTF.getText());
+
 		return h;
 	}
 
@@ -1358,6 +1385,16 @@ public class TekenVeelvlakInteractieEditPanel extends JPanel
 		if (h.containsKey("scoreMax"))
 			scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		maxScoreVeld.setText("" + scoreMax);
+		boolean log = false;
+		if (h.containsKey("logOption"))
+			log = ((Boolean) h.get("logOption")).booleanValue();
+		logCB.setSelected(log);
+		logIDTF.setVisible(log);
+		
+		String logID = "";
+		if (h.containsKey("logID"))
+			logID = (String) h.get("logID");
+		logIDTF.setText(logID);
 
 		setBounds(getLocation().x, getLocation().y, tvipBreedte + editWidth, Math.max(tvipHoogte, editHeight));
 

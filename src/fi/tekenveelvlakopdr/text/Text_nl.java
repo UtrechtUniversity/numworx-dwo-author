@@ -72,6 +72,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 { "rechterkantRBLabel" , "Rechterkant" },
                 
                 { "maxScoreTekst" , "Maximale score" },
+				{ "logCBLabel", "LogID" },
 				
         };
 }
