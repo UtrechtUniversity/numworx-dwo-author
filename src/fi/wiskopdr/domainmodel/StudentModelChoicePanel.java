@@ -221,12 +221,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     //scroll.setMinimumSize(new Dimension(450,300));
     scroll.setMaximumSize(new Dimension(450,500));
     scroll.setPreferredSize(new Dimension(450,300));
-    if (descr!=null && descr.startsWith(WISKOPDR_SIG))
-    {
-      WiskOpdrPanel panel = getWiskOpdrPanel(descr);
-      //panel.setPreferredSize(new Dimension(400,300));
-      scroll.setViewportView(panel);
-    }
+//    if (descr!=null && descr.startsWith(WISKOPDR_SIG))
+//    {
+//      WiskOpdrPanel panel = getWiskOpdrPanel(descr);
+//      //panel.setPreferredSize(new Dimension(400,300));
+//      scroll.setViewportView(panel);
+//    }
     
     leerdoelTitelLabel = new JLabel(" ");
 	leerdoelTitelLabel.setForeground(Color.WHITE);
@@ -354,13 +354,13 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       if (u instanceof Node) {
         String descr = ((Node) u).getDescription();
         if (descr == null) descr = "";
-        if (descr.startsWith(WISKOPDR_SIG)) {
-          WiskOpdrPanel panel = getWiskOpdrPanel(descr);
-          scroll.setViewportView(panel);
-        } else {
+//        if (descr.startsWith(WISKOPDR_SIG)) {
+//          WiskOpdrPanel panel = getWiskOpdrPanel(descr);
+//          scroll.setViewportView(panel);
+//        } else {
           description.setText(descr);
           scroll.setViewportView(description);
-        }
+//        }
       } else {
         description.setText("");
         scroll.setViewportView(description);
@@ -369,14 +369,14 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     repaint();
   }
 
-  private WiskOpdrPanel getWiskOpdrPanel(String descr) {
-    Object save = TekstImageVak.getImageMap();
-    try {
-      WiskOpdrPanel panel = WiskOpdr.getWiskOpdrPanel(descr, WiskOpdr.language);
-      panel.setBackground(Color.WHITE);
-      return panel;
-    } finally {
-      TekstImageVak.setImageMap(save);
-    }
-  }
+//  private WiskOpdrPanel getWiskOpdrPanel(String descr) {
+//    Object save = TekstImageVak.getImageMap();
+//    try {
+//      WiskOpdrPanel panel = WiskOpdr.getWiskOpdrPanel(descr, WiskOpdr.language);
+//      panel.setBackground(Color.WHITE);
+//      return panel;
+//    } finally {
+//      TekstImageVak.setImageMap(save);
+//    }
+//  }
 }

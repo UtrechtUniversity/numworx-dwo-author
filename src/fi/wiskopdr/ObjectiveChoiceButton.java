@@ -181,9 +181,9 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 		this.studentModel = studentModel;
 		addActionListener(this);
 		if (studentModel != null) {
-			System.out.println("storeCurrentGlobalVars");
-			globalVarState = new WiskOpdrGlobalVarState();
-			globalVarState.storeCurrentGlobalVars();
+//			System.out.println("storeCurrentGlobalVars");
+//			globalVarState = new WiskOpdrGlobalVarState();
+//			globalVarState.storeCurrentGlobalVars();
 			strategy = new StudentModelChoicePanel(studentModel);
 		}
 	}
@@ -285,21 +285,21 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
         	frame.setVisible(false);
             frame.dispose();
             frame=null;
-            if(studentModel!=null && globalVarState != null   ) {
-            	System.out.println("setStoredGlobalVars");
-				globalVarState.setStoredGlobalVars();
-				globalVarState = null;
-            }
+//            if(studentModel!=null && globalVarState != null   ) {
+//            	System.out.println("setStoredGlobalVars");
+//				globalVarState.setStoredGlobalVars();
+//				globalVarState = null;
+//            }
         }
 		else if(e.getSource().equals(cancelButton)) {   
 			frame.getContentPane().removeAll();
 			frame.setVisible(false);
             frame.dispose();
             frame=null;
-            if(studentModel!=null && globalVarState != null) {
-				globalVarState.setStoredGlobalVars();
-				globalVarState = null;
-            }
+//            if(studentModel!=null && globalVarState != null) {
+//				globalVarState.setStoredGlobalVars();
+//				globalVarState = null;
+//            }
         }
 	}   
 }
