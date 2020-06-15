@@ -106,6 +106,11 @@ public class FormuleTeken extends FormuleElement
 		return diffOperatoren;
 	}
 	
+	public static boolean isMaalTeken()
+	{
+		return maalteken;
+	}
+	
 	public int getCorrItalic()
 	{
 		

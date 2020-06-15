@@ -2366,7 +2366,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 	}
 
-	private static Properties jarOfMap = new Properties();
+	public static Properties jarOfMap = new Properties();
 // Dit moet uit een resource komen
 	static {
 //		jarOfMap.setProperty("nl.numworx.geodefiner.GeoDefiner", "geodefiner.jar");

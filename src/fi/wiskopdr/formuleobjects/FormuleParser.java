@@ -52,6 +52,11 @@ public class FormuleParser
 		return diffOperatoren;
 	}
 	
+	public static boolean isSignificantie()
+	{
+		return significantie;
+	}
+	
 	public static VergelijkingMeerv parseVergelijking(String s)
 	{
 		return parseVergelijking(s, null);

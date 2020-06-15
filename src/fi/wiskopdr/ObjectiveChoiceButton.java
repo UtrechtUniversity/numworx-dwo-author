@@ -158,6 +158,8 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	private Component scrollPane;
 	private String labelString;
 	
+	private WiskOpdrGlobalVarState globalVarState;
+	
 	
 	// in oude geodefiner
 	public ObjectiveChoiceButton(String[][] objectives, String[] categorieString) {	
@@ -179,7 +181,10 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 		this.studentModel = studentModel;
 		addActionListener(this);
 		if (studentModel != null) {
-		  strategy = new StudentModelChoicePanel(studentModel);
+			System.out.println("storeCurrentGlobalVars");
+			globalVarState = new WiskOpdrGlobalVarState();
+			globalVarState.storeCurrentGlobalVars();
+			strategy = new StudentModelChoicePanel(studentModel);
 		}
 	}
 	
@@ -258,24 +263,43 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	      frame.setLocation(x , y);
 	    frame.setVisible(true);
 	    
+//	    frame.addWindowListener(new WindowAdapter() {
+//	    		public void windowClosed(WindowEvent e) {
+//	    			if(studentModel!=null && globalVarState != null) {
+//	    				globalVarState.setStoredGlobalVars();
+//	    				globalVarState = null;
+//	            }
+//	    		}
+//	    });
+	    
     }
 	
 	public void actionPerformed(ActionEvent e){
 		if(e.getSource().equals(this) && frame==null){	
 			makeGUI();
 			makeFrame();
+			
 		}
 		else if(e.getSource().equals(okButton)) {   
 			makeChoices();
         	frame.setVisible(false);
             frame.dispose();
             frame=null;
+            if(studentModel!=null && globalVarState != null   ) {
+            	System.out.println("setStoredGlobalVars");
+				globalVarState.setStoredGlobalVars();
+				globalVarState = null;
+            }
         }
 		else if(e.getSource().equals(cancelButton)) {   
 			frame.getContentPane().removeAll();
 			frame.setVisible(false);
             frame.dispose();
             frame=null;
+            if(studentModel!=null && globalVarState != null) {
+				globalVarState.setStoredGlobalVars();
+				globalVarState = null;
+            }
         }
 	}   
 }

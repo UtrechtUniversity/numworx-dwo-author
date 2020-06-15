@@ -55,6 +55,9 @@ public class Expressie
 	public static void zetHoekGraden(boolean b)
   	{	hoekGraden=b;
 	}
+	public static boolean isHoekGraden()
+  	{	return hoekGraden;
+	}
 	public void zetMaat(FontMetrics fm)
   	{
 	}
