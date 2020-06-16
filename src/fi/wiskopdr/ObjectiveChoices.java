@@ -11,4 +11,5 @@ public interface ObjectiveChoices {
   void setObjectives(List<String> objectives);
   void makeChoices();
   Component makeGUI();
+  default void close() {}
 }

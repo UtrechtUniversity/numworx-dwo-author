@@ -19,7 +19,7 @@ import nl.numworx.swingbrowser.api.SwingBrowserProvider;
 public class SimpleSwingBrowser implements WindowListener {
   
     private static final SwingBrowserProvider BROWSER_PROVIDER = new SwingBrowserProvider();
-    final private SwingBrowser browser;
+    final protected SwingBrowser browser;
 	private Component observer;
 	
 	public void setRepaintObserver(Component c) {

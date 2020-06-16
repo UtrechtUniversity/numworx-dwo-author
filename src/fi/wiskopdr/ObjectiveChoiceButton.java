@@ -278,7 +278,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 		if(e.getSource().equals(this) && frame==null){	
 			makeGUI();
 			makeFrame();
-			
+            strategy.close();			
 		}
 		else if(e.getSource().equals(okButton)) {   
 			makeChoices();

@@ -62,9 +62,23 @@ public class StudentModel {
 protected static String getTitle(JSONObject map) {
     return (String) ((Map) ((Map) map.get("info")).get("title")).get(WiskOpdr.language.toString());
 }
-protected static String getDescription(JSONObject map) {
+protected static String getDescription0(JSONObject map) {
   return (String) ((Map) ((Map) map.get("info")).get("description")).get(WiskOpdr.language.toString());
 }
+protected static String getJSON(JSONObject map) {
+  return (String) ((Map) ((Map) map.get("info")).get("description")).get(WiskOpdr.language.toString() + "@JSON");
+}
+
+protected static String getDescription(JSONObject map) {
+  String test = getDescription0(map);
+  if (test == null) return null;
+  if (test.startsWith(StudentModelChoicePanel.WISKOPDR_SIG))
+    test = getJSON(map);
+  else if (test.startsWith("{"))
+    test = '\uFEFF' + test; // prefix with BOM
+  return test;
+}
+
 
 static StudentObjective[] readObjectives(Object object) {
     if (object == null) return new StudentObjective[0];

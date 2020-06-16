@@ -38,14 +38,11 @@ import javax.swing.tree.TreePath;
 
 import fi.wiskopdr.ObjectiveChoices;
 import fi.wiskopdr.WiskOpdr;
-import fi.wiskopdr.WiskOpdrPanel;
-import fi.wiskopdr.tekstobjects.TekstImageVak;
-
 import fi.beans.numworxlf.JScrollPane;
 import fi.beans.numworxlf.JRadioButton;
 import fi.beans.numworxlf.JCheckBox;
 
-public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices, TreeSelectionListener {
+public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices, TreeSelectionListener, AutoCloseable {
   private class LeafNodeEditor extends AbstractCellEditor implements TreeCellEditor {
 
     private static final int XWIDTH = 20; // positie [x]
@@ -178,6 +175,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   JTextArea description;
   final StudentModel studentModel;
   static final String WISKOPDR_SIG = "H4sIAAAAAA";
+  static final String JSON_SIG = "{";
 
   public StudentModelChoicePanel(StudentModel studentModel) {
     super(null);
@@ -208,8 +206,6 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     add(rightBox);
     
     //title = new JLabel(v.toString());
-    
-    
 	
     String descr = v.getDescription();
     description = new JTextArea(descr, 10, 30);
@@ -221,12 +217,16 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     //scroll.setMinimumSize(new Dimension(450,300));
     scroll.setMaximumSize(new Dimension(450,500));
     scroll.setPreferredSize(new Dimension(450,300));
-//    if (descr!=null && descr.startsWith(WISKOPDR_SIG))
-//    {
-//      WiskOpdrPanel panel = getWiskOpdrPanel(descr);
-//      //panel.setPreferredSize(new Dimension(400,300));
-//      scroll.setViewportView(panel);
-//    }
+    if (descr!=null && descr.startsWith(WISKOPDR_SIG))
+    {
+      JLabel panel = new JLabel("Unsupported description");
+      //panel.setPreferredSize(new Dimension(400,300));
+      scroll.setViewportView(panel);
+    } else if (descr != null && descr.startsWith(JSON_SIG)) {
+      DescriptionBrowser b = getBrowser();
+      scroll.setViewportView(b.getBrowserPanel());
+      b.setDescription(descr);
+    }
     
     leerdoelTitelLabel = new JLabel(" ");
 	leerdoelTitelLabel.setForeground(Color.WHITE);
@@ -249,6 +249,19 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     tree.addTreeSelectionListener(this);
   }
 
+  private volatile DescriptionBrowser cache;
+  private synchronized DescriptionBrowser getBrowser() {
+    if (cache == null) cache = new DescriptionBrowser();   
+    return cache;
+  }
+
+  public synchronized void close() {
+    if (cache != null) {
+      cache.dispose();
+      cache = null;
+    }
+  }
+  
   private boolean[][] choices;
   private List<String> ids;
   private JScrollPane scroll;
@@ -354,19 +367,32 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       if (u instanceof Node) {
         String descr = ((Node) u).getDescription();
         if (descr == null) descr = "";
-//        if (descr.startsWith(WISKOPDR_SIG)) {
+        if (descr.startsWith(WISKOPDR_SIG)) {
 //          WiskOpdrPanel panel = getWiskOpdrPanel(descr);
 //          scroll.setViewportView(panel);
-//        } else {
+            JLabel panel = new JLabel("Unsupported description");
+            scroll.setViewportView(panel);
+        } else if (descr.startsWith(JSON_SIG)) {
+            DescriptionBrowser b = getBrowser();
+            scroll.setViewportView(b.getBrowserPanel());
+            b.setDescription(descr);
+        
+        } else {
           description.setText(descr);
           scroll.setViewportView(description);
-//        }
+        } 
       } else {
         description.setText("");
         scroll.setViewportView(description);
       }
     }   
     repaint();
+  }
+
+  @Override
+  protected void finalize() throws Throwable {
+    close();
+    super.finalize();
   }
 
 //  private WiskOpdrPanel getWiskOpdrPanel(String descr) {
