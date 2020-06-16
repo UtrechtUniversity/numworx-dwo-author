@@ -6,12 +6,15 @@ import java.util.*;
 import javax.swing.*;
 
 import fi.beans.base64code.*;
+import fi.wiskopdr.formuleobjects.FormuleVakHouder;
+import fi.wiskopdr.formuleobjects.Tablet;
+import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.opdrnav.*;
 import fi.wiskopdr.tekstobjects.ShareAction;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 	
 
-public class WiskOpdrEditPanel extends JPanel 
+public class WiskOpdrEditPanel extends JPanel implements TabletOwner
 {
 	private Hashtable launchData;
 	private String launchDataString;
@@ -141,6 +144,81 @@ public class WiskOpdrEditPanel extends JPanel
 	
     public void reset()
     {   if(onsEdit!=null)onsEdit.stop();
-	}	
+	}
+
+//	@Override
+//	public void zetTablet(FormuleVakHouder formuleVakHouder, int x, int y) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void addTablet(FormuleVakHouder formuleVakHouder, int x, int y) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void removeTablet() {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void zetTabletUser(FormuleVakHouder formuleVakHouder) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public Tablet getTablet() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}	
     
+    private Tablet tablet;
+    private FormuleVakHouder tabletUser;
+    private boolean tabletAdded;
+    
+    public void zetTabletUser(FormuleVakHouder formuleVakHouder) {
+		if (tablet == null)
+			return;
+		tablet.zetFormuleVakHouder(formuleVakHouder);
+		tabletUser = formuleVakHouder;
+	}
+
+	public void zetTablet(FormuleVakHouder formuleVakHouder, int x, int y) {
+		if (tablet == null) {
+			tablet = new Tablet(formuleVakHouder);
+			tablet.setLocation(x, y);
+		}
+		tablet.zetFormuleVakHouder(formuleVakHouder);
+		tabletUser = formuleVakHouder;
+	}
+
+	public void addTablet(FormuleVakHouder formuleVakHouder, int x, int y) {
+		if (tablet == null) {
+			tablet = new Tablet(formuleVakHouder);
+		}
+		if (!tabletAdded) {
+			//this.setLayer(tablet, JLayeredPane.PALETTE_LAYER.intValue());
+			this.add(tablet, 0);
+			tablet.setLocation(x, y);
+			tabletAdded = true;
+			repaint();
+		}
+		tablet.zetFormuleVakHouder(formuleVakHouder);
+	}
+
+	public void removeTablet() {
+		if (tablet == null)
+			return;
+		remove(tablet);
+		repaint();
+		tabletAdded = false;
+	}
+
+	public Tablet getTablet() {
+		return tablet;
+	}
 }
