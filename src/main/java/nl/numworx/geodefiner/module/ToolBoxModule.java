@@ -33,6 +33,7 @@ import fi.euclides.swing.XXXAction;
 import fi.euclides.util.Messages;
 import nl.numworx.geodefiner.CirkelRadiusHandler;
 import nl.numworx.geodefiner.ColorHandler;
+import nl.numworx.geodefiner.DashHandler;
 import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.FormuleHandler;
 import nl.numworx.geodefiner.TextHandler;
@@ -50,6 +51,7 @@ import nl.numworx.geodefiner.tools.PuntAction;
 import nl.numworx.geodefiner.tools.XXXXAction;
 import nl.numworx.geodefiner.ui.CircleModel;
 import nl.numworx.geodefiner.ui.LineModel;
+import nl.numworx.geodefiner.ui.LinePane;
 import nl.numworx.geodefiner.ui.PointModel;
 import nl.numworx.geodefiner.ui.RayModel;
 import nl.numworx.geodefiner.ui.SegmentModel;
@@ -215,6 +217,12 @@ public abstract class ToolBoxModule implements Tools {
 	Action color_palette(Instance instance, AWTViewer viewer) {
 		EventHandler handler = new ColorHandler("Selecteer eerst", instance.getStateConfiguration());		
 		return new XXXAction("Kleurenpalet", "/colorpalette-active.png", handler, viewer);
+	}
+	
+	@Provides @Singleton @IntoMap @IntKey(LINE_PALETTE) static 
+	Action line_palette(Instance instance, AWTViewer viewer) {
+		EventHandler handler = new DashHandler("Selecteer eerst", instance.getStateConfiguration());
+		return new XXXAction("Lijnenpalet", "/dashedline-active.png", handler, viewer);
 	}
 	
 /* 		actions.set(DISTANCE,new XXXAction(, viewer));

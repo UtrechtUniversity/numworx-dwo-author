@@ -59,18 +59,27 @@ public class LineModel extends ColorModel<Destroyable> {
 		return new LinePane(this);
 	}
 
-	float[][]  dashes = { null, { 1f, 3f }, { 5f, 3f } , { 5f, 3f, 1f, 3f } };
+	static final float[][]  dashes = { null, { 1f, 3f }, { 5f, 3f } , { 5f, 3f, 1f, 3f } };
 	
 	@Override
 	public void install(Destroyable item) {
-		float[] dash = dashes[type.ordinal()];
-		BasicStroke stroke = new BasicStroke(width,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+		Stroke stroke = getStroke(type, width);
 		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
 		adapter.put(Stroke.class, stroke);
 		adapter.put(Boolean.valueOf(rigid));
 		super.install(item);
 	}
 
+	public static Stroke getStroke(LineType type, float width) {
+		float[] dash = dashes[type.ordinal()];
+		BasicStroke stroke = new BasicStroke(width,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+		return stroke;
+	}
+
+	public static Stroke getStroke(LineType type) {
+		return getStroke(type, 1.0f);
+	}
+	
 	LineModel() {}
 
 	@Inject LineModel(Tracker tracker, Optional<RenameAction> ra) {
