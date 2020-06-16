@@ -42,9 +42,10 @@ public interface Tools {
 	
 	int CIRCLE_WITH_RADIUS = 28;
 	int COLOR_PALETTE = 29;
+	int LINE_PALETTE = 30;
 // NOT YET
-	int UNDO = 30;
-	int REDO = 31;
+	int UNDO = 31;
+	int REDO = 32;
 		
-	int TOOL_SIZE = 30;
+	int TOOL_SIZE = 31;
 }
