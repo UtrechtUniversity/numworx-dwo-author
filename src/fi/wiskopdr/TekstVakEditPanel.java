@@ -2037,7 +2037,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
         logIDLabelField.setVisible(logOption); 
-    	logIDLabelLabel.setVisible(logOption); 
+    		logIDLabelLabel.setVisible(logOption); 
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
         logIDLabelField.setText(logIDLabel);
@@ -2164,7 +2164,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(tableMode)
 		{	
 			tekstVakPanel.zetBreedte(b);//setSize(b,tekstVakPanel.getSize().height);
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			
 		}
 		//else tekstEditor.setSize(b,tekstEditor.getSize().height);
@@ -2212,6 +2212,21 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     public void start(){
     	setSize(getPreferredSize());
     }
+    
+    private void updateTekstVakPanel() {
+    		Hashtable h = getEditState();
+    		if(random && randomNr != 0) 
+		{
+			randomteksten[randomNr] = (String[][])tekstVakPanel.getEditState().get("teksten");
+			randomIpLaunchdata[randomNr] = (Hashtable[])tekstVakPanel.getEditState().get("interactiePanelLaunchData");
+			h = getEditState();
+			h.put("teksten",randomteksten[randomNr]);
+			h.put("interactiePanelLaunchData",randomIpLaunchdata[randomNr]);
+			//tekstVakPanel.setEditState(h);
+			//tabPositieKnop.setLocation(376+25*randomNr+5 ,2);
+		}
+    		tekstVakPanel.setEditState(h);
+    }
 	
     public void focusGained(FocusEvent e)
     {
@@ -2222,86 +2237,86 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(e.getSource().equals(cellMargeTF))
         {   
             cellMarge = Integer.parseInt(cellMargeTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
         if(e.getSource().equals(bovenMargeTF))
         {   
             bovenMarge = Integer.parseInt(bovenMargeTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
         if(e.getSource().equals(cellSpaceColumnTF))
 		{	
 			cellSpaceColumn = Integer.parseInt(cellSpaceColumnTF.getText());
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			
 		}
 		if(e.getSource().equals(cellSpaceRowTF))
 		{	
 			cellSpaceRow = Integer.parseInt(cellSpaceRowTF.getText());
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			
 		}
 		if(e.getSource().equals(interlinieTF))
 		{	
 			interlinie = Integer.parseInt(interlinieTF.getText());
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			
 		}
         if(e.getSource().equals(rondingTF))
         {   
             ronding = Integer.parseInt(rondingTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
         if(e.getSource().equals(hoekTF))
         {   
             hoek = Integer.parseInt(hoekTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
         if(e.getSource().equals(interactiePanelIdTF))
         {   
             ipId = Integer.parseInt(interactiePanelIdTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
         if(e.getSource().equals(randDikteTF))
         {   
         	randDikte = Integer.parseInt(randDikteTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
         if(e.getSource().equals(aftrekPopupTF))
         {   
         	puntenAftrekPopup = Integer.parseInt(aftrekPopupTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
         if(e.getSource().equals(randomTF))
 		{	randomVar = randomTF.getText();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
         if(e.getSource().equals(responsiveToggleWidthTF))
         {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
         }
         if(e.getSource().equals(responsiveMinWidthTF))
         {   responsiveMinWidth = Integer.parseInt(responsiveMinWidthTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
         }
         if(e.getSource().equals(responsiveMaxWidthTF))
         {   responsiveMaxWidth = Integer.parseInt(responsiveMaxWidthTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
         }
         if(e.getSource().equals(responsiveConstantTF))
         {   responsiveConstant = Integer.parseInt(responsiveConstantTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
         }
         if(e.getSource().equals(responsiveFactorTF))
         {   responsiveFactor = Double.parseDouble(responsiveFactorTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
         }
     }
     
@@ -2436,18 +2451,18 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				h.put("interactiePanelLaunchData",randomIpLaunchdata[0]);
 				tekstVakPanel.setEditState(h);
 			}
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		
 		if(e.getSource().equals(randZichtbaarCB))
 		{	randZichtbaar = randZichtbaarCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			randDikteTF.setVisible(randZichtbaar);
 			randColorButton.setVisible(randZichtbaar);
 		}
 		if(e.getSource().equals(bgColorZichtbaarCB))
 		{	bgColorZichtbaar = bgColorZichtbaarCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			bgColorButton.setVisible(bgColorZichtbaar);
 		}
 		if(e.getSource().equals(zwevendCB))
@@ -2469,7 +2484,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			//checkExpressieFormuleVak.setEnabled(selectable || sleepbaar);
 			//selectieWaardeLabel.setEnabled(selectable || sleepbaar);
 			
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			
 		}
 		if(e.getSource().equals(anderFontCB))
@@ -2479,7 +2494,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			//else 
 			font = WiskOpdr.tekstFont;
 			tekstVakPanel.setFont(font);
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			fontButton.setVisible(anderFont);
 			fgColorButton.setVisible(anderFont);
 			if(!anderFont)
@@ -2491,28 +2506,28 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		if(e.getSource().equals(tableBordersCB))
 		{	tableBorders = tableBordersCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(centerHCB))
 		{	centerH = centerHCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(centerVCB))
 		{	centerV = centerVCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(pasAanHCB))
 		{	pasAanH = pasAanHCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			produceAction("pasMaatAan");
 		//	repaint();
 		}
 		if(e.getSource().equals(pasAanBCB))
 		{	pasAanB = pasAanBCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			produceAction("pasMaatAan");
 		//	repaint();
 		}
@@ -2522,7 +2537,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			selectedCB.setVisible(selectable);
 			if(!selectable)selectedCB.setSelected(false);
 			selectieColorButton.setVisible(selectable);
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			if(!zwevend || selectable) 
 			{	sleepbaarCB.setSelected(false);
 				draaibaarCB.setSelected(false);
@@ -2534,11 +2549,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		if(e.getSource().equals(colorSelectionCB))
 		{	colorSelection = colorSelectionCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(selectedCB))
 		{	selected = selectedCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(sleepbaarCB))
 		{	sleepbaar = sleepbaarCB.isSelected();
@@ -2552,59 +2567,59 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				selectable = false; 
 				sleepdoel = false; 
 			}
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(draaibaarCB))
 		{	draaibaar = draaibaarCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(sleepHandleCB))
 		{	sleepHandle = sleepHandleCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(linkCB))
 		{	isLink = linkCB.isSelected();
 			linkButton.setVisible(isLink);
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(zichtbaarNaNakijkenCB))
 		{	zichtbaarNaNakijken = zichtbaarNaNakijkenCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(balansVergComCB))
 		{	balansVergCom = balansVergComCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(defaultBijNullCB))
 		{	defaultBijNull = defaultBijNullCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(aftrekPopupCB))
 		{	aftrekPopup = aftrekPopupCB.isSelected();
 			aftrekPopupTF.setVisible(aftrekPopup);
 			aftrekPopupLabel.setVisible(aftrekPopup);
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(callOutCB))
 		{	callOut = callOutCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(vulHoogteCB))
 		{	vulHoogte = vulHoogteCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(inklapbaarCB))
 		{	inklapbaar = inklapbaarCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			tekstVakPanel.klapUitAction();
 			knopImageButton1.setVisible(inklapbaar);
 			knopImageButton2.setVisible(inklapbaar);
@@ -2618,11 +2633,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			
 		}
 		if(e.getSource().equals(posBeginRB) || e.getSource().equals(posEindRB) || e.getSource().equals(posNaTekstRB) || e.getSource().equals(knopIsRegel1RB))
-		{	tekstVakPanel.setEditState(getEditState());
+		{	updateTekstVakPanel();
 		}
 		if(e.getSource().equals(checkUitklapVakCB))
 		{	checkUitklapVak = checkUitklapVakCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(sleepdoelCB))
 		{	sleepdoel = sleepdoelCB.isSelected();
@@ -2634,43 +2649,43 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				sleepbaar = false;
 				draaibaar = false;
 			}
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			repaint();
 		}
 		if(e.getSource().equals(cellMargeTF))
 		{	
 			cellMarge = Integer.parseInt(cellMargeTF.getText());
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			
 		}
 		if(e.getSource().equals(cellSpaceColumnTF))
 		{	
 			cellSpaceColumn = Integer.parseInt(cellSpaceColumnTF.getText());
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			
 		}
 		if(e.getSource().equals(cellSpaceRowTF))
 		{	
 			cellSpaceRow = Integer.parseInt(cellSpaceRowTF.getText());
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			
 		}
 		if(e.getSource().equals(bovenMargeTF))
         {   
             bovenMarge = Integer.parseInt(bovenMargeTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
 		if(e.getSource().equals(interlinieTF))
         {   
 			interlinie = Integer.parseInt(interlinieTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
 		if(e.getSource().equals(randDikteTF))
         {   
         	randDikte = Integer.parseInt(randDikteTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
 		if(e.getSource().equals(kolommenPlusMin))
@@ -2692,7 +2707,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(e.getSource().equals(rondingTF))
 		{	
 			ronding = Integer.parseInt(rondingTF.getText());
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(rondingCB))
 		{	
@@ -2702,7 +2717,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(e.getSource().equals(hoekTF))
 		{	
 			hoek = Integer.parseInt(hoekTF.getText());
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(hoekCB))
 		{	
@@ -2712,13 +2727,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(e.getSource().equals(interactiePanelIdTF))
 		{	
 			ipId = Integer.parseInt(interactiePanelIdTF.getText());
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 			
 		}
 		if(e.getSource().equals(aftrekPopupTF))
         {   
         	puntenAftrekPopup = Integer.parseInt(aftrekPopupTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
             
         }
 		if(e.getSource().equals(rondingPlusMin))
@@ -2726,7 +2741,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			if(e.getActionCommand().equals("plus"))ronding++;
 			else ronding--;
 			rondingTF.setText(Integer.toString(ronding));
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(fontButton))
 		{	//font = tekstVakPanel.getFont();
@@ -2739,27 +2754,27 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		if(e.getSource().equals(bgColorButton))
 		{	bgColor = JColorChooser.showDialog(this, "Kies kleur", bgColor);//new Color(255,255,180));
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(fgColorButton))
 		{	fgColor = JColorChooser.showDialog(this, "Kies kleur", fgColor);
 			if(fgColor==null) fgColor = Color.black;
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		
 		if(e.getSource().equals(selectieColorButton))
 		{	selectieColor = JColorChooser.showDialog(this, "Kies kleur", selectieColor);
 			if(selectieColor==null) selectieColor = Color.white;
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(randColorButton))
 		{	randColor = JColorChooser.showDialog(this, "Kies kleur", randColor);
 			if(randColor==null) randColor = Color.gray;
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		if(e.getSource().equals(randomTF))
 		{	randomVar = randomTF.getText();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 		
 		if(e.getSource().equals(linkButton))
@@ -2900,13 +2915,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	    if(e.getSource().equals(kiesStyleChoice))
 		{	if(kiesStyleChoice.getSelectedIndex()==0)
 			{	enableStyleSettings(true);
-				tekstVakPanel.setEditState(getEditState());
+				updateTekstVakPanel();
 			}
 			else
 			{	
 				setEditStyle();
 				enableStyleSettings(styleManager.isVisible());
-				tekstVakPanel.setEditState(getEditState());
+				updateTekstVakPanel();
 			}
 			
 	    	repaint();
@@ -2934,19 +2949,19 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 				//((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)this)).pack();
 			}
 			//revalidate();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 	    if(e.getSource().equals(templateModeEditCB))
 		{	templateModeEdit = templateModeEditCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 	    if(e.getSource().equals(templateModeFillCB))
 		{	templateModeFill = templateModeFillCB.isSelected();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 	    if(e.getSource().equals(layerChoice))
 		{	layerNr = layerChoice.getSelectedIndex();
-			tekstVakPanel.setEditState(getEditState());
+			updateTekstVakPanel();
 		}
 	    if(e.getSource().equals(responsiveCB))
         {   responsive = responsiveCB.isSelected();
@@ -2958,27 +2973,27 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
             responsiveConstantTF.setVisible(responsive);
             responsiveFactorLabel.setVisible(responsive);
             responsiveFactorTF.setVisible(responsive);
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
         }
 	    if(e.getSource().equals(responsiveToggleWidthTF))
         {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
         }
 	    if(e.getSource().equals(responsiveMinWidthTF))
         {  	responsiveMinWidth = Integer.parseInt(responsiveMinWidthTF.getText());
-       		tekstVakPanel.setEditState(getEditState());
+       		updateTekstVakPanel();
         }
 	    if(e.getSource().equals(responsiveMaxWidthTF))
         {   responsiveMaxWidth = Integer.parseInt(responsiveMaxWidthTF.getText());
-       		tekstVakPanel.setEditState(getEditState());
+       		updateTekstVakPanel();
         }
 	    if(e.getSource().equals(responsiveConstantTF))
         {   responsiveConstant = Integer.parseInt(responsiveConstantTF.getText());
-       		tekstVakPanel.setEditState(getEditState());
+       		updateTekstVakPanel();
         }
 	    if(e.getSource().equals(responsiveFactorTF))
         {   responsiveFactor = Double.parseDouble(responsiveFactorTF.getText());
-            tekstVakPanel.setEditState(getEditState());
+            updateTekstVakPanel();
         }
 	}
 	

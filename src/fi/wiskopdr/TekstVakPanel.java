@@ -3625,14 +3625,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			g.transform(rotation);
 		}
 
-		if (random)
-		{
-			int x = getWidth();
-			for (int i = 0; i < 4; i++)
-			{
-				g.drawRect(x - 6 - 5 * i, 0, 3, 3);
-			}
-		}
+		
 		if (callOut && tekstVakken.length == 1 && tekstVakken[0].length == 1)
 		{
 			g.setColor(randColor);
@@ -3686,6 +3679,15 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				y -= 3;
 			g.setColor(Color.red);
 			g.fillOval(x - 3, y - 3, 7, 7);
+		}
+		if (random)
+		{
+			int x = getWidth();
+			g.setColor(Color.black);
+			for (int i = 0; i < 4; i++)
+			{
+				g.drawRect(x - 6 - 5 * i, 0, 3, 3);
+			}
 		}
 		if (!tableBorders)
 			return;
