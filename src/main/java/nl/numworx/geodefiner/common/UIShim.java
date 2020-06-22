@@ -29,6 +29,7 @@ public class  UIShim<D extends Destroyable, T> implements UIModel<D, T>, Visitor
 
 
 	public boolean set;
+	protected UIShim<D, T> chain;
 
 	public UIModel<D, T> init(D item) {
 		return delegate.init(item);
@@ -80,7 +81,8 @@ public class  UIShim<D extends Destroyable, T> implements UIModel<D, T>, Visitor
 	@Override
 	public void visitPunt(Punt p) {
 		try {
-			install(p);
+			if(chain != null) p.visit(chain);
+			else install(p);
 		} catch(Exception oops) {}
 		
 	}
@@ -136,6 +138,10 @@ public class  UIShim<D extends Destroyable, T> implements UIModel<D, T>, Visitor
 		try {
 			install(b);
 		} catch(Exception oops) {}
+	}
+
+	public void setChain(UIShim<D, T> chain) {
+		this.chain = chain;
 	}
 	
 }
