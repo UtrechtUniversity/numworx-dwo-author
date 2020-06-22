@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Kegelsnede2;
+import fi.euclides.model.Punt;
 
 public class AddFocusHandler extends EventHandler {
 
@@ -12,7 +13,8 @@ public class AddFocusHandler extends EventHandler {
 	}
 
 	public void command() {
-		getModel().buildFocus();
+		Punt[] p = getModel().buildFocus();
+		for(Punt pp:p) pp.visit(decorator);
 	}
 
 	/* (non-Javadoc)

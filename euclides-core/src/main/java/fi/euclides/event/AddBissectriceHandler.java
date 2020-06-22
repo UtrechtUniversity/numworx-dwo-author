@@ -103,14 +103,14 @@ public class AddBissectriceHandler extends EventHandler {
 			if(select.size() == 1 && select.firstElement() instanceof Punt) 
 				; // okay
 			else {
-				context.toggle(m.buildPunt(x, y));
+				context.toggle(visit(m.buildPunt(x, y)));
 			}
 			break;
 		case 1:
 			if(select.size()==1 && select.firstElement() instanceof Punt)
 				select.insertElementAt(p1, 0);
 			else {
-				Punt p = m.buildPunt(x, y);
+				Punt p = visit(m.buildPunt(x, y));
 				context.toggle(p1);
 				context.toggle(p);
 			}
@@ -122,7 +122,7 @@ public class AddBissectriceHandler extends EventHandler {
 				select.insertElementAt(p2, 1);
 			} else 
 			{ 	
-				Punt p = m.buildPunt(x, y);
+				Punt p = visit(m.buildPunt(x, y));
 				context.toggle(p1);
 				context.toggle(p2);
 				context.toggle(p);

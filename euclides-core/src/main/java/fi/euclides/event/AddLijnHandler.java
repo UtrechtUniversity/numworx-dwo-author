@@ -86,7 +86,7 @@ public class AddLijnHandler extends EventHandler {
 			if (select.isEmpty() 
 				|| select.firstElement() instanceof OpObject
 			) {
-				Destroyable p = model.buildPunt(x, y);
+				Destroyable p = visit(model.buildPunt(x, y));
 				model.toggle(p);
 			} 
 				
