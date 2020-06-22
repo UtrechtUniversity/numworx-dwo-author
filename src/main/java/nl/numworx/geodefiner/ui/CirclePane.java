@@ -53,9 +53,11 @@ public class CirclePane extends UIEditor {
 // TODO mooie layout, tabbladen?
 		Box hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("CirclePane.1")));hbox.add(Box.createGlue());
-		add(hbox);
-		add(visibilityEditor);
-		add(Box.createVerticalStrut(10));
+		if(model.item != null) {
+			add(hbox);
+			add(visibilityEditor);
+			add(Box.createVerticalStrut(10));
+		}
 		hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("CirclePane.2")));hbox.add(Box.createGlue());
 		add(hbox);
@@ -71,7 +73,7 @@ public class CirclePane extends UIEditor {
 		Box panel;
 		panel = Box.createHorizontalBox();
 		panel.add(new JLabel(Messages.getString("PointPane.2"))); panel.add(rigid); panel.add(Box.createGlue());
-		add(panel);
+		if (model.item != null) add(panel);
 		add(Box.createVerticalStrut(10));
 		hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("CirclePane.5")));hbox.add(Box.createGlue());

@@ -45,7 +45,7 @@ public class LinePane<M extends LineModel> extends ColorPane<M> {
 		panel = Box.createHorizontalBox();
 		panel.add(new JLabel(Messages.getString("PointPane.2"))); panel.add(rigid); panel.add(Box.createGlue());
 		add(Box.createVerticalStrut(10));
-		add(panel);
+		if (model.item != null) add(panel);
 	}
 	public void commit() {
 		commitFields(widthField);

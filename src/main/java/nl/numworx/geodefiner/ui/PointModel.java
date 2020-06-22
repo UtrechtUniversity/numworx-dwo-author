@@ -46,7 +46,11 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 	public void fromMap(ObjectMap map) {
 		super.fromMap(map);
 		if(map.containsKey("size")) size  = Float.valueOf(map.getInt("size"));
-		if(map.containsKey("type")) type  = PointType.valueOf( map.getString("type"));
+		try {
+			if(map.containsKey("type")) type  = PointType.valueOf( map.getString("type"));
+		} catch (Exception e) {
+			type = PointType.DISK;
+		}
 		rigid = map.getBoolean("rigid", true);
 	}
 	

@@ -2,6 +2,7 @@ package nl.numworx.geodefiner.module;
 
 import java.awt.Cursor;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.swing.Action;
 
@@ -51,7 +52,6 @@ import nl.numworx.geodefiner.tools.PuntAction;
 import nl.numworx.geodefiner.tools.XXXXAction;
 import nl.numworx.geodefiner.ui.CircleModel;
 import nl.numworx.geodefiner.ui.LineModel;
-import nl.numworx.geodefiner.ui.LinePane;
 import nl.numworx.geodefiner.ui.PointModel;
 import nl.numworx.geodefiner.ui.RayModel;
 import nl.numworx.geodefiner.ui.SegmentModel;
@@ -81,35 +81,44 @@ public abstract class ToolBoxModule implements Tools {
 		return xaction;
 	}
 	
+	@Provides @Singleton @Named("point") static
+	UIShim<Destroyable, UIEditor> getpointShim(AWTViewer viewer, PointModel model, Instance instance) {
+		return new UIShim<>(model, instance.getStateConfiguration(), viewer);
+	}
+		
 	@Provides @Singleton @IntoMap @IntKey(POINT) static 
-	Action point(AWTViewer viewer, PointModel model, Instance instance) {
-		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+	Action point(AWTViewer viewer, @Named("point") UIShim<Destroyable, UIEditor> shim, Instance instance) {
 		return new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddSnapPuntHandler(shim),viewer, shim);
 	}
 	@Provides @Singleton @IntoMap @IntKey(LINE) static 
-	Action line(AWTViewer viewer, LineModel model, Instance instance) {
+	Action line(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new XXXXAction(Messages.getString("Euclides.50"), "/line.png", new AddLijnHandler(AddLijnHandler.LINE),viewer, shim);
 	}
 	@Provides @Singleton @IntoMap @IntKey(SEGMENT) static 
-	Action segment(AWTViewer viewer, SegmentModel model, Instance instance) {
+	Action segment(AWTViewer viewer, SegmentModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new XXXXAction(Messages.getString("Euclides.48"), "/segment.png", new AddLijnHandler(AddLijnHandler.SEGMENT),viewer, shim);
 	}
 	@Provides @Singleton @IntoMap @IntKey(HALFLINE) static 
-	Action halfline(AWTViewer viewer, RayModel model, Instance instance) {
+	Action halfline(AWTViewer viewer, RayModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new XXXXAction(Messages.getString("Euclides.49"), "/ray.png", new AddLijnHandler(AddLijnHandler.RAY),viewer, shim);
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(PERPENDICULAR) static 
-	Action perpendicular(AWTViewer viewer, LineModel model, Instance instance) {
+	Action perpendicular(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new XXXXAction(Messages.getString("Euclides.56"), "/plumb.png", new AddLoodLijnHandler(),viewer, shim);
 	}
 	@Provides @Singleton @IntoMap @IntKey(PARALLEL) static 
-	Action parallel(AWTViewer viewer, LineModel model, Instance instance) {
+	Action parallel(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new XXXXAction(Messages.getString("Euclides.58"), "/parallel.png", new AddParallelHandler(),viewer,shim);
 	}
 
@@ -126,14 +135,16 @@ public abstract class ToolBoxModule implements Tools {
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(CIRCLE) static 
-	Action circle(AWTViewer viewer, CircleModel model, Instance instance) {
+	Action circle(AWTViewer viewer, CircleModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer, shim);
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(ARC) static 
-	Action arc(AWTViewer viewer, CircleModel model, Instance instance) {
+	Action arc(AWTViewer viewer, CircleModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new XXXXAction("Boog", "/angle.png", new AddBoogHandler("Boog"),viewer, shim);
 	}
 
@@ -144,8 +155,9 @@ public abstract class ToolBoxModule implements Tools {
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(BISECTRICE) static 
-	Action bissectrice(AWTViewer viewer, LineModel model, Instance instance) {
+	Action bissectrice(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new XXXXAction(Messages.getString("Euclides.60"), "/bissectrice.png", new AddBissectriceHandler(),viewer, shim);
 	}
 	@Provides @Singleton @IntoMap @IntKey(MIRROR) static 
@@ -171,8 +183,9 @@ public abstract class ToolBoxModule implements Tools {
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(POLELINE) static 
-	Action poleline(AWTViewer viewer, LineModel model, Instance instance) {
+	Action poleline(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new XXXXAction("Poollijn", "/line.png", new AddPoollijnHandler(), viewer,shim);
 	}
 	
@@ -208,8 +221,9 @@ public abstract class ToolBoxModule implements Tools {
 		return new TrailAction(Messages.getString("Euclides.44"), viewer);
 	}
 	@Provides @Singleton @IntoMap @IntKey(CIRCLE_WITH_RADIUS) static 
-	Action circle_with_radius(AWTViewer viewer, CircleModel model, Instance instance) {
+	Action circle_with_radius(AWTViewer viewer, CircleModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		shim.setChain(chain);
 		return new XXXXAction(Messages.getString("Euclides.104"), "/fixedcircle.png", new CirkelRadiusHandler(Messages.getString("AddCirkelHandler.0")), viewer,shim);
 	}
 	

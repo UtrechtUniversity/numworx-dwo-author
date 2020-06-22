@@ -39,13 +39,16 @@ class PointPane<T extends PointModel> extends ColorPane<T> {
 		  item = ((Groep)item).prototype();
 		}
         rigid.setEnabled(item instanceof FreePoint||item == null);
+        rigid.setVisible(item != null);
 		rigid.setSelected(!model.rigid);			
 		Box panel = Box.createHorizontalBox();
 		panel.add( new JLabel(Messages.getString("PointPane.1"))); panel.add(sizeField);panel.add(new JLabel("px"));panel.add(Box.createGlue());
 		add(Box.createVerticalStrut(10));
 		add(panel);
 		panel = Box.createHorizontalBox();
-		panel.add(new JLabel(Messages.getString("PointPane.2"))); panel.add(rigid); panel.add(Box.createGlue());
+		if (item != null)
+			panel.add(new JLabel(Messages.getString("PointPane.2")));
+		panel.add(rigid); panel.add(Box.createGlue());
 		add(Box.createVerticalStrut(10));
 		add(panel );
 
