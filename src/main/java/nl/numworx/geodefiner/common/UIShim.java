@@ -28,6 +28,12 @@ public class  UIShim<D extends Destroyable, T> implements UIModel<D, T>, Visitor
 	}
 
 
+	public UIShim(UIModel<D, T> delegate, Map<String, Map<String, Object>> state, Tracker tracker,
+			UIShim<D,T> point) {
+		this(delegate, state, tracker);
+		setChain(point);
+	}
+
 	public boolean set;
 	protected UIShim<D, T> chain;
 
