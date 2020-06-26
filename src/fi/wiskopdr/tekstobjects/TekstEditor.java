@@ -505,6 +505,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 						}
 						else if(componentList.get(i).get(j).startsWith("STND")) {
 							String type = componentList.get(i).get(j).substring(4);
+							type = type.replace('-', '_');
 							String typeName = TComponentGeneratorFactory.getComponentTypeName(type);
 							componentItems[teller] = new JMenuItem(new TComponentAction(typeName,type));
 							componentItems[teller].setFont(new Font("SansSerif",Font.PLAIN,13));
@@ -679,9 +680,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	{
 	  mainEditor = true;
 	  
-	  headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));//new Color(120,150,202)));
-	  scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));//new Color(120,150,202)));
-	 
+	  //headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));//new Color(120,150,202)));
+	  if(OpdrNavStructEdit.hasMenuBar) {
+		  headerPanel.setBorder(BorderFactory.createMatteBorder(0,1,1,0,WiskOpdr.colorBlue4));//new Color(120,150,202)));
+		  scrollPane.setBorder(BorderFactory.createMatteBorder(0,0,1,1,WiskOpdr.colorBlue4));
+	  }
+	  else {
+		  headerPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));//new Color(120,150,202)));
+		  scrollPane.setBorder(BorderFactory.createLineBorder(Color.lightGray));//new Color(120,150,202)));
+	  }
 	  
 	  tekstVak.setOpaque(true);
       tekstVak.setBackground(Color.white);
