@@ -454,6 +454,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		String[][] misconceptions = null;
 		String[] mccCategorieString = null;
 		Hashtable styles = null;
+		String templateName = null;
 		Hashtable templatePages = null;
 		Hashtable templateComponents = null;
 		ArrayList<String> templatePagesKeys = null;
@@ -524,6 +525,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			mccCategorieString = (String[]) h.get("mccCategorieString");
 		if (h != null && h.containsKey("TekstVakPanelStyles"))
 			styles = (Hashtable) h.get("TekstVakPanelStyles");
+		if (h != null && h.containsKey("templateName"))
+			templateName = (String) h.get("templateName");
 		if (h != null && h.containsKey("TekstVakPanelTemplatePages"))
 			templatePages = (Hashtable) h.get("TekstVakPanelTemplatePages");
 		if (h != null && h.containsKey("TekstVakPanelTemplateComponents"))
@@ -560,6 +563,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
         TekstVakPanel.zetFontOvererving(fontOvererving);
       //if(styles != null)
         TekstVakPanel.styles = styles;
+        
+        TekstVakPanel.templateName = templateName;
     
       //if(templatePages != null)
         TekstVakPanel.templatePages = templatePages;
@@ -691,6 +696,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		
 		if(TekstVakPanel.styles != null)
 			instellingen.put("TekstVakPanelStyles", TekstVakPanel.styles);
+		
+		if(TekstVakPanel.templateName != null)
+			instellingen.put("templateName", TekstVakPanel.templateName);
 		
 		if(TekstVakPanel.templatePages != null)
 			instellingen.put("TekstVakPanelTemplatePages", TekstVakPanel.templatePages);

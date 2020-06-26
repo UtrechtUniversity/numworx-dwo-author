@@ -299,7 +299,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
 		//tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
-		tekstEditor.setBounds(10, hasTitle ? 75 : 5, w - 20, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
+		int corrMenu = OpdrNavStructEdit.hasMenuBar ? 5 : 0;
+		tekstEditor.setBounds(10, hasTitle ? 75 : 5-corrMenu, w - 20, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465-corrMenu : 0));
 		tekstEditor.setMainEditor(defaultMarginX, defaultMarginY, defaultDocWidth, defaultDocHeight);
         
         
@@ -833,6 +834,13 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
                 premium = true;
             if(launchState.containsKey("logID")) {
             	String logID = (String)launchState.get("logID");
+            	if(logID.startsWith("DWOTEMPNAME_") && ip instanceof TekstInteractiePanelVak) {
+            		launchState.put("logID", "");
+            		launchState.put("logOption", false);
+            		TekstVakPanel.setTemplateName(logID.substring(12));
+            		launchState.put("logID", logID);
+            		launchState.put("logOption", true);
+            	}
             	if(logID.startsWith("DWOTEMP_") && ip instanceof TekstInteractiePanelVak) {
             		launchState.put("logID", "");
             		launchState.put("logOption", false);

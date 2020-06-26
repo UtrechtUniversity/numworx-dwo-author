@@ -1093,6 +1093,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		String[] mccCategorieString = null;
 		boolean scoresZichtbaar = true;
 		Hashtable styles = null;
+		String templateName = null;
 		Hashtable templatePages = null;
 		Hashtable templateComponents = null;
 		ArrayList<String> templatePagesKeys = null;
@@ -1226,6 +1227,8 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 			scoresZichtbaar = ((Boolean) h.get("scoresZichtbaar")).booleanValue();
 		if (h != null && h.containsKey("TekstVakPanelStyles"))
 			styles = (Hashtable) h.get("TekstVakPanelStyles");
+		if (h != null && h.containsKey("templateName"))
+			templateName = (String) h.get("templateName");
 		if (h != null && h.containsKey("TekstVakPanelTemplatePages"))
 			templatePages = (Hashtable) h.get("TekstVakPanelTemplatePages");
 		if (h != null && h.containsKey("TekstVakPanelTemplateComponents"))
@@ -1249,6 +1252,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 		
 		TekstVakPanel.zetFontOvererving(fontOvererving);
 		TekstVakPanel.styles = styles;
+		TekstVakPanel.templateName = templateName;
 		TekstVakPanel.templatePages = templatePages;
 		TekstVakPanel.templateComponents = templateComponents;
 		TekstVakPanel.templatePagesKeys = templatePagesKeys;

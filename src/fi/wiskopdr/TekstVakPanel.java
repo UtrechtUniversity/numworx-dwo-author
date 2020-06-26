@@ -76,6 +76,7 @@ import fi.wiskopdr.tekstobjects.TekstVak;
 public class TekstVakPanel extends RoundedPanel implements TabletOwner, InteractiePanel, ActionListener, MouseListener, MouseMotionListener, CBookAware
 {
 	public static Map<String,Map<String,Object>> styles = new Hashtable<String,Map<String,Object>>();
+	public static String templateName;
 	public static Map<String,String> templatePages = new Hashtable<String,String>();
 	public static Map<String,String> templateComponents = new Hashtable<String,String>();
 	public static ArrayList<String> templatePagesKeys = new ArrayList<String>();
@@ -84,6 +85,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	public static boolean[] layerVisible;
 	public static boolean TEMPLATE_EDITOR;
 	
+	public static void setTemplateName(String name) {
+		templateName = name;
+	}
 	public static void addTemplatePage(String key, String content) {
 		if(templatePages==null)
 			templatePages = new Hashtable<String,String>();
