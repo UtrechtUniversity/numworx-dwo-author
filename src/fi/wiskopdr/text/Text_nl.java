@@ -76,6 +76,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "settingsLabel", "Instellingen"},
 				{ "helpTitelLabel", "Help"},
 				
+				{ "linkDialogUrlGegevensWijzigen", "URLgegevens wijzigen"},
+				{ "linkDialogLinkGegevens", "Link gegevens"},
+				
 				{ "choiceOefenen" , "Oefenen" },
 				{ "choiceOefenenEindloos" , "Oefenen eindeloos" },
 				{ "choiceOefenenStraf" , "Oefenen strafpunten" },
@@ -118,6 +121,12 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "strategieVersieLabel" , "Strategieversie" },
 				{ "oefenVersieLabel" , "Strategie-oefenversie" },
 				{ "bordjesVersieLabel" , "Bordjesmethodeversie" },
+				
+				{ "titelKeuzeTestwaarden" , "Keuze testwaarden" },
+				{ "tekstKeuzeTestwaarden" , "Testwaarden interval is nu " },
+				{ "titelDefVariabelen" , "Definities variabelen" },
+				{ "titelDefFuncties" , "Definities functies" },
+				
 				
 				{ "herleidingKeuze_0" , "Geen" },
 				{ "herleidingKeuze_1" , "Veelterm herleid zonder haakjes" },
@@ -425,13 +434,18 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_docWidthLabel" , " Breedte"},
 				{"OPT_docHeightLabel" , "Hoogte (min)"},
 				{"OPT_combCompNav" , "Gedeelde componenten"},
-				
+				{"OPT_stylesWarnDialog" , "Alle ingestelde styles gaan verloren. Akkoord?"},
 				
 				{"OBJ_leerdoel", "Leerdoel"},
 				{"OBJ_categorie", "Vul naam in van categorie"},
 				{"OBJ_categorieBox", "Leerdoelen in meerdere categorieen"},
 				{"OBJ_kolomMeerButton", "Voeg kolom toe"},
 				{"OBJ_kolomMinderButton", "Verwijder kolom"},
+				{"OBJ_leerdoelInstellingen", "Instellingen leerdoelen"},
+				{"OBJ_gebruikAanwezigLeerdomein", "Gebruik aanwezig leerdomein"},
+				{"OBJ_gebruikEigenLeerdoelen", "Gebruik eigen leerdoelen"},
+				{"OBJ_koppelLeerdoelTitel", "Koppel aan leerdoelen"},
+				
 				{"MCC_misconception", "Foutenanalyse"},
 				{"MCC_categorie", "Vul naam in van categorie"},
 				{"MCC_categorieBox", "Foutenanalyse in meerdere categorieen"},
@@ -589,7 +603,12 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"SM_closeButton", "Sluiten"},
                 {"SM_addStyleAction", "Geef stijlnaam"},
                 
-                //Text Editor tooltips
+                //Text Editor + tooltips
+                {"TE_menuTemplateComponents", "Componenten in template-opmaak"},
+                {"TE_menuWidgets", "Widgets"},
+                {"TE_menuAntwoordTypes", "Antwoordtypes"},
+                {"TE_menuTekstvakken", "Tekstvakken"},
+                
                 {"TE_formuleButtonTooltip", "Formule invoegen"},
                 {"TE_graphButtonTooltip", "Grafiek invoegen"},
                 {"TE_linkButtonTooltip", "Link invoegen"},

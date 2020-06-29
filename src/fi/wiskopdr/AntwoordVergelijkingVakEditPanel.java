@@ -1599,7 +1599,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     
     public void maakantwoordSubstitutiesFrame()
    	{
-    	DialogFacade substitutiesVakPopupFrame = DialogFacade.newInstance(this, "Definities variabelen");
+    	DialogFacade substitutiesVakPopupFrame = DialogFacade.newInstance(this, WiskOpdr.rb.getString("titelDefVariabelen"));
     	substitutiesVakPopupFrame.getContentPane().setLayout(null);
     	substitutiesVakPopupFrame.getContentPane().add(this.antwoordSubstitutiesVak);
     	substitutiesVakPopupFrame.addWindowListener(new WindowAdapter(){
@@ -1628,7 +1628,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     
     public void maakantwoordFunctiesFrame()
    	{
-    	DialogFacade functiesVakPopupFrame = DialogFacade.newInstance(this, "Definities functies");
+    	DialogFacade functiesVakPopupFrame = DialogFacade.newInstance(this, WiskOpdr.rb.getString("titelDefFuncties"));
     	functiesVakPopupFrame.getContentPane().setLayout(null);
     	functiesVakPopupFrame.getContentPane().add(this.antwoordFunctiesVak);
     	functiesVakPopupFrame.addWindowListener(new WindowAdapter(){
@@ -2329,7 +2329,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     {   if(e.getSource()==gelijkwaardigCB && e.getModifiers()== InputEvent.BUTTON3_MASK || e.isControlDown())
 		{	try{
 			new Expressie();
-			String intervalString = JOptionPane.showInputDialog(this, "testwaarden interval is nu [" + Expressie.df.format(eqTestValueMin) + ";" + Expressie.df.format(eqTestValueMax) +"]", "Keuze testWaarden", JOptionPane.QUESTION_MESSAGE);
+			String intervalString = JOptionPane.showInputDialog(this, WiskOpdr.rb.getString("tekstKeuzeTestwaarden") + "[" + Expressie.df.format(eqTestValueMin) + ";" + Expressie.df.format(eqTestValueMax) +"]", WiskOpdr.rb.getString("titelKeuzeTestwaarden"), JOptionPane.QUESTION_MESSAGE);
 			intervalString = StringUtils.replaceStr(intervalString, "[", "");
 			intervalString = StringUtils.replaceStr(intervalString, "]", "");
 			String[] parts = StringUtils.split(intervalString, ";");

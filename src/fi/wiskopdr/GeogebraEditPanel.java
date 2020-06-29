@@ -74,7 +74,8 @@ class GeogebraEditPanel extends JPanel implements InteractieEditPanel , ActionLi
 		
 		optiesPanel = new JPanel();
 		optiesPanel.setLayout(null);
-		optiesPanel.setPreferredSize(new Dimension(200,400));
+		optiesPanel.setPreferredSize(new Dimension(200,800));
+		optiesPanel.setMinimumSize(new Dimension(200,800));
 		optiesPanel.setMaximumSize(new Dimension(200,600));
 		hb.add(optiesPanel);
 		
@@ -113,7 +114,7 @@ class GeogebraEditPanel extends JPanel implements InteractieEditPanel , ActionLi
 		optiesPanel.add(maxScoreLabel);
 		
 		maxScoreTF = new JTextField("0");
-		maxScoreTF.setBounds(20, 290, 40, 20);
+		maxScoreTF.setBounds(100, 290, 40, 20);
 		maxScoreTF.addActionListener(this);
 		maxScoreTF.setVisible(false);
 		optiesPanel.add(maxScoreTF);

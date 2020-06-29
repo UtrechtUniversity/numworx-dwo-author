@@ -284,14 +284,14 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		antwoordVakKnop.addActionListener(this);
 		if(form)headerPanel.add(antwoordVakKnop);
 		antwoordVakKnopJMenu = new JPopupMenu();
-		TekstInteractiePanelVak.makeJMenu(this,"Antwoordtypes",antwoordVakKnopJMenu, 0);
+		TekstInteractiePanelVak.makeJMenu(this,WiskOpdr.rb.getString("TE_menuAntwoordTypes"),antwoordVakKnopJMenu, 0);
 		
 		tekstVakKnop = new FormuleButton("tekstvak");
 		tekstVakKnop.setBounds(toolbarLeft,84+26+26+26+26+26,balkH/2-10,20,20);
 		tekstVakKnop.addActionListener(this);
 		if(form)headerPanel.add(tekstVakKnop);
 		tekstvakKnopJMenu = new JPopupMenu();
-		TekstInteractiePanelVak.makeJMenu(this,"Tekstvakken",tekstvakKnopJMenu, 3);
+		TekstInteractiePanelVak.makeJMenu(this,WiskOpdr.rb.getString("TE_menuTekstvakken"),tekstvakKnopJMenu, 3);
 		
 		opsommingKnop = new FormuleButton("opsomming");
 		opsommingKnop.setBounds(toolbarLeft,84+26+26+26+26+26+26,balkH/2-10,20,20);
@@ -372,7 +372,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		componentChoice.setBackground(new Color(237,239,241));
 		componentChoice.setForeground(new Color(49,71,112));
 		componentChoice.setFont(new Font("SansSerif",Font.PLAIN,12));
-		titel = new JLabel("Componenten in template-opmaak");
+		titel = new JLabel(WiskOpdr.rb.getString("TE_menuTemplateComponents"));
 	    titel.setOpaque(true);
 	    titel.setForeground(new Color(237,239,241));
 	    titel.setBackground(new Color(49,71,112));
@@ -600,7 +600,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		appletKnop.addActionListener(this);
 		if(form)headerPanel.add(appletKnop);
 		appletKnopJMenu = new JPopupMenu();
-        TekstInteractiePanelVak.makeJMenu(this,"Widgets", appletKnopJMenu, 1);
+        TekstInteractiePanelVak.makeJMenu(this,WiskOpdr.rb.getString("TE_menuWidgets"), appletKnopJMenu, 1);
 		
 		wortelKnop = new FormuleButton("wortel");
 		wortelKnop.setBounds(toolbarLeft,12,balkH/2-10,20,20);

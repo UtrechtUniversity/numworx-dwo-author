@@ -70,6 +70,9 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "imagesButtonLabel", "Images"},
 				{ "settingsLabel", "Settings"},
 				{ "helpTitelLabel", "Help"},
+				
+				{ "linkDialogUrlGegevensWijzigen", "Edit URL information"},
+				{ "linkDialogLinkGegevens", "Link information"},
 								
 				{ "choiceOefenen" , "Practice" },
 				{ "choiceOefenenEindloos" , "Practice endless" },
@@ -106,7 +109,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "onafhankelijkCBLabel", "Independent"},
 				{ "checkCBLabel" , "Checkable" },
 				{ "teltMeeCBLabel" , "Include in grading" },
-				{ "logCBLabel" , "logID" },
+				{ "logCBLabel" , "LogID" },
 				{ "rmCBLabel" , "Calculator" },
 				{ "pijlCBLabel" , "Arrow" },
 				{ "substitutiesButtonLabel" , "substitutions" },
@@ -114,6 +117,11 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "strategieVersieLabel" , "Strategy version" },
 				{ "oefenVersieLabel" , "Strategy+ version" },
 				{ "bordjesVersieLabel" , "Cover-up method version" },
+				
+				{ "titelKeuzeTestwaarden" , "Choose test values" },
+				{ "tekstKeuzeTestwaarden" , "Test value interval is now " },
+				{ "titelDefVariabelen" , "Definitions variables" },
+				{ "titelDefFuncties" , "Definitions functions" },
 				
 				{ "herleidingKeuze_0" , "None" },
 				{ "herleidingKeuze_1" , "Polynom expanded and symplified" },
@@ -304,22 +312,22 @@ public class Text_en extends java.util.ListResourceBundle
 				{"mozaikIpLabel" , "Mozaik"},
 				{"veelvlakkenIpLabel" , "Polyhedra"},
 				{"eerlijkVerdelenIpLabel" , "PE Equal sharing"},
-				{"statistiekIpLabel" , "[test] Statistical representations"},
-				{"stroomdiagrammenIpLabel" , "[test] Flow diagrams New"},
+				{"statistiekIpLabel" , "Statistical representations"},
+				{"stroomdiagrammenIpLabel" , "Flow diagrams"},
 				{"tegelsIpLabel" , "Tilings"},
 				{"checkWaardeUnitLabel" , "Check value unit"},
 				{"omtrekAppletIpLabel" , "PE circumference applet"},
 				{"algebraExpressiesIpLabel" , "Algebra trees"},
 				{"oppervlakteAlgebraIpLabel" , "[test] Area algebra"},
 				{"blokkenProgrammaIpLabel" , "[test] Block programs"},
-				{"grafieken3DIpLabel" , "[test] Graphs 3D"},
+				{"grafieken3DIpLabel" , "Graphs 3D"},
 				{"spotProblemsIpLabel" , "Spot problems"},
-				{"kladjeIpLabel" , "[test] Note"},
+				{"kladjeIpLabel" , "Note"},
 				{"kansbomenIpLabel" , "Probability trees"},
 				{"rekenmachineIpLabel" , "Calculator"},
 				{"formStructIpLabel" , "[test] FormStruct"},
 				{"graphToolIpLabel" , "GraphTool"},
-				{"draabankIpLabel" , "Turning lathe"}, 
+				{"draaibankIpLabel" , "Turning lathe"}, 
 				{"waarmakersIpLabel" , "[test] Truemakers"},
 				{"statSimIpLabel" , "Statistics Simulations"},
 				{"stelselVakLabel", "System of equations"},
@@ -406,12 +414,18 @@ public class Text_en extends java.util.ListResourceBundle
 				{"OPT_docWidthLabel" , "Page: Width"},
                 {"OPT_docHeightLabel" , "Height (min)"},
                 {"OPT_combCompNav" , "Combined components"},
+                
 				
 				{"OBJ_leerdoel", "Objective"},
 				{"OBJ_categorie", "Category"},
 				{"OBJ_categorieBox", "Objectives in multiple categories"},
 				{"OBJ_kolomMeerButton", "Add column"},
 				{"OBJ_kolomMinderButton", "Remove column"},
+				{"OBJ_leerdoelInstellingen", "Settings learning objectives"},
+				{"OBJ_gebruikAanwezigLeerdomein", "Use present learning domain"},
+				{"OBJ_gebruikEigenLeerdoelen", "Use your own learning objectives"},
+				{"OBJ_koppelLeerdoelTitel", "Link to learning objectives"},
+				
 				{"MCC_misconception", "Error type"},
 				{"MCC_categorie", "Category"},
 				{"MCC_categorieBox", "Error analysis in multiple categories"},
@@ -565,7 +579,12 @@ public class Text_en extends java.util.ListResourceBundle
                 {"SM_closeButton", "Close"},
                 {"SM_addStyleAction", "Give style name"},
                 
-              //Text Editor tooltips
+                //Text Editor + tooltips
+                {"TE_menuTemplateComponents", "Components with template-layout"},
+                {"TE_menuWidgets", "Widgets"},
+                {"TE_menuAntwoordTypes", "Answer types"},
+                {"TE_menuTekstvakken", "Text boxes"},
+                
                 {"TE_formuleButtonTooltip", "Add Formula"},
                 {"TE_graphButtonTooltip", "Add graph tool"},
                 {"TE_linkButtonTooltip", "Add link"},
@@ -817,6 +836,11 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CN_regelMeer", "Add line"},
 				{"CN_regelMinder", "Remove line"},
 				
+				//layer panels
+				{"L_layers", "Layers"},
+				{"L_layerName", "Layer-name"},
+				{"L_layerVisible","Visible"},
+				
 				// crossswidget commands
 				{"CBA_input", "input"},
 				{"CBA_int.index", "choice" },
@@ -900,6 +924,10 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "Gonio-keyboard", "Gonio keyboard" },
 				{ "Statistiek-keyboard", "Statistics keyboard" },
 				{ "Meetkunde-keyboard", "Geometry keyboard" },
+				{ "versionKeyboard", "Type keyboard" },
+				{ "keyBoardAutomatisch", "Automatic" },
+				{ "keyBoardDesktop", "Only for desktop" },
+				{ "keyBoardTablet", "Only tablet" },
 				{ "Tablet handschriftset", "Tablet handwriting" },
 				{ "Basis", "Basic" },
 				{ "Uitgebreid", "Extended" },

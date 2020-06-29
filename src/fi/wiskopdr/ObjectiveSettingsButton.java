@@ -197,7 +197,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 		topPanel.setBackground(WiskOpdr.colorBlue1);
 		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
 		
-		titleLabel = new JLabel("Instellingen leerdoelen");
+		titleLabel = new JLabel(WiskOpdr.rb.getString("OBJ_leerdoelInstellingen"));
 		titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
 		titleLabel.setForeground(WiskOpdr.colorGray3);
 		
@@ -234,13 +234,13 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
         
         buttonGroep = new ButtonGroup();
         
-        studentModelRB = new WiskOpdrRadioButton("Gebruik een aanwezig leerdomein");
+        studentModelRB = new WiskOpdrRadioButton(WiskOpdr.rb.getString("OBJ_gebruikAanwezigLeerdomein"));
         studentModelRB.setFont(font);
         studentModelRB.setSelected(studentModel!=null);
         studentModelRB.addActionListener(this);
         buttonGroep.add(studentModelRB);
         
-        eigenLeerdoelenRB = new WiskOpdrRadioButton("Gebruik eigen leerdoelen");
+        eigenLeerdoelenRB = new WiskOpdrRadioButton(WiskOpdr.rb.getString("OBJ_gebruikEigenLeerdoelen"));
         eigenLeerdoelenRB.setFont(font);
         eigenLeerdoelenRB.setSelected(studentModel==null);
         eigenLeerdoelenRB.addActionListener(this);

@@ -1569,7 +1569,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				
 			}
 			else {
-				int b = JOptionPane.showConfirmDialog(null,"Alle ingestelde styles gaan verloren. Akkoord?", "", JOptionPane.YES_NO_OPTION);
+				int b = JOptionPane.showConfirmDialog(null,WiskOpdr.rb.getString("OPT_stylesWarnDialog"), "", JOptionPane.YES_NO_OPTION);
 				System.out.println("confirm "+b);
 				if(b==0)
 					TekstVakPanel.styles = null;

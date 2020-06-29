@@ -209,7 +209,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
     public static Link addLink(Component owner) {
         String[] httpString = new String[] {"http://", "http://","http://", "http://",
         		"http://", "http://","http://", "http://","http://", "http://"};
-    	AddLinkDialog asd = new AddLinkDialog(owner, "Link gegevens", "link", httpString, 400, 400, LinkType.FALSE, null);
+    	AddLinkDialog asd = new AddLinkDialog(owner, WiskOpdr.rb.getString("linkDialogLinkGegevens"), "link", httpString, 400, 400, LinkType.FALSE, null);
         asd.show();
         if (asd.isConfirmed()) {
             Link link = new Link(asd.getLinkTekst(), asd.getUrlString(), asd.getWidth(), asd.getHeight(), asd.getEmbedded(), asd.getGrensScores());
@@ -269,7 +269,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
 	        //		urls[i] = "";
 	        //}
 	                
-	        AddLinkDialog asd = new AddLinkDialog(owner, "URLgegevens wijzigen", linkTekst, urls, width, height, embedded, grensScores);
+	        AddLinkDialog asd = new AddLinkDialog(owner, WiskOpdr.rb.getString("linkDialogUrlGegevensWijzigen"), linkTekst, urls, width, height, embedded, grensScores);
 	        asd.show();
 	        if (asd.isConfirmed()) {
 	        	Link newLink = new Link(asd.getLinkTekst(), asd.getUrlString(), asd.getWidth(), asd.getHeight(), asd.getEmbedded(), asd.getGrensScores());

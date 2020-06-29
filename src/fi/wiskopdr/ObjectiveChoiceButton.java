@@ -202,7 +202,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 		topPanel.setBackground(WiskOpdr.colorBlue1);
 		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
 		
-		titleLabel = new JLabel("Koppel aan leerdoelen");
+		titleLabel = new JLabel(WiskOpdr.rb.getString("OBJ_koppelLeerdoelTitel"));
 		titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
 		titleLabel.setForeground(WiskOpdr.colorGray3);
 		
