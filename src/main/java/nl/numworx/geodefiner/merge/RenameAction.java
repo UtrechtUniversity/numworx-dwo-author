@@ -33,7 +33,13 @@ import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 
 @SuppressWarnings("serial")
 public abstract class RenameAction extends AbstractAction {
-
+	
+	
+	public interface RenamePane {
+		void setName(String actionCommand);
+		Destroyable getItem();		
+	}
+	
   public RenameAction() {
     super("rename");
   }
@@ -43,7 +49,7 @@ public abstract class RenameAction extends AbstractAction {
   @Inject NamingModel mapper;
   @Inject Definitions definitions;
   
-  private ColorPane<?> pane;
+  private RenamePane pane;
   
   @Override
   public void actionPerformed(ActionEvent e) {
@@ -53,7 +59,7 @@ public abstract class RenameAction extends AbstractAction {
 		if (! f.getInputVerifier().verify(f)) return;
 		String newname = f.getText();
 		Destroyable pp = mapper.fromString(newname);
-		if (pp != null && pp != pane.model.item)
+		if (pp != null && pp != pane.getItem())
 			return;
 			
 	}
@@ -67,7 +73,7 @@ public abstract class RenameAction extends AbstractAction {
 
 
   public void doRename() {
-    Destroyable p = pane.model.item;
+    Destroyable p = pane.getItem();
     String oldName = mapper.toString(p);
     String newName = getName();
     Destroyable pp = mapper.fromString(newName);
@@ -145,14 +151,13 @@ public abstract class RenameAction extends AbstractAction {
 	}
 
 
-public ColorPane<?> getPane() {
+public RenamePane getPane() {
     return pane;
   }
 
-  public void setPane(ColorPane<?> pane) {
+  public void setPane(RenamePane pane) {
     this.pane = pane;
-    ColorModel<? extends Destroyable> model = pane.model;
-    String name = mapper.toString(model.item);
+    String name = mapper.toString(pane.getItem());
     putValue(NAME, name);
     pane.setName(name);
   }

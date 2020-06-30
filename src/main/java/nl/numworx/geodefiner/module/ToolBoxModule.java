@@ -62,13 +62,13 @@ public abstract class ToolBoxModule implements Tools {
 
 	@Provides @Singleton @IntoMap @IntKey(RESET) static 
 	Action reset(Instance instance, AWTViewer viewer) {
-		ResetHandler resetter = new ResetHandler("Reset", instance);
-		return new XXXAction("Reset", "/reseticon.gif", resetter, viewer);
+		ResetHandler resetter = new ResetHandler(Messages.getString("ToolBoxModule.0"), instance); //$NON-NLS-1$
+		return new XXXAction(Messages.getString("ToolBoxModule.1"), "/reseticon.gif", resetter, viewer); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(DESTROY) static 
 	Action destroy(Instance instance, AWTViewer viewer) {
-		XXXAction xaction = new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new FilteredDestroyHandler(instance),viewer);
+		XXXAction xaction = new XXXAction(Messages.getString("Euclides.37"), "/delete.png", new FilteredDestroyHandler(instance),viewer); //$NON-NLS-1$ //$NON-NLS-2$
 		xaction.cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 		return xaction;
 	}
@@ -76,7 +76,7 @@ public abstract class ToolBoxModule implements Tools {
 	@Provides @Singleton @IntoMap @IntKey(SELECTOR) static 
 	Action selector(Instance instance, AWTViewer viewer) {
 		EventHandler selector = instance.selector;
-		XXXAction xaction = new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer);
+		XXXAction xaction = new XXXAction(Messages.getString("Euclides.35"), "/move.png", selector, viewer); //$NON-NLS-1$ //$NON-NLS-2$
 		xaction.cursor = Cursor.getDefaultCursor();
 		return xaction;
 	}
@@ -88,155 +88,155 @@ public abstract class ToolBoxModule implements Tools {
 		
 	@Provides @Singleton @IntoMap @IntKey(POINT) static 
 	Action point(AWTViewer viewer, @Named("point") UIShim<Destroyable, UIEditor> shim, Instance instance) {
-		return new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddSnapPuntHandler(shim),viewer, shim);
+		return new PuntAction(Messages.getString("Euclides.46"), "/point.png", new AddSnapPuntHandler(shim),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(LINE) static 
 	Action line(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction(Messages.getString("Euclides.50"), "/line.png", new AddLijnHandler(AddLijnHandler.LINE),viewer, shim);
+		return new XXXXAction(Messages.getString("Euclides.50"), "/line.png", new AddLijnHandler(AddLijnHandler.LINE),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(SEGMENT) static 
 	Action segment(AWTViewer viewer, SegmentModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction(Messages.getString("Euclides.48"), "/segment.png", new AddLijnHandler(AddLijnHandler.SEGMENT),viewer, shim);
+		return new XXXXAction(Messages.getString("Euclides.48"), "/segment.png", new AddLijnHandler(AddLijnHandler.SEGMENT),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(HALFLINE) static 
 	Action halfline(AWTViewer viewer, RayModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction(Messages.getString("Euclides.49"), "/ray.png", new AddLijnHandler(AddLijnHandler.RAY),viewer, shim);
+		return new XXXXAction(Messages.getString("Euclides.49"), "/ray.png", new AddLijnHandler(AddLijnHandler.RAY),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(PERPENDICULAR) static 
 	Action perpendicular(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction(Messages.getString("Euclides.56"), "/plumb.png", new AddLoodLijnHandler(),viewer, shim);
+		return new XXXXAction(Messages.getString("Euclides.56"), "/plumb.png", new AddLoodLijnHandler(),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(PARALLEL) static 
 	Action parallel(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction(Messages.getString("Euclides.58"), "/parallel.png", new AddParallelHandler(),viewer,shim);
+		return new XXXXAction(Messages.getString("Euclides.58"), "/parallel.png", new AddParallelHandler(),viewer,shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(PAN) static 
 	Action pan(AWTViewer viewer) {
-		XXXAction xaction=new XXXAction(Messages.getString("Euclides.41"), "/pan.png", new PanHandler(Messages.getString("Euclides.41"), viewer), viewer);
+		XXXAction xaction=new XXXAction(Messages.getString("Euclides.41"), "/pan.png", new PanHandler(Messages.getString("Euclides.41"), viewer), viewer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		xaction.cursor = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR);
 		return xaction;
 	}
 	@Provides @Singleton @IntoMap @IntKey(TRIANGLE) static 
 	Action triangle(AWTViewer viewer, CircleModel model, Instance instance) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
-		return new XXXXAction("Veelhoek", "/triangle.png", new AddPolygonHandler("Veelhoek"),viewer, shim);
+		return new XXXXAction(Messages.getString("ToolBoxModule.22"), "/triangle.png", new AddPolygonHandler(Messages.getString("ToolBoxModule.24")),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(CIRCLE) static 
 	Action circle(AWTViewer viewer, CircleModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer, shim);
+		return new CirkelAction(Messages.getString("Euclides.52"), "/circle.png", new AddCirkelHandler(),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(ARC) static 
 	Action arc(AWTViewer viewer, CircleModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction("Boog", "/angle.png", new AddBoogHandler("Boog"),viewer, shim);
+		return new XXXXAction(Messages.getString("ToolBoxModule.27"), "/angle.png", new AddBoogHandler(Messages.getString("ToolBoxModule.29")),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(MIDPOINT) static 
 	Action midpoint(AWTViewer viewer, PointModel model, Instance instance) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
-		return new XXXXAction(Messages.getString("Euclides.54"), "/midpoint.png", new AddMiddelPuntHandler(),viewer, shim);
+		return new XXXXAction(Messages.getString("Euclides.54"), "/midpoint.png", new AddMiddelPuntHandler(),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(BISECTRICE) static 
 	Action bissectrice(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction(Messages.getString("Euclides.60"), "/bissectrice.png", new AddBissectriceHandler(),viewer, shim);
+		return new XXXXAction(Messages.getString("Euclides.60"), "/bissectrice.png", new AddBissectriceHandler(),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(MIRROR) static 
 	Action mirror(AWTViewer viewer) {
-		return new XXXAction(Messages.getString("Euclides.62"), "/mirror.png", new AddSpiegelHandler(),viewer);
+		return new XXXAction(Messages.getString("Euclides.62"), "/mirror.png", new AddSpiegelHandler(),viewer); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(CONIC_SECTION) static 
 	Action conic(AWTViewer viewer) {
-		return new XXXAction("Kegelsnede", "/quadric.png", new AddKegelsnedeHandler("Kegelsnede"),viewer);
+		return new XXXAction(Messages.getString("ToolBoxModule.36"), "/quadric.png", new AddKegelsnedeHandler(Messages.getString("ToolBoxModule.38")),viewer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	@Provides @Singleton @IntoMap @IntKey(FOCUS) static 
 	Action focus(AWTViewer viewer) {
-		return new XXXAction("Brandpunt", "/quadric.png", new AddFocusHandler(), viewer);
+		return new XXXAction(Messages.getString("ToolBoxModule.39"), "/quadric.png", new AddFocusHandler(), viewer); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(LOCUS) static 
 	Action locus(AWTViewer viewer) {
-		return new XXXAction("Meetkundige plaats", "/objecttracker.png", new AddLocusHandler("Meetkundige plaats"), viewer);
+		return new XXXAction(Messages.getString("ToolBoxModule.41"), "/objecttracker.png", new AddLocusHandler("Meetkundige plaats"), viewer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	@Provides @Singleton @IntoMap @IntKey(TANGENT) static 
 	Action tangent(AWTViewer viewer, LineModel model, Instance instance) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
-		return new XXXXAction("Raaklijn", "/line.png", new AddRaakLijnHandler(), viewer, shim);
+		return new XXXXAction(Messages.getString("ToolBoxModule.44"), "/line.png", new AddRaakLijnHandler(), viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(POLELINE) static 
 	Action poleline(AWTViewer viewer, LineModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction("Poollijn", "/line.png", new AddPoollijnHandler(), viewer,shim);
+		return new XXXXAction(Messages.getString("ToolBoxModule.46"), "/line.png", new AddPoollijnHandler(), viewer,shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(DISTANCE) static 
 	Action distance(AWTViewer viewer) {
-		return new XXXAction(Messages.getString("Euclides.88"), "/distance.png", new AfstandHandler(Messages.getString("Euclides.90")), viewer);
+		return new XXXAction(Messages.getString("Euclides.88"), "/distance.png", new AfstandHandler(Messages.getString("Euclides.90")), viewer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	@Provides @Singleton @IntoMap @IntKey(AREA) static 
 	Action area(AWTViewer viewer) {
-		return new XXXAction(Messages.getString("Euclides.91"), "/area.png", new OppHandler(Messages.getString("Euclides.93")), viewer);
+		return new XXXAction(Messages.getString("Euclides.91"), "/area.png", new OppHandler(Messages.getString("Euclides.93")), viewer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	@Provides @Singleton @IntoMap @IntKey(ANGLE) static 
 	Action angle(AWTViewer viewer) {
-		return new XXXAction(Messages.getString("Euclides.85"), "/angle2.png", new HoekHandler(Messages.getString("Euclides.85")), viewer);
+		return new XXXAction(Messages.getString("Euclides.85"), "/angle2.png", new HoekHandler(Messages.getString("Euclides.85")), viewer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	@Provides @Singleton @IntoMap @IntKey(VECTOR) static 
 	Action vector(AWTViewer viewer) {
-		return new XXXAction("Vector", "/arrow.png", new VectorHandler("Vector"), viewer);
+		return new XXXAction(Messages.getString("ToolBoxModule.57"), "/arrow.png", new VectorHandler(Messages.getString("ToolBoxModule.59")), viewer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(FORMULA) static 
 	Action formula(AWTViewer viewer, Definitions definitions) {
-		FormuleHandler formule =	new FormuleHandler("Definitie", definitions);
-		return new XXXAction("Definitie", "/function.png", formule, viewer);
+		FormuleHandler formule =	new FormuleHandler(Messages.getString("ToolBoxModule.60"), definitions); //$NON-NLS-1$
+		return new XXXAction(Messages.getString("ToolBoxModule.61"), "/function.png", formule, viewer); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(TEXT) static 
 	Action text(AWTViewer viewer) {
-		TextHandler text = new TextHandler(Messages.getString("AddLoodLijnHandler.1"));
-		return new XXXAction("Tekst", "/showname.png", text, viewer);
+		TextHandler text = new TextHandler(Messages.getString("AddLoodLijnHandler.1")); //$NON-NLS-1$
+		return new XXXAction(Messages.getString("ToolBoxModule.64"), "/showname.png", text, viewer); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(TRAIL) static 
 	Action trail(AWTViewer viewer) {
-		return new TrailAction(Messages.getString("Euclides.44"), viewer);
+		return new TrailAction(Messages.getString("Euclides.44"), viewer); //$NON-NLS-1$
 	}
 	@Provides @Singleton @IntoMap @IntKey(CIRCLE_WITH_RADIUS) static 
 	Action circle_with_radius(AWTViewer viewer, CircleModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction(Messages.getString("Euclides.104"), "/fixedcircle.png", new CirkelRadiusHandler(Messages.getString("AddCirkelHandler.0")), viewer,shim);
+		return new XXXXAction(Messages.getString("Euclides.104"), "/fixedcircle.png", new CirkelRadiusHandler(Messages.getString("AddCirkelHandler.0")), viewer,shim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(COLOR_PALETTE) static
 	Action color_palette(Instance instance, AWTViewer viewer) {
-		EventHandler handler = new ColorHandler("Selecteer eerst", instance.getStateConfiguration());		
-		return new XXXAction("Kleurenpalet", "/colorpalette-active.png", handler, viewer);
+		EventHandler handler = new ColorHandler(Messages.getString("ToolBoxModule.70"), instance.getStateConfiguration());		 //$NON-NLS-1$
+		return new XXXAction(Messages.getString("ToolBoxModule.71"), "/colorpalette-active.png", handler, viewer); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(LINE_PALETTE) static 
 	Action line_palette(Instance instance, AWTViewer viewer) {
-		EventHandler handler = new DashHandler("Selecteer eerst", instance.getStateConfiguration());
-		return new XXXAction("Lijnenpalet", "/dashedline-active.png", handler, viewer);
+		EventHandler handler = new DashHandler(Messages.getString("ToolBoxModule.73"), instance.getStateConfiguration()); //$NON-NLS-1$
+		return new XXXAction(Messages.getString("ToolBoxModule.74"), "/dashedline-active.png", handler, viewer); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 /* 		actions.set(DISTANCE,new XXXAction(, viewer));

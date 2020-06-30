@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 
 import fi.beans.numworxlf.NumworxTextFieldUI;
 import fi.euclides.model.math.Numbers;
+import nl.numworx.geodefiner.Messages;
 
 public class OPane extends PointPane<OModel> {
 
@@ -20,14 +21,14 @@ public class OPane extends PointPane<OModel> {
 		yField.setValue(model.item.getYd());yField.setColumns(5);
 		yField.setMaximumSize(yField.getPreferredSize());
 		Box panel = Box.createHorizontalBox();
-		panel.add(new JLabel("x-positie"));
+		panel.add(new JLabel(Messages.getString("OPane.0"))); //$NON-NLS-1$
 		panel.add(xField);
-		panel.add(new JLabel("px"));panel.add(Box.createGlue());
+		panel.add(new JLabel("px"));panel.add(Box.createGlue()); //$NON-NLS-1$
 		add(panel);
 		panel = Box.createHorizontalBox();
-		panel.add(new JLabel("y-positie"));
+		panel.add(new JLabel(Messages.getString("OPane.2"))); //$NON-NLS-1$
 		panel.add(yField);
-		panel.add(new JLabel("px"));panel.add(Box.createGlue());
+		panel.add(new JLabel("px"));panel.add(Box.createGlue()); //$NON-NLS-1$
 		add(panel);
 	}
 

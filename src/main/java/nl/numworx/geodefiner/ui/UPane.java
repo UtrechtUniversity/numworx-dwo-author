@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import fi.beans.numworxlf.NumworxTextFieldUI;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.math.Numbers;
+import nl.numworx.geodefiner.Messages;
 
 class UPane extends PointPane<UModel> {
 
@@ -21,9 +22,9 @@ class UPane extends PointPane<UModel> {
 		dField.setValue(u.getDistance().doubleValue());dField.setColumns(5);
 		dField.setMaximumSize(dField.getPreferredSize());
 		Box panel = Box.createHorizontalBox();
-		panel.add(new JLabel("roostermaat"));
+		panel.add(new JLabel(Messages.getString("UPane.0"))); //$NON-NLS-1$
 		panel.add(dField);
-		panel.add(new JLabel("px"));panel.add(Box.createGlue());
+		panel.add(new JLabel("px"));panel.add(Box.createGlue()); //$NON-NLS-1$
 		add(panel);
 	}
 

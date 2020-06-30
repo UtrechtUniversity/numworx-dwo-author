@@ -34,7 +34,7 @@ public class Main {
 	private static AppContext  appcontext;
 
 	public static void main(String[] args) throws Exception {
-		Locale.setDefault(new Locale("nl")); // define your locale here 
+		Locale.setDefault(new Locale("en")); // define your locale here 
 		
 // Alleen met cbookeditor
 		WiskOpdr.applet = new WiskOpdr();

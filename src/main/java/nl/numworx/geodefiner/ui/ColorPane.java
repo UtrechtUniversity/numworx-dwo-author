@@ -5,6 +5,7 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,37 +21,60 @@ import javax.swing.JTextField;
 
 import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.merge.RenameAction;
+import nl.numworx.geodefiner.merge.RenameAction.RenamePane;
 import nl.numworx.geodefiner.ui.color.ColorChooser;
 import fi.euclides.event.NameMapper;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.Token;
+import fi.euclides.model.Destroyable;
 import fi.euclides.util.Messages;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
-public class ColorPane<T extends ColorModel<?>> extends UIEditor {
+public class ColorPane<T extends ColorModel<?>> extends UIEditor implements RenamePane {
 
-	public T model;
-	ColorChooser  chooser;
-	FormuleEditor  visibilityEditor;
-	JCheckBox trails, log;
-	JTextField name;
-	Format  formatter = new Format() {
+	static final class RenameVerifier extends InputVerifier {
+		@Override
+		public boolean verify(JComponent input) {
+			JTextField field = (JTextField) input;
+			String text = field.getText();
+			return verify(text);
+		}
+
+		boolean verify(String text) {
+			if (text.isEmpty()) return true;
+			FormuleParser parser = new FormuleParser(text);
+			try {
+				Token t = parser.variableAt();
+				return true;
+			} catch(Exception e) {}
+			return false;
+		}
+	}
+
+	static final class RenameFormat extends Format {
 		
 		@Override
 		public Object parseObject(String source, ParsePosition pos) {
-			if (!verifier.verify(name)) {
+			if (!verifier.verify(source)) {
 				pos.setErrorIndex(0);
 				return null;
 			}
 			pos.setIndex(source.length());
 			return source;
 		}
-		
+
 		@Override
 		public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
 			return toAppendTo.append(Objects.toString(obj, ""));
 		}
-	};
+	}
+
+	public T model;
+	ColorChooser  chooser;
+	FormuleEditor  visibilityEditor;
+	JCheckBox trails, log;
+	JTextField name;
+	RenameFormat  formatter;
 	
 	public String toString() {
 		return "*";
@@ -71,22 +95,7 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		addComponents();
 	}
 
-	static InputVerifier verifier = new InputVerifier() {
-
-		@Override
-		public boolean verify(JComponent input) {
-			JTextField field = (JTextField) input;
-			String text = field.getText();
-			if (text.isEmpty()) return true;
-			FormuleParser parser = new FormuleParser(text);
-			try {
-				Token t = parser.variableAt();
-				return true;
-			} catch(Exception e) {}
-			return false;
-		} 
-		
-	};
+	static RenameVerifier verifier = new RenameVerifier();
 	
 	void addComponents() {
 		Box hbox = Box.createHorizontalBox();
@@ -96,6 +105,7 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		  action.setPane(this);
 		  hbox.add(new JLabel(Messages.getString("Euclides.103")));
 		  JFormattedTextField n;
+		  formatter = new RenameFormat(); 
 		  name = n = new JFormattedTextField(formatter);
 		  n.setValue(action.getName());
 		  name.setInputVerifier(verifier);
@@ -128,6 +138,15 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor {
 		model.log = log.isSelected();
 		model.install();
         model.getRename().ifPresent(RenameAction::doRename);
+	}
+
+	JTextField getNameField() {
+		return name;
+	}
+
+	@Override
+	public Destroyable getItem() {
+		return model.item;
 	}
 
 }

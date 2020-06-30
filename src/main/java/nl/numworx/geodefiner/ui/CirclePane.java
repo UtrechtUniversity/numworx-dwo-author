@@ -14,12 +14,16 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import fi.euclides.model.Destroyable;
 import fi.euclides.util.Messages;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 import nl.numworx.geodefiner.common.LineType;
+import nl.numworx.geodefiner.merge.RenameAction;
+import nl.numworx.geodefiner.merge.RenameAction.RenamePane;
+import nl.numworx.geodefiner.ui.ColorPane.RenameFormat;
 import nl.numworx.geodefiner.ui.color.ColorChooser;
 
-public class CirclePane extends UIEditor {
+public class CirclePane extends UIEditor implements RenamePane {
 
 	private CircleModel model;
 	private JComboBox<LineType> type;
@@ -27,6 +31,7 @@ public class CirclePane extends UIEditor {
 	private ColorChooser stroke, fill;
 	private FormuleEditor  visibilityEditor;
 	private JCheckBox rigid;
+	private JFormattedTextField name;
 
 	public CirclePane(CircleModel model) {
 		this.model = model;
@@ -52,6 +57,21 @@ public class CirclePane extends UIEditor {
 		setLayout(layout);
 // TODO mooie layout, tabbladen?
 		Box hbox = Box.createHorizontalBox();
+		if (model.getRename().isPresent()) {
+			  RenameAction action = model.getRename().get();
+			  action.setPane(this);
+			  hbox.add(new JLabel(Messages.getString("Euclides.103")));
+			  JFormattedTextField n;
+			  RenameFormat formatter = new RenameFormat(); 
+			  name = n = new JFormattedTextField(formatter);
+			  n.setValue(action.getName());
+			  name.setInputVerifier(ColorPane.verifier);
+			  name.addActionListener(action);
+			  hbox.add(name);
+			  hbox.add(Box.createGlue());
+			  add(hbox);
+			  hbox = Box.createHorizontalBox();
+			}
 		hbox.add(new JLabel(Messages.getString("CirclePane.1")));hbox.add(Box.createGlue());
 		if(model.item != null) {
 			add(hbox);
@@ -91,6 +111,12 @@ public class CirclePane extends UIEditor {
 		model.visibility.setString(visibilityEditor.formuleVak.toString());
 		model.rigid = !rigid.isSelected();
 		model.install();
+        model.getRename().ifPresent(RenameAction::doRename);
+	}
+
+	@Override
+	public Destroyable getItem() {
+		return model.item;
 	}
 
 }
