@@ -399,69 +399,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	//	 "fi.wiskopdr.GrafiekPanel",
 	//	 "fi.wiskopdr.GrafiekTekenPanel"
 	//};
-	public static String[] interactiePanelDescriptions =
-	{	WiskOpdr.rb.getString("formuleAntwVakLabel") ,
-		WiskOpdr.rb.getString("vergelijkingAntwVakLabel") ,
-		WiskOpdr.rb.getString("simpelFormuleAntwVakLabel") ,
-		WiskOpdr.rb.getString("simpelVergelijkingAntwVakLabel") ,
-		WiskOpdr.rb.getString("tekstAntwVakLabel") ,
-		WiskOpdr.rb.getString("algebraPijlenLabel") ,
-		WiskOpdr.rb.getString("blokkenbouwenLabel") ,
-		WiskOpdr.rb.getString("stroomdiagrammenLabel") ,
-		WiskOpdr.rb.getString("grafiekenToolLabel") ,
-		WiskOpdr.rb.getString("tekstVakLabelH"),
-		WiskOpdr.rb.getString("geogebra3IpLabel"),//"Geogebra",
-		WiskOpdr.rb.getString("fruitBalansIpLabel"),//"Fruitbalans",
-		WiskOpdr.rb.getString("checkSelectieUnitLabel"),//"CheckUnit",
-		WiskOpdr.rb.getString("checkTekstAntwoordVakLabel"),//"Check-tekstantwoordvak",
-		WiskOpdr.rb.getString("keuzeAntwoordVakLabel"),//"Keuzeantwoordvak",
-		WiskOpdr.rb.getString("doorzienIpLabel"),//"Doorzien-component",
-		WiskOpdr.rb.getString("checkSleepUnitLabel"),//"CheckSleepUnit",
-		WiskOpdr.rb.getString("vergrotenIpLabel"),//"PO Vergroten",
-		WiskOpdr.rb.getString("vangenIpLabel"),//"PO Vangen",
-		WiskOpdr.rb.getString("verknippenIpLabel"),//"PO Verknippen",
-		WiskOpdr.rb.getString("geomAlgebra2dIpLabel"),//"Geom.algebra 2d",
-		WiskOpdr.rb.getString("geomAlgebra1dIpLabel"),//"Geom.algebra 1d",
-		WiskOpdr.rb.getString("normaleVerdelingIpLabel"),//"Normale verdeling",
-		WiskOpdr.rb.getString("mp3PlayerIpLabel"),//"Mp3-player",
-		WiskOpdr.rb.getString("binominaleVerdelingIpLabel"),//"Binominale verdeling",
-		WiskOpdr.rb.getString("getallenlijnIpLabel"),//"Getallenlijn (sprong)",
-		WiskOpdr.rb.getString("tekenVeelvlakIpLabel"),//"Tekenveelvlak",
-		WiskOpdr.rb.getString("mozaikIpLabel"),//"Mozaik",
-		WiskOpdr.rb.getString("veelvlakkenIpLabel"),//"Veelvlakken",
-		WiskOpdr.rb.getString("eerlijkVerdelenIpLabel"),//"PO Eerlijk verdelen",
-		WiskOpdr.rb.getString("statistiekIpLabel"),//"[test] Statistische representaties",
-		WiskOpdr.rb.getString("stroomdiagrammenIpLabel"),//"[test] Stroomdiagrammen Nieuw",
-		WiskOpdr.rb.getString("tegelsIpLabel"),//"Tegels",
-		WiskOpdr.rb.getString("checkWaardeUnitLabel"),//"[test] CheckWaardeUnit",
-		WiskOpdr.rb.getString("omtrekAppletIpLabel"),//"PO Omtrek applet",
-		WiskOpdr.rb.getString("algebraExpressiesIpLabel"),//"[test] Algebra expressies",
-		WiskOpdr.rb.getString("oppervlakteAlgebraIpLabel"),//"[test] Oppervlakte-algebra"
-		WiskOpdr.rb.getString("blokkenProgrammaIpLabel"),//"[test] Blokkenprogramma"
-		WiskOpdr.rb.getString("grafieken3DIpLabel"),//"[test] Blokkenprogramma"
-		WiskOpdr.rb.getString("geogebraIpLabel"),//"Geogebra",
-		WiskOpdr.rb.getString("spotProblemsIpLabel"),//"[test] SpotProblem"
-		WiskOpdr.rb.getString("kladjeIpLabel"),//"[test] Kladje"
-		WiskOpdr.rb.getString("kansbomenIpLabel"),//"Kansbomen"
-		WiskOpdr.rb.getString("rekenmachineIpLabel"),//"Rekenmachine"
-		WiskOpdr.rb.getString("formStructIpLabel"),//"[test] FormStruct"
-		WiskOpdr.rb.getString("graphToolIpLabel"),//"[test] GraphTool"
-		WiskOpdr.rb.getString("draaibankIpLabel"),//"[test] Draaibank"
-		WiskOpdr.rb.getString("waarmakersIpLabel"),//"[test] Waarmakers"
-		WiskOpdr.rb.getString("statSimIpLabel"),//"[test] StatSim"
-		WiskOpdr.rb.getString("checkButtonIpLabel"),//"[test] CheckButton"
-		WiskOpdr.rb.getString("sliderIpLabel"),
-		"DataPlot",
-		"ReactieVergelijking",
-		WiskOpdr.rb.getString("stelselVakLabel"),//[test] Stelsel-antwoordvak
-		WiskOpdr.rb.getString("javaLogoIpLabel"),//[test] JavaLogo
-		WiskOpdr.rb.getString("symboolIpLabel"),
-		WiskOpdr.rb.getString("heksIpLabel"),
-		WiskOpdr.rb.getString("geoDefinerIpLabel"),
-		WiskOpdr.rb.getString("javaLogo3DIpLabel"),
-		"IVM Draw [test]",
-		"[test] " + WiskOpdr.rb.getString("samengesteldeStappenIpLabel")
-	};
+	
+	public static String[] interactiePanelDescriptions = makeStaticDescriptions();
+
 	
 	
 //	public static int[][] interactiePanelSets =
@@ -505,6 +445,77 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		"eslate widget",
 		"epsilon widget"
 	};
+	
+	public static void initStatics() {
+		interactiePanelDescriptions = makeStaticDescriptions();
+	}
+	
+	public static String[] makeStaticDescriptions() {
+		String[] s =
+			{	WiskOpdr.rb.getString("formuleAntwVakLabel") ,
+				WiskOpdr.rb.getString("vergelijkingAntwVakLabel") ,
+				WiskOpdr.rb.getString("simpelFormuleAntwVakLabel") ,
+				WiskOpdr.rb.getString("simpelVergelijkingAntwVakLabel") ,
+				WiskOpdr.rb.getString("tekstAntwVakLabel") ,
+				WiskOpdr.rb.getString("algebraPijlenLabel") ,
+				WiskOpdr.rb.getString("blokkenbouwenLabel") ,
+				WiskOpdr.rb.getString("stroomdiagrammenLabel") ,
+				WiskOpdr.rb.getString("grafiekenToolLabel") ,
+				WiskOpdr.rb.getString("tekstVakLabelH"),
+				WiskOpdr.rb.getString("geogebra3IpLabel"),//"Geogebra",
+				WiskOpdr.rb.getString("fruitBalansIpLabel"),//"Fruitbalans",
+				WiskOpdr.rb.getString("checkSelectieUnitLabel"),//"CheckUnit",
+				WiskOpdr.rb.getString("checkTekstAntwoordVakLabel"),//"Check-tekstantwoordvak",
+				WiskOpdr.rb.getString("keuzeAntwoordVakLabel"),//"Keuzeantwoordvak",
+				WiskOpdr.rb.getString("doorzienIpLabel"),//"Doorzien-component",
+				WiskOpdr.rb.getString("checkSleepUnitLabel"),//"CheckSleepUnit",
+				WiskOpdr.rb.getString("vergrotenIpLabel"),//"PO Vergroten",
+				WiskOpdr.rb.getString("vangenIpLabel"),//"PO Vangen",
+				WiskOpdr.rb.getString("verknippenIpLabel"),//"PO Verknippen",
+				WiskOpdr.rb.getString("geomAlgebra2dIpLabel"),//"Geom.algebra 2d",
+				WiskOpdr.rb.getString("geomAlgebra1dIpLabel"),//"Geom.algebra 1d",
+				WiskOpdr.rb.getString("normaleVerdelingIpLabel"),//"Normale verdeling",
+				WiskOpdr.rb.getString("mp3PlayerIpLabel"),//"Mp3-player",
+				WiskOpdr.rb.getString("binominaleVerdelingIpLabel"),//"Binominale verdeling",
+				WiskOpdr.rb.getString("getallenlijnIpLabel"),//"Getallenlijn (sprong)",
+				WiskOpdr.rb.getString("tekenVeelvlakIpLabel"),//"Tekenveelvlak",
+				WiskOpdr.rb.getString("mozaikIpLabel"),//"Mozaik",
+				WiskOpdr.rb.getString("veelvlakkenIpLabel"),//"Veelvlakken",
+				WiskOpdr.rb.getString("eerlijkVerdelenIpLabel"),//"PO Eerlijk verdelen",
+				WiskOpdr.rb.getString("statistiekIpLabel"),//"[test] Statistische representaties",
+				WiskOpdr.rb.getString("stroomdiagrammenIpLabel"),//"[test] Stroomdiagrammen Nieuw",
+				WiskOpdr.rb.getString("tegelsIpLabel"),//"Tegels",
+				WiskOpdr.rb.getString("checkWaardeUnitLabel"),//"[test] CheckWaardeUnit",
+				WiskOpdr.rb.getString("omtrekAppletIpLabel"),//"PO Omtrek applet",
+				WiskOpdr.rb.getString("algebraExpressiesIpLabel"),//"[test] Algebra expressies",
+				WiskOpdr.rb.getString("oppervlakteAlgebraIpLabel"),//"[test] Oppervlakte-algebra"
+				WiskOpdr.rb.getString("blokkenProgrammaIpLabel"),//"[test] Blokkenprogramma"
+				WiskOpdr.rb.getString("grafieken3DIpLabel"),//"[test] Blokkenprogramma"
+				WiskOpdr.rb.getString("geogebraIpLabel"),//"Geogebra",
+				WiskOpdr.rb.getString("spotProblemsIpLabel"),//"[test] SpotProblem"
+				WiskOpdr.rb.getString("kladjeIpLabel"),//"[test] Kladje"
+				WiskOpdr.rb.getString("kansbomenIpLabel"),//"Kansbomen"
+				WiskOpdr.rb.getString("rekenmachineIpLabel"),//"Rekenmachine"
+				WiskOpdr.rb.getString("formStructIpLabel"),//"[test] FormStruct"
+				WiskOpdr.rb.getString("graphToolIpLabel"),//"[test] GraphTool"
+				WiskOpdr.rb.getString("draaibankIpLabel"),//"[test] Draaibank"
+				WiskOpdr.rb.getString("waarmakersIpLabel"),//"[test] Waarmakers"
+				WiskOpdr.rb.getString("statSimIpLabel"),//"[test] StatSim"
+				WiskOpdr.rb.getString("checkButtonIpLabel"),//"[test] CheckButton"
+				WiskOpdr.rb.getString("sliderIpLabel"),
+				"DataPlot",
+				"ReactieVergelijking",
+				WiskOpdr.rb.getString("stelselVakLabel"),//[test] Stelsel-antwoordvak
+				WiskOpdr.rb.getString("javaLogoIpLabel"),//[test] JavaLogo
+				WiskOpdr.rb.getString("symboolIpLabel"),
+				WiskOpdr.rb.getString("heksIpLabel"),
+				WiskOpdr.rb.getString("geoDefinerIpLabel"),
+				WiskOpdr.rb.getString("javaLogo3DIpLabel"),
+				"IVM Draw [test]",
+				"[test] " + WiskOpdr.rb.getString("samengesteldeStappenIpLabel")
+			};
+		return s;
+	}
 	
 	public static void makeJMenu(TekstEditor te, String title, JPopupMenu menu, int setNr) {
 	  boolean[][] separators = {{false,false,false,false,true,false,true,true,true,false,false,false,false},{},{},

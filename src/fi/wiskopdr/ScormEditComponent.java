@@ -12,6 +12,7 @@ import fi.beans.ideas.IdeasClient;
 import fi.wiskopdr.opdrnav.*;
 import fi.wiskopdr.tekstobjects.ShareAction;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 	
 
 public class ScormEditComponent extends JPanel implements ScormEditComponentIF
@@ -35,6 +36,7 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
         Locale language = new Locale (langArg, "");
         WiskOpdr.language = language;
         WiskOpdr.rb = ResourceBundle.getBundle("fi.wiskopdr.text.Text",language);
+        TekstInteractiePanelVak.initStatics();
         if(WiskOpdr.ideas == null)
         {   try 
 	        {
