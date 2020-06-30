@@ -5,11 +5,12 @@ import java.util.Vector;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Punt;
+import fi.euclides.util.Messages;
 
 public class AddFocusHandler extends EventHandler {
 
 	public AddFocusHandler() {
-		super("Brandpunten van kegelsnede of cirkel");
+		super(Messages.getString("AddFocusHandler.0")); //$NON-NLS-1$
 	}
 
 	public void command() {
