@@ -3,6 +3,7 @@ package nl.numworx.samllogin;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
@@ -28,7 +29,7 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     static SwingBrowserProvider provider = new SwingBrowserProvider();
     static BiConsumer<SamlLoginPanel, API> strategy = (p, api) -> p.setApi(api);
     
-    public static final class PrintStatus extends Console implements Status {
+    public final class PrintStatus extends Console implements Status {
         @Override
         public void showStatus(String message) {
             LOG.fine(message);
@@ -38,6 +39,21 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
       public void log(String object) {
             LOG.info(object);
       }
+
+		@Override
+		public void debug(Object msg) {
+			LOG.info(Objects.toString(msg, "debug message null"));
+			
+			if (msg != null ) { 
+				String message = (String) msg;
+				if (message.startsWith("NavigationRedirected:"))
+					message = message.substring(21);
+				if (last.startsWith(message) && last.length() > message.length()) {
+					SamlLoginPanel.super.loadURL(last);
+				}
+			}
+		}
+      
     }
 
     /**
@@ -111,11 +127,13 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
       }
       return p;
     }
-    String extra = "";    
+    String extra = "";
+
+	private String last;    
 
     @Override
 	public void loadURL(String url) {
-		super.loadURL(url + extra);
+		super.loadURL(last = url + extra);
 	    getJfxPanel().setName("Aanmelden");
 	}
 
