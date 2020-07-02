@@ -257,6 +257,22 @@ public class Kegelsnede2 extends MP {
 		public void focus(Punt focus1, Punt focus2) {
 			double v = b / SQRT_8;  // vertical 
 			double h = a;			// horizontal
+			
+			v = v*v;
+			h = h*h;
+			double d = h - v;
+			double dd = Math.sqrt(Math.abs(d)); 
+			double dx = 0, dy = 0;
+			if (d > 0) {
+				dx = dd; dy = 0;
+			} else {
+				dx = 0; dy = dd;
+			}
+			// NIET GOED: GEEN rotate:
+			double ddx = dx + cx * dy;
+			double ddy = dy + cy * dx;
+			
+			
 // rotatie c,s hoe met cx en cy
 			// cos = 1, sin = 0
 			// x' = x + cx*y, y' = y // cy = 0;
@@ -264,10 +280,9 @@ public class Kegelsnede2 extends MP {
 			System.out.println(cy); // extentricity?
 			focus1.setDefined(isDefined());
 			focus2.setDefined(isDefined());
-			double dx = 0, dy = 0;
 // TODO bepaal dx en dy uit a en b en cx,cy
-			focus1.setXY(tx+dx, ty+dy);
-			focus2.setXY(tx-dx, ty-dy);
+			focus1.setXY(tx+ddx, ty+ddy);
+			focus2.setXY(tx-ddx, ty-ddy);
 		}
 
 		public void center(Punt center) {
