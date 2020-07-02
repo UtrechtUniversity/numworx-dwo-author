@@ -111,6 +111,7 @@ private void setTrack(Track track) {
 						t = new Polygon(array);
 					else
 						t = new Triangle(array);
+					t = visit(t);
 					addSegment(model,p);
 					model.add(t);
 					points.clear();
@@ -138,17 +139,17 @@ private void setTrack(Track track) {
 				if(last == s.getP2() && p == s.getP1()) return;
 			}
 		}
-		model.buildSegment(last, p);
+		visit(model.buildSegment(last, p));
 	}
 
 	private Punt selectedPoint(Numbers x, Numbers y, Model model, Vector<Destroyable> select) {
 		Punt p = null;
 		if(select.isEmpty()) {
-			p = model.buildPunt(x, y);
+			p = visit(model.buildPunt(x, y));
 		} else if(select.size() == 1 && select.firstElement() instanceof Punt) {
 			p = (Punt) select.firstElement();
 		} else if (select.firstElement() instanceof OpObject) {
-			p = model.buildPunt(x,y);
+			p = visit(model.buildPunt(x,y));
 		}
 		model.clearSelection();
 		return p;
