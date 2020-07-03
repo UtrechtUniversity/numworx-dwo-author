@@ -72,6 +72,12 @@ public class LineModel extends ColorModel<Destroyable> {
 
 	public static Stroke getStroke(LineType type, float width) {
 		float[] dash = dashes[type.ordinal()];
+		if (dash != null) {
+			dash = new float[dash.length];
+			for(int i = 0; i < dash.length; i++) {
+				dash[i] = width * dashes[type.ordinal()][i];
+			}
+		}
 		BasicStroke stroke = new BasicStroke(width,BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
 		return stroke;
 	}
@@ -86,5 +92,14 @@ public class LineModel extends ColorModel<Destroyable> {
 		this();
 		set(tracker);
 		setRename(ra);
+	}
+
+	@Override
+	public void installLight() {
+		Stroke stroke = getStroke(type, width);
+		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
+		adapter.put(Stroke.class, stroke);
+		
+		super.installLight();
 	}
 }

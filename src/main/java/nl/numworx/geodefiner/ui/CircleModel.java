@@ -86,4 +86,12 @@ public class CircleModel extends LineModel {
 		set(t);
 		setRename(ra);
 	}
+
+	@Override
+	public void installLight() {
+		DefaultAdapter.getDefault(item)
+		.put(Paint.class, fill.equals(TRANSPARANT)? null : fill);
+		super.installLight();
+	}
+	
 }

@@ -66,5 +66,18 @@ public class SegmentModel extends LineModel {
 		set(t);
 		setRename(ra);
 	}
+
+	@Override
+	public void installLight() {
+		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
+		if(tip == Tips.NOTIP) {
+			adapter.put(Tips.class, null);
+			adapter.put(Float.class, null);
+		} else {
+			adapter.put(tip);
+			adapter.put(width);
+		}
+		super.installLight();
+	}
 	
 }
