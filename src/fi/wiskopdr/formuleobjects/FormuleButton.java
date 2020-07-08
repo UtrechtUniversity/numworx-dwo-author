@@ -259,8 +259,10 @@ public class FormuleButton extends JButton implements MouseListener
 	{	paint(g);
 	}*/
 	
-	public void paintComponent(Graphics g)
+	public void paintComponent(Graphics gr)
 	{	
+		Graphics2D g = (Graphics2D)gr;
+        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 	    if(popupButtonImage!=null){
 	        //g.drawImage(popupButtonImage,0,0,getWidth(), getHeight(),getParent());
 	      popupButtonImage.paintIcon(this, g, 0, 0);
@@ -460,16 +462,20 @@ public class FormuleButton extends JButton implements MouseListener
 			g.drawRect(9, 4, 2, 3);
 			g.drawRect(9, 9, 2, 3);
 			g.drawRect(9, 14, 2, 3);
-
-			// rechte haak links
+			
 			g.setColor(WiskOpdr.isPremium()?Color.black:Color.gray);
-			g.drawLine(3, 3, 5, 3);
-			g.drawLine(3, 17, 5, 17);
-			g.drawLine(3, 3, 3, 17);
-			// rechte haak rechts
-			g.drawLine(14, 3, 16, 3);
-			g.drawLine(14, 17, 16, 17);
-			g.drawLine(16, 3, 16, 17);
+			g.drawArc(6, -h/2, 2*h,2*h, 158, 44);
+			g.drawArc(-25, -h/2, 2*h,2*h, -22, 44);
+			
+//			// rechte haak links
+//			g.setColor(WiskOpdr.isPremium()?Color.black:Color.gray);
+//			g.drawLine(3, 3, 5, 3);
+//			g.drawLine(3, 17, 5, 17);
+//			g.drawLine(3, 3, 3, 17);
+//			// rechte haak rechts
+//			g.drawLine(14, 3, 16, 3);
+//			g.drawLine(14, 17, 16, 17);
+//			g.drawLine(16, 3, 16, 17);
 		}
 		else if(code.equals("vectornotatie"))
 		{
@@ -516,13 +522,23 @@ public class FormuleButton extends JButton implements MouseListener
 
 			// rechte haak links
 			g.setColor(WiskOpdr.isPremium()?Color.black:Color.gray);
-			g.drawLine(3, 3, 5, 3);
-			g.drawLine(3, 17, 5, 17);
-			g.drawLine(3, 3, 3, 17);
+//			g.drawLine(3, 3, 5, 3);
+//			g.drawLine(3, 17, 5, 17);
+//			g.drawLine(3, 3, 3, 17);
+			
+			g.drawArc(3, -h/2, 2*h,2*h, 158, 44);
+			g.drawArc(-b/2-3, -h/2, 2*h,2*h, -22, 44);
+
+
+//			ctx.arc(width-c-bx, d+by+2, bx, 0, -Math.PI/4, true);
+//			ctx.moveTo(width-c, d+2 + by);
+//			ctx.lineTo(width-c, height-d-by);
+//			ctx.arc(width-c-bx, height-d-by, bx,  0, Math.PI/4,false);
+//			ctx.stroke();
 			// rechte haak rechts
-			g.drawLine(21, 3, 23, 3);
-			g.drawLine(21, 17, 23, 17);
-			g.drawLine(23, 3, 23, 17);
+//			g.drawLine(21, 3, 23, 3);
+//			g.drawLine(21, 17, 23, 17);
+//			g.drawLine(23, 3, 23, 17);
 		}
 		else if(code.equals("haakjes"))
 		{	g.drawString("(",3,15);
