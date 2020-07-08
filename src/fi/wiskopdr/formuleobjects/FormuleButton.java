@@ -434,12 +434,19 @@ public class FormuleButton extends JButton implements MouseListener
 			g.drawLine(breedte-1-c, d+hh-b, breedte-1-c, hoogte-hh+b-d);		
 			g.drawLine(breedte-b+bb-1-c, hoogte-bb-d, breedte-1-c, hoogte-hh+b-d);
 			g.drawLine(breedte-b-1-c, hoogte-d, breedte-b+bb-1-c, hoogte-bb-d);
-			g.setColor(Color.white);
-            g.fillRect(8,3,4,5);
-            g.fillRect(8,12,4,5);
-            g.setColor(Color.gray);
-            g.drawRect(8,3,4,5);
-            g.drawRect(8,12,4,5);
+			
+			g.setFont(new Font("SansSerif",Font.PLAIN, 8));
+			g.drawString("n",8,8);
+			g.drawString("k",8,17);
+				
+				
+//			g.setColor(Color.white);
+//            g.fillRect(8,3,4,5);
+//            g.fillRect(8,12,4,5);
+//            g.setColor(Color.gray);
+//            g.drawRect(8,3,4,5);
+//            g.drawRect(8,12,4,5);
+			
             g.setColor(Color.black);
 		}
 		else if(code.equals("vector"))
