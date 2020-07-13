@@ -305,7 +305,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 			b += getComponent(i).getSize().width;
 		}
 		if(getComponentCount()>0)
-		{	setSize(b+Math.max(1,correctieCursief),h1+h2);
+		{	setSize(b+Math.max(2,correctieCursief),h1+h2);
 			ashoogte = h1;
 		}
 		else 

@@ -304,6 +304,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		if(stateNr>-1 && stateNr<states.size())
 		{	h = (Hashtable)states.elementAt(stateNr);
 			zetTekst((String)h.get("tekstBuffer"),true);
+			vulVak(tekst.toString());
 			caretPos = ((Integer)h.get("caretPos")).intValue();
 			//states.removeElementAt(stateNr-1);
 			stateNr--;
@@ -464,13 +465,14 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	    int laatsteRegel = aantalRegels;
 	    for(int i=aantalGevuld+1 ; i<laatsteRegel; i++)
 	    {	remove(regels[i]);
-	    	regels[i] = null;
-	    	aantalRegels--;
-	    	produceAction("resize");
+		    	regels[i] = null;
+		    	aantalRegels--;
+		    	produceAction("resize");
 	    }
 	    //setCaret(caretPos);
 	    setEditable(editable); // Keep editable flag in regels[]
-	    if(widthResizable)zetMaat();
+	    if(widthResizable || aantalRegels<laatsteRegel)
+	    		zetMaat();
 	}
 	
 	public void setCaretPositionEnd()
