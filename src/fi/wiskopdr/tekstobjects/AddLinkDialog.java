@@ -7,6 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.net.URI;
+import java.util.Arrays;
+
 import javax.swing.*;
 
 import fi.wiskopdr.WiskOpdr;
@@ -324,6 +327,22 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         	else
         	{	urls = new String[1];
         		urls[0] = urlField.getText();
+        		try {
+        		  URI uri = new URI(urls[0]);
+        		  String scheme = uri.getScheme();
+        		  if (scheme != null) {
+        		    java.util.List<String> allowed = Arrays.asList("http","https", "goto", "about");
+        		    if ( ! allowed.contains(scheme)) {
+        		      throw new IllegalArgumentException(scheme);
+        		    }
+        		  }
+        		  
+        		} catch(Exception oops) {
+        		  urls[0] = "";
+        		  urlField.setText("");
+        		  return;
+        		}
+        		
         	}
         	//url = urlField.getText();
             try {width = Integer.parseInt(widthField.getText());}
