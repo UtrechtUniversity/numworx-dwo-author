@@ -21,6 +21,8 @@ public class Text_gr extends java.util.ListResourceBundle
             { "roterenTekst" , "Rotate objects" },
             { "schalenTekst" , "Scale objects" },
             { "ivmOptieTekst" , "IVM option" },
+            { "checkCBLabel" , "Check (by teacher)" },
+            { "scoreLabel" , "Score" },
             
             { "CBA_drawing", "drawing"},
             { "CBA_double.translationX", "translation x"},

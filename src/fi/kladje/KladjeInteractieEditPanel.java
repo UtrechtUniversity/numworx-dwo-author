@@ -39,6 +39,13 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	JCheckBox lijnTekenenBox, rechthoekTekenenBox, cirkelTekenenBox, tekstTekenenBox, formuleOptieBox, ivmOptieBox;
 	JCheckBox roterenBox, schalenBox;
 	
+	private JCheckBox checkCB;
+	private JLabel scoreLabel;
+	private JTextField scoreTF;
+	
+	private boolean check;
+	
+	
 	JLabel translationLabel;
 	JTextField translationXTF, translationYTF;
 	JLabel scaleLabel;
@@ -206,32 +213,50 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		translationLabel = new JLabel("translation");
 		translationLabel.setFont(theFont);
 		translationLabel.setBounds(currentX, currentY, 100, height);
-		add(translationLabel);
+		//add(translationLabel);
 		
 		translationXTF = new JTextField("0");
 		translationXTF.setFont(theFont);
 		translationXTF.setBounds(currentX+100, currentY, 30, height);
 		translationXTF.addActionListener(this);
-		add(translationXTF);
+		//add(translationXTF);
 		
 		translationYTF = new JTextField("0");
 		translationYTF.setFont(theFont);
 		translationYTF.setBounds(currentX+140, currentY, 30, height);
 		translationYTF.addActionListener(this);
-		add(translationYTF);
+		//add(translationYTF);
+		
+		checkCB = new JCheckBox(Kladje.rb.getString("checkCBLabel"));
+		checkCB.setFont(theFont);
+		checkCB.setBounds(currentX, currentY, 200, height);
+		checkCB.addActionListener(this);
+		add(checkCB);
 		
 		currentY += height;
 		
 		scaleLabel = new JLabel("scale");
 		scaleLabel.setFont(theFont);
 		scaleLabel.setBounds(currentX, currentY, 100, height);
-		add(scaleLabel);
+		//add(scaleLabel);
 		
 		scaleTF = new JTextField("1.0");
 		scaleTF.setFont(theFont);
 		scaleTF.setBounds(currentX+100, currentY, 30, height);
 		scaleTF.addActionListener(this);
-		add(scaleTF);
+		//add(scaleTF);
+		
+		scoreLabel = new JLabel(Kladje.rb.getString("scoreLabel"));
+		scoreLabel.setFont(theFont);
+		scoreLabel.setBounds(currentX+30, currentY, 60, height);
+		scoreLabel.setVisible(false);
+		add(scoreLabel);
+		
+		scoreTF = new JTextField("0");
+		scoreTF.setFont(theFont);
+		scoreTF.setBounds(currentX+90, currentY, 40, height);
+		scoreTF.setVisible(false);
+		add(scoreTF);
 		
 		currentY += height;
 		
@@ -275,6 +300,10 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			scaleLabel.setLocation(klip.getSize().width + offset, scaleLabel.getLocation().y);
 			scaleTF.setLocation(klip.getSize().width + offset+100, scaleTF.getLocation().y);
 			ivmOptieBox.setLocation(klip.getSize().width + offset, ivmOptieBox.getLocation().y);
+			
+			checkCB.setLocation(klip.getSize().width + offset, checkCB.getLocation().y);
+			scoreLabel.setLocation(klip.getSize().width + offset+30, scoreLabel.getLocation().y);
+			scoreTF.setLocation(klip.getSize().width + offset+90, scoreTF.getLocation().y);
 		}
 	}
 	
@@ -365,6 +394,18 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			fiButton.setInstellingen(formuleInstellingen);
 		}
 		
+		if (b.containsKey("check")) {
+			check = ((Boolean) b.get("check")).booleanValue();
+			checkCB.setSelected(check);
+		}
+		scoreLabel.setVisible(checkCB.isSelected());
+		scoreTF.setVisible(checkCB.isSelected());
+		
+		if (b.containsKey("scoreMax")) {
+			scoreMax = ((Integer) b.get("scoreMax")).intValue();
+			scoreTF.setText(""+scoreMax);
+		}
+		
 		// HIER !!
 		klip.setEditState(b);		
 		
@@ -376,6 +417,13 @@ System.out.println("kliep getEditState");
 
 		Hashtable h = klip.getEditState();
 		
+		try {
+			scoreMax = Integer.parseInt(scoreTF.getText());
+		}
+		catch(Exception e) {}
+		check = checkCB.isSelected();	
+		
+		h.put("check", new Boolean(check));
 		h.put("scoreMax", new Integer(scoreMax));
 		
 		h.put("klipBreedte", new Integer(klipBreedte));
@@ -388,6 +436,7 @@ System.out.println("kliep getEditState");
 		}
 		
 		return h;
+		
 		
 	}
 		
@@ -513,6 +562,12 @@ System.out.println("kliep getEditState");
 		else if (e.getSource() == scaleTF)
 		{
 			klip.zetScale(Double.parseDouble(scaleTF.getText()));
+		}
+		else if (e.getSource() == checkCB)
+		{
+			scoreLabel.setVisible(checkCB.isSelected());
+			scoreTF.setVisible(checkCB.isSelected());
+			scoreTF.setText("0");
 		}
 
 	}
