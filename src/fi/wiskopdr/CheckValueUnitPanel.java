@@ -100,7 +100,7 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
 		attempts = new Vector();
 		
 		checkButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
-		checkButton.setBounds(0,5,80,20);
+		checkButton.setBounds(0,5,100,26);
 		checkButton.addActionListener(this);
 		add(checkButton);
 		

@@ -522,6 +522,7 @@ public class Text_de extends java.util.ListResourceBundle
                 {"TVEP_lineText_InteractieSoorten", "Interaction types"},
                 {"TVEP_lineText_InteractieVerwerking", "Interaction processing"},
                 
+                {"TVEP_respToggleWidthLabel", "minimum total width"},
                 {"TVEP_respMinLabel", "min"},
                 {"TVEP_respMaxLabel", "max"},
                 {"TVEP_respConstantLabel", "constant"},

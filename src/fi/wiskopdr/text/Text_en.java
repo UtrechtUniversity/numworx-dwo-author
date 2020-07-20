@@ -30,8 +30,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "subLabel" , "Substitute:" },
                 { "meerLabel" , "more" },
 				
-                { "klaarKnopLabel" , "Check" },
-				{ "nakijkKnopLabel" , "Check" },
+                { "klaarKnopLabel" , "CHECK" },
+				{ "nakijkKnopLabel" , "CHECK" },
 				{ "checkExternal" , "External check" },
 				{ "eindeKnopLabel", "End" },
 				{ "nakijkLabel1" , "Checked: " },
@@ -566,6 +566,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_lineText_InteractieSoorten", "Interaction types"},
                 {"TVEP_lineText_InteractieVerwerking", "Interaction processing"},
                 
+                {"TVEP_respToggleWidthLabel", "minimum total width"},
                 {"TVEP_respMinLabel", "min"},
                 {"TVEP_respMaxLabel", "max"},
                 {"TVEP_respConstantLabel", "constant"},

@@ -548,7 +548,7 @@ public class AntwoordKeuzeVak extends JLayeredPane implements InteractiePanel, A
 
 	public int geefAsHoogte()
 	{
-		return 8;
+		return getHeight()/2+5;
 	}
 
 	public int getIpId()

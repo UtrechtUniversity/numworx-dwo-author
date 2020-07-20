@@ -34,8 +34,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "subLabel" , "Substitueer:" },
                 { "meerLabel" , "meer" },
 				
-                { "klaarKnopLabel" , "klaar" },
-				{ "nakijkKnopLabel" , "kijk na" },
+                { "klaarKnopLabel" , "CONTROLEER" },
+				{ "nakijkKnopLabel" , "CONTROLEER" },
 				{ "checkExternal" , "extern controleren" },
 				{ "eindeKnopLabel", "Einde"},
 				{ "nakijkLabel1" , "Nagekeken: " },
@@ -590,6 +590,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_lineText_InteractieSoorten", "Interactiesoorten"},
                 {"TVEP_lineText_InteractieVerwerking", "Interactieverwerking"},
                 
+                {"TVEP_respToggleWidthLabel", "minimale totale breedte"},
                 {"TVEP_respMinLabel", "min"},
                 {"TVEP_respMaxLabel", "max"},
                 {"TVEP_respConstantLabel", "constante"},

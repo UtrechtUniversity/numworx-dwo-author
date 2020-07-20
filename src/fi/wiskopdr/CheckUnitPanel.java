@@ -107,11 +107,11 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 		attempts = new Vector();
 		
 		checkButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
-		checkButton.setBounds(0,5,80,20);
+		checkButton.setBounds(0,5,100,26);
 		checkButton.addActionListener(this);
 		add(checkButton);
 		
-		setSize(checkButton.getWidth()+30, 25);
+		//setSize(checkButton.getWidth()+30, 25);
 		
 		/*if(images==null)
 		{	images = new Hashtable();

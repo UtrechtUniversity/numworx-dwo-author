@@ -799,10 +799,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		}
 		else if(soortInteractiePanel == 12)
 		{	interactieEditPanel = (new CheckUnitPanel()).getEditPanel();
-			breedteTF.setText("110");
-			hoogteTF.setText("35");
-			if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(110);
-	    	if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(35);
+			breedteTF.setText("126");
+			hoogteTF.setText("31");
+			if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(126);
+	    	if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(31);
 		}
 		else if(soortInteractiePanel == 13)
 		{	interactieEditPanel = (new AntwoordTekstVak()).getEditPanel();
@@ -822,10 +822,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		}
 		else if(soortInteractiePanel == 16)
 		{	interactieEditPanel = (new CheckSleepUnitPanel()).getEditPanel();
-			breedteTF.setText("110");
-			hoogteTF.setText("35");
-			if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(110);
-	    	if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(35);
+			breedteTF.setText("126");
+	        hoogteTF.setText("31");
+			if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(126);
+	    	if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(31);
 		}
 		else if(soortInteractiePanel == 25)
 		{	interactieEditPanel = (new GetallenlijnSprongPanel()).getEditPanel();
@@ -836,17 +836,17 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	    }
 		else if(soortInteractiePanel == 33)
         {   interactieEditPanel = (new CheckValueUnitPanel()).getEditPanel();
-            breedteTF.setText("110");
-            hoogteTF.setText("35");
-            if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(110);
-            if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(35);
+	        breedteTF.setText("126");
+	        hoogteTF.setText("31");
+            if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(126);
+            if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(31);
         }
 		else if(soortInteractiePanel == 49)
         {   interactieEditPanel = (new CheckButtonPanel()).getEditPanel();
-            breedteTF.setText("110");
-            hoogteTF.setText("35");
-            if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(110);
-            if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(35);
+            breedteTF.setText("126");
+            hoogteTF.setText("31");
+            if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(126);
+            if(interactieEditPanel!=null)interactieEditPanel.zetHoogte(31);
         }
 		else if(soortInteractiePanel == 52)
         {   interactieEditPanel = (new ReactieVergelijkingVak()).getEditPanel();

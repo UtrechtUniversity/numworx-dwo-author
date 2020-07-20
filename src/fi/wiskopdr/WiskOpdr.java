@@ -73,6 +73,12 @@ import fi.wiskopdr.tekstobjects.Link;
 import fi.wiskopdr.tekstobjects.LinkIF;
 import fi.wiskopdr.tekstobjects.LinkRegel;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
+import fi.wiskopdr.templateconstants.TemplateBasicConstants;
+import fi.wiskopdr.templateconstants.TemplateConstants;
+import fi.wiskopdr.templateconstants.TemplateNumworxConstants;
+import fi.wiskopdr.templateconstants.TemplateUUTestConstants;
+
+
 
 public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, ComponentListener, PartialScoreIF, LinkIF, Printable {
 	
@@ -112,6 +118,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static Color colorBlue3 = new Color(120,150,202);
 	public static Color colorBlue4 = new Color(180,195,228);
 	public static Color colorBlue5 = new Color(211,229,244);
+	public static Color colorBlue6 = new Color(229,240,249);
 	
 	public static Color colorGray1 = new Color(206,207,208);
 	public static Color colorGray2 = new Color(221,223,225);
@@ -151,7 +158,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 	public static String dwo_env; // "dummy", "test", "app" of null of een combinatie, bijv. saml,test
 	public static boolean isExperimental() {
-		return dwo_env != null && dwo_env.contains("test");
+		return true;
+		//return dwo_env != null && dwo_env.contains("test");
 	}
 	public static String abo_type; // free,demo,premium,standard (null)
 	public static boolean isPremium() {
@@ -166,6 +174,12 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static String[][] misconceptions = null;
 	public static String[] mccCategorieString = null;
 	public static boolean ho;
+	
+	public static TemplateConstants templateConstants = new TemplateBasicConstants(); // Never null
+	private static final String templateBasisName = "TemplateBasis";
+	private static final String templateNumworxName = "TemplateNumworx";
+	private static final String templateUUTestName = "TemplateUUTest";
+	private static String templateName = templateBasisName;
 
 	
 	private JSONArray studentModelsJSON;
@@ -227,7 +241,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	  return rights.contains("H");
 	}
 
-
+	
 
   private static URL defaultCodeBase; // allow code injection?
 	private static boolean COMPLETED = false;
@@ -303,6 +317,19 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 		;
 		return image;
+	}
+	
+	public static void setTemplateConstants(String name) {
+		if(templateNumworxName.equals(name)) {
+			templateConstants = new TemplateNumworxConstants();
+		}
+		else if(templateUUTestName.equals(name)) {
+			templateConstants = new TemplateUUTestConstants();
+		}
+		else {
+			templateConstants = new TemplateBasicConstants();
+		}
+		
 	}
 
 	/**

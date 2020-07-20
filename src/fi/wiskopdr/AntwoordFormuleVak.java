@@ -14,6 +14,7 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -220,6 +221,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	private Vergelijking[] antwoordSubstituties;
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
+	
+	
 	
 	
 	public static void zetFontOverervingForm(boolean b)
@@ -434,8 +437,6 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 			     }
 		     }
 	     }
-	    	
-	     
 	}
 	
 	public boolean hasPrefix()

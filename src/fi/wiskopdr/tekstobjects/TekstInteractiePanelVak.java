@@ -15,7 +15,9 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Paint;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
@@ -57,6 +59,7 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -107,6 +110,7 @@ import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.WiskOpdrButton;
 import fi.wiskopdr.cbook.CBookInteractiePanel;
 import fi.wiskopdr.cbook.Service;
 import fi.wiskopdr.cbook.WidgetBridge;
@@ -1595,8 +1599,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         		{	
         			//if(volledigeBreedte)interactiePanel.setBounds(0,0,tekstVak.getSize().width-2*tekstVak.geefMarge(), hoogte);
     	        	//else interactiePanel.setBounds(0,0,breedte,hoogte);
+        			Component fakeComponent = getFakeComponent(soortInteractiePanel, interactiePanelLaunchState);
+        			if(fakeComponent != null)
+        				add(fakeComponent);
+        			else	
+        				add((Component)interactiePanel,0);
         			
-        			add((Component)interactiePanel,0);
+        			
         			if(volledigeBreedte)
         				setSize(tekstVak.getSize().width-2*tekstVak.geefMarge(),hoogte);
         			else {
@@ -1770,7 +1779,87 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         
 	}
 	
-	
+	private Component getFakeComponent(int soortInteractiePanel, Hashtable interactiePanelLaunchState ) {
+		if(soortInteractiePanel==12 || soortInteractiePanel==16 || soortInteractiePanel==33 || soortInteractiePanel==49) {
+			WiskOpdrButton button =  new WiskOpdrButton(WiskOpdr.rb.getString("klaarKnopLabel"));
+			button.setBounds(0,5,126, 26);
+			String backgroundColorString = ((String)WiskOpdr.templateConstants.checkButton("background-color")).substring(1);
+			button.setBackground(new Color(Integer.parseInt(backgroundColorString,16)));
+			button.setForeground(Color.WHITE);
+			button.setFont(new Font("SansSerif",Font.BOLD,12));
+			return button;
+		}
+			
+		if(soortInteractiePanel<5 || soortInteractiePanel==13 || soortInteractiePanel==14 ||soortInteractiePanel==53) {
+			int borderWidth = (Integer)WiskOpdr.templateConstants.answerboxFEWS("border-width");
+			String borderColorString = ((String)WiskOpdr.templateConstants.answerboxFEWS("border-color")).substring(1);
+			String backgroundColorString = ((String)WiskOpdr.templateConstants.answerboxFEWS("background-color")).substring(1);
+			int borderRadius = (Integer)WiskOpdr.templateConstants.answerboxFEWS("border-radius");
+			String stepbuttonImage = (String)WiskOpdr.templateConstants.answerboxFEWS("stepbutton-image");
+			
+			boolean boxMetRand = true;
+			if(interactiePanelLaunchState.containsKey("boxMetRand"))
+				boxMetRand = (Boolean)interactiePanelLaunchState.get("boxMetRand");
+			
+			JPanel avPanel = new JPanel(new BorderLayout());
+			JPanel header = new JPanel(new BorderLayout());
+			avPanel.setSize(getSize().width, getSize().height);
+			if(boxMetRand) {
+				avPanel.setBackground(new Color(Integer.parseInt(backgroundColorString,16)));
+				header.setBackground(new Color(Integer.parseInt(backgroundColorString,16)));
+				avPanel.setBorder(BorderFactory.createLineBorder(new Color(Integer.parseInt(borderColorString,16)), borderWidth, borderRadius>0));
+			}
+			else { 
+				avPanel.setBackground(new Color(0,0,0,0));
+				header.setBackground(new Color(0,0,0,0));
+				if(soortInteractiePanel==2 || soortInteractiePanel==3 || soortInteractiePanel==13) 
+					avPanel.add(new JLabel("..."),BorderLayout.WEST);
+				avPanel.setBorder(BorderFactory.createDashedBorder(Color.LIGHT_GRAY));
+			}
+				
+			
+			//add(avPanel,0);
+			
+			if(soortInteractiePanel<2 || soortInteractiePanel==53) {
+				header.add(new JLabel(new ImageIcon(WiskOpdr.loadImage("resources/"+stepbuttonImage))),BorderLayout.EAST);
+				avPanel.add(header,BorderLayout.NORTH);
+			}
+			if(soortInteractiePanel==2 || soortInteractiePanel==3) {
+				avPanel.setSize(getSize().width, 24);
+				boolean uitw = false;
+				if(interactiePanelLaunchState.containsKey("uitw"))
+					uitw = (Boolean)interactiePanelLaunchState.get("uitw");
+				if(uitw) {
+					header.add(new JLabel(new ImageIcon(WiskOpdr.loadImage("resources/uitwerkingknop.png"))),BorderLayout.EAST);
+					avPanel.add(header,BorderLayout.NORTH);
+				}
+			}
+			if(soortInteractiePanel==14 ) {
+				JPanel keuzeKnop = new JPanel() {
+					public void paintComponent(Graphics g) {
+						g.setColor(Color.WHITE);
+						g.fillRect(1, 1, getWidth()-20, getHeight());
+						g.setColor(new Color(Integer.parseInt(borderColorString,16)));
+						g.fillRect(getWidth()-40, 1, 20, getHeight()-2);
+						g.drawRoundRect(1, 1, getWidth()-22, getHeight()-2,2 ,2);
+						if(borderWidth>1)
+							g.drawRoundRect(2, 2, getWidth()-24, getHeight()-4,2 ,2);
+						Polygon p = new Polygon();
+						p.addPoint(getWidth()-26, getHeight()/2-2);
+						p.addPoint(getWidth()-34, getHeight()/2-2);
+						p.addPoint(getWidth()-30, getHeight()/2+2);
+						g.setColor(Color.WHITE);
+						g.fillPolygon(p);
+					}
+				};
+				avPanel.setBorder(BorderFactory.createEmptyBorder());
+				avPanel.add(keuzeKnop,BorderLayout.CENTER);
+			}
+			return avPanel;
+		}
+		else
+			return null;
+	}
 	
 	private Map<String, Set<Connector>> toConnector(Map s) {
 		if (s == null)
@@ -2049,6 +2138,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			{	interactiePanel = new CheckUnitPanel();
 				//((TekstVakPanel)interactiePanel).setEditable(true);
 				//interactiePanel.setBounds(0,0,getSize().width, getSize().height);
+				breedte = 126;
+				hoogte = 31;
 				((Component)interactiePanel).setBackground(getBackground());
 				interactiePanel.addActionListener(this);
 				
@@ -2086,6 +2177,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			{	interactiePanel = new CheckSleepUnitPanel();
 				//((TekstVakPanel)interactiePanel).setEditable(true);
 				//interactiePanel.setBounds(0,0,getSize().width, getSize().height);
+				breedte = 126;
+				hoogte = 31;
 				((Component)interactiePanel).setBackground(getBackground());
 				interactiePanel.addActionListener(this);
 				
@@ -2111,7 +2204,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             {   interactiePanel = new CheckValueUnitPanel();
                 //((TekstVakPanel)interactiePanel).setEditable(true);
                 //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
-                ((Component)interactiePanel).setBackground(getBackground());
+	            breedte = 126;
+				hoogte = 31;
+				((Component)interactiePanel).setBackground(getBackground());
                 interactiePanel.addActionListener(this);
                 
             //add((Component)interactiePanel,0);
@@ -2124,7 +2219,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             {   interactiePanel = new CheckButtonPanel();
                 //((TekstVakPanel)interactiePanel).setEditable(true);
                 //interactiePanel.setBounds(0,0,getSize().width, getSize().height);
-                ((Component)interactiePanel).setBackground(getBackground());
+	            breedte = 126;
+				hoogte = 31;
+				((Component)interactiePanel).setBackground(getBackground());
                 interactiePanel.addActionListener(this);
                 
             //add((Component)interactiePanel,0);
@@ -2730,6 +2827,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             else if(!popup && interactiePanel instanceof CheckSleepUnitPanel)ashoogte = ((CheckSleepUnitPanel)interactiePanel).geefAsHoogte();
             else if(!popup && interactiePanel instanceof CheckButtonPanel)ashoogte = ((CheckButtonPanel)interactiePanel).geefAsHoogte();
             else if(!popup && interactiePanel instanceof SymboolPanel) ashoogte = ((SymboolPanel) interactiePanel).geefAsHoogte();
+            else if(!popup && interactiePanel instanceof AntwoordKeuzeVak) ashoogte = ((AntwoordKeuzeVak) interactiePanel).geefAsHoogte();
             else ashoogte = 15;
 		}
 	

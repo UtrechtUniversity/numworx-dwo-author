@@ -23,6 +23,7 @@ import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.ShareAction;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
 public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, ActionListener, ItemListener, TabletOwner, ClipboardOwner {
 	
@@ -558,6 +559,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
         if (h!=null && h.containsKey("combinedComponents"))
         	combinedComponents = ((Boolean) h.get("combinedComponents")).booleanValue();
 		
+         
         MyOpdrEditContainer.setDefaultDocSizes(margeLinks, margeBoven, docWidth, docHeight);
        
         TekstVakPanel.zetFontOvererving(fontOvererving);
@@ -565,6 +567,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
         TekstVakPanel.styles = styles;
         
         TekstVakPanel.templateName = templateName;
+        System.out.println("template name: "+templateName);
     
       //if(templatePages != null)
         TekstVakPanel.templatePages = templatePages;
@@ -591,7 +594,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		WiskOpdr.setMisconceptions(misconceptions);
 		WiskOpdr.setMccCategories(mccCategorieString);
 		
-		
+		WiskOpdr.setTemplateConstants(templateName);
 		
 		FormuleTeken.zetMaalTeken(maalTeken);
 		FormuleTeken.zetDiffOperatoren(diffOperatoren);

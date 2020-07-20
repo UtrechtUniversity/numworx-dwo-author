@@ -154,7 +154,7 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 	}
 	
 	public int geefAsHoogte()
-	{	return checkButton.getHeight()/2+6;
+	{	return checkButton.getHeight()/2+11;
 	}
 
 	@Override
