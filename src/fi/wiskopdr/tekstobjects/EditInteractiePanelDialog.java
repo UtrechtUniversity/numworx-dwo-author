@@ -1081,7 +1081,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	produceAction("cancel");
             this.setVisible(false);
             this.dispose();
-            OpdrNavStructEdit.helpBrowser.loadURL(null);
+            //OpdrNavStructEdit.helpBrowser.loadURL(null);
             
         } 
         else if (e.getSource() == okButton) {
@@ -1090,7 +1090,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         	WiskOpdr.setLaunchDataChanged();
             this.setVisible(false);
             this.dispose();
-            OpdrNavStructEdit.helpBrowser.loadURL(null);
+            //OpdrNavStructEdit.helpBrowser.loadURL(null);
             
         }
         else if (e.getSource() == helpButton && interactieEditPanel instanceof HelpButtonPanelIF) {
@@ -1112,7 +1112,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     		}
     		else {
     			helpBox.validate(); 
-    			OpdrNavStructEdit.helpBrowser.loadURL(null);
+    			//OpdrNavStructEdit.helpBrowser.loadURL(null);
             	
     			pack();	
     		}	
@@ -1213,7 +1213,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			helpTitelBox.setVisible(false);
 			if(interactieEditPanel!=null && interactieEditPanel instanceof HelpButtonPanelIF) 
         		((HelpButtonPanelIF)interactieEditPanel).showHelpButtons(false);
-			OpdrNavStructEdit.helpBrowser.loadURL(null);
+			//OpdrNavStructEdit.helpBrowser.loadURL(null);
 			pack();
 		}
 
@@ -1308,7 +1308,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
      * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
      */
     public void windowClosed(WindowEvent e) {
-    	 OpdrNavStructEdit.helpBrowser.loadURL(null);
+    	 //OpdrNavStructEdit.helpBrowser.loadURL(null);
     }
 
     public void windowClosing(WindowEvent e) {
