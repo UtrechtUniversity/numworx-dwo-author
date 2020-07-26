@@ -21,6 +21,7 @@ import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.ShareAction;
 //import fi.wiskopdr.tekstobjects.VoorwaardelijkeLinkButton;
 import fi.wiskopdr.expressies.*;
+import fi.beans.base64code.StringCodeObject;
 import fi.beans.numworxlf.JScrollPane;
 
 
@@ -67,7 +68,9 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JButton exportStylesButton;
 	private JCheckBox layersCB;
 	private JCheckBox combinedComponentsCB;
-	
+	private JLabel styleInteractionsLabel;
+	private JComboBox styleInteractionsComboBox;
+	private String[] templateNames = {"TemplateBasis", "TemplateNumworx"};
 	
 	private JLabel wiskundeLabel, navigatieLabel, layoutLabel, nakijkenLabel;
 	
@@ -731,8 +734,27 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		boxh.add(hbStyles);
 		boxv3.add(boxh);
-		//boxv3.add(Box.createVerticalStrut(10));
+		boxv3.add(Box.createVerticalStrut(5));
 		
+		boxh = Box.createHorizontalBox();
+		styleInteractionsLabel = new JLabel(WiskOpdr.rb.getString("OPT_styleInteractionsLabel"));
+		styleInteractionsLabel.setFont(font);
+		styleInteractionsLabel.setForeground(WiskOpdr.fgcolorEditor);
+		boxh.add(styleInteractionsLabel);
+		boxh.add(Box.createRigidArea(new Dimension(10,0)));
+		styleInteractionsComboBox = new WiskOpdrComboBox();
+		styleInteractionsComboBox.setFont(font);
+		styleInteractionsComboBox.setPreferredSize(new Dimension(150,24));
+		styleInteractionsComboBox.setForeground(WiskOpdr.fgcolorEditor);
+		styleInteractionsComboBox.addActionListener(this);
+		
+		styleInteractionsComboBox.addItem(WiskOpdr.rb.getString("OPT_TemplateBasisLabel"));
+		styleInteractionsComboBox.addItem(WiskOpdr.rb.getString("OPT_TemplateNumworxLabel"));
+		boxh.add(styleInteractionsComboBox);
+		boxh.add(Box.createHorizontalGlue());
+		
+		boxv3.add(boxh);
+		boxv3.add(Box.createVerticalStrut(5));
 		
 		boxh = Box.createHorizontalBox();
 		layersCB = maakCheckBox(WiskOpdr.rb.getString("OPT_layers"), boxh, false);
@@ -1042,6 +1064,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		String[] layerNames = null;
 		boolean[] layerVisible = null;
 		boolean combinedComponents = false;
+		int styleInteractionsNr = 0;
 		
 		try
 		{	fontSize = Integer.parseInt(fontSizeTF.getText());
@@ -1118,6 +1141,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		catch(Exception e){aftrekCorrectieZelftoets = 0;}
 		
 		combinedComponents = combinedComponentsCB.isSelected();
+		styleInteractionsNr = styleInteractionsComboBox.getSelectedIndex();
 		 
 		
 		Hashtable h = new Hashtable();
@@ -1194,6 +1218,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("templateEdit", new Boolean(templateEdit));
 		h.put("aftrekCorrectieZelftoets", new Integer(aftrekCorrectieZelftoets));
 		h.put("combinedComponents", new Boolean(combinedComponents));
+		h.put("styleInteractionsNr", new Integer(styleInteractionsNr));
 		
 		return h;
 	}
@@ -1261,6 +1286,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		String[] layerNames = null;
 		boolean[] layerVisible = null;
 		boolean combinedComponents = false;
+		int styleInteractionsNr = 0;
 		
 		if(h.containsKey("fontSize")) fontSize = ((Integer)h.get("fontSize")).intValue();
 		if(h.containsKey("maalTeken")) maalTeken = ((Boolean)h.get("maalTeken")).booleanValue();
@@ -1331,6 +1357,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("layerNames")) layerNames = (String[])h.get("layerNames");
 		if(h.containsKey("layerVisible")) layerVisible = (boolean[])h.get("layerVisible");
 		if(h.containsKey("combinedComponents")) combinedComponents = ((Boolean)h.get("combinedComponents")).booleanValue();
+		if(h.containsKey("styleInteractionsNr")) styleInteractionsNr = ((Integer)h.get("styleInteractionsNr")).intValue();
 		
 		fontSizeTF.setText(""+fontSize);
 		//navigatieSizeTF.setText(""+navigatieSize);
@@ -1422,6 +1449,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		layersButton.setVisible(hasLayers);
 		layersButton.zetLayerInfo(layerNames, layerVisible);
 		combinedComponentsCB.setSelected(combinedComponents || ShareAction.getSharingIsUsed());
+		styleInteractionsComboBox.setSelectedIndex(styleInteractionsNr);
 	}
 	
 	public void cancel()
@@ -1458,6 +1486,40 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		SimpelAntwoordVergelijkingVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
 		AntwoordTekstVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
 		ShareAction.setSharingPossible(combinedComponentsCB.isSelected() || ShareAction.getSharingIsUsed());
+		
+		WiskOpdr.setTemplateConstants(templateNames[styleInteractionsComboBox.getSelectedIndex()]);
+		TekstVakPanel.setTemplateName(templateNames[styleInteractionsComboBox.getSelectedIndex()]);
+		
+//		String launchDataString = 
+//		Object ob1 = StringCodeObject.decodeStringToObject(launchDataString);
+//		Hashtable launchData = (Hashtable) ob1;
+//		
+//		String instellingenString = (String) launchData.get("instellingen");
+//		Object ob = StringCodeObject.decodeStringToObject(instellingenString);
+//		Hashtable instellingen = (Hashtable) ob;
+//		
+//		Hashtable styles = null;
+//		Hashtable templatePages = null;
+//		Hashtable templateComponents = null;
+//		ArrayList<String> templatePagesKeys = null;
+//		ArrayList<String> templateComponentsKeys = null;
+//		
+//		if (instellingen != null && instellingen.containsKey("TekstVakPanelStyles"))
+//			styles = (Hashtable) instellingen.get("TekstVakPanelStyles");
+//		if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePages"))
+//			templatePages = (Hashtable) instellingen.get("TekstVakPanelTemplatePages");
+//		if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponents"))
+//			templateComponents = (Hashtable) instellingen.get("TekstVakPanelTemplateComponents");
+//		if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePagesKeys"))
+//			templatePagesKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplatePagesKeys");
+//		if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponentsKeys"))
+//			templateComponentsKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplateComponentsKeys");
+//		
+//		TekstVakPanel.styles = styles;
+//		TekstVakPanel.templatePages = templatePages;
+//		TekstVakPanel.templateComponents = templateComponents;
+//		TekstVakPanel.templatePagesKeys = templatePagesKeys;
+//		TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
 		
 		//opdrNavStruct.setTimer(timerCB.isSelected(), timeLimit);
 		//opdrNavStruct.zetOpnieuwMogelijk(opnieuwCB.isSelected());
@@ -1636,6 +1698,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 				TekstVakPanel.styles.put(styleKeys[i],style);
 			}
 		}
+		
 		if(e.getSource().equals(layersCB))
 		{
 			layersButton.setVisible(layersCB.isSelected());

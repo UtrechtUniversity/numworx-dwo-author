@@ -436,6 +436,10 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_combCompNav" , "Gedeelde componenten"},
 				{"OPT_stylesWarnDialog" , "Alle ingestelde styles gaan verloren. Akkoord?"},
 				
+				{"OPT_styleInteractionsLabel" , "Stijl antwoordvakken"},
+				{"OPT_TemplateBasisLabel" , "Template Basis stijl"},
+				{"OPT_TemplateNumworxLabel" , "Template Numworx stijl"},
+				
 				{"OBJ_leerdoel", "Leerdoel"},
 				{"OBJ_categorie", "Vul naam in van categorie"},
 				{"OBJ_categorieBox", "Leerdoelen in meerdere categorieen"},

@@ -378,6 +378,11 @@ public class Text_fr extends java.util.ListResourceBundle
                                 {"OPT_docWidthLabel" , "Page: Width"},
                                 {"OPT_docHeightLabel" , "Height (min)"},
                                 {"OPT_combCompNav" , "Combined components"},
+                                {"OPT_stylesWarnDialog" , "All styles will be lost. Ok?"},
+                                
+                                {"OPT_styleInteractionsLabel" , "Style answerboxes"},
+                                {"OPT_TemplateBasisLabel" , "Template Basic style"},
+                                {"OPT_TemplateNumworxLabel" , "Template Numworx style"},
                 				
                                 {"OBJ_leerdoel", "Objectif"},
                                 {"OBJ_categorie", "Catégorie"},
