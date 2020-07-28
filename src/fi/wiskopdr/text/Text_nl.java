@@ -437,6 +437,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_stylesWarnDialog" , "Alle ingestelde styles gaan verloren. Akkoord?"},
 				
 				{"OPT_styleInteractionsLabel" , "Stijl antwoordvakken"},
+				{"OPT_TemplateGeenLabel" , "Geen template"},
 				{"OPT_TemplateBasisLabel" , "Template Basis stijl"},
 				{"OPT_TemplateNumworxLabel" , "Template Numworx stijl"},
 				
@@ -609,7 +610,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"SM_addStyleAction", "Geef stijlnaam"},
                 
                 //Text Editor + tooltips
-                {"TE_menuTemplateComponents", "Componenten in template-opmaak"},
+                {"TE_menuTemplateComponents", "Template componenten"},
                 {"TE_menuWidgets", "Widgets"},
                 {"TE_menuAntwoordTypes", "Antwoordtypes"},
                 {"TE_menuTekstvakken", "Tekstvakken"},

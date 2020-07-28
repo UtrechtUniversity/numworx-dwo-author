@@ -417,7 +417,8 @@ public class Text_en extends java.util.ListResourceBundle
                 {"OPT_stylesWarnDialog" , "All styles will be lost. Ok?"},
                 
                 {"OPT_styleInteractionsLabel" , "Style answerboxes"},
-                {"OPT_TemplateBasisLabel" , "Template Basic style"},
+                {"OPT_TemplateGeenLabel" , "No template"},
+				{"OPT_TemplateBasisLabel" , "Template Basic style"},
                 {"OPT_TemplateNumworxLabel" , "Template Numworx style"},
                 
 				{"OBJ_leerdoel", "Objective"},
@@ -585,7 +586,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"SM_addStyleAction", "Give style name"},
                 
                 //Text Editor + tooltips
-                {"TE_menuTemplateComponents", "Components with template-layout"},
+                {"TE_menuTemplateComponents", "Template components"},
                 {"TE_menuWidgets", "Widgets"},
                 {"TE_menuAntwoordTypes", "Answer types"},
                 {"TE_menuTekstvakken", "Text boxes"},
