@@ -3,6 +3,11 @@ package nl.numworx.samllogin;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import javax.servlet.ServletException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -14,7 +19,9 @@ public class Main {
     
     final JFrame f = new JFrame("Login uu-dev");
     SamlLoginPanel.debug = true;
-    SAMLLoginIF browser = new SamlLoginPanel("https://numworx.acc.uu.nl/dwo/saml/login.jsp");
+    SamlLoginPanel browser = new SamlLoginPanel();
+   
+    browser.loadURL("http://localhost:8080/dwo/saml/login2.jsp");
     browser
       .getPromise()
       .then( p -> {

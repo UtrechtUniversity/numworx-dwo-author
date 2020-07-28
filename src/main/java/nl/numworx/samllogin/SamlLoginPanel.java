@@ -3,8 +3,13 @@ package nl.numworx.samllogin;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
@@ -28,6 +33,26 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
   
     static SwingBrowserProvider provider = new SwingBrowserProvider();
     static BiConsumer<SamlLoginPanel, API> strategy = (p, api) -> p.setApi(api);
+
+    /** for use elsewhere 
+     * 
+     * @param targetStringLength length
+     * @return randomstring
+     */
+    String randomAlphanumericString(int targetStringLength) {
+  	    int leftLimit = 48; // numeral '0'
+  	    int rightLimit = 122; // letter 'z'
+  	    ThreadLocalRandom random = ThreadLocalRandom.current();
+  	 
+  	    String generatedString = random.ints(leftLimit, rightLimit + 1)
+  	      .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+  	      .limit(targetStringLength)
+  	      .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+  	      .toString();
+  	 
+  	    return(generatedString);
+  	}
+
     
     public final class PrintStatus extends Console implements Status {
         @Override
@@ -71,6 +96,11 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
       return super.LMSSetValue(key, value);
     }
 
+    @Override
+    public String LMSGetValue(String key) {
+    	return map.getProperty(key, "");
+    }
+    
     @Override
     public String LMSFinish(String iParam) {
       defer.resolve(map);
@@ -133,6 +163,9 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
 
     @Override
 	public void loadURL(String url) {
+    	URI u = URI.create(url);
+    	String login = u.resolve("/dwo/saml/login").toString();
+    	api.LMSSetValue("dme.oauth.endpoint", login);
 		super.loadURL(last = url + extra);
 	    getJfxPanel().setName("Aanmelden");
 	}
@@ -155,6 +188,21 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     setPreferredSize(getSize());
     setMinimumSize(getSize());
     setBackground(COLOR15);
+// voor Midden-03
+    api.LMSSetValue("dme.oauth.client_id", "5493fd2c-d09a-11ea-87d0-0242ac130003");
+    String verifier = randomAlphanumericString(64);
+	api.LMSSetValue("dme.oauth.code_verifier", verifier);
+	MessageDigest digest = null;
+	try {
+		digest = MessageDigest.getInstance("SHA-256");
+	} catch (NoSuchAlgorithmException e) {
+		
+	}
+	byte[] encodedhash = digest.digest(
+	  verifier.getBytes(StandardCharsets.UTF_8));
+	String challenge = java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(encodedhash);
+	api.LMSSetValue("dme.oauth.code_challenge", challenge);    
+  
   }
     
   public JComponent asComponent() {
