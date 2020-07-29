@@ -1800,10 +1800,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			boolean boxMetRand = true;
 			if(interactiePanelLaunchState.containsKey("boxMetRand"))
 				boxMetRand = (Boolean)interactiePanelLaunchState.get("boxMetRand");
+			boolean hasFeedback = false;
+			if(interactiePanelLaunchState.containsKey("hasFeedback"))
+				hasFeedback = (Boolean)interactiePanelLaunchState.get("hasFeedback");
+			
 			
 			JPanel avPanel = new JPanel(new BorderLayout());
 			JPanel header = new JPanel(new BorderLayout());
 			avPanel.setSize(getSize().width, getSize().height);
+			JLabel label = new JLabel("");
 			if(boxMetRand) {
 				avPanel.setBackground(new Color(Integer.parseInt(backgroundColorString,16)));
 				header.setBackground(new Color(Integer.parseInt(backgroundColorString,16)));
@@ -1812,9 +1817,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			else { 
 				avPanel.setBackground(new Color(0,0,0,0));
 				header.setBackground(new Color(0,0,0,0));
-				if(soortInteractiePanel==2 || soortInteractiePanel==3 || soortInteractiePanel==13) 
-					avPanel.add(new JLabel("..."),BorderLayout.WEST);
+				if(soortInteractiePanel==2 || soortInteractiePanel==3 || soortInteractiePanel==13)  {
+					label.setText("...");
+					avPanel.add(label,BorderLayout.WEST);
+				}
 				avPanel.setBorder(BorderFactory.createDashedBorder(Color.LIGHT_GRAY));
+			}
+			
+			if(hasFeedback) {
+				label.setText(" ? "+label.getText());
+				avPanel.add(label,BorderLayout.WEST);
 			}
 				
 			
@@ -1822,6 +1834,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			
 			if(soortInteractiePanel<2 || soortInteractiePanel==53) {
 				header.add(new JLabel(new ImageIcon(WiskOpdr.loadImage("resources/"+stepbuttonImage))),BorderLayout.EAST);
+				header.add(label,BorderLayout.WEST);
 				avPanel.add(header,BorderLayout.NORTH);
 			}
 			if(soortInteractiePanel==2 || soortInteractiePanel==3) {
