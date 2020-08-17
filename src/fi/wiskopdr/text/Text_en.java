@@ -64,6 +64,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "cutMenuItem" ,  "Cut"},
 				{ "pasteMenuItem" ,  "Paste"},
 				{ "editMenuItem" ,  "Edit text box"},
+				{ "selectMenuItem" ,  "Select text box"},
 				{ "insertCopyMenuItem" ,  "Copy (insert)"},
 				{ "deelscoresKnopLabel", "Partial scores"},
 				{ "misconceptionsKnopLabel", "Error analysis"},
@@ -988,6 +989,7 @@ public class Text_en extends java.util.ListResourceBundle
                 { "TCOMP_addItem" , "Add item"},
                 { "TCOMP_removeItem" , "Remove item"},
                 { "TCOMP_decompose" , "Decompose"},
+                { "TCOMP_select" , "Select"},
                 
              // Helpteksten (URL's)
 				{ "HELP_0_URL_0" , "https://app.dwo.nl/dwo/apps/player.html?t=0&profile=106&locale=nl#670371"},

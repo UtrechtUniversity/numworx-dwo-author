@@ -241,7 +241,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean layerVisible;
 	
 	private JCheckBox responsiveCB;
-	private JLabel responsiveTFLabel;
+	private JLabel responsiveToggleWidthLabel;
 	private JTextField responsiveToggleWidthTF;
 	private JLabel responsiveMinLabel;
 	private JLabel responsiveMaxLabel;
@@ -941,6 +941,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		layerChoice.setBounds(110,530,125,20);
 		layerChoice.setVisible(TekstVakPanel.layerNames!=null);
 		layoutOptionsPanel.add(layerChoice);
+		
+		responsiveToggleWidthLabel = new JLabel(WiskOpdr.rb.getString("TVEP_respToggleWidthLabel"));
+		responsiveToggleWidthLabel.setForeground(WiskOpdr.colorBlue1);
+		responsiveToggleWidthLabel.setFont(ifFont);
+		responsiveToggleWidthLabel.setVisible(false);
 		
 		responsiveToggleWidthTF = new WiskOpdrTextField("");
 		responsiveToggleWidthTF.setPreferredSize(new Dimension(50,20));

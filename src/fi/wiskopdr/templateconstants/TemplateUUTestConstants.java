@@ -50,6 +50,7 @@ public class TemplateUUTestConstants implements TemplateConstants {
 		MapAnswerboxFEWS.put("padding-bottom", new Integer(0));
 		
 		MapAnswerboxFEWS.put("stepbutton-image", "stappenvakknoppen-uutoets.png");
+		MapAnswerboxFEWS.put("knopjes-teksteditor-image", "knopjes-teksteditor.png");
 		
 		//answerboxCombo
 		MapAnswerboxCombo.put("background-color", "#FFFFFF");

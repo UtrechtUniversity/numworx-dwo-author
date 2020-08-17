@@ -72,7 +72,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	int minimumHoogte;
 	
 	public PopupMenu popup;
-    private MenuItem miCut, miCopy, miPaste, miEdit;
+    private MenuItem miCut, miCopy, miPaste, miEdit, miSelect;
 	
 	
 	public TekstVak()
@@ -143,6 +143,10 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
         miEdit.addActionListener(this);
         popup.add(miEdit);
         
+        miSelect = new MenuItem(WiskOpdr.rb.getString("selectMenuItem"));
+        miSelect.addActionListener(this);
+        popup.add(miSelect);
+        
         add(popup);
 	}
 	
@@ -162,11 +166,14 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 				if(ht.containsKey("TComponent")) {
 					tComponent = (String)ht.get("TComponent");
 					miEdit.setLabel(WiskOpdr.rb.getString("TCOMP_edit") + " " + TComponentGeneratorFactory.getComponentTypeName(tComponent));
+					miSelect.setLabel(WiskOpdr.rb.getString("TCOMP_select") + " " + TComponentGeneratorFactory.getComponentTypeName(tComponent));
 				}
 				else{
 					miEdit.setLabel(WiskOpdr.rb.getString("editMenuItem"));
+					miSelect.setLabel(WiskOpdr.rb.getString("selectMenuItem"));
 				}
 				miEdit.setEnabled(!template || tComponent!=null);
+				miSelect.setEnabled(!template || tComponent!=null) ;
 			}				
 		}
 		popup.show(actieveRegel,x,y);
@@ -1185,6 +1192,22 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 				if(tvp.getParent() instanceof TekstInteractiePanelVak) {
 					TekstInteractiePanelVak tipv = (TekstInteractiePanelVak)tvp.getParent();
 					tipv.editInteractiePanel();
+				}
+				
+			}
+		}
+		if(e.getSource()==this.miSelect)
+		{	getTekstVak().getXWidgetManager().getBasisVak().setSelected(false);
+			if(this.getParent() instanceof TekstVakPanel) {
+				TekstVakPanel tvp = (TekstVakPanel)getParent(); 
+				if(tvp.getParent() instanceof TekstInteractiePanelVak) {
+					TekstInteractiePanelVak tipv = (TekstInteractiePanelVak)tvp.getParent();
+					if(tipv.isTemplateEditable()) {
+						tipv.setSelected(true);
+						tipv.repaint();
+						this.getXWidgetManager().getBasisVak().setTekstVakMetSelectie(tipv.getTekstVak());
+						tipv.getTekstVak().requestFocus();
+					}
 				}
 				
 			}

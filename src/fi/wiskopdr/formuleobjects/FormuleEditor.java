@@ -532,8 +532,9 @@ public class FormuleEditor extends JLayeredPane implements TabletOwner, ActionLi
 //    }
     
     public void setNewScrollSize()
-    {   System.out.println("setNewScroll");
-    	int maxX = 0; 
+    {   
+    //System.out.println("setNewScroll");
+    		int maxX = 0; 
         int maxY = 0; 
         for(int i=0 ; i<contentPane.getComponentCount() ; i++)
         {   Component c = contentPane.getComponent(i);

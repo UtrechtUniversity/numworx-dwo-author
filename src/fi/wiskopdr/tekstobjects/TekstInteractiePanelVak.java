@@ -1796,6 +1796,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			String backgroundColorString = ((String)WiskOpdr.templateConstants.answerboxFEWS("background-color")).substring(1);
 			int borderRadius = (Integer)WiskOpdr.templateConstants.answerboxFEWS("border-radius");
 			String stepbuttonImage = (String)WiskOpdr.templateConstants.answerboxFEWS("stepbutton-image");
+			String knopjesTeksteditorImage = (String)WiskOpdr.templateConstants.answerboxFEWS("knopjes-teksteditor-image");
 			
 			boolean boxMetRand = true;
 			if(interactiePanelLaunchState.containsKey("boxMetRand"))
@@ -1836,6 +1837,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				header.add(new JLabel(new ImageIcon(WiskOpdr.loadImage("resources/"+stepbuttonImage))),BorderLayout.EAST);
 				header.add(label,BorderLayout.WEST);
 				avPanel.add(header,BorderLayout.NORTH);
+			}
+			if(soortInteractiePanel==4) {
+				boolean balkZichtbaar = false;
+				if(interactiePanelLaunchState.containsKey("balkZichtbaar"))
+					balkZichtbaar = (Boolean)interactiePanelLaunchState.get("balkZichtbaar");
+				if(balkZichtbaar) {
+					header.add(new JLabel(new ImageIcon(WiskOpdr.loadImage("resources/"+knopjesTeksteditorImage))),BorderLayout.WEST);
+					avPanel.add(header,BorderLayout.NORTH);
+				}
+				
 			}
 			if(soortInteractiePanel==2 || soortInteractiePanel==3) {
 				avPanel.setSize(getSize().width, 24);
@@ -2822,6 +2833,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	{	return  !(interactiePanel instanceof TekstVakPanel && ((TekstVakPanel)interactiePanel).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
 	}
 	
+	public boolean isMenuSelectable() {
+		return !((TekstVakPanel)interactiePanel).templateModeFill || (TekstVakPanel.TEMPLATE_EDITOR && tComponent==null);
+	}
+	
 	public void zetMaat()
 	{	if(interactiePanel!=null)
 		{	if(!popup)
@@ -2941,7 +2956,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			editInteractiePanelDialog.removeActionListener(this);
 			
 			if(launchData !=null)
-			{	if(interactiePanel!=null)remove((Component)interactiePanel);
+			{	//if(interactiePanel!=null)remove((Component)interactiePanel);
+				removeAll();
 				setEditState(launchData);
 			}
 			editInteractiePanelDialog.dispose();
