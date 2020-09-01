@@ -20,7 +20,6 @@ import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
-
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
@@ -31,11 +30,34 @@ public class MathScratchPanel extends JPanel implements InteractiePanel, CBookAw
 	private ActionListener listener;
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
 	
+	private boolean grid = false;
+	
 	public MathScratchPanel(MathScratch applet) {
 		setBorder(BorderFactory.createDashedBorder(Color.LIGHT_GRAY));
 	}
 	
-	public void paintComponent(Graphics g) {
+	public void paintComponent(Graphics gr) {
+		Graphics2D g = (Graphics2D) gr;
+		Color ruitjesKleur = MathScratch.colorBlue4;
+		if (grid) {
+			double lineDistance = 10;
+			GeneralPath curve = new GeneralPath();
+			g.setColor(ruitjesKleur);
+			
+			int vSteps = (int) (getHeight() / lineDistance);
+			for (int vCnt = 1; vCnt <= vSteps; vCnt++) {
+				curve.moveTo(0, vCnt * lineDistance);
+				curve.lineTo(getWidth() - 1, vCnt * lineDistance);
+			}
+			int hSteps = (int) (getWidth() / lineDistance);
+			for (int hCnt = 1; hCnt <= hSteps; hCnt++) {
+				curve.moveTo(hCnt * lineDistance, 0);
+				curve.lineTo(hCnt * lineDistance, getHeight() - 1);
+			}
+			g.setStroke(new BasicStroke(0.5f));
+			g.draw(curve);
+		}
+		
 		drawBin(g);
 		drawUndo(g);
 	}
@@ -141,6 +163,11 @@ public class MathScratchPanel extends JPanel implements InteractiePanel, CBookAw
 	public boolean isFout() {
 		return false;
 	}
+	
+	public void setGrid(boolean grid) {
+		this.grid = grid;
+		repaint();
+	}
 
 	public void kijkNa() {
 	}
@@ -151,8 +178,10 @@ public class MathScratchPanel extends JPanel implements InteractiePanel, CBookAw
 	public void opnieuw() {
 	}
 
-	public void setEditState(Hashtable editState) {
-
+	public void setEditState(Hashtable h) {
+		if (h.containsKey("grid")) {
+			grid = ((Boolean) h.get("grid"));
+		}
 	}
 
 	public void setState(Hashtable state) {
@@ -183,8 +212,10 @@ public class MathScratchPanel extends JPanel implements InteractiePanel, CBookAw
 
 	}
 
-	public void zetOpdracht(Hashtable editState, String[] names, Hashtable random) {
-
+	public void zetOpdracht(Hashtable h, String[] names, Hashtable random) {
+		if (h.containsKey("grid")) {
+			grid = ((Boolean) h.get("grid"));
+		}
 	}
 	
 //	public void setSize(int width, int height) {
@@ -201,10 +232,19 @@ public class MathScratchPanel extends JPanel implements InteractiePanel, CBookAw
 	public void addCBookEventListener(CBookEventListener listener, String command) {
 		cbookEventHandler.addCBookEventListener(listener, command);
 	}
+	
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+	}
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] commands = { "graph" };
+		String[] commands = {"drawing",
+				"action.setCorrect", 
+				"action.setFalse", 
+				"action.setHalf"
+				};
 		return commands;
 	}
 
@@ -218,12 +258,26 @@ public class MathScratchPanel extends JPanel implements InteractiePanel, CBookAw
 
 	@Override
 	public String[] getSendCmds() {
-		String[] commands = { "action.correct", "action.false", "text.feedback", "graph" };
+		String[] commands = {"drawing",	
+				"equation", 
+				"equation.correct", 
+				"action.check", 
+				"action.check.n",
+				"action.closePopup", 
+				"equation.1", 
+				"equation.2", 
+				"equation.3", 
+				"equation.4", 
+				"equation.5",
+				"equation.6",
+				"equation.7",
+				"equation.8",
+				"equation.9",
+				"equation.10",
+				"text.strokecode"
+				};
 		return commands;
 	}
 
-	@Override
-	public void removeCBookEventListener(CBookEventListener listener, String command) {
-		cbookEventHandler.removeCBookEventListener(listener, command);
-	}
+	
 }

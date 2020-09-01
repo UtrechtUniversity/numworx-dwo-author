@@ -1,5 +1,6 @@
 package fi.mathscratch;
 
+import java.awt.Color;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -16,6 +17,17 @@ public class MathScratch extends JApplet implements WiskOpdrApplet {
 	protected static String langArg;
 	private Model model;
 	private MathScratchPanel interactiePanel;
+	
+	public static Color colorBlue1 = new Color(49,71,112);
+	public static Color colorBlue2 = new Color(38,115,182);
+	public static Color colorBlue3 = new Color(120,150,202);
+	public static Color colorBlue4 = new Color(180,195,228);
+	public static Color colorBlue5 = new Color(211,229,244);
+	public static Color colorBlue6 = new Color(229,240,249);
+	
+	public static Color colorGray1 = new Color(206,207,208);
+	public static Color colorGray2 = new Color(221,223,225);
+	public static Color colorGray3 = new Color(237,239,241);
 	
 	public MathScratch() {
 		langArg = "nl";

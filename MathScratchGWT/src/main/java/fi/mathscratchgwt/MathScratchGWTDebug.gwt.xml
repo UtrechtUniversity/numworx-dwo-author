@@ -12,6 +12,9 @@
 
   <!-- Other module inherits                                      -->
    <inherits name="nl.uu.fi.dwo.interaction.Interaction" />
+   <inherits name='com.vaadin.pointerevents.PointerEvents' />
+   <inherits name='nl.uu.fi.dwo.formule.Formule' />
+  <inherits name='fi.writemathgwt.WriteMathGWT-DWO' />
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='fi.mathscratchgwt.client.MathScratchGWTDebug' />
