@@ -111,9 +111,9 @@ private void setTrack(Track track) {
 						t = new Polygon(array);
 					else
 						t = new Triangle(array);
-					t = visit(t);
 					addSegment(model,p);
 					model.add(t);
+					t = visit(t);
 					points.clear();
 					setTrack(new Track(x,y));
 					state = 0;
