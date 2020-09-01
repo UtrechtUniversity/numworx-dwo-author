@@ -66,8 +66,8 @@ public class AddCirkelHandler extends EventHandler {
 					Volgpunt p2;
 					p1 = p2 = new Volgpunt((Punt) p);
 					p2.moveTo(x, y);
-					visit(p1);
 					model.add(p1);
+					visit(p1);
 				} else
 				{
 					p1 = visit(model.buildPunt(x, y));
