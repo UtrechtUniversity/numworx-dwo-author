@@ -149,10 +149,18 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	}
 
 	public SpeelVeld(int width, int height) {
-		this.width = width;
-		this.height = height;
 		canvas = Canvas.createIfSupported();
 	    context = canvas.getContext2d();
+		setCoordinates(width, height);
+	    
+		status = new Label(" ");
+		setTrack(contexts.values());
+		initHandlers(canvas);
+	}
+
+	private void setCoordinates(int width, int height) {
+		this.width = width;
+		this.height = height;
 	    canvas.setPixelSize(width,height);	    
 		double ratio = nl.uu.fi.dwo.interaction.client.TekstComponent.getDeviceRatio(context); // retina screens
 		if(ratio > 1.0) {
@@ -164,13 +172,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 			this.canvas.setCoordinateSpaceHeight(height);
 			this.canvas.setCoordinateSpaceWidth(width);
 		}
-
-	    
-		status = new Label(" ");
 		ll.setClip(0, 0, width, height);
 		rr.setClip(0, 0, width, height);
-		setTrack(contexts.values());
-		initHandlers(canvas);
 	}
 	
 	private void initHandlers(final Canvas canvas) {
@@ -445,15 +448,9 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public void init(int w, int h) {
-		width = w;
-		height = h;
 		offX=0;
 		offY=0;
-		canvas.setPixelSize(width,height);
-	    canvas.setCoordinateSpaceWidth(width);
-	    canvas.setCoordinateSpaceHeight(height);
-		ll.setClip(0, 0, width, height);
-		rr.setClip(0, 0, width, height);
+		setCoordinates(w, h);
 	}
 
 	@Override
