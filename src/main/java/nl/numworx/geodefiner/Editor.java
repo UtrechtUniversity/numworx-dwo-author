@@ -116,6 +116,14 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	boolean[][] getChoices() {
 		return checkDWO.getChoices();
 	}
+	
+	void setObjectives(String[] objectives) {
+		checkDWO.setObjectives(objectives);
+	}
+	
+	String[] getObjectives() {
+		return checkDWO.getObjectives();
+	}
 
 	private final CheckObjectsPanel checkObjects;
 	private ToolboxPanel toolbox;

@@ -10,7 +10,6 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import fi.beans.numworxlf.JCheckBox;
@@ -36,6 +35,7 @@ import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
+@SuppressWarnings("serial")
 public class CheckDWOPanel extends JPanel implements ChangeListener, ActionListener {
 
 	private static final Integer DEFAULT_SCORE = Integer.valueOf(10);
@@ -47,7 +47,7 @@ public class CheckDWOPanel extends JPanel implements ChangeListener, ActionListe
 	
 	@Inject @Named("checkBtn") javax.swing.JButton checkBtn;
 	@Inject @Named("validator") JComponent validator = this;
-	ObjectiveChoiceButton objBtn;
+	private ObjectiveChoiceButton objBtn;
 
 	@Inject void setTracker(Tracker tracker) {
 		this.tracker = tracker;
@@ -179,9 +179,20 @@ public class CheckDWOPanel extends JPanel implements ChangeListener, ActionListe
 			objBtn.setChoices(choices);
 	}
 
+	public void setObjectives(String[] objectives) {
+		if (objBtn != null)
+			objBtn.setObjectives(objectives);
+	}
+	
 	public boolean[][] getChoices() {
 		if(objBtn != null)
 			return objBtn.getChoices();
+		return null;
+	}
+	
+	public String[] getObjectives() {
+		if (objBtn != null)
+			return objBtn.getObjectives();
 		return null;
 	}
 

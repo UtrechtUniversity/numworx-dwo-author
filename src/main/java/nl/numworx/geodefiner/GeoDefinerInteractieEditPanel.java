@@ -41,14 +41,18 @@ public class GeoDefinerInteractieEditPanel extends JPanel implements
 		boolean[][] logObjectives = (boolean[][]) b.get("logObjectives");
 		if (logObjectives != null)
 			editor.setChoices(logObjectives);
+		String[] smObjectives = (String[]) b.get(fi.wiskopdr.domainmodel.Constants.OBJECTIVES);
+		if (smObjectives != null) 
+			editor.setObjectives(smObjectives);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Hashtable getEditState() {
 		Hashtable map = new Hashtable( editor.getLaunchData() );
 		int scoreMax = editor.getMaxScore();
-		boolean[][] logObjectives;
+		boolean[][] logObjectives; String[] smObjectives;
 		logObjectives = editor.getChoices();
+		smObjectives = editor.getObjectives();
 		map.put("scoreMax", scoreMax);
         if(logObjectives!=null)
         {	map.put("logObjectives",logObjectives);
@@ -61,6 +65,9 @@ public class GeoDefinerInteractieEditPanel extends JPanel implements
 				}
     		}
         	map.put("scoreMaxObjectives",scoreMaxObjectives);
+        }
+        if (smObjectives != null) {
+        	map.put(fi.wiskopdr.domainmodel.Constants.OBJECTIVES, smObjectives);
         }
 		return map;
 	}
