@@ -2049,7 +2049,15 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		randomCB.setSelected(random);
 		randomTF.setVisible(random);
-		randomTF.setText(randomVar);
+		String s = randomVar;
+		if(s.length()==5) {
+			Boolean b1 = s.charAt(1)=='?';
+			Boolean b2 = s.charAt(2)=='(';
+			Boolean b4 = s.charAt(4)==')';
+			if(b1 && b2 && b4) 
+				s = ""+s.charAt(0) + s.charAt(3);
+		}
+		randomTF.setText(s);
 		randomTab.setVisible(random);
 		aantalTabsKnop.setVisible(random);
 		tabPositieKnop.setVisible(random);
@@ -2301,8 +2309,15 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         }
         if(e.getSource().equals(randomTF))
 		{	randomVar = randomTF.getText();
-			updateTekstVakPanel();
-		}
+        		String s = randomTF.getText();
+        		if(s.length()==2) {
+        			char char0 = s.charAt(0);
+        			char char1 = s.charAt(1);
+        			if(Character.isLetter(char0) && Character.isDigit(char1)) 
+        				randomVar = char0+"?("+char1+")";
+        		}
+        		updateTekstVakPanel();
+        	}
         if(e.getSource().equals(responsiveToggleWidthTF))
         {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
             updateTekstVakPanel();
@@ -2779,6 +2794,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		if(e.getSource().equals(randomTF))
 		{	randomVar = randomTF.getText();
+			String s = randomTF.getText();
+			if(s.length()==2) {
+				char char0 = s.charAt(0);
+				char char1 = s.charAt(1);
+				if(Character.isLetter(char0) && Character.isDigit(char1)) 
+					randomVar = char0+"?("+char1+")";
+			}
 			updateTekstVakPanel();
 		}
 		
