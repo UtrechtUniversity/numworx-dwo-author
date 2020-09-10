@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.vectomatic.dom.svg.OMSVGDocument;
 import org.vectomatic.dom.svg.OMSVGElement;
@@ -59,10 +60,13 @@ import com.vaadin.pointerevents.client.PointerUpHandler;
 import fi.writemathgwt.client.engine.Point;
 import fi.writemathgwt.client.engine.Stroke;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
+import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 public class MathScratchField {
 
+	private static Logger logger = Logger.getLogger("MathScratchField");
+	
 	public static CssColor colorBlue1 = CssColor.make(49,71,112);
 	public static CssColor colorBlue2 = CssColor.make(38,115,182);
 	public static CssColor colorBlue3 = CssColor.make(120,150,202);
@@ -95,7 +99,7 @@ public class MathScratchField {
 	
 	private OMSVGSVGElement svg;
 	private SVGImage svgImage;
-	private OMSVGDocument doc;
+	 OMSVGDocument doc;
 	private SVGManager svgManager;
 	
 	private Canvas mathScratchCanvas, backgroundCanvas;
@@ -266,8 +270,8 @@ public class MathScratchField {
 			sc.setFormuleModus(!showWriting);
 			sc.setState(strokeContainerList.get(sCnt));
 			kStrokeContainers.add(sc);
-			svgManager.appendStrokeContainers();
 		}
+		svgManager.appendStrokeContainers();
 		addToHistory();
 
 		List<Map<String, Object>> hiddenStrokeContainerList = new ArrayList<Map<String, Object>>();
@@ -336,6 +340,7 @@ public class MathScratchField {
 	private int proActiveY;
 	private boolean writing;
 	private boolean moving;
+	private boolean movingStrokes;
 	private Point activeTranslation = new Point(0, 0);
 
 	public Point getActiveTranslation() {
@@ -557,7 +562,7 @@ public class MathScratchField {
 
 		if (currentStrokeContainer != null && currentStrokeContainer.isNotRelevantWhenReady()) {
 			kStrokeContainers.remove(currentStrokeContainer);
-			svgManager.appendStrokeContainers();
+			svgManager.removeStrokeContainer(currentStrokeContainer);
 			currentStrokeContainer = null;
 			return;
 		}
@@ -573,6 +578,7 @@ public class MathScratchField {
 		activeTranslation.x = 0;
 		activeTranslation.y = 0;
 		lastCurrentStrokeContainer = currentStrokeContainer;
+		svgManager.addStrokeContainer(currentStrokeContainer);
 		currentStrokeContainer = null;
 		activeHSCNumber = 0;
 		eigenaar.fireClose();
@@ -599,6 +605,7 @@ public class MathScratchField {
 		activeTranslation.y = 0;
 		currentHiddenStrokeContainer = null;
 		activeHSCNumber = 0;
+		svgManager.removeCurrentSC();
 
 	}
 
@@ -696,6 +703,7 @@ public class MathScratchField {
 			currentStrokeContainer.setActive(true);
 			lastCurrentStrokeContainer = null;
 		}
+		svgManager.appendCurrentSC(currentStrokeContainer);
 		//paint();
 	}
 	
@@ -754,6 +762,19 @@ public class MathScratchField {
 	
 	public void setAreaSetting(Map areaSettings) {
 		this.areaSettings = areaSettings;
+		ObjectMap launchState = JSONUtilities.wrapMap(areaSettings);
+		ObjectList rectangles = launchState.getObjectList("rectangleData");
+		int[][] data = new int[rectangles.size()][4];
+		for(int i=0 ; i<rectangles.size() ; i++) {
+			int[] rectAttr = rectangles.getIntArray(i);
+			for(int j=0 ; j<4 ; j++) {
+				data[i][j]=rectAttr[j];
+			}
+		}
+		for(int i=0 ; i<data.length ; i++) {
+			hiddenSCRectangles.add(new Rectangle(data[i][0],data[i][1],data[i][2],data[i][3]));
+			hiddenStrokeContainers.add(new KStrokeContainer(this,new Rectangle(data[i][0],data[i][1],data[i][2],data[i][3])));
+		}
 	}
 	
 	public void setGrid(boolean grid) {
@@ -795,6 +816,7 @@ public class MathScratchField {
 			currentHiddenStrokeContainer = findHiddenStrokeContainer(eventX, eventY);
 			if (currentHiddenStrokeContainer != null) {
 				currentHiddenStrokeContainer.setActive(true);
+				svgManager.appendCurrentSC(currentHiddenStrokeContainer);
 				if (currentHiddenStrokeContainer.getStrokeCount() > 0)
 					return;
 				currentHiddenStrokeContainer.getWriteBox();
@@ -809,6 +831,7 @@ public class MathScratchField {
 					&& currentHiddenStrokeContainer.isActive()) {
 				eigenaar.sendEquation(activeHSCNumber);
 				closeCurrentHiddenContainer();
+				svgManager.removeCurrentSC();
 				addToHistory();
 				paint();
 				return;
@@ -817,6 +840,7 @@ public class MathScratchField {
 					&& currentHiddenStrokeContainer.isActive()) {
 				eigenaar.sendEquation(activeHSCNumber);
 				closeCurrentHiddenContainer();
+				svgManager.removeCurrentSC();
 				paint();
 				eigenaar.fireCheck_n();
 				return;
@@ -828,12 +852,14 @@ public class MathScratchField {
 			if (currentHiddenStrokeContainer.getApproxButtonArea().contains(eventX, eventY)
 					&& currentHiddenStrokeContainer.isActive()) {
 				currentHiddenStrokeContainer.approximate();
+				svgManager.appendCurrentSC(currentHiddenStrokeContainer);
 				paintFormule(false);
 				return;
 			}
 
 			if (!currentHiddenStrokeContainer.writeBoxContains(eventX, eventY)) {
 				closeCurrentHiddenContainer();
+				svgManager.removeCurrentSC();
 				// addToHistory();
 				paint();
 				// eigenaar.setChanged();
@@ -850,6 +876,8 @@ public class MathScratchField {
 		}
 
 		if (currentStrokeContainer != null && currentStrokeContainer.getHandleArea().contains(eventX, eventY)) {
+			if(currentStrokeContainer.recognizeOff)
+				movingStrokes = true;
 			moving = true;
 			return;
 		}
@@ -857,8 +885,9 @@ public class MathScratchField {
 		if (currentStrokeContainer != null && currentStrokeContainer.getCloseButtonArea().contains(eventX, eventY)) {
 			if (activeHSCNumber > 0)
 				eigenaar.sendEquation(activeHSCNumber);
+			
 			closeCurrentContainer();
-			svgManager.appendStrokeContainers();
+			//svgManager.appendStrokeContainers();
 			addToHistory();
 			paint();
 			eigenaar.fireStrokeCodes();
@@ -867,25 +896,30 @@ public class MathScratchField {
 
 		if (currentStrokeContainer != null && currentStrokeContainer.getEraserButtonArea().contains(eventX, eventY)) {
 			currentStrokeContainer.setEraserActive(true);
+			svgManager.enablePenButtonSVG(false);
+			svgManager.enableEraserButtonSVG(true);
 			paintFormule(false);
 			return;
 		}
 
 		if (currentStrokeContainer != null && currentStrokeContainer.getPenButtonArea().contains(eventX, eventY)) {
 			currentStrokeContainer.setEraserActive(false);
+			svgManager.enablePenButtonSVG(true);
+			svgManager.enableEraserButtonSVG(false);
 			paintFormule(false);
 			return;
 		}
 
 		if (currentStrokeContainer != null && currentStrokeContainer.getBinButtonArea().contains(eventX, eventY)) {
 			currentStrokeContainer.wis();
-			svgManager.appendStrokeContainers();
+			svgManager.appendCurrentSC(currentStrokeContainer);
 			paintFormule(false);
 			return;
 		}
 
 		if (currentStrokeContainer != null && currentStrokeContainer.getUndoButtonArea().contains(eventX, eventY)) {
 			currentStrokeContainer.eraseLastStroke();
+			svgManager.appendCurrentSC(currentStrokeContainer);
 			paintFormule(false);
 			return;
 		}
@@ -896,7 +930,7 @@ public class MathScratchField {
 			if (activeHSCNumber > 0)
 				eigenaar.sendEquation(activeHSCNumber);
 			closeCurrentContainer();
-			svgManager.appendStrokeContainers();
+			//svgManager.appendStrokeContainers();
 			addToHistory();
 			paint();
 			eigenaar.fireStrokeCodes();
@@ -917,6 +951,7 @@ public class MathScratchField {
 				&& !(currentStrokeContainer.isCorrect() || currentStrokeContainer.isFalse()
 						|| currentStrokeContainer.isHalf())) {
 			currentStrokeContainer.setRecognizeOff(true);
+			svgManager.appendCurrentSC(currentStrokeContainer);
 			paintFormule(false);
 			return;
 		}
@@ -925,6 +960,7 @@ public class MathScratchField {
 				&& currentStrokeContainer.writeBoxContains(eventX, eventY)) {
 			currentStrokeContainer.eraseStrokes(eventX, eventY);
 			currentStrokeContainer.setErasing(true, eventX, eventY);
+			svgManager.appendCurrentSC(currentStrokeContainer);
 			paintFormule(false);
 			return;
 		}
@@ -943,6 +979,7 @@ public class MathScratchField {
 
 		if (currentStrokeContainer != null && currentStrokeContainer.getApproxButtonArea().contains(eventX, eventY)) {
 			currentStrokeContainer.approximate();
+			svgManager.appendCurrentSC(currentStrokeContainer);
 			paintFormule(false);
 			return;
 		}
@@ -960,6 +997,7 @@ public class MathScratchField {
 
 		if (currentStrokeContainer == null && getBinArea().contains(eventX, eventY)) {
 			kStrokeContainers.clear();
+			svgManager.removeStrokeContainers();
 			addToHistory();
 			eigenaar.setChanged();
 		}
@@ -976,7 +1014,7 @@ public class MathScratchField {
 			proActiveX = proActiveStrokeContainer.getBox().x;
 			proActiveY = proActiveStrokeContainer.getBox().y;
 			proActiveStrokeContainer.setProActive(true);
-			svgManager.startTranslateSC(kStrokeContainers.indexOf(proActiveStrokeContainer));
+			svgManager.startTranslateSC(proActiveStrokeContainer);
 			paint();
 			paintFormule(true);
 			return;
@@ -1038,8 +1076,9 @@ public class MathScratchField {
 			int dx = eventX - startX;
 			int dy = eventY - startY;
 			proActiveStrokeContainer.translate(dx, dy);
-			int nr = kStrokeContainers.indexOf(proActiveStrokeContainer);
-			svgManager.translateSC(nr, dx, dy);
+			//int nr = kStrokeContainers.indexOf(proActiveStrokeContainer);
+			//svgManager.translateSC(nr, dx, dy);
+			svgManager.translateSC(proActiveStrokeContainer, dx, dy);
 			startX = eventX;
 			startY = eventY;
 			paintFormule(true);
@@ -1050,11 +1089,18 @@ public class MathScratchField {
 				formulaStrokePointsDouble.clear();
 				int dx = eventX - startX;
 				int dy = eventY - startY;
+				
+				if(movingStrokes)
+					svgManager.translateCurrentSCStrokes(dx,dy);
+				else {
+					svgManager.translateCurrentSC(dx,dy);
+				}
 				currentStrokeContainer.translate(dx, dy);
 				activeTranslation.x += dx;
 				activeTranslation.y += dy;
 				paintFormule(true);
-				svgManager.translateCurrentSC(dx,dy);
+				
+				//svgManager.appendCurrentSC(currentStrokeContainer);
 				startX = eventX;
 				startY = eventY;
 			} else if (currentHiddenStrokeContainer != null) {
@@ -1064,6 +1110,7 @@ public class MathScratchField {
 				int dy = eventY - startY;
 				currentHiddenStrokeContainer.translate(dx, dy);
 				currentHiddenStrokeContainer.getDefaultBox().translate(dx, dy);
+				svgManager.translateCurrentSC(dx,dy);
 				activeTranslation.x += dx;
 				activeTranslation.y += dy;
 				paintFormule(true);
@@ -1101,7 +1148,7 @@ public class MathScratchField {
 	}
 
 	public void mouseUpTouchEndAction(int eventX, int eventY) {
-		moving = false;
+		//movingStrokes = false;
 		if (currentHiddenStrokeContainer != null) {
 			if (formulaStrokePointsDouble.size() > 0) {
 				double[] x = new double[formulaStrokePointsDouble.size()];
@@ -1110,6 +1157,7 @@ public class MathScratchField {
 					x[i] = formulaStrokePointsDouble.get(i).x;
 					y[i] = formulaStrokePointsDouble.get(i).y;
 				}
+				logger.info("hidden make stroke");
 				Stroke strokeNew = new Stroke(x, y);
 				if (strokeNew.getParsePointsbox().getDiagonal() > 15
 						|| currentHiddenStrokeContainer.getStrokeCount() > 0) {
@@ -1117,6 +1165,7 @@ public class MathScratchField {
 					currentHiddenStrokeContainer.setCorrect(false);
 					currentHiddenStrokeContainer.setFalse(false);
 					currentHiddenStrokeContainer.setHalf(false);
+					svgManager.appendCurrentSC(currentHiddenStrokeContainer);
 					if (currentHiddenStrokeContainer.getStrokeCount() == 1)
 						paint();
 				}
@@ -1137,6 +1186,11 @@ public class MathScratchField {
 			svgManager.removeFormulaStroke();
 			formulaStrokePointsDouble.clear();
 
+			if(moving) {
+				svgManager.appendCurrentSC(currentHiddenStrokeContainer);
+				moving = false;
+			}
+			
 			paintFormule(true);
 			if (currentHiddenStrokeContainer == null)
 				eigenaar.sendDrawing();
@@ -1149,7 +1203,8 @@ public class MathScratchField {
 			if (eventX > breedte - 60 && eventY < 60 || proActiveStrokeContainer.getBox().x > breedte
 					|| proActiveStrokeContainer.getBox().y > hoogte) {
 				kStrokeContainers.remove(proActiveStrokeContainer);
-				svgManager.appendStrokeContainers();
+				svgManager.removeStrokeContainer(proActiveStrokeContainer);
+				//svgManager.appendStrokeContainers();
 				proActiveStrokeContainer = null;
 				addToHistory();
 				paint();
@@ -1163,11 +1218,12 @@ public class MathScratchField {
 				currentStrokeContainer = proActiveStrokeContainer;
 				currentStrokeContainer.scale(schrijfLeesFactor / 1.0);
 				currentStrokeContainer.setActive(true);
+				svgManager.appendCurrentSC(currentStrokeContainer);
 				currentStrokeContainer.setNr(kStrokeContainers.indexOf(currentStrokeContainer));
 
 			}
 			proActiveStrokeContainer.setProActive(false);
-			svgManager.stopTranslateSC(kStrokeContainers.indexOf(proActiveStrokeContainer));
+			svgManager.stopTranslateSC(proActiveStrokeContainer);
 			proActiveStrokeContainer = null;
 			addToHistory();
 			paint();
@@ -1190,8 +1246,13 @@ public class MathScratchField {
 			currentStrokeContainer.setCorrect(false);
 			currentStrokeContainer.setFalse(false);
 			currentStrokeContainer.setHalf(false);
-			if (currentStrokeContainer.getStrokeCount() == 1) {
+			//svgManager.appendCurrentSC(currentStrokeContainer);
+			if(currentStrokeContainer.recognizeOff && currentStrokeContainer.getStrokeCount() > 1)
+				svgManager.addStrokeCurrentSC(stroke);
+			else
 				svgManager.appendCurrentSC(currentStrokeContainer);
+			if (currentStrokeContainer.getStrokeCount() == 1) {
+				//svgManager.appendCurrentSC(currentStrokeContainer);
 				paint();
 			}
 		}
@@ -1199,7 +1260,8 @@ public class MathScratchField {
 		if (currentStrokeContainer != null && currentStrokeContainer.isNotRelevant()
 				&& !currentStrokeContainer.getRecognizeOff()) {
 			kStrokeContainers.remove(currentStrokeContainer);
-			svgManager.appendStrokeContainers();
+			svgManager.removeStrokeContainer(currentStrokeContainer);
+			//svgManager.appendStrokeContainers();
 			svgManager.removeCurrentSC();
 			currentStrokeContainer = null;
 			eigenaar.fireStrokeCodes();
@@ -1217,7 +1279,16 @@ public class MathScratchField {
 		formulaStrokePoints.clear();
 		svgManager.removeFormulaStroke();
 		formulaStrokePointsDouble.clear();
-		svgManager.appendCurrentSC(currentStrokeContainer);
+		
+		if(movingStrokes) {
+			svgManager.stopTranslateSCStrokes();
+			movingStrokes = false;
+		}
+		if(moving) {
+			svgManager.appendCurrentSC(currentStrokeContainer);
+			moving = false;
+		}
+		//
 		paintFormule(true);
 		if (currentStrokeContainer == null)
 			eigenaar.sendDrawing();
@@ -1371,7 +1442,7 @@ public class MathScratchField {
 			if (hasPointerEventSupport)
 				return;
 
-			moving = false;
+			//moving = false;
 			mouseUpTouchEndAction(lastTouchX, lastTouchY);
 		}
 	}
@@ -1435,7 +1506,7 @@ public class MathScratchField {
 			e.stopPropagation();
 			e.preventDefault();
 
-			moving = false;
+			//moving = false;
 			mouseUpTouchEndAction(lastTouchX, lastTouchY);
 
 			e.preventDefault();

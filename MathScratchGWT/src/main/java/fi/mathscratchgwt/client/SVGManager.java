@@ -13,6 +13,9 @@ import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.utils.SVGConstants;
 
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.dom.client.Style.Unit;
+
+import java.util.HashMap;
 
 import fi.writemathgwt.client.engine.Point;
 import fi.writemathgwt.client.engine.Stroke;
@@ -53,16 +56,29 @@ public class SVGManager {
 	private OMSVGSVGElement svgSCShadow;
 	
 	private OMSVGSVGElement svgCurrentSC;
+	private OMSVGSVGElement svgCurrentSCStrokes;
+	private OMSVGSVGElement svgCurrentSCGrid;
 	private OMSVGSVGElement svgCheckButton;
 	private OMSVGSVGElement svgCloseButton;
 	private OMSVGSVGElement svgCalculatorButton;
 	private OMSVGSVGElement svgDrawButton;
 	private OMSVGSVGElement svgFormButton;
 	private OMSVGSVGElement svgHandleButton;
+	private OMSVGSVGElement svgPenButton;
+	private OMSVGSVGElement svgEraserButton;
+	private OMSVGSVGElement svgUndoButton;
+	private OMSVGSVGElement svgBinButton;
+	
 	
 	private ArrayList<OMNode> currentSCNodes = new ArrayList<OMNode>(); 
+	private ArrayList<OMNode> currentSCStrokeNodes = new ArrayList<OMNode>(); 
+	private ArrayList<OMNode> currentSCGridNodes = new ArrayList<OMNode>(); 
 	private ArrayList<ArrayList<OMNode>> scNodes = new ArrayList<ArrayList<OMNode>>();
+	
+	private HashMap<KStrokeContainer,OMSVGSVGElement> scMap = new HashMap<KStrokeContainer, OMSVGSVGElement>();
+	private HashMap<Stroke,OMSVGPathElement> currentSCStrokeMap = new HashMap<Stroke, OMSVGPathElement>();
 
+	
 	public SVGManager(MathScratchField mathScratchField, OMSVGDocument doc, OMSVGSVGElement svg, int width, int height) {
 		this.mathScratchField = mathScratchField;
 		this.doc = doc;
@@ -71,6 +87,8 @@ public class SVGManager {
 		this.height = height;
 		
 		svgCurrentSC = doc.createSVGSVGElement();
+		svgCurrentSCStrokes = doc.createSVGSVGElement();
+		svgCurrentSCGrid = doc.createSVGSVGElement();
 		
 		initCloseButtonSVG();
 		initCheckButtonSVG();
@@ -78,6 +96,70 @@ public class SVGManager {
 		initDrawButtonSVG();
 		initFormButtonSVG();
 		initHandleButtonSVG();
+		initPenButtonSVG();
+		initEraserButtonSVG();
+		initUndoButtonSVG();
+		initBinButtonSVG();
+	}
+	
+	public void drawGoedSVG(OMSVGSVGElement svgGoed) {
+		OMSVGCircleElement goed = doc.createSVGCircleElement(9, 9, 9);
+		goed.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, ""+CssColor.make(74,163,91));
+		svgGoed.appendChild(goed);
+		
+		OMSVGPathElement vink = doc.createSVGPathElement();
+		OMSVGPathSegList segsVink = vink.getPathSegList();
+		segsVink.appendItem(vink.createSVGPathSegMovetoAbs(4, 9));
+		segsVink.appendItem(vink.createSVGPathSegLinetoAbs(8, 12));
+		segsVink.appendItem(vink.createSVGPathSegLinetoAbs(13, 5));
+		segsVink.appendItem(vink.createSVGPathSegMovetoAbs(4, 9));
+		segsVink.appendItem(vink.createSVGPathSegClosePath());
+		vink.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, "white");
+		vink.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+		vink.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 2.4);
+		
+		svgGoed.appendChild(vink);
+	}
+	
+	public void drawFoutSVG(OMSVGSVGElement svgFout) {
+		OMSVGCircleElement fout = doc.createSVGCircleElement(9, 9, 9);
+		fout.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, ""+CssColor.make(217,56,49));
+		svgFout.appendChild(fout);
+		
+		OMSVGPathElement kruis = doc.createSVGPathElement();
+		OMSVGPathSegList segsKruis = kruis.getPathSegList();
+		segsKruis.appendItem(kruis.createSVGPathSegMovetoAbs(5, 5));
+		segsKruis.appendItem(kruis.createSVGPathSegLinetoAbs(13, 13));
+		segsKruis.appendItem(kruis.createSVGPathSegMovetoAbs(5, 13));
+		segsKruis.appendItem(kruis.createSVGPathSegLinetoAbs(13, 5));
+		segsKruis.appendItem(kruis.createSVGPathSegClosePath());
+		kruis.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, "white");
+		kruis.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+		kruis.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 2.0);
+		
+		svgFout.appendChild(kruis);
+	}
+	
+	public void drawHalfSVG(OMSVGSVGElement svgHalf) {
+		OMSVGCircleElement half = doc.createSVGCircleElement(9, 9, 8.4f);
+		half.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, ""+CssColor.make(253,232,53));
+		half.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, ""+CssColor.make(150,150,150));
+		half.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 1.2);
+		svgHalf.appendChild(half);
+		
+		OMSVGPathElement vink = doc.createSVGPathElement();
+		OMSVGPathSegList segsVink = vink.getPathSegList();
+		segsVink.appendItem(vink.createSVGPathSegMovetoAbs(4, 9));
+		segsVink.appendItem(vink.createSVGPathSegLinetoAbs(8, 12));
+		segsVink.appendItem(vink.createSVGPathSegLinetoAbs(13, 5));
+		segsVink.appendItem(vink.createSVGPathSegMovetoAbs(4, 9));
+		segsVink.appendItem(vink.createSVGPathSegClosePath());
+		vink.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, ""+CssColor.make(150,150,150));
+		vink.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+		vink.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 2.4);
+		
+		svgHalf.appendChild(vink);
+		
 	}
 	
 	public void initCloseButtonSVG() {
@@ -189,7 +271,7 @@ public class SVGManager {
 		svgDrawButton.appendChild(drawButton);
 	}
 	
-	private void enableDrawButtonSVG(boolean b) {
+	public void enableDrawButtonSVG(boolean b) {
 		if(b)
 			((OMSVGRectElement)svgDrawButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue2.toString());
 		else
@@ -226,11 +308,179 @@ public class SVGManager {
 		svgFormButton.appendChild(formButton);
 	}
 	
-	private void enableFormButtonSVG(boolean b) {
+	public void enableFormButtonSVG(boolean b) {
 		if(b)
 			((OMSVGRectElement)svgFormButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue2.toString());
 		else
 			((OMSVGRectElement)svgFormButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue4.toString());
+	}
+	
+	public void initPenButtonSVG() {
+		svgPenButton = doc.createSVGSVGElement();
+		Rectangle r = new Rectangle(0,0,25,25);
+		float x = (float)r.x+(float)r.width/8;
+		float y = (float)r.y+(float)r.height/8;
+		float w = 3*(float)r.width/4;
+		float h = 3*(float)r.height/4;
+		OMSVGRectElement rect = doc.createSVGRectElement(r.x, r.y, r.width, r.height, 0, 0);
+		rect.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue2.toString());
+		svgPenButton.appendChild(rect);
+		
+		OMSVGPathElement penButton = doc.createSVGPathElement();
+		OMSVGPathSegList segsPenButton = penButton.getPathSegList();
+		segsPenButton.appendItem(penButton.createSVGPathSegMovetoAbs(x, y+h));
+		segsPenButton.appendItem(penButton.createSVGPathSegLinetoAbs(x, y+3*h/4));
+		segsPenButton.appendItem(penButton.createSVGPathSegLinetoAbs(x+3*w/4, y));
+		segsPenButton.appendItem(penButton.createSVGPathSegLinetoAbs(x+w, y+h/4));
+		segsPenButton.appendItem(penButton.createSVGPathSegLinetoAbs(x+w/4, y+h));
+		segsPenButton.appendItem(penButton.createSVGPathSegLinetoAbs(x, y+h));
+		segsPenButton.appendItem(penButton.createSVGPathSegLinetoAbs(x, y+3*h/4));
+		
+		segsPenButton.appendItem(penButton.createSVGPathSegMovetoAbs(x, y+3*h/4));
+		segsPenButton.appendItem(penButton.createSVGPathSegLinetoAbs(x+w/4, y+h));
+		
+//		segsPenButton.appendItem(penButton.createSVGPathSegLinetoAbs(x, y+3*h/4));
+//		segsPenButton.appendItem(penButton.createSVGPathSegLinetoAbs(x+w/4, y+h));
+//		
+		
+		segsPenButton.appendItem(penButton.createSVGPathSegMovetoAbs(x, y+h));
+		segsPenButton.appendItem(penButton.createSVGPathSegClosePath());
+		penButton.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, "white");
+		penButton.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+		penButton.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 2.0);
+		svgPenButton.appendChild(penButton);
+	}
+	
+	public void enablePenButtonSVG(boolean b) {
+		if(b)
+			((OMSVGRectElement)svgPenButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue2.toString());
+		else
+			((OMSVGRectElement)svgPenButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue4.toString());
+	}
+	
+	public void initEraserButtonSVG() {
+		svgEraserButton = doc.createSVGSVGElement();
+		Rectangle r = new Rectangle(0,0,25,25);
+		
+		int x = r.x+r.width/8;
+		int y = r.y+r.height/8;
+		int w = 3*r.width/4;
+		int h = 3*r.height/4;
+		OMSVGRectElement rect = doc.createSVGRectElement(r.x, r.y, r.width, r.height, 0, 0);
+		rect.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue4.toString());
+		svgEraserButton.appendChild(rect);
+		
+		OMSVGPathElement eraserButton = doc.createSVGPathElement();
+		OMSVGPathSegList segsEraserButton = eraserButton.getPathSegList();
+		segsEraserButton.appendItem(eraserButton.createSVGPathSegMovetoAbs(x+w/2, y));
+		segsEraserButton.appendItem(eraserButton.createSVGPathSegLinetoAbs(x+w, y));
+		segsEraserButton.appendItem(eraserButton.createSVGPathSegLinetoAbs(x+w/2, y+h));
+		segsEraserButton.appendItem(eraserButton.createSVGPathSegLinetoAbs(x, y+h));
+		segsEraserButton.appendItem(eraserButton.createSVGPathSegLinetoAbs(x+w/2, y));
+		segsEraserButton.appendItem(eraserButton.createSVGPathSegLinetoAbs(x+w, y));
+		segsEraserButton.appendItem(eraserButton.createSVGPathSegMovetoAbs(x+w/2, y));
+		segsEraserButton.appendItem(eraserButton.createSVGPathSegClosePath());
+		eraserButton.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, "white");
+		eraserButton.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+		eraserButton.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 2.0);
+		svgEraserButton.appendChild(eraserButton);
+		
+		OMSVGPathElement eraserButtonPart = doc.createSVGPathElement();
+		OMSVGPathSegList segsEraserButtonPart = eraserButtonPart.getPathSegList();
+		segsEraserButtonPart.appendItem(eraserButtonPart.createSVGPathSegMovetoAbs(x+w/4, y+h/2));
+		segsEraserButtonPart.appendItem(eraserButtonPart.createSVGPathSegLinetoAbs(x+3*w/4, y+h/2));
+		segsEraserButtonPart.appendItem(eraserButtonPart.createSVGPathSegLinetoAbs(x+w/2, y+h));
+		segsEraserButtonPart.appendItem(eraserButtonPart.createSVGPathSegLinetoAbs(x, y+h));
+		segsEraserButtonPart.appendItem(eraserButtonPart.createSVGPathSegLinetoAbs(x+w/4, y+h/2));
+		segsEraserButtonPart.appendItem(eraserButtonPart.createSVGPathSegLinetoAbs(x+3*w/4, y+h/2));
+		segsEraserButtonPart.appendItem(eraserButtonPart.createSVGPathSegMovetoAbs(x+w/4, y+h/2));
+		segsEraserButtonPart.appendItem(eraserButtonPart.createSVGPathSegClosePath());
+		eraserButtonPart.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "white");
+		svgEraserButton.appendChild(eraserButtonPart);
+	}
+	
+	public void enableEraserButtonSVG(boolean b) {
+		if(b)
+			((OMSVGRectElement)svgEraserButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue2.toString());
+		else
+			((OMSVGRectElement)svgEraserButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue4.toString());
+	}
+	
+	public void initUndoButtonSVG() {
+		svgUndoButton = doc.createSVGSVGElement();
+		Rectangle r = new Rectangle(0,0,25,25);
+		float x = (float)r.x+(float)r.width/8;
+		float y = (float)r.y+(float)r.height/8-5;
+		float w = 3*(float)r.width/4;
+		float h = 3*(float)r.height/4;
+		
+		OMSVGRectElement rect = doc.createSVGRectElement(r.x, r.y, r.width, r.height, 0, 0);
+		rect.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue4.toString());
+		svgUndoButton.appendChild(rect);
+		
+		OMSVGPathElement undoButton = doc.createSVGPathElement();
+		OMSVGPathSegList segsUndoButton = undoButton.getPathSegList();
+		segsUndoButton.appendItem(undoButton.createSVGPathSegMovetoAbs(x, y + h));
+		segsUndoButton.appendItem(undoButton.createSVGPathSegArcAbs(x + w , y + h, w / 2, w / 2, 180, true, true));
+		segsUndoButton.appendItem(undoButton.createSVGPathSegMovetoAbs(x, y-1 + h));
+		segsUndoButton.appendItem(undoButton.createSVGPathSegLinetoAbs(x , y-1 + h * 4 / 5));
+		segsUndoButton.appendItem(undoButton.createSVGPathSegLinetoAbs(x + w / 5, y-1 + h ));
+		segsUndoButton.appendItem(undoButton.createSVGPathSegLinetoAbs(x, y-1 + h));
+		segsUndoButton.appendItem(undoButton.createSVGPathSegLinetoAbs(x , y-1 + h * 4 / 5));
+		segsUndoButton.appendItem(undoButton.createSVGPathSegMovetoAbs(x + w / 6, y + h));
+		segsUndoButton.appendItem(undoButton.createSVGPathSegClosePath());
+		undoButton.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, "white");
+		undoButton.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+		undoButton.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 2.0);
+		svgUndoButton.appendChild(undoButton);
+	}
+	
+	public void enableUndoButtonSVG(boolean b) {
+		if(b)
+			((OMSVGRectElement)svgUndoButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue2.toString());
+		else
+			((OMSVGRectElement)svgUndoButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue4.toString());
+	}
+	
+	public void initBinButtonSVG() {
+		svgBinButton = doc.createSVGSVGElement();
+		Rectangle r = new Rectangle(0,0,25,25);
+		float x = (float)r.x+(float)r.width/8;
+		float y = (float)r.y+(float)r.height/8;
+		float w = 3*(float)r.width/4;
+		float h = 3*(float)r.height/4;
+		
+		OMSVGRectElement rect = doc.createSVGRectElement(r.x, r.y, r.width, r.height, 0, 0);
+		rect.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue4.toString());
+		svgBinButton.appendChild(rect);
+		
+		OMSVGPathElement binButton = doc.createSVGPathElement();
+		OMSVGPathSegList segsBinButton = binButton.getPathSegList();
+		segsBinButton.appendItem(binButton.createSVGPathSegMovetoAbs(x, y + h / 4));
+		segsBinButton.appendItem(binButton.createSVGPathSegLinetoAbs(x + w, y + h / 4));
+		segsBinButton.appendItem(binButton.createSVGPathSegMovetoAbs(x + w / 6, y + h / 4));
+		segsBinButton.appendItem(binButton.createSVGPathSegLinetoAbs(x + w / 4, y + h));
+		segsBinButton.appendItem(binButton.createSVGPathSegLinetoAbs(x + w * 3 / 4, y + h));
+		segsBinButton.appendItem(binButton.createSVGPathSegLinetoAbs(x + w * 5 / 6, y + h / 4));
+		segsBinButton.appendItem(binButton.createSVGPathSegMovetoAbs(x + w / 2, y + h / 4));
+		segsBinButton.appendItem(binButton.createSVGPathSegLinetoAbs(x + w / 2, y + h));
+		segsBinButton.appendItem(binButton.createSVGPathSegMovetoAbs(x + w * 3 / 8, y + h / 4));
+		segsBinButton.appendItem(binButton.createSVGPathSegLinetoAbs(x + w * 3 / 8, y));
+		segsBinButton.appendItem(binButton.createSVGPathSegLinetoAbs(x + w * 5 / 8, y));
+		segsBinButton.appendItem(binButton.createSVGPathSegLinetoAbs(x + w * 5 / 8, y + h / 4));
+		segsBinButton.appendItem(binButton.createSVGPathSegMovetoAbs(x, y + h / 4));
+		segsBinButton.appendItem(binButton.createSVGPathSegClosePath());
+		binButton.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, "white");
+		binButton.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+		binButton.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 2.0);
+		svgBinButton.appendChild(binButton);
+	}
+	
+	public void enableBinButtonSVG(boolean b) {
+		if(b)
+			((OMSVGRectElement)svgBinButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue2.toString());
+		else
+			((OMSVGRectElement)svgBinButton.getFirstChild()).getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, colorBlue4.toString());
 	}
 	
 	public void initHandleButtonSVG() {
@@ -275,6 +525,8 @@ public class SVGManager {
 		handle.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 1.5);
 		svgHandleButton.appendChild(handle);
 	}
+	
+	
 	
 	public void appendGrid() {
 		int lineDistance = 10;
@@ -357,18 +609,28 @@ public class SVGManager {
 			undo.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, colorBlue4.toString());
 	}
 	
-	public void appendStrokeContainers () {
-		removeStrokeContainers();
-		ArrayList<KStrokeContainer> strokeContainers = mathScratchField.getStrokeContainers();
-		if(strokeContainers.size()>0) {
-			enableBin(true);
-			enableUndo(true);
+	public void addStrokeContainer(KStrokeContainer sc) {
+		OMSVGSVGElement svgSC = doc.createSVGSVGElement();
+		ArrayList<OMNode> nodeList = new ArrayList<OMNode>();
+		
+		if(sc.formuleModus && !sc.recognizeOff) {
+			OMSVGSVGElement svgForm = doc.createSVGSVGElement();
+			if(!sc.recognizeOff && sc.formuleViewer!=null) {
+				float x = sc.getBox().x;
+				float y = sc.getBox().y;
+				sc.formuleViewer.setFont(FormuleFont.createFromFontSize(16));
+				sc.formuleViewer.setColor(CssColor.make(80, 80, 80));
+				sc.formuleViewer.getMainRegel().draw(svgForm);
+				svgForm.getX().getBaseVal().setValue(x);
+				svgForm.getY().getBaseVal().setValue(y);
+				//currentSCNodes.add(svgForm);
+				//svgCurrentSC.appendChild(svgForm);
+				nodeList.add(svgForm);
+				svgSC.appendChild(svgForm);
+			}
 		}
-		for(int i=0 ; i<strokeContainers.size() ; i++) {
-			OMSVGSVGElement svgSC = doc.createSVGSVGElement();
-			svgStrokeContainers.add(svgSC);
-			scNodes.add(new ArrayList<OMNode>());
-			ArrayList<Stroke> strokes = strokeContainers.get(i).strokeContainer.getStrokes();
+		else {
+			ArrayList<Stroke> strokes = sc.strokeContainer.getStrokes();
 			for(int j = 0 ; j < strokes.size() ; j++) {
 				Stroke stroke = strokes.get(j);
 				OMSVGPathElement strokePath = doc.createSVGPathElement();
@@ -393,8 +655,146 @@ public class SVGManager {
 				strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, ""+strokeColor);
 				strokePath.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
 				strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 1.5);
-				scNodes.get(i).add(strokePath);
+				
+				nodeList.add(strokePath);
 				svgSC.appendChild(strokePath);
+			}
+		}
+		float corrx = sc.getBox().x-34;
+		float corrY = sc. getBox().y + sc.getBox().height/2-7;
+		if(sc.isCorrect()) {
+			OMSVGSVGElement svgGoed = doc.createSVGSVGElement();
+			drawGoedSVG(svgGoed);
+			svgGoed.getX().getBaseVal().setValue(corrx);
+			svgGoed.getY().getBaseVal().setValue(corrY);
+			nodeList.add(svgGoed);
+			svgSC.appendChild(svgGoed);
+		}
+		else if(sc.isHalf()) {
+			OMSVGSVGElement svgHalf = doc.createSVGSVGElement();
+			drawHalfSVG(svgHalf);
+			svgHalf.getX().getBaseVal().setValue(corrx);
+			svgHalf.getY().getBaseVal().setValue(corrY);
+			nodeList.add(svgHalf);
+			svgSC.appendChild(svgHalf);
+		}
+		else if(sc.isFalse()) {
+			OMSVGSVGElement svgFout = doc.createSVGSVGElement();
+			drawFoutSVG(svgFout);
+			svgFout.getX().getBaseVal().setValue(corrx);
+			svgFout.getY().getBaseVal().setValue(corrY);
+			nodeList.add(svgFout);
+			svgSC.appendChild(svgFout);
+		}
+		
+		if(scMap.containsKey(sc)) {
+			try {
+				svg.replaceChild(svgSC, scMap.get(sc));
+				svgStrokeContainers.remove(scMap.get(sc));
+			} catch(Exception e) {}
+		}
+		else {
+			svg.appendChild(svgSC);
+		}
+		scMap.put(sc, svgSC);
+		svgStrokeContainers.add(svgSC);
+		scNodes.add(nodeList);
+	}
+	
+	public void removeStrokeContainer(KStrokeContainer sc) {
+		try {
+			svg.removeChild(scMap.get(sc));
+			svgStrokeContainers.remove(scMap.get(sc));
+		} catch(Exception e) {}
+		
+		scMap.remove(sc);
+	}
+	
+	public void appendStrokeContainers () {
+		removeStrokeContainers();
+		scMap.clear();
+		ArrayList<KStrokeContainer> strokeContainers = mathScratchField.getStrokeContainers();
+		if(strokeContainers.size()>0) {
+			enableBin(true);
+			enableUndo(true);
+		}
+		for(int i=0 ; i<strokeContainers.size() ; i++) {
+			OMSVGSVGElement svgSC = doc.createSVGSVGElement();
+			scMap.put(strokeContainers.get(i), svgSC);
+			svgStrokeContainers.add(svgSC);
+			scNodes.add(new ArrayList<OMNode>());
+			
+			KStrokeContainer sc = strokeContainers.get(i);
+			if(sc.formuleModus && !sc.recognizeOff) {
+				OMSVGSVGElement svgForm = doc.createSVGSVGElement();
+				if(!sc.recognizeOff && sc.formuleViewer!=null) {
+					float x = sc.getBox().x;
+					float y = sc.getBox().y;
+					sc.formuleViewer.setFont(FormuleFont.createFromFontSize(16));
+					sc.formuleViewer.setColor(CssColor.make(80, 80, 80));
+					sc.formuleViewer.getMainRegel().draw(svgForm);
+					svgForm.getX().getBaseVal().setValue(x);
+					svgForm.getY().getBaseVal().setValue(y);
+					scNodes.get(i).add(svgForm);
+					svgSC.appendChild(svgForm);
+				}
+			}
+			else {
+				ArrayList<Stroke> strokes = strokeContainers.get(i).strokeContainer.getStrokes();
+				for(int j = 0 ; j < strokes.size() ; j++) {
+					Stroke stroke = strokes.get(j);
+					OMSVGPathElement strokePath = doc.createSVGPathElement();
+					OMSVGPathSegList segsStrokePath = strokePath.getPathSegList();
+					float x0 = (float)stroke.getParsePoints().get(0).x;
+					float y0 = (float)stroke.getParsePoints().get(0).y;
+					//if(r.contains((int)x0,(int)0))
+						segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+					if(stroke.getParsePointsbox().width>3 ||  stroke.getParsePointsbox().height>3) {
+						for(int k = 1 ; k < stroke.getParsePoints().size() ; k++) {
+							float x = (float)stroke.getParsePoints().get(k).x ;
+							float y = (float)stroke.getParsePoints().get(k).y;
+							//if(r.contains((int)x,(int)y))
+								segsStrokePath.appendItem(strokePath.createSVGPathSegLinetoAbs(x,y));
+						}
+					}
+					else {
+						segsStrokePath.appendItem(strokePath.createSVGPathSegArcAbs(x0+0.01f, y0, 1, 1, 360, true, true));
+					}
+					segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+					segsStrokePath.appendItem(strokePath.createSVGPathSegClosePath());
+					strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, ""+strokeColor);
+					strokePath.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+					strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 1.5);
+					scNodes.get(i).add(strokePath);
+					svgSC.appendChild(strokePath);
+				}
+			}
+			
+			float corrx = strokeContainers.get(i).getBox().x-34;
+			float corrY = strokeContainers.get(i). getBox().y + strokeContainers.get(i).getBox().height/2-7;
+			if(strokeContainers.get(i).isCorrect()) {
+				OMSVGSVGElement svgGoed = doc.createSVGSVGElement();
+				drawGoedSVG(svgGoed);
+				svgGoed.getX().getBaseVal().setValue(corrx);
+				svgGoed.getY().getBaseVal().setValue(corrY);
+				scNodes.get(i).add(svgGoed);
+				svgSC.appendChild(svgGoed);
+			}
+			else if(strokeContainers.get(i).isHalf()) {
+				OMSVGSVGElement svgHalf = doc.createSVGSVGElement();
+				drawHalfSVG(svgHalf);
+				svgHalf.getX().getBaseVal().setValue(corrx);
+				svgHalf.getY().getBaseVal().setValue(corrY);
+				scNodes.get(i).add(svgHalf);
+				svgSC.appendChild(svgHalf);
+			}
+			else if(strokeContainers.get(i).isFalse()) {
+				OMSVGSVGElement svgFout = doc.createSVGSVGElement();
+				drawFoutSVG(svgFout);
+				svgFout.getX().getBaseVal().setValue(corrx);
+				svgFout.getY().getBaseVal().setValue(corrY);
+				scNodes.get(i).add(svgFout);
+				svgSC.appendChild(svgFout);
 			}
 			svg.appendChild(svgSC);
 		}
@@ -417,8 +817,47 @@ public class SVGManager {
 		scNodes.clear();
 	}
 	
+	public void removeStrokeCurrentSC(Stroke stroke) {
+		svgCurrentSCStrokes.removeChild(currentSCStrokeMap.get(stroke));
+		currentSCStrokeMap.remove(stroke);
+	}
+
+	public void addStrokeCurrentSC(Stroke stroke) {
+		OMSVGPathElement strokePath = doc.createSVGPathElement();
+		OMSVGPathSegList segsStrokePath = strokePath.getPathSegList();
+		float x0 = (float)stroke.getParsePoints().get(0).x;
+		float y0 = (float)stroke.getParsePoints().get(0).y;
+		//if(r.contains((int)x0,(int)0))
+			segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+		if(stroke.getParsePointsbox().width>3 ||  stroke.getParsePointsbox().height>3) {
+			for(int j = 1 ; j < stroke.getParsePoints().size() ; j++) {
+				float x = (float)stroke.getParsePoints().get(j).x ;
+				float y = (float)stroke.getParsePoints().get(j).y;
+				//if(r.contains((int)x,(int)y))
+					segsStrokePath.appendItem(strokePath.createSVGPathSegLinetoAbs(x,y));
+			}
+		}
+		else {
+			segsStrokePath.appendItem(strokePath.createSVGPathSegArcAbs(x0+0.01f, y0, 1, 1, 360, true, true));
+		}
+		segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+		segsStrokePath.appendItem(strokePath.createSVGPathSegClosePath());
+		strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, ""+strokeColor);
+		strokePath.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+		strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 3.0);
+		currentSCStrokeNodes.add(strokePath);
+		svgCurrentSCStrokes.appendChild(strokePath);
+		currentSCStrokeMap.put(stroke, strokePath);
+		
+		
+		
+	}
 	
 	public void appendCurrentSC(KStrokeContainer csc) {
+		appendCurrentSC(csc, null);
+	}
+	
+	public void appendCurrentSC(KStrokeContainer csc, Stroke newStroke) {
 		if(csc==null || !csc.isActive() || csc.getWriteBox()==null)
 			return;
 		removeCurrentSC();
@@ -456,18 +895,19 @@ public class SVGManager {
 			OMSVGLineElement stroke = doc.createSVGLineElement(popupX, popupY + cy + vCnt * lineDistance, popupX + popupWidth, popupY + cy + vCnt * lineDistance);
 			stroke.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, gridColor.toString());
 			stroke.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 0.4);
-			currentSCNodes.add(stroke);
-			svgCurrentSC.appendChild(stroke);
+			currentSCGridNodes.add(stroke);
+			svgCurrentSCGrid.appendChild(stroke);
 		}
 		int hSteps = (int)popupWidth / lineDistance;
 		for (int hCnt = 1; hCnt <= hSteps; hCnt++) {
 			OMSVGLineElement stroke = doc.createSVGLineElement(popupX + hCnt * lineDistance, popupY, popupX + hCnt * lineDistance , popupY + popupHeight);
 			stroke.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, gridColor.toString());
 			stroke.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 0.4);
-			currentSCNodes.add(stroke);
-			svgCurrentSC.appendChild(stroke);
+			currentSCGridNodes.add(stroke);
+			svgCurrentSCGrid.appendChild(stroke);
 		}
-		
+		currentSCNodes.add(svgCurrentSCGrid);
+		svgCurrentSC.appendChild(svgCurrentSCGrid);
 		//gele toolBar
 		OMSVGRectElement toolbarForm = doc.createSVGRectElement(popupX+popupWidth-47, popupY, 47, popupHeight, 0, 0);
 		toolbarForm.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, ""+toolbarColor);
@@ -509,12 +949,42 @@ public class SVGManager {
 			svgCurrentSC.appendChild(svgCalculatorButton);
 		}
 		
+		//goed/half/fout
+		float corrx = csc.getWriteBox().x+6;
+		float corrY = csc.getWriteBox().y+6;
+		if(csc.isCorrect()) {
+			OMSVGSVGElement svgGoed = doc.createSVGSVGElement();
+			drawGoedSVG(svgGoed);
+			svgGoed.getX().getBaseVal().setValue(corrx);
+			svgGoed.getY().getBaseVal().setValue(corrY);
+			currentSCNodes.add(svgGoed);
+			svgCurrentSC.appendChild(svgGoed);
+		}
+		if(csc.isHalf()) {
+			OMSVGSVGElement svgHalf = doc.createSVGSVGElement();
+			drawHalfSVG(svgHalf);
+			svgHalf.getX().getBaseVal().setValue(corrx);
+			svgHalf.getY().getBaseVal().setValue(corrY);
+			currentSCNodes.add(svgHalf);
+			svgCurrentSC.appendChild(svgHalf);
+		}
+		if(csc.isFalse()) {
+			OMSVGSVGElement svgFout = doc.createSVGSVGElement();
+			drawFoutSVG(svgFout);
+			svgFout.getX().getBaseVal().setValue(corrx);
+			svgFout.getY().getBaseVal().setValue(corrY);
+			currentSCNodes.add(svgFout);
+			svgCurrentSC.appendChild(svgFout);
+		}
+		
 		//drawButton
+		if(!csc.isInputSC && !csc.isCorrect() && !csc.isHalf() && !csc.isFalse()) {
 		Rectangle dba = csc.getNotRecognizeButtonArea();
 		svgDrawButton.getX().getBaseVal().setValue(dba.x);
 		svgDrawButton.getY().getBaseVal().setValue(dba.y);
 		currentSCNodes.add(svgDrawButton);
 		svgCurrentSC.appendChild(svgDrawButton);
+		}
 		
 		//formButton
 		if(drawMode) {
@@ -525,6 +995,33 @@ public class SVGManager {
 			svgCurrentSC.appendChild(svgFormButton);
 			enableDrawButtonSVG(true);
 			enableFormButtonSVG(false);
+			
+			Rectangle pba = csc.getPenButtonArea();
+			svgPenButton.getX().getBaseVal().setValue(pba.x);
+			svgPenButton.getY().getBaseVal().setValue(pba.y);
+			currentSCNodes.add(svgPenButton);
+			svgCurrentSC.appendChild(svgPenButton);
+			
+			Rectangle eba = csc.getEraserButtonArea();
+			svgEraserButton.getX().getBaseVal().setValue(eba.x);
+			svgEraserButton.getY().getBaseVal().setValue(eba.y);
+			currentSCNodes.add(svgEraserButton);
+			svgCurrentSC.appendChild(svgEraserButton);
+			
+			Rectangle uba = csc.getUndoButtonArea();
+			svgUndoButton.getX().getBaseVal().setValue(uba.x);
+			svgUndoButton.getY().getBaseVal().setValue(uba.y);
+			currentSCNodes.add(svgUndoButton);
+			svgCurrentSC.appendChild(svgUndoButton);
+			
+			Rectangle bba = csc.getBinButtonArea();
+			svgBinButton.getX().getBaseVal().setValue(bba.x);
+			svgBinButton.getY().getBaseVal().setValue(bba.y);
+			currentSCNodes.add(svgBinButton);
+			svgCurrentSC.appendChild(svgBinButton);
+			
+			enableUndoButtonSVG(true);
+			enableBinButtonSVG(true);
 		}
 		else {
 			enableDrawButtonSVG(false);
@@ -535,8 +1032,10 @@ public class SVGManager {
 		Rectangle hba = csc.getHandleArea();
 		svgHandleButton.getX().getBaseVal().setValue(hba.x);
 		svgHandleButton.getY().getBaseVal().setValue(hba.y);
-		currentSCNodes.add(svgHandleButton);
-		svgCurrentSC.appendChild(svgHandleButton);
+//		currentSCNodes.add(svgHandleButton);
+//		svgCurrentSC.appendChild(svgHandleButton);
+		currentSCStrokeNodes.add(svgHandleButton);
+		svgCurrentSCStrokes.appendChild(svgHandleButton);
 		
 		// formuleViewer
 		OMSVGSVGElement svgForm = doc.createSVGSVGElement();
@@ -553,6 +1052,7 @@ public class SVGManager {
 		}
 		
 		//strokes
+		//if(newStroke==null) {
 		ArrayList<Stroke> strokes = csc.strokeContainer.getStrokes();
 		for(int i = 0 ; i < strokes.size() ; i++) {
 			Stroke stroke = strokes.get(i);
@@ -578,21 +1078,75 @@ public class SVGManager {
 			strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, ""+strokeColor);
 			strokePath.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
 			strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 3.0);
-			currentSCNodes.add(strokePath);
-			svgCurrentSC.appendChild(strokePath);
+			
+			currentSCStrokeNodes.add(strokePath);
+			svgCurrentSCStrokes.appendChild(strokePath);
+			currentSCStrokeMap.put(stroke, strokePath);
+			
+			currentSCNodes.add(svgCurrentSCStrokes);
+			svgCurrentSC.appendChild(svgCurrentSCStrokes);
+			//currentSCStrokeMap.put(stroke, strokePath);
 		}
 		svg.appendChild(svgCurrentSC);
+//		}
+//		else {
+//			OMSVGPathElement strokePath = doc.createSVGPathElement();
+//			OMSVGPathSegList segsStrokePath = strokePath.getPathSegList();
+//			float x0 = (float)newStroke.getParsePoints().get(0).x;
+//			float y0 = (float)newStroke.getParsePoints().get(0).y;
+//			//if(r.contains((int)x0,(int)0))
+//				segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+//			if(newStroke.getParsePointsbox().width>3 ||  newStroke.getParsePointsbox().height>3) {
+//				for(int j = 1 ; j < newStroke.getParsePoints().size() ; j++) {
+//					float x = (float)newStroke.getParsePoints().get(j).x ;
+//					float y = (float)newStroke.getParsePoints().get(j).y;
+//					//if(r.contains((int)x,(int)y))
+//						segsStrokePath.appendItem(strokePath.createSVGPathSegLinetoAbs(x,y));
+//				}
+//			}
+//			else {
+//				segsStrokePath.appendItem(strokePath.createSVGPathSegArcAbs(x0+0.01f, y0, 1, 1, 360, true, true));
+//			}
+//			segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+//			segsStrokePath.appendItem(strokePath.createSVGPathSegClosePath());
+//			strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, ""+strokeColor);
+//			strokePath.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+//			strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 3.0);
+//			currentSCNodes.add(strokePath);
+//			svgCurrentSC.appendChild(strokePath);
+//			currentSCStrokeMap.put(newStroke, strokePath);
+//		}
+			
 	}
 	
 	public void removeCurrentSC() {
+		for(int i=0 ; i<currentSCStrokeNodes.size() ; i++) {
+			try {
+				svgCurrentSCStrokes.removeChild(currentSCStrokeNodes.get(i));
+			} catch(Exception e) {}
+		}
+		try {
+			svgCurrentSC.removeChild(svgCurrentSCStrokes);
+		} catch(Exception e) {}
+		
+		for(int i=0 ; i<currentSCGridNodes.size() ; i++) {
+			try {
+				svgCurrentSCGrid.removeChild(currentSCGridNodes.get(i));
+			} catch(Exception e) {}
+		}
+		try {
+			svgCurrentSC.removeChild(svgCurrentSCGrid);
+		} catch(Exception e) {}
+		
 		for(int i=0 ; i<currentSCNodes.size() ; i++) {
 			try {
 				svgCurrentSC.removeChild(currentSCNodes.get(i));
 			} catch(Exception e) {}
 		}
 		try {
-			svgCurrentSC.removeChild(svgCurrentSC);
+			svg.removeChild(svgCurrentSC);
 		} catch(Exception e) {}
+		
 		svgCurrentSC.getX().getBaseVal().setValue(0);
 		svgCurrentSC.getY().getBaseVal().setValue(0);
 	}
@@ -602,8 +1156,24 @@ public class SVGManager {
 		svgCurrentSC.getY().getBaseVal().setValue(svgCurrentSC.getY().getBaseVal().getValue() + dy);
 	}
 	
-	public void startTranslateSC(int nr) {
-		KStrokeContainer sc = mathScratchField.getStrokeContainers().get(nr);
+	public void translateCurrentSCStrokes(int dx, int dy) {
+		svgCurrentSCStrokes.getX().getBaseVal().setValue(svgCurrentSCStrokes.getX().getBaseVal().getValue() + dx);
+		svgCurrentSCStrokes.getY().getBaseVal().setValue(svgCurrentSCStrokes.getY().getBaseVal().getValue() + dy);
+		int	lineDistance = (int)(10*mathScratchField.schrijfLeesFactor);
+		svgCurrentSCGrid.getX().getBaseVal().setValue((svgCurrentSCGrid.getX().getBaseVal().getValue() + dx - 0.5f*lineDistance)%lineDistance + 0.5f*lineDistance);
+		svgCurrentSCGrid.getY().getBaseVal().setValue((svgCurrentSCGrid.getY().getBaseVal().getValue() + dy - 0.5f*lineDistance)%lineDistance + 0.5f*lineDistance);
+	}
+	
+	public void stopTranslateSCStrokes() {
+		svgCurrentSCStrokes.getX().getBaseVal().setValue(0);
+		svgCurrentSCStrokes.getY().getBaseVal().setValue(0);
+		svgCurrentSCGrid.getX().getBaseVal().setValue(0);
+		svgCurrentSCGrid.getY().getBaseVal().setValue(0);
+	}
+	
+	public void startTranslateSC(KStrokeContainer sc) {
+		svg.removeChild(scMap.get(sc));
+		svg.appendChild(scMap.get(sc));
 		int x = sc.getBox().x-10;
 		int y = sc.getBox().y-10;
 		int w = sc.getBox().width+20;
@@ -622,20 +1192,21 @@ public class SVGManager {
 			currentSCNodes.add(shadow);
 			svgSCShadow.appendChild(shadow);
 		}
-		svgSCShadow.getX().getBaseVal().setValue(svgSCShadow.getX().getBaseVal().getValue() - svgStrokeContainers.get(nr).getX().getBaseVal().getValue());
-		svgSCShadow.getY().getBaseVal().setValue(svgSCShadow.getY().getBaseVal().getValue() - svgStrokeContainers.get(nr).getY().getBaseVal().getValue());
-		svgStrokeContainers.get(nr).insertBefore(svgSCShadow, svgStrokeContainers.get(nr).getFirstChild());
+		svgSCShadow.getX().getBaseVal().setValue(svgSCShadow.getX().getBaseVal().getValue() - scMap.get(sc).getX().getBaseVal().getValue());
+		svgSCShadow.getY().getBaseVal().setValue(svgSCShadow.getY().getBaseVal().getValue() - scMap.get(sc).getY().getBaseVal().getValue());
+		scMap.get(sc).insertBefore(svgSCShadow, scMap.get(sc).getFirstChild());
 	}
-	public void stopTranslateSC(int nr) {
+	
+	public void stopTranslateSC(KStrokeContainer sc) {
 		try {
-			svgStrokeContainers.get(nr).removeChild(svgSCShadow);
+			scMap.get(sc).removeChild(svgSCShadow);
 		} catch(Exception e) {}
 		svgSCShadow = null;
 	}
 	
-	public void translateSC(int nr, int dx, int dy) {
-		svgStrokeContainers.get(nr).getX().getBaseVal().setValue(svgStrokeContainers.get(nr).getX().getBaseVal().getValue() + dx);
-		svgStrokeContainers.get(nr).getY().getBaseVal().setValue(svgStrokeContainers.get(nr).getY().getBaseVal().getValue() + dy);
+	public void translateSC(KStrokeContainer sc, int dx, int dy) {
+		scMap.get(sc).getX().getBaseVal().setValue(scMap.get(sc).getX().getBaseVal().getValue() + dx);
+		scMap.get(sc).getY().getBaseVal().setValue(scMap.get(sc).getY().getBaseVal().getValue() + dy);
 	}
 	
 	private OMSVGPathElement initFormulaStroke() {
@@ -672,6 +1243,8 @@ public class SVGManager {
 	}
 	
 	public void removeFormulaStroke() {
+		if(segsFormulaStroke==null)
+			return;
 		segsFormulaStroke.clear();
 		try {
 			svg.removeChild(formulaStroke);

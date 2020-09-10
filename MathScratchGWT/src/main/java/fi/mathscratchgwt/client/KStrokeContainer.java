@@ -6,6 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.vectomatic.dom.svg.OMNode;
+import org.vectomatic.dom.svg.OMSVGLineElement;
+import org.vectomatic.dom.svg.OMSVGPathElement;
+import org.vectomatic.dom.svg.OMSVGPathSegList;
+import org.vectomatic.dom.svg.OMSVGRectElement;
+import org.vectomatic.dom.svg.OMSVGSVGElement;
+import org.vectomatic.dom.svg.utils.SVGConstants;
+
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.LineCap;
 import com.google.gwt.canvas.dom.client.CssColor;
@@ -30,10 +38,12 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
 public class KStrokeContainer {
 
-	private MathScratchField parent;
-	 StrokeContainer strokeContainer;
+	private static Logger logger = Logger.getLogger("KStrokeContainer");
 	
-	private boolean formuleModus;
+	private MathScratchField parent;
+	StrokeContainer strokeContainer;
+	
+	 boolean formuleModus;
 	private boolean active = false;
 	private boolean proActive = false;
 	private boolean changedToActive = false;
@@ -51,7 +61,7 @@ public class KStrokeContainer {
 	private boolean isfalse = false;
 	private boolean isHalf = false;
 	
-	private boolean isInputSC = false;
+	 boolean isInputSC = false;
 	
 	 FormuleViewer formuleViewer;
 	 boolean isGetalsExpressie = false;
@@ -62,7 +72,7 @@ public class KStrokeContainer {
 	private Image approxImage, formuleschrijfImage, formuleschrijfaanImage;
 	private ImageElement approxImageElement, formuleschrijfImageElement, formuleschrijfaanImageElement;
 	
-	 boolean recognizeOff;
+	boolean recognizeOff;
 	
 	private boolean eraserActive = false;
 	private boolean erasing = false;
@@ -70,12 +80,15 @@ public class KStrokeContainer {
 	
 	private int nr;
 	
-	private ArrayList<ArrayList<fi.writemathgwt.client.engine.Point>> fakeStrokes = new  ArrayList<ArrayList<fi.writemathgwt.client.engine.Point>>();
-	
-	//private double schrijfLeesFactor = 2;
-	//private boolean checkable;
-	private static Logger logger = Logger.getLogger("KStrokeContainer");
-	
+	private OMSVGSVGElement svg;
+	private OMSVGSVGElement svgStrokes;
+	private OMSVGSVGElement svgPopup;
+	private OMSVGSVGElement svgGrid;
+	private OMSVGRectElement rectToolbarForm;
+	private OMSVGRectElement rectToolbarDraw;
+	private ArrayList<OMNode> svgStrokesNodes = new ArrayList<OMNode>();
+	private ArrayList<OMNode> svgPopupNodes = new ArrayList<OMNode>();
+	private ArrayList<OMNode> svgGridNodes = new ArrayList<OMNode>();
 	
 	public KStrokeContainer (MathScratchField parent) {
 		this.parent = parent;
@@ -97,6 +110,11 @@ public class KStrokeContainer {
 		ImageResource formuleschrijfaanImageResource = parent.eigenaar.mathScratchGWTClientBundle.formuleschrijfaanResource(); 
 		formuleschrijfaanImage = new Image(formuleschrijfaanImageResource);
 		formuleschrijfaanImageElement = ImageElement.as(formuleschrijfaanImage.getElement());
+		
+//		initSvg();
+//		svg.appendChild(svgPopup);
+//		svg.appendChild(svgGrid);
+//		svg.appendChild(svgStrokes);
 	}
 	
 	public KStrokeContainer (MathScratchField parent, Rectangle defaultBox) {
@@ -121,6 +139,11 @@ public class KStrokeContainer {
 		ImageResource formuleschrijfaanImageResource = parent.eigenaar.mathScratchGWTClientBundle.formuleschrijfaanResource(); 
 		formuleschrijfaanImage = new Image(formuleschrijfaanImageResource);
 		formuleschrijfaanImageElement = ImageElement.as(formuleschrijfaanImage.getElement());
+		
+//		initSvg();
+//		svg.appendChild(svgPopup);
+//		svg.appendChild(svgGrid);
+//		svg.appendChild(svgStrokes);
 	}
 	
 	public boolean addStroke(Stroke stroke) {
@@ -146,10 +169,6 @@ public class KStrokeContainer {
 			formuleViewer.setColor(CssColor.make(38, 115, 182));
 			//formuleViewer.setFont(FormuleFont.createFromFontSize(16));
 		}
-		
-//		if(isNotRelevant())
-//			return false;
-		
 		corrigeerSCPositie();
 		if(getStrokeCount()==0)
 			box = defaultBox;
@@ -207,7 +226,8 @@ public class KStrokeContainer {
 	}
 	
 	public void eraseLastStroke() {
-		strokeContainer.getStrokes().remove(strokeContainer.getStrokes().size()-1);
+		if(strokeContainer.getStrokes().size()>0)
+			strokeContainer.getStrokes().remove(strokeContainer.getStrokes().size()-1);
 		if(strokeContainer.getStrokes().size()==0)
 			eraserActive = false;
 	}
@@ -231,6 +251,10 @@ public class KStrokeContainer {
 //		y = getBox().y+getBox().height; 
 		return new Rectangle(x,y,30,30);
 		
+	}
+	
+	public OMSVGSVGElement getSvg() {
+		return svg;
 	}
 	
 	public Rectangle getHeaderArea() {
@@ -914,58 +938,53 @@ public class KStrokeContainer {
 		}
 		
 		if(active && popupMode) {
+			Rectangle wbox = new Rectangle(20,20,parent.breedte-40,parent.hoogte-40);
+			g.setFillStyle(CssColor.make(255, 255, 255));
+			g.fillRect(wbox.x, wbox.y, wbox.width, wbox.height);
+			g.setFillStyle(CssColor.make(255, 243, 180));
+			g.fillRect(wbox.x+wbox.width-42, wbox.y-5, 47, wbox.height+10);
+			drawShadow(g,new Rectangle((int)wbox.x-5, (int)wbox.y-5, (int)wbox.width+10, (int)wbox.height+10));
+			drawGrid(g,new Rectangle((int)wbox.x-5, (int)wbox.y-5, (int)wbox.width+10, (int)wbox.height+10));
 			
-				Rectangle wbox = new Rectangle(20,20,parent.breedte-40,parent.hoogte-40);
-				g.setFillStyle(CssColor.make(255, 255, 255));
-				g.fillRect(wbox.x, wbox.y, wbox.width, wbox.height);
-				g.setFillStyle(CssColor.make(255, 243, 180));
-				g.fillRect(wbox.x+wbox.width-42, wbox.y-5, 47, wbox.height+10);
-				drawShadow(g,new Rectangle((int)wbox.x-5, (int)wbox.y-5, (int)wbox.width+10, (int)wbox.height+10));
-				drawGrid(g,new Rectangle((int)wbox.x-5, (int)wbox.y-5, (int)wbox.width+10, (int)wbox.height+10));
-				
-				g.setStrokeStyle(CssColor.make(80, 80, 80));
-				
-				//g.setFillStyle(CssColor.make(239, 241, 243));
-				//g.fillRect(wbox.x + wbox.width-40, wbox.y, 40, 40);
+			g.setStrokeStyle(CssColor.make(80, 80, 80));
+			
+			//g.setFillStyle(CssColor.make(239, 241, 243));
+			//g.fillRect(wbox.x + wbox.width-40, wbox.y, 40, 40);
 
-				drawcloseButton(g, getCloseButtonArea());
-				if(!recognizeOff && formuleViewer!=null) {
-					int x = Math.max(wbox.x+50, getBox()!=null ? getBox().x : 0) ;// + getBox().width/2-parent.formuleViewer.getWidth()/2;
-					int y = wbox.y+5;//-20-formuleViewer.getHeight();
-					g.translate(x, y);
-					formuleViewer.setFont(FormuleFont.createFromFontSize(16));
-					formuleViewer.setColor(CssColor.make(38, 115, 182));
-					formuleViewer.getMainRegel().paintAll(g);
-					g.translate(-x, -y);
-				}
-				
-				if(parent.eigenaar.comRoot!=null && parent.eigenaar.comRoot.hasListeners("action.check"))
-					drawCheckButton(g, getCheckButtonArea());
-				
-				if(correct||isfalse||isHalf) {
-					//g.setFillStyle(CssColor.make(240, 255, 240));
-					if(correct)
-						g.setFillStyle(CssColor.make(0, 200, 0));
-					if(isfalse)
-						g.setFillStyle(CssColor.make(200, 0, 0));
-					if(isHalf)
-						g.setFillStyle(CssColor.make(240, 240, 0));
-					g.beginPath();
-					g.arc(wbox.x + 20, wbox.y + 20 , 8, 0, 8* Math.PI);
-					g.closePath();
-					g.stroke();
-					g.fill();
-				}
+			drawcloseButton(g, getCloseButtonArea());
+			if(!recognizeOff && formuleViewer!=null) {
+				int x = Math.max(wbox.x+50, getBox()!=null ? getBox().x : 0) ;// + getBox().width/2-parent.formuleViewer.getWidth()/2;
+				int y = wbox.y+5;//-20-formuleViewer.getHeight();
+				g.translate(x, y);
+				formuleViewer.setFont(FormuleFont.createFromFontSize(16));
+				formuleViewer.setColor(CssColor.make(38, 115, 182));
+				formuleViewer.getMainRegel().paintAll(g);
+				g.translate(-x, -y);
+			}
 			
+			if(parent.eigenaar.comRoot!=null && parent.eigenaar.comRoot.hasListeners("action.check"))
+				drawCheckButton(g, getCheckButtonArea());
+			
+			if(correct||isfalse||isHalf) {
+				//g.setFillStyle(CssColor.make(240, 255, 240));
+				if(correct)
+					g.setFillStyle(CssColor.make(0, 200, 0));
+				if(isfalse)
+					g.setFillStyle(CssColor.make(200, 0, 0));
+				if(isHalf)
+					g.setFillStyle(CssColor.make(240, 240, 0));
+				g.beginPath();
+				g.arc(wbox.x + 20, wbox.y + 20 , 8, 0, 8* Math.PI);
+				g.closePath();
+				g.stroke();
+				g.fill();
+			}
 		}
 		
 		if(proActive) {
 			g.setFillStyle(CssColor.make(240, 240, 240));
 			drawProActiveAura(g, new Rectangle(getBox().x,getBox().y,getBox().width, getBox().height));
-			//g.fill();
 		}
-		
-		
 		
 		if(active || recognizeOff || !formuleModus) {
 			if(!strokeContainer.isParseable())
@@ -1015,7 +1034,6 @@ public class KStrokeContainer {
 				g.fillRect(getHandleArea().x, getHandleArea().y, getHandleArea().width, getHandleArea().height);
 				drawHandle(g,getHandleArea());
 			}
-			
 		}
 		else {
 			formuleViewer.setFont(FormuleFont.createFromFontSize(18));
@@ -1151,20 +1169,6 @@ public class KStrokeContainer {
 	public boolean getEraserActive() {
 		return eraserActive;
 	}
-//	public void setActive (boolean b) {
-//		active = b;
-//		if(active && getBox()!=null) {
-//			activeTranslationX = getBox().x - 40;
-//			activeTranslationY = 0; 
-//			if(getBox().y<70)
-//				activeTranslationY = getBox().y-70;
-//			if(getBox().y+getBox().height>parent.hoogte-70) 
-//				activeTranslationY = getBox().y+getBox().height - (parent.hoogte-70);
-//			translate((int)-activeTranslationX,(int)-activeTranslationY);
-//		}
-//		else if(getBox()!=null)
-//			translate((int)activeTranslationX, (int)activeTranslationY);
-//	}
 	
 	public void setProActive (boolean b) {
 		proActive = b;
@@ -1200,6 +1204,20 @@ public class KStrokeContainer {
 			translate((int)activeTranslationX, (int)activeTranslationY);
 			//defaultBox.translate((int)activeTranslationX, (int)activeTranslationY);
 		}
+		
+//		if(b) {
+//			updatePopupSvg();
+//			updateGridSvg();
+//			updateStrokesSvg();
+//			
+//		}
+//		else {
+//			svg.removeChild(svgPopup);
+//			svg.removeChild(svgGrid);
+//			//svg.removeChild(svgStrokes);
+//			updateStrokesSvg();
+//		}
+			
 	}
 	
 	public void setpopupMode (boolean b) {
@@ -1265,8 +1283,6 @@ public class KStrokeContainer {
 	public Rectangle getWriteBox() {
 		int margin = 60;
 		
-		
-		
 		if(writeBox==null && strokeContainer != null && getBox()!=null) { // strokeContainer.getBoundingBox()!=null
 			
 			Rectangle b = getBox();
@@ -1274,11 +1290,6 @@ public class KStrokeContainer {
 			int ySC = b.y;
 			int widthSC =  Math.max(60, b.width);
 			int heightSC = Math.max(30, b.height);
-			
-//			int xSC = (int)strokeContainer.getBoundingBox().x;
-//			int ySC = (int)strokeContainer.getBoundingBox().y;
-//			int widthSC = (int)strokeContainer.getBoundingBox().width;
-//			int heightSC = (int)strokeContainer.getBoundingBox().height;
 			
 			int x = Math.max(20,xSC - margin);
 			int y = (int)Math.max(20, ySC - margin-10);
@@ -1302,18 +1313,6 @@ public class KStrokeContainer {
 			y = (int)Math.min(y, parent.hoogte - height -20);
 			writeBox = new Rectangle(x, y, width, height);
 		}
-			
-//		else if(writeBox==null && strokeContainer != null) { //strokeContainer.getBoundingBox()==null
-//			int width = parent.breedte-40;
-//			int height = Math.min(parent.hoogte-40, defaultBox.height + 2*margin);
-//			
-//			int x = 20;
-//			int y = (int)Math.max(20,defaultBox.y - margin-10);
-//			y= (int)Math.min(y, parent.hoogte - height -20);
-//			
-//			
-//			writeBox = new Rectangle(x, y, width, height);
-//		}
 		return writeBox;
 	}
 	
@@ -1437,5 +1436,163 @@ public class KStrokeContainer {
 		formuleViewer = new FormuleViewer(strokeContainer.getFormulaString());
 		formuleViewer.setColor(CssColor.make(38, 115, 182));
 	}
+	
+//	private void initSvg() {
+//		svg = parent.doc.createSVGSVGElement();
+//		svgPopup = parent.doc.createSVGSVGElement();
+//		svgGrid = parent.doc.createSVGSVGElement();
+//		svgStrokes = parent.doc.createSVGSVGElement();
+//	}
+//	
+//	public void updatePopupSvg() {
+//		for(int i=0 ; i<svgPopupNodes.size() ; i++) {
+//			try {
+//				svgPopup.removeChild(svgPopupNodes.get(i));
+//			} catch(Exception e) {}
+//		}
+//		svgPopup.getX().getBaseVal().setValue(0);
+//		svgPopup.getY().getBaseVal().setValue(0);
+//		if(getWriteBox()==null)
+//			return;
+//		float popupX = getWriteBox().x-5;
+//		float popupY = getWriteBox().y-5;
+//		float popupWidth = getWriteBox().width+10;
+//		float popupHeight = getWriteBox().height+10;
+//		OMSVGRectElement popup = parent.doc.createSVGRectElement(popupX, popupY, popupWidth, popupHeight, 0, 0);
+//		popup.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, SVGConstants.CSS_WHITE_VALUE);
+//		svgPopupNodes.add(popup);
+//		svgPopup.appendChild(popup);
+//		
+//		//shadow
+//		for(int i=0 ;i<10 ; i++) {
+//			CssColor c = CssColor.make("rgba("+(200+5*i)+","+(200+5*i)+","+(200+5*i)+","+(1-0.1*i)+")");
+//			OMSVGRectElement shadow = parent.doc.createSVGRectElement(popupX-1-i, popupY-1-i, popupWidth+2+2*i, popupHeight+2+2*i, 0, 0);
+//			shadow.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+//			shadow.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY,""+c);
+//			shadow.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "2.0");
+//			svgPopupNodes.add(shadow);
+//			svgPopup.appendChild(shadow);
+//		}
+//		
+//		CssColor toolbarColor = CssColor.make(255, 243, 180);
+//		rectToolbarForm = parent.doc.createSVGRectElement(popupX+popupWidth-47, popupY, 47, popupHeight, 0, 0);
+//		rectToolbarForm.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, ""+toolbarColor);
+//		rectToolbarDraw = parent.doc.createSVGRectElement(popupX, popupY, popupWidth, 47, 0, 0);
+//		rectToolbarDraw.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, ""+toolbarColor);
+//		
+//		if(recognizeOff) {
+//			svgPopupNodes.add(rectToolbarDraw);
+//			svgPopup.appendChild(rectToolbarDraw);
+//		}
+//		else {
+//			svgPopupNodes.add(rectToolbarForm);
+//			svgPopup.appendChild(rectToolbarForm);
+//		}
+//	}
+//	
+//	public void updateGridSvg() {
+//		for(int i=0 ; i<svgGridNodes.size() ; i++) {
+//			try {
+//				svgGrid.removeChild(svgGridNodes.get(i));
+//			} catch(Exception e) {}
+//		}
+//		svgGrid.getX().getBaseVal().setValue(0);
+//		svgGrid.getY().getBaseVal().setValue(0);
+//		CssColor gridColor = CssColor.make(180,195,228);
+//		if(getWriteBox()==null)
+//			return;
+//		float popupX = getWriteBox().x-5;
+//		float popupY = getWriteBox().y-5;
+//		float popupWidth = getWriteBox().width+10-47;
+//		float popupHeight = getWriteBox().height+10;
+//		Point c = parent.getActiveTranslation();
+//		int cx = (c.x-getWriteBox().x)%20;
+//		int cy = (c.y-getWriteBox().y)%20;
+//		int	lineDistance = (int)(10*parent.schrijfLeesFactor);
+//		int vSteps = (int)popupHeight / lineDistance;
+//		for (int vCnt = 1; vCnt <= vSteps+1; vCnt++) {
+//			OMSVGLineElement stroke = parent.doc.createSVGLineElement(popupX, popupY + cy + vCnt * lineDistance, popupX + popupWidth, popupY + cy + vCnt * lineDistance);
+//			stroke.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, gridColor.toString());
+//			stroke.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 0.4);
+//			svgGridNodes.add(stroke);
+//			svgGrid.appendChild(stroke);
+//		}
+//		int hSteps = (int)popupWidth / lineDistance;
+//		for (int hCnt = 1; hCnt <= hSteps; hCnt++) {
+//			OMSVGLineElement stroke = parent.doc.createSVGLineElement(popupX + hCnt * lineDistance, popupY, popupX + hCnt * lineDistance , popupY + popupHeight);
+//			stroke.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, gridColor.toString());
+//			stroke.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 0.4);
+//			svgGridNodes.add(stroke);
+//			svgGrid.appendChild(stroke);
+//		}
+//	}
+//	
+//	public void updateStrokesSvg() {
+//		for(int i=0 ; i<svgStrokesNodes.size() ; i++) {
+//			try {
+//				svgStrokes.removeChild(svgStrokesNodes.get(i));
+//			} catch(Exception e) {}
+//		}
+//		svgStrokes.getX().getBaseVal().setValue(0);
+//		svgStrokes.getY().getBaseVal().setValue(0);
+//		CssColor strokeColor = CssColor.make(80,80,80);
+//		ArrayList<Stroke> strokes = strokeContainer.getStrokes();
+//		for(int i = 0 ; i < strokes.size() ; i++) {
+//			Stroke stroke = strokes.get(i);
+//			OMSVGPathElement strokePath = parent.doc.createSVGPathElement();
+//			OMSVGPathSegList segsStrokePath = strokePath.getPathSegList();
+//			float x0 = (float)stroke.getParsePoints().get(0).x;
+//			float y0 = (float)stroke.getParsePoints().get(0).y;
+//			//if(r.contains((int)x0,(int)0))
+//				segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+//			if(stroke.getParsePointsbox().width>3 ||  stroke.getParsePointsbox().height>3) {
+//				for(int j = 1 ; j < stroke.getParsePoints().size() ; j++) {
+//					float x = (float)stroke.getParsePoints().get(j).x ;
+//					float y = (float)stroke.getParsePoints().get(j).y;
+//					//if(r.contains((int)x,(int)y))
+//						segsStrokePath.appendItem(strokePath.createSVGPathSegLinetoAbs(x,y));
+//				}
+//			}
+//			else {
+//				segsStrokePath.appendItem(strokePath.createSVGPathSegArcAbs(x0+0.01f, y0, 1, 1, 360, true, true));
+//			}
+//			segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+//			segsStrokePath.appendItem(strokePath.createSVGPathSegClosePath());
+//			strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, ""+strokeColor);
+//			strokePath.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+//			strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 3.0);
+//			svgStrokesNodes.add(strokePath);
+//			svgStrokes.appendChild(strokePath);
+//		}		
+//	}
+//	
+//	public void addStrokeSvg(Stroke stroke) {
+//		CssColor strokeColor = CssColor.make(80,80,80);
+//		OMSVGPathElement strokePath = parent.doc.createSVGPathElement();
+//		OMSVGPathSegList segsStrokePath = strokePath.getPathSegList();
+//		float x0 = (float)stroke.getParsePoints().get(0).x;
+//		float y0 = (float)stroke.getParsePoints().get(0).y;
+//		//if(r.contains((int)x0,(int)0))
+//			segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+//		if(stroke.getParsePointsbox().width>3 ||  stroke.getParsePointsbox().height>3) {
+//			for(int j = 1 ; j < stroke.getParsePoints().size() ; j++) {
+//				float x = (float)stroke.getParsePoints().get(j).x ;
+//				float y = (float)stroke.getParsePoints().get(j).y;
+//				//if(r.contains((int)x,(int)y))
+//					segsStrokePath.appendItem(strokePath.createSVGPathSegLinetoAbs(x,y));
+//			}
+//		}
+//		else {
+//			segsStrokePath.appendItem(strokePath.createSVGPathSegArcAbs(x0+0.01f, y0, 1, 1, 360, true, true));
+//		}
+//		segsStrokePath.appendItem(strokePath.createSVGPathSegMovetoAbs(x0,y0));
+//		segsStrokePath.appendItem(strokePath.createSVGPathSegClosePath());
+//		strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, ""+strokeColor);
+//		strokePath.getStyle().setSVGProperty(SVGConstants.CSS_FILL_PROPERTY, "transparent");
+//		strokePath.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_WIDTH_PROPERTY, "" + 3.0);
+//		svgStrokesNodes.add(strokePath);
+//		svgStrokes.appendChild(strokePath);
+//	}
+	
 }
 
