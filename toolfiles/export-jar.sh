@@ -18,3 +18,5 @@ cp ../target/geodefiner.jar $R/www-dev/dwo/jars/geodefiner.jar
 cp ../target/geodefiner.jar.pack.gz $R/www-dev/dwo/jars/geodefiner.jar.pack.gz
 cp ../target/statistiek.jar $R/www-dev/dwo/jars/statistiek.jar
 cp ../target/statistiek.jar.pack.gz $R/www-dev/dwo/jars/statistiek.jar.pack.gz
+cp ../target/mathscratch.jar $R/www-dev/dwo/jars/statistiek.jar
+cp ../target/mathscratch.jar.pack.gz $R/www-dev/dwo/jars/statistiek.jar.pack.gz
