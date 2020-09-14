@@ -242,6 +242,7 @@
                                 <includeClassifier>geodefiner</includeClassifier>
                                 <includeClassifier>balansfruitapplet</includeClassifier>
                                 <includeClassifier>statistiek</includeClassifier>
+                                <includeClassifier>mathscratch</includeClassifier>
                             </includeClassifiers>
                         </configuration>                
                         <dependencies>
