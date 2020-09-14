@@ -144,7 +144,9 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 			mathScratchField.setInputOption((Boolean) launchState.getBoolean("inputOption"));
 		}
 		if (launchState.containsKey("areaSettings")) {
-			mathScratchField.setAreaSetting((Map) launchState.getMap("areaSettings"));
+			Map map = (Map) launchState.getMap("areaSettings");
+			if(!map.isEmpty()) // Wim, kan leeg zijn.
+				mathScratchField.setAreaSetting(map);
 		}
 		if (launchState.containsKey("grid")) {
 			mathScratchField.setGrid((Boolean) launchState.getBoolean("grid"));
