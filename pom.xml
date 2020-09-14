@@ -45,7 +45,7 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<includeScope>compile</includeScope>
-							<excludeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek</excludeArtifactIds>
+							<excludeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek,mathscratch</excludeArtifactIds>
 							<stripVersion>true</stripVersion>
 							<stripClassifier>true</stripClassifier>
 						</configuration>
@@ -58,7 +58,7 @@
 						<phase>process-classes</phase>
 						<configuration>
 							<includeScope>compile</includeScope>
-							<includeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek</includeArtifactIds>
+							<includeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek,mathscratch</includeArtifactIds>
 							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
@@ -121,6 +121,10 @@
 						<exclusion>
 							<groupId>fi.statistiek</groupId>
 							<artifactId>statistiek</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>fi.mathscrath</groupId>
+							<artifactId>mathscratch</artifactId>
 						</exclusion>
 					</exclusions>
 					<proguardInclude>toolfiles/config.pro</proguardInclude>
@@ -194,6 +198,11 @@
                   <file>${project.build.directory}/statistiek.jar</file>
                   <type>jar</type>
                   <classifier>statistiek</classifier>
+                </artifact>
+                <artifact>
+                  <file>${project.build.directory}/mathscratch.jar</file>
+                  <type>jar</type>
+                  <classifier>mathscratch</classifier>
                 </artifact>
               </artifacts>
             </configuration>
@@ -449,6 +458,11 @@
 			<groupId>fi.verknippen</groupId>
 			<artifactId>verknippen</artifactId>
 			<version>0.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fi.mathscratch</groupId>
+			<artifactId>mathscratch</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>

@@ -6,6 +6,8 @@
 -outjars ../target/geodefiner.jar
 -injars ../target/dependency/statistiek-jar-with-dependencies.jar
 -outjars ../target/statistiek.jar
+-injars ../target/dependency/mathscratch.jar
+-outjars ../target/mathscratch.jar
 
 
 -target 1.8
@@ -87,6 +89,12 @@
 -keep class fi.balansfruit.BalansFruitApplet{
     <fields>;
     <methods>;
+}
+
+#keep all, tuning later.
+-keep class fi.mathscratch.** {
+	<fields>;
+	<methods>;
 }
 
 -keep,allowshrinking class org.** {
