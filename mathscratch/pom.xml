@@ -51,6 +51,7 @@
 					<niceManifest>true</niceManifest>
 					<dependencyReducedPomLocation>${basedir}/small-pom.xml</dependencyReducedPomLocation>
 					<instructions>
+						<Bundle-SymbolicName>fi.mathscratch.MathScratch</Bundle-SymbolicName>
 						<Export-Package>fi.mathscratch</Export-Package>
 						<Require-Bundle>fi.wiskopdr.WiskOpdr</Require-Bundle>
 						<Main-class>fi.mathscratch.MathScratch</Main-class>
