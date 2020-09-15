@@ -26,7 +26,7 @@ public abstract class AbstractCirkelLabelHandler extends AbstractTextHandler {
 		LabelDelegate CONST = getTracker().getRegistered(Const.TYPE);
 		CONST.define(l);
 		Destroyable[] depend = { p, l };
-		getModel().buildCirkel(depend);
+		visit(getModel().buildCirkel(depend));
 	}
 
 	@Override
@@ -39,6 +39,7 @@ public abstract class AbstractCirkelLabelHandler extends AbstractTextHandler {
 			|| select.firstElement() instanceof OpObject
 		) {
 			Destroyable p = model.buildPunt(x, y);
+			p = visit(p);
 			model.toggle(p);
 		} 
 		attachSelection();
