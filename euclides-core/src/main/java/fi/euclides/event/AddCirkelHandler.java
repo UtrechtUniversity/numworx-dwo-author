@@ -114,7 +114,7 @@ public class AddCirkelHandler extends EventHandler {
 			super.command();
 			return;				
 		}
-		getModel().buildCirkel().visit(decorator);;
+		getModel().buildCirkel().visit(decorator);
 	}
 
 	/* (non-Javadoc)
