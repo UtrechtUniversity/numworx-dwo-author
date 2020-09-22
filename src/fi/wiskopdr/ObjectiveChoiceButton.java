@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.swing.*;
 
@@ -33,7 +34,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
         // 2D -> Flat model:
         for(int i = 0; i < choices.length; i++) {
           boolean choice[] = choices[i];
-          StudentObjective[] objs = studentModel.categories[i].objectives;
+          StudentObjective[] objs = studentModel.get().categories[i].objectives;
           for (int j = 0; j < objs.length; j++) {
             if (choice[j])
               ids.add(objs[j].id);
@@ -47,7 +48,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
        choices = new boolean[objectives.length][];
        for(int j=0 ; j<objectives.length ; j++)
        {   choices[j] = new boolean[objectives[j].length];
-           StudentObjective[] objs = studentModel.categories[j].objectives;
+           StudentObjective[] objs = studentModel.get().categories[j].objectives;
            for(int i=0; i<objectives[j].length; i++){   
            choices[j][i] = obj.contains(objs[i].id);
            }
@@ -147,7 +148,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	
 	private String[][] objectives;
 	private String[] categorieString;
-	private StudentModel studentModel;
+	private Supplier<StudentModel> studentModel;
 	private JButton okButton; 
 	private JButton cancelButton;
 	
@@ -160,31 +161,71 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	
 	private WiskOpdrGlobalVarState globalVarState;
 	
-	
-	// in oude geodefiner
-	public ObjectiveChoiceButton(String[][] objectives, String[] categorieString) {	
-		this(WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString, WiskOpdr.studentModel);
+	public static boolean hasObjectiveChoices() {
+	  return WiskOpdr.objectives !=  null || WiskOpdr.studentModelSupplier != null; 
 	}
 
+	/**
+	 * Voor gebruik in widgets. 
+	 * Geen referenties naar objectives of studentmodel.
+	 * Jargon
+	 * <pre>
+	 * if (ObjectiveChoiceButton.hasObjectiveChoices() { button = new ObjectiveChoiceButton() }
+	 * </pre>
+	 */
+	public ObjectiveChoiceButton() {
+	  this(WiskOpdr.rb.getString("OPT_objectives"), WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModelSupplier);
+	}
+	
+	
+//	// in oude geodefiner
+//	@Deprecated
+//	public ObjectiveChoiceButton(String[][] objectives, String[] categorieString) {	
+//		this(WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString, WiskOpdr.studentModel);
+//	}
+
+	@Deprecated
 	public ObjectiveChoiceButton(String[][] objectives, String[] categorieString, StudentModel model) {
 	  this(WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString,model);
 	}
-    public ObjectiveChoiceButton(String labelString, String[][] objectives, String[] categorieString) {
-      this(labelString, objectives, categorieString, null);
+ 
+	/**
+	 * Voor gebruik bij misconcepties.
+	 * @param labelString
+	 * @param objectives
+	 * @param categorieString
+	 */
+	public ObjectiveChoiceButton(String labelString, String[][] objectives, String[] categorieString) {
+      this(labelString, objectives, categorieString, (Supplier<StudentModel>)null);
     }
+	
+	public ObjectiveChoiceButton(String labelString, String[][] objectives, String[] categorieString, Supplier<StudentModel> studentModelGetter) {
+	  super(labelString);
+      this.labelString = labelString;
+      this.objectives = objectives;
+      this.categorieString = categorieString;
+      this.studentModel = studentModelGetter;
+      addActionListener(this);
+      if (studentModel != null) {
+//        System.out.println("storeCurrentGlobalVars");
+//        globalVarState = new WiskOpdrGlobalVarState();
+//        globalVarState.storeCurrentGlobalVars();
+          strategy = new StudentModelChoicePanel(studentModel);
+      }
+	}
 	
 	public ObjectiveChoiceButton(String labelString, String[][] objectives, String[] categorieString, StudentModel studentModel)
 	{	super(labelString);
 		this.labelString = labelString;
 		this.objectives = objectives;
 		this.categorieString = categorieString;
-		this.studentModel = studentModel;
+		this.studentModel = () -> studentModel;
 		addActionListener(this);
 		if (studentModel != null) {
 //			System.out.println("storeCurrentGlobalVars");
 //			globalVarState = new WiskOpdrGlobalVarState();
 //			globalVarState.storeCurrentGlobalVars();
-			strategy = new StudentModelChoicePanel(studentModel);
+			strategy = new StudentModelChoicePanel(this.studentModel);
 		}
 	}
 	

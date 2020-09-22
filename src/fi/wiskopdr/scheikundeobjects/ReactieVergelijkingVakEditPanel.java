@@ -183,10 +183,10 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         logIDField = makeTextField(520,5,60,20,"0",false);
         boxMetRandCB = makeCheckBox(500,155,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
         
-        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+        logObjectivesButton = new ObjectiveChoiceButton();
+        logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
         logObjectivesButton.setBounds(600,5,120,20);
-        if(WiskOpdr.objectives!=null)add(logObjectivesButton);
+        if(ObjectiveChoiceButton.hasObjectiveChoices())add(logObjectivesButton);
         
         correctPV = makeTextField(440,360,30,20,""+puntenCorrect,true);
         vereenvoudigbaarPV = makeTextField(440,385,30,20,""+aftrekVereenvoudigbaar,true);

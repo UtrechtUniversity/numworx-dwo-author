@@ -108,8 +108,8 @@ public class CBookInteractieEditPanel extends JPanel implements
 			top.add(logid);
 		}
 // objectives:
-	    logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null);
+	    logObjectivesButton = new ObjectiveChoiceButton();
+        logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
         if(logObjectivesButton.isVisible())
         	top.add(logObjectivesButton);
         infoBtn = new InfoButton(this);

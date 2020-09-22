@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -168,7 +169,11 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	
 	public static String[][] objectives = null;
 	public static String[] categorieString = null;
+
+	@Deprecated // use supplier
 	public static StudentModel studentModel;
+	public static Supplier<StudentModel> studentModelSupplier;
+
 	private StudentModel studentModels[];
 	public static String[][] misconceptions = null;
 	public static String[] mccCategorieString = null;
@@ -1889,5 +1894,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
   public static void setStudentModel(StudentModel studentModel2) {
     studentModel = studentModel2;
+    if (studentModel2 != null)
+      studentModelSupplier = () -> studentModel2;
+    else
+      studentModelSupplier = null;   
   }
 }

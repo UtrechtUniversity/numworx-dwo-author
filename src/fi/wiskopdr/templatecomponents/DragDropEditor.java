@@ -254,7 +254,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		logIDLabelLabel = makeLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),font);
 		logIDLabelLabel.setVisible(false);
 		logIDLabelField = makeTextField("",50,22,this);
-		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+		logObjectivesButton = new ObjectiveChoiceButton();
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
         
@@ -611,7 +611,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
         logObjectivesButton.setObjectives(smObjectives);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
+        logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
         knopImageButton.setPopupButtonImage(knopImage);
     	iconman = new Iconan(WiskOpdr.applet, (Component)mainPanel, (Hashtable)TekstImageVak.getImageMap());
     	if(knopImageString!=null && !"".equals(knopImageString)) {

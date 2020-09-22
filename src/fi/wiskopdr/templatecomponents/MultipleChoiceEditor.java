@@ -263,7 +263,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		logIDLabelLabel = makeLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),font);
 		logIDLabelLabel.setVisible(false);
 		logIDLabelField = makeTextField("",50,22,this);
-		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+		logObjectivesButton = new ObjectiveChoiceButton();
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
                 
@@ -664,7 +664,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         logObjectivesButton.setObjectives(smObjectives);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
+        logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
         
         //checkFormuleCB.setSelected(checkFormule);
         //if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);

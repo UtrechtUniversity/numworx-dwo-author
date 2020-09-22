@@ -8,6 +8,7 @@ import java.awt.event.*;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 //import javax.swing.JComboBox;
@@ -62,8 +63,9 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 	private String rowLabel;
 	private String columnLabel;
 	private StudentModel studentModel;
+	private String studentModelId;
 	
-	private JComboBox<StudentModel> leerdomeinCombobox = new JComboBox<>(WiskOpdr.applet.getStudentModels());
+	private JComboBox<StudentModel> leerdomeinCombobox = new JComboBox<>(/*WiskOpdr.applet.getStudentModels()*/);
 	
 		
 	public ObjectiveSettingsButton(){	
@@ -88,7 +90,12 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 	
 	public void setStudentModelID(String id) {
 		studentModel = null;
-		if (id == null) return;
+		studentModelId = id;
+	}
+	
+	private void requestStudentModel() {
+	  String id = studentModelId;
+	  if (id == null || studentModel != null) return;
 		for( StudentModel s: WiskOpdr.applet.getStudentModels()) {
 			if( s != null && s.id.equals(id))
 			{
@@ -100,7 +107,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 				//eigenLeerdoelenRB.setSelected(true);
 				break;
 			}
-		}
+	  }
 	}
 	
 	private void makeObjects(){   
@@ -153,10 +160,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
     }
     
     public String getStudentModelID() {
-    		if(studentModel != null) {
-    			return studentModel.id;
-    		}
-    		return null;
+    		return studentModelId;
     }
     
     public void makeTextFields()
@@ -236,13 +240,13 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
         
         studentModelRB = new WiskOpdrRadioButton(WiskOpdr.rb.getString("OBJ_gebruikAanwezigLeerdomein"));
         studentModelRB.setFont(font);
-        studentModelRB.setSelected(studentModel!=null);
+        studentModelRB.setSelected(studentModelId!=null);
         studentModelRB.addActionListener(this);
         buttonGroep.add(studentModelRB);
         
         eigenLeerdoelenRB = new WiskOpdrRadioButton(WiskOpdr.rb.getString("OBJ_gebruikEigenLeerdoelen"));
         eigenLeerdoelenRB.setFont(font);
-        eigenLeerdoelenRB.setSelected(studentModel==null);
+        eigenLeerdoelenRB.setSelected(studentModelId==null);
         eigenLeerdoelenRB.addActionListener(this);
         
         buttonGroep.add(eigenLeerdoelenRB);
@@ -293,9 +297,18 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 		scrollPane = new JScrollPane(objectivesPanel);
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setBackground(WiskOpdr.colorGray3);
-		scrollPane.setVisible(studentModel==null);
+		scrollPane.setVisible(studentModelId==null);
 		
-		leerdomeinCombobox.setVisible(studentModel!=null);
+		leerdomeinCombobox.setVisible(studentModelId!=null);
+		if (leerdomeinCombobox.isVisible())
+		{
+		  StudentModel[] studentModels = WiskOpdr.applet.getStudentModels();
+		  for(StudentModel s: studentModels) {
+		    if (s != null && s.id .equals(studentModelId)) { studentModel = s; break; }
+		  }
+          leerdomeinCombobox.setModel(new DefaultComboBoxModel<>(studentModels));
+          leerdomeinCombobox.setSelectedItem(studentModel);
+		}
 		leerdomeinCombobox.setForeground(WiskOpdr.colorBlue1);
 		leerdomeinCombobox.setPreferredSize(new Dimension(360,22));
 		leerdomeinCombobox.setMaximumSize(new Dimension(360,22));
@@ -365,7 +378,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 						if(objectives[i] != null && objectives[i].length > aantalRijen)
 							aantalRijen = objectives[i].length;
 			}
-			boolean m = studentModel == null;
+			boolean m = studentModelId == null;
 			makeGUI(aantalRijen, aantalKolommen);
 			aantalKolommenKnop.setEnabled(m);
 			aantalRijenKnop.setEnabled(m);
@@ -439,6 +452,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
         }
 		else if(e.getSource().equals(studentModelRB)) {
 			scrollPane.setVisible(!studentModelRB.isSelected());
+			leerdomeinCombobox.setModel(new DefaultComboBoxModel<>(WiskOpdr.applet.getStudentModels()));
 			leerdomeinCombobox.setVisible(studentModelRB.isSelected());
 			if(studentModelRB.isSelected())
 				objectives = null;
@@ -449,6 +463,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 			leerdomeinCombobox.setVisible(!eigenLeerdoelenRB.isSelected());
 			if(eigenLeerdoelenRB.isSelected()) {
 				studentModel = null;
+				studentModelId = null;
 				aantalKolommenKnop.setEnabled(true);
 				aantalRijenKnop.setEnabled(true);
 				leerdomeinCombobox.setSelectedIndex(0);
@@ -457,6 +472,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 		}
 		else if(e.getSource().equals(leerdomeinCombobox)) {
 			studentModel = (StudentModel) leerdomeinCombobox.getSelectedItem();
+			studentModelId = studentModel != null ? studentModel.id: null;
 		}
 		else if(e.getSource().equals(importButton)) {
 			JComboBox<StudentModel> combo = new JComboBox<>(WiskOpdr.applet.getStudentModels());
@@ -467,6 +483,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 				System.out.println("import model " + result);
 				if(result <= 0) {
 					studentModel = null;
+					studentModelId = null;
 					for(JTextField t: categoryTextFields) t.setEnabled(true);
 					for(JTextField[] tt: objectiveTextFields) for(JTextField t: tt) t.setEnabled(true);
 					aantalKolommenKnop.setEnabled(true);
@@ -474,6 +491,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 					return;
 				}
 				studentModel = (StudentModel) combo.getSelectedItem();
+				studentModelId = studentModel.id;
 				aantalKolommen = studentModel.categories.length;
 				aantalKolommen = Math.min(maxCategories, aantalKolommen);
 				aantalRijen = studentModel.getMaxObjectives();
@@ -508,6 +526,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 	}
 
   public StudentModel getStudentModel() {
+    requestStudentModel();
     return studentModel;
   }   
 }

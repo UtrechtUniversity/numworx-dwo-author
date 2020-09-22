@@ -308,12 +308,12 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
         scoringLabel = makeLabel(320,385,160,20,WiskOpdr.rb.getString("score"),true);
         logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
        
-        logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+        logObjectivesButton = new ObjectiveChoiceButton();
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
+        logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
         logObjectivesButton.setBounds(600,5,120,20);
-        if(WiskOpdr.objectives!=null)add(logObjectivesButton);
+        if(ObjectiveChoiceButton.hasObjectiveChoices())add(logObjectivesButton);
         
         // Hulp setting
         titleHulpLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"));

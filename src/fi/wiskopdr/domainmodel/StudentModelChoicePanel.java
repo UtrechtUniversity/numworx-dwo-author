@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.EventObject;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
@@ -173,19 +174,16 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   DynamicUtilTreeNode root;
   JLabel leerdoelTitelLabel;
   JTextArea description;
-  final StudentModel studentModel;
+  final Supplier<StudentModel> studentModel;
   static final String WISKOPDR_SIG = "H4sIAAAAAA";
   static final String JSON_SIG = "{";
 
-  public StudentModelChoicePanel(StudentModel studentModel) {
+  public StudentModelChoicePanel(Supplier<StudentModel> studentModel2) {
     super(null);
-    this.studentModel = studentModel;
+    this.studentModel = studentModel2;
     setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-    NodeVector v = new NodeVector(studentModel);
-    root = new DynamicUtilTreeNode(v, v);
-    model = new DefaultTreeModel(root);   
-    tree = new JTree(model);
+    tree = new JTree();
     //tree.setMinimumSize(new Dimension(200,100));
     //tree.setPreferredSize(tree.getMinimumSize());
     tree.setCellEditor(new LeafNodeEditor(tree));
@@ -207,7 +205,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     
     //title = new JLabel(v.toString());
 	
-    String descr = v.getDescription();
+    String descr = "";
     description = new JTextArea(descr, 10, 30);
     description.setLineWrap(true);
     description.setWrapStyleWord(true);
@@ -300,8 +298,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     ids = new ArrayList<>();
     getObjectives(root.getUserObject(), ids);
 // old style
-    int x = studentModel.categories.length;
-    int y = studentModel.getMaxObjectives();
+    int x = studentModel.get().categories.length;
+    int y = studentModel.get().getMaxObjectives();
     choices = new boolean[x][y];
     NodeVector v = (NodeVector) root.getUserObject();
     for (x = 0; x < v.size(); x ++) {
@@ -320,6 +318,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
   @Override
   public Component makeGUI() {
+    if (root == null) {
+      NodeVector v = new NodeVector(studentModel.get());
+      root = new DynamicUtilTreeNode(v, v);
+      model = new DefaultTreeModel(root);   
+      tree.setModel(model);
+    }
 // old style
     if (choices != null) {
       NodeVector v = (NodeVector) root.getUserObject();

@@ -1437,7 +1437,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			if(WiskOpdr.isExperimental() && WiskOpdr.isPremium())
 			{
 			  objectivesButton.setStudentModelID(studentModelId);
-			  WiskOpdr.setStudentModel(objectivesButton.getStudentModel());
+			  //WiskOpdr.setStudentModel(objectivesButton.getStudentModel());
+			  WiskOpdr.studentModelSupplier = 
+			      studentModelId != null ?
+			      () -> objectivesButton.getStudentModel() : null;
 			}
 		}
 		misconceptionsCB.setSelected(hasMisconceptions);

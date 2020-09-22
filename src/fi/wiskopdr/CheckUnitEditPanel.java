@@ -149,10 +149,10 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		logIDLabelLabel.setVisible(false);
 		logIDLabelField = makeTextField("",50,22,this);
 		logIDLabelField.setVisible(false);
-		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+		logObjectivesButton = new ObjectiveChoiceButton();
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
+        logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
 		
 		
 		

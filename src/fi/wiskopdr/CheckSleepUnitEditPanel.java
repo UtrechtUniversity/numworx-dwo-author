@@ -168,10 +168,10 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		logIDLabelLabel.setVisible(false);
 		logIDLabelField = makeTextField("",50,22,this);
 		logIDLabelField.setVisible(false);
-		logObjectivesButton = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+		logObjectivesButton = new ObjectiveChoiceButton();
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
-        logObjectivesButton.setVisible(WiskOpdr.objectives!=null || WiskOpdr.studentModel!=null);
+        logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
         
         // mainPanel    //Hulp
         titleHulpLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"), font.deriveFont(Font.BOLD, 16));
