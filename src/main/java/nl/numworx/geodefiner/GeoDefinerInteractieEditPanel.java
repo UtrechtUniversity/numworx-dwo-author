@@ -66,7 +66,7 @@ public class GeoDefinerInteractieEditPanel extends JPanel implements
     		}
         	map.put("scoreMaxObjectives",scoreMaxObjectives);
         }
-        if (smObjectives != null) {
+        if (smObjectives != null && smObjectives.length > 0) {
         	map.put(fi.wiskopdr.domainmodel.Constants.OBJECTIVES, smObjectives);
         }
 		return map;
