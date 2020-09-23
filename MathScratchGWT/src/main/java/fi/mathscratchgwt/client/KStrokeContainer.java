@@ -140,6 +140,7 @@ public class KStrokeContainer {
 		formuleschrijfaanImage = new Image(formuleschrijfaanImageResource);
 		formuleschrijfaanImageElement = ImageElement.as(formuleschrijfaanImage.getElement());
 		
+		
 //		initSvg();
 //		svg.appendChild(svgPopup);
 //		svg.appendChild(svgGrid);
@@ -151,8 +152,11 @@ public class KStrokeContainer {
 		writeBox = null;
 		
 		boolean b = false;
-		if(recognizeOff)
+		if(recognizeOff) {
 			b=strokeContainer.addStroke(stroke,false);
+			addToHistory();
+			parent.svgManager.enableBinButtonSVG(true);
+		}
 		else {
 			strokeContainer.addStroke(stroke);
 			//logger.info(strokeContainer.getFormulaString());
@@ -217,19 +221,77 @@ public class KStrokeContainer {
 	
 	public void wis() {
 		strokeContainer.wis();
+		parent.svgManager.enableBinButtonSVG(false);
+		addToHistory();
 	}
 	
 	public void eraseStrokes(int x, int y) {
 		strokeContainer.removeStrokes(x,y);
-		if(strokeContainer.getStrokes().size()==0)
+		addToHistory();
+		if(strokeContainer.getStrokes().size()==0) {
 			eraserActive = false;
+			parent.svgManager.enableEraserButtonSVG(false);
+			parent.svgManager.enablePenButtonSVG(true);
+			parent.svgManager.enableBinButtonSVG(false);
+		}
 	}
 	
-	public void eraseLastStroke() {
-		if(strokeContainer.getStrokes().size()>0)
-			strokeContainer.getStrokes().remove(strokeContainer.getStrokes().size()-1);
-		if(strokeContainer.getStrokes().size()==0)
+//	public void eraseLastStroke() {
+//		if(strokeContainer.getStrokes().size()>0)
+//			strokeContainer.getStrokes().remove(strokeContainer.getStrokes().size()-1);
+//		if(strokeContainer.getStrokes().size()==0)
+//			eraserActive = false;
+//	}
+	
+	private int numHistories;
+	private int maxHistories = 10;
+	private HashMap<String, Object>[] histories = new HashMap[maxHistories+1];
+	
+	
+	public void addToHistory() {
+		HashMap<String, Object> stateTable = getState();
+		histories[numHistories] = stateTable;
+		numHistories++;
+		if (numHistories > 1)
+			parent.svgManager.enableUndoButtonSVG(true);
+		if (numHistories > maxHistories) {
+			for (int i = 0; i < numHistories - 1; i++) {
+				histories[i] = histories[i + 1];
+			}
+			numHistories--;
+		}
+	}
+	
+	public HashMap<String, Object> getFromHistory() {
+		HashMap<String, Object> lastState = null;
+		if (numHistories > 1) {
+			lastState = histories[numHistories - 2];
+			numHistories--;
+			if (numHistories < 2)
+				parent.svgManager.enableUndoButtonSVG(false);
+		}
+		else {
+			numHistories = 1;
+			parent.svgManager.enableUndoButtonSVG(false);
+		}
+		logger.info("getFromHistory "+numHistories);
+		return lastState;
+	}
+	
+	public void undo() {
+		HashMap<String, Object> lastState = getFromHistory();
+		if (lastState != null) {
+			setState(lastState);
+		}
+		if(strokeContainer.getStrokes().size()==0) {
 			eraserActive = false;
+			parent.svgManager.enableEraserButtonSVG(false);
+			parent.svgManager.enablePenButtonSVG(true);
+			parent.svgManager.enableBinButtonSVG(false);
+		}
+		else {
+			parent.svgManager.enableBinButtonSVG(true);
+		}
 	}
 	
 	public int getStrokeCount() {
@@ -1144,12 +1206,15 @@ public class KStrokeContainer {
 			correct = false;
 			isfalse = false;
 			isHalf = false;
+			numHistories = 0;
+			addToHistory();
 		}
 		else {
 			writeBox = null;
 			parseAllStrokes();
 			eraserActive = false;
 		}
+		
 	}
 	
 	public boolean getRecognizeOff() {
@@ -1204,6 +1269,8 @@ public class KStrokeContainer {
 			translate((int)activeTranslationX, (int)activeTranslationY);
 			//defaultBox.translate((int)activeTranslationX, (int)activeTranslationY);
 		}
+		
+		
 		
 //		if(b) {
 //			updatePopupSvg();

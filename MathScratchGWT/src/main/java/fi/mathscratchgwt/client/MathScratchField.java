@@ -99,8 +99,8 @@ public class MathScratchField {
 	
 	private OMSVGSVGElement svg;
 	private SVGImage svgImage;
-	 OMSVGDocument doc;
-	private SVGManager svgManager;
+	OMSVGDocument doc;
+	SVGManager svgManager;
 	
 	private Canvas mathScratchCanvas, backgroundCanvas;
 	private Context2d gIm, backgroundgIm, strokeContainergIm;
@@ -125,7 +125,7 @@ public class MathScratchField {
 	CssColor lijnenKleur = CssColor.make(150, 150, 255); 
 	CssColor ruitjesKleur = CssColor.make(180,195,228);
 
-	int maxHistories = 5;
+	int maxHistories = 10;
 	int numHistories = 0;
 	HashMap<String, Object>[] histories = new HashMap[maxHistories + 1];
 
@@ -204,7 +204,6 @@ public class MathScratchField {
 		foutkruisImage = new Image(foutkruisResource);
 		foutkruisImageElement = ImageElement.as(foutkruisImage.getElement());
 
-		svgManager.appendGrid();
 		svgManager.appendBin();
 		svgManager.enableBin(false);
 		svgManager.appendUndo();
@@ -272,7 +271,8 @@ public class MathScratchField {
 			kStrokeContainers.add(sc);
 		}
 		svgManager.appendStrokeContainers();
-		addToHistory();
+		if(init)
+			addToHistory();
 
 		List<Map<String, Object>> hiddenStrokeContainerList = new ArrayList<Map<String, Object>>();
 		if (launchState.containsKey("hiddenStrokeContainerList"))
@@ -347,18 +347,7 @@ public class MathScratchField {
 		return activeTranslation;
 	}
 
-	void addToHistory() {
-		HashMap<String, Object> stateTable = getState(false);
-
-		histories[numHistories] = stateTable;
-		numHistories++;
-		if (numHistories > maxHistories) {
-			for (int i = 0; i < numHistories - 1; i++) {
-				histories[i] = histories[i + 1];
-			}
-			numHistories--;
-		}
-	}
+	
 
 	public void paintFormule(boolean refresh) {
 		if(true)return;
@@ -636,24 +625,54 @@ public class MathScratchField {
 	}
 
 	void undo() {
-		wis(false);
+		//wis(false);
 		HashMap<String, Object> lastState = getFromHistory();
 		if (lastState != null) {
 			setState(lastState, false);
 		}
 		paint();
 	}
+	
+	void addToHistory() {
+		HashMap<String, Object> stateTable = getState(false);
+		histories[numHistories] = stateTable;
+		numHistories++;
+		if (numHistories > 1)
+			svgManager.enableUndo(true);
+		if (numHistories > maxHistories) {
+			for (int i = 0; i < numHistories - 1; i++) {
+				histories[i] = histories[i + 1];
+			}
+			numHistories--;
+		}
+		logger.info("addToHistory "+numHistories);
+	}
 
 	public HashMap<String, Object> getFromHistory() {
-		if (numHistories > 0)
+		HashMap<String, Object> lastState = null;
+		if (numHistories > 1) {
+			lastState = histories[numHistories - 2];
 			numHistories--;
-
-		if (numHistories > 0) {
-			return histories[numHistories - 1];
-		} else {
-			numHistories = 0;
-			return null;
+			if (numHistories < 2)
+				svgManager.enableUndo(false);
 		}
+		else {
+			numHistories = 1;
+			svgManager.enableUndo(false);
+		}
+		logger.info("getFromHistory "+numHistories);
+		return lastState;
+		
+//		if (numHistories > 0)
+//			numHistories--;
+//		
+//
+//		if (numHistories > 0) {
+//			return histories[numHistories - 1];
+//		} else {
+//			numHistories = 0;
+//			return null;
+//		}
 	}
 
 	void wis(boolean complete) {
@@ -661,6 +680,7 @@ public class MathScratchField {
 		if (complete)
 			numHistories = 0;
 		paint();
+		svgManager.enableBin(false);
 	}
 	
 	public boolean hasCheckConnection() {
@@ -785,10 +805,15 @@ public class MathScratchField {
 	
 	public void setScaleWriting(boolean scaleWriting) {
 		this.scaleWriting = scaleWriting;
+		if(!scaleWriting)
+			this.schrijfLeesFactor = 1;
+			
 	}
 	
 	public void setWritingScale(double writingScale) {
 		this.schrijfLeesFactor = writingScale;
+		if(!scaleWriting)
+			this.schrijfLeesFactor = 1;
 	}
 	
 	private void addFormulaStrokePoint(Point point) {
@@ -918,7 +943,7 @@ public class MathScratchField {
 		}
 
 		if (currentStrokeContainer != null && currentStrokeContainer.getUndoButtonArea().contains(eventX, eventY)) {
-			currentStrokeContainer.eraseLastStroke();
+			currentStrokeContainer.undo();
 			svgManager.appendCurrentSC(currentStrokeContainer);
 			paintFormule(false);
 			return;
@@ -999,6 +1024,8 @@ public class MathScratchField {
 			kStrokeContainers.clear();
 			svgManager.removeStrokeContainers();
 			addToHistory();
+			svgManager.updateBin();
+			svgManager.updateUndo();
 			eigenaar.setChanged();
 		}
 
@@ -1025,6 +1052,8 @@ public class MathScratchField {
 			currentStrokeContainer = new KStrokeContainer(this);
 			currentStrokeContainer.setActive(true);
 			kStrokeContainers.add(currentStrokeContainer);
+			svgManager.enableBin(true);
+			//svgManager.enableUndo(true);
 		}
 
 		proActiveStrokeContainer = null;

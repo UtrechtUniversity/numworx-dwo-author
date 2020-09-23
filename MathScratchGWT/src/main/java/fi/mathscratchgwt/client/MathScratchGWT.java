@@ -157,6 +157,7 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 		if (launchState.containsKey("writingScale")) {
 			mathScratchField.setWritingScale((Double) launchState.getDouble("writingScale"));
 		}
+		mathScratchField.addToHistory();
 		mathScratchField.paint();
 	}
 	
@@ -230,7 +231,10 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 
 	@Override
 	public void setState(HashMap<String, Object> h) {
-		if(h == null||h.isEmpty()) return;
+		if(h == null||h.isEmpty()) {
+			mathScratchField.addToHistory();
+			return;
+		}
 		mathScratchField.setState(h, false);
 	}
 

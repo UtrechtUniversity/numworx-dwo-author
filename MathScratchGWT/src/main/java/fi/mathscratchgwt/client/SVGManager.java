@@ -581,6 +581,14 @@ public class SVGManager {
 			bin.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, colorBlue4.toString());
 	}
 	
+	public void updateBin() {
+		boolean b = mathScratchField.numHistories>0;
+		if(b)
+			bin.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, colorBlue2.toString());
+		else
+			bin.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, colorBlue4.toString());
+	}
+	
 	public void appendUndo() {
 		CssColor strokeColor = colorBlue2;
 //		if (mathScratchField.kStrokeContainers.size() < 1)
@@ -603,6 +611,14 @@ public class SVGManager {
 	}
 	
 	public void enableUndo(boolean b) {
+		if(b)
+			undo.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, colorBlue2.toString());
+		else
+			undo.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, colorBlue4.toString());
+	}
+	
+	public void updateUndo() {
+		boolean b = mathScratchField.numHistories>1;
 		if(b)
 			undo.getStyle().setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY, colorBlue2.toString());
 		else
@@ -716,7 +732,7 @@ public class SVGManager {
 		ArrayList<KStrokeContainer> strokeContainers = mathScratchField.getStrokeContainers();
 		if(strokeContainers.size()>0) {
 			enableBin(true);
-			enableUndo(true);
+			//enableUndo(true);
 		}
 		for(int i=0 ; i<strokeContainers.size() ; i++) {
 			OMSVGSVGElement svgSC = doc.createSVGSVGElement();
@@ -1020,8 +1036,8 @@ public class SVGManager {
 			currentSCNodes.add(svgBinButton);
 			svgCurrentSC.appendChild(svgBinButton);
 			
-			enableUndoButtonSVG(true);
-			enableBinButtonSVG(true);
+			//enableUndoButtonSVG(true);
+			//enableBinButtonSVG(true);
 		}
 		else {
 			enableDrawButtonSVG(false);
