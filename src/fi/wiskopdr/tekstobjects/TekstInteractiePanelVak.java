@@ -1923,7 +1923,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		connections = this.connections;
 		subscriptions = replaceConnector(this.subscriptions);
 	    
-		if(launchData.containsKey("volledigeBreedte") && (Boolean)launchData.get("volledigeBreedte") && tekstVak!=null) {
+		if(launchData!=null && launchData.containsKey("volledigeBreedte") && (Boolean)launchData.get("volledigeBreedte") && tekstVak!=null) {
 			int volleBreedte = tekstVak.getWidth() - 2*tekstVak.geefMarge();
 			launchData.put("breedte", new Integer(volleBreedte));
 		}
