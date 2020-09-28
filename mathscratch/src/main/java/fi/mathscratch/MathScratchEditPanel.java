@@ -125,6 +125,7 @@ public class MathScratchEditPanel extends JPanel implements InteractieEditPanel,
         
         drawingCB = new JCheckBox(MathScratch.rb.getString("drawingCB"));
         drawingCB.setSelected(true);
+        drawingCB.addActionListener(this);
         
         formRecognitionCB = new JCheckBox(MathScratch.rb.getString("formRecognitionCB"));
         formRecognitionCB.setSelected(true);
@@ -279,7 +280,20 @@ public class MathScratchEditPanel extends JPanel implements InteractieEditPanel,
 			showFormFontRB.setVisible(form);
 			showFormFontRBRA.setVisible(form);
 			calculatorCB.setVisible(form);
+			if(!form)
+				drawingCB.setSelected(true);
 		}
+		if(e.getSource()==drawingCB) {
+			boolean drawing = drawingCB.isSelected();
+			if(!drawing) {
+				formRecognitionCB.setSelected(true);
+				showWritingRB.setVisible(true);
+				showWritingRBRA.setVisible(true);
+				showFormFontRB.setVisible(true);
+				showFormFontRBRA.setVisible(true);
+			}
+		}
+		
 		if(e.getSource()==scaleWritingCB) {
 			boolean scale = scaleWritingCB.isSelected();
 			scaleWritingCBRA.setVisible(scale);
