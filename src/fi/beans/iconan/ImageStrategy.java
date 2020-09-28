@@ -85,7 +85,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
      * @param name
      */
     NameObserver(String name) {
-        this.name = name;
+        this.name = parent.strip(name);
     }
     
 }
@@ -193,7 +193,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
     }
 
     private boolean inNamemap(String name) {
-        return parent.namemap.containsKey(name);
+        return parent.namemap.containsKey(parent.strip(name));
     }
 
     @Override

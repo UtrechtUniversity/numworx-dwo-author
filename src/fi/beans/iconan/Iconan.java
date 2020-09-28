@@ -144,7 +144,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			String name = previewName;
 			if(name != null)
 			{
-			  namemap.put(name + "/w", (previewWidth));
+			  //namemap.put(name + "/w", (previewWidth));
 			  namemap.put(suffix(name)+"/w", (previewWidth));
 			}
 			previewCanvas.repaint();
@@ -156,7 +156,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			String name = previewName;
 			if(name != null)
 			{
-			  namemap.put(name + "/h", (previewHeight));
+			  //namemap.put(name + "/h", (previewHeight));
               namemap.put(suffix(name) + "/h", (previewHeight));
 			}
 			previewCanvas.repaint();
@@ -166,7 +166,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		  Boolean volBreedte = volBreedteCB.isSelected();
 		  String name = previewName;
 		  if (name != null) {
-		    namemap.put(name + "/v", volBreedte);
+		    //namemap.put(name + "/v", volBreedte);
 		    namemap.put(suffix(name), volBreedte);
 		  }
 		  return true;
@@ -216,9 +216,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			{
 				String selected = (String) list.getSelectedValue();
 				if(null != selected) {
-					namemap.put(selected + "/w", Integer.parseInt(widthField.getText()));
-					namemap.put(selected + "/h", Integer.parseInt(heightField.getText()));
-					namemap.put(selected + "/v", volBreedteCB.isSelected());
+//					namemap.put(selected + "/w", Integer.parseInt(widthField.getText()));
+//					namemap.put(selected + "/h", Integer.parseInt(heightField.getText()));
+//					namemap.put(selected + "/v", volBreedteCB.isSelected());
 					Iterator<String> keys = namemap.keySet().iterator();
 					while (keys.hasNext()) {
                       String string = (String) keys.next();
@@ -453,11 +453,15 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	 */
 	private void setSizes(String name) {
 		previewWidth = getWidth(name);
+		if (!namemap.containsKey(name + "/w"))
+		  namemap.put(name + "/w", previewWidth);
 		widthField.setText(String.valueOf(previewWidth));
 	    widthField.setColumns(5);
 	    widthField.revalidate();
 
 		previewHeight = getHeight(name);
+		if (!namemap.containsKey(name + "/h"))
+		  namemap.put(name + "/h", previewHeight);
 		heightField.setText(String.valueOf(previewHeight));
 		
 		volBreedteCB.setSelected(isVolBreedte(name));
@@ -466,9 +470,6 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	public boolean isVolBreedte(String name) {
       if(namemap.containsKey(suffix(name) + "/v")) {
         return Boolean.TRUE.equals(namemap.get(suffix(name) + "/v"));
-      }
-      if (namemap.containsKey(strip(name) + "/v")) {
-        return Boolean.TRUE.equals(namemap.get(strip(name) + "/v"));
       }
       return false;
   }
@@ -481,15 +482,16 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 
   protected Strategy getStrategy(String name) {
-    Strategy s = strategies.get(strip(name));
+    String strip = strip(name);
+    Strategy s = strategies.get(strip);
     if(s == null) {
-      Object mime = namemap.get(name + "/t");
+      Object mime = namemap.get(strip + "/t");
       if("image/svg+xml".equals(mime)) {
         s = svgStrategy;
       } else {
         s = imageStrategy;
       }
-      strategies.put(name, s);
+      strategies.put(strip, s);
     }
     return s;
   }
@@ -1037,8 +1039,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		namemap.put(filename, data);
 		namemap.put(filename + "/t", type);
 		namemap.remove(filename + "/w");
-		namemap.remove(filename + "/v");
-		
+		namemap.remove(filename + "/v");		
 		namemap.remove(filename + "/h");
 		namemap.remove(filename + "/u");
 		namemap.put(filename + "/f", file.toURI());
@@ -1206,6 +1207,14 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		  }
 		}
 		ListModel<String> model = list.getModel();
+		list.getSelectionModel().clearSelection();
+		widthField.setText("");
+		heightField.setText("");
+		volBreedteCB.setSelected(false);
+		widthField.setEnabled(imagename != null);
+		heightField.setEnabled(imagename != null);
+		volBreedteCB.setEnabled(imagename != null);
+		
 		for(int i = 0; i < model.getSize(); i++)
 		{
 			if(model.getElementAt(i).equals(shortname))

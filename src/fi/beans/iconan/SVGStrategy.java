@@ -7,7 +7,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.swing.Icon;
@@ -90,6 +89,7 @@ public class SVGStrategy implements Strategy {
 
   private Dimension parseData(byte[] data, String name)
       throws ParserConfigurationException, SAXException, IOException {
+    name = parent.strip(name);
     Dimension result = new Dimension(-1, -1);
     ByteArrayInputStream in = new ByteArrayInputStream(data);
     InputSource input = new InputSource(in);
@@ -144,7 +144,7 @@ public class SVGStrategy implements Strategy {
 
   
   private JComponent getPreviewPanel(String name, SimpleSwingBrowser simpleSwingBrowser) {
-    InputStream in = new ByteArrayInputStream((byte[])parent.namemap.get(name));
+    InputStream in = new ByteArrayInputStream((byte[])parent.namemap.get(parent.strip(name)));
 // add unzip?
     //in = new GzipInputStream(in);
     try {
