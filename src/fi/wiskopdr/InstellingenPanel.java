@@ -1437,7 +1437,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			if(WiskOpdr.isExperimental() && WiskOpdr.isPremium())
 			{
 			  objectivesButton.setStudentModelID(studentModelId);
-			  WiskOpdr.setStudentModel(objectivesButton.getStudentModel()); // Deze regel kan weg als Graphtool/Geodefiner zijn geupdate.
+			  //WiskOpdr.setStudentModel(objectivesButton.getStudentModel()); // Deze regel kan weg als Graphtool/Geodefiner zijn geupdate.
 			  WiskOpdr.studentModelSupplier = 
 			      studentModelId != null ?
 			      () -> objectivesButton.getStudentModel() : null;
