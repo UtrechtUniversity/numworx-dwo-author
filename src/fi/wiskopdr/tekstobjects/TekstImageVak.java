@@ -140,7 +140,17 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 		if(w == -1) w = 16;
 		setSize(w,h);
 		ashoogte=15; // TODO getVAlign?
-		if(getParent()instanceof TekstElement)((TekstElement)getParent()).zetMaat();
+		if(getParent()instanceof TekstElement) {
+			((TekstElement)getParent()).zetMaat();
+		}
+		if(vol) {
+			int volWidth = tekstVak.getSize().width-2*tekstVak.geefMarge();
+			int volHeight = volWidth*h/w;
+			setSize(volWidth,volHeight);
+		}
+		if(getParent()instanceof TekstElement) {
+			((TekstElement)getParent()).zetMaat();
+		}
 	}
 	/**
 	 * restore ImageVak met plaatje.
