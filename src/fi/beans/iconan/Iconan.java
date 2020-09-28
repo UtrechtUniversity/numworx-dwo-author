@@ -32,6 +32,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
@@ -60,6 +61,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import fi.beans.iconan.text.Text;
+import fi.beans.numworxlf.JCheckBox;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrButton;
 import fi.wiskopdr.WiskOpdrTextField;
@@ -76,12 +78,26 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	private ActionListener al;
 	private JButton newBtn, okBtn, cancelBtn, closeBtn, rmBtn, urlBtn, chngBtn;
 	JTextField widthField, heightField;
+	JCheckBox  volBreedteCB;
 	JLabel widthLabel, heightLabel;
 	int previewWidth = 32, previewHeight = 32;
 	private JPanel previewCanvas = new JPanel(new BorderLayout()); //{ previewCanvas.setBorder(BorderFactory.createEtchedBorder()); }
 	private Applet applet;
 	private boolean emptyStart = true;
 	private boolean chooseImage = true;
+	long suffix;
+	private static long nextSuffix;
+	static final char SUFFIX = '\f';
+	
+	String suffix(String name) {
+	  if (suffix == 0||name.indexOf(SUFFIX)>0) return name;
+	  return name + SUFFIX + suffix;
+	}
+	String strip(String name) {
+	  int i = name.indexOf(SUFFIX);
+	  if (i >0) return name.substring(0,i);
+	  return name;
+	}
 	
 	private JDialog imageDialog;
 	
@@ -127,7 +143,10 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			previewWidth = Integer.parseInt(widthField.getText());
 			String name = previewName;
 			if(name != null)
-				namemap.put(name + "/w", new Integer(previewWidth));
+			{
+			  namemap.put(name + "/w", (previewWidth));
+			  namemap.put(suffix(name)+"/w", (previewWidth));
+			}
 			previewCanvas.repaint();
 			return true;
 		}
@@ -136,10 +155,23 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			previewHeight = Integer.parseInt(heightField.getText());
 			String name = previewName;
 			if(name != null)
-				namemap.put(name + "/h", new Integer(previewWidth));
+			{
+			  namemap.put(name + "/h", (previewHeight));
+              namemap.put(suffix(name) + "/h", (previewHeight));
+			}
 			previewCanvas.repaint();
 			return true;
 		}
+		if (source == volBreedteCB) {
+		  Boolean volBreedte = volBreedteCB.isSelected();
+		  String name = previewName;
+		  if (name != null) {
+		    namemap.put(name + "/v", volBreedte);
+		    namemap.put(suffix(name), volBreedte);
+		  }
+		  return true;
+		}
+		
 		return false;
 	}
 	
@@ -184,14 +216,23 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			{
 				String selected = (String) list.getSelectedValue();
 				if(null != selected) {
-					namemap.put(selected + "/w", new Integer(widthField.getText()));
-					namemap.put(selected + "/h", new Integer(heightField.getText()));
+					namemap.put(selected + "/w", Integer.parseInt(widthField.getText()));
+					namemap.put(selected + "/h", Integer.parseInt(heightField.getText()));
+					namemap.put(selected + "/v", volBreedteCB.isSelected());
+					Iterator<String> keys = namemap.keySet().iterator();
+					while (keys.hasNext()) {
+                      String string = (String) keys.next();
+                      if (string.contains("" + SUFFIX + suffix)) keys.remove();                     
+                    }
+					namemap.put(suffix(selected) + "/w", Integer.parseInt(widthField.getText()));
+					namemap.put(suffix(selected) + "/h", Integer.parseInt(heightField.getText()));
+					namemap.put(suffix(selected) + "/v", volBreedteCB.isSelected());
 				} else {
 					selected = "";
 					al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "cancel"));
 					return;
 				}				
-				al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, selected));
+				al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, suffix(selected)));
 			}
 			if(imageDialog!=null)
 				imageDialog.setVisible(false);
@@ -319,7 +360,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			JPanel bottomPanel = new JPanel(new BorderLayout());
 			bottomPanel.setBackground(WiskOpdr.colorGray2);
 			bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-			Component[] comp = {okBtn, hst(20), cancelBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField };
+			Component[] comp = {okBtn, hst(20), cancelBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField, hst(5), volBreedteCB };
 			Component[] compBeheer = {closeBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField};
 			if(chooseImage) 
 				bottomPanel.add(hb(comp));
@@ -418,9 +459,21 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 		previewHeight = getHeight(name);
 		heightField.setText(String.valueOf(previewHeight));
+		
+		volBreedteCB.setSelected(isVolBreedte(name));
 	}
 
-	Map<String,Strategy> strategies = new TreeMap<String,Strategy>();
+	public boolean isVolBreedte(String name) {
+      if(namemap.containsKey(suffix(name) + "/v")) {
+        return Boolean.TRUE.equals(namemap.get(suffix(name) + "/v"));
+      }
+      if (namemap.containsKey(strip(name) + "/v")) {
+        return Boolean.TRUE.equals(namemap.get(strip(name) + "/v"));
+      }
+      return false;
+  }
+
+  Map<String,Strategy> strategies = new TreeMap<String,Strategy>();
 	
 	public int getWidth(String name) {
       return getStrategy(name).getWidth(name);
@@ -428,7 +481,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 
   protected Strategy getStrategy(String name) {
-    Strategy s = strategies.get(name);
+    Strategy s = strategies.get(strip(name));
     if(s == null) {
       Object mime = namemap.get(name + "/t");
       if("image/svg+xml".equals(mime)) {
@@ -447,10 +500,10 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
   private void rebuildList() {
 		list.removeAll();
-		Enumeration<String> keys = namemap.keys();
-		while (keys.hasMoreElements()) {
-			String string = keys.nextElement();
-			if(string.indexOf('/')<0)
+		Iterator<String> keys = namemap.keySet().iterator();
+		while (keys.hasNext()) {
+			String string = keys.next();
+			if(string.indexOf('/')<0 && string.indexOf(SUFFIX)<0)
 				add(string);
 		}
 	}
@@ -497,6 +550,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 	public Image getImage(String name)
 	{
+	    name = strip(name);
 		byte[] data = (byte[]) namemap.get(name);
 		if(data == null)
 			return null;
@@ -657,10 +711,29 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		imagemap = new Hashtable<>();
 		initialize();
 		reLocale();
-	
+		nextSuffix();
 	}
 
-	/**
+	private void nextSuffix() {
+	  nextSuffix = 0;
+      if (namemap != null) {
+        for(String name: namemap.keySet()) {
+          int index = name.indexOf(SUFFIX);
+          if (index > 0) {
+            name = name.substring(index+1);
+            index = name.indexOf('/');
+            if (index >=0) {
+              name = name.substring(0,index);
+            }
+            nextSuffix = Math.max(nextSuffix, Long.parseLong(name));
+          }
+        }
+      }
+    
+  }
+
+
+  /**
 	 * @deprecated gebruik Iconan(Applet)
 	 */
 	public Iconan() {
@@ -795,13 +868,16 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		add(previewCanvas, previewConstraints);
 		
 		widthField = new WiskOpdrTextField("16");
-		widthField.setEnabled(false);
+		widthField.setEnabled(true);
 		widthField.setColumns(5);
 		widthField.setMinimumSize(widthField.getPreferredSize());
 		heightField = new WiskOpdrTextField("16");
-		heightField.setEnabled(false);
+		heightField.setEnabled(true);
 		heightField.setColumns(5);
 		heightField.setMinimumSize(heightField.getPreferredSize());
+		
+		volBreedteCB = new JCheckBox(WiskOpdr.rb.getString("volleBreedteLabel"));
+		volBreedteCB.setOpaque(false);
 		
         GridBagConstraints wlConstraints = new GridBagConstraints();
         Insets wl = new Insets(10,0,1,0);
@@ -850,6 +926,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		heightField.addActionListener(this);
 		widthField.addFocusListener(this);
 		heightField.addFocusListener(this);
+		volBreedteCB.addActionListener(this);
 		
 		
 		svgStrategy = new SVGStrategy(this);
@@ -960,6 +1037,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		namemap.put(filename, data);
 		namemap.put(filename + "/t", type);
 		namemap.remove(filename + "/w");
+		namemap.remove(filename + "/v");
 		
 		namemap.remove(filename + "/h");
 		namemap.remove(filename + "/u");
@@ -993,6 +1071,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		namemap.put(filename + "/t", type);
 		namemap.remove(filename + "/w");
 		namemap.remove(filename + "/h");
+		namemap.remove(filename + "/v");
 		namemap.remove(filename + "/f");
 // als 'u' niet begint met codebase, bewaar volledige naam
 		namemap.put(filename + "/u", getURI(u));
@@ -1114,13 +1193,25 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	public void select(String imagename) {
 	    emptyStart = "EMPTY".equals(imagename);
 		rebuildList();
+		String shortname = imagename;
+		if (emptyStart||imagename == null) {
+		  suffix = ++nextSuffix;
+		} else {
+		  int s = imagename.indexOf(SUFFIX);
+		  if (s>0) {
+		    suffix = Long.parseLong(imagename.substring(s+1));
+		    shortname = imagename.substring(0,s);
+		  } else {
+		    suffix = ++nextSuffix;
+		  }
+		}
 		ListModel<String> model = list.getModel();
 		for(int i = 0; i < model.getSize(); i++)
 		{
-			if(model.getElementAt(i).equals(imagename))
+			if(model.getElementAt(i).equals(shortname))
 			{
 				list.setSelectedIndex(i);
-				selectPreview(imagename);
+				selectPreview(shortname);
 				return;
 			}
 		}

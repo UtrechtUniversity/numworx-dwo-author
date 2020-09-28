@@ -56,7 +56,9 @@ public class SVGStrategy implements Strategy {
 	}
 	
 	public int getHeight(String name) {
-		Integer w = (Integer) parent.namemap.get(name + "/h");
+      Integer w = (Integer) parent.namemap.get(parent.suffix(name) + "/h");
+      if (w == null)
+        w = (Integer) parent.namemap.get(parent.strip(name) + "/h");
 		if(w != null)
 			return w.intValue();
 		byte[] data = (byte[])parent.namemap.get(name);
@@ -70,7 +72,9 @@ public class SVGStrategy implements Strategy {
 		return -1;
 	}
     public int getWidth(String name) {
-      Integer w = (Integer) parent.namemap.get(name + "/w");
+      Integer w = (Integer) parent.namemap.get(parent.suffix(name) + "/w");
+      if (w == null)
+        w = (Integer)parent.namemap.get(parent.strip(name) + "/w");
       if(w != null)
           return w.intValue();
       byte[] data = (byte[])parent.namemap.get(name);

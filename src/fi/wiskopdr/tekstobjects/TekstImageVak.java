@@ -135,6 +135,7 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 	public void zetMaat() {
 		int w = iconman.getWidth(imagename);
 		int h = iconman.getHeight(imagename);
+		boolean vol = iconman.isVolBreedte(imagename);
 		if(h == -1) h = 16;
 		if(w == -1) w = 16;
 		setSize(w,h);
