@@ -98,8 +98,8 @@ public class CheckDWOPanel extends JPanel implements ChangeListener, ActionListe
 		formule.setPreferredSize(new Dimension(200,50));
 		formule.setMaximumSize(new Dimension(Short.MAX_VALUE, 50));
 		formule.formuleVak.addActionListener(this);
-		if(WiskOpdr.objectives!=null || WiskOpdr.studentModel != null)
-			objBtn = new ObjectiveChoiceButton(WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModel);
+		if (ObjectiveChoiceButton.hasObjectiveChoices())
+			objBtn = new ObjectiveChoiceButton();
 		add(checkDWO);
 		add(extern);
 		Box hbox = Box.createHorizontalBox();
