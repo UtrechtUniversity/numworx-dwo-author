@@ -149,8 +149,8 @@ public class MathScratchField {
 	Point translation = new Point(0, 0);
 	double scale = 1.0;
 	
-	private boolean drawOption = true;
-	private boolean formOption = true;
+	 boolean drawOption = true;
+	 boolean formOption = true;
 	 boolean showWriting = true;
 	private boolean inputOption = true;
 	private Map areaSettings = null;
@@ -549,7 +549,7 @@ public class MathScratchField {
 	
 	private void closeCurrentContainer() {
 
-		if (currentStrokeContainer != null && currentStrokeContainer.isNotRelevantWhenReady()) {
+		if (!currentStrokeContainer.recognizeOff && currentStrokeContainer != null && currentStrokeContainer.isNotRelevantWhenReady()) {
 			kStrokeContainers.remove(currentStrokeContainer);
 			svgManager.removeStrokeContainer(currentStrokeContainer);
 			currentStrokeContainer = null;
@@ -743,10 +743,11 @@ public class MathScratchField {
 	}
 
 	private void setInSCRow(KStrokeContainer sc) {
+		
 		KStrokeContainer referenceSC = null;
 		for (int i = 0; i < kStrokeContainers.size(); i++) {
 			KStrokeContainer ksc = kStrokeContainers.get(i);
-			if (ksc != sc && ksc.getBox().y < sc.getBox().y && Math.abs(ksc.getBox().x - sc.getBox().x) < 60
+			if (ksc != sc && ksc.getBox()!=null && sc.getBox()!=null && ksc.getBox().y < sc.getBox().y && Math.abs(ksc.getBox().x - sc.getBox().x) < 60
 					&& Math.abs(sc.getBox().y - (ksc.getBox().y + ksc.getBox().height)) < 100
 					&& (referenceSC == null || ksc.getBox().y > referenceSC.getBox().y)) {
 				referenceSC = ksc;
@@ -766,6 +767,11 @@ public class MathScratchField {
 	
 	public void setFormOption(boolean formOption) {
 		this.formOption = formOption;
+		if(!formOption)
+			KStrokeContainer.setOnlyDrawOption(true);
+		else
+			KStrokeContainer.setOnlyDrawOption(false);
+			
 	}
 	
 	public void setShowWriting(boolean showWriting) {
@@ -967,11 +973,12 @@ public class MathScratchField {
 				&& !(currentStrokeContainer.isCorrect() || currentStrokeContainer.isFalse()
 						|| currentStrokeContainer.isHalf())) {
 			currentStrokeContainer.setRecognizeOff(false);
+			svgManager.appendCurrentSC(currentStrokeContainer);
 			paint();
 			return;
 		}
 
-		if (currentStrokeContainer != null
+		if (drawOption && currentStrokeContainer != null
 				&& currentStrokeContainer.getNotRecognizeButtonArea().contains(eventX, eventY)
 				&& !(currentStrokeContainer.isCorrect() || currentStrokeContainer.isFalse()
 						|| currentStrokeContainer.isHalf())) {
@@ -1267,8 +1274,8 @@ public class MathScratchField {
 			}
 			Stroke stroke = new Stroke(x, y);
 			
-			if (stroke.getParsePointsbox().height > 200
-					|| currentStrokeContainer.getStrokeCount() == 0 && stroke.getParsePointsbox().width > 200)
+			if (drawOption && (stroke.getParsePointsbox().height > 200
+					|| currentStrokeContainer.getStrokeCount() == 0 && stroke.getParsePointsbox().width > 200))
 				currentStrokeContainer.setRecognizeOff(true);
 
 			currentStrokeContainer.addStroke(stroke);

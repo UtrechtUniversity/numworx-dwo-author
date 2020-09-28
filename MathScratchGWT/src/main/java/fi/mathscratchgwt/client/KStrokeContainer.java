@@ -39,7 +39,7 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 public class KStrokeContainer {
 
 	private static Logger logger = Logger.getLogger("KStrokeContainer");
-	
+	 static boolean onlyDrawOption = false;
 	private MathScratchField parent;
 	StrokeContainer strokeContainer;
 	
@@ -90,7 +90,13 @@ public class KStrokeContainer {
 	private ArrayList<OMNode> svgPopupNodes = new ArrayList<OMNode>();
 	private ArrayList<OMNode> svgGridNodes = new ArrayList<OMNode>();
 	
+	public static void setOnlyDrawOption(boolean b) {
+		onlyDrawOption = b;
+	}
 	public KStrokeContainer (MathScratchField parent) {
+		if(onlyDrawOption)
+			recognizeOff = true;
+		
 		this.parent = parent;
 		
 		strokeContainer = new StrokeContainer();
@@ -118,6 +124,9 @@ public class KStrokeContainer {
 	}
 	
 	public KStrokeContainer (MathScratchField parent, Rectangle defaultBox) {
+		if(onlyDrawOption)
+			recognizeOff = true;
+		
 		this.parent = parent;
 		this.defaultBox = defaultBox;
 		this.box = defaultBox;
@@ -209,7 +218,7 @@ public class KStrokeContainer {
 	}
 	
 	public void corrigeerSCPositie() {
-		if(active && getBox()!=null && !this.isInputSC) {
+		if(!recognizeOff && active && getBox()!=null && !this.isInputSC) {
 			int correctieX = Math.max(0, getBox().x+getBox().width+80+47 - parent.breedte-20);
 			int correctieY = Math.min(0,getBox().y-70);
 			activeTranslationX += correctieX;
@@ -475,6 +484,8 @@ public class KStrokeContainer {
 	}	
 	
 	private void drawNotRecognizeButton(Context2d g, Rectangle r) {
+		if(!parent.drawOption || onlyDrawOption)
+			return;
 		if(recognizeOff)
 			g.setFillStyle(CssColor.make(38, 115, 182));
 		else
@@ -505,6 +516,8 @@ public class KStrokeContainer {
 	}
 	
 	private void drawRecognizeButton(Context2d g, Rectangle r) {
+		if(!parent.drawOption || onlyDrawOption)
+			return;
 		if(!recognizeOff)
 			g.setFillStyle(CssColor.make(38, 115, 182));
 		else
@@ -1200,7 +1213,10 @@ public class KStrokeContainer {
 	}
 	
 	public void setRecognizeOff(boolean b) {
-		recognizeOff=b;
+		if(onlyDrawOption)
+			recognizeOff = true;
+		else
+			recognizeOff=b;
 		if(b) {
 			strokeContainer.removeWmObjects();
 			correct = false;

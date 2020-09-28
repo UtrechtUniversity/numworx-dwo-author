@@ -676,33 +676,34 @@ public class SVGManager {
 				svgSC.appendChild(strokePath);
 			}
 		}
-		float corrx = sc.getBox().x-34;
-		float corrY = sc. getBox().y + sc.getBox().height/2-7;
-		if(sc.isCorrect()) {
-			OMSVGSVGElement svgGoed = doc.createSVGSVGElement();
-			drawGoedSVG(svgGoed);
-			svgGoed.getX().getBaseVal().setValue(corrx);
-			svgGoed.getY().getBaseVal().setValue(corrY);
-			nodeList.add(svgGoed);
-			svgSC.appendChild(svgGoed);
+		if(!sc.recognizeOff) {
+			float corrx = sc.getBox().x-34;
+			float corrY = sc. getBox().y + sc.getBox().height/2-7;
+			if(sc.isCorrect()) {
+				OMSVGSVGElement svgGoed = doc.createSVGSVGElement();
+				drawGoedSVG(svgGoed);
+				svgGoed.getX().getBaseVal().setValue(corrx);
+				svgGoed.getY().getBaseVal().setValue(corrY);
+				nodeList.add(svgGoed);
+				svgSC.appendChild(svgGoed);
+			}
+			else if(sc.isHalf()) {
+				OMSVGSVGElement svgHalf = doc.createSVGSVGElement();
+				drawHalfSVG(svgHalf);
+				svgHalf.getX().getBaseVal().setValue(corrx);
+				svgHalf.getY().getBaseVal().setValue(corrY);
+				nodeList.add(svgHalf);
+				svgSC.appendChild(svgHalf);
+			}
+			else if(sc.isFalse()) {
+				OMSVGSVGElement svgFout = doc.createSVGSVGElement();
+				drawFoutSVG(svgFout);
+				svgFout.getX().getBaseVal().setValue(corrx);
+				svgFout.getY().getBaseVal().setValue(corrY);
+				nodeList.add(svgFout);
+				svgSC.appendChild(svgFout);
+			}
 		}
-		else if(sc.isHalf()) {
-			OMSVGSVGElement svgHalf = doc.createSVGSVGElement();
-			drawHalfSVG(svgHalf);
-			svgHalf.getX().getBaseVal().setValue(corrx);
-			svgHalf.getY().getBaseVal().setValue(corrY);
-			nodeList.add(svgHalf);
-			svgSC.appendChild(svgHalf);
-		}
-		else if(sc.isFalse()) {
-			OMSVGSVGElement svgFout = doc.createSVGSVGElement();
-			drawFoutSVG(svgFout);
-			svgFout.getX().getBaseVal().setValue(corrx);
-			svgFout.getY().getBaseVal().setValue(corrY);
-			nodeList.add(svgFout);
-			svgSC.appendChild(svgFout);
-		}
-		
 		if(scMap.containsKey(sc)) {
 			try {
 				svg.replaceChild(svgSC, scMap.get(sc));
@@ -785,32 +786,33 @@ public class SVGManager {
 					svgSC.appendChild(strokePath);
 				}
 			}
-			
-			float corrx = strokeContainers.get(i).getBox().x-34;
-			float corrY = strokeContainers.get(i). getBox().y + strokeContainers.get(i).getBox().height/2-7;
-			if(strokeContainers.get(i).isCorrect()) {
-				OMSVGSVGElement svgGoed = doc.createSVGSVGElement();
-				drawGoedSVG(svgGoed);
-				svgGoed.getX().getBaseVal().setValue(corrx);
-				svgGoed.getY().getBaseVal().setValue(corrY);
-				scNodes.get(i).add(svgGoed);
-				svgSC.appendChild(svgGoed);
-			}
-			else if(strokeContainers.get(i).isHalf()) {
-				OMSVGSVGElement svgHalf = doc.createSVGSVGElement();
-				drawHalfSVG(svgHalf);
-				svgHalf.getX().getBaseVal().setValue(corrx);
-				svgHalf.getY().getBaseVal().setValue(corrY);
-				scNodes.get(i).add(svgHalf);
-				svgSC.appendChild(svgHalf);
-			}
-			else if(strokeContainers.get(i).isFalse()) {
-				OMSVGSVGElement svgFout = doc.createSVGSVGElement();
-				drawFoutSVG(svgFout);
-				svgFout.getX().getBaseVal().setValue(corrx);
-				svgFout.getY().getBaseVal().setValue(corrY);
-				scNodes.get(i).add(svgFout);
-				svgSC.appendChild(svgFout);
+			if(!sc.recognizeOff) {
+				float corrx = strokeContainers.get(i).getBox().x-34;
+				float corrY = strokeContainers.get(i). getBox().y + strokeContainers.get(i).getBox().height/2-7;
+				if(strokeContainers.get(i).isCorrect()) {
+					OMSVGSVGElement svgGoed = doc.createSVGSVGElement();
+					drawGoedSVG(svgGoed);
+					svgGoed.getX().getBaseVal().setValue(corrx);
+					svgGoed.getY().getBaseVal().setValue(corrY);
+					scNodes.get(i).add(svgGoed);
+					svgSC.appendChild(svgGoed);
+				}
+				else if(strokeContainers.get(i).isHalf()) {
+					OMSVGSVGElement svgHalf = doc.createSVGSVGElement();
+					drawHalfSVG(svgHalf);
+					svgHalf.getX().getBaseVal().setValue(corrx);
+					svgHalf.getY().getBaseVal().setValue(corrY);
+					scNodes.get(i).add(svgHalf);
+					svgSC.appendChild(svgHalf);
+				}
+				else if(strokeContainers.get(i).isFalse()) {
+					OMSVGSVGElement svgFout = doc.createSVGSVGElement();
+					drawFoutSVG(svgFout);
+					svgFout.getX().getBaseVal().setValue(corrx);
+					svgFout.getY().getBaseVal().setValue(corrY);
+					scNodes.get(i).add(svgFout);
+					svgSC.appendChild(svgFout);
+				}
 			}
 			svg.appendChild(svgSC);
 		}
@@ -994,23 +996,25 @@ public class SVGManager {
 		}
 		
 		//drawButton
-		if(!csc.isInputSC && !csc.isCorrect() && !csc.isHalf() && !csc.isFalse()) {
-		Rectangle dba = csc.getNotRecognizeButtonArea();
-		svgDrawButton.getX().getBaseVal().setValue(dba.x);
-		svgDrawButton.getY().getBaseVal().setValue(dba.y);
-		currentSCNodes.add(svgDrawButton);
-		svgCurrentSC.appendChild(svgDrawButton);
+		if(!KStrokeContainer.onlyDrawOption && mathScratchField.drawOption && !csc.isInputSC && !csc.isCorrect() && !csc.isHalf() && !csc.isFalse()) {
+			Rectangle dba = csc.getNotRecognizeButtonArea();
+			svgDrawButton.getX().getBaseVal().setValue(dba.x);
+			svgDrawButton.getY().getBaseVal().setValue(dba.y);
+			currentSCNodes.add(svgDrawButton);
+			svgCurrentSC.appendChild(svgDrawButton);
 		}
 		
 		//formButton
 		if(drawMode) {
-			Rectangle fba = csc.getRecognizeButtonArea();
-			svgFormButton.getX().getBaseVal().setValue(fba.x);
-			svgFormButton.getY().getBaseVal().setValue(fba.y);
-			currentSCNodes.add(svgFormButton);
-			svgCurrentSC.appendChild(svgFormButton);
-			enableDrawButtonSVG(true);
-			enableFormButtonSVG(false);
+			if(!KStrokeContainer.onlyDrawOption) {
+				Rectangle fba = csc.getRecognizeButtonArea();
+				svgFormButton.getX().getBaseVal().setValue(fba.x);
+				svgFormButton.getY().getBaseVal().setValue(fba.y);
+				currentSCNodes.add(svgFormButton);
+				svgCurrentSC.appendChild(svgFormButton);
+				enableDrawButtonSVG(true);
+				enableFormButtonSVG(false);
+			}
 			
 			Rectangle pba = csc.getPenButtonArea();
 			svgPenButton.getX().getBaseVal().setValue(pba.x);
@@ -1055,7 +1059,7 @@ public class SVGManager {
 		
 		// formuleViewer
 		OMSVGSVGElement svgForm = doc.createSVGSVGElement();
-		if(!csc.recognizeOff && csc.formuleViewer!=null) {
+		if(!csc.recognizeOff && csc.formuleViewer!=null && csc.strokeContainer.getStrokes().size()>0) {
 			float x = Math.max(csc.getWriteBox().x+50, csc.getBox()!=null ? csc.getBox().x : 0) ;// + getBox().width/2-parent.formuleViewer.getWidth()/2;
 			float y = csc.getWriteBox().y+5;
 			csc.formuleViewer.setFont(FormuleFont.createFromFontSize(16));
