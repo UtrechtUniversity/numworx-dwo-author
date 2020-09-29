@@ -63,7 +63,7 @@ public abstract class ToolBoxModule implements Tools {
 	@Provides @Singleton @IntoMap @IntKey(RESET) static 
 	Action reset(Instance instance, AWTViewer viewer) {
 		ResetHandler resetter = new ResetHandler(Messages.getString("ToolBoxModule.0"), instance); //$NON-NLS-1$
-		return new XXXAction(Messages.getString("ToolBoxModule.1"), "/reseticon.gif", resetter, viewer); //$NON-NLS-1$ //$NON-NLS-2$
+		return new XXXAction(Messages.getString("ToolBoxModule.1"), "/reset.png", resetter, viewer); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(DESTROY) static 
