@@ -20,6 +20,7 @@ import fi.euclides.event.AddLoodLijnHandler;
 import fi.euclides.event.AddMiddelPuntHandler;
 import fi.euclides.event.AddParallelHandler;
 import fi.euclides.event.AddPoollijnHandler;
+import fi.euclides.event.AddPuntHandler;
 import fi.euclides.event.AddRaakLijnHandler;
 import fi.euclides.event.AddSpiegelHandler;
 import fi.euclides.event.EventHandler;
@@ -32,6 +33,7 @@ import fi.euclides.swing.AWTViewer;
 import fi.euclides.swing.PanHandler;
 import fi.euclides.swing.XXXAction;
 import fi.euclides.util.Messages;
+import nl.numworx.geodefiner.AddHoekPuntHandler;
 import nl.numworx.geodefiner.CirkelRadiusHandler;
 import nl.numworx.geodefiner.ColorHandler;
 import nl.numworx.geodefiner.DashHandler;
@@ -238,6 +240,11 @@ public abstract class ToolBoxModule implements Tools {
 	Action line_palette(Instance instance, AWTViewer viewer) {
 		EventHandler handler = new DashHandler(Messages.getString("ToolBoxModule.73"), instance.getStateConfiguration()); //$NON-NLS-1$
 		return new XXXAction(Messages.getString("ToolBoxModule.74"), "/dashedline-active.png", handler, viewer); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+	
+	@Provides @Singleton @IntoMap @IntKey(ANGLE_POINT) static
+	Action anglePoint(Instance instance, AWTViewer viewer, AddHoekPuntHandler handler) {
+		return new XXXAction("Punt onder hoek", "/anglepoint.png", handler, viewer);		
 	}
 	
 /* 		actions.set(DISTANCE,new XXXAction(, viewer));

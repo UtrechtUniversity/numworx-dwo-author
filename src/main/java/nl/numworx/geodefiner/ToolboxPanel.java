@@ -162,7 +162,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		}
 		if (!GeoDefiner.isExperimental) 
 		{
-		  int[] experimental = { FOCUS, TANGENT, LOCUS };
+		  int[] experimental = { FOCUS, TANGENT, LOCUS, ANGLE_POINT };
 		  for(int i: experimental) {
 		    vbox.getComponent(i).hide();
 		  }
