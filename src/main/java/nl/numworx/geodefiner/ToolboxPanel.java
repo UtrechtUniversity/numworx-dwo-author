@@ -36,7 +36,6 @@ import fi.beans.numworxlf.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.TransferHandler;
 
-import dagger.Lazy;
 import nl.numworx.geodefiner.common.Tools;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
@@ -57,7 +56,12 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 			setBackground(Color.white);
 			setName(name);
 			setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 10));
-			TransferHandler newHandler = new TransferHandler("pos");
+			TransferHandler newHandler = new TransferHandler("pos") {
+
+				@Override
+				public int getSourceActions(JComponent c) {
+					return COPY_OR_MOVE;
+				} } ;
 			this.setTransferHandler(newHandler);
 			addMouseListener(new MouseAdapter(){
 				            public void mousePressed(MouseEvent e){
