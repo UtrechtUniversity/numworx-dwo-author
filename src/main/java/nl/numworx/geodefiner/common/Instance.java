@@ -58,6 +58,7 @@ public abstract class Instance /*implements Observer*/ {
 	static {
 		Volgpunt.addCreator();
 		Polygon.addCreator();
+		Hoekpunt.addCreator();
 	}
 	public final class Selector extends SelectHandler {
       boolean gravity;
