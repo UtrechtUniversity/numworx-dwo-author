@@ -250,7 +250,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		model = new CheckObjectsModel();
 		table = new JTable(model);
 		table.getColumnModel().getColumn(0).setPreferredWidth(60);
-		table.getColumnModel().getColumn(0).setMaxWidth(60);
+		table.getColumnModel().getColumn(0).setMaxWidth(100);
 		table.getColumnModel().getColumn(2).setPreferredWidth(60);
 		table.getColumnModel().getColumn(2).setMaxWidth(60);
 		table.setRowHeight(80);
