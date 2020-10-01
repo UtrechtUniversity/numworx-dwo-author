@@ -243,8 +243,9 @@ public abstract class ToolBoxModule implements Tools {
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(ANGLE_POINT) static
-	Action anglePoint(Instance instance, AWTViewer viewer, AddHoekPuntHandler handler) {
-		return new XXXAction("Punt onder hoek", "/anglepoint.png", handler, viewer);		
+	Action anglePoint(Instance instance, AWTViewer viewer, AddHoekPuntHandler handler, PointModel model) {
+		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		return new XXXXAction("Punt onder hoek", "/anglepoint.png", handler, viewer,shim);		
 	}
 	
 /* 		actions.set(DISTANCE,new XXXAction(, viewer));

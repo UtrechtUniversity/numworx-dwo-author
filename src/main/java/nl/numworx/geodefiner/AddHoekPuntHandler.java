@@ -15,9 +15,11 @@ import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.proof.DrieOpEenRij;
 import nl.numworx.geodefiner.common.Hoekpunt;
 
 public class AddHoekPuntHandler extends EventHandler {
+	private static final double EPS = DrieOpEenRij.EPS;
 	private int state;
 	private Punt p1, p2;
 	private Track track;
@@ -58,7 +60,7 @@ public class AddHoekPuntHandler extends EventHandler {
 		}
 	}
 
-	private void createTrack() {
+	protected void createTrack() {
 		CommandPanel message = new CommandPanel(null);
 		Component parent = getTracker().adapt(Component.class);
 		int r = JOptionPane.showConfirmDialog(parent, message, "Hoek in graden", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -73,14 +75,38 @@ public class AddHoekPuntHandler extends EventHandler {
 				setStatus(e.toString());
 			}
 		}
-		
+		getModel().clearSelection();
 		
 	}
-	private void build(Punt p, Punt q, Numbers d) {
-		d = Numbers.div(d, Numbers.createInteger(180));
-		d = Numbers.mul(d, Numbers.PI);
-		getModel().add(new Hoekpunt(p,q,d));
-		getModel().clearSelection();
+
+	protected void build(Punt p, Punt q, Numbers d) {
+		if (d.equals(Numbers.ZERO)) return;
+		Numbers r = Numbers.round(d);
+		Numbers eps = Numbers.abs(Numbers.sub(d, r));
+		Punt hp;
+		if (eps.doubleValue() < EPS) {
+			long l = r.longValue();
+			int ll = (int) (l % 360);
+			switch(ll) {
+			case 0: return;
+			case 90:
+			case -270: hp = new Hoekpunt(p,q,Numbers.ZERO, Numbers.ONE); break;
+			case 180:
+			case -180: hp = new Hoekpunt(p,q,Numbers.neg(Numbers.ONE), Numbers.ZERO); break;// Spiegelpunt?
+			case 270:
+			case -90:  hp = new Hoekpunt(p,q,Numbers.ZERO, Numbers.neg(Numbers.ONE)); break;
+			
+			default:	
+				d = Numbers.div(d, Numbers.createInteger(180));
+				d = Numbers.mul(d, Numbers.PI);
+				hp = new Hoekpunt(p,q,d);
+			}
+		} else {
+			d = Numbers.div(d, Numbers.createInteger(180));
+			d = Numbers.mul(d, Numbers.PI);
+			hp = new Hoekpunt(p,q,d);
+		}
+		visit(getModel().add(hp));
 	}
 	
 	/* (non-Javadoc)
