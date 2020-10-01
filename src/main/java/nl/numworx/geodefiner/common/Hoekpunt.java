@@ -27,27 +27,35 @@ public class Hoekpunt extends Punt implements Observer {
 	}
 
 	private Punt[] depend = new Punt[2];
-	Numbers angle, sin, cos;
+	Numbers sin, cos;
 	
 	public Hoekpunt() {
 	}
 
+	public Hoekpunt(Punt p1, Punt p2, Numbers cos, Numbers sin) {
+		depend[0] = p1;
+		depend[1] = p2;
+		this.sin = sin;
+		this.cos = cos;
+		observe();
+		calculate();
+		
+	}
 
 	public Hoekpunt(Punt p1, Punt p2, Numbers hoek) {
 		depend[0] = p1;
 		depend[1] = p2;
-		angle = hoek;
-		sincos();
+		double d = hoek.doubleValue();
+		sin = Numbers.createDouble(Math.sin(d));
+		cos = Numbers.createDouble(Math.cos(d));
+		observe();
 		calculate();
 	}
 
 
-	private void sincos() {
+	private void observe() {
 		depend[0].addObserver(this);
 		depend[1].addObserver(this);
-		double d = angle.doubleValue();
-		sin = Numbers.createDouble(Math.sin(d));
-		cos = Numbers.createDouble(Math.cos(d));
 	}
 
 
@@ -82,15 +90,17 @@ public class Hoekpunt extends Punt implements Observer {
 	public void read(Codec codec) throws IOException {
 		super.read(codec);
 		codec.read(depend);
-		angle = codec.readNumber();
-		sincos();
+		cos = codec.readNumber();
+		sin = codec.readNumber();
+		observe();
 	}
 
 	@Override
 	public void write(Codec codec) throws IOException {
 		super.write(codec);
 		codec.write(depend);
-		codec.writeNumber(angle);
+		codec.writeNumber(cos);
+		codec.writeNumber(sin);
 	}
 
 
