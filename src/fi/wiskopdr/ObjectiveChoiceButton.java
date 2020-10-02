@@ -8,11 +8,9 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Window;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -32,6 +30,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
         if (studentModel == null) return null;
         List<String> ids = new ArrayList<>();
         // 2D -> Flat model:
+        if(choices != null) // NPE op volgende regel
         for(int i = 0; i < choices.length; i++) {
           boolean choice[] = choices[i];
           StudentObjective[] objs = studentModel.get().categories[i].objectives;
