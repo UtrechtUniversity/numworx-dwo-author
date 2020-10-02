@@ -219,7 +219,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 		this.labelString = labelString;
 		this.objectives = objectives;
 		this.categorieString = categorieString;
-		this.studentModel = () -> studentModel;
+		this.studentModel = studentModel == null ? null : () -> studentModel;
 		addActionListener(this);
 		if (studentModel != null) {
 //			System.out.println("storeCurrentGlobalVars");
