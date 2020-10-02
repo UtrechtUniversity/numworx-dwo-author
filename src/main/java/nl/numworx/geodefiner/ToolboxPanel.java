@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.ItemEvent;
@@ -28,6 +29,7 @@ import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import fi.beans.numworxlf.Constants;
 import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JCheckBox;
 import javax.swing.JComponent;
@@ -49,19 +51,14 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		ImageIcon icon = new ImageIcon(getClass().getResource("/fi/euclides/resources" + name));
 		return icon;
 	}
-	
 	public class ToolPanel extends JPanel {
+
 		ToolPanel(String name) {
 			super(new FlowLayout(FlowLayout.LEADING,0,0));
 			setBackground(Color.white);
 			setName(name);
 			setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 10));
-			TransferHandler newHandler = new TransferHandler("pos") {
-
-				@Override
-				public int getSourceActions(JComponent c) {
-					return COPY_OR_MOVE;
-				} } ;
+			TransferHandler newHandler = new ListTransfer("pos") ;
 			this.setTransferHandler(newHandler);
 			addMouseListener(new MouseAdapter(){
 				            public void mousePressed(MouseEvent e){
@@ -69,6 +66,17 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 				                TransferHandler handle = button.getTransferHandler();
 				                handle.exportAsDrag(button, e, TransferHandler.COPY);
 				            }
+							@Override
+							public void mouseEntered(MouseEvent e) {
+								setBackground(Constants.COLOR20);
+								setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
+							}
+
+							@Override
+							public void mouseExited(MouseEvent e) {
+								setBackground(Color.WHITE);
+								setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+							}
 				        });
 		}
 
@@ -107,6 +115,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 		check.setSelectedIcon(selectedIcon(icon));
 		check.addItemListener(this);
 		check.setBackground(Color.white);
+		check.setContentAreaFilled(false);
 		boxes.add(check);
 		ToolPanel panel = new ToolPanel(label);
 		panel.add(check);

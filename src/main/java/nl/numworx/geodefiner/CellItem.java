@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
+import fi.beans.numworxlf.Constants;
 import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JOptionPane;
 import javax.swing.JPanel;
@@ -156,7 +158,7 @@ public class CellItem extends JPanel {
 		if(cell.item != null) cell.item.addObserver(a);
 		add(radio, BorderLayout.LINE_START);
 		add( center = createCenter(cell), BorderLayout.CENTER);
-		TransferHandler newHandler = new TransferHandler("pos");
+		TransferHandler newHandler = new ListTransfer("pos");
 		this.setTransferHandler(newHandler);
 		addMouseListener(new MouseAdapter(){
 			            public void mousePressed(MouseEvent e){
@@ -164,7 +166,23 @@ public class CellItem extends JPanel {
 			                TransferHandler handle = button.getTransferHandler();
 			                handle.exportAsDrag(button, e, TransferHandler.COPY);
 			            }
+
+						@Override
+						public void mouseEntered(MouseEvent e) {
+							System.out.print("Enter ");
+							setBackground(Constants.COLOR20);
+							setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
+						}
+
+						@Override
+						public void mouseExited(MouseEvent e) {
+							System.out.println("Exit");
+							setBackground(Color.WHITE);
+							setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+					}
+			            
 			        });
+		setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 	}
 
 	public String getPos() {
