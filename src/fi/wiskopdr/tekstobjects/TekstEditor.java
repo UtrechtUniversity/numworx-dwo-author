@@ -666,7 +666,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 		this.tekstVak = tekstVak;
 		
-		tekstVak.setBounds(5,5, 240,40);
+		//tekstVak.setBounds(5,5, 240,40);
 		tekstVak.addActionListener(this);
 		//tekstVak.setBorder(BorderFactory.createLineBorder(Color.lightGray, 1));
 		add(tekstVak);
@@ -932,9 +932,6 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		contentPane.revalidate();
 		contentPane.doLayout();
 	}
-	
-		
-	
 	
 	
 	public TekstVak geefTekstVak()
