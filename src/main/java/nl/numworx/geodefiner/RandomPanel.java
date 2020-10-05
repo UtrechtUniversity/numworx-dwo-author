@@ -47,6 +47,7 @@ class RandomPanel extends JPanel implements ActionListener, FocusListener {
 	public void setText(String text) {
 		if(text == null) text = "";
 		randomVarEditor.zetTekst(text);
+		randomVarEditor.layoutTekst();
 	}
 
 	@Override
