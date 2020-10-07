@@ -3,7 +3,6 @@ package nl.numworx.geodefiner.common.index;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
-import fi.euclides.model.Groep;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
@@ -14,9 +13,7 @@ import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.algo.FreePoint;
-import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Observable;
-import fi.euclides.util.Observer;
 
 abstract class AbstractSelector<T extends Destroyable> implements Visitor, Selector {
 	
