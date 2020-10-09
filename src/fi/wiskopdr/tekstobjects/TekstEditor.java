@@ -819,9 +819,13 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         {
           //tekstVak.setBounds(5,5,b-10-(toolbarLeft?33:0),h-30);
         }
+        else if(!scrollbar)
+        {
+        		tekstVak.setBounds(5,5,b-10-(toolbarLeft?33:0),h-50);
+        }
         else
         {
-          tekstVak.setBounds(5,5,b-10-(toolbarLeft?33:0),h-50);
+        		tekstVak.setBounds(5,5,b-10-(toolbarLeft?33:0),tekstVak.getHeight());
         }
        
         //tekstVak.layoutTekst();
