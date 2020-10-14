@@ -135,7 +135,8 @@ public class ListGenerator implements TComponentGenerator, ActionListener {
 		
 		double[] hoogtes = new double[rowCount];
 		for(int i=0 ; i<rowCount ; i++) {
-			hoogtes[1] = 1; // maakt niet uit
+			if(rowCount>1)
+				hoogtes[1] = 1; // maakt niet uit
 		}
 		
 		String[][] teksten = new String[rowCount][columnCount];
