@@ -222,6 +222,7 @@ public class Text_cn extends java.util.ListResourceBundle
 				{"boxMetRand" , "Box"},
 				{"keuzeVakKiesLabel" , "Choose"},
 				{"verzamelDoelCBLabel" , "Target object as collection area"},
+				{"scoreCumulatiefCBLabel","Score cumulative"},
                 
 				
 				{"vormCBLabel" , "Form"},

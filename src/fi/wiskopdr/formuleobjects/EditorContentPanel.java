@@ -43,7 +43,7 @@ public class EditorContentPanel extends JPanel //implements Scrollable
         //System.out.println("kijk");
         setPreferredSize(new Dimension(maxX,maxY));
         if(formuleEditor!=null && !(formuleEditor instanceof StelselEditor))
-        	scrollRectToVisible(new Rectangle(maxX-10,maxY-10, maxX, maxY));
+        		scrollRectToVisible(new Rectangle(maxX-10,maxY-10, maxX, maxY));
         revalidate();
         doLayout();   
     }
@@ -113,7 +113,9 @@ public class EditorContentPanel extends JPanel //implements Scrollable
 		{super.paintComponent(g);
 		  drawShadow(g,getComponent(0).getBounds());
 		}
-		else super.paintComponent(g);
+		else {
+			super.paintComponent(g);
+		}
 	}
 	
 	boolean shadow=false;

@@ -211,7 +211,7 @@ public class Text_fa extends java.util.ListResourceBundle
 				{"boxMetRand" , "مستطیل"},
 				{"keuzeVakKiesLabel" , "انتخاب کردن"},
 				{"verzamelDoelCBLabel" , "محیط جمع آوری اشیاء هدف"},
-                
+				{"scoreCumulatiefCBLabel","Score cumulative"},
 				
 				{"vormCBLabel" , "فرم"},
 				{"formuleToolCBLabel" , ",ویراستار مورد فرمول"},

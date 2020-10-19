@@ -106,6 +106,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     private JLabel ScoringLabel; // overbodig?
     private Box scoringBox;
     private JTextField  feedbackPV;
+    private JCheckBox scoreCumulatiefCB;
     //private JLabel puntenLabel, checkTotaalLabel; // overbodig?
     
 	// Logging/Nakijken
@@ -410,6 +411,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     	titleScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
     	feedbackPV = makeTextField(200,0,30,20,""+puntenFeedback,false);
+    	scoreCumulatiefCB =  makeCheckBox(0,0,120,20,WiskOpdr.rb.getString("scoreCumulatiefCBLabel"),false,true);
     	
     	String[] items = {WiskOpdr.rb.getString("goedLabel"),WiskOpdr.rb.getString("doorLabel"),WiskOpdr.rb.getString("halfLabel"),WiskOpdr.rb.getString("foutLabel")};
         goedFoutIP = new ActKeuzePanel(items,440,420,80,80);
@@ -621,11 +623,21 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		
 		//plaats componenten scoringbox 
         Component[] r70 = {titleScoreLabel, 	ra(10,10), 		feedbackPV, ra(5,10), hbScore, hgl()};
+        Component[] r71 = {scoreCumulatiefCB,  hgl()};
         //Component[] r71 = {ra(10,10), 		feedbackPV, 	hgl()};
 		//Component[] r72 = {goedFoutIP, 		hgl()};
 		
-		Component[] k7 = {hb(r70), vgl()};
-		scoringBox = vb(k7);
+        if(soort==1) {
+        	Component[] k7 = {hb(r70),vst(5),hb(r71),vgl()};
+        	scoringBox = vb(k7);
+        }
+        else
+        {
+        	Component[] k7 = {hb(r70),vgl()};
+        	scoringBox = vb(k7);
+        }
+        	
+		
 		
 		// plaats componenten verificatie box
 		Component[] r61 = {titleVerificatieLabel, 	ra(5,10),	hbVerificatie,	hgl(),	ra(5,10),					titleVerificatieScoreLabel};
@@ -873,7 +885,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
     		titleFeedbackLabel.setText(WiskOpdr.rb.getString("feedbackLabel"));
     		titleVerificatieLabel.setText(WiskOpdr.rb.getString("FEV_titleVerificatieLabel"));
     		titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
-	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + (hasFeedback && !scoreCumulatiefCB.isSelected() ? " max" : " 1"));
 	    	scoringBox.validate();
     	}
     }
@@ -1059,6 +1071,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				boolean uitw = false;
 				boolean casAntw = false;
 				boolean boxMetRand = true;
+				boolean scoreCumulatief = false;
 				
                 if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
                 if(interactiePanelLaunchState.containsKey("startString")) startString = (String)interactiePanelLaunchState.get("startString");
@@ -1116,6 +1129,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				if(interactiePanelLaunchState.containsKey("uitw")) uitw = ((Boolean)interactiePanelLaunchState.get("uitw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("casAntw")) casAntw = ((Boolean)interactiePanelLaunchState.get("casAntw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
+				if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
 				if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
 				
@@ -1148,6 +1162,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				this.eqTestValueMax = eqTestValueMax;
 				this.hasFeedback = hasFeedback;
                 
+				scoreCumulatiefCB.setSelected(scoreCumulatief);
                 
                 
                 //feedbackModusKeuze.setVisible(tips);
@@ -1282,6 +1297,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 exactCB.setSelected(exact);
                 exactPV.setVisible(exact);
                 exactPV.setText(""+puntenExact);
+               
                 
                 ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
     }
@@ -1336,6 +1352,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			boolean uitw = false;
 			boolean casAntw = false;
 			boolean boxMetRand = true;
+			boolean scoreCumulatief = false;
 			
             getAnswerModel();
             answerModels = this.answerModels;
@@ -1404,8 +1421,18 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             formuleToolBijFocus = this.formuleToolBijFocus;
             scoreMax = puntenGelijkwaardig + puntenVorm + puntenEindOplossing + puntenExact;
             hasFeedback = this.hasFeedback;
-            if(hasFeedback)scoreMax = puntenFeedback;
             feedbackSize = feedbackSizeCB.isSelected();
+            scoreCumulatief = scoreCumulatiefCB.isSelected();
+            if(hasFeedback) { 
+            		scoreMax = puntenFeedback;
+            		if(scoreCumulatief) {
+            			scoreMax = 0;
+            			for(int i=0 ; i<answerModels.length ; i++) {
+            				scoreMax += (Integer)answerModels[i].get("puntenFeedback");
+            			}
+            		}
+            }
+           
             
             //if(tips) feedbackModus = feedbackModusKeuze.getSelectedIndex();
             
@@ -1516,6 +1543,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
 			interactiePanelLaunchState.put("casAntw",new Boolean(casAntw));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
+			interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
 			if(logObjectives!=null)
 	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
@@ -2179,6 +2207,9 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             revalidate();
             repaint();
         }
+        else if(e.getSource()==scoreCumulatiefCB)
+        {	updateFeedbackTitelLabel();
+        }
         else
         {
             int puntenGelijkwaardig = 0;
@@ -2259,6 +2290,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         if(b || exact)exactPV.setVisible(!b);
         if(b || significant && significantieAan) significantPV.setVisible(!b);
 		
+        if(!b)
+        	scoreCumulatiefCB.setSelected(false);
         
         //eindOplossingCB.setVisible(!b);
         //vormCB.setVisible(b);

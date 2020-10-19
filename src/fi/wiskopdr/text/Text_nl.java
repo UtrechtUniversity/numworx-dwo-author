@@ -264,6 +264,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"verzamelDoelCBLabel" , "Doelobject als verzamelgebied"},
 				{"oplossingenRegelZichtbaar", "Oplossingenregel zichtbaar"},
 				{"rekenVakZichtbaar", "Rekenvak zichtbaar"},
+				{"scoreCumulatiefCBLabel","Score cumulatief"},
 				
 				{"vormCBLabel" , "Vorm"},
 				{"formuleToolCBLabel" , "Formule-invoer editor"},
@@ -441,6 +442,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_TemplateGeenLabel" , "Geen template"},
 				{"OPT_TemplateBasisLabel" , "Template Basis stijl"},
 				{"OPT_TemplateNumworxLabel" , "Template Numworx stijl"},
+				{"OPT_TemplateToetsUULabel" , "Toets UU stijl"},
 				
 				{"OBJ_leerdoel", "Leerdoel"},
 				{"OBJ_categorie", "Vul naam in van categorie"},

@@ -210,7 +210,7 @@ public class Text_es extends java.util.ListResourceBundle
 				{"boxMetRand" , "Caja"},
 				{"keuzeVakKiesLabel" , "Escoge"},
 				{"verzamelDoelCBLabel" , "Objeto objetivo como área de colección"},
-                
+				{"scoreCumulatiefCBLabel","Score cumulative"},
 				
 				{"vormCBLabel" , "Formulario"},
 				{"formuleToolCBLabel" , "Editor de entrada de fórmula"},

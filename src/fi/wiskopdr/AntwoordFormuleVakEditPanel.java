@@ -104,6 +104,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     private JLabel ScoringLabel; // overbodig?
     private Box scoringBox;
     private JTextField  feedbackPV;
+    private JCheckBox scoreCumulatiefCB;
     
     // Logging/Nakijken
  	private JLabel titleLoggingLabel;
@@ -393,6 +394,8 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	    titleScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
     	    feedbackPV = makeTextField(460,385,30,20,"0",false);
+    	    scoreCumulatiefCB =  makeCheckBox(0,0,120,20,WiskOpdr.rb.getString("scoreCumulatiefCBLabel"),false,true);
+        	
 		
     	
 		// Logging/Nakijken
@@ -629,11 +632,19 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		
 		//plaats componenten scoringbox 
         Component[] r70 = {titleScoreLabel, 	ra(10,10), 		feedbackPV, ra(5,10), hbScore, hgl()};
+        Component[] r71 = {scoreCumulatiefCB,  hgl()};
         //Component[] r71 = {ra(10,10), 		feedbackPV, 	hgl()};
 		//Component[] r72 = {goedFoutIP, 		hgl()};
 		
-		Component[] k7 = {hb(r70), vgl()};
-		scoringBox = vb(k7);
+        if(soort==0) {
+        	Component[] k7 = {hb(r70),vst(5),hb(r71),vgl()};
+        	scoringBox = vb(k7);
+        }
+        else
+        {
+        	Component[] k7 = {hb(r70),vgl()};
+        	scoringBox = vb(k7);
+        }
 		
 		
 		// plaats componenten verificatie box
@@ -880,6 +891,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     		titleVerificatieLabel.setText(WiskOpdr.rb.getString("FEV_titleVerificatieLabel"));
     		titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
 	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+	    	titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + (hasFeedback && !scoreCumulatiefCB.isSelected() ? " max" : " 1"));
 	    	scoringBox.validate();
 	   }
     }
@@ -1040,7 +1052,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
                 boolean boxMetRand = true;
                 String[] antwoordSubStrings = null;
                 String[] antwoordFuncStrings = null;
-                
+                boolean scoreCumulatief = false;
 				
 				if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
 				if(interactiePanelLaunchState.containsKey("startString")) startString = (String)interactiePanelLaunchState.get("startString");
@@ -1072,6 +1084,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				if(interactiePanelLaunchState.containsKey("uitw")) uitw = ((Boolean)interactiePanelLaunchState.get("uitw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("eigenOpdr")) eigenOpdr = ((Boolean)interactiePanelLaunchState.get("eigenOpdr")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
+				if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("tips")) tips = ((Boolean)interactiePanelLaunchState.get("tips")).booleanValue();
                 if(tips){
                 	if(interactiePanelLaunchState.containsKey("ideasInstellingen")) ideasInstellingen = (Hashtable)interactiePanelLaunchState.get("ideasInstellingen");
@@ -1118,6 +1131,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				this.eqTestValueMax = eqTestValueMax;
 				
 				this.tips = tips;
+				scoreCumulatiefCB.setSelected(scoreCumulatief);
 				ideasButton.setVisible(tips);
 				if(tips)
                 {  	ideasButton.zetInstellingen(ideasInstellingen);
@@ -1276,7 +1290,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			boolean boxMetRand = true;
 			String[] antwoordSubStrings = null;
             String[] antwoordFuncStrings = null;
-            
+            boolean scoreCumulatief = false;
 			
 			getAnswerModel();
 			answerModels = this.answerModels;
@@ -1371,8 +1385,17 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			formuleToolBijFocus = this.formuleToolBijFocus;
 			scoreMax = puntenGelijkwaardig + puntenHerleiding + puntenExact;
 			hasFeedback = this.hasFeedback;
-			if(hasFeedback)scoreMax = puntenFeedback;
 			feedbackSize = feedbackSizeCB.isSelected();
+            scoreCumulatief = scoreCumulatiefCB.isSelected();
+            if(hasFeedback) { 
+            		scoreMax = puntenFeedback;
+            		if(scoreCumulatief) {
+            			scoreMax = 0;
+            			for(int i=0 ; i<answerModels.length ; i++) {
+            				scoreMax += (Integer)answerModels[i].get("puntenFeedback");
+            			}
+            		}
+            }
 			if(!teltMee)scoreMax = 0;
 			
 			if(logObjectives!=null)
@@ -1429,6 +1452,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
 			interactiePanelLaunchState.put("eigenOpdr",new Boolean(eigenOpdr));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
+			interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
 			interactiePanelLaunchState.put("tips",new Boolean(tips));
 			if(tips){
 				interactiePanelLaunchState.put("ideasInstellingen",ideasInstellingen);
@@ -1948,6 +1972,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		{	tips = tipsCB.isSelected();
 			ideasButton.setVisible(tips);
 		}
+        else if(e.getSource()==scoreCumulatiefCB)
+        {	updateFeedbackTitelLabel();
+        }
         else
 		{
 			int puntenGelijkwaardig = 0;
@@ -2022,6 +2049,10 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		if(b || herleiding) herleidingPV.setVisible(!b);
 		if(b || exact) exactPV.setVisible(!b);
 		if(b || significant && significantieAan) significantPV.setVisible(!b);
+		
+		if(!b)
+        		scoreCumulatiefCB.setSelected(false);
+		
 		answerModelNr = 0;
 		tabbladTab.setSelected(answerModelNr+1);
 		if(b)setAnswerModel();

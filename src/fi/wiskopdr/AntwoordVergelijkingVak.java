@@ -114,6 +114,10 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	private int pijlX = "GR".equals(WiskOpdr.deployVariant) ? 105 : 130;
 	protected FormuleVak[] formuleVakken;
 	private int stapNr;
+	
+	private boolean scoreCumulatief = false;
+	private int[] scoreContainer;
+	private int currentAnswerModel = 0;
 
 	private ImageComponent[] imageComponenten;
 	private ImageComponent[] imageComponentenStap;
@@ -343,6 +347,10 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		formuleVakken = new FormuleVak[100];
 		imageComponenten = new ImageComponent[100];
 		imageComponentenStap = new ImageComponent[100];
+		scoreContainer = new int[100];
+		for(int i=0 ; i<scoreContainer.length ; i++) {
+			scoreContainer[i] = -1;
+		}
 
 		formuleVakken[0] = new FormuleVak();
 		formuleVakken[0].setFont(formuleVakFont);
@@ -813,6 +821,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 	}
 
 	public void setAnswerModel(int nr) {
+		currentAnswerModel = nr;
 		Hashtable h = answerModels[nr];
 		if (h == null)
 			return;
@@ -1007,6 +1016,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		boolean casAntw = false;
 		boolean boxMetRand = true;
 		boolean[][] logObjectives = null;
+		boolean scoreCumulatief = false;
 		
 		if (h.containsKey("antwoordString"))
 			antwoordString = (String) h.get("antwoordString");
@@ -1120,6 +1130,8 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			boxMetRand = ((Boolean) h.get("boxMetRand")).booleanValue();
 		if(h.containsKey("logObjectives")) 
 			logObjectives = (boolean[][])h.get("logObjectives");
+		if (h.containsKey("scoreCumulatief"))
+			scoreCumulatief = ((Boolean) h.get("scoreCumulatief")).booleanValue();
 		
 		this.pijl = pijl;
 		this.subKnopExtra = subKnopExtra;
@@ -1144,6 +1156,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		this.puntenExact = puntenExact;
 		this.puntenSignificant = puntenSignificant;
 		this.logObjectives = logObjectives;
+		this.scoreCumulatief = scoreCumulatief;
 		
 		zetStappen(stappen);
 
@@ -2463,6 +2476,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			boolean answerModelFits = pastGelijkwaardig && pastVorm && pastEindAntwoord && pastExact && pastSignificant;
 			if (answerModelFits)
 			{
+				scoreContainer[stapNr] = currentAnswerModel;
 				if (!feedback.trim().equals("") && show)
 					setFeedback(feedback, true);
 				else if (getParent() == null && feedbackTekst.getParent() != null)
@@ -2809,6 +2823,26 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 			return Math.max(0, score - ideasPuntenAftrek);
 		if(mode==1)
 			return Math.max(0, score-errorCount*2);
+		if(scoreCumulatief) {
+			int scoreCum = 0;
+			int[] scoreContainerTemp = new int[scoreContainer.length];
+			for(int i=0 ; i<scoreContainer.length ; i++) {
+				scoreContainerTemp[i] = scoreContainer[i];
+			}
+			for(int i=0 ; i<scoreContainerTemp.length ; i++) {
+				int amNr = scoreContainerTemp[i];
+				if(amNr>-1) {
+					scoreCum = scoreCum + (Integer)answerModels[amNr].get("puntenFeedback");
+					for(int j=i ; j<scoreContainerTemp.length ; j++) {
+						if(scoreContainerTemp[j] == amNr) 
+							scoreContainerTemp[j] = -1;
+					}
+				}
+			}
+			if(mode==1)
+				return Math.max(0, scoreCum-errorCount*2);
+			return scoreCum;
+		}
 		return score;
 	}
 
@@ -3057,6 +3091,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 		{
 			remove(formuleVakken[stapNr]);
 			remove(pijlVakken[stapNr - 1]);
+			scoreContainer[stapNr] = -1;
 			if (pijlVakken[stapNr - 1].geefOperator().equals("sub"))
 				substitutie = null;
 			if ("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))

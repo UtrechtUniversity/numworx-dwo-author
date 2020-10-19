@@ -245,6 +245,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"verzamelDoelCBLabel" , "Target object as collection area"},
 				{"oplossingenRegelZichtbaar", "Solution bar visible"},
 				{"rekenVakZichtbaar", "Equation box visible"},
+				{"scoreCumulatiefCBLabel","Score cumulative"},
 				
 				{"vormCBLabel" , "Form"},
 				{"formuleToolCBLabel" , "Formula input editor"},

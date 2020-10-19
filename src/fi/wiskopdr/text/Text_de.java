@@ -211,6 +211,7 @@ public class Text_de extends java.util.ListResourceBundle
 				{"boxMetRand" , "Rahmen"},
 				{"keuzeVakKiesLabel" , "Auswahl"},
 				{"verzamelDoelCBLabel" , "Zielobjekt als Sammlung"}, //what's this?
+				{"scoreCumulatiefCBLabel","Score cumulative"},
                 
 				
 				{"vormCBLabel" , "Formular"},

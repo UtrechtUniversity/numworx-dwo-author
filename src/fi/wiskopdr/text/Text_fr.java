@@ -212,7 +212,7 @@ public class Text_fr extends java.util.ListResourceBundle
                                 {"boxMetRand" , "Boîte"},
                                 {"keuzeVakKiesLabel" , "Choisir"},
                                 {"verzamelDoelCBLabel" , "Objets cible comme collection"},
-                
+                                {"scoreCumulatiefCBLabel","Score cumulative"},
                                 
                                 {"vormCBLabel" , "Forme"},
                                 {"formuleToolCBLabel" , "Éditeur de formules"},

@@ -212,7 +212,7 @@ public class Text_gr extends java.util.ListResourceBundle
 				{"boxMetRand" , "Box"},
 				{"keuzeVakKiesLabel" , "Επιλογή"},
 				{"verzamelDoelCBLabel" , "targetobject as collection area"},
-                
+				{"scoreCumulatiefCBLabel","Score cumulative"},
 				
 				{"vormCBLabel" , "Μορφή"},
 				{"formuleToolCBLabel" , "Συντάκτης ειαγωγής τύπου"},

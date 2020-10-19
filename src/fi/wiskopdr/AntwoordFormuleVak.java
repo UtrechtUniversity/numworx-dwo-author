@@ -101,6 +101,10 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	private FormuleVak[] formuleVakken;
 	private int stapNr;
 	
+	private boolean scoreCumulatief = false;
+	private int[] scoreContainer;
+	private int currentAnswerModel = 0;
+	
 	private boolean stappen;
 	private boolean hasPrefix;
 	private String prefix;
@@ -350,6 +354,10 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		prefixVakken = new FormuleVak[100];
 		imageComponenten = new ImageComponent[100];
 		imageComponentenStap = new ImageComponent[100];
+		scoreContainer = new int[100];
+		for(int i=0 ; i<scoreContainer.length ; i++) {
+			scoreContainer[i] = -1;
+		}
 		
 		formuleVakken[0] = new FormuleVak();
 		formuleVakken[0].setFont(formuleVakFont);
@@ -637,7 +645,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 	}
 	
 	public void setAnswerModel(int nr)
-	{	Hashtable h = answerModels[nr];
+	{	currentAnswerModel = nr;
+		Hashtable h = answerModels[nr];
 		if(h==null) return;
 	
 		String antwoordString = "$f@";
@@ -786,6 +795,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
         boolean[][] logObjectives = null;
         String[] antwoordSubStrings = null;
 		String[] antwoordFuncStrings = null;
+		boolean scoreCumulatief = false;
+		
         		
 		if(h.containsKey("antwoordString")) antwoordString = (String)h.get("antwoordString");
 		if(h.containsKey("startString")) startString = (String)h.get("startString");
@@ -824,6 +835,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		if(h.containsKey("logObjectives")) logObjectives = (boolean[][])h.get("logObjectives");
 		if (h.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[]) h.get("antwoordSubStrings");
 		if (h.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[]) h.get("antwoordFuncStrings");
+		if (h.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean) h.get("scoreCumulatief")).booleanValue();
+		
 		//setScoreDataFormule(herleiding,exact,soortHerleiding, puntenGelijkwaardig, puntenHerleiding, puntenExact);
 		
 		this.herleiding = herleiding;
@@ -835,6 +848,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		this.puntenExact = puntenExact;
 		this.puntenSignificant = puntenSignificant;
 		this.logObjectives = logObjectives;
+		this.scoreCumulatief = scoreCumulatief;
 		
 		zetStappen(stappen);
 		
@@ -2255,6 +2269,8 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 					answerModelFits = true;
 				if (answerModelFits)
 				{
+					scoreContainer[stapNr] = currentAnswerModel;
+					
 					if (!feedback.trim().equals("") && show)
 						setFeedback(feedback, true);
 					else if (getParent() == null && feedbackTekst.getParent() != null)
@@ -2350,7 +2366,26 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 			return Math.max(0, score - ideasPuntenAftrek);
 		if(mode==1)
 			return Math.max(0, score-errorCount*2);
-		//System.out.println("Score bij getScore: "+score);
+		if(scoreCumulatief) {
+			int scoreCum = 0;
+			int[] scoreContainerTemp = new int[scoreContainer.length];
+			for(int i=0 ; i<scoreContainer.length ; i++) {
+				scoreContainerTemp[i] = scoreContainer[i];
+			}
+			for(int i=0 ; i<scoreContainerTemp.length ; i++) {
+				int amNr = scoreContainerTemp[i];
+				if(amNr>-1) {
+					scoreCum = scoreCum + (Integer)answerModels[amNr].get("puntenFeedback");
+					for(int j=i ; j<scoreContainerTemp.length ; j++) {
+						if(scoreContainerTemp[j] == amNr) 
+							scoreContainerTemp[j] = -1;
+					}
+				}
+			}
+			if(mode==1)
+				return Math.max(0, scoreCum-errorCount*2);
+			return scoreCum;
+		}
 	    return score;
 	}
 	
@@ -2680,6 +2715,7 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 		if(stapNr>0)
 		{	remove(formuleVakken[stapNr]);
 			remove(pijlVakken[stapNr-1]);
+			scoreContainer[stapNr] = -1;
 			if("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))removeSoft(mwFeedbackPanel);
 			else removeSoft(feedbackTekst);
 			

@@ -209,7 +209,7 @@ public class Text_in extends java.util.ListResourceBundle
 				{"boxMetRand" , "Kontak"},
 				{"keuzeVakKiesLabel" , "Pilih"},
 				{"verzamelDoelCBLabel" , "targetobject as collection area"},
-                
+				{"scoreCumulatiefCBLabel","Score cumulative"},
 				
 				{"vormCBLabel" , "Bentuk"},
 				{"formuleToolCBLabel" , "Rumus masukan editor"},

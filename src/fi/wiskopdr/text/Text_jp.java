@@ -223,7 +223,7 @@ public class Text_jp extends java.util.ListResourceBundle
 				{"boxMetRand" , "ボックス"},
 				{"keuzeVakKiesLabel" , "選びます。"},
 				{"verzamelDoelCBLabel" , "回収した範囲としてのターゲットオブジェクト"},
-                
+				{"scoreCumulatiefCBLabel","Score cumulative"},
 				
 				{"vormCBLabel" , "フォーム"},
 				{"formuleToolCBLabel" , "公式を編集プログラムにインプットします。"},
