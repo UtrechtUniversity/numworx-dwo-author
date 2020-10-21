@@ -172,7 +172,15 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 	@Override
 	public void start() {
 		if(!debug)
+		{
+			if(browser.getApi() == null) {
+				browser.setApi(new MyFilterAPI(api));
+			}
+			if (browser.getConsole() == null) {
+				browser.setConsole(new PrintStreamConsole());
+			}
 			browser.loadURL(url);
+		}
 	}
 
 	@SuppressWarnings("restriction")
@@ -189,12 +197,12 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 		}
         browser.setApi(null);
         browser.setConsole(null);
-		browser.removeMembers();
 		System.out.println("Preview stopped " + cnt);
 	}
 
 	@Override
 	public void destroy() {
+		browser.removeMembers();
 		removeAll();
 		browser = null;
 		System.gc();
