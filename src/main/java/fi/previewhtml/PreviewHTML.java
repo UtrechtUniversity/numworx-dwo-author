@@ -3,8 +3,13 @@ package fi.previewhtml;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.util.Hashtable;
 import java.util.Locale;
 
@@ -25,10 +30,9 @@ import fi.beans.scorm.Scorm;
 import fi.beans.scorm.ScormAppletIF;
 import fi.beans.scorm.ScormBoolean;
 import fi.beans.scorm.ScormEditComponentIF;
-import fi.beans.scorm.ScormMainFrame;
 import fi.beans.scorm.ScormString;
 
-public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListener, Status {
+public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListener, Status, Printable {
 
 	public final class MyFilterAPI extends FilterAPI  implements SCORM12APIInterface {
 		public MyFilterAPI(SCORM12APIInterface api) {
@@ -265,6 +269,24 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 		if(e.getSource() == stopKnop) stop();
 		else
 			browser.loadURL(url);
+	}
+
+	@Override
+	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+		Graphics2D g2d = (Graphics2D)graphics;
+	    g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+	    if(pageIndex == 0) {
+		    double width = browser.getWidth();
+		    double pageWidth = pageFormat.getImageableWidth();
+		    double sx = pageWidth/width; sx = Math.min(1, sx);
+//	    	browser.setSize(1024, (int) (pageFormat.getImageableHeight()/sx)); // ????
+//	    	browser.invalidate();
+			g2d.scale(sx, sx);
+	    	browser.print(g2d);
+	    	return PAGE_EXISTS;
+	    }
+	    browser.invalidate();
+		return Printable.NO_SUCH_PAGE;
 	}
 
 	
