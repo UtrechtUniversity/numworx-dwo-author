@@ -4,6 +4,8 @@ package fi.beans.browser;
  
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -309,25 +311,13 @@ public class SimpleSwingBrowser extends JPanel implements Status, ConsoleListene
     
   }
 
-//    static {
-//    	Platform.setImplicitExit(false);
-//    }
+@Override
+public void print(Graphics g) {
+	super.print(g);
+//	Image image = browser.toImage();
+//	g.drawImage(image, 0, 0, null);
+}
 
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(new Runnable() {
-//
-//            public void run() {
-//                SimpleSwingBrowser browser = new SimpleSwingBrowser();
-//                browser.setVisible(true);
-//                browser.loadURL("http://web-expresser.appspot.com");
-//                JFrame f = new JFrame();
-//                f.setDefaultCloseOperation(f.EXIT_ON_CLOSE);
-//                f.setContentPane(browser);
-//                f.pack();
-//                f.show();
-//           }     
-//       });
-//    }
 }
 
 	

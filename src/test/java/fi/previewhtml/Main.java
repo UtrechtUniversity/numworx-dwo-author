@@ -87,7 +87,7 @@ public class Main implements AppletStub, AppletContext {
 		public String getParameter(String name) {
 			if ("debug".equals(name)) return "true";
 			if ("url".equals(name))
-				return "https://test.dwo.nl/dwo/apps/player.html?locale=nl#371821";
+				return "http://127.0.0.1:8888/DWO2player.html#371821";
 			if ("API".equals(name))
 			    return TestAPI.class.getName();
 			return null;

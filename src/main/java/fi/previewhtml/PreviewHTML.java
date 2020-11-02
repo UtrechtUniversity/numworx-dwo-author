@@ -34,6 +34,19 @@ import fi.beans.scorm.ScormString;
 
 public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListener, Status, Printable {
 
+	String locationOverride;
+	boolean overridden;
+	
+    final class NotifyConsole extends PrintStreamConsole {
+		@Override
+		public void debug(Object msg) { // Covert channel
+			super.debug(msg);
+			synchronized(browser) {
+				overridden = true;
+				browser.notifyAll();
+			}
+		}
+	}
 	public final class MyFilterAPI extends FilterAPI  implements SCORM12APIInterface {
 		public MyFilterAPI(SCORM12APIInterface api) {
 			super(api);
@@ -61,8 +74,17 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 			return "true";
 		}
 
+		
+		
 		@Override
 		public String LMSGetValue(String iDataModelElement) {
+			if ("cmi.location".equals(iDataModelElement) && locationOverride != null) {
+				synchronized(browser) {
+					//overridden = true;
+					browser.notifyAll();
+					return locationOverride;
+				}
+			}
 			final String result = super.LMSGetValue(iDataModelElement);
 //			System.out.println("Getvalue " + iDataModelElement + " > " + result);
 			return result;
@@ -165,7 +187,7 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 		getContentPane().add(content, BorderLayout.NORTH);
 		
 		browser = new SimpleSwingBrowser();
-		browser.setConsole(new PrintStreamConsole());
+		browser.setConsole(new NotifyConsole());
 		
 		browser.setApi(new MyFilterAPI(api));
 		
@@ -177,14 +199,18 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 	public void start() {
 		if(!debug)
 		{
-			if(browser.getApi() == null) {
-				browser.setApi(new MyFilterAPI(api));
-			}
-			if (browser.getConsole() == null) {
-				browser.setConsole(new PrintStreamConsole());
-			}
-			browser.loadURL(url);
+			start0();
 		}
+	}
+
+	private void start0() {
+		if(browser.getApi() == null) {
+			browser.setApi(new MyFilterAPI(api));
+		}
+		if (browser.getConsole() == null) {
+			browser.setConsole(new NotifyConsole());
+		}
+		browser.loadURL(url);
 	}
 
 	@SuppressWarnings("restriction")
@@ -271,11 +297,36 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 			browser.loadURL(url);
 	}
 
+	Html5Print html5;
 	@Override
 	public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
 		Graphics2D g2d = (Graphics2D)graphics;
 	    g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-	    if(pageIndex == 0) {
+	    
+	    if(html5 == null) {
+	    	html5 = new Html5Print(api);
+	    	html5.init();
+	    }
+	    
+	    if(pageIndex < html5.aantalOpdrachten) {
+	    	String location = String.valueOf(pageIndex);
+	    	if (!location.equals(locationOverride)) {
+	    		locationOverride = location;
+	    		stop(); // switch to correct page.
+	    		overridden = false;
+	    		start0(); // wait????
+	    		synchronized(browser) { while(!inited || !overridden)
+					try {
+						browser.wait(1000L);
+					} catch (InterruptedException e) {
+					} }
+	    		try {
+					Thread.sleep(200L);
+				} catch (InterruptedException e) {
+				}
+	    	}
+	    	
+	    	
 		    double width = browser.getWidth();
 		    double pageWidth = pageFormat.getImageableWidth();
 		    double sx = pageWidth/width; sx = Math.min(1, sx);
