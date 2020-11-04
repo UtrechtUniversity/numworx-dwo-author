@@ -137,11 +137,10 @@ public class CellItem extends JPanel {
 	boolean canDelete;
 	final UIModelFactory factory;
 	
-	
 	public CellItem(CELL cell, AbstractViewer viewer, int i0, UIModelFactory factory) {
 		super(new BorderLayout());
 		this.factory = factory;
-		setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 10));
+		setBorder(new CellBorder());
 		canDelete = true;
 		setBackground(Color.WHITE);
 		this.setCell(cell);

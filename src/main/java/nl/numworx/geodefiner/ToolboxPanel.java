@@ -57,7 +57,7 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 			super(new FlowLayout(FlowLayout.LEADING,0,0));
 			setBackground(Color.white);
 			setName(name);
-			setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 10));
+			setBorder(new CellBorder());
 			TransferHandler newHandler = new ListTransfer("pos") ;
 			this.setTransferHandler(newHandler);
 			addMouseListener(new MouseAdapter(){
