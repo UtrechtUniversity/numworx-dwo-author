@@ -1501,45 +1501,45 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		TekstVakPanel.setTemplateName(templateNames[index]);
 		
 		// onderstaande bestemd om oude activiteiten naar het Numworx template te brengen. strings nu hard in de code. Liever inladen uit database
-		if(WiskOpdr.isExperimental()) {
-			String[] launchDataStringTemplates = new String[index+1];
-			Properties templates = new Properties();
-			try {
-    			InputStream in = getClass().getResourceAsStream("resources/template.properties");
-    			templates.load(in);
-    			in.close();
-			} catch(IOException oops) {}
-			launchDataStringTemplates[index] = templates.getProperty(String.valueOf(index));
-			Object ob1 = StringCodeObject.decodeStringToObject(launchDataStringTemplates[index]);
-			Hashtable launchData = (Hashtable) ob1;
-			
-			String instellingenString = (String) launchData.get("instellingen");
-			Object ob = StringCodeObject.decodeStringToObject(instellingenString);
-			Hashtable instellingen = (Hashtable) ob;
-			
-			Hashtable styles = null;
-			Hashtable templatePages = null;
-			Hashtable templateComponents = null;
-			ArrayList<String> templatePagesKeys = null;
-			ArrayList<String> templateComponentsKeys = null;
-			
-			if (instellingen != null && instellingen.containsKey("TekstVakPanelStyles"))
-				styles = (Hashtable) instellingen.get("TekstVakPanelStyles");
-			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePages"))
-				templatePages = (Hashtable) instellingen.get("TekstVakPanelTemplatePages");
-			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponents"))
-				templateComponents = (Hashtable) instellingen.get("TekstVakPanelTemplateComponents");
-			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePagesKeys"))
-				templatePagesKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplatePagesKeys");
-			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponentsKeys"))
-				templateComponentsKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplateComponentsKeys");
-			
-			TekstVakPanel.styles = styles;
-			TekstVakPanel.templatePages = templatePages;
-			TekstVakPanel.templateComponents = templateComponents;
-			TekstVakPanel.templatePagesKeys = templatePagesKeys;
-			TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
-		}
+//		if(WiskOpdr.isExperimental()) {
+//			String[] launchDataStringTemplates = new String[index+1];
+//			Properties templates = new Properties();
+//			try {
+//    			InputStream in = getClass().getResourceAsStream("resources/template.properties");
+//    			templates.load(in);
+//    			in.close();
+//			} catch(IOException oops) {}
+//			launchDataStringTemplates[index] = templates.getProperty(String.valueOf(index));
+//			Object ob1 = StringCodeObject.decodeStringToObject(launchDataStringTemplates[index]);
+//			Hashtable launchData = (Hashtable) ob1;
+//			
+//			String instellingenString = (String) launchData.get("instellingen");
+//			Object ob = StringCodeObject.decodeStringToObject(instellingenString);
+//			Hashtable instellingen = (Hashtable) ob;
+//			
+//			Hashtable styles = null;
+//			Hashtable templatePages = null;
+//			Hashtable templateComponents = null;
+//			ArrayList<String> templatePagesKeys = null;
+//			ArrayList<String> templateComponentsKeys = null;
+//			
+//			if (instellingen != null && instellingen.containsKey("TekstVakPanelStyles"))
+//				styles = (Hashtable) instellingen.get("TekstVakPanelStyles");
+//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePages"))
+//				templatePages = (Hashtable) instellingen.get("TekstVakPanelTemplatePages");
+//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponents"))
+//				templateComponents = (Hashtable) instellingen.get("TekstVakPanelTemplateComponents");
+//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePagesKeys"))
+//				templatePagesKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplatePagesKeys");
+//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponentsKeys"))
+//				templateComponentsKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplateComponentsKeys");
+//			
+//			TekstVakPanel.styles = styles;
+//			TekstVakPanel.templatePages = templatePages;
+//			TekstVakPanel.templateComponents = templateComponents;
+//			TekstVakPanel.templatePagesKeys = templatePagesKeys;
+//			TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
+//		}
 		
 		//opdrNavStruct.setTimer(timerCB.isSelected(), timeLimit);
 		//opdrNavStruct.zetOpnieuwMogelijk(opnieuwCB.isSelected());
