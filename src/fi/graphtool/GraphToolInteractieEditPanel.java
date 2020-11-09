@@ -11,14 +11,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -26,13 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.FormuleParser;
+import fi.wiskopdr.ObjectiveChoiceButton;
 
 
 
@@ -40,6 +36,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 
 	private GraphToolInteractiePanel interactiePanel;
 	private JPanel optionsPanel;
+	private ObjectiveChoiceButton objBtn;
 	public static final boolean cDefault_TraceOption = false;
 	
 	private int defaultWidth = 800; 
@@ -47,7 +44,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	private int defaultIpWidth = 300; //hier stond 270
 //	private int defaultOpWidth = 470;
 	private int defaultOpWidth = 560;
-	private int defaultOpHeight= 560;
+	private int defaultOpHeight= 690;
 //	private int defaultOpHeight= 490;
 	
 	private Font theFont;
@@ -111,7 +108,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	protected static int TEKENTABELPUNTEN = 4;
 	
 	private int typeOpdracht;
-	private JComboBox opdrachtKeuze;
+	private JComboBox<String> opdrachtKeuze;
 	private boolean opdrachtKeuzeAllowed = true;
 	private int[] maxScores = new int[9];
 	private JLabel[] scoreMaxLabel;
@@ -574,10 +571,21 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		veldEditorOptiesButton.addActionListener(this);
 		veldEditorOptiesButton.setVisible(veldComponentAan);
 		toolsPanel.add(veldEditorOptiesButton);
+
+		if (ObjectiveChoiceButton.hasObjectiveChoices()) {
+			objBtn = new ObjectiveChoiceButton();
+			objBtn.setSize(objBtn.getPreferredSize());
+			currentY += height + offset;			
+			objBtn.setLocation(currentX, currentY);
+			toolsPanel.add(objBtn);
+		} else {
+			objBtn = null;
+		}
+
 		
 		typeOpdracht = GEENOPDRACHT;
 		
-		opdrachtKeuze = new JComboBox();
+		opdrachtKeuze = new JComboBox<String>();
 		opdrachtKeuze.setBackground(getBackground());
 		opdrachtKeuze.setFont(theFont);
 		opdrachtKeuze.setBounds(20, 30, 400, 20);
@@ -1264,7 +1272,28 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			h.put("dragOptie", new Boolean(dragOptie)); // TODO
 			h.put("zoomOptie", new Boolean(zoomOptie));
 		}
-		
+
+		if (objBtn != null) {
+			boolean[][] logObjectives; String[] smObjectives;
+			logObjectives = objBtn.getChoices();
+			smObjectives = objBtn.getObjectives();
+			int scoreMax = interactiePanel.getScoreMax();
+	        if(logObjectives!=null)
+	        {	h.put("logObjectives",logObjectives);
+				int[][] scoreMaxObjectives;
+	    		scoreMaxObjectives = new int[logObjectives.length][];
+	    		for(int j=0 ; j<scoreMaxObjectives.length; j++)
+	    		{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
+					for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
+					{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
+					}
+	    		}
+	        	h.put("scoreMaxObjectives",scoreMaxObjectives);
+	        }
+	        if (smObjectives != null && smObjectives.length > 0) {
+	        	h.put(fi.wiskopdr.domainmodel.Constants.OBJECTIVES, smObjectives);
+	        }
+		}
 		return h;
 	}
 	
@@ -1521,6 +1550,17 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 			{
 				schuifParamListElements.addElement(interactiePanel.schuifParameters[i].geefNaam());
 			}
+
+		if (objBtn != null) {
+			boolean[][] logObjectives = (boolean[][]) h.get("logObjectives");
+			if (logObjectives != null)
+				objBtn.setChoices(logObjectives);
+			String[] smObjectives = (String[]) h.get(fi.wiskopdr.domainmodel.Constants.OBJECTIVES);
+			if (smObjectives != null) 
+				objBtn.setObjectives(smObjectives);
+		}
+	
+	
 	}
 	
 	public void setBounds(int x, int y, int b, int h) {
