@@ -40,6 +40,7 @@
        	  <configuration>
        	    <niceManifest>true</niceManifest>
           	<instructions>
+				<_snapshot>${osgi.qualifier}</_snapshot>
           		<Bundle-SymbolicName>fi.graphtool.GraphTool</Bundle-SymbolicName>
  				<Main-Class>fi.graphtool.GraphTool</Main-Class>
 				<Trusted-Only>true</Trusted-Only>
@@ -88,5 +89,7 @@
 	</dependencies>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 	</properties>
 </project>
