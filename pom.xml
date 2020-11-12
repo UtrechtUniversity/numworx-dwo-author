@@ -15,18 +15,18 @@
   	<dependency>
   		<groupId>nl.uu.fi.dwo</groupId>
   		<artifactId>DWO-commons-lib</artifactId>
-  		<version>2.4.10-SNAPSHOT</version>
+  		<version>2.4.10</version>
   	</dependency>
 	<dependency>
 		<groupId>nl.numworx.swingbrowser</groupId>
 		<artifactId>swingbrowser-api</artifactId>
-		<version>0.0.8-SNAPSHOT</version>
+		<version>0.0.8</version>
 		<scope>provided</scope>
 	</dependency>
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
 			<artifactId>DWOJClient</artifactId>
-			<version>2.4.10-SNAPSHOT</version>
+			<version>2.4.10</version>
 			<scope>test</scope>
 		</dependency>
   </dependencies>
@@ -119,5 +119,15 @@
             <url>https://repos.dwo.nl/artifactory/libs-snapshot-local</url>    
         </repository>
     </distributionManagement>    
+  <repositories>	
+	<repository>
+	  <id>com.teamdev</id>
+	  <url>https://europe-maven.pkg.dev/jxbrowser/releases</url>
+	</repository>
+	  <repository>
+	    <id>com.teamdev-old</id>
+	    <url>http://maven.teamdev.com/repository/products</url>
+	  </repository>
+  </repositories>
   
 </project>
