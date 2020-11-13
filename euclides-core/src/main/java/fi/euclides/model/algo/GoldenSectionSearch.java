@@ -33,13 +33,4 @@ public class GoldenSectionSearch {
     }
   }
 
-  public static void main(String[] args) {
-    Function f = (x)->Math.pow(x-2,2);
-    double a = 1;
-    double b = 5;
-    double tol = 1e-5;
-    double [] ans = gss(f,a,b,tol);
-    System.out.println("[" + ans[0] + "," + ans[1] + "]");
-    // [1.9999959837979107,2.0000050911830893]                                                                                                              
-  }
 }
