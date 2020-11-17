@@ -1496,12 +1496,15 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		AntwoordTekstVak.zetFontOverervingForm(fontOverervingFormCB.isSelected());
 		ShareAction.setSharingPossible(combinedComponentsCB.isSelected() || ShareAction.getSharingIsUsed());
 		
-		int index = styleInteractionsComboBox.getSelectedIndex();
-        WiskOpdr.setTemplateConstants(templateNames[index]);
-		TekstVakPanel.setTemplateName(templateNames[index]);
+		
 		
 		// onderstaande bestemd om oude activiteiten naar het Numworx template te brengen. strings nu hard in de code. Liever inladen uit database
 //		if(WiskOpdr.isExperimental()) {
+		
+//			int index = styleInteractionsComboBox.getSelectedIndex();
+//       	WiskOpdr.setTemplateConstants(templateNames[index]);
+//			TekstVakPanel.setTemplateName(templateNames[index]);
+		
 //			String[] launchDataStringTemplates = new String[index+1];
 //			Properties templates = new Properties();
 //			try {
