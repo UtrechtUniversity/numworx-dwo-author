@@ -44,7 +44,7 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 	private int defaultIpWidth = 300; //hier stond 270
 //	private int defaultOpWidth = 470;
 	private int defaultOpWidth = 560;
-	private int defaultOpHeight= 690;
+	private int defaultOpHeight= 490;
 //	private int defaultOpHeight= 490;
 	
 	private Font theFont;
@@ -575,9 +575,8 @@ public class GraphToolInteractieEditPanel extends JPanel implements InteractieEd
 		if (ObjectiveChoiceButton.hasObjectiveChoices()) {
 			objBtn = new ObjectiveChoiceButton();
 			objBtn.setSize(objBtn.getPreferredSize());
-			currentY += height + offset;			
-			objBtn.setLocation(currentX, currentY);
-			toolsPanel.add(objBtn);
+			objBtn.setLocation(defaultOpWidth-objBtn.getWidth()-25, defaultOpHeight - 30 - objBtn.getHeight() - 20);
+			opdrachtenPanel.add(objBtn);
 		} else {
 			objBtn = null;
 		}
