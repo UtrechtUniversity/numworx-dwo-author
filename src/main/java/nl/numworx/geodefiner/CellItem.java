@@ -168,14 +168,12 @@ public class CellItem extends JPanel {
 
 						@Override
 						public void mouseEntered(MouseEvent e) {
-							System.out.print("Enter ");
 							setBackground(Constants.COLOR20);
 							setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
 						}
 
 						@Override
 						public void mouseExited(MouseEvent e) {
-							System.out.println("Exit");
 							setBackground(Color.WHITE);
 							setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 					}
