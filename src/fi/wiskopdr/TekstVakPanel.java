@@ -4702,15 +4702,19 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] sendCommands = {"int.index",
+		String[] acceptedCommands = {
+		        "int.index",
 				"action.setVisible",
 				"action.setNotVisible",
 				"action.unfold",
 				"action.fold",
 				"action.select",
 				"action.deselect",
-				"text.content"};
-		return sendCommands;
+				"text.content",
+				"action.zoom",
+				"action.unzoom",
+		};
+		return acceptedCommands;
 	}
 
 	@Override
