@@ -13,6 +13,8 @@
 	<maven.compiler.source>1.8</maven.compiler.source>
 	<maven.compiler.target>1.8</maven.compiler.target>
 	<jarsigner.skip>true</jarsigner.skip>
+	<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+	<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
   </properties>
   <build>
   	<finalName>${project.artifactId}</finalName>
@@ -47,6 +49,7 @@
        	  <configuration>
        	    <niceManifest>true</niceManifest>
           	<instructions>
+ 				<_snapshot>${osgi.qualifier}</_snapshot>
           		<Bundle-SymbolicName>fi.statistiek.Statistiek</Bundle-SymbolicName>
  				<Main-Class>fi.statistiek.Statistiek</Main-Class>
 				<Trusted-Only>true</Trusted-Only>
