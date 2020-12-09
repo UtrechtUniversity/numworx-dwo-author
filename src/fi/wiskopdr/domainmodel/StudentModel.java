@@ -41,7 +41,7 @@ public class StudentModel {
     return null;
 }
   private static StudentCategory[] readCategories(Object object) {
-    if(object == null) return new StudentCategory[0];
+    if(object == null) return null;
     JSONArray array = (JSONArray) object;
     int size = array.size();
     StudentCategory[] categories = new StudentCategory[size];
@@ -63,10 +63,19 @@ protected static String getTitle(JSONObject map) {
     return (String) ((Map) ((Map) map.get("info")).get("title")).get(WiskOpdr.language.toString());
 }
 protected static String getDescription0(JSONObject map) {
-  return (String) ((Map) ((Map) map.get("info")).get("description")).get(WiskOpdr.language.toString());
+  try {
+    return (String) ((Map) ((Map) map.get("info")).get("description")).get(WiskOpdr.language.toString());
+  } catch (Exception e) {
+    return null;
+  }
 }
+
 protected static String getJSON(JSONObject map) {
-  return (String) ((Map) ((Map) map.get("info")).get("description")).get(WiskOpdr.language.toString() + "@JSON");
+  try {
+    return (String) ((Map) ((Map) map.get("info")).get("description")).get(WiskOpdr.language.toString() + "@JSON");
+  } catch (Exception e) {
+    return null;
+  }
 }
 
 protected static String getDescription(JSONObject map) {

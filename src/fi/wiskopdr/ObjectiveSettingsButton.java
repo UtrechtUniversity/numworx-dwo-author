@@ -527,6 +527,6 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 
   public StudentModel getStudentModel() {
     requestStudentModel();
-    return studentModel;
+    return WiskOpdr.applet.expandStudentModel(studentModel);
   }   
 }

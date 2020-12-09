@@ -193,7 +193,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	{
 		JSONParser parser = new JSONParser();
 		try {
-			String studentModelsMock = getParameter("studentModelContexts");
+			String studentModelsMock = getParameter("reducedStudentModelContexts");
 			if(studentModelsMock == null)
 				studentModelsMock = "[]";
 			studentModelsJSON = (JSONArray) parser.parse(studentModelsMock);
@@ -225,6 +225,24 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 		return studentModels;
 	}
+	
+	public StudentModel expandStudentModel(StudentModel s) {
+	  if (s == null) return null;
+	  String id = s.id;
+	  if (s.categories == null) {
+    	  String json = getParameter("studentModelContext:" + id);
+    	  try {
+            StudentModel model = StudentModel.readModel(new JSONParser().parse(json));
+            s.categories = model.categories;
+            s.description = model.description;
+        } catch (ParseException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+	  }
+	  return s;
+	}
+	
 	
 	public JSONObject getDwoProfile() {
 	  String json = getParameter("dwoProfile");
