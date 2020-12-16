@@ -2,10 +2,6 @@ package fi.wiskopdr;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
 import java.util.Hashtable;
 
 import javax.swing.JPanel;
