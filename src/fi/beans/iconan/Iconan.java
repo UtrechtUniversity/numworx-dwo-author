@@ -14,6 +14,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -339,8 +340,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	public void editImage(String imageName, Component parent, ActionListener aListener) {
         
 		if(imageDialog == null) {
-        	Frame f = JOptionPane.getFrameForComponent(parent);
-        	imageDialog = new JDialog(f,"", true);
+        	Window f = (Window) WiskOpdr.getWindowForComponent(parent);
+        	imageDialog = new JDialog(f,""); imageDialog.setModal(true);
 			imageDialog.setLayout(new BorderLayout());
 			//imageDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 			if(!chooseImage) {
