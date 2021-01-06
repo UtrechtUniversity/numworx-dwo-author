@@ -25,6 +25,7 @@ import fi.euclides.event.AddRaakLijnHandler;
 import fi.euclides.event.AddSpiegelHandler;
 import fi.euclides.event.EventHandler;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Label;
 import fi.euclides.proof.AfstandHandler;
 import fi.euclides.proof.HoekHandler;
 import fi.euclides.proof.OppHandler;
@@ -57,6 +58,7 @@ import nl.numworx.geodefiner.ui.LineModel;
 import nl.numworx.geodefiner.ui.PointModel;
 import nl.numworx.geodefiner.ui.RayModel;
 import nl.numworx.geodefiner.ui.SegmentModel;
+import nl.numworx.geodefiner.ui.TextModel;
 import nl.numworx.geodefiner.ui.UIEditor;
 
 @Module
@@ -215,9 +217,11 @@ public abstract class ToolBoxModule implements Tools {
 		return new XXXAction(Messages.getString("ToolBoxModule.61"), "/function.png", formule, viewer); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(TEXT) static 
-	Action text(AWTViewer viewer) {
+	Action text(AWTViewer viewer, TextModel textModel, Instance instance) {
+		textModel.setDXY(6f,-5f);
+		UIShim<Label, UIEditor> shim = new UIShim<>(textModel, instance.getStateConfiguration(), viewer);
 		TextHandler text = new TextHandler(Messages.getString("AddLoodLijnHandler.1")); //$NON-NLS-1$
-		return new XXXAction(Messages.getString("ToolBoxModule.64"), "/showname.png", text, viewer); //$NON-NLS-1$ //$NON-NLS-2$
+		return new XXXXAction(Messages.getString("ToolBoxModule.64"), "/showname.png", text, viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	@Provides @Singleton @IntoMap @IntKey(TRAIL) static 
 	Action trail(AWTViewer viewer) {

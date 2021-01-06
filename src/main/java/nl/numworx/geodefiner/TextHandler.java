@@ -59,7 +59,7 @@ public class TextHandler extends AbstractTextHandler {
 			vp.setDxy(Numbers.createInteger(6), Numbers.createInteger(-5));
 			vp.setFree(false);
 			l.setP(vp);
-			getModel().add(l);
+			visit(getModel().add(l));
 		}
 	}
 
