@@ -21,7 +21,6 @@ import fi.euclides.persist.CreateUtil;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
-//import fi.euclides.util.Queue;
 import nl.numworx.geodefiner.common.Volgpunt;
 
 public class LocusModel2 extends Observable implements Codec, Observer, LocusModel {
