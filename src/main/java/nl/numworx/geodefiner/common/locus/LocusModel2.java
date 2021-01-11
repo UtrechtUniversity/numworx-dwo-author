@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 
 import fi.euclides.event.NameMapper;
@@ -19,7 +21,6 @@ import fi.euclides.persist.CreateUtil;
 import fi.euclides.proof.LabelDelegate;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
-import fi.euclides.util.Queue;
 import nl.numworx.geodefiner.common.Volgpunt;
 
 public class LocusModel2 extends Observable implements Codec, Observer, LocusModel {
@@ -40,7 +41,7 @@ public class LocusModel2 extends Observable implements Codec, Observer, LocusMod
 		this.source = sourceorg;
 		this.dest = destorg;
 		map = new HashMap<String, Destroyable>();
-		q = new Queue();
+		q = new LinkedList();
 		punten = new Vector<Destroyable>();
 		copies = new HashMap<>();
 		toDestroy = new Vector<Destroyable>();
@@ -60,7 +61,7 @@ public class LocusModel2 extends Observable implements Codec, Observer, LocusMod
 
 	@SuppressWarnings("unchecked")
 	private void writeObject(Object o) {
-		q.addElement(o);
+		q.add(o);
 	}
 	private Object readObject() {
 		return q.poll();

@@ -116,6 +116,9 @@ public class  UIShim<D extends Destroyable, T> implements UIModel<D, T>, Visitor
 
 	@Override
 	public void visitLabel(Label label) {
+		try {
+			install(label);
+		} catch(Exception oops) {}
 	}
 
 	@Override
