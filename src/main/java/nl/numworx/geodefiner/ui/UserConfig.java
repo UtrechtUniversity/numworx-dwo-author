@@ -24,7 +24,7 @@ public enum UserConfig implements Observer, Visitor {
 
 	static final Float USER_POINT_SIZE = Float.valueOf(7f);
 	static final Paint USER_TRIANGLE_PAINT = new Color(0x80dca000, true); //vulling: #dca000 + half transparant
-	static final Color USER_TRIANGLE_COLOR = new Color(0xFF6e5000, false);
+	static final Color USER_TRIANGLE_COLOR = new Color(0x00000000, true); //vulling full transparent
 	
 	@Override
 	public void visitPunt(Punt p) {

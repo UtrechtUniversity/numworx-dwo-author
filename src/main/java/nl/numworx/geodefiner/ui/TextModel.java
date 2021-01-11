@@ -18,6 +18,7 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.DefaultAdapter;
+import fi.euclides.util.Messages;
 
 public class TextModel extends ColorModel<Label> {
 	public static final float DEFAULT_SIZE = 12;
@@ -39,9 +40,8 @@ public class TextModel extends ColorModel<Label> {
 		return isAlwaysF() && Boolean.TRUE.equals(herleid);
 	}
 
-	public void install() {
-		install(item);
-		super.install();
+	public void install(Destroyable maybe) {
+		install( (Label) maybe );
 	}
 	
 	public void install(Label item) {
@@ -69,7 +69,7 @@ public class TextModel extends ColorModel<Label> {
 	}
 
 	private void setdxy() {
-		if(item.getP()instanceof Volgpunt) {
+		if(item != null && item.getP()instanceof Volgpunt) {
 		Volgpunt p = (Volgpunt) this.item.getP();
 			dx = (float) p.getDx().doubleValue();
 			dy = (float) p.getDy().doubleValue();
@@ -125,11 +125,16 @@ public class TextModel extends ColorModel<Label> {
 	}
 	
 	public String sample() {
+		if(item == null) return Messages.getString("ToolBoxModule.64");
 		return item.getString();
 	}
 	
 	@Inject TextModel(Tracker t, Optional<RenameAction> ra) {
 		set(t);
 		setRename(ra);
+	}
+	public void setDXY(float x, float y) {
+		dx = x;
+		dy = y;
 	}
 }
