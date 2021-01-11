@@ -1,6 +1,7 @@
 package fi.euclides.model;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -20,7 +21,6 @@ import fi.euclides.model.RaaklijnLocus;
 import fi.euclides.model.SnijpuntLijn;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.Arrays;
 import fi.euclides.util.DComparator;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;

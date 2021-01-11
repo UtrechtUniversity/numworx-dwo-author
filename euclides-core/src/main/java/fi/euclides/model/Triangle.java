@@ -11,7 +11,6 @@ import fi.euclides.model.algo.PointInTriangle;
 import fi.euclides.model.algo.PointOnAlgorithm;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.DrieOpEenRij;
-import fi.euclides.util.Arrays;
 import fi.euclides.util.Observable;
 
 public class Triangle extends MP {

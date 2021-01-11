@@ -1,10 +1,10 @@
 package fi.euclides.proof;
 
 
-import fi.euclides.util.Arrays;
 import fi.euclides.util.DefaultAdapter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 import fi.euclides.util.Hashtable;
