@@ -386,7 +386,7 @@ public abstract class Instance /*implements Observer*/ {
 				Destroyable d = mapper.fromString(name);
 				if (d == null) continue;
 				ObjectMap value = configuration.getObjectMap(name);
-				UIModel<?,?> model = uiModelFactory.build(d);
+				UIModel<?,?> model = uiModelFactory.lightBuild(d);
 				model.fromMap(value);
 				model.installLight();
 				getStateConfiguration().put(name, model.toMap());
