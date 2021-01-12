@@ -15,6 +15,8 @@ public interface Models {
   AxesModel axesmodel();
   SegmentModel segmentmodel();
   CircleModel circlemodel();
+  TriangleModel triangleModel();
+
   @Named("locus") ColorModel<Locus> integralmodel();
   @Named("vgl")   LineModel vglmodel();
   @Named("ivgl")  ColorModel<Locus> inequalitymodel();

@@ -59,6 +59,7 @@ import nl.numworx.geodefiner.ui.PointModel;
 import nl.numworx.geodefiner.ui.RayModel;
 import nl.numworx.geodefiner.ui.SegmentModel;
 import nl.numworx.geodefiner.ui.TextModel;
+import nl.numworx.geodefiner.ui.TriangleModel;
 import nl.numworx.geodefiner.ui.UIEditor;
 
 @Module
@@ -133,7 +134,7 @@ public abstract class ToolBoxModule implements Tools {
 		return xaction;
 	}
 	@Provides @Singleton @IntoMap @IntKey(TRIANGLE) static 
-	Action triangle(AWTViewer viewer, CircleModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
+	Action triangle(AWTViewer viewer, TriangleModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
 		return new XXXXAction(Messages.getString("ToolBoxModule.22"), "/triangle.png", new AddPolygonHandler(Messages.getString("ToolBoxModule.24")),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

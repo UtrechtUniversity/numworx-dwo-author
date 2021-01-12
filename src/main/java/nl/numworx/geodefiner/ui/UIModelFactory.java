@@ -115,4 +115,10 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 		model = models.circlemodel().init(b);
 	}
 
+	@Override
+	public UIModel<?, ?> lightBuild(Destroyable d) {
+		if (d instanceof Triangle) return models.triangleModel().init(d);
+		return super.lightBuild(d);
+	}
+
 }
