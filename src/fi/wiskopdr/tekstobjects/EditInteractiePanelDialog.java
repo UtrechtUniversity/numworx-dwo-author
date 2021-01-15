@@ -1039,7 +1039,9 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         h.put("setNr", new Integer(setNr));
         h.put("popupImageString", popupImageString);
 // if Logging, enable xwid for LA transport
-        if(Boolean.TRUE.equals(interactiePanelLaunchState.get(Constants.LOGGING)))
+// if StudentModel data, enable xwid for XAPI transport
+        if(Boolean.TRUE.equals(interactiePanelLaunchState.get(Constants.LOGGING))
+            || interactiePanelLaunchState.containsKey(fi.wiskopdr.domainmodel.Constants.OBJECTIVES))
         {
         	getCrossWidgetId();
         }
