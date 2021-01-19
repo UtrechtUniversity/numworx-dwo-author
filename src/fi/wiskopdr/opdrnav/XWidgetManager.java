@@ -78,6 +78,7 @@ public class XWidgetManager {
 	public String getWidgetID() {
 		Set<String> pool = keySet();
  		String uniq = getUUID(pool);
+ 		widgets.put(uniq, null);
  		return uniq;
 	}
 
