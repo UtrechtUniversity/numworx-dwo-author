@@ -74,6 +74,12 @@ public class XWidgetManager {
 		String key = tekstInteractiePanelVak.getCrossWidgetId(this);
 		widgets.put(key, tekstInteractiePanelVak);
 	}
+	
+	public String getWidgetID() {
+		Set<String> pool = keySet();
+ 		String uniq = getUUID(pool);
+ 		return uniq;
+	}
 
 	public void newCrossWidgetId(TekstInteractiePanelVak tekstInteractiePanelVak) {
 		Set<String> pool = keySet();
