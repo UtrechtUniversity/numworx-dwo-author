@@ -3,6 +3,8 @@ package fi.wiskopdr.opdrnav;
 import java.awt.*;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
@@ -423,8 +425,9 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			int i = Integer.parseInt(loc);
 			if(activiteitNr == 0 && i < aantalOpdrachten[0] && i >= 0)
 			kiesOpdracht(activiteitNr, i);
-		} catch(RuntimeException _) {}
-		
+		} catch(RuntimeException oops) {
+		  Logger.getLogger(getClass().getName()).log(Level.WARNING,"kiesOpdracht " + loc, oops);		  
+		}
 		
 	}
 
