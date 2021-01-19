@@ -15,7 +15,11 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -29,6 +33,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import org.json.fimple.JSONArray;
 
 import fi.beans.iconan.Iconan;
 import fi.wiskopdr.DialogFacade;
@@ -45,6 +51,7 @@ import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 
 public class DragDropEditor implements TComponentEditor, ActionListener, FocusListener, HelpButtonPanelIF, WindowListener {
 
@@ -112,6 +119,8 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
     private Box helpTitelBox;
     private JButton hideHelpButton;
     
+    private String DDwidgetID = null;
+	
     
     // Helpbuttons
     private static String HELP_DRAGDROP_URL = WiskOpdr.rb.getString("HELP_DRAGDROP_URL");
@@ -469,6 +478,9 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		boolean volledigeBreedte = true;
 		int breedte = 500;
 		
+		String DDwidgetID = null;
+		
+		
 		itemCount = intFromText(itemCount,itemCountTF.getText());
 		itemWidth = intFromText(itemWidth,itemWidthTF.getText());
 		itemHeight = intFromText(itemHeight,itemHeightTF.getText());
@@ -490,6 +502,8 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		teltMee = teltMeeCB.isSelected();
 		volledigeBreedte = volledigeBreedteCB.isSelected();
 		breedte = intFromText(breedte, breedteTF.getText());
+		
+		DDwidgetID = this.DDwidgetID;
 		
 		if(logObjectives!=null) {
 			scoreMaxObjectives = new int[logObjectives.length][];
@@ -532,6 +546,9 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		preferences.put("volledigeBreedte", new Boolean(volledigeBreedte));
 		preferences.put("breedte", new Integer(breedte));
 		
+		if(DDwidgetID != null)
+			preferences.put("DDwidgetID", DDwidgetID);
+		
 		return preferences;
 	}
 
@@ -564,6 +581,8 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		boolean volledigeBreedte = true;
 		int breedte = 500;
 		
+		String DDwidgetID = null;
+		
 		if(preferences.containsKey("itemCount")) itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		if(preferences.containsKey("itemWidth")) itemWidth = ((Integer)preferences.get("itemWidth")).intValue();
 		if(preferences.containsKey("itemHeight")) itemHeight = ((Integer)preferences.get("itemHeight")).intValue();
@@ -588,6 +607,8 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		
 		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
 		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
+		
+		if(preferences.containsKey("DDwidgetID")) DDwidgetID = (String)preferences.get("DDwidgetID");
 		
 		
 		itemCountTF.setText(""+itemCount);
@@ -627,6 +648,9 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
     	
     	volledigeBreedteCB.setSelected(volledigeBreedte);
 	    breedteTF.setText(""+breedte);
+	    
+	    this.DDwidgetID = DDwidgetID;
+	    
 	   
 	    frame.setVisible(true);
 		frame.pack();

@@ -6,10 +6,15 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import org.json.fimple.JSONArray;
 
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.TekstVakPanel;
@@ -17,6 +22,7 @@ import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.wiskopdr.tekstobjects.TekstVak;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
 
 public class DragDropGenerator implements TComponentGenerator, ActionListener {
 
@@ -63,6 +69,9 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 	}
 	
 	public TekstInteractiePanelVak generateAndReturnComponent(TekstVak tekstVak) {
+		String DDwidgetID = tekstVak.getXWidgetManager().getWidgetID();
+		initPreferences.put("DDwidgetID", DDwidgetID);
+		
 		TekstInteractiePanelVak tComponent = new TekstInteractiePanelVak(tekstVak, makeTComponentLD(initPreferences));
 		
 		TekstVak tComponentTV = ((TekstVakPanel)tComponent.getInteractiePanel()).geefTekstVak(0, 0);	
@@ -100,7 +109,7 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 	}
 	
 	public void editComponent(TekstInteractiePanelVak oldTComponent, Hashtable<String,Object> preferences) {
-		
+		System.out.println("preferences: "+preferences);
 		TekstVak tekstVak = oldTComponent.getTekstVak();
 		int oldItemCount = ((Integer)((Hashtable)oldTComponent.getEditState().get("TComponentPreferences")).get("itemCount")).intValue();
 		TekstVak oldTComponentTV = ((TekstVakPanel)oldTComponent.getInteractiePanel()).geefTekstVak(0,0);
@@ -188,8 +197,11 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 	private Hashtable<String,Object> makeTComponentLD(Hashtable<String,Object> preferences) {
 		boolean volledigeBreedte = true;
 		int breedte = 500;
+		String DDwidgetID = null;
+		
 		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
 		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
+		if(preferences.containsKey("DDwidgetID")) DDwidgetID = (String)preferences.get("DDwidgetID");
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
 		ipLaunchState.put("tekst", "");
@@ -203,6 +215,9 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		launchData.put("interactiePanelLaunchState", ipLaunchState);
 		launchData.put("volledigeBreedte", new Boolean(volledigeBreedte));
 		launchData.put("breedte", new Integer(breedte));
+		if(DDwidgetID != null)
+			launchData.put("DDwidgetID", DDwidgetID);
+				
 		if(!decompose) launchData.put("TComponent", "DragDrop");
 		if(!decompose) launchData.put("TComponentPreferences", preferences);
 		
@@ -384,6 +399,8 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		//String[] formuleStrings = null;
 		String knopImageString = "";
 		
+		String crossWidgetId = null;
+		
 		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		if(preferences.containsKey("randomizePositions")) randomizePositions = ((Boolean)preferences.get("randomizePositions")).booleanValue();
 		if(preferences.containsKey("snapToTarget")) snapToTarget = ((Boolean)preferences.get("snapToTarget")).booleanValue();
@@ -401,6 +418,7 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		
+		if(preferences.containsKey("DDwidgetID")) crossWidgetId = (String)preferences.get("DDwidgetID");
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
 		ipLaunchState.put("aantalSleepObjects", new Integer(itemCount));
@@ -436,6 +454,10 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		launchData.put("breedte", new Integer(126));
 		launchData.put("hoogte", new Integer(31));
 		launchData.put("volledigeBreedte", new Boolean(false));
+		
+		if(crossWidgetId != null)
+			launchData.put("crossWidgetId", crossWidgetId);
+		
 		return launchData;
 	}
 	
