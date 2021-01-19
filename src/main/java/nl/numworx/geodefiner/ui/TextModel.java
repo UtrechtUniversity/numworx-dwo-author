@@ -41,19 +41,27 @@ public class TextModel extends ColorModel<Label> {
 	}
 
 	public void install(Destroyable maybe) {
-		install( (Label) maybe );
+		if (maybe instanceof Label)
+			install( (Label) maybe );
+		else {
+			install0(maybe);
+			super.install(maybe);
+		}
 	}
 	
 	public void install(Label item) {
-		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
-		adapter.put(align);
-		adapter.put(Font.class, font);
-		adapter.put(Boolean.class, alwaysF);
+		install0(item);
 		Punt p = item.getP();
 		if(p instanceof Volgpunt) {
 			((Volgpunt) p).setDxy(Numbers.createDouble(dx), Numbers.createDouble(dy));
 		}
 		super.install(item);
+	}
+	public void install0(Destroyable item) {
+		DefaultAdapter adapter = DefaultAdapter.getDefault(item);
+		adapter.put(align);
+		adapter.put(Font.class, font);
+		adapter.put(Boolean.class, alwaysF);
 	}
 
 	@Override
