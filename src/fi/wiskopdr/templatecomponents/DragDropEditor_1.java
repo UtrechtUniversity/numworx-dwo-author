@@ -51,6 +51,7 @@ public class DragDropEditor_1 implements TComponentEditor, ActionListener, Focus
 	private TekstVak tekstVak;
 	private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
 	private int scoreMax;
+	private String DDwidgetID = null;
 	
 	private DialogFacade frame;
 	private JPanel preferencesPanel;
@@ -468,6 +469,7 @@ public class DragDropEditor_1 implements TComponentEditor, ActionListener, Focus
 		
 		boolean volledigeBreedte = true;
 		int breedte = 500;
+		String DDwidgetID = null;
 		
 		itemCount = intFromText(itemCount,itemCountTF.getText());
 		itemWidth = intFromText(itemWidth,itemWidthTF.getText());
@@ -490,6 +492,8 @@ public class DragDropEditor_1 implements TComponentEditor, ActionListener, Focus
 		teltMee = teltMeeCB.isSelected();
 		volledigeBreedte = volledigeBreedteCB.isSelected();
 		breedte = intFromText(breedte, breedteTF.getText());
+		
+		DDwidgetID = this.DDwidgetID;
 		
 		if(logObjectives!=null) {
 			scoreMaxObjectives = new int[logObjectives.length][];
@@ -531,6 +535,8 @@ public class DragDropEditor_1 implements TComponentEditor, ActionListener, Focus
 		
 		preferences.put("volledigeBreedte", new Boolean(volledigeBreedte));
 		preferences.put("breedte", new Integer(breedte));
+		if(DDwidgetID != null)
+			preferences.put("DDwidgetID", DDwidgetID);
 		
 		return preferences;
 	}
@@ -563,6 +569,7 @@ public class DragDropEditor_1 implements TComponentEditor, ActionListener, Focus
 		
 		boolean volledigeBreedte = true;
 		int breedte = 500;
+		String DDwidgetID = null;
 		
 		if(preferences.containsKey("itemCount")) itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		if(preferences.containsKey("itemWidth")) itemWidth = ((Integer)preferences.get("itemWidth")).intValue();
@@ -588,6 +595,7 @@ public class DragDropEditor_1 implements TComponentEditor, ActionListener, Focus
 		
 		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
 		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
+		if(preferences.containsKey("DDwidgetID")) DDwidgetID = (String)preferences.get("DDwidgetID");
 		
 		
 		itemCountTF.setText(""+itemCount);
@@ -628,6 +636,8 @@ public class DragDropEditor_1 implements TComponentEditor, ActionListener, Focus
     	volledigeBreedteCB.setSelected(volledigeBreedte);
 	    breedteTF.setText(""+breedte);
 	   
+	    this.DDwidgetID = DDwidgetID;
+	    
 	    frame.setVisible(true);
 		frame.pack();
 		//frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);

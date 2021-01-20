@@ -56,6 +56,7 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
 	private int aantalSelectables = 4;
 	private int aantalSelectablesMax = 30;
 	private boolean[][][] logMisconceptions;
+	private String MCwidgetID = null;
 	
 	private DialogFacade frame;
 	private JPanel preferencesPanel;
@@ -499,6 +500,7 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
 		
 		boolean volledigeBreedte = true;
 		int breedte = 300;
+		String MCwidgetID = null;
 		
 		itemCount = intFromText(itemCount, itemCountTF.getText());
 		listNumberType = listNumberTypeComboBox.getSelectedIndex()-1;
@@ -527,6 +529,8 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
 		
 		volledigeBreedte = volledigeBreedteCB.isSelected();
 		breedte = intFromText(breedte, breedteTF.getText());
+		
+		MCwidgetID = this.MCwidgetID;
 		
 		if(logObjectives!=null) {
 			scoreMaxObjectives = new int[logObjectives.length][];
@@ -575,6 +579,8 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
 		
 		preferences.put("volledigeBreedte", new Boolean(volledigeBreedte));
 		preferences.put("breedte", new Integer(breedte));
+		if(MCwidgetID != null)
+			preferences.put("MCwidgetID", MCwidgetID);
 		
 		return preferences;
 	}
@@ -605,6 +611,7 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
 		
 		boolean volledigeBreedte = true;
 		int breedte = 300;
+		String MCwidgetID = null;
 		
 		if(preferences.containsKey("itemCount")) itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		if(preferences.containsKey("listNumberType")) listNumberType = ((Integer)preferences.get("listNumberType")).intValue()+1;
@@ -629,6 +636,7 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
 		
 		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
 		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
+		if(preferences.containsKey("MCwidgetID")) MCwidgetID = (String)preferences.get("MCwidgetID");
 		
 		itemCountTF.setText(""+itemCount);
 		listNumberTypeComboBox.setSelectedIndex(listNumberType);
@@ -685,6 +693,8 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
     	
     	volledigeBreedteCB.setSelected(volledigeBreedte);
 	    breedteTF.setText(""+breedte);
+	    
+	    this.MCwidgetID = MCwidgetID;
 	    
 		frame.setVisible(true);
 		frame.pack();

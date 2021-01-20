@@ -58,6 +58,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 	private TekstVak tekstVak;
 	private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
 	private int scoreMax;
+	private String DDwidgetID = null;
 	
 	private DialogFacade frame;
 	private JPanel preferencesPanel;
@@ -118,10 +119,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
     private Box helpBox;
     private Box helpTitelBox;
     private JButton hideHelpButton;
-    
-    private String DDwidgetID = null;
-	
-    
+     
     // Helpbuttons
     private static String HELP_DRAGDROP_URL = WiskOpdr.rb.getString("HELP_DRAGDROP_URL");
     private static String HELP_DRAGDROP_URL_CHECK = WiskOpdr.rb.getString("HELP_DRAGDROP_URL_CHECK");
@@ -477,7 +475,6 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		
 		boolean volledigeBreedte = true;
 		int breedte = 500;
-		
 		String DDwidgetID = null;
 		
 		
@@ -545,7 +542,6 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		
 		preferences.put("volledigeBreedte", new Boolean(volledigeBreedte));
 		preferences.put("breedte", new Integer(breedte));
-		
 		if(DDwidgetID != null)
 			preferences.put("DDwidgetID", DDwidgetID);
 		
@@ -580,7 +576,6 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		
 		boolean volledigeBreedte = true;
 		int breedte = 500;
-		
 		String DDwidgetID = null;
 		
 		if(preferences.containsKey("itemCount")) itemCount = ((Integer)preferences.get("itemCount")).intValue();
@@ -607,7 +602,6 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		
 		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
 		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
-		
 		if(preferences.containsKey("DDwidgetID")) DDwidgetID = (String)preferences.get("DDwidgetID");
 		
 		

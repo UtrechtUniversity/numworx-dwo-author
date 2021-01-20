@@ -75,6 +75,9 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 	}
 	
 	public TekstInteractiePanelVak generateAndReturnComponent(TekstVak tekstVak) {
+		String MCwidgetID = tekstVak.getXWidgetManager().getWidgetID();
+		initPreferences.put("MCwidgetID", MCwidgetID);
+		
 		TekstInteractiePanelVak tComponent = new TekstInteractiePanelVak(tekstVak, makeTComponentLD(initPreferences));
 		
 		TekstVak tComponentTV = ((TekstVakPanel)tComponent.getInteractiePanel()).geefTekstVak(0, 0);		
@@ -157,8 +160,11 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 	private Hashtable<String,Object> makeTComponentLD(Hashtable<String,Object> preferences) {
 		boolean volledigeBreedte = true;
 		int breedte = 300;
+		String MCwidgetID = null;
+		
 		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
 		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
+		if(preferences.containsKey("MCwidgetID")) MCwidgetID = (String)preferences.get("MCwidgetID");
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
 		ipLaunchState.put("tekst", "");
@@ -172,6 +178,8 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		launchData.put("interactiePanelLaunchState", ipLaunchState);
 		launchData.put("volledigeBreedte", new Boolean(volledigeBreedte));
 		launchData.put("breedte", new Integer(breedte));
+		if(MCwidgetID != null)
+			launchData.put("MCwidgetID", MCwidgetID);
 		if(!decompose) launchData.put("TComponent", "MultipleChoice");
 		if(!decompose) launchData.put("TComponentPreferences", preferences);
 		
@@ -277,7 +285,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		//String[] formuleStrings = null;
 		String knopImageString = "";
 		boolean[][][] logMisconceptions = null;
-		
+		String crossWidgetId = null;
 		
 		
 		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
@@ -295,6 +303,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		if(preferences.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])preferences.get("logMisconceptions");
+		if(preferences.containsKey("MCwidgetID")) crossWidgetId = (String)preferences.get("MCwidgetID");
 		
 		
 		if(juisteSelecties==null)
@@ -334,6 +343,8 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		launchData.put("breedte", new Integer(126));
 		launchData.put("hoogte", new Integer(31));
 		launchData.put("volledigeBreedte", new Boolean(false));
+		if(crossWidgetId != null)
+			launchData.put("crossWidgetId", crossWidgetId);
 		return launchData;
 	}
 	
