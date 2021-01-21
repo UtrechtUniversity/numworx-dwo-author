@@ -123,10 +123,10 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 	}
 	public void visitBoog(Boog b) {
 		selectColor(b);
-		double d = b.base.getD();
+		double d = b.getD();
 		double s = b.getStart();
 		double l = b.length();
-		drawArc(b.base.getX(), b.base.getY(), d, s, l);
+		drawArc(b.getX(), b.getY(), d, s, l);
 	}
 	
 	public void visitCirkel(Cirkel c) {

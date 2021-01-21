@@ -185,7 +185,7 @@ public class Boog extends Rondje implements OpObject<Boog> {
 	}
 
 	@Override
-	double getD() {
+	public double getD() {
 		return base.getD();
 	}
 	@Override
@@ -211,5 +211,12 @@ public class Boog extends Rondje implements OpObject<Boog> {
 		}
 		return done;
 	}
+
+  public double getX() {
+    return base.getX();
+  }
+  public double getY() {
+    return base.getY();
+  }
 
 }
