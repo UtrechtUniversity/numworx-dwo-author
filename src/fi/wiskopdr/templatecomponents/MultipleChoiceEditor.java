@@ -429,6 +429,10 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
  	    frame.setLocation(xD, yD);
 	}
 	
+	public void dispose( ) {
+		frame.dispose();
+	}
+	
 	public void maakCheckboxes() {
 		if(WiskOpdr.misconceptions!=null)
 			logMisconceptions = new boolean[aantalSelectables][][];

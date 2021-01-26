@@ -462,13 +462,18 @@ public class DragDropGenerator_1 implements TComponentGenerator, ActionListener 
 	
 	public void edit(TekstInteractiePanelVak tipv) {
 		tipvEdit = tipv;
-		if(ddEditor==null) {
-			ddEditor = new DragDropEditor_1(tipv.getTekstVak());
-			ddEditor.addActionListener(this);
-		}
-		else {
-			ddEditor.setTekstVak(tipv.getTekstVak());
-		}
+		if(ddEditor!=null)
+			ddEditor.dispose();
+		ddEditor = new DragDropEditor_1(tipv.getTekstVak());
+		ddEditor.addActionListener(this);
+		
+//		if(ddEditor==null) {
+//			ddEditor = new DragDropEditor(tipv.getTekstVak());
+//			ddEditor.addActionListener(this);
+//		}
+//		else {
+//			ddEditor.setTekstVak(tipv.getTekstVak());
+//		}
 		Hashtable<String,Object> preferences = (Hashtable<String,Object>)tipv.getEditState().get("TComponentPreferences");
 		ddEditor.setPreferences(preferences);
 		//ddEditor.show();

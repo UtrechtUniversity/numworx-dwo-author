@@ -350,13 +350,17 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 	
 	public void edit(TekstInteractiePanelVak tipv) {
 		tipvEdit = tipv;
-		if(mcEditor==null) {
-			mcEditor = new MultipleChoiceEditor(tipv.getTekstVak());
-			mcEditor.addActionListener(this);
-		}
-		else {
-			mcEditor.setTekstVak(tipv.getTekstVak());
-		}
+		if(mcEditor!=null)
+			mcEditor.dispose();
+		mcEditor = new MultipleChoiceEditor(tipv.getTekstVak());
+		mcEditor.addActionListener(this);
+//		if(mcEditor==null) {
+//			mcEditor = new MultipleChoiceEditor_1(tipv.getTekstVak());
+//			mcEditor.addActionListener(this);
+//		}
+//		else {
+//			mcEditor.setTekstVak(tipv.getTekstVak());
+//		}
 		Hashtable<String,Object> preferences = (Hashtable<String,Object>)tipv.getEditState().get("TComponentPreferences");
 		mcEditor.setPreferences(preferences);
 	}

@@ -429,6 +429,10 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
  	    frame.setLocation(xD, yD);
 	}
 	
+	public void dispose( ) {
+		frame.dispose();
+	}
+	
 	public void editImage() {
 		if(iconman==null)
 			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
