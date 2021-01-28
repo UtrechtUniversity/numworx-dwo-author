@@ -65,6 +65,13 @@ public class TextModel extends ColorModel<Label> {
 	}
 
 	@Override
+	public void installLight() {
+	  install0(item);
+	  super.installLight();
+	}
+
+	
+	@Override
 	public UIModel<Label, UIEditor> init(Label item) {
 		if(item != null) align = item.adapt(Align.class);
 		if(align == null) align= Align.BASE;
