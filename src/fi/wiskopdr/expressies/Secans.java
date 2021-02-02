@@ -74,9 +74,6 @@ public class Secans extends Expressie
 	{	return "sec" + "$h" + kind1.toStringStrikt() + "@";
 	}
     
-    public String toStringCAS()
-    {   return "Sec" + "[" + kind1.toStringCAS() + "]";
-    }
     public Object visit(AbstractConverter converter) {
     	return converter.secans(kind1.visit(converter));
     }

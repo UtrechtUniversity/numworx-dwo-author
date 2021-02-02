@@ -111,10 +111,6 @@ public class Functie extends Expressie
 	{	return functieNaam + "$h" + kind1.toStringStrikt() + "@";
 	}
     
-    public String toStringCAS()
-    {   return functieNaam + "[" + kind1.toStringCAS() + "]";
-    }
-    
     public Object visit(AbstractConverter converter) {
     	//return converter.sinus(kind1.visit(converter));
     	return functieExpressie.substitueer(kind1, functieVariabele).visit(converter);

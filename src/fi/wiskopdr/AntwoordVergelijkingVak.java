@@ -1494,7 +1494,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
         	VergelijkingMeerv vmAntw = null;
         	if(vm!=null){
         		Vergelijking v = vm.geefVergelijking(0);
-        		vergStringCas = v.geefExpLinks().toStringCAS() + "==" + v.geefExpRechts().toStringCAS();
+        		vergStringCas = v.geefExpLinks().toStringStrikt() + "==" + v.geefExpRechts().toStringStrikt();
         		String[] varNamen = v.geefVarNamen();
         		if(varNamen.length != 1)return;
         		vmAntw = //Expressie.solveWithCAS(vergStringCas, varNamen[0]);
@@ -3365,13 +3365,13 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				//VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieDefSet);
 				VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieMVDefSet);
 				String vergStringCas = "$f@";
-
+// FIXME hier een toStringCAS 
 				VergelijkingMeerv vmAntw = null;
 				if (vm != null)
 				{
 					Vergelijking v = vm.geefVergelijking(0);
 					String varNaam = v.geefVarNaam();
-					vergStringCas = v.geefExpLinks().toStringCAS() + "==" + v.geefExpRechts().toStringCAS();
+					vergStringCas = v.geefExpLinks().toStringStrikt() + "==" + v.geefExpRechts().toStringStrikt();
 					String[] varNamen = v.geefVarNamen();
 					if (varNamen.length != 1)
 						return;

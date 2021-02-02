@@ -80,10 +80,6 @@ public class NdeLog extends Expressie
 	{	return "$L" + kind1.toStringStrikt() + "$n" +kind2.toStringStrikt() + "@@";
 	}
     
-    public String toStringCAS()
-    {   return "Log" + "[" + kind2.toStringCAS() + "," + kind1.toStringCAS() + "]";
-    }
-    
     public Object visit(AbstractConverter converter) {
     	return converter.ndelog(kind1.visit(converter), kind2.visit(converter));
     }

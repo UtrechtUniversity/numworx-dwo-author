@@ -107,11 +107,7 @@ public class Bin extends Expressie
 	public String toStringStrikt()
 	{	return "$y" + kind1.toStringStrikt() + "$n" + kind2.toStringStrikt() + "@@"; 
 	}
-    
-    public String toStringCAS()
-    {   return "Binomial" + "[" + kind1.toStringCAS() + "," + kind2.toStringCAS() + "]";
-    }
-    
+        
     public Object visit(AbstractConverter converter) 
 	{
 		return converter.bin( kind1.visit(converter), kind2.visit(converter));

@@ -98,12 +98,6 @@ public class Deling extends Expressie
 		return "$b" + s1 + "$n" + s2 + "@@";
 	}
     
-    public String toStringCAS()
-    {   String s1 = kind1.toStringCAS();
-        String s2 = kind2.toStringCAS();
-        return "(" + s1 + ")/(" + s2 + ")" ;
-    }
-    
     public Object visit(AbstractConverter converter) {
     	return converter.deling(kind1.visit(converter), kind2.visit(converter));  			
     }

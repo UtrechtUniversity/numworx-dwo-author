@@ -73,7 +73,7 @@ public class ReduceTest extends TestCase {
 		Expressie x = new BasisExpressie("x");
 		Expressie nul = new BasisExpressie(0);
 		e = new Limiet(e, x, nul, new BasisExpressie(1)); // Ordening (naar beneden)
-		String cas = e.toStringCAS(); System.out.println(cas);
+		String cas = e.toStringStrikt(); System.out.println(cas);
 		String command = e.visit(MPReduceConverter.getInstance()).toString();
 		String result = interpreter.evaluate(command);
 		Object r =  new MPReduceParser(new StringReader(result)).start();

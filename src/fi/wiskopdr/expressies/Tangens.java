@@ -81,10 +81,6 @@ public class Tangens extends Expressie
 	{	return "tan" + "$h" + kind1.toStringStrikt() + "@";
 	}
     
-    public String toStringCAS()
-    {   return "Tan" + "[" + kind1.toStringCAS() + "]";
-    }
-    
     public Object visit(AbstractConverter converter) {
     	return converter.tangens(kind1.visit(converter));
     }

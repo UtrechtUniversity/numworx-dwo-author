@@ -70,11 +70,7 @@ public class Conjug extends Expressie
 	public String toStringStrikt()
 	{	return "$c" + kind1.toStringStrikt() + "@";
 	}
-    
-    public String toStringCAS()
-    {   return "Conjugate" + "[" + kind1.toStringCAS() + "]";
-    }
-    
+        
     public Object visit(AbstractConverter converter) {
     	return converter.conjug(kind1.visit(converter));  			
     }

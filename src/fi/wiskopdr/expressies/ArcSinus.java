@@ -80,11 +80,7 @@ public class ArcSinus extends Expressie
 	public String toStringStrikt()
 	{	return "arcsin" + "$h" + kind1.toStringStrikt() + "@";
 	}
-    
-    public String toStringCAS()
-    {   return "ArcSin" + "[" + kind1.toStringCAS() + "]";
-    }
-    
+        
     public Object visit(AbstractConverter converter) 
 	{
 		return converter.arcsin( kind1.visit(converter));

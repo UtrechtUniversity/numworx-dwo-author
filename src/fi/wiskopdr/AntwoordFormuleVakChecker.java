@@ -702,6 +702,8 @@ public class AntwoordFormuleVakChecker
 		}
 	}
 	
+	
+// FIXME hier een toStringCAS die daar niet thuis hoort	
 	public void checkCasStatement(String expAntwoordString)	
 	{
 		String checkString = casString;
@@ -710,7 +712,7 @@ public class AntwoordFormuleVakChecker
 			{	int index1 = checkString.substring(0,j).lastIndexOf("{");
 				String parseString = checkString.substring(index1+1,j);
 				if(parseString.equals("ANS"))
-				{	parseString = (FormuleParser.geefExpressie(expAntwoordString)).toStringCAS();
+				{	parseString = (FormuleParser.geefExpressie(expAntwoordString)).toStringStrikt();
 				}
 				checkString = ""+checkString.substring(0,index1)+parseString+checkString.substring(j+1);
 				j=index1;

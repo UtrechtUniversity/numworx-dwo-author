@@ -2689,12 +2689,10 @@ public class AntwoordFormuleVak extends AntwoordVak implements InteractiePanel, 
 					exp = FormuleParser.geefExpressie(eString,functieMVDefSet);
 				}
 			}
-        	String eStringCas = "$f@";
         	
         	Expressie expAntw = null;
         	if(exp!=null)
         	{	
-        		eStringCas = exp.toStringCAS();
         		expAntw = Expressie.evalWithCAS(exp);
         		String def = "";
         		if(expAntw!=null) def = expAntw.toString();

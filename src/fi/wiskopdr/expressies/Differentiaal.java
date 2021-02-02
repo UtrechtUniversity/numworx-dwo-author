@@ -93,10 +93,6 @@ public class Differentiaal extends Expressie
 	   
 	}
 	
-	public String toStringCAS() //weet niet of 'Differential' klopt of handig is.
-	{   return "Differential" + "[" + kind1.toStringCAS() + "]";
-	}
-	 
 	public Object visit(AbstractConverter converter) 
 	{   	return converter.differentiaal(kind1.visit(converter));  			
 	}

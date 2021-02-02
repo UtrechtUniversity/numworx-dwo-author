@@ -92,10 +92,6 @@ public class Wortel extends Expressie
 	{	return "$w" + kind1.toStringStrikt() + "@";
 	}
     
-    public String toStringCAS()
-    {   return "Sqrt" + "[" + kind1.toStringCAS() + "]";
-    }
-    
     public Object visit(AbstractConverter converter) {
     	return converter.wortel(kind1.visit(converter));
     }

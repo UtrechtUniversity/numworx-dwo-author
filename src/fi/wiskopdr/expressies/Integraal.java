@@ -85,17 +85,7 @@ public class Integraal extends Expressie
 	public String toStringStrikt()
 	{	return "$i" + kind1.toStringStrikt() + "$n" + kind2.toStringStrikt() + "$k" + kind3.toStringStrikt() + "$l" + kind4.toStringStrikt() + "@@@@";//"$n" + kind3.toString() + 
 	}
-    
-    public String toStringCAS()
-    {   
-    	if(!kind4.isVar())
-    	{
-    		String var = kind4.geefVarNaam();
-    		return "Integrate[" + kind1.toStringCAS() + "*D[" +  kind4.toStringCAS() + "," + var + "]" + ",{" + var + "," + kind2.toStringCAS() + "," + kind3.toStringCAS() + "}]";
-    	}
-    	return "Integrate[" + kind1.toStringCAS() + ",{" + kind4.toStringCAS() + "," + kind2.toStringCAS() + "," + kind3.toStringCAS() + "}]";//"$n" + kind3.toString() + 
-    }
-    
+        
     public Object visit(AbstractConverter converter ) {
     	return converter.integrate( kind1.visit(converter),kind2.visit(converter),kind3.visit(converter),kind4.visit(converter), kind4.geefVarNaam());
     }

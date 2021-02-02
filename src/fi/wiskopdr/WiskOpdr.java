@@ -1,6 +1,5 @@
 package fi.wiskopdr;
 
-import java.applet.Applet;
 import java.applet.AppletStub;
 import java.awt.Button;
 import java.awt.Color;

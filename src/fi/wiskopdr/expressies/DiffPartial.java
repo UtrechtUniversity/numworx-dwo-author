@@ -83,10 +83,6 @@ public class DiffPartial extends Expressie
 	   
 	}
     
-    public String toStringCAS()
-    {   return "D[" + kind1.toStringCAS() + "," + kind2.toStringCAS() + "]";
-    }
-    
     public Object visit(AbstractConverter converter) {
     	return converter.diffpartial(kind1.visit(converter), kind2.visit(converter));  			
     }

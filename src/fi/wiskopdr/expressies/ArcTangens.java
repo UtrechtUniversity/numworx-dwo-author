@@ -80,11 +80,7 @@ public class ArcTangens extends Expressie
 	public String toStringStrikt()
 	{	return "arctan" + "$h" + kind1.toStringStrikt() + "@";
 	}
-    
-    public String toStringCAS()
-    {   return "ArcTan" + "[" + kind1.toStringCAS() + "]";
-    }
-    
+        
     public Object visit(AbstractConverter converter) 
 	{
 		return converter.arctan( kind1.visit(converter));

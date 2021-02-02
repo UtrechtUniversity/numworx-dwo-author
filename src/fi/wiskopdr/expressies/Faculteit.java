@@ -86,10 +86,6 @@ public class Faculteit extends Expressie
 	{	return  kind1.toStringStrikt() + "!";
 	}
     
-    public String toStringCAS()
-    {   return "Fac" + "[" + kind1.toStringCAS() + "]";
-    }
-    
     public Object visit(AbstractConverter converter ) {
     	return converter.fac( kind1.visit(converter));
     }

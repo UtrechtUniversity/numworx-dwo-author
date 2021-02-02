@@ -74,10 +74,6 @@ public class Log extends Expressie
 	{	return "log" + "$h" + kind1.toStringStrikt() + "@";
 	}
     
-    public String toStringCAS()
-    {   return "Log" + "["+ "10," + kind1.toStringCAS() + "]";
-    }
-    
     public Object visit(AbstractConverter converter ) {
     	return converter.log( kind1.visit(converter));
     }
