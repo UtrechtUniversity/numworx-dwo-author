@@ -3364,14 +3364,12 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 				String vergString = formuleVak.toString();
 				//VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieDefSet);
 				VergelijkingMeerv vm = FormuleParser.parseVergelijking(vergString, functieMVDefSet);
-				String vergStringCas = "$f@";
-// FIXME hier een toStringCAS 
+// FIXED hier was een toStringCAS, wordt niet gebruikt 
 				VergelijkingMeerv vmAntw = null;
 				if (vm != null)
 				{
 					Vergelijking v = vm.geefVergelijking(0);
 					String varNaam = v.geefVarNaam();
-					vergStringCas = v.geefExpLinks().toStringStrikt() + "==" + v.geefExpRechts().toStringStrikt();
 					String[] varNamen = v.geefVarNamen();
 					if (varNamen.length != 1)
 						return;
@@ -3395,8 +3393,7 @@ public class AntwoordVergelijkingVak extends AntwoordVak implements InteractiePa
 					}
 					else
 					{	huidigeVergelijking = vm;
-						vmAntw = //Expressie.solveWithCAS(vergStringCas, varNamen[0]);
-								Expressie.solve(v, varNamen[0]);
+						vmAntw = Expressie.solve(v, varNamen[0]);
 						String def = "";
 						if (vmAntw != null)
 							def = vmAntw.toString();
