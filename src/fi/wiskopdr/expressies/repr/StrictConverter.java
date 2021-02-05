@@ -172,7 +172,7 @@ public class StrictConverter extends AbstractConverter {
 
 	@Override
 	public Object integrate(Object kind1, Object kind2, Object kind3,
-			Object kind4, String _) {
+			Object kind4, String dummy) {
 				return "$i" + kind1 + "$n" + kind2 + "$k" + kind3 + "$l" + kind4 + "@@@@";
 			}
 
@@ -241,7 +241,7 @@ public class StrictConverter extends AbstractConverter {
 	}
 
 	@Override
-	public Object primitieve(Object kind1, Object kind2, String _) {
+	public Object primitieve(Object kind1, Object kind2, String dummy) {
 		return "$P" + kind1 + "$n" + kind2  + "@@";
 	}
 

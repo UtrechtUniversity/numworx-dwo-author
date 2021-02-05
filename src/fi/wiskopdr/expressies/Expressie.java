@@ -12,7 +12,6 @@ import fi.wiskopdr.expressies.repr.AbstractConverter;
 import fi.wiskopdr.expressies.repr.MPReduce;
 import fi.wiskopdr.expressies.repr.MPReduceConverter;
 import fi.wiskopdr.expressies.repr.MPReduceParser;
-import fi.wiskopdr.expressies.repr.MathematicaConverter;
 import fi.wiskopdr.expressies.repr.ParseException;
 import fi.wiskopdr.expressies.repr.StrictConverter;
 import fi.wiskopdr.expressies.repr.StringConverter;
@@ -147,10 +146,6 @@ public class Expressie
 		return visit(StrictConverter.getInstance()).toString();
 	}
     
-    public String toStringCAS()
-    {
-    	return visit(MathematicaConverter.getInstance()).toString();
-    }
 	
 	public static Expressie evalWithCAS(Expressie e)
 	{

@@ -66,8 +66,6 @@ public class ConverterTest extends TestCase {
 		assertNotNull(visit);
 if(c instanceof StringConverter)
 			assertEquals(e.toString(), visit.toString());
-		else if(c instanceof MathematicaConverter)
-			assertEquals(e.toStringCAS(), visit.toString());
 		else if(c instanceof StrictConverter)
 			assertEquals(e.toStringStrikt(), visit.toString());
 
@@ -97,8 +95,6 @@ if(c instanceof StringConverter)
 		System.out.println( visit );
 		if(c instanceof StringConverter)
 			assertEquals(v.toString(), visit.toString());
-//		else if(c instanceof MathematicaConverter)
-//			assertEquals(v.toStringCAS(), visit.toString());
 		else if(c instanceof StrictConverter)
 			assertEquals(v.toStringStrikt(), visit.toString());
 		
@@ -131,37 +127,31 @@ if(c instanceof StringConverter)
 		String t = "testAbs";
 		TestSuite s = new TestSuite();
 		s.addTest(new ConverterTest(t));
-		s.addTest(new ConverterTest(MathematicaConverter.getInstance(),t));
 		s.addTest(new ConverterTest(MPReduceConverter.getInstance(),t));
 		s.addTest(new ConverterTest(StrictConverter.getInstance(),t));
 
 		t = "testOptelling";
 		s.addTest(new ConverterTest(t));
-		s.addTest(new ConverterTest(MathematicaConverter.getInstance(),t));
 		s.addTest(new ConverterTest(MPReduceConverter.getInstance(),t));
 		s.addTest(new ConverterTest(StrictConverter.getInstance(),t));
 
 		t = "testVermenigvuldiging";
 		s.addTest(new ConverterTest(t));
-		s.addTest(new ConverterTest(MathematicaConverter.getInstance(),t));
 		s.addTest(new ConverterTest(MPReduceConverter.getInstance(),t));
 		s.addTest(new ConverterTest(StrictConverter.getInstance(),t));
 		
 		t = "testMacht";
 		s.addTest(new ConverterTest(t));
-		//s.addTest(new ConverterTest(MathematicaConverter.getInstance(),t));
 		s.addTest(new ConverterTest(MPReduceConverter.getInstance(),t));
 		s.addTest(new ConverterTest(StrictConverter.getInstance(),t));
 
 		t = "testBasis";
 		s.addTest(new ConverterTest(t));
-		s.addTest(new ConverterTest(MathematicaConverter.getInstance(),t));
 		s.addTest(new ConverterTest(MPReduceConverter.getInstance(),t));
 		s.addTest(new ConverterTest(StrictConverter.getInstance(),t));
 
 		t = "testVergelijking";
 		s.addTest(new ConverterTest(t));
-		s.addTest(new ConverterTest(MathematicaConverter.getInstance(),t));
 		s.addTest(new ConverterTest(MPReduceConverter.getInstance(),t));
 		s.addTest(new ConverterTest(StrictConverter.getInstance(),t));
 		

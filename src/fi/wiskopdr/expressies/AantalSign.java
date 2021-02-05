@@ -109,9 +109,6 @@ public class AantalSign extends Expressie
 	{	return "sgf" + "$h" + kind1.toStringStrikt() + "@";
 	}
     
-    public String toStringCAS()
-    {   return "Sgf" + "[" + kind1.toStringCAS() + "]";//TODO
-    }
     
     public Object visit(AbstractConverter converter) {
     	return converter.aantalsign(kind1.visit(converter));

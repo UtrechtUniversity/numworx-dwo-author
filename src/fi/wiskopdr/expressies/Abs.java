@@ -88,11 +88,7 @@ public class Abs extends Expressie
 	public String toStringStrikt()
 	{	return "$r" + kind1.toStringStrikt() + "@";
 	}
-    
-    public String toStringCAS()
-    {   return "Abs" + "[" + kind1.toStringCAS() + "]";
-    }
-    
+        
 	/**
 	 * Geef de lengte (norm) van het vectorkind.
 	 * 

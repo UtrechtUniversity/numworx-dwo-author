@@ -81,10 +81,6 @@ public class Cosinus extends Expressie
 	{	return "cos" + "$h" + kind1.toStringStrikt() + "@";
 	}
     
-    public String toStringCAS()
-    {   return "Cos" + "[" + kind1.toStringCAS() + "]";
-    }
-    
     public Object visit(AbstractConverter converter) {
     	return converter.cosinus(kind1.visit(converter));  			
     }

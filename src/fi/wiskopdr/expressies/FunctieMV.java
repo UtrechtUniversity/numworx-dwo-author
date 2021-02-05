@@ -184,18 +184,6 @@ public class FunctieMV extends Expressie
 		return functieNaam + "$h" + kindString + "@";
 	}
     
-    public String toStringCAS()
-    {   
-    	String kindString = "";
-		for(int i=0 ; i<kinderen.length ; i++)
-		{	if(i>0)
-			{	kindString = kindString + ",";
-			}
-			kindString = kindString + kinderen[i].toStringCAS();
-		}
-    	return functieNaam + "[" + kindString + "]";
-    }
-    
     public Object visit(AbstractConverter converter) {
     	//return converter.sinus(kind1.visit(converter));
     	//return functieExpressie.substitueer(kind1, functieVariabele).visit(converter);

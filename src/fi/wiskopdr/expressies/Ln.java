@@ -78,10 +78,6 @@ public class Ln extends Expressie
 	{	return "ln" + "$h" + kind1.toStringStrikt() + "@";
 	}
     
-    public String toStringCAS()
-    {   return "Log" + "[" + kind1.toStringCAS() + "]";
-    }
-    
     public Object visit(AbstractConverter converter ) {
     	return converter.ln( kind1.visit(converter));
     }
