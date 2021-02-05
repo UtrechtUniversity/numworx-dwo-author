@@ -8,11 +8,14 @@ import java.awt.Rectangle;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
@@ -21,8 +24,7 @@ import javax.swing.BoxLayout;
 //import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-//import javax.swing.JRadioButton;
-//import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JTree;
@@ -107,7 +109,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
      }
  }
 
-  public static class ChoiceCellRenderer implements TreeCellRenderer {
+  public  class ChoiceCellRenderer implements TreeCellRenderer {
 
     private JCheckBox    leafRenderer = new JCheckBox();
     private JRadioButton nonLeafRenderer = new JRadioButton();
@@ -156,11 +158,17 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
             returnValue.setForeground(textForeground);
             returnValue.setBackground(textBackground);
           }
-          if ((value != null) && (value instanceof DefaultMutableTreeNode)) {
+          if (value instanceof DefaultMutableTreeNode) {
             Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
             if (userObject instanceof Node) {
               Node node = (Node) userObject;
-              returnValue.setText(node.toString());
+              String text = node.toString();
+              Double factor = null;
+              if (node instanceof NodeLeaf) factor = ids.get(((NodeLeaf) node).getId());
+              if (factor == null) factor = 1.0;
+              if (node.isValue() && node instanceof NodeLeaf && factor.doubleValue() <= 0.999)
+                text +=  " " + factor;
+              returnValue.setText(text);
               returnValue.setSelected(node.isValue());
             }
           }
@@ -225,6 +233,15 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       scroll.setViewportView(b.getBrowserPanel());
       b.setDescription(descr);
     }
+    slider = new JSlider(1, 10, 10);
+    slider.setToolTipText("factor");
+    slider.setMajorTickSpacing(3);
+    Hashtable<Number, JLabel> dict = new Hashtable<>();
+    dict.put(slider.getMinimum(), new JLabel("min"));
+    dict.put(slider.getMaximum(), new JLabel("max"));
+    slider.setLabelTable(dict);
+    slider.setPaintLabels(true);
+    slider.setPaintTicks(true);
     
     leerdoelTitelLabel = new JLabel(" ");
 	leerdoelTitelLabel.setForeground(Color.WHITE);
@@ -243,6 +260,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 	
     rightBox.add(hb);
     rightBox.add(scroll);
+    rightBox.add(slider);
     
     tree.addTreeSelectionListener(this);
   }
@@ -261,18 +279,27 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   }
   
   private boolean[][] choices;
-  private List<String> ids;
+  private Map<String, Double> ids;
   private JScrollPane scroll;
+  private JSlider slider;
+  private List<String> objectives;
   
   public List<String> getObjectives() {
-    return ids;
+    return objectives;
   }
   
-  private void getObjectives(Object v, List<String> ids) {
+  private  List<String> createObjectives() {
+    if (ids == null) return null;
+    return ids.entrySet().stream()
+        .map(e -> e.getKey() + (e.getValue() != null ? ("/" + e.getValue()): ""))
+        .collect(Collectors.toList());
+  }
+  
+  private void getObjectives(Object v, Map<String, Double> ids) {
     if (v instanceof NodeLeaf) {
       NodeLeaf leaf = (NodeLeaf) v;
-      if (leaf.isValue())
-        ids.add(leaf.getId());
+      if (!leaf.isValue())
+        ids.remove(leaf.getId());
     } else if (v instanceof NodeVector) {
       NodeVector vector = (NodeVector) v;
       vector.stream().forEach(item -> getObjectives(item, ids));
@@ -284,19 +311,34 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   }
   
   public void setObjectives(List<String> objectives) {
-    ids = objectives;
+    this.objectives = objectives;
+    makeGUI();
+  }
+  
+  private void setObjectives() {
+    if (objectives != null) {
+    ids = new HashMap<>();
+    objectives.forEach(s -> {
+      String[] split = s.split("/");
+      ids.put(split[0], split.length>1 ? Double.valueOf(split[1]): null);
+    } );
+    }
   }
   
   public void setChoices(boolean[][] choices) {
     this.choices = choices;
     this.ids = null;  // if you forget setObjectives!
+    this.objectives = null;
   }
 
   @Override
   public void makeChoices() {
 // new style
-    ids = new ArrayList<>();
+    TreePath p = tree.getSelectionPath();
+    if (p != null) savePath(p);
+    //ids = new HashMap<>();
     getObjectives(root.getUserObject(), ids);
+    objectives = createObjectives();
 // old style
     int x = studentModel.get().categories.length;
     int y = studentModel.get().getMaxObjectives();
@@ -318,6 +360,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
   @Override
   public Component makeGUI() {
+    tree.setSelectionPath(null);
+    setObjectives();
     if (root == null) {
       NodeVector v = new NodeVector(studentModel.get());
       root = new DynamicUtilTreeNode(v, v);
@@ -326,6 +370,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     }
 // old style
     if (choices != null) {
+      if (ids == null) ids = new HashMap<>();
       NodeVector v = (NodeVector) root.getUserObject();
       int maxx = Math.min(v.size(),choices.length);
       for (int x = 0; x < maxx; x ++) {
@@ -335,6 +380,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
           Object e = w.get(y);
           if (e instanceof NodeLeaf) {
             ((NodeLeaf) e).setValue(choices[x][y]);
+            String id = ((NodeLeaf) e).getId();
+            if (choices[x][y] && !ids.containsKey(id)) ids.put(id, null);
           }
         }
     }}
@@ -347,7 +394,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         Object u = node.getUserObject();
         if (u instanceof NodeLeaf) {
           NodeLeaf leaf = (NodeLeaf) u;
-          leaf.setValue(ids.contains(leaf.getId()));
+          leaf.setValue(ids.containsKey(leaf.getId()));
         }
       }
     }
@@ -357,6 +404,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
   @Override
   public void valueChanged(TreeSelectionEvent e) {
+    TreePath[] paths = e.getPaths();
+    for( TreePath p: paths) {
+      if (! e.isAddedPath(p)) {
+        savePath(p);        
+      }
+    }
     if (e.isAddedPath()) {
       TreePath path = tree.getSelectionPath();
       if (path == null) {
@@ -369,6 +422,11 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       Object u = node.getUserObject();
       leerdoelTitelLabel.setText(u.toString());
       if (u instanceof Node) {
+        Double factor = null;
+        if (u instanceof NodeLeaf) factor = ids.get(((NodeLeaf) u).getId());
+        if (factor == null) factor = 1.0; 
+        slider.setValue(Math.round(slider.getMaximum() * factor.floatValue()));
+      
         String descr = ((Node) u).getDescription();
         if (descr == null) descr = "";
         if (descr.startsWith(WISKOPDR_SIG)) {
@@ -393,10 +451,13 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     repaint();
   }
 
-  @Override
-  protected void finalize() throws Throwable {
-    close();
-    super.finalize();
+  private void savePath(TreePath p) {
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
+    Object u = node.getUserObject();
+    if (u instanceof NodeLeaf) {
+      ids.put(((NodeLeaf) u).getId(), (double)slider.getValue()/slider.getMaximum());
+      model.nodeChanged(node);
+    }
   }
 
 //  private WiskOpdrPanel getWiskOpdrPanel(String descr) {
