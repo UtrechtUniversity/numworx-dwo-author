@@ -421,12 +421,13 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 // paging:
 		String loc = (String) launchData.get("cmi.location");
 		this.useLocation = loc != null;
+		if (useLocation)
 		try {
 			int i = Integer.parseInt(loc);
 			if(activiteitNr == 0 && i < aantalOpdrachten[0] && i >= 0)
-			kiesOpdracht(activiteitNr, i);
+			  kiesOpdracht(activiteitNr, i);
 		} catch(RuntimeException oops) {
-		  Logger.getLogger(getClass().getName()).log(Level.WARNING,"kiesOpdracht " + loc, oops);		  
+		  Logger.getLogger(getClass().getName()).log(Level.WARNING,"kiesOpdracht " + loc);		  
 		}
 		
 	}
