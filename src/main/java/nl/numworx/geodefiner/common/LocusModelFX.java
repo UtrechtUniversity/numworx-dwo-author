@@ -158,7 +158,7 @@ public class LocusModelFX extends LocusModelF {
 		xas.deleteObserver(this);
 		x.destroy();
 		source.destroy();
-		dest.destroy();
+		if (dest != null) dest.destroy();
 	}
 
 	public void update(Observable observable, Object arg) {
