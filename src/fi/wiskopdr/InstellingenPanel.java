@@ -145,7 +145,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private ObjectiveSettingsButton objectivesButton;
 	private ObjectiveSettingsButton misconceptionsButton;
 	
-	private JButton okButton, cancelButton;
+	private JButton okButton, cancelButton, objectivesViewBtn;
 	
 	private DialogFacade dialog;
 	private DialogFacade stylesExportDialog;
@@ -887,20 +887,28 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		misconceptionsCB.setFont(font);
 		misconceptionsCB.setForeground(WiskOpdr.fgcolorEditor);
 		misconceptionsCB.setSelected(false);
-		boxh.add(misconceptionsCB);
-		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
-		boxh.add(Box.createHorizontalGlue());
+//		boxh.add(misconceptionsCB);
+//		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
+//		boxh.add(Box.createHorizontalGlue());
 		
 		misconceptionsButton = new ObjectiveSettingsButton(WiskOpdr.rb.getString("OPT_misconceptions"), WiskOpdr.rb.getString("MCC_misconception"), WiskOpdr.rb.getString("MCC_categorie"));
 		misconceptionsButton.setVisible(false);
 		misconceptionsButton.setPreferredSize(new Dimension(140,24));
 		misconceptionsButton.setMaximumSize(new Dimension(140,24));
-		boxh.add(misconceptionsButton);
-		boxh.add(Box.createHorizontalGlue());
+//		boxh.add(misconceptionsButton);
+//		boxh.add(Box.createHorizontalGlue());
 		//boxv4.add(boxh);
 		//boxv4.add(Box.createVerticalStrut(60));
+		boxh.add(Box.createHorizontalGlue());
+		objectivesViewBtn = new WiskOpdrButton("Leerdoelen overzicht");
+		objectivesViewBtn.setVisible(false);
+		objectivesViewBtn.setAction(new ObjectivesViewAction("Leerdoelen overzicht", objectivesButton, opdrNavStruct));
+		boxh.add(objectivesViewBtn);
+        boxh.add(Box.createRigidArea(new Dimension(9,0)));
+        if (WiskOpdr.isExperimental())
+          boxv4.add(boxh);
 		
-		boxv4.createVerticalGlue();
+		//boxv4.createVerticalGlue();
 		
 		
 		
@@ -1433,6 +1441,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		objectivesCB.setSelected(hasObjectives);
 		objectivesButton.setVisible(hasObjectives);
 		pilotObjectivesCB.setVisible(hasObjectives);
+		objectivesViewBtn.setVisible(hasObjectives);
 		if(hasObjectives)
 		{	objectivesButton.setObjectives(objectives);
 			objectivesButton.setCategories(categorieString);
@@ -1440,7 +1449,6 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			if(WiskOpdr.isExperimental() && WiskOpdr.isPremium())
 			{
 			  objectivesButton.setStudentModelID(studentModelId);
-			  //WiskOpdr.setStudentModel(objectivesButton.getStudentModel()); // Deze regel kan weg als Graphtool/Geodefiner zijn geupdate.
 			  WiskOpdr.studentModelSupplier = 
 			      studentModelId != null ?
 			      () -> objectivesButton.getStudentModel() : null;
@@ -1623,6 +1631,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{
 			objectivesButton.setVisible(objectivesCB.isSelected());
 			pilotObjectivesCB.setVisible(objectivesCB.isSelected());
+			objectivesViewBtn.setVisible(objectivesCB.isSelected());
 		}
 		if(e.getSource()==misconceptionsCB)
 		{
