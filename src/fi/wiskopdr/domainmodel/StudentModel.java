@@ -1,5 +1,6 @@
 package fi.wiskopdr.domainmodel;
 
+import java.util.List;
 import java.util.Map;
 
 import org.json.fimple.JSONArray;
@@ -102,7 +103,13 @@ static StudentObjective[] readObjectives(Object object) {
 
 static StudentObjective readObjective(Object object) {
     JSONObject map = (JSONObject) object;
-    return new StudentObjective ( getTitle(map), getDescription(map), getUUID(map), map.get("objectives") );
+    return new StudentObjective ( getTitle(map), getDescription(map), getUUID(map), map.get("objectives"), getVoorkennis(map) );
+}
+
+private static String[] getVoorkennis(JSONObject map) {
+  List<String> strings = (List<String>) map.get("voorkennis");
+  if (strings == null) return new String[0];
+  return strings.toArray(new String[strings.size()]);
 }
 
 static String getUUID(JSONObject map) {   

@@ -9,6 +9,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +20,7 @@ import javax.swing.*;
 
 public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListener
 {
-    class ObjectivesFacade implements ObjectiveChoices {
+    class ObjectivesFacade implements ObjectiveChoices, PropertyChangeListener {
       public boolean[][] getChoices(){   
         return choices;
       }
@@ -107,9 +109,22 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
           objectivesPanel.add(boxv);
       }
       scrollPane = new JScrollPane(objectivesPanel);
+      scrollPane.addPropertyChangeListener("enabled", this);
       return scrollPane;
 
     }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+      if ("enabled".equals(evt.getPropertyName())) {
+        boolean value = evt.getNewValue().equals(Boolean.TRUE);
+        for(int i = 0 ; i < choicesCBs.length; i++) {
+          for (int j = 0; j < choicesCBs[i].length; j++) {
+            choicesCBs[i][j].setEnabled(value);
+          }
+        }
+      }
+     }
     }
   
     ObjectiveChoices strategy = new ObjectivesFacade();

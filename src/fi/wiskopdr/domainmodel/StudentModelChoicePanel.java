@@ -460,6 +460,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     }
   }
 
+  @Override
+  public void setEnabled(boolean enabled) {
+    super.setEnabled(enabled);
+    tree.setEditable(enabled);
+  }
+
 //  private WiskOpdrPanel getWiskOpdrPanel(String descr) {
 //    Object save = TekstImageVak.getImageMap();
 //    try {
@@ -470,4 +476,6 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 //      TekstImageVak.setImageMap(save);
 //    }
 //  }
+  
+  
 }

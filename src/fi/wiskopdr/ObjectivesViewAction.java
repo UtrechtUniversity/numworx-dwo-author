@@ -3,15 +3,25 @@ package fi.wiskopdr;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
+
+import com.google.common.collect.Sets;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.numworxlf.JOptionPane;
 import fi.wiskopdr.domainmodel.Constants;
+import fi.wiskopdr.domainmodel.StudentCategory;
+import fi.wiskopdr.domainmodel.StudentModel;
+import fi.wiskopdr.domainmodel.StudentObjective;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 
 @SuppressWarnings("serial")
@@ -44,16 +54,21 @@ class ObjectivesViewAction extends AbstractAction {
       btn.strategy.setChoices(choices);
       btn.strategy.setObjectives(new ArrayList<>(objectives));
       Component t = btn.strategy.makeGUI();
-      JOptionPane.showMessageDialog((Component) e.getSource(), t);
+      t.setEnabled(false);
+      JOptionPane.showMessageDialog((Component) e.getSource(), t, "", JOptionPane.PLAIN_MESSAGE);
     }
 
   }
 
   void buildChoices() {
     String[][] objectives = objectivesButton.getObjectives();
-    choices = new boolean[objectives.length][];
-    for (int i = 0; i < objectives.length; i++) {
-      choices[i] = new boolean[objectives[i].length];
+    if (objectives != null) {
+      choices = new boolean[objectives.length][];
+      for (int i = 0; i < objectives.length; i++) {
+        choices[i] = new boolean[objectives[i].length];
+    }
+    } else {
+      choices = new boolean[0][0];
     }
     this.objectives = new TreeSet<>();
     
@@ -63,13 +78,54 @@ class ObjectivesViewAction extends AbstractAction {
       String statei = (String) state.get("opdracht_1_" + (i+1));
       Map mapi = (Map)StringCodeObject.decodeStringToObject(statei);
       int[][] max = (int[][])mapi.get("scoreMaxObjectives");
-      updatechoices(max);
+      if (max != null) updatechoices(max);
       Map[] data = (Map[])mapi.get("interactiePanelLaunchData");
       updatechoices(data);
     }
-    
+    this.objectives = metVoorkennis(this.objectives, objectivesButton.getStudentModel());
   }
 
+  private Set<String> strip(Collection<String> ids) {
+    return ids.stream().map(s -> s.split("/")[0]).collect(Collectors.toSet());
+  }
+
+  Set<String> metVoorkennis(Set<String> ids, StudentModel model) {
+      if(model == null) return ids;
+      ids = strip(ids);
+      Map<String,StudentObjective> infos = new TreeMap<>();
+      for(StudentCategory item: model.categories) {
+        add(item.objectives, infos);
+      }
+      Set<String> all = new TreeSet<String>(ids);
+      Set<String> extra = new TreeSet<>();
+      Set<String> work = new TreeSet<>(all);
+      while( ! work.isEmpty()) {
+        // extra is empty, work is nonempty, work all in "all"
+        for (String id : work) {
+          StudentObjective info = infos.get(id);
+          if (info == null) continue;
+          String[] voorkennis = info.voorkennis;
+          if (voorkennis == null) continue;
+          extra.addAll(strip(Arrays.asList(voorkennis)));
+        }
+        extra.removeAll(all);
+        work.clear();
+        work.addAll(extra);
+        all.addAll(extra);
+        extra.clear();
+    }
+    return all;
+  }
+
+  private void add(StudentObjective[] objs, Map<String, StudentObjective> infos) {
+    if (objs == null) return;
+    for(StudentObjective obj: objs) {
+      add(obj.objectives, infos);
+      if (obj.id != null) {
+        infos.put(obj.id, obj);
+      }    
+    }
+  }
 
   private void updatechoices(Map[] data) {
     for (int i = 0; i < data.length; i++) {
@@ -77,7 +133,6 @@ class ObjectivesViewAction extends AbstractAction {
       if(map != null) updatechoices(map);    
     }
   }
-
 
   private void updatechoices(Map map) {
     Map state = (Map) map.get("interactiePanelLaunchState");
@@ -94,19 +149,16 @@ class ObjectivesViewAction extends AbstractAction {
     }
   }
 
-
   private void updatechoices(boolean[][] max) {
     for(int i = 0; i < Math.min(choices.length, max.length); i++) {
       boolean choicei[] = choices[i];
       boolean[] maxi = max[i];
       int limit = Math.min(choicei.length, maxi.length);
       for(int j = 0; j < limit; j++) {
-        if (maxi[j]!= false) choicei[j] = true;
+        if (maxi[j]) choicei[j] = true;
       }
     }
-    
   }
-
 
   private void updatechoices(int[][] max) {
     for(int i = 0; i < Math.min(choices.length, max.length); i++) {
@@ -117,7 +169,6 @@ class ObjectivesViewAction extends AbstractAction {
         if (maxi[j]!= 0) choicei[j] = true;
       }
     }
-    
   }
 
 }

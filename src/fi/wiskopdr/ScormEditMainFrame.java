@@ -48,7 +48,14 @@ import org.w3c.dom.DocumentFragment;
 
 public class ScormEditMainFrame extends MainFrame implements ActionListener
 {
-	private static final String SAVE_AS_FACET = "opslaan als FACET Item (CI)";
+	@Override
+  public String getParameter(String name) {
+    if ("dwo_env".equals(name)) return "test";
+    return super.getParameter(name);
+  }
+
+
+  private static final String SAVE_AS_FACET = "opslaan als FACET Item (CI)";
 	ScormEditComponentIF scormEditComponent;
 	FileDialog openDial, saveDial;
 	String titel;
