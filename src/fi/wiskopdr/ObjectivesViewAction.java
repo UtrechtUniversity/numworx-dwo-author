@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -13,8 +12,6 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
-
-import com.google.common.collect.Sets;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.numworxlf.JOptionPane;
