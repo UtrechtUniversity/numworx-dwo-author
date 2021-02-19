@@ -608,7 +608,8 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TE_parameterButtonTooltip", "Use random parameters"},
                 {"TE_opsommingButtonTooltip", "Add list"},
                 {"TE_vormenButtonTooltip", "Add shape"},
-                				
+                {"TE_geodefinerButtonTooltip", "Add GeoDefiner"},
+               				
 				//GeogebraEditPanel
 				{"GEP_bewaarOptie" , "Save option"},
 				{"GEP_alsTool" , "As tool"},
