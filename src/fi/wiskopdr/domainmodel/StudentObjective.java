@@ -1,5 +1,10 @@
 package fi.wiskopdr.domainmodel;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class StudentObjective {
 
   public StudentObjective(String objective, String description, String id, Object objectives, String[] voorkennis) {
@@ -13,8 +18,14 @@ public class StudentObjective {
   }
   public String id;
   
-  public String objective;
+  public final String objective;
   public String description;
   public StudentObjective[] objectives; // and so on....
   public String[] voorkennis;
+
+  public Integer x,y;
+
+  public Map<String, Map<String, Collection<Number>>> methode;
+
+  public List<DomStudentModelMethodInfo> methodInfo;
 }

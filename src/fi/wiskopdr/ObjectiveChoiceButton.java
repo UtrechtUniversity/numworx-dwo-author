@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import javax.swing.*;
+import javax.swing.tree.TreeModel;
 
 public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListener
 {
@@ -125,6 +126,10 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
         }
       }
      }
+    @Override
+    public TreeModel getTreeModel() {
+      return null;
+    }
     }
   
     ObjectiveChoices strategy = new ObjectivesFacade();

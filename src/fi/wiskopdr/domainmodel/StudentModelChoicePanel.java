@@ -37,6 +37,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import fi.wiskopdr.ObjectiveChoices;
@@ -464,6 +465,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   public void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
     tree.setEditable(enabled);
+    slider.setEnabled(enabled);
+  }
+
+  @Override
+  public TreeModel getTreeModel() {
+    return model;
   }
 
 //  private WiskOpdrPanel getWiskOpdrPanel(String descr) {

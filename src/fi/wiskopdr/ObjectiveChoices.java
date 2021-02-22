@@ -3,6 +3,8 @@ package fi.wiskopdr;
 import java.awt.Component;
 import java.util.List;
 
+import javax.swing.tree.TreeModel;
+
 public interface ObjectiveChoices {
   boolean[][] getChoices();
   List<String> getObjectives();
@@ -12,4 +14,5 @@ public interface ObjectiveChoices {
   void makeChoices();
   Component makeGUI();
   default void close() {}
+  TreeModel getTreeModel();
 }
