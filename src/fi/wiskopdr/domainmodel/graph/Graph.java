@@ -49,7 +49,7 @@ import fi.wiskopdr.domainmodel.NodeLeaf;
 
 public class Graph extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
 
-	final protected ArrayList<GraphNode> graphNodes = new ArrayList<GraphNode>();
+	public final ArrayList<GraphNode> graphNodes = new ArrayList<GraphNode>();
 	final protected ArrayList<GraphEdge> graphEdges = new ArrayList<GraphEdge>();
 	
 	protected ArrayList<ChapterGraphNode> chapterNodes = new ArrayList<ChapterGraphNode>();

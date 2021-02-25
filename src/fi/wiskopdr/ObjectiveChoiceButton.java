@@ -22,6 +22,13 @@ import javax.swing.tree.TreeModel;
 public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListener
 {
     class ObjectivesFacade implements ObjectiveChoices, PropertyChangeListener {
+      
+      JLabel titleLabel = new JLabel();
+
+      public void setTitle(String title) {
+        this.titleLabel.setText(title);
+      }
+      
       public boolean[][] getChoices(){   
         return choices;
       }
@@ -68,6 +75,19 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
     }
     
     public Component makeGUI() {
+      JPanel titlePanel = new JPanel(new BorderLayout());
+      titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+      titleLabel.setForeground(WiskOpdr.colorGray3);
+      
+      Box headerBox = Box.createHorizontalBox();
+      headerBox.setOpaque(true);
+      headerBox.setBackground(WiskOpdr.colorBlue1);
+      headerBox.add(Box.createHorizontalGlue());
+      headerBox.add(titleLabel);
+      headerBox.add(Box.createHorizontalGlue());
+      headerBox.setBorder(BorderFactory.createEmptyBorder(0,20,5,20));
+      titlePanel.add(headerBox, BorderLayout.NORTH);
+
       objectivesPanel = new JPanel();
       
       Box boxv = Box.createVerticalBox();
@@ -110,8 +130,9 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
           objectivesPanel.add(boxv);
       }
       scrollPane = new JScrollPane(objectivesPanel);
-      scrollPane.addPropertyChangeListener("enabled", this);
-      return scrollPane;
+      titlePanel.addPropertyChangeListener("enabled", this);
+      titlePanel.add(scrollPane, BorderLayout.CENTER);
+      return titlePanel;
 
     }
 
@@ -174,7 +195,6 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	private JPanel objectivesPanel = new JPanel();
 	private JPanel bottomPanel = new JPanel();
 	private JPanel topPanel = new JPanel();
-	private JLabel titleLabel;
 	private Component scrollPane;
 	private String labelString;
 	
@@ -260,18 +280,9 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 		
 		topPanel = new JPanel(new BorderLayout());
 		topPanel.setBackground(WiskOpdr.colorBlue1);
-		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
+		topPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 20));
 		
-		titleLabel = new JLabel(WiskOpdr.rb.getString("OBJ_koppelLeerdoelTitel"));
-		titleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
-		titleLabel.setForeground(WiskOpdr.colorGray3);
-		
-		Box headerBox = Box.createHorizontalBox();		
-		headerBox.add(Box.createHorizontalGlue());
-		headerBox.add(titleLabel);
-		headerBox.add(Box.createHorizontalGlue());
-		topPanel.add(headerBox, BorderLayout.NORTH);
-
+		strategy.setTitle(WiskOpdr.rb.getString("OBJ_koppelLeerdoelTitel"));
         scrollPane = strategy.makeGUI();
         
 //        okButton = new JButton("Ok");
@@ -320,17 +331,14 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 		 Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
 	      int x = (screenSize.width-frame.getSize().width)/2;
 	      int y = (screenSize.height-frame.getSize().height)/2;
-	      frame.setLocation(x , y);
-	    frame.setVisible(true);
-	    
-//	    frame.addWindowListener(new WindowAdapter() {
-//	    		public void windowClosed(WindowEvent e) {
-//	    			if(studentModel!=null && globalVarState != null) {
-//	    				globalVarState.setStoredGlobalVars();
-//	    				globalVarState = null;
-//	            }
-//	    		}
-//	    });
+	      frame.setLocation(x , y);	    
+	    frame.addWindowListener(new WindowAdapter() {
+	    		public void windowClosed(WindowEvent e) {
+	    		  frame.dispose();
+	    		  frame = null;
+	    		}
+	    });
+        frame.setVisible(true);
 	    
     }
 	

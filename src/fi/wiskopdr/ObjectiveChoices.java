@@ -2,6 +2,7 @@ package fi.wiskopdr;
 
 import java.awt.Component;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.tree.TreeModel;
 
@@ -15,4 +16,6 @@ public interface ObjectiveChoices {
   Component makeGUI();
   default void close() {}
   TreeModel getTreeModel();
+  void setTitle(String title);
+  default void setScore(Map<String, Double> scoreMap) {}
 }

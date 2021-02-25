@@ -1,10 +1,14 @@
 package fi.wiskopdr.domainmodel;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -25,14 +29,18 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.JTree.DynamicUtilTreeNode;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellEditor;
@@ -42,8 +50,11 @@ import javax.swing.tree.TreePath;
 
 import fi.wiskopdr.ObjectiveChoices;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.domainmodel.graph.Graph;
 import fi.beans.numworxlf.JScrollPane;
 import fi.beans.numworxlf.JRadioButton;
+import fi.beans.numworxlf.Constants;
+import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JCheckBox;
 
 public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices, TreeSelectionListener, AutoCloseable {
@@ -181,39 +192,73 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   JTree tree;
   DefaultTreeModel model;
   DynamicUtilTreeNode root;
-  JLabel leerdoelTitelLabel;
+  JLabel leerdoelTitelLabel, title;
   JTextArea description;
+  JButton graphButton;
+  Graph graph;
+  
   final Supplier<StudentModel> studentModel;
   static final String WISKOPDR_SIG = "H4sIAAAAAA";
   static final String JSON_SIG = "{";
+  private static final Font font = new Font("SansSerif", Font.PLAIN, 12);
 
   public StudentModelChoicePanel(Supplier<StudentModel> studentModel2) {
-    super(null);
+    super(new BorderLayout());
     this.studentModel = studentModel2;
-    setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-    setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+// North
+    Box north = Box.createHorizontalBox();
+    north.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
+    north.setOpaque(true);
+    north.setBackground(Constants.COLOR15);
+    graphButton = new JButton("Graph");
+    title = new JLabel("title");
+    title.setForeground(Constants.COLOR20);
+    title.setFont(font.deriveFont(24f));
+    north.add(Box.createHorizontalGlue());
+    north.add(title);
+    north.add(Box.createHorizontalGlue());
+    north.add(graphButton);
+    add(north, BorderLayout.NORTH);
+
+    JSplitPane split = new JSplitPane();
+    BasicSplitPaneUI sui = (BasicSplitPaneUI) BasicSplitPaneUI.createUI(split);
+    split.setUI(sui);
+    BasicSplitPaneDivider divider = sui.getDivider();
+    divider.setBorder(BorderFactory.createEmptyBorder());
+    divider.setBackground(Constants.COLOR20);
+    split.setDividerSize(20);
+    split.setResizeWeight(0.8);
+    split.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    split.setBackground(Constants.COLOR20);
+    add(split, BorderLayout.CENTER);
+
     tree = new JTree();
-    //tree.setMinimumSize(new Dimension(200,100));
-    //tree.setPreferredSize(tree.getMinimumSize());
     tree.setCellEditor(new LeafNodeEditor(tree));
     tree.setEditable(true);
     tree.setCellRenderer(new ChoiceCellRenderer());
-    Box leftBox = Box.createVerticalBox();
-    add(leftBox);
-    //leftBox.add(new JLabel(v.toString()));
-    //leftBox.add(Box.createVerticalStrut(10));
+    
+    graph = new Graph();
+
+    JSplitPane leftBox = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    leftBox.setBorder(BorderFactory.createEmptyBorder());
+    leftBox.setResizeWeight(0.9);
+    BasicSplitPaneUI suiLeft = (BasicSplitPaneUI) BasicSplitPaneUI.createUI(leftBox);
+    leftBox.setUI(suiLeft);
+    BasicSplitPaneDivider dividerLeft = sui.getDivider();
+    dividerLeft.setBorder(BorderFactory.createEmptyBorder());
+    dividerLeft.setBackground(Constants.COLOR20);
+    leftBox.setDividerSize(20);
     JScrollPane sp = new JScrollPane(tree);
     sp.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue3));
-    leftBox.add(sp);
+    leftBox.setTopComponent(sp);
     sp.setMinimumSize(new Dimension(400,300));
     sp.setPreferredSize(sp.getMinimumSize());
 
-    add(Box.createHorizontalStrut(10));
-    Box rightBox = Box.createVerticalBox();
-    add(rightBox);
+    split.setLeftComponent(leftBox);
     
-    //title = new JLabel(v.toString());
-	
+    Box rightBox = Box.createVerticalBox();
+    split.setRightComponent(rightBox);
+    	
     String descr = "";
     description = new JTextArea(descr, 10, 30);
     description.setLineWrap(true);
@@ -264,7 +309,39 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     rightBox.add(slider);
     
     tree.addTreeSelectionListener(this);
+
+    graphButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+          if ("Graph".equals(graphButton.getText())) {
+              graphButton.setText("Hide Graph");
+              split.setResizeWeight(0);
+              split.setRightComponent(graph);
+              Dimension pref = sp.getPreferredSize();
+              pref.width = 380;
+              leftBox.setPreferredSize(pref);
+              graph.setPreferredSize(new Dimension(1000, 650));              
+              leftBox.setBottomComponent(rightBox);
+              
+              packWindow();
+          } else {
+              graphButton.setText("Graph");
+              split.setResizeWeight(0.5);
+              Dimension pref = sp.getPreferredSize();
+              pref.width = 580;
+              leftBox.setPreferredSize(pref);
+              split.setRightComponent(rightBox);
+              
+              packWindow();
+          }
+
+      }
+  });
   }
+
+  
+  private void packWindow() {
+    ((Window) SwingUtilities.getAncestorOfClass(Window.class, this)).pack();
+}
 
   private volatile DescriptionBrowser cache;
   private synchronized DescriptionBrowser getBrowser() {
@@ -279,6 +356,10 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     }
   }
   
+  public void setTitle(String title) {
+    this.title.setText(title);
+  }
+
   private boolean[][] choices;
   private Map<String, Double> ids;
   private JScrollPane scroll;
@@ -368,6 +449,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       root = new DynamicUtilTreeNode(v, v);
       model = new DefaultTreeModel(root);   
       tree.setModel(model);
+      graph.setModel(model, null);
     }
 // old style
     if (choices != null) {
@@ -471,6 +553,16 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   @Override
   public TreeModel getTreeModel() {
     return model;
+  }
+
+  @Override
+  public void setScore(Map<String, Double> map) {
+    for (fi.wiskopdr.domainmodel.graph.GraphNode node : graph.graphNodes) {
+      String id = node.getID();
+      Double score = map.get(id);
+      node.setSuccesFailScore(score);
+  }
+
   }
 
 //  private WiskOpdrPanel getWiskOpdrPanel(String descr) {

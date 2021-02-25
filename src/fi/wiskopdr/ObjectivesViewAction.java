@@ -2,11 +2,15 @@ package fi.wiskopdr;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +19,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.JPanel;
 
@@ -59,31 +64,46 @@ class ObjectivesViewAction extends AbstractAction {
       buildChoices();
       btn.strategy.setChoices(choices);
       btn.strategy.setObjectives(toList(objectives)); // show exclusief voorkennis, maximum factor
+      btn.strategy.setTitle(getValue(Action.NAME).toString());
       Component t = btn.strategy.makeGUI();
       t.setEnabled(false);
-      JButton b = new JButton("Graph");
-      b.addActionListener(ev -> {
-        Graph gr = new Graph();
-        gr.setModel(btn.strategy.getTreeModel(), null);
-        gr.setSize(1000,650);
-        gr.setPreferredSize(new Dimension(1000, 650));
-        ArrayList<GraphNode> nodes = gr.getGraphNodes();
-        Set strip = strip(objectives);
-        for(GraphNode node: nodes) {
-          String id = node.getID();
-          if (strip.contains(id)) node.setSuccesFailScore(100.0);
-          else if (voorkennis.contains(id)) node.setSuccesFailScore(60.0);
-        }
-        
-        JOptionPane.showMessageDialog(b, gr, "Graph", JOptionPane.PLAIN_MESSAGE);
-      });
-      JPanel  p = new JPanel(new BorderLayout());
-      p.add(t, BorderLayout.CENTER);
-      if (btn.strategy.getTreeModel() != null) {
-        Box vb = Box.createHorizontalBox(); vb.add(Box.createGlue()); vb.add(b);
-        p.add(vb, BorderLayout.NORTH);
-      }
-      JOptionPane.showMessageDialog((Component) e.getSource(), p, "", JOptionPane.PLAIN_MESSAGE);
+//       JButton b = new JButton("Graph");
+//     b.addActionListener(ev -> {
+//        Graph gr = new Graph();
+//        gr.setModel(btn.strategy.getTreeModel(), null);
+//        gr.setSize(1000,650);
+//        gr.setPreferredSize(new Dimension(1000, 650));
+//        ArrayList<GraphNode> nodes = gr.getGraphNodes();
+//        Set strip = strip(objectives);
+//        for(GraphNode node: nodes) {
+//          String id = node.getID();
+//          if (strip.contains(id)) node.setSuccesFailScore(100.0);
+//          else if (voorkennis.contains(id)) node.setSuccesFailScore(60.0);
+//        }
+//        
+//        JOptionPane.showMessageDialog(b, gr, "Graph", JOptionPane.PLAIN_MESSAGE);
+//      });
+//      JPanel  p = new JPanel(new BorderLayout());
+//      p.add(t, BorderLayout.CENTER);
+//      if (btn.strategy.getTreeModel() != null) {
+//        Box vb = Box.createHorizontalBox(); vb.add(Box.createGlue()); vb.add(b);
+//        p.add(vb, BorderLayout.NORTH);
+//      }
+      Map<String, Double> scoreMap = new HashMap<>();
+      voorkennis.forEach(s -> scoreMap.put(s, 60.0));
+      strip(objectives).forEach(s -> scoreMap.put(s, 100.0));
+      btn.strategy.setScore(scoreMap);
+      
+      DialogFacade dialog = DialogFacade.newInstance((Component) e.getSource(), "", true);
+      dialog.setContentPane((Container) t);
+      dialog.pack();
+// center
+      Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+      int x = (screenSize.width-dialog.getSize().width)/2;
+      int y = (screenSize.height-dialog.getSize().height)/2;
+      dialog.setLocation(x , y);
+      dialog.setVisible(true);
+      dialog.dispose();
       btn.strategy.close();
     }
 
