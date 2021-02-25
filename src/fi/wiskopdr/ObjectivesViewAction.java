@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -57,7 +58,7 @@ class ObjectivesViewAction extends AbstractAction {
       ObjectiveChoiceButton btn = new ObjectiveChoiceButton(objectivesButton.getObjectives(), objectivesButton.getCategories(), objectivesButton.getStudentModel());
       buildChoices();
       btn.strategy.setChoices(choices);
-      btn.strategy.setObjectives(new ArrayList<>(voorkennis)); // show inclusief
+      btn.strategy.setObjectives(toList(objectives)); // show exclusief voorkennis, maximum factor
       Component t = btn.strategy.makeGUI();
       t.setEnabled(false);
       JButton b = new JButton("Graph");
@@ -87,6 +88,11 @@ class ObjectivesViewAction extends AbstractAction {
     }
 
   }
+
+  private List<String> toList(Set<String> set) {
+    return set.stream().map(o -> o.contains("/")? o: (o+"/1.0")).sorted().distinct().collect(Collectors.toList());
+  }
+
 
   void buildChoices() {
     String[][] objectives = objectivesButton.getObjectives();
