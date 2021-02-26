@@ -1700,7 +1700,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 					or[i].zetScore(j + 1, getInt(orScores,i,j) + getInt(scoreCorrecties,i,j));
 					or[i].zetCorrectieView(j+1, scoreCorrecties[i][j]!=0);
 				}
-				totaal += getInt(orScores,i,j);
+				totaal += getInt(orScores,i,j) + getInt(scoreCorrecties, i, j);
 			}
 			if (mode == ZELFTOETS && totaal > 0)
 				totaal = Math.max(0, totaal - (aantalNakijken[i] - 1) * nakijkStraf);
