@@ -1,8 +1,8 @@
--injars ..\output\classes
--outjars ..\output\jar\calculatordwo.jar
+#-injars ..\output\classes
+#-outjars ..\output\jar\calculatordwo.jar
 
--libraryjars <java.home>/lib/rt.jar
--libraryjars ..\lib\mayscript.jar
+#-libraryjars <java.home>/lib/rt.jar
+#-libraryjars ..\lib\mayscript.jar
 
 -target 1.6
 

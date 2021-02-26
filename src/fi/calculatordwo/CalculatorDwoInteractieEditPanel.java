@@ -30,6 +30,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 	JRadioButton scientificButton, easyButton, citoButton;
 	ButtonGroup groep;
 	JCheckBox gonioBox, logaritmeBox, gradenInstelbaarBox;
+	JPanel settings;
 	int rmMode = 1;
 	boolean	gradenInstelbaar = true;
 	boolean gonioKnoppen = true;
@@ -52,18 +53,24 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		height = 3 * theFM.getHeight() / 2;
 		currentX = cdip.getSize().width + offset;
 		currentY = offset;
+		settings = new JPanel(null);
+		settings.setOpaque(false);
+		add(settings);
+		settings.setBounds(currentX, 0, editWidth, editHeight); // big enough
+		currentX = 0;
+		
 		
 		citoButton = new JRadioButton(CalculatorDwo.rb.getString("citoButton"));
 		citoButton.setBounds(currentX, currentY, width, height);
 		citoButton.setOpaque(false);
-		add(citoButton);
+		settings.add(citoButton);
 		
 		currentY += height + offset;
 		
 		easyButton = new JRadioButton(CalculatorDwo.rb.getString("eenvoudigButton"));
 		easyButton.setBounds(currentX, currentY, width, height);
 		easyButton.setOpaque(false);
-		add(easyButton);
+		settings.add(easyButton);
 		
 		currentY += height + offset;
 		
@@ -71,7 +78,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		scientificButton.setSelected(true);
 		scientificButton.setBounds(currentX, currentY, width, height);
 		scientificButton.setOpaque(false);
-		add(scientificButton);
+		settings.add(scientificButton);
 		
 		currentY += height + offset;
 		
@@ -90,7 +97,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		gonioBox.setBounds(currentX, currentY, width, height);
 		gonioBox.setSelected(true);
 		gonioBox.setOpaque(false);
-		add(gonioBox);
+		settings.add(gonioBox);
 		gonioBox.addActionListener(this);
 		
 		currentY += height + offset;
@@ -99,7 +106,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		logaritmeBox.setBounds(currentX, currentY, width, height);
 		logaritmeBox.setSelected(true);
 		logaritmeBox.setOpaque(false);
-		add(logaritmeBox);
+		settings.add(logaritmeBox);
 		logaritmeBox.addActionListener(this);
 		
 		currentY += height + offset;
@@ -108,7 +115,7 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 		gradenInstelbaarBox.setBounds(currentX, currentY, width, height);
 		gradenInstelbaarBox.setSelected(true);
 		gradenInstelbaarBox.setOpaque(false);
-		add(gradenInstelbaarBox);
+		settings.add(gradenInstelbaarBox);
 		gradenInstelbaarBox.addActionListener(this);
 
 	}
@@ -176,12 +183,16 @@ public class CalculatorDwoInteractieEditPanel  extends JPanel implements ActionL
 
 	public void zetBreedte(int b) {
 		cdipBreedte = b;
-		
+		cdip.setBounds(0, 0, cdipBreedte, cdipHoogte);
+		cdip.invalidate(); cdip.validate(); cdip.repaint();
+		settings.setLocation(cdipBreedte+offset, 0);
 		setBounds(getLocation().x, getLocation().y, cdipBreedte + editWidth, Math.max(cdipHoogte, editHeight));		
 	}
 
 	public void zetHoogte(int h) {
 		cdipHoogte = h;
+		cdip.setBounds(0, 0, cdipBreedte, cdipHoogte);
+		cdip.invalidate(); cdip.validate(); cdip.repaint();
 		
 		setBounds(getLocation().x, getLocation().y, cdipBreedte + editWidth, Math.max(cdipHoogte, editHeight));		
 	}
