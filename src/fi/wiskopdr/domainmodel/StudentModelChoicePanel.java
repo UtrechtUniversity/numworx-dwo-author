@@ -238,6 +238,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     tree.setCellRenderer(new ChoiceCellRenderer());
     
     graph = new Graph();
+    
+    graph.addActionListener(new GraphTreeAction(tree));
 
     JSplitPane leftBox = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     leftBox.setBorder(BorderFactory.createEmptyBorder());

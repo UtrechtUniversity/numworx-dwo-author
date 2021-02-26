@@ -47,8 +47,7 @@ public class NodeLeaf implements Node {
   }
 
   public Map<String, Map<String, Collection<Number>>> getMethode() {
-    return obj.methode;
-  }
+    return obj.methode == null ? Collections.emptyMap() : obj.methode;  }
 
   public List<DomStudentModelMethodInfo> getMethodeInfos() {
     return obj.methodInfo;
