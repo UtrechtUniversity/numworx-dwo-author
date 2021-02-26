@@ -1,7 +1,6 @@
 package fi.euclides.event;
 
 import fi.euclides.model.VrijPunt;
-import fi.euclides.model.math.Numbers;
 import fi.euclides.model.Boog;
 import fi.euclides.model.LijnTrack;
 

@@ -1,6 +1,5 @@
 package fi.euclides.event;
 
-import java.util.List;
 import java.util.Vector;
 
 import fi.euclides.util.Messages;
