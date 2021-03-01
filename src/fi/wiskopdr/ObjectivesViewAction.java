@@ -90,9 +90,14 @@ class ObjectivesViewAction extends AbstractAction {
 //        p.add(vb, BorderLayout.NORTH);
 //      }
       Map<String, Double> scoreMap = new HashMap<>();
-      voorkennis.forEach(s -> scoreMap.put(s, 60.0));
+      voorkennis.forEach(s -> scoreMap.put(s, 100.0));
       strip(objectives).forEach(s -> scoreMap.put(s, 100.0));
       btn.strategy.setScore(scoreMap);
+      
+      Map<String, Boolean> selectionMap = new HashMap<>();
+      voorkennis.forEach(s -> selectionMap.put(s, new Boolean(false)));
+      strip(objectives).forEach(s -> selectionMap.put(s, new Boolean(true)));
+      btn.strategy.setSelection(selectionMap);
       
       DialogFacade dialog = DialogFacade.newInstance((Component) e.getSource(), "", true);
       dialog.setContentPane((Container) t);

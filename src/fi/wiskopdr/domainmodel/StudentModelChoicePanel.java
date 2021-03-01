@@ -563,7 +563,16 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       String id = node.getID();
       Double score = map.get(id);
       node.setSuccesFailScore(score);
+    }
   }
+    
+    @Override
+    public void setSelection(Map<String, Boolean> map) {
+      for (fi.wiskopdr.domainmodel.graph.GraphNode node : graph.graphNodes) {
+        String id = node.getID();
+        Boolean selection = map.get(id);
+        node.setPartOfSelection(selection);
+    }
 
   }
 

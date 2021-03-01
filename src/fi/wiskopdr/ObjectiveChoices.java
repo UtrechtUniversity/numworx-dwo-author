@@ -18,4 +18,5 @@ public interface ObjectiveChoices {
   TreeModel getTreeModel();
   void setTitle(String title);
   default void setScore(Map<String, Double> scoreMap) {}
+  default void setSelection(Map<String, Boolean> selectionMap) {}
 }

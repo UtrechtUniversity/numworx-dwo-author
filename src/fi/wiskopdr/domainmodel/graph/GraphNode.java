@@ -70,8 +70,9 @@ public class GraphNode {
 	private final Set<String> visible = new HashSet<>();
 
 	private Double succesFailScore = null;
+	private Boolean partOfSelection = null;
 
-	private Color succesColor = new Color(0, 200, 0);
+	private Color succesColor = new Color(120, 150, 202);//new Color(250, 180, 60);
 	private Color halfSuccesColor = new Color(180, 240, 180);
 	private Color failColor = new Color(200, 0, 0);
 	private Color halfFailColor = new Color(255, 150, 150);
@@ -103,6 +104,10 @@ public class GraphNode {
 
 	public void setSuccesFailScore(Double succesFailScore) {
 		this.succesFailScore = succesFailScore;
+	}
+	
+	public void setPartOfSelection(Boolean partOfSelection) {
+		this.partOfSelection = partOfSelection;
 	}
 
 	public Double getSuccesFailScore() {
@@ -442,6 +447,14 @@ public class GraphNode {
 									10));
 						g.fillOval(x - 3 * size / 2, y - 3 * size / 2 + textHeight / 6, 3 * size, 3 * size);
 						g.setColor(getSuccesFailColor());
+						
+						if(partOfSelection) {
+							g.setColor(	new Color(g.getColor().getRed(), g.getColor().getGreen(), g.getColor().getBlue(), 255));
+							if (blur)
+								g.setColor(new Color(g.getColor().getRed(), g.getColor().getGreen(), g.getColor().getBlue(),10));
+							g.setStroke(new BasicStroke(6f * (float) factor));
+							g.drawOval(x - 3 * size / 2-3, y - 3 * size / 2 + textHeight / 6-3, 3 * size+6, 3 * size+6);
+						}
 					}
 				}
 				if (blur)
