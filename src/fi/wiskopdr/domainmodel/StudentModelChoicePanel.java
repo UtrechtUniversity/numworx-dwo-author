@@ -108,7 +108,15 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
              public void itemStateChanged(ItemEvent itemEvent) {
                  if (stopCellEditing()) {
                      fireEditingStopped();
+                     boolean flag = LeafNodeEditor.this.leaf.isValue();
                      //model.nodeStructureChanged(root);
+                     graph.graphNodes.stream()
+                     .filter(t -> t.getID().equals(LeafNodeEditor.this.leaf.getId()))
+                     .findAny()
+                     .ifPresent(t -> {
+                       t.setSuccesFailScore(flag?100.0:null);
+                       t.setPartOfSelection(flag?Boolean.TRUE:null);
+                     });
                      repaint();
                  }
              }  
@@ -483,7 +491,26 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         }
       }
     }
+    graph.graphNodes.stream()
+      .filter(n -> ids.containsKey(n.getID()))
+      .forEach(n -> {
+        n.setSuccesFailScore(100.0);
+        n.setPartOfSelection(Boolean.TRUE);
+      });
     model.nodeStructureChanged(root);
+
+    @SuppressWarnings("unchecked")
+    Enumeration<DefaultMutableTreeNode> all = root.depthFirstEnumeration();
+    while (all.hasMoreElements()) {
+      DefaultMutableTreeNode node = all.nextElement();
+      Object u = node.getUserObject();
+      if (u instanceof NodeLeaf) {
+        NodeLeaf leaf = (NodeLeaf) u;
+        if (leaf.isValue()) {
+          tree.makeVisible(new TreePath(node.getPath()));
+        }
+      }
+    }
     return this;
   }
 

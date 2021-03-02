@@ -13,6 +13,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -174,6 +175,8 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
     public void setObjectives(String[] obj) {
       if (obj != null)
         strategy.setObjectives(Arrays.asList(obj));
+      else
+        strategy.setObjectives(Collections.emptyList());
     }
 
     private void makeChoices() {
@@ -334,7 +337,6 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	      frame.setLocation(x , y);	    
 	    frame.addWindowListener(new WindowAdapter() {
 	    		public void windowClosed(WindowEvent e) {
-	    		  frame.dispose();
 	    		  frame = null;
 	    		}
 	    });
