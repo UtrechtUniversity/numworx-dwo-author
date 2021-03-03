@@ -1657,6 +1657,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 // init all globals, zonder init()
 	  abo_type = getParameter("abo_type"); // Zie WiskOpdr.isPremium();	  
       dwo_env = getParameter("dwo_env"); // Zie Wiskopdr.isExperimental();
+      applet = this;
       doCAS  = CAS_LOCAL;
       { // at constructor time wipeout
         studentModelSupplier = null;
