@@ -1,6 +1,7 @@
 package fi.wiskopdr;
 
 import java.awt.AWTEventMulticaster;
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -281,6 +282,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private int responsiveToggleWidth;
 	private int responsiveMinWidth;
 	private int responsiveMaxWidth;
+	private boolean fullScreenOption;
 	
 	public TekstVakPanel()
 	{
@@ -802,6 +804,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		int responsiveToggleWidth = 800;
 		int responsiveMinWidth = 400;
 		int responsiveMaxWidth = 980;
+		boolean fullScreenOption = false;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) 
@@ -1014,7 +1017,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
     		responsiveMinWidth = ((Integer) h.get("responsiveMinWidth")).intValue();
 	    if (responsive && h.containsKey("responsiveMaxWidth"))
 	    		responsiveMaxWidth = ((Integer) h.get("responsiveMaxWidth")).intValue();
-        
+	    if(h.containsKey("fullScreenOption"))
+	    	fullScreenOption = ((Boolean)h.get("fullScreenOption")).booleanValue();
+	    
 		this.zichtbaarNaNakijken = zichtbaarNaNakijken;
 		this.balansVergCom = balansVergCom;
 
@@ -1102,6 +1107,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	    this.responsiveToggleWidth = responsiveToggleWidth;
 	    this.responsiveMinWidth = responsiveMinWidth;
         this.responsiveMaxWidth = responsiveMaxWidth;
+        this.fullScreenOption = fullScreenOption;
 	    
 		if (isLink) {
 			if(!linkUrl.equals("")) {
@@ -1899,6 +1905,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         int responsiveToggleWidth = 800;
         int responsiveMinWidth = 400;
 		int responsiveMaxWidth = 980;
+		boolean fullScreenOption = false;
 
 		styleString = this.styleString;
 		randZichtbaar = this.randZichtbaar;
@@ -1981,6 +1988,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		responsiveToggleWidth = this.responsiveToggleWidth;
 		responsiveMinWidth = this.responsiveMinWidth;
 		responsiveMaxWidth = this.responsiveMaxWidth;
+		fullScreenOption = this.fullScreenOption;
 
 		if (WiskOpdr.objectives != null)
 		{
@@ -2134,7 +2142,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		  h.put("responsiveMinWidth", new Integer(responsiveMinWidth));
           h.put("responsiveMaxWidth", new Integer(responsiveMaxWidth));
 		}
-       
+		h.put("fullScreenOption", new Boolean(fullScreenOption));
+		
 //		for (int i = 0; i < aantalRijen && inklapbaar; i++)
 //		{	if(uitklapHoogtes.length>i)System.out.println("uitklapH: rij "+i +"="+uitklapHoogtes[i]);
 //			//System.out.println("Hoogtes: rij "+i +"="+(int)hoogtes[i]);
@@ -2755,6 +2764,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         int responsiveToggleWidth = 800;
         int responsiveMinWidth = 400;
 		int responsiveMaxWidth = 980;
+		boolean fullScreenOption = false;
 
 		Hashtable style = null;
 		if(h.containsKey("styleString")) styleString = (String)h.get("styleString");
@@ -2957,7 +2967,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
     		responsiveMinWidth = ((Integer) h.get("responsiveMinWidth")).intValue();
 	    if (responsive && h.containsKey("responsiveMaxWidth"))
 	    		responsiveMaxWidth = ((Integer) h.get("responsiveMaxWidth")).intValue();
-	       
+	    if(h.containsKey("fullScreenOption"))
+	    	fullScreenOption = ((Boolean)h.get("fullScreenOption")).booleanValue();
+	      
         
        	this.styleString = styleString;
         this.randZichtbaar = randZichtbaar;
@@ -3062,6 +3074,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
         this.responsiveToggleWidth = responsiveToggleWidth;
         this.responsiveMinWidth = responsiveMinWidth;
         this.responsiveMaxWidth = responsiveMaxWidth;
+        this.fullScreenOption = fullScreenOption;
 
 		tekstVakken = new TekstVak[aantalRijen][aantalKolommen];
 		removeAll();
@@ -3683,6 +3696,32 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				y -= 3;
 			g.setColor(Color.red);
 			g.fillOval(x - 3, y - 3, 7, 7);
+		}
+		if (fullScreenOption)
+		{
+			int w = tekstVakken[0][0].getWidth();
+			int h = tekstVakken[0][0].getHeight();
+			int d = 10;
+			int m = 4;
+			int x = w - d - m;
+			int y = d + m;
+			int r = 4; 
+			int p = 5;
+			g.setColor(WiskOpdr.colorBlue2);
+			g.setStroke(new BasicStroke(2f));
+			g.drawLine(x+r, y+r, x+d-2, y+d-2);
+			g.drawLine(x-r, y-r, x-d+2, y-d+2);
+			g.drawLine(x+r, y-r, x+d-2, y-d+2);
+			g.drawLine(x-r, y+r, x-d+2, y+d-2);
+			g.drawLine(x+d-p, y+d, x+d, y+d);
+			g.drawLine(x+d, y+d-p, x+d, y+d);
+			g.drawLine(x-d+p, y-d, x-d, y-d);
+			g.drawLine(x-d, y-d+p, x-d, y-d);
+			g.drawLine(x+d-p, y-d, x+d, y-d);
+			g.drawLine(x-d, y+d-p, x-d, y+d);
+			g.drawLine(x-d+p, y+d, x-d, y+d);
+			g.drawLine(x+d, y-d+p, x+d, y-d);
+			
 		}
 		if (random)
 		{

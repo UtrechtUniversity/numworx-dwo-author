@@ -252,6 +252,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JTextField responsiveConstantTF;
 	private JTextField responsiveFactorTF;
 	
+	private JCheckBox fullScreenCB;
+	private boolean fullScreenOption;
+	
 	private boolean responsive;
 	private String responsiveCode = "w2";
     private int responsiveConstant = 0;
@@ -498,6 +501,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		templateModeEditCB= maakCheckBox("Template mode (edit)", 10,590,150,20, templateModeEdit, layoutOptionsPanel);
 		templateModeFillCB= maakCheckBox("Template mode (fill)", 10,615,150,20, templateModeFill, layoutOptionsPanel);
 		responsiveCB = maakCheckBox("Responsive", 10,640,150,20, responsive, layoutOptionsPanel);
+		fullScreenCB = maakCheckBox("Full screen option", 10,640,150,20, fullScreenOption, layoutOptionsPanel);
 		
 		vulHoogteCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_vulHoogte"), 10,390,225,20, vulHoogte, layoutOptionsPanel);
 		callOutCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_callOut"), 10,505,225,20, callOut, layoutOptionsPanel);
@@ -544,6 +548,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		templateModeEditCB.setVisible(WiskOpdr.isExperimental());
 		templateModeFillCB.setVisible(WiskOpdr.isExperimental());
 		responsiveCB.setVisible(WiskOpdr.isExperimental());
+		fullScreenCB.setVisible(WiskOpdr.isExperimental());
 		ideasCB.setVisible(WiskOpdr.isExperimental());
 		backButtonCB.setVisible(WiskOpdr.isExperimental());
 		hintButtonCB.setVisible(WiskOpdr.isExperimental());
@@ -1177,12 +1182,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         Component[] r124 = {templateModeFillCB,ra(10,0),hgl()};
         Component[] r125 = {responsiveCB,  ra(10,0),   hgl(), responsiveMinLabel, ra(5,0), responsiveMinWidthTF,  ra(10,0), responsiveMaxLabel, ra(5,0), responsiveMaxWidthTF};
         Component[] r126 = {  hgl(), responsiveFactorLabel, ra(5,0), responsiveFactorTF,  ra(10,0), responsiveConstantLabel, ra(5,0), responsiveConstantTF};
+        Component[] r127 = {fullScreenCB,  ra(10,0),   hgl()};
 		
 		selectionObjectBoxIP = hb(r23);	
 		vd = 3;
 		Component[] k2 = {hb(kenmerkenLine), ra(0,vd),hb(r21), ra(0,vd), hb(r22), ra(0,15), hb(soortenLine),ra(0,vd), selectionObjectBoxIP, ra(0,vd), hb(r24), ra(0,vd), hb(r25), 
 				ra(0,vd), hb(r26), ra(0,vd), hb(r27),  ra(0,vd), hb(r118),hb(r119),hb(r120),hb(r121),ra(0,15), hb(verwerkingLine), ra(0,vd),hb(r28), ra(0,vd), hb(r29), ra(0,vd), hb(r210), 
-				ra(0,vd), hb(r211), ra(0,vd), hb(r212), spaceTest1, hb(testLine), hb(r123),spaceTest2, hb(r124),spaceTest3, hb(r125),ra(0,vd), hb(r126),vgl()};
+				ra(0,vd), hb(r211), ra(0,vd), hb(r212), spaceTest1, hb(testLine), hb(r123),spaceTest2, hb(r124),spaceTest3, hb(r125),ra(0,vd), hb(r126),ra(0,vd), hb(r127),vgl()};
 		
 		Box interactionOptionsBox = vb(k2);
 		interactionOptionsPanel.add(interactionOptionsBox);
@@ -1441,6 +1447,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		int responsiveMinWidth = 400;
 		int responsiveMaxWidth = 980;
 		double responsiveFactor = 0.5;
+		boolean fullScreenOption = false;
 		
 		int locationX = Integer.parseInt(locationXTF.getText());
 		int locationY = Integer.parseInt(locationYTF.getText());
@@ -1521,6 +1528,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         responsiveToggleWidth = this.responsiveToggleWidth;
         responsiveMinWidth = this.responsiveMinWidth;
 		responsiveMaxWidth = this.responsiveMaxWidth;
+		fullScreenOption = this.fullScreenOption;
 			
 		Hashtable h = null;
 		 
@@ -1626,6 +1634,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
           h.put("responsiveMinWidth", new Integer(responsiveMinWidth));
           h.put("responsiveMaxWidth", new Integer(responsiveMaxWidth));
         }
+		h.put("fullScreenOption", new Boolean(fullScreenOption));
 		return h;
 	}
 	
@@ -1775,6 +1784,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         int responsiveToggleWidth = 800;
         int responsiveMinWidth = 400;
 		int responsiveMaxWidth = 980;
+		boolean fullScreenOption = false;
 		
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
@@ -1914,7 +1924,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         		responsiveMinWidth = ((Integer) h.get("responsiveMinWidth")).intValue();
         if (responsive && h.containsKey("responsiveMaxWidth"))
         		responsiveMaxWidth = ((Integer) h.get("responsiveMaxWidth")).intValue();
-        
+        if(h.containsKey("fullScreenOption")) fullScreenOption = ((Boolean)h.get("fullScreenOption")).booleanValue();
         //System.out.println("logOption: "+logOption);
 
 		this.randZichtbaar = randZichtbaar;
@@ -1980,6 +1990,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         this.responsiveToggleWidth = responsiveToggleWidth;
         this.responsiveMinWidth = responsiveMinWidth;
         this.responsiveMaxWidth = responsiveMaxWidth;
+        this.fullScreenOption = fullScreenOption;
 		
 		if(isLink)
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
@@ -2165,6 +2176,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     	responsiveFactorLabel.setVisible(responsive);
     	responsiveFactorTF.setVisible(responsive);
     	responsiveFactorTF.setText(""+responsiveFactor);
+    	
+    	fullScreenCB.setSelected(fullScreenOption);
     	
     	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)this)).pack();
 	}
@@ -3002,6 +3015,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
             responsiveFactorTF.setVisible(responsive);
             updateTekstVakPanel();
         }
+	    if(e.getSource().equals(fullScreenCB))
+        {   fullScreenOption = fullScreenCB.isSelected();
+        		updateTekstVakPanel();
+        }
+        
 	    if(e.getSource().equals(responsiveToggleWidthTF))
         {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
             updateTekstVakPanel();
