@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -49,6 +51,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import fi.wiskopdr.ObjectiveChoices;
+import fi.wiskopdr.ObjectivesViewAction;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.domainmodel.graph.Graph;
 import fi.beans.numworxlf.JScrollPane;
@@ -59,6 +62,17 @@ import fi.beans.numworxlf.JCheckBox;
 
 public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices, TreeSelectionListener, AutoCloseable {
   private class LeafNodeEditor extends AbstractCellEditor implements TreeCellEditor {
+
+    private final class editorListener implements ItemListener {
+      public void itemStateChanged(ItemEvent itemEvent) {
+           if (stopCellEditing()) {
+               fireEditingStopped();
+               updateGraph();
+               repaint();
+           }
+           itemEvent.getItemSelectable().removeItemListener(this);
+       }
+    }
 
     private static final int XWIDTH = 20; // positie [x]
     private  ChoiceCellRenderer renderer = new ChoiceCellRenderer();
@@ -103,24 +117,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
          Component editor = renderer.getTreeCellRendererComponent(tree, value,
                  true, expanded, leaf, row, true);
          // editor always selected / focused
-         ItemListener itemListener = new ItemListener() {
-
-             public void itemStateChanged(ItemEvent itemEvent) {
-                 if (stopCellEditing()) {
-                     fireEditingStopped();
-                     boolean flag = LeafNodeEditor.this.leaf.isValue();
-                     //model.nodeStructureChanged(root);
-                     graph.graphNodes.stream()
-                     .filter(t -> t.getID().equals(LeafNodeEditor.this.leaf.getId()))
-                     .findAny()
-                     .ifPresent(t -> {
-                       t.setSuccesFailScore(flag?100.0:null);
-                       t.setPartOfSelection(flag?Boolean.TRUE:null);
-                     });
-                     repaint();
-                 }
-             }  
-         };
+         ItemListener itemListener = new editorListener();
          if (editor instanceof JCheckBox) {
              ((JCheckBox) editor).addItemListener(itemListener);
          }
@@ -491,12 +488,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         }
       }
     }
-    graph.graphNodes.stream()
-      .filter(n -> ids.containsKey(n.getID()))
-      .forEach(n -> {
-        n.setSuccesFailScore(100.0);
-        n.setPartOfSelection(Boolean.TRUE);
-      });
+
+    updateGraph();
     model.nodeStructureChanged(root);
 
     @SuppressWarnings("unchecked")
@@ -512,6 +505,32 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       }
     }
     return this;
+  }
+
+
+  private void updateGraph() {
+
+// mogelijke optimalisatie: kennis tree eenmalig opbouwen uit ids.keyset en dan bijwerken.    
+    Set<String> kennis = new TreeSet<>();
+    @SuppressWarnings("unchecked")
+    Enumeration<DefaultMutableTreeNode> e = root.depthFirstEnumeration();
+    while (e.hasMoreElements()) {
+      DefaultMutableTreeNode node = e.nextElement();
+      if (!node.isLeaf()) continue;
+      Object object = node.getUserObject();
+      if (object instanceof NodeLeaf) {
+        if (((NodeLeaf) object).isValue()) kennis.add(((NodeLeaf) object).getId());
+      }      
+    }
+    Set<String> voorkennis = ObjectivesViewAction.metVoorkennis(kennis, studentModel.get());
+    graph.graphNodes
+      .forEach(n -> {
+        boolean on = voorkennis.contains(n.getID());
+        n.setSuccesFailScore(on ? 100.0 : null);
+        if (on) n.setPartOfSelection(Boolean.valueOf(kennis.contains(n.getID())));
+        else n.setPartOfSelection(null);
+      });
+    graph.repaint();
   }
 
   @Override

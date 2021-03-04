@@ -35,7 +35,7 @@ import fi.wiskopdr.domainmodel.graph.GraphNode;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 
 @SuppressWarnings("serial")
-class ObjectivesViewAction extends AbstractAction {
+public class ObjectivesViewAction extends AbstractAction {
 
   private ObjectiveSettingsButton objectivesButton;
   private boolean[][] choices;
@@ -144,11 +144,11 @@ class ObjectivesViewAction extends AbstractAction {
     this.voorkennis = metVoorkennis(this.objectives, objectivesButton.getStudentModel());
   }
 
-  private Set<String> strip(Collection<String> ids) {
+  static Set<String> strip(Collection<String> ids) {
     return ids.stream().map(s -> s.split("/")[0]).collect(Collectors.toSet());
   }
 
-  Set<String> metVoorkennis(Set<String> ids, StudentModel model) {
+  public static Set<String> metVoorkennis(Set<String> ids, StudentModel model) {
       if(model == null) return ids;
       ids = strip(ids);
       Map<String,StudentObjective> infos = new TreeMap<>();
@@ -176,7 +176,7 @@ class ObjectivesViewAction extends AbstractAction {
     return all;
   }
 
-  private void add(StudentObjective[] objs, Map<String, StudentObjective> infos) {
+  static private void add(StudentObjective[] objs, Map<String, StudentObjective> infos) {
     if (objs == null) return;
     for(StudentObjective obj: objs) {
       add(obj.objectives, infos);
