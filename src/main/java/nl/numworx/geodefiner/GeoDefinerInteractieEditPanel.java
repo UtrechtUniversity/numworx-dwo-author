@@ -39,11 +39,9 @@ public class GeoDefinerInteractieEditPanel extends JPanel implements
 	public void setEditState(Hashtable b) {
 		editor.setLaunchData(b);
 		boolean[][] logObjectives = (boolean[][]) b.get("logObjectives");
-		if (logObjectives != null)
-			editor.setChoices(logObjectives);
-		String[] smObjectives = (String[]) b.get(fi.wiskopdr.domainmodel.Constants.OBJECTIVES);
-		if (smObjectives != null) 
-			editor.setObjectives(smObjectives);
+		editor.setChoices(logObjectives);
+		String[] smObjectives = (String[]) b.get(fi.wiskopdr.domainmodel.Constants.OBJECTIVES); 
+		editor.setObjectives(smObjectives);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
