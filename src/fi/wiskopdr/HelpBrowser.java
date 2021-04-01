@@ -7,7 +7,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class HelpBrowser 
+public class HelpBrowser extends JPanel
 {
   //private DialogFacade frame;
 
@@ -19,14 +19,18 @@ public class HelpBrowser
   private Component src;
 
 
-  public HelpBrowser(Component c){	
+  public HelpBrowser(Component c){
+    super(null);
     src = c;
     ssb = new SimpleSwingBrowser();
     panel = ssb.getBrowserPanel();
     panel.invalidate();
+    panel.setMinimumSize(new Dimension(10,10));
     panel.setBounds(0, 0, width, height); // o i d
     panel.validate(); 
     panel.doLayout();
+    add(panel);
+    setSize(width, height);
 //    frame = DialogFacade.newInstance(c, "", true);
 //
 //
@@ -37,9 +41,10 @@ public class HelpBrowser
   }
   
   public JComponent getBrowserPanel() {
-	  return panel;
+	  return this;
   }
 
+  
   public void loadURL(String url) {
 //    src = WiskOpdr.getWindowForComponent(src);
 //    Dimension preferredSize = new Dimension(width,src.getHeight());
@@ -57,5 +62,11 @@ public class HelpBrowser
   public void dispose() {
     ssb.dispose();
     //frame.dispose();
+  }
+
+  @Override
+  public void setBounds(int x, int y, int width, int height) {
+    super.setBounds(x, y, width, height);
+    panel.setSize(Math.max(10,width), Math.max(10, height));
   }
 }
