@@ -2236,10 +2236,12 @@ MouseListener, MouseMotionListener, CBookAware {
 		
 		
 	}
-	
-	public Hashtable getState() {	
+	public Hashtable getState() {
+		return getState(false);
+	}
+	public Hashtable getState(boolean forGetEditState) {	
 			
-		if(!("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))) {
+		if(!forGetEditState && !("MW".equals(WiskOpdr.deployVariant) || "GR".equals(WiskOpdr.deployVariant))) {
 			formuleComponent.updateFormulas();
 			kijkNa(false);
 		}
@@ -3922,7 +3924,7 @@ MouseListener, MouseMotionListener, CBookAware {
 	}
 
 	public Hashtable getEditState() {
-		return getState();
+		return getState(true);
 	}
 
 	public InteractieEditPanel getEditPanel() {

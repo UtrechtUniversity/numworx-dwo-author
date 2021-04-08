@@ -562,7 +562,9 @@ public class FormuleComponent extends FormuleEditor implements FocusListener, Mo
 			}
 		}
 		for(int i = 0; i < domeinen.length; i++)
-		{	domeinStrings[i][0] = "$f" + Double.toString(domeinen[i][0]) + "@";
+		{	if(domeinStrings.length<i+1)
+				return;
+			domeinStrings[i][0] = "$f" + Double.toString(domeinen[i][0]) + "@";
 			domeinStrings[i][1] = "$f" + Double.toString(domeinen[i][1]) + "@";
 		}
 		for(int i = 0; i < Math.min(domeinButtons.length, domeinen.length); i++)
