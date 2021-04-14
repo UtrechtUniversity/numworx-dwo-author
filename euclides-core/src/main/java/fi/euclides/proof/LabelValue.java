@@ -27,7 +27,15 @@ public abstract class LabelValue extends  LabelDelegate  {
 	}
 
 	protected String hoekAsString(Numbers value) {
-		if(true)
+		return hoekAsString(value, true);
+	}
+	
+	protected String hoekAsString(Label label) {
+		return hoekAsString(label.value);
+	}
+	
+	protected String hoekAsString(Numbers value, boolean rad) {
+		if(rad)
 			return Numbers.toString(value);
 		return Math.round(value.doubleValue() * 180.0 / Math.PI)%360 + "°";
 	}

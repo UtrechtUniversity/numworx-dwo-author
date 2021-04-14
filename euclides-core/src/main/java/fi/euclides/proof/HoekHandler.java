@@ -43,8 +43,8 @@ public class HoekHandler extends LabelValue implements Observer {
 			l.register(this);
 			l.setX((l1.getX1()+l2.getX1()+l1.getX2()+l2.getX2())/4);
 			l.setY((l1.getY1()+l2.getY1()+l1.getY2()+l2.getY2())/4);
+			visit(getModel().add(l));
 			l.setString(getString(l1, l2, l));
-			getModel().add(l);
 			
 		
 		} else
@@ -59,8 +59,8 @@ public class HoekHandler extends LabelValue implements Observer {
 			l.register(this);
 			l.setX(p1.getXd()/4+p2.getXd()/2 + p3.getXd()/4);
 			l.setY(p1.getYd()/4+p2.getYd()/2 + p3.getYd()/4);
+			visit(getModel().add(l));
 			l.setString(getString(p1, p2, p3,l));
-			getModel().add(l);
 		} else {
 			setStatus(string);
 		}
@@ -128,7 +128,7 @@ public class HoekHandler extends LabelValue implements Observer {
 			result += Math.PI*2.0;
 		l.value = Numbers.createDouble(result);
 		
-		return hoekAsString(l.value); //JMath.round(result * 180.0 / Math.PI)%mod + "°";
+		return hoekAsString(l); //JMath.round(result * 180.0 / Math.PI)%mod + "°";
 	}
 	
 	String getString(Lijn l1, Lijn l2, Label l)
