@@ -80,6 +80,10 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 			model = models.intervalmodel().init(label);
 			return;
 		}
+		if (label.getState() == Label.HOEK) {
+			model = models.angleModel().init(label);
+			return;
+		}
 
 		model = models.textmodel().init(label);
 	}

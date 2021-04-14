@@ -83,7 +83,7 @@ public class TextModel extends ColorModel<Label> {
 		return super.init(item);
 	}
 
-	private void setdxy() {
+	protected void setdxy() {
 		if(item != null && item.getP()instanceof Volgpunt) {
 		Volgpunt p = (Volgpunt) this.item.getP();
 			dx = (float) p.getDx().doubleValue();

@@ -3,7 +3,9 @@ package nl.numworx.geodefiner.ui;
 import javax.inject.Named;
 
 import dagger.Subcomponent;
+import fi.euclides.model.Destroyable;
 import fi.euclides.model.Locus;
+import nl.numworx.geodefiner.common.UIModel;
 
 @Subcomponent(modules = { ModelsModule.class })
 public interface Models {
@@ -28,5 +30,7 @@ public interface Models {
   @Subcomponent.Builder interface Builder {
 	  Models build();
   }
+
+  AngleModel angleModel();
 
 }

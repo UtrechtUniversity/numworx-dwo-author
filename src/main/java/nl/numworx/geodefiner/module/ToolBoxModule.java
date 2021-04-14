@@ -27,7 +27,6 @@ import fi.euclides.event.EventHandler;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.proof.AfstandHandler;
-import fi.euclides.proof.HoekHandler;
 import fi.euclides.proof.OppHandler;
 import fi.euclides.proof.VectorHandler;
 import fi.euclides.swing.AWTViewer;
@@ -46,6 +45,7 @@ import nl.numworx.geodefiner.common.AddCirkelHandler;
 import nl.numworx.geodefiner.common.AddPolygonHandler;
 import nl.numworx.geodefiner.common.AddSnapPuntHandler;
 import nl.numworx.geodefiner.common.FilteredDestroyHandler;
+import nl.numworx.geodefiner.common.HoekHandler;
 import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.ResetHandler;
 import nl.numworx.geodefiner.common.Tools;
@@ -53,6 +53,7 @@ import nl.numworx.geodefiner.common.UIShim;
 import nl.numworx.geodefiner.tools.CirkelAction;
 import nl.numworx.geodefiner.tools.PuntAction;
 import nl.numworx.geodefiner.tools.XXXXAction;
+import nl.numworx.geodefiner.ui.AngleModel;
 import nl.numworx.geodefiner.ui.CircleModel;
 import nl.numworx.geodefiner.ui.LineModel;
 import nl.numworx.geodefiner.ui.PointModel;
@@ -204,8 +205,10 @@ public abstract class ToolBoxModule implements Tools {
 		return new XXXAction(Messages.getString("Euclides.91"), "/area.png", new OppHandler(Messages.getString("Euclides.93")), viewer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	@Provides @Singleton @IntoMap @IntKey(ANGLE) static 
-	Action angle(AWTViewer viewer) {
-		return new XXXAction(Messages.getString("Euclides.85"), "/angle2.png", new HoekHandler(Messages.getString("Euclides.85")), viewer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	Action angle(AWTViewer viewer, AngleModel angleModel, Instance instance) {
+		UIShim<Label, UIEditor> shim = new UIShim<>(angleModel, instance.getStateConfiguration(), viewer);
+		HoekHandler handler = new HoekHandler(Messages.getString("Euclides.85"));
+		return new XXXXAction(Messages.getString("Euclides.85"), "/angle2.png", handler, viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	@Provides @Singleton @IntoMap @IntKey(VECTOR) static 
 	Action vector(AWTViewer viewer) {
