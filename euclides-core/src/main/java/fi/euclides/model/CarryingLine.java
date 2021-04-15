@@ -3,6 +3,7 @@ package fi.euclides.model;
 import java.io.IOException;
 
 import fi.euclides.model.math.Numbers;
+import fi.euclides.util.Observable;
 
 public class CarryingLine extends Lijn {
 
@@ -62,6 +63,12 @@ public class CarryingLine extends Lijn {
 
 	public Destroyable[] getDepend() {
 		return new Destroyable[] { lijn };
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if (o == lijn) setChanged();
+		super.update(o, arg);
 	}
 
 }
