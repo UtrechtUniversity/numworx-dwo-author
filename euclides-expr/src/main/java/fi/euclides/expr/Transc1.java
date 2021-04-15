@@ -3,6 +3,7 @@ package fi.euclides.expr;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.proof.AngleType;
 import fi.euclides.proof.LabelValue;
 import fi.euclides.util.DefaultAdapter;
 
@@ -134,7 +135,7 @@ public class Transc1 extends Som {
 			Numbers c = ll[0].value;
 			DefaultAdapter.getDefault(l).put( new Numbers[] { Numbers.real(c), Numbers.imag(c) });
 			l.setState(Label.HOEK);
-			l.setString(hoekAsString(value));
+			l.setString(hoekAsString(value, l.adapt(AngleType.class)));
 		} else
 			l.setString(Numbers.toString(value));	
 		l.setValue(value);

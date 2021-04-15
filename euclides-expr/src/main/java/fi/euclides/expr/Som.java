@@ -3,6 +3,7 @@ package fi.euclides.expr;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.proof.AngleType;
 import fi.euclides.proof.LabelValue;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
@@ -113,7 +114,7 @@ public class Som extends LabelValue {
 		value = Numbers.createDouble(result);
 
 		l.setState(Label.HOEK);
-		l.setString(hoekAsString(value));
+		l.setString(hoekAsString(value, l.adapt(AngleType.class)));
 		l.setValue(value);
 	}
 

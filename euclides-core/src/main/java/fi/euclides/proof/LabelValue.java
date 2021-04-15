@@ -26,18 +26,19 @@ public abstract class LabelValue extends  LabelDelegate  {
 		l.setValue(n);
 	}
 
-	protected String hoekAsString(Numbers value) {
-		return hoekAsString(value, true);
-	}
+//	@Deprecated
+//	protected String hoekAsString(Numbers value) {
+//		return hoekAsString(value, null);
+//	}
 	
 	protected String hoekAsString(Label label) {
-		return hoekAsString(label.value);
+		return hoekAsString(label.value, label.adapt(AngleType.class));
 	}
 	
-	protected String hoekAsString(Numbers value, boolean rad) {
-		if(rad)
-			return Numbers.toString(value);
-		return Math.round(value.doubleValue() * 180.0 / Math.PI)%360 + "°";
+	protected String hoekAsString(Numbers value, AngleType rad) {
+		if(rad == AngleType.DEGREE)
+			return Math.round(value.doubleValue() * 180.0 / Math.PI)%360 + "°";
+		return Numbers.toString(value);
 	}
 
 }
