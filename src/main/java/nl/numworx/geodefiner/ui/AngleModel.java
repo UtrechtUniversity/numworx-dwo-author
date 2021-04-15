@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
+import fi.euclides.proof.AngleType;
 import fi.euclides.util.DefaultAdapter;
-import nl.numworx.geodefiner.common.AngleType;
 import nl.numworx.geodefiner.merge.RenameAction;
 import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
 
@@ -38,7 +38,7 @@ public class AngleModel extends TextModel {
 
 	@Override
 	public void fromMap(ObjectMap map) {
-		map.getBoolean("rad", true);
+		rad = map.getBoolean("rad", true);
 		super.fromMap(map);
 	}
 
@@ -60,6 +60,8 @@ public class AngleModel extends TextModel {
 		item.getRegistered().update(item, null);
 	}
 
-
+	public String toString() {
+		return "angle";
+	}
 
 }
