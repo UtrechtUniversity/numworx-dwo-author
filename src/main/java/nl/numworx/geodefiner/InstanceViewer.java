@@ -61,6 +61,7 @@ import fi.wiskopdr.formuleobjects.FormuleVak;
 import nl.numworx.geodefiner.common.Align;
 import nl.numworx.geodefiner.common.CELL;
 import nl.numworx.geodefiner.common.CheckObject;
+import nl.numworx.geodefiner.common.Hoekpunt;
 import nl.numworx.geodefiner.common.Instance.Selector;
 import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Interval;
@@ -644,7 +645,44 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 			DefaultAdapter.getDefault(label).put(Shape.class, checkbox.getBounds());
 			g3.dispose();
 		}
-				
+		
+		
+		private void visitHoek(Label label) {
+			Punt center = label.getP();
+			String string = label.getString();
+			FontMetrics fm = g.getFontMetrics();
+			double w = fm.stringWidth(string);
+			double h = fm.getAscent();
+			double HOEKSIZE = fm.getHeight() * 1.2;
+			Destroyable depend[] = label.getDepend();
+			double startAngle = 0;
+			if (depend[1] instanceof Punt) {
+				Punt p0 = (Punt) depend[1];
+				Punt p1 = (Punt) depend[0];
+				double y = p1.getYd() - p0.getYd();
+				double x = p1.getXd() - p0.getXd();
+				startAngle = Math.atan2(-y, x);
+			} else if (depend[0] instanceof Lijn) {
+				Lijn l = (Lijn) depend[0];
+				startAngle = Math.atan2(-l.getDY(), l.getDX());
+			}
+			double value = label.value.doubleValue();
+			Color f = g.getColor();
+			g.setColor(new Color(f.getRed(), f.getGreen(), f.getBlue(), f.getAlpha()/3));
+			fillArc(center.getXd()-HOEKSIZE/2, center.getYd()-HOEKSIZE/2, HOEKSIZE, startAngle, value);
+			g.setColor(f);
+			value = startAngle + value/2;
+			double ww = Math.hypot(w/2, h/2);
+			double x,y;
+			x= center.getXd() + (HOEKSIZE/2+ww)*Math.cos(value);
+			y= center.getYd() - (HOEKSIZE/2+ww)*Math.sin(value);
+			drawString(string, x-w/2 , y+h/2 );
+
+			Rectangle2D.Double rect = 
+					new Rectangle2D.Double(x-w/2, y+h/2 - fm.getAscent(), w, fm.getHeight());
+			DefaultAdapter.getDefault((Adaptee) label).put(Shape.class, rect);
+
+		}
 		@Override
 		public void visitLabel(Label label) {
 			selectColor(label);
@@ -652,6 +690,11 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 			if(f==null) f = fi.wiskopdr.WiskOpdr.tekstFont; // NEVER NULL
 			g.setFont(f);
 			String string = label.getString();
+			if (label.getRegistered() instanceof nl.numworx.geodefiner.common.HoekHandler) {
+				visitHoek(label);
+				return;
+			}
+			
 			if(label.getRegistered() instanceof FlipFlop) {
 				visitCheckbox(label);
 				return;
@@ -704,7 +747,28 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 	          float p2 = pointSize/2f;
 	          fillCircle(punt.getXd()-p2, punt.getYd()-p2 , pointSize);
 	        } else 
-	          super.visitPunt(punt);
+	        {
+	        	if (punt instanceof Hoekpunt) {
+	    			selectColor(punt);
+	        		visitHoekPunt((Hoekpunt) punt);
+	        	}
+	        	super.visitPunt(punt);
+	        }
+		}
+
+		private void visitHoekPunt(Hoekpunt punt) {
+			double hoek = (punt.hoek());
+			Punt[] p = new Punt[3];
+			p[2] = punt; p[1] = punt.getDepend()[0]; p[0] = punt.getDepend()[1];
+			Label l = new Label();
+			l.setState(Label.HOEK);
+// XXX altijd graden?
+			l.setString(Math.round(hoek * 180.0 / Math.PI)%360 + "°");
+			l.setValue(Numbers.createDouble(hoek));
+			l.setDepend(p);
+			l.setP(p[1]);
+			visitHoek(l);
+			
 		}
 
 		final Color grayish = new Color(0.125f,0.125f,0.125f,0.125f);
