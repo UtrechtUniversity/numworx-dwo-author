@@ -9,6 +9,8 @@ import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.SnijPunt;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.proof.AngleType;
+import fi.euclides.util.DefaultAdapter;
 
 public class HoekHandler extends fi.euclides.proof.HoekHandler {
 
@@ -22,7 +24,7 @@ public class HoekHandler extends fi.euclides.proof.HoekHandler {
 
 	@Override
 	public <T extends Destroyable> T visit(T t) {
-		
+		DefaultAdapter.getDefault(t).put(AngleType.DEGREE);
 		volg( (Label) t);
 		return super.visit(t);
 	}
@@ -32,14 +34,10 @@ public class HoekHandler extends fi.euclides.proof.HoekHandler {
 		if (depend[1] instanceof Punt)
 		{
 			Punt p = (Punt) depend[1];
-			Volgpunt vp = new Volgpunt(p);
-			vp.setDxy(Numbers.createInteger(10), Numbers.createInteger(-10));
-			l.setP(vp);
+			l.setP(p);
 		} else if (depend[1] instanceof Lijn) {
-			SnijPunt p = new SnijPunt(lijn(depend[0]), lijn( depend[1]));
-			Volgpunt vp = new Volgpunt(p);
-			vp.setDxy(Numbers.createInteger(10), Numbers.createInteger(-10));
-			l.setP(vp);
+			SnijPunt p = new SnijPunt(lijn(depend[0]), lijn( depend[1]));		
+			l.setP(p);
 		}
 	}
 
