@@ -29,6 +29,10 @@ public class Hoekpunt extends Punt implements Observer {
 	private Punt[] depend = new Punt[2];
 	Numbers sin, cos;
 	
+	public double hoek() {
+		return Math.atan2(sin.doubleValue(), cos.doubleValue());
+	}
+	
 	public Hoekpunt() {
 	}
 
@@ -121,4 +125,10 @@ public class Hoekpunt extends Punt implements Observer {
 		}
 	}
 
+	@Override
+	public Punt[] getDepend() {
+		return depend;
+	}
+
+	
 }

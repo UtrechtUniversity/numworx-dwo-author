@@ -559,12 +559,15 @@ public abstract class Instance /*implements Observer*/ {
 		
 		ObjectList toolbox = launchData.getObjectList("toolbox");
 		if(toolbox != null && toolbox.size() > 0 || hasTrail) {
-			List modelState = getModelState();
+			List<?> modelState = getModelState();
 			if(modelState != null) map.put("model", modelState);
 			
 			Map configuration = getStateConfiguration();
-			if (!configuration.isEmpty())
+			if (!configuration.isEmpty()) 
+			{
+				configuration = new HashMap<>(configuration);
 				map.put("configuration", configuration);
+			}
 		}
 		}
 		if (nagekeken != null) 

@@ -112,7 +112,7 @@ public class Expression extends fi.euclides.openmath.Expression {
 	@Override
 	public void setAllTracker(Tracker tracker) {
 		super.setAllTracker(tracker);
-		LabelDelegate value = new HoekHandler();
+		LabelDelegate value = new fi.euclides.proof.HoekHandler(); // Dit is de oude versie
 		symbolmap.put("geodefiner.angle", value);
 		value = new Phi();
 		symbolmap.put("geodefiner.phi", value);
