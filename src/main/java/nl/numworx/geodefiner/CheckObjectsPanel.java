@@ -186,13 +186,16 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 			value = f;
 			Color fg = Color.black;
 			Color bg = Color.white;
-			if(isSelected) {
-				bg = table.getSelectionBackground();
-				fg = table.getSelectionForeground();
-			}
+//			if(isSelected) {
+//				bg = table.getSelectionBackground();
+//				fg = table.getSelectionForeground();
+//			}
 			
 			vak.formuleVak.setFGColor(fg);
+			vak.formuleVak.setForeground(fg);
+			vak.formuleVak.setBackground(bg);
 			vak.setBackground(bg);
+			vak.setForeground(fg);
 			vak.formuleVak.vulVak(f);
 			vak.formuleVak.zetMaat();
 			vak.doLayout();
