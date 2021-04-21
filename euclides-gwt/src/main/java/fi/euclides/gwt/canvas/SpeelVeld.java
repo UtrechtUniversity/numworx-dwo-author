@@ -104,8 +104,8 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
   private final CssColor black = CssColor.make(0,0,0);
 	private final CssColor white = CssColor.make(255,255,255);
-	private final static int POINTER_COLOR=5;
-	private final static int WHITE=6;
+	protected final static int POINTER_COLOR=5;
+	protected final static int WHITE=6;
 	private final CssColor
 		red = CssColor.make("red"),
 		green = CssColor.make("green"),
