@@ -1,5 +1,6 @@
 package fi.wiskopdr;
 
+import java.applet.AppletContext;
 import java.applet.AppletStub;
 import java.awt.Button;
 import java.awt.Color;
@@ -506,10 +507,55 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 	/**
 	 * Hiermee vraagt de DWO een WiskOpdr-panel op voor tekst enz. op de modulepagina. 
+	 * @Deprecated gebruik met AppletStub
+	 * 
 	 */
-	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale) {
+	   public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale) {
+	     AppletStub appletStub = new AppletStub() {
+
+        @Override
+        public boolean isActive() {
+          // TODO Auto-generated method stub
+          return false;
+        }
+
+        @Override
+        public URL getDocumentBase() {
+          // TODO Auto-generated method stub
+          return null;
+        }
+
+        @Override
+        public URL getCodeBase() {
+          // TODO Auto-generated method stub
+          return null;
+        }
+
+        @Override
+        public String getParameter(String name) {
+          // TODO Auto-generated method stub
+          return null;
+        }
+
+        @Override
+        public AppletContext getAppletContext() {
+          // TODO Auto-generated method stub
+          return null;
+        }
+
+        @Override
+        public void appletResize(int width, int height) {
+          // TODO Auto-generated method stub
+          
+        }};
+      return getWiskOpdrPanel(launchDataString, locale, appletStub);
+	   }
+	
+	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale, AppletStub stub) {
 		language = locale;
 		WiskOpdr wiskOpdr = new WiskOpdr();
+		wiskOpdr.setStub(stub);
+		
 		Hashtable launchData = null;
 		if (launchDataString != null) {
 			Object o = StringCodeObject.decodeStringToObject(launchDataString);
