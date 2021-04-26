@@ -189,6 +189,8 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     setMinimumSize(getSize());
     setBackground(COLOR15);
 // voor Midden-03
+
+    api.LMSSetValue("dme.oauth._children", "client_id,code_challenge,endpoint,state");
     api.LMSSetValue("dme.oauth.client_id", "5493fd2c-d09a-11ea-87d0-0242ac130003");
     String verifier = randomAlphanumericString(64);
 	api.LMSSetValue("dme.oauth.code_verifier", verifier);

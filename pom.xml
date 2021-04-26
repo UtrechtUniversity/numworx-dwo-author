@@ -61,6 +61,39 @@
   		<scope>provided</scope>
   		<optional>true</optional>
 	 </dependency>
+	<dependency>
+		<groupId>nl.numworx.swingbrowser</groupId>
+		<artifactId>swingbrowser-ext</artifactId>
+		<version>0.0.10-SNAPSHOT</version>
+		<type>bundle</type>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.felix</groupId>
+		<artifactId>org.apache.felix.connect</artifactId>
+		<version>0.2.0</version>
+		<type>bundle</type>
+		<scope>test</scope>
+	</dependency>
+  	<dependency>
+  		<groupId>nl.numworx</groupId>
+  		<artifactId>org.eclipse.equinox.http</artifactId>
+  		<version>1.0.500</version>
+  		<scope>test</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.osgi</groupId>
+  		<artifactId>osgi.cmpn</artifactId>
+  		<version>5.0.0</version>
+  		<scope>test</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>fi.beans</groupId>
+  		<artifactId>numworxlf</artifactId>
+  		<version>2.3.13-SNAPSHOT</version>
+  		<type>bundle</type>
+  		<scope>test</scope>
+  	</dependency>
   </dependencies>
   <packaging>bundle</packaging>
       <distributionManagement>
