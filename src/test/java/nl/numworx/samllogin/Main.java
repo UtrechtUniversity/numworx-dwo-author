@@ -17,11 +17,11 @@ public class Main {
 
   public static void main(String[] args) {
     
-    final JFrame f = new JFrame("Login uu-dev");
+    final JFrame f = new JFrame("Login entree-s");
     SamlLoginPanel.debug = true;
     SamlLoginPanel browser = new SamlLoginPanel();
    
-    browser.loadURL("http://localhost:8080/dwo/saml/login2.jsp");
+    browser.loadURL("https://entree-s.dwo.nl/dwo/oauth2/login3.jsp");
     browser
       .getPromise()
       .then( p -> {
