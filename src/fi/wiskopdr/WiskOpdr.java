@@ -555,6 +555,10 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		language = locale;
 		WiskOpdr wiskOpdr = new WiskOpdr();
 		wiskOpdr.setStub(stub);
+		applet = wiskOpdr;
+	    abo_type = wiskOpdr.getParameter("abo_type"); // Zie WiskOpdr.isPremium();   
+	    dwo_env = wiskOpdr.getParameter("dwo_env"); // Zie Wiskopdr.isExperimental();
+	    
 		
 		Hashtable launchData = null;
 		if (launchDataString != null) {
@@ -579,6 +583,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	  language = locale;
 	  WiskOpdr wiskOpdr = new WiskOpdr();
 	  wiskOpdr.setStub(stub);
+      dwo_env = wiskOpdr.getParameter("dwo_env"); // Zie Wiskopdr.isExperimental();
+      abo_type = wiskOpdr.getParameter("abo_type"); // Zie WiskOpdr.isPremium();
+      applet = wiskOpdr;
 	  if (launchDataString == null || launchDataString.isEmpty()) launchDataChanged = true;
 	  return new WiskOpdrEditPanel(launchDataString, wiskOpdr, ew, eh, dw, dh);
 	}
