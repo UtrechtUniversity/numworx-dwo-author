@@ -39,6 +39,7 @@
        	  <configuration>
        	    <niceManifest>true</niceManifest>
           	<instructions>
+   				<_snapshot>${osgi.qualifier}</_snapshot>
           		<Bundle-SymbolicName>fi.tekenveelvlakopdr.TekenVeelvlakOpdr</Bundle-SymbolicName>
  				<Main-Class>fi.tekenveelvlakopdr.TekenVeelvlakOpdr</Main-Class>
 				<Trusted-Only>true</Trusted-Only>
@@ -84,4 +85,8 @@
          </plugin>        
     </plugins>
   </build>
+  <properties>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
+  </properties>
 </project>
