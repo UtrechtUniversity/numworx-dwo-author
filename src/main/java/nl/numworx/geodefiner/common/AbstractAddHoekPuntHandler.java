@@ -21,7 +21,7 @@ public abstract class AbstractAddHoekPuntHandler extends EventHandler {
 
 	public AbstractAddHoekPuntHandler(String string) {
 		super(string);
-		testLijn = false;
+		testLijn = true;
 		testPunt = true;
 	}
 
