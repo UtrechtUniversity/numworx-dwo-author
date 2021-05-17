@@ -6,7 +6,6 @@ import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Locus;
 import fi.euclides.model.MP;
 import fi.euclides.model.Triangle;
-import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
