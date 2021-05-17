@@ -209,7 +209,37 @@ public class EqualsVisitor implements Visitor {
 
 	@Override
 	public void visitBoog(Boog a) {
-		test = a .equals(b) ? Numbers.ZERO : Numbers.ONE;			
+		test = a .equals(b) ? Numbers.ZERO : Numbers.ONE;
+		if (test == Numbers.ONE && b instanceof Boog) {
+			Boog o = (Boog) b;
+			Punt oA = Boog.startOf(o);
+			Punt oC = Boog.endOf(o);
+			Punt oCenter = o.getCenter();
+			double ol = o.length();
+						
+			Punt aA = Boog.startOf(a);
+			Punt aC = Boog.endOf(a);
+			Punt aCenter = a.getCenter();
+			double al = a.length();
+			boolean swap = false;
+			Numbers t1 = puntenTest(oCenter, aCenter);
+			Numbers t2 = Numbers.add(puntenTest(oA, aA), puntenTest(oC,aC));
+			Numbers t3 = Numbers.add(puntenTest(oA, aC), puntenTest(oC, aA));
+			if (Numbers.signum(Numbers.sub(t2, t3))>0) {
+				t2 = t3;
+				swap = true;
+			}
+			Numbers tl;
+			if (swap)
+			  tl = Numbers.createDouble(Math.abs(al+ol));
+			else 	
+			  tl = Numbers.createDouble(Math.abs(al-ol));			
+// same endpoints
+// same center
+// same length		
+			test = Numbers.add(t1, Numbers.add(t2, tl));
+		}
+		
 	}
 	
 }
