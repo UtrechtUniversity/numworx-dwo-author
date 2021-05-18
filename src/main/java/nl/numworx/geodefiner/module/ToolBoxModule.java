@@ -207,7 +207,7 @@ public abstract class ToolBoxModule implements Tools {
 	@Provides @Singleton @IntoMap @IntKey(ANGLE) static 
 	Action angle(AWTViewer viewer, AngleModel angleModel, Instance instance) {
 		UIShim<Label, UIEditor> shim = new UIShim<>(angleModel, instance.getStateConfiguration(), viewer);
-		HoekHandler handler = new HoekHandler(Messages.getString("Euclides.85"));
+		HoekHandler handler = new HoekHandler(Messages.getString("Euclides.86"));
 		return new XXXXAction(Messages.getString("Euclides.85"), "/angle2.png", handler, viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	@Provides @Singleton @IntoMap @IntKey(VECTOR) static 
