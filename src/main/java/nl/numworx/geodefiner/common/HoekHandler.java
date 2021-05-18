@@ -83,13 +83,13 @@ public class HoekHandler extends fi.euclides.proof.HoekHandler {
 				l0 = (Lijn) d; p0 = p1 = null;
 			}
 			else if (d instanceof Punt) {
-				message = "AddLijnHandler.1";
+				message = "Euclides.87";
 				p0 = (Punt) d; p1 = null; l0 = null;
 				testPunt = true;
 				testLijn = false;
 			}
 			else {
-				message = "Euclides.85";
+				message = "Euclides.86";
 				testLijn = true;
 				testPunt = true;
 				getModel().clearSelection();
@@ -103,7 +103,7 @@ public class HoekHandler extends fi.euclides.proof.HoekHandler {
 			p0 = (Punt) select.firstElement();
 			p1 = (Punt) select.lastElement();
 			l0 = null;
-			setStatus(Messages.getString("AddLoodLijnHandler.1"));
+			setStatus(Messages.getString("Euclides.89"));
 			getTracker().setPointerHandler(this);
 			return; 
 		}
@@ -139,7 +139,7 @@ public class HoekHandler extends fi.euclides.proof.HoekHandler {
 				p1 = (Punt) select.firstElement();
 				state = 2;
 				context.clearSelection();
-				setStatus(Messages.getString("AddLijnHandler.1"));
+				setStatus(Messages.getString("Euclides.89"));
 				return;
 			}
 		} else 
@@ -149,7 +149,7 @@ public class HoekHandler extends fi.euclides.proof.HoekHandler {
 				p0 = (Punt)d; p1 = null; l0 = null; testLijn = false;
 				state = 1;
 				context.clearSelection();
-				setStatus(Messages.getString("AddLoodLijnHandler.1"));
+				setStatus(Messages.getString("Euclides.87"));
 				return;
 			}
 			if (d instanceof Lijn) {
