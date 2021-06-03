@@ -38,6 +38,7 @@ public class AddBissectriceHandler extends EventHandler {
 	public void command() {
 		final Vector<?> select = getModel().getSelect();
 		state = select.size();
+		p2 = null;
 		switch(state) {
 		case 3: 
 			build();
@@ -54,10 +55,13 @@ public class AddBissectriceHandler extends EventHandler {
 				} else {
 					state = 0;
 				}
+				super.command();
+				break;
 		case 1: Object object = select.firstElement();
 			if(object instanceof Punt)
 			{
 				p1 = (Punt) object;
+				createTrack();
 			} else {
 				state = 0;
 			}
@@ -68,10 +72,14 @@ public class AddBissectriceHandler extends EventHandler {
 	}
 
 	protected void createTrack() {
-		Bissectrice bs = new Bissectrice();
-		bs.setP1(p1);
-		bs.setP2(p2);
-		track = (new LijnTrack(p1.getX(), p1.getY(), bs));
+		if (p2 == null) {
+			track = new Track(p1.getX(), p1.getY());
+		} else {
+			Bissectrice bs = new Bissectrice();
+			bs.setP1(p1);
+			bs.setP2(p2);
+			track = (new LijnTrack(p1.getX(), p1.getY(), bs));
+		}
 	}
 
 	protected void build() {
@@ -80,11 +88,11 @@ public class AddBissectriceHandler extends EventHandler {
 	}
 
 	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
-		if(state == 2)
+		if (state == 2 || state == 1)
 		{
 			context.setTrack(track);
 			pointerDragged(x,y,context);
-		} else if(state == 0 || state == 1)
+		} else if (state == 0)
 		{	
 			track=new Track(x, y);
 			context.setTrack(track);

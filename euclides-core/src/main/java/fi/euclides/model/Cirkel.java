@@ -84,11 +84,13 @@ public class Cirkel extends Rondje implements Observer, OpObject<Cirkel> {
 	}
 	
 	void recalc() {
-		double rx = radius2.getXd()-getRadius().getXd();
-		double ry = radius2.getYd()-getRadius().getYd();
-		setD( 2 * Math.hypot(rx,ry));
-		setX(getCenter().getXd()-getR());
-		setY(getCenter().getYd()-getR());
+		if (isDefined()) {
+			double rx = radius2.getXd()-getRadius().getXd();
+			double ry = radius2.getYd()-getRadius().getYd();
+			setD( 2 * Math.hypot(rx,ry));
+			setX(getCenter().getXd()-getR());
+			setY(getCenter().getYd()-getR());
+		}
 		setChanged();
 	}
 
