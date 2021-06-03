@@ -12,6 +12,7 @@ import dagger.multibindings.IntKey;
 import dagger.multibindings.IntoMap;
 import fi.euclides.event.AddBissectriceHandler;
 import fi.euclides.event.AddBoogHandler;
+import fi.euclides.event.AddBoogHandler2;
 import fi.euclides.event.AddFocusHandler;
 import fi.euclides.event.AddKegelsnedeHandler;
 import fi.euclides.event.AddLijnHandler;
@@ -152,7 +153,7 @@ public abstract class ToolBoxModule implements Tools {
 	Action arc(AWTViewer viewer, CircleModel model, Instance instance, @Named("point") UIShim<Destroyable, UIEditor> chain) {
 		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
 		shim.setChain(chain);
-		return new XXXXAction(Messages.getString("ToolBoxModule.27"), "/angle.png", new AddBoogHandler(Messages.getString("ToolBoxModule.29")),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return new XXXXAction(Messages.getString("ToolBoxModule.27"), "/angle.png", new AddBoogHandler2(Messages.getString("ToolBoxModule.29")),viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Provides @Singleton @IntoMap @IntKey(MIDPOINT) static 
