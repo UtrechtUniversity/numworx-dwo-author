@@ -55,7 +55,7 @@ public abstract class AbstractAddHoekPuntHandler extends EventHandler {
 		}
 	}
 
-	protected void build(Punt p, Punt q, Numbers d) {
+	protected void build(Punt q, Punt p, Numbers d) {
 		if (d.equals(Numbers.ZERO)) return;
 		Numbers r = Numbers.round(d);
 		Numbers eps = Numbers.abs(Numbers.sub(d, r));
