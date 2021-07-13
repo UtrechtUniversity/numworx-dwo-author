@@ -138,6 +138,12 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
 		String shareMapString = ShareAction.getSharedLaunchData();
 		if(shareMapString != null) h.put(ShareAction.SHARE_MAP, shareMapString);
 		onsEdit.setSizeLabel(h);
+		
+		if ("true".equals(h.get("premium")) && ! WiskOpdr.isPremium()) {
+		  System.err.println("Error: need a Premium subscription");
+		  return launchData;
+		}
+		
     	return h;
 	}
 	
