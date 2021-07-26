@@ -314,7 +314,7 @@ public class GraphNode {
 
 	public boolean hasChapterCode(String code) {
 		return methodeInfos.values().stream()
-				.anyMatch(t -> code.equals(t.getMethod() + "-" + t.getBook() + "-" + t.getChapter()));
+				.anyMatch(t -> code.equals(t.key()));
 	}
 
 	// public boolean hasChapterCode(String methode, String book, Set<Integer>
@@ -383,9 +383,10 @@ public class GraphNode {
 			for (String v2code : visible) {
 				if (v1code.compareTo(v2code) < 0 && tempLocation == null) {
 					Point location0 = getLocation(v1code);
+                    Point location1 = getLocation(v2code);
+                    if(location0 != null && location1 != null) {
 					int x0 = origin.x + (int) ((location0.x) * factor);
 					int y0 = origin.y + (int) ((location0.y) * factor);
-					Point location1 = getLocation(v2code);
 					int x1 = origin.x + (int) ((location1.x) * factor);
 					int y1 = origin.y + (int) ((location1.y) * factor);
 					if (Math.abs(x0 - x1) < 1 && Math.abs(y0 - y1) < 1)
@@ -405,13 +406,13 @@ public class GraphNode {
 					path.moveTo(x0, y0);
 					path.closePath();
 					g.draw(path);
-				}
+				}}
 			}
 		}
 
 		for (String code : getMethodeCodes()) {
-			if (visible.contains(code)) {
-				location = getLocation(code);
+            location = getLocation(code);
+			if (location != null && visible.contains(code)) {
 				// g.setFont(defaultFont.deriveFont((int)(defaultFontSize*factor)));
 				g.setFont(new Font("SansSerif", Font.PLAIN, (int) (defaultFontSize * factor)));
 				if (selected.contains(code))

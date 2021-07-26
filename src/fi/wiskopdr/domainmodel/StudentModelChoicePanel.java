@@ -401,7 +401,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   
   public void setObjectives(List<String> objectives) {
     this.objectives = objectives;
-    makeGUI();
+    //makeGUI();
+    setObjectives();
   }
   
   private void setObjectives() {

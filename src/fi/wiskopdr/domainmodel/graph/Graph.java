@@ -1499,6 +1499,7 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
             if(node.isVisible()  && node.getLocation()!=null && node.getTempLocation()==null) {
               for (String code: node.getVisibleSet()) {
 				Point location = node.getLocation(code);
+				if (location == null) continue; // NPE check
                 if(xMax < location.x)
 					xMax = location.x;
 				if(yMax < location.y)

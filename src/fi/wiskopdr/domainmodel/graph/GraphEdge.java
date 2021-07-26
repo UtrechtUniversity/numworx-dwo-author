@@ -92,18 +92,24 @@ public class GraphEdge {
 				if(scode.equals(tcode) || source.getVisibleSet().size()==1 && target.getVisibleSet().size()==1 || source.getTempLocation()!=null) { //&& scode.equals(tcode)
 					boolean sameChapters = Objects.equals(scode, tcode);
 					
-					float x0 = origin.x + (float)((source.getLocation(scode).x)*factor);
-					float x1 = origin.x + (float)((target.getLocation(tcode).x)*factor);
-					float y0 = origin.y + (float)((source.getLocation(scode).y)*factor);
-					float y1 = origin.y + (float)((target.getLocation(tcode).y)*factor);
+					Point sourceLocation = source.getLocation(scode);
+                    Point targetLocation = target.getLocation(tcode);
+                    float x0, x1, y0, y1;
 					if(source.getTempLocation()!=null) {
 						x0 = source.getTempLocation().x;
 						y0 = source.getTempLocation().y;
-					}
+					} else if (sourceLocation != null) {
+	                    x0 = origin.x + (float)((sourceLocation.x)*factor);
+	                    y0 = origin.y + (float)((sourceLocation.y)*factor);					  
+					} else continue;
+					
 					if(voorkennisTree && target.getTempLocation()!=null) {
 						x1 = target.getTempLocation().x;
 						y1 = target.getTempLocation().y;
-					}
+					} else if (targetLocation != null) {
+	                    x1 = origin.x + (float)((targetLocation.x)*factor);
+	                    y1 = origin.y + (float)((targetLocation.y)*factor);					  
+					} else continue;
 					float mx = (x0 + x1)/2;
 					float my = (y0 + y1)/2;
 					float dm1 = (float)Math.sqrt((x1-mx)*(x1-mx)+(y1-my)*(y1-my));
