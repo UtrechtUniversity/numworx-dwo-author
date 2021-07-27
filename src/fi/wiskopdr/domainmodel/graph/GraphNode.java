@@ -412,6 +412,7 @@ public class GraphNode {
 
 		for (String code : getMethodeCodes()) {
             location = getLocation(code);
+            if(tempLocation != null) location = tempLocation;
 			if (location != null && visible.contains(code)) {
 				// g.setFont(defaultFont.deriveFont((int)(defaultFontSize*factor)));
 				g.setFont(new Font("SansSerif", Font.PLAIN, (int) (defaultFontSize * factor)));
