@@ -201,7 +201,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   JTextArea description;
   JButton graphButton;
   Graph graph;
-  
+  String activeMethod;
+
   final Supplier<StudentModel> studentModel;
   static final String WISKOPDR_SIG = "H4sIAAAAAA";
   static final String JSON_SIG = "{";
@@ -453,11 +454,13 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     tree.setSelectionPath(null);
     setObjectives();
     if (root == null) {
-      NodeVector v = new NodeVector(studentModel.get());
+      StudentModel smodel = studentModel.get();
+      activeMethod = smodel.activeMethod;
+      NodeVector v = new NodeVector(smodel);
       root = new DynamicUtilTreeNode(v, v);
       model = new DefaultTreeModel(root);   
       tree.setModel(model);
-      graph.setModel(model, null);
+      graph.setModel(model, null, WiskOpdr.applet.getStudentMethod(activeMethod));
     }
 // old style
     if (choices != null) {

@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.swing.JPanel;
 import javax.swing.tree.TreeModel;
 
+import fi.wiskopdr.domainmodel.StudentMethod;
+
 public class EditableGraph extends JPanel implements ActionListener{
 
 	private CardLayout cards;
@@ -46,8 +48,8 @@ public class EditableGraph extends JPanel implements ActionListener{
 //		}
 //	}
 
-	public void setModel(TreeModel model, Map<String, Map<String, Set<Integer>>> filter) {
-		graph.setModel(model, filter);
+	public void setModel(TreeModel model, Map<String, Map<String, Set<Integer>>> filter, StudentMethod active) {
+		graph.setModel(model, filter, active);
 //		editGraph.setModelJustSet(true);
 	}
 

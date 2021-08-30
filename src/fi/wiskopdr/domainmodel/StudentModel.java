@@ -16,6 +16,8 @@ public class StudentModel {
   public String description;
   public String id;
   public StudentCategory[] categories;
+  public String activeMethod;
+  
   public String toString() {
       return String.valueOf(title);
   }
@@ -35,9 +37,17 @@ public class StudentModel {
     result.title = getTitle(info);
     result.description = getDescription(info);
     result.id = getId(map); // FIXME 
-    result.categories = readCategories(model.get("categories"));        
+    result.categories = readCategories(model.get("categories")); 
+    result.activeMethod = getMethod(model);
     return result;
 }
+  private static String getMethod(JSONObject map) {
+    Object object = map.get("activeMethod");
+    if (object instanceof Map) object = ((Map)object).get("idString");
+    if (object instanceof String) return (String) object;
+    return null;
+  }
+
   private static String getId(JSONObject map) {
     Object id = map.get("id");
     if(id instanceof Map) {

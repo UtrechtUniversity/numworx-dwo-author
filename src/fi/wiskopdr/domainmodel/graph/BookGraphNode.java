@@ -10,28 +10,18 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import fi.wiskopdr.domainmodel.StudentMethod;
 
 public class BookGraphNode {
 	
-	public static HashMap<String, String> bookDescriptionsMap;
-	public static String[] bookCodes = {
-			"Getal&Ruimte-1HV",
-			"Getal&Ruimte-2HV",
-			"Getal&Ruimte-3V",
-			"Moderne Wiskunde-1HV",
-			"Moderne Wiskund-2HV",
-			"Moderne Wiskund-3V"
-			
-	};
-	public static String[] bookDescriptions = {
-			"1HV",
-			"2HV",
-			"3V",
-			"1HV",
-			"2HV",
-			"3V"
-	};
+	public static Map<String, String> bookDescriptionsMap = new LinkedHashMap<>();
+	public static List<List<Number>>  bookEdges;
 	private static Color defaultNodeColor = LeerdomeinGraphPanel.colorBlue4;
 	private static Color defaultTextColor = new Color(120, 150, 202, 35);
 	private static int defaultFontSize = 640;
@@ -54,13 +44,23 @@ public class BookGraphNode {
 		return bookDescriptionsMap.get(bookCode);
 	}
 	
+	public static void initBookDescription(StudentMethod active) {
+	  bookDescriptionsMap.clear();
+	  String key = active.key();
+	  List<String> books = active.getBooks();
+	  int bsize = books.size();
+	  for (int i = 0; i < bsize; i++) {
+	    String book = books.get(i);
+	      bookDescriptionsMap.put(key + "-" + book, book);
+	  }
+	  bookEdges = active.getEdges();
+	}
+	
+	
+	
+	
+	
 	public BookGraphNode(String bookCode, ArrayList<ChapterGraphNode> chapterGraphNodes, ArrayList<GraphEdge> ChapterGraphEdges) {
-		if(bookDescriptionsMap==null) {
-			bookDescriptionsMap = new HashMap<String, String>();
-			for(int i=0 ; i<bookCodes.length ; i++) {
-				bookDescriptionsMap.put(bookCodes[i], bookDescriptions[i]);
-			}
-		}
 		this.bookCode = bookCode;
 		makeLocation(chapterGraphNodes);
 	}
@@ -185,5 +185,9 @@ public class BookGraphNode {
 	public String getBookDescription() {
 		return bookDescriptionsMap.get(bookCode);
 	}
+
+    public static Collection<String> bookCodes() {
+      return bookDescriptionsMap.keySet();
+    }
 
 }

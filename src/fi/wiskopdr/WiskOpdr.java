@@ -65,6 +65,7 @@ import fi.beans.scorm.ScormEditComponentIF;
 import fi.beans.wnwidgets.NWButtonUI;
 import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.copyright.FIButton;
+import fi.wiskopdr.domainmodel.StudentMethod;
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import fi.wiskopdr.opdrnav.MyOpdrContainer;
@@ -241,6 +242,19 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	  }
 	  return s;
 	}
+	
+	public StudentMethod getStudentMethod(String id) {
+	  if (id == null) return new StudentMethod();
+      String json = getParameter("studentModelMethod:" + id);
+      try {
+        return new StudentMethod(new JSONParser().parse(json));
+      } catch (Exception e) {
+        return new StudentMethod();
+      }
+      
+	  
+	}
+	
 	
 	
 	public JSONObject getDwoProfile() {
