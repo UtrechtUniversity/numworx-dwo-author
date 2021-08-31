@@ -22,13 +22,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -377,27 +380,62 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 		if (graphEdges != this.graphEdges) {
 			this.graphEdges.clear();
 			this.graphEdges.addAll(graphEdges);
+            Map<String,ChapterGraphNode> chapters = new TreeMap<>();
 			
 			chapterNodes.clear();
 			for (String code: ChapterGraphNode.hfstCodes()) {
-              chapterNodes.add(new ChapterGraphNode(code, graphNodes, graphEdges));		  
+              ChapterGraphNode e = new ChapterGraphNode(code, graphNodes, graphEdges);
+              chapterNodes.add(e);		  
+              chapters.put(code, e);
 			}
 			
 			
 			chapterEdges.clear();
 			
-			for(ChapterGraphNode cSourceNode : chapterNodes ) {
-				for(ChapterGraphNode cTargetNode : chapterNodes ) {
-					if(cSourceNode!=cTargetNode && cSourceNode.getMethodCode().equals(cTargetNode.getMethodCode())) {
-						for(GraphEdge edge : graphEdges) {
-							if(edge.getSource().hasChapterCode(cSourceNode.getHfstCode()) && edge.getTarget().hasChapterCode(cTargetNode.getHfstCode()) && cSourceNode.getBookCode().compareTo(cTargetNode.getBookCode())==0) {
-								chapterEdges.add(new ChapterGraphEdge(cSourceNode, cTargetNode));
-								break;
-							}
-						}
-					}
-				}
-			}
+//			for(ChapterGraphNode cSourceNode : chapterNodes ) {
+//				for(ChapterGraphNode cTargetNode : chapterNodes ) {
+//					if(cSourceNode!=cTargetNode && cSourceNode.getMethodCode().equals(cTargetNode.getMethodCode())) {
+//						for(GraphEdge edge : graphEdges) {
+//							if(edge.getSource().hasChapterCode(cSourceNode.getHfstCode()) && edge.getTarget().hasChapterCode(cTargetNode.getHfstCode()) && cSourceNode.getBookCode().compareTo(cTargetNode.getBookCode())==0) {
+//								chapterEdges.add(new ChapterGraphEdge(cSourceNode, cTargetNode));
+//								break;
+//							}
+//						}
+//					}
+//				}
+//			}
+			
+            Set<ChapterGraphEdge> chapterEdgeSet = new HashSet<>();
+            for(GraphEdge edge: graphEdges) {
+              GraphNode from = edge.getSource();
+              GraphNode to   = edge.getTarget();
+              Collection<DomStudentModelMethodInfo> fromChapters = from.getMethodeInfos();
+              if (fromChapters == null) continue;
+              Collection<DomStudentModelMethodInfo> toChapters = to.getMethodeInfos();
+              if (toChapters == null) continue;
+              for (DomStudentModelMethodInfo froc: fromChapters) {
+                for (DomStudentModelMethodInfo toc: toChapters) {
+                  if (froc.getBook().equals(toc.getBook()) && froc.getMethod().equals(toc.getMethod()) && ! froc.getChapter().equals(toc.getChapter())) {
+                    ChapterGraphNode fn = chapters.get(froc.key());
+                    ChapterGraphNode tn = chapters.get(toc.key());
+                    if (fn != null && tn != null) chapterEdgeSet.add(new ChapterGraphEdge(fn, tn));
+                  }
+                  
+                }
+              }
+              
+            }
+            chapterEdges.addAll(chapterEdgeSet);
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 //			//hfst 1
 //			chapterEdges.add(new ChapterGraphEdge(chapterNodes.get(0), chapterNodes.get(3)));
 //			chapterEdges.add(new ChapterGraphEdge(chapterNodes.get(0), chapterNodes.get(6)));
