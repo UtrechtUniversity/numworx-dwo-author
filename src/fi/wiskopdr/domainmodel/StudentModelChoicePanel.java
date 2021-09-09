@@ -45,6 +45,7 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -194,16 +195,54 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
   }
 
+  private class MethodListener implements ItemListener {
+
+    DefaultTreeModel methodModel;
+    StudentMethod active = new StudentMethod();
+    
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+      if (e.getStateChange() == ItemEvent.SELECTED) {
+        if (methodModel == null) {
+          String method = active.getMethod();
+          DefaultMutableTreeNode root = new DefaultMutableTreeNode(method); 
+          methodModel = new DefaultTreeModel(root);       
+        }
+        
+        tree.setModel(methodModel);
+      } else {
+        tree.setModel(model);
+      }
+      
+    }
+
+    public StudentMethod getActive() {
+      return active;
+    }
+
+    public void setActive(StudentMethod active) {
+      this.active = active;
+    }
+    
+    
+    
+  }
+  
+  
+  
   JTree tree;
   DefaultTreeModel model;
   DynamicUtilTreeNode root;
   JLabel leerdoelTitelLabel, title;
   JTextArea description;
   JButton graphButton;
+  JCheckBox methods;
+  MethodListener methodListener = new MethodListener();
   Graph graph;
   String activeMethod;
 
   final Supplier<StudentModel> studentModel;
+  private JButton filterBtn;
   static final String WISKOPDR_SIG = "H4sIAAAAAA";
   static final String JSON_SIG = "{";
   private static final Font font = new Font("SansSerif", Font.PLAIN, 12);
@@ -242,7 +281,10 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     tree.setCellEditor(new LeafNodeEditor(tree));
     tree.setEditable(true);
     tree.setCellRenderer(new ChoiceCellRenderer());
-    
+    methods = new JCheckBox("Geen methode");
+    filterBtn = new JButton("Filter");
+    methods.setEnabled(false);
+    methods.addItemListener(methodListener);
     graph = new Graph();
     
     graph.addActionListener(new GraphTreeAction(tree));
@@ -258,7 +300,15 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     leftBox.setDividerSize(20);
     JScrollPane sp = new JScrollPane(tree);
     sp.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue3));
-    leftBox.setTopComponent(sp);
+    Box vbox = Box.createVerticalBox();
+    Box hbox = Box.createHorizontalBox();
+    vbox.add(sp);
+    hbox.add(Box.createGlue());
+    hbox.add(methods);
+    hbox.add(filterBtn);
+    hbox.add(Box.createGlue());
+    vbox.add(hbox);
+    leftBox.setTopComponent(vbox);
     sp.setMinimumSize(new Dimension(400,300));
     sp.setPreferredSize(sp.getMinimumSize());
 
@@ -460,7 +510,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       root = new DynamicUtilTreeNode(v, v);
       model = new DefaultTreeModel(root);   
       tree.setModel(model);
-      graph.setModel(model, null, WiskOpdr.applet.getStudentMethod(activeMethod));
+      StudentMethod studentMethod = WiskOpdr.applet.getStudentMethod(activeMethod);
+      methods.setText(studentMethod.getMethod());
+      methods.setEnabled(activeMethod != null);
+      methodListener.setActive(studentMethod);
+      filterBtn.setEnabled(activeMethod != null);
+      graph.setModel(model, null, studentMethod);
     }
 // old style
     if (choices != null) {

@@ -13,7 +13,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JPopupMenu;
 
-public class WiskOpdrComboBox extends JComboBox {
+@SuppressWarnings("serial")
+public class WiskOpdrComboBox<T> extends JComboBox<T> {
 
   private Color bgColor = WiskOpdr.colorBlue3;
   private Color fgColor = Color.white;
@@ -39,7 +40,7 @@ public class WiskOpdrComboBox extends JComboBox {
     }
   }
   
-  public void addItem(Object item) {
+  public void addItem(T item) {
 	  super.addItem(item);
 	  setPreferredSize(new Dimension(super.getPreferredSize().width , 22));
 	  setMaximumSize(new Dimension(250 , 22));

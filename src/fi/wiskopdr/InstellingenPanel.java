@@ -9,21 +9,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 import javax.swing.*;
 
 import fi.beans.stringutils.StringUtils;
-import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.*;
-import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.ShareAction;
 //import fi.wiskopdr.tekstobjects.VoorwaardelijkeLinkButton;
 import fi.wiskopdr.expressies.*;
-import fi.beans.base64code.StringCodeObject;
 import fi.beans.numworxlf.JScrollPane;
 
 
@@ -113,7 +108,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private int margeBoven = 10;
 	private int margeOnder = 10;
 	
-	private JComboBox keyboardCombobox;
+	private JComboBox<String> keyboardCombobox;
 	private JLabel keyboardLabel;
 	private JComboBox keyboardVersionCombobox;
 	private JLabel keyboardVersionLabel;
@@ -385,7 +380,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.add(Box.createRigidArea(new Dimension(10,0)));
 		boxh.add(Box.createHorizontalGlue());
 		
-		keyboardCombobox = new WiskOpdrComboBox();
+		keyboardCombobox = new WiskOpdrComboBox<String>();
 		keyboardCombobox.setFont(font);
 		keyboardCombobox.setPreferredSize(new Dimension(180,24));
 		keyboardCombobox.setForeground(WiskOpdr.fgcolorEditor);
