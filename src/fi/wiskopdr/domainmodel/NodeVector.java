@@ -14,6 +14,14 @@ class NodeVector extends Vector<Node> implements Node {
       addElement(new NodeVector(cat));
     }
   }
+  
+  public NodeVector(String title, String description) {
+    this.title = title;
+    this.description = description;
+  }
+  public NodeVector(String title) {
+    this(title, "");
+  }
 
   NodeVector(StudentCategory cat) {
     this.title = cat.category;

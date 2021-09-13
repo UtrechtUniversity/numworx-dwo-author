@@ -195,18 +195,68 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
   }
 
+  public static final String BEGRIPPEN_EN_VAKTAAL = "Begrippen en vaktaal";
+
   private class MethodListener implements ItemListener {
 
-    DefaultTreeModel methodModel;
+    InvisibleTreeModel methodModel;
     StudentMethod active = new StudentMethod();
     
     @Override
     public void itemStateChanged(ItemEvent e) {
       if (e.getStateChange() == ItemEvent.SELECTED) {
         if (methodModel == null) {
+          Map<String, InvisibleNode> nodes = new HashMap<>();
           String method = active.getMethod();
-          DefaultMutableTreeNode root = new DefaultMutableTreeNode(method); 
-          methodModel = new DefaultTreeModel(root);       
+          NodeVector uroot = new NodeVector(method);
+          DefaultMutableTreeNode root = new InvisibleNode(uroot); 
+          List<String> books = active.getBooks();
+          int bookcount = books.size();
+          for(int i = 0; i < bookcount; i++ ) {
+            NodeVector ubook = new NodeVector(books.get(i));
+            InvisibleNode book = new InvisibleNode(ubook);
+            root.add(book);
+            uroot.add(ubook);
+            List<String> chapters = active.getChapters().get(i);
+            int chapsize = chapters.size();
+            for(int j = 0; j < chapsize; j ++) {
+              NodeVector uchap = new NodeVector(chapters.get(j));
+              InvisibleNode chap = new InvisibleNode(uchap);
+              book.add(chap);
+              ubook.add(uchap);
+              String key = active.key() + "-" + book.toString() + "-" + (j+1);
+              nodes.put(key, chap);
+              NodeVector ubenv = new NodeVector(BEGRIPPEN_EN_VAKTAAL);
+              InvisibleNode benv = new InvisibleNode(ubenv);
+              chap.add(benv);
+              uchap.add(ubenv);
+              key = key + "-W:";
+              nodes.put(key,  benv);
+            }
+          }
+          Enumeration<DefaultMutableTreeNode> all = ((DefaultMutableTreeNode) model.getRoot()).depthFirstEnumeration();
+          while( all.hasMoreElements() ) {
+            Object o = all.nextElement().getUserObject();
+            if (o instanceof NodeLeaf) {
+              NodeLeaf nl = (NodeLeaf)o;
+              List<DomStudentModelMethodInfo> methodeInfos = nl.getMethodeInfos();
+              if (methodeInfos == null) continue;
+              Set<String> infos = methodeInfos.stream().map(DomStudentModelMethodInfo::key).collect(Collectors.toSet());
+              String title = nl.toString();              
+              for(String mi : infos) {
+                if (title.startsWith("W:")) 
+                  mi += "-W:";
+                nodes.computeIfPresent(mi, (k, n) -> { 
+                  InvisibleNode node = new InvisibleNode(o, false, true);
+                  insertMethod(n,node);
+                  return n; });
+              }
+            }
+          }
+          
+          
+          
+          methodModel = new InvisibleTreeModel(root);       
         }
         
         tree.setModel(methodModel);
@@ -214,6 +264,13 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         tree.setModel(model);
       }
       
+    }
+
+    private void insertMethod(InvisibleNode parent, InvisibleNode node) {
+      Node unode = (Node) node.getUserObject();
+      NodeVector uparent = (NodeVector) parent.getUserObject();
+      parent.add(node);
+      uparent.add(unode);
     }
 
     public StudentMethod getActive() {
