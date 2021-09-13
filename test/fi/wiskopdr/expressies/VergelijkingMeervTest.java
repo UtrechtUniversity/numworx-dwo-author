@@ -60,7 +60,26 @@ public class VergelijkingMeervTest {
     boolean result = check.isOplossing(exp, "x"); //
     assertTrue("eindoplossing x", result);
   }
+
+  @Test
+  public void test6() {
+    String vgl = "$dx*a$nx@@=a";
+    FunctieMVDefSet functieMVDefSet = new FunctieMVDefSet();
+    VergelijkingMeerv check = FormuleParser.parseVergelijking("$f" + vgl + "@", functieMVDefSet);      
+    BasisExpressie exp = new BasisExpressie("x");
+    boolean result = check.isOplossing(exp, "x"); //
+    assertTrue("eindoplossing x", result);
+  }
   
+  @Test
+  public void test7() {
+    String vgl = "$dx^2$nx@@=x+x";
+    FunctieMVDefSet functieMVDefSet = new FunctieMVDefSet();
+    VergelijkingMeerv check = FormuleParser.parseVergelijking("$f" + vgl + "@", functieMVDefSet);
+    BasisExpressie exp = new BasisExpressie("x");
+    boolean result = check.isOplossing(exp, "x"); //
+    assertTrue("eindoplossing x", result);
+  }
   
 
 }
