@@ -700,6 +700,8 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		opnieuwMogelijk = this.opnieuwMogelijk;
 		gekoppeldeOpdrachten = this.gekoppeldeOpdrachten;
 		instellingen = instellingenPanel.geefInstellingen();
+		if (instellingen.containsKey("studentModelId"))
+		  premium = true;     // premiumfeature: studentmodellen
 		
 		if(TekstVakPanel.styles != null)
 			instellingen.put("TekstVakPanelStyles", TekstVakPanel.styles);

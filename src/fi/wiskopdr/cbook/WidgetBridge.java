@@ -94,7 +94,7 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		try {
 			return new URL("https://mc2-resource.appspot.com/dav/");
 			//return new URL("http://localhost:8888/dav/"); // LOCAL
-		} catch (MalformedURLException _) {
+		} catch (MalformedURLException oops) {
 			return null;
 		}
 	}

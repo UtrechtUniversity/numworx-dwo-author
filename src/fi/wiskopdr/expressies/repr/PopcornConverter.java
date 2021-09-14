@@ -32,11 +32,11 @@ public class PopcornConverter extends AbstractConverter {
 		basisString = basisString.replace(',','.'); // decimale komma
 		try {
 			return new BigInteger(basisString); // looks Integer
-		} catch(Exception _) {}
+		} catch(Exception oops) {}
 		try {
 			new Double(basisString);    // looks Double
 			return basisString;			// prevent conversion errors 
-		} catch(Exception _) {}
+		} catch(Exception oops) {}
 		return "$" + basisString;		// variable
 	}
 
