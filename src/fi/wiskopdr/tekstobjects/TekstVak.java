@@ -1064,12 +1064,14 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	    {	tekst.delete(firstIndex,lastIndex);
 	    	vulVak(tekst.toString());
 	    	setCaret(firstIndex);
+	    	keyStrokeUpdated = true;
 	    	return true;
 	    }
 	    if(tekst.length()>0 && elementAt(0).isSelected())
 		{	tekst.delete(0,0);
 	    	vulVak(tekst.toString());
 	    	setCaret(0);
+	    	keyStrokeUpdated = true;
 	    	return true;
 	    }
 	    return false;	
@@ -1515,7 +1517,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 			else if (kt == KeyEvent.VK_BACK_SPACE)
 	        {
 				if(!keyStrokeUpdated)
-				{	if(!actieveRegel.backSpaceAction() || backSpaceNeedsLayout())
+				{	
+				    if(!actieveRegel.backSpaceAction() || backSpaceNeedsLayout())
 	    				{	vulVak(tekst.toString());
 						setCaret(caretPos);
 	    				}
