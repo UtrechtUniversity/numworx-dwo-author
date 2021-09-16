@@ -15,5 +15,9 @@ public interface TrackerContext extends Adaptee {
   void clearSelection();
   void toggle(Destroyable d);
   Vector<Destroyable> selection();
+  default boolean isTracked(Destroyable p) {
+    Track t = getTrack();
+    return t != null && t.isTracked(p);
+  }
 
 }

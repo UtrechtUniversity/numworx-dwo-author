@@ -100,6 +100,12 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
       return "Finger" + id;
     }
 
+    @Override
+    public boolean isTracked(Destroyable p) {
+      // TODO Auto-generated method stub
+      return track != null && track.isTracked(p);
+    }
+
   }
 
   private final CssColor black = CssColor.make(0,0,0);
@@ -347,7 +353,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	
 	Map<Integer, TrackerContext> contexts = new HashMap<>();
 	
-	protected TrackerContext getCtx(int id) {
+	public TrackerContext getCtx(int id) {
 	  TrackerContext c = contexts.get(id);
 	  if(c == null) {
 	      c = new SpeelVeldContext(id);

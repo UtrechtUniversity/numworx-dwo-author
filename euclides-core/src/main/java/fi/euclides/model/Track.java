@@ -25,4 +25,8 @@ public class Track {
 		p.moveTo(x, y);
 	}
 
+  public boolean isTracked(Destroyable d) {
+    return d == p;
+  }
+
 }
