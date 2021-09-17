@@ -229,6 +229,7 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 			content.repaint();
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public <T> T adapt(Class<T> cls) {
 			if(cls == nl.numworx.geodefiner.common.Snapper.class) return (T) snapper;

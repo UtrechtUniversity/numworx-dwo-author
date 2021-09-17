@@ -26,8 +26,7 @@ public final class Snapper extends nl.numworx.geodefiner.common.Snapper implemen
 			this.viewer = viewer;
 		}
 		
-		public void translate(MouseEvent ev) {
-			
+		private boolean testHits(MouseEvent ev) {
 			HitTester test = viewer.getHitTester().copy();
 			test.setXY(ev.getX(), ev.getY());
 			test.setVisitor(this);
@@ -36,10 +35,13 @@ public final class Snapper extends nl.numworx.geodefiner.common.Snapper implemen
 			for(Punt p: points) {
 				p.visit(test);
 				if (this.test)
-					return; // no gravity at points.
+					return true; // no gravity at points.
 			}
-			
-			
+			return false;
+		}
+		
+		
+		public void translate(MouseEvent ev) {
 			if (gravity) {
 				int ox = (int) viewer.getModel().getO().getXd();
 				int dx = (int) viewer.getModel().getU().getXd() - ox;
@@ -58,7 +60,9 @@ public final class Snapper extends nl.numworx.geodefiner.common.Snapper implemen
 				if ( y*2 > dy) y -= dy;
 				//System.out.println(" " + x);
 				if(y > SNAP || y < -SNAP) y = 0;
-				ev.translatePoint(-x, -y);
+
+				if ( (x != 0 || y != 0) && !testHits(ev) )
+					ev.translatePoint(-x, -y);
 			}
 // Keep mouse inside panel
 			{
@@ -79,7 +83,7 @@ public final class Snapper extends nl.numworx.geodefiner.common.Snapper implemen
 
 		@Override
 		public void visitPunt(Punt p) {
-			test = true;
+			test = !viewer.isTracked(p);
 		}
 
 		@Override
