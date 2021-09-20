@@ -38,6 +38,8 @@ public class GraphNode {
 
 	static final String NOTFOUND = "NOTFOUND";
 	private static Color defaultNodeColor = LeerdomeinGraphPanel.colorBlue4;
+	private static Color defaultKennenNodeColor = new Color(255,255,150);
+	private static Color defaultKennenNodeBorderColor = new Color(255,200,150);
 	private static Color defaultTextColor = LeerdomeinGraphPanel.colorBlue1;
 	private static int defaultFontSize = 16;
 	private static Font defaultFont = new Font("SansSerif", Font.PLAIN, defaultFontSize);
@@ -51,7 +53,7 @@ public class GraphNode {
 	// private String label;
 
 	private Point tempLocation;
-	private int size = 16;
+	private int size = 24;//Node size
 	private Color nodeColor = defaultNodeColor;
 	private Color nodeBorderColor = LeerdomeinGraphPanel.colorBlue2;
 	private Color textColor = defaultTextColor;
@@ -76,6 +78,10 @@ public class GraphNode {
 	private Color halfSuccesColor = new Color(180, 240, 180);
 	private Color failColor = new Color(200, 0, 0);
 	private Color halfFailColor = new Color(255, 150, 150);
+	
+	private boolean kennenLeerdoel;
+	
+	private ArrayList<String> deselections;
 
 	// private boolean visible = true;
 
@@ -83,6 +89,11 @@ public class GraphNode {
 		this.ID = ID;
 		this.subdomein = subdomein;
 		this.description = description;
+		kennenLeerdoel = description.startsWith("W:");
+		if(kennenLeerdoel) {
+			nodeColor = defaultKennenNodeColor;
+			nodeBorderColor = defaultKennenNodeBorderColor;
+		}
 		// setFont(defaultFont);
 	}
 
@@ -90,6 +101,11 @@ public class GraphNode {
 		this.ID = ID;
 		this.subdomein = subdomein;
 		this.description = description;
+		kennenLeerdoel = description.startsWith("W:");
+		if(kennenLeerdoel) {
+			nodeColor = defaultKennenNodeColor;
+			nodeBorderColor = defaultKennenNodeBorderColor;
+		}
 		methodeInfos = Collections.singletonMap(info.key(), info);
 	}
 
@@ -109,6 +125,12 @@ public class GraphNode {
 	public void setPartOfSelection(Boolean partOfSelection) {
 		this.partOfSelection = partOfSelection;
 	}
+	
+	public boolean isPartOfSelection() {
+		if(partOfSelection==null)
+			return false;
+		return partOfSelection;
+	}
 
 	public Double getSuccesFailScore() {
 		return succesFailScore;
@@ -116,6 +138,14 @@ public class GraphNode {
 
 	public String getID() {
 		return ID;
+	}
+	
+	public ArrayList<String> getDeselections() {
+		return deselections;
+	}
+	
+	public void updateDeselections(ArrayList<String> deselections) {
+		this.deselections = deselections;
 	}
 
 	@Deprecated
@@ -459,6 +489,7 @@ public class GraphNode {
 						}
 					}
 				}
+				g.setColor(nodeColor);
 				if (blur)
 					g.setColor(new Color(g.getColor().getRed(), g.getColor().getGreen(), g.getColor().getBlue(), 30));
 				g.fillOval(x - size / 2, y - size / 2 + textHeight / 6, size, size);

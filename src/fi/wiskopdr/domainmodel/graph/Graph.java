@@ -107,6 +107,9 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 	
 	private StudentMethod active;
 	
+	private VoorkennisDeselector voorkennisDeselector;
+	private GraphNode voorkennisTreeNode;
+	
 	
 
 	public Graph() {
@@ -118,7 +121,7 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 		addMouseMotionListener(this);
 		painter = this;
 		
-		
+		voorkennisDeselector = new VoorkennisDeselector(this);
 		
 		topPanel = new JPanel();
 		topPanel.setBackground(LeerdomeinGraphPanel.colorBlue3);
@@ -555,8 +558,13 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 		for(GraphNode gn : graphNodes) {
 			gn.setVisible(false);
 		}
+		voorkennisTreeNode = graphNode;
 		ArrayList<ArrayList<GraphNode>> voorkennisNodes = getVoorkennisNodes(graphNode);
 		cleanVoorkennisNodes(voorkennisNodes);
+		//voorkennisDeselector.removeCheckBoxes();
+		if(graphNode.isPartOfSelection()) {
+			voorkennisDeselector.initiate(graphNode, voorkennisNodes);
+		}
 		for(int i=0 ; i<voorkennisNodes.size() ; i++) {
 			ArrayList<GraphNode> gnList = voorkennisNodes.get(i);
 			for(int j=0 ; j<gnList.size() ; j++) {
@@ -868,6 +876,7 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 	
 	public void verbergVoorkennisTree() {
 		voorkennisTree = false;
+		voorkennisDeselector.finalize();
 		for(int i = 0 ; i<graphNodes.size() ; i++) {
 			GraphNode node = graphNodes.get(i);
 			node.setTempLocation(null);
