@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -480,6 +482,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   private JScrollPane scroll;
   private JSlider slider;
   private List<String> objectives;
+  private List<String> deselections = Collections.emptyList();
   
   public List<String> getObjectives() {
     return objectives;
@@ -513,6 +516,20 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     setObjectives();
   }
   
+  @Override
+  public void setDeselections(List<String> objectives) { // not null and copy
+    if (objectives == null) objectives = new ArrayList<>();
+    else objectives = new ArrayList<>(objectives);
+
+    this.deselections = objectives;
+  }
+  
+  @Override
+  public List<String> getDeselections() {
+    return this.deselections;
+  }
+  
+  
   private void setObjectives() {
     if (objectives != null) {
     ids = new HashMap<>();
@@ -537,6 +554,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     //ids = new HashMap<>();
     getObjectives(root.getUserObject(), ids);
     objectives = createObjectives();
+    deselections = graph.getDeselections();
 // old style
     int x = studentModel.get().categories.length;
     int y = studentModel.get().getMaxObjectives();
@@ -646,6 +664,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         if (on) n.setPartOfSelection(Boolean.valueOf(kennis.contains(n.getID())));
         else n.setPartOfSelection(null);
       });
+    graph.setDeselections(deselections);
     graph.repaint();
   }
 

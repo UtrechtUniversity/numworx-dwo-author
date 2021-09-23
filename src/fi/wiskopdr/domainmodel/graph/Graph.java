@@ -876,7 +876,7 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 	
 	public void verbergVoorkennisTree() {
 		voorkennisTree = false;
-		voorkennisDeselector.finalize();
+		voorkennisDeselector.end();
 		for(int i = 0 ; i<graphNodes.size() ; i++) {
 			GraphNode node = graphNodes.get(i);
 			node.setTempLocation(null);
@@ -1541,5 +1541,21 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 		}
 	}
 	//end ActionProducer
+
+  public void setDeselections(List<String> deselections) {
+    for(GraphNode node: graphNodes) {
+      ArrayList<ArrayList<GraphNode>> nodes = getVoorkennisNodes(node);
+      Set<String> set = nodes.stream().flatMap(ArrayList::stream).map(GraphNode::getID).collect(Collectors.toSet());
+      node.setDeselections(deselections, set);
+    }
+  }
+  
+  public List<String> getDeselections() {
+    return graphNodes.stream()
+        .map(GraphNode::getDeselections)
+        .flatMap(ArrayList::stream)
+        .distinct()
+        .collect(Collectors.toList());
+  }
 
 }

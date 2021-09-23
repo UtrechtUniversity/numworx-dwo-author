@@ -1041,6 +1041,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				String logIDLabel = "";
 				boolean[][] logObjectives = null;
 				String[] smObjectives = null;
+				String[] smDeselections = null;
 				boolean hasObjectives = false;
 				double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
@@ -1096,6 +1097,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
         			}
                     try {
                         smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
+                        smDeselections = (String[]) interactiePanelLaunchState.get(Constants.DESELECTIONS);
                     } catch(Exception ex) {}
                 
         		if(interactiePanelLaunchState.containsKey("hasObjectives"))
@@ -1208,6 +1210,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	            
 	            logObjectivesButton.setChoices(logObjectives); // this order!
 	            logObjectivesButton.setObjectives(smObjectives);
+	            logObjectivesButton.setDeselections(smDeselections);
 	           	            
 	            aantalDecRmField.setVisible(rmKnop);
 	            aantalDecRmLabel.setVisible(rmKnop);
@@ -1377,6 +1380,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			logIDLabel = logIDLabelField.getText();
 			logObjectives = logObjectivesButton.getChoices();
 			String[] smObjectives = logObjectivesButton.getObjectives();
+			String[] smDeselections = logObjectivesButton.getDeselections();
 			
 			puntenGelijkwaardig = this.puntenGelijkwaardig;
 			puntenHerleiding = this.puntenHerleiding;
@@ -1462,6 +1466,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
 	        	try {
 	        	  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+	        	  interactiePanelLaunchState.put(Constants.DESELECTIONS, smDeselections);
 	        	} catch(Exception e) {}
 	        }
 	        interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);

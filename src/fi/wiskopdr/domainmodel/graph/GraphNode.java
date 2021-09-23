@@ -148,6 +148,13 @@ public class GraphNode {
 		this.deselections = deselections;
 	}
 
+	public void setDeselections(Collection<String> deselections, Collection<String> voorkennis) {
+	  ArrayList<String> copy = new ArrayList<>(deselections);
+	  copy.retainAll(voorkennis);
+	  updateDeselections(copy);
+	}
+	
+	
 	@Deprecated
 	public Point getLocation() {
 		if (methodeInfos.isEmpty())

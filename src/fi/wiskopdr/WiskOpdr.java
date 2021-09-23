@@ -235,6 +235,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
             StudentModel model = StudentModel.readModel(new JSONParser().parse(json));
             s.categories = model.categories;
             s.description = model.description;
+            s.activeMethod = model.activeMethod;
         } catch (ParseException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();

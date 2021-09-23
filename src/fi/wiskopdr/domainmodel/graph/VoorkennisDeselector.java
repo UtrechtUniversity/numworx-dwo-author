@@ -44,10 +44,10 @@ public class VoorkennisDeselector implements ActionListener{
 		setDeselections(voorkennisTreeNode.getDeselections());
 	}
 	
-	public void finalize() {
+	public void end() {
 		if(voorkennisTreeNode!=null)
 			voorkennisTreeNode.updateDeselections(getDeselections());
-		System.out.println(getDeselections().toString());
+		System.out.println(getDeselections());
 		for(int i=0 ; i<checkBoxes.size() ; i++) {
 			ArrayList<JCheckBox> cbList = checkBoxes.get(i);
 			for(int j=0 ; j<cbList.size() ; j++) {
@@ -72,7 +72,7 @@ public class VoorkennisDeselector implements ActionListener{
 		return deselections;
 	}
 	
-	public void setDeselections(ArrayList<String> deselections) {
+	public void setDeselections(Iterable<String> deselections) {
 		if(deselections==null)
 			return;
 		for(String ID : deselections) {

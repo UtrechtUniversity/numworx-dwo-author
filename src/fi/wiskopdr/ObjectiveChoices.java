@@ -1,6 +1,7 @@
 package fi.wiskopdr;
 
 import java.awt.Component;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -19,4 +20,6 @@ public interface ObjectiveChoices {
   void setTitle(String title);
   default void setScore(Map<String, Double> scoreMap) {}
   default void setSelection(Map<String, Boolean> selectionMap) {}
+  default List<String> getDeselections() { return Collections.emptyList(); }
+  default void setDeselections(List<String> deselections) { }
 }

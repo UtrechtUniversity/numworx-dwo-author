@@ -22,6 +22,8 @@ import javax.swing.tree.TreeModel;
 
 public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListener
 {
+    private static final String[] NULSTRINGS = new String[0];
+
     class ObjectivesFacade implements ObjectiveChoices, PropertyChangeListener {
       
       JLabel titleLabel = new JLabel();
@@ -162,7 +164,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
     public String[] getObjectives() {
       List<String> obj = strategy.getObjectives();
       if (obj != null) // can be null!
-        return obj.toArray(new String[0]);
+        return obj.toArray(NULSTRINGS);
       else
         return null;
     }
@@ -371,6 +373,15 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 //				globalVarState = null;
 //            }
         }
-	}   
+	}
+  public String[] getDeselections() {
+    List<String> deselections = strategy.getDeselections();
+    return deselections.toArray(NULSTRINGS);
+  }
+  
+  public void setDeselections(String[] deselections) {
+    if (deselections == null) deselections = NULSTRINGS;
+    strategy.setDeselections(Arrays.asList(deselections));
+  }
 }
 
