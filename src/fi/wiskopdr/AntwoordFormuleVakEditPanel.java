@@ -1042,6 +1042,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				boolean[][] logObjectives = null;
 				String[] smObjectives = null;
 				String[] smDeselections = null;
+				String[] smForeknowledge = null;
 				boolean hasObjectives = false;
 				double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
@@ -1098,6 +1099,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
                     try {
                         smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
                         smDeselections = (String[]) interactiePanelLaunchState.get(Constants.DESELECTIONS);
+                        smForeknowledge = (String[]) interactiePanelLaunchState.get(Constants.FOREKNOWLEDGE);
                     } catch(Exception ex) {}
                 
         		if(interactiePanelLaunchState.containsKey("hasObjectives"))
@@ -1211,6 +1213,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	            logObjectivesButton.setChoices(logObjectives); // this order!
 	            logObjectivesButton.setObjectives(smObjectives);
 	            logObjectivesButton.setDeselections(smDeselections);
+	            logObjectivesButton.setForeknowledge(smForeknowledge);
 	           	            
 	            aantalDecRmField.setVisible(rmKnop);
 	            aantalDecRmLabel.setVisible(rmKnop);
@@ -1381,6 +1384,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			logObjectives = logObjectivesButton.getChoices();
 			String[] smObjectives = logObjectivesButton.getObjectives();
 			String[] smDeselections = logObjectivesButton.getDeselections();
+			String[] smForeknowledge = logObjectivesButton.getForeknowledge();
 			
 			puntenGelijkwaardig = this.puntenGelijkwaardig;
 			puntenHerleiding = this.puntenHerleiding;
@@ -1467,6 +1471,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	        	try {
 	        	  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
 	        	  interactiePanelLaunchState.put(Constants.DESELECTIONS, smDeselections);
+	        	  if (smForeknowledge != null) interactiePanelLaunchState.put(Constants.FOREKNOWLEDGE, smForeknowledge);
 	        	} catch(Exception e) {}
 	        }
 	        interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);

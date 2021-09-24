@@ -13,6 +13,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -382,6 +383,18 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
   public void setDeselections(String[] deselections) {
     if (deselections == null) deselections = NULSTRINGS;
     strategy.setDeselections(Arrays.asList(deselections));
+  }
+
+  public void setForeknowledge(String[] foreknowledge) {
+    strategy.setForeknowledge(foreknowledge == null ? null : Arrays.asList(foreknowledge));
+  }
+  
+  
+  
+  public String[] getForeknowledge() {
+    Collection<String> knowledge = strategy.getForeknowledge();
+    if (knowledge == null) return null;
+    return knowledge.toArray(NULSTRINGS);
   }
 }
 

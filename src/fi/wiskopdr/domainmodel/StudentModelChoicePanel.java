@@ -13,6 +13,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.EventObject;
@@ -483,6 +484,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   private JSlider slider;
   private List<String> objectives;
   private List<String> deselections = Collections.emptyList();
+  private Collection<String> foreknowledge;
   
   public List<String> getObjectives() {
     return objectives;
@@ -544,6 +546,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     this.choices = choices;
     this.ids = null;  // if you forget setObjectives!
     this.objectives = null;
+    this.deselections = Collections.emptyList();
   }
 
   @Override
@@ -555,6 +558,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     getObjectives(root.getUserObject(), ids);
     objectives = createObjectives();
     deselections = graph.getDeselections();
+    foreknowledge = calculateForeknowledge();
 // old style
     int x = studentModel.get().categories.length;
     int y = studentModel.get().getMaxObjectives();
@@ -624,6 +628,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     }
 
     updateGraph();
+    graph.setDeselections(deselections);
+    foreknowledge = calculateForeknowledge();
     model.nodeStructureChanged(root);
 
     @SuppressWarnings("unchecked")
@@ -645,6 +651,20 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   private void updateGraph() {
 
 // mogelijke optimalisatie: kennis tree eenmalig opbouwen uit ids.keyset en dan bijwerken.    
+    Set<String> kennis = calculateKennis();
+    Set<String> voorkennis = ObjectivesViewAction.metVoorkennis(kennis, studentModel.get());
+    graph.graphNodes
+      .forEach(n -> {
+        boolean on = voorkennis.contains(n.getID());
+        n.setSuccesFailScore(on ? 100.0 : null);
+        if (on) n.setPartOfSelection(Boolean.valueOf(kennis.contains(n.getID())));
+        else n.setPartOfSelection(null);
+      });
+    graph.repaint();
+  }
+
+
+  private Set<String> calculateKennis() {
     Set<String> kennis = new TreeSet<>();
     @SuppressWarnings("unchecked")
     Enumeration<DefaultMutableTreeNode> e = root.depthFirstEnumeration();
@@ -656,16 +676,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         if (((NodeLeaf) object).isValue()) kennis.add(((NodeLeaf) object).getId());
       }      
     }
-    Set<String> voorkennis = ObjectivesViewAction.metVoorkennis(kennis, studentModel.get());
-    graph.graphNodes
-      .forEach(n -> {
-        boolean on = voorkennis.contains(n.getID());
-        n.setSuccesFailScore(on ? 100.0 : null);
-        if (on) n.setPartOfSelection(Boolean.valueOf(kennis.contains(n.getID())));
-        else n.setPartOfSelection(null);
-      });
-    graph.setDeselections(deselections);
-    graph.repaint();
+    return kennis;
   }
 
   @Override
@@ -757,16 +768,23 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
   }
 
-//  private WiskOpdrPanel getWiskOpdrPanel(String descr) {
-//    Object save = TekstImageVak.getImageMap();
-//    try {
-//      WiskOpdrPanel panel = WiskOpdr.getWiskOpdrPanel(descr, WiskOpdr.language);
-//      panel.setBackground(Color.WHITE);
-//      return panel;
-//    } finally {
-//      TekstImageVak.setImageMap(save);
-//    }
-//  }
+    private Collection<String> calculateForeknowledge() {
+      Set<String> kennis = calculateKennis();
+      Set<String> voorkennis = ObjectivesViewAction.metVoorkennis(kennis, studentModel.get());
+      voorkennis.removeAll(deselections);
+      return voorkennis;
+    }
+
+    @Override
+    public Collection<String> getForeknowledge() {
+      return this.foreknowledge;
+    }
+
+
+    @Override
+    public void setForeknowledge(Collection<String> foreknowledge) {
+      this.foreknowledge = foreknowledge;
+    }
   
   
 }

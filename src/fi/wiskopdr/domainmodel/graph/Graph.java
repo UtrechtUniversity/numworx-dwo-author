@@ -1549,7 +1549,7 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
       node.setDeselections(deselections, set);
     }
   }
-  
+    
   public List<String> getDeselections() {
     return graphNodes.stream()
         .map(GraphNode::getDeselections)
