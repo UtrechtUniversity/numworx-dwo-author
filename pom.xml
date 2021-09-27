@@ -314,9 +314,7 @@
 		<dependency>
 			<groupId>fi.tegels</groupId>
 			<artifactId>tegels</artifactId>
-			<version>0.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/output/jar/tegels.jar</systemPath>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.geomalgebra</groupId>
@@ -458,7 +456,7 @@
 		<dependency>
 			<groupId>fi.verknippen</groupId>
 			<artifactId>verknippen</artifactId>
-			<version>0.0.0</version>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.mathscratch</groupId>
