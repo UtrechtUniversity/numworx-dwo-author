@@ -288,7 +288,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
          
         importButton = new WiskOpdrButton("Import");
         importButton.addActionListener(this);
-        if (WiskOpdr.isExperimental() && WiskOpdr.isPremium())
+        if (WiskOpdr.isPremium())
         		//hb.add(importButton);
         
         hb.add(Box.createHorizontalGlue());
@@ -315,7 +315,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 		leerdomeinCombobox.setMinimumSize(new Dimension(360,22));
 		leerdomeinCombobox.addActionListener(this);
 		Box vb = Box.createVerticalBox();
-		if (WiskOpdr.isExperimental() && WiskOpdr.isPremium()) {
+		if (WiskOpdr.isPremium()) {
 			hb = Box.createHorizontalBox();
 			hb.add(studentModelRB) ; hb.add(Box.createHorizontalGlue());
 			vb.add(hb);

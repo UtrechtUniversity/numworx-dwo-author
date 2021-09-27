@@ -17,6 +17,7 @@ import javax.swing.JPopupMenu;
 import org.json.fimple.JSONArray;
 
 import fi.wiskopdr.InteractiePanelContainerIF;
+import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.domainmodel.Constants;
@@ -391,7 +392,7 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 	    boolean logOption = false;
 		String logID = "";
 		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
+		String[] smObjectives = null, smDeselections = null, smForeknowledge = null;
 		boolean check = true;
 		boolean teltMee = true;
 		//boolean checkFormule = false;
@@ -412,12 +413,11 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 		if(preferences.containsKey("teltMee")) teltMee = ((Boolean)preferences.get("teltMee")).booleanValue();
 		//if(preferences.containsKey("checkFormule")) checkFormule = ((Boolean)preferences.get("checkFormule")).booleanValue();
 		//if(preferences.containsKey("formuleStrings")) formuleStrings = (String[])preferences.get("formuleStrings");
-		if(preferences.containsKey("logObjectives")) logObjectives = (boolean[][])preferences.get("logObjectives");
-		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		if(preferences.containsKey("DDwidgetID")) crossWidgetId = (String)preferences.get("DDwidgetID");
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
+		ipLaunchState.putAll(ObjectiveChoiceButton.copyEditState(preferences));
 		ipLaunchState.put("aantalSleepObjects", new Integer(itemCount));
 		ipLaunchState.put("aantalDoelObjects", new Integer(itemCount));
 		ipLaunchState.put("randomizePositions", new Boolean(randomizePositions));
@@ -437,6 +437,8 @@ public class DragDropGenerator implements TComponentGenerator, ActionListener {
 	    	//ipLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
             try {
               ipLaunchState.put(Constants.OBJECTIVES, smObjectives);
+              ipLaunchState.put(Constants.DESELECTIONS, smDeselections);
+              ipLaunchState.put(Constants.FOREKNOWLEDGE, smForeknowledge);
             } catch(Exception e) {}
 	    }
 //		if("".equals(knopImageString))

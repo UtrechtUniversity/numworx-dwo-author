@@ -594,8 +594,6 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				boolean logOption = false;
 				String logID = "";
 				String logIDLabel = "";
-				boolean[][] logObjectives = null;
-				String[] smObjectives = null;
 				boolean checkExternal = false;
 				
 				
@@ -610,8 +608,6 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				if(interactiePanelLaunchState.containsKey("logOption")) logOption = ((Boolean)interactiePanelLaunchState.get("logOption")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("logID")) logID = (String)interactiePanelLaunchState.get("logID");
 				if(interactiePanelLaunchState.containsKey("logIDLabel")) logIDLabel = (String)interactiePanelLaunchState.get("logIDLabel");
-				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
-				if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
 				if(interactiePanelLaunchState.containsKey("checkExternal")) checkExternal = ((Boolean)interactiePanelLaunchState.get("checkExternal")).booleanValue();
 				
 				aantalKeuzes = keuzeMogelijkheden.length;
@@ -675,8 +671,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
                 //logObjectivesButton.setVisible(logOption);
                 logIDField.setText(logID);
                 logIDLabelField.setText(logIDLabel);
-                logObjectivesButton.setChoices(logObjectives);
-                logObjectivesButton.setObjectives(smObjectives);
+                logObjectivesButton.setEditState(interactiePanelLaunchState);
                 
 				setFeedbackOption(hasFeedback);
 				feedbackCB.setSelected(hasFeedback);
@@ -697,7 +692,6 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 		    String[] keuzeMogelijkheden = null;
 	        String antwoordString = null;
 			int scoreMax = 0;
-			int[][] scoreMaxObjectives = null;
 			Hashtable[] answerModels;
 			boolean hasFeedback;
 			boolean check = true;
@@ -705,8 +699,6 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			boolean logOption = false;
 			String logID = "";
 			String logIDLabel = "";
-			boolean[][] logObjectives = null;
-			String[] smObjectives = null;
 			boolean checkExternal = false;
 			
 			keuzeMogelijkheden = new String[aantalKeuzes];
@@ -727,18 +719,6 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			logOption = logCB.isSelected();
 			logID = logIDField.getText();	
 			logIDLabel = logIDLabelField.getText();
-			logObjectives = logObjectivesButton.getChoices();
-			smObjectives = logObjectivesButton.getObjectives();
-			
-			if(logObjectives!=null)
-			{	scoreMaxObjectives = new int[logObjectives.length][];
-				for(int j=0 ; j<scoreMaxObjectives.length; j++)
-				{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-					for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-					{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-					}
-				}
-			}
 			
 			checkExternal = checkExternalCB.isSelected();
 			
@@ -752,18 +732,10 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			interactiePanelLaunchState.put("logOption",new Boolean(logOption));
 			interactiePanelLaunchState.put("logID",logID);
 			interactiePanelLaunchState.put("logIDLabel",logIDLabel);
-			if(logObjectives!=null)
-	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
-	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
-                try {
-                  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
-                } catch(Exception e) {}
-	        }
 			interactiePanelLaunchState.put("checkExternal",checkExternal);
 			
-		
-		
-		
+			interactiePanelLaunchState.putAll(logObjectivesButton.getEditState(scoreMax));
+				
 		return interactiePanelLaunchState;
 	}
 	public void destroy()

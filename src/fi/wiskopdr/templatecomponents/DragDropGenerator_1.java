@@ -12,6 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import fi.wiskopdr.InteractiePanelContainerIF;
+import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.domainmodel.Constants;
@@ -390,11 +391,8 @@ public class DragDropGenerator_1 implements TComponentGenerator, ActionListener 
 		boolean relocate = false;
 		boolean view = false;
 		int scoreMax = 0;
-	    int[][] scoreMaxObjectives = null;
 	    boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		//boolean checkFormule = false;
@@ -415,13 +413,12 @@ public class DragDropGenerator_1 implements TComponentGenerator, ActionListener 
 		if(preferences.containsKey("teltMee")) teltMee = ((Boolean)preferences.get("teltMee")).booleanValue();
 		//if(preferences.containsKey("checkFormule")) checkFormule = ((Boolean)preferences.get("checkFormule")).booleanValue();
 		//if(preferences.containsKey("formuleStrings")) formuleStrings = (String[])preferences.get("formuleStrings");
-		if(preferences.containsKey("logObjectives")) logObjectives = (boolean[][])preferences.get("logObjectives");
-		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		if(preferences.containsKey("DDwidgetID")) crossWidgetId = (String)preferences.get("DDwidgetID");
 		
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
+        ipLaunchState.putAll(ObjectiveChoiceButton.copyEditState(preferences));
 		ipLaunchState.put("aantalSleepObjects", new Integer(itemCount));
 		ipLaunchState.put("aantalDoelObjects", new Integer(itemCount));
 		ipLaunchState.put("randomizePositions", new Boolean(randomizePositions));
@@ -436,13 +433,6 @@ public class DragDropGenerator_1 implements TComponentGenerator, ActionListener 
 		ipLaunchState.put("teltMee",new Boolean(teltMee));
 		//ipLaunchState.put("checkFormule",new Boolean(checkFormule));
 		//ipLaunchState.put("formuleStrings", formuleStrings);
-		if(logObjectives!=null)
-	    {	ipLaunchState.put("logObjectives",logObjectives);
-	    	//ipLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
-            try {
-              ipLaunchState.put(Constants.OBJECTIVES, smObjectives);
-            } catch(Exception e) {}
-	    }
 //		if("".equals(knopImageString))
 //			ipLaunchState.put("knopImageString", "controleerknop");
 //		else

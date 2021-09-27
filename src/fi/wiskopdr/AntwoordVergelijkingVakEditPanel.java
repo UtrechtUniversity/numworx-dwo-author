@@ -1055,9 +1055,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 boolean logOption = false;
 				String logID = "";
 				String logIDLabel = "";
-				boolean[][] logObjectives = null;
-				String[] smObjectives = null;
-                boolean tipOpBalk = true;
+				boolean tipOpBalk = true;
                 boolean hulpOpBalk = false;
                 boolean stapOpBalk = false;
                 boolean solveOpBalk = false;
@@ -1130,8 +1128,6 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				if(interactiePanelLaunchState.containsKey("casAntw")) casAntw = ((Boolean)interactiePanelLaunchState.get("casAntw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
-				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
-				if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
 				
                 this.vorm = vorm;
                 this.exact = exact;
@@ -1232,8 +1228,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 	            //logObjectivesButton.setVisible(logOption);
 	            logIDField.setText(logID);
 	            logIDLabelField.setText(logIDLabel);
-	            logObjectivesButton.setChoices(logObjectives);
-	            logObjectivesButton.setObjectives(smObjectives);
+                logObjectivesButton.setEditState(interactiePanelLaunchState);
                 
                 uitwCB.setSelected(uitw);
                 casAntwCB.setSelected(casAntw);
@@ -1302,6 +1297,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
     }
     
+    @SuppressWarnings("unchecked")
     public Hashtable getEditState()
     {   
         Hashtable interactiePanelLaunchState = new Hashtable();
@@ -1325,7 +1321,6 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             boolean subKnop = false;
             boolean subKnopExtra = false;
             int scoreMax = 0;
-            int[][] scoreMaxObjectives = null;
             boolean formuleToolBijFocus = false;
             Hashtable[] answerModels;
             boolean hasFeedback;
@@ -1345,9 +1340,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             boolean logOption = false;
 			String logID = "";
 			String logIDLabel = "";
-			boolean[][] logObjectives = null;
-			String[] smObjectives = null;
-            double eqTestValueMin = 0;
+			double eqTestValueMin = 0;
 			double eqTestValueMax = 5;
 			boolean uitw = false;
 			boolean casAntw = false;
@@ -1475,26 +1468,13 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
             logOption = logCB.isSelected();
 			logID = logIDField.getText();
 			logIDLabel = logIDLabelField.getText();
-			logObjectives = logObjectivesButton.getChoices();
-			smObjectives = logObjectivesButton.getObjectives();
-			
 			uitw = uitwCB.isSelected();
 			casAntw = casAntwCB.isSelected();
 			boxMetRand = boxMetRandCB.isSelected();
 			
 			
 			if(!teltMee)scoreMax = 0;
-			
-			if(logObjectives!=null)
-			{	scoreMaxObjectives = new int[logObjectives.length][];
-				for(int j=0 ; j<scoreMaxObjectives.length; j++)
-				{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-					for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-					{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-					}
-				}
-			}
-            
+			            
             //changedTexts = this.changedTexts;
             
             eqTestValueMin = this.eqTestValueMin;
@@ -1544,13 +1524,9 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			interactiePanelLaunchState.put("casAntw",new Boolean(casAntw));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
 			interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
-			if(logObjectives!=null)
-	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
-	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
-	        	try {
-                  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
-	        	} catch(Exception e) {}
-	        }
+            
+            interactiePanelLaunchState.putAll(logObjectivesButton.getEditState(scoreMax));
+                
 			
         return interactiePanelLaunchState;
     }

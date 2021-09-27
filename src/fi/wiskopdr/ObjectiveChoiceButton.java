@@ -1,5 +1,6 @@
 package fi.wiskopdr;
 
+import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.domainmodel.StudentModelChoicePanel;
 import fi.wiskopdr.domainmodel.StudentObjective;
@@ -15,7 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import javax.swing.*;
@@ -391,10 +394,90 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
   
   
   
+  static public Map<String,Object> copyEditState(Map<String,Object> interactiePanelLaunchState) {
+    boolean[][] logObjectives = null;
+    int[][] scoreMaxObjectives = null;
+    String[] smObjectives = NULSTRINGS;
+    String[] smForeknowledge = null;
+    String[] smDeselections = NULSTRINGS;
+    
+    if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
+    if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
+    if(interactiePanelLaunchState.containsKey(Constants.FOREKNOWLEDGE)) smForeknowledge = (String[]) interactiePanelLaunchState.get(Constants.FOREKNOWLEDGE);
+    if(interactiePanelLaunchState.containsKey(Constants.DESELECTIONS)) smDeselections = (String[]) interactiePanelLaunchState.get(Constants.DESELECTIONS);
+    if(interactiePanelLaunchState.containsKey("scoreMaxObjectives")) scoreMaxObjectives = (int[][]) interactiePanelLaunchState.get("scoreMaxObjectives");
+    interactiePanelLaunchState = new Hashtable<String,Object>();
+
+    if (scoreMaxObjectives != null) 
+      interactiePanelLaunchState.put("scoreMaxObjectives", scoreMaxObjectives);
+    
+    if(logObjectives!=null)
+    {   interactiePanelLaunchState.put("logObjectives",logObjectives);
+        //interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+        try {
+          interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+          interactiePanelLaunchState.put(Constants.DESELECTIONS, smDeselections);
+          if (smForeknowledge != null)
+            interactiePanelLaunchState.put(Constants.FOREKNOWLEDGE, smForeknowledge);
+        } catch(Exception e) {}
+    }
+    return interactiePanelLaunchState;
+  }
+  
   public String[] getForeknowledge() {
     Collection<String> knowledge = strategy.getForeknowledge();
     if (knowledge == null) return null;
     return knowledge.toArray(NULSTRINGS);
   }
+  
+  public void setEditState(Map interactiePanelLaunchState) {
+    boolean[][] logObjectives = null;
+    String[] smObjectives = null;
+    String[] smForeknowledge = null;
+    String[] smDeselections = null;
+    
+    if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
+    if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
+    if(interactiePanelLaunchState.containsKey(Constants.FOREKNOWLEDGE)) smForeknowledge = (String[]) interactiePanelLaunchState.get(Constants.FOREKNOWLEDGE);
+    if(interactiePanelLaunchState.containsKey(Constants.DESELECTIONS)) smDeselections = (String[]) interactiePanelLaunchState.get(Constants.DESELECTIONS);
+    this.setChoices(logObjectives);
+    this.setObjectives(smObjectives);
+    this.setDeselections(smDeselections);
+    this.setForeknowledge(smForeknowledge);
+  }
+  
+  public Map getEditState(int scoreMax) {
+    Hashtable interactiePanelLaunchState = new Hashtable();
+    int[][] scoreMaxObjectives = null;
+    boolean[][] logObjectives = null;
+    String[] smObjectives = null;
+    logObjectives = this.getChoices();
+    smObjectives = this.getObjectives();
+    String[] smDeselections = this.getDeselections();
+    String[] smForeknowledge = this.getForeknowledge();
+    
+    if(logObjectives!=null)
+    {   scoreMaxObjectives = new int[logObjectives.length][];
+        for(int j=0 ; j<scoreMaxObjectives.length; j++)
+        {   scoreMaxObjectives[j] = new int[logObjectives[j].length];
+            for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
+            {   if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
+            }
+        }
+    }
+    if(logObjectives!=null)
+    {   interactiePanelLaunchState.put("logObjectives",logObjectives);
+        interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
+        try {
+          interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
+          interactiePanelLaunchState.put(Constants.DESELECTIONS, smDeselections);
+          if (smForeknowledge != null)
+            interactiePanelLaunchState.put(Constants.FOREKNOWLEDGE, smForeknowledge);
+        } catch(Exception e) {}
+    }
+    return interactiePanelLaunchState; 
+    
+  }
+  
 }
 

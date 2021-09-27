@@ -713,9 +713,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
                 boolean teltMee = true;
                 boolean logOption = false;
 				String logID = "";
-				boolean[][] logObjectives = null;
-				String[] smObjectives = null;
-                double eqTestValueMin = 0;
+				double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
 				boolean casAntw = false;
 				boolean boxMetRand = true;
@@ -749,8 +747,6 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 				if(interactiePanelLaunchState.containsKey("eqTestValueMax")) eqTestValueMax = ((Double)interactiePanelLaunchState.get("eqTestValueMax")).doubleValue();
 				if(interactiePanelLaunchState.containsKey("casAntw")) casAntw = ((Boolean)interactiePanelLaunchState.get("casAntw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
-				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
-				if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
 				if(interactiePanelLaunchState.containsKey("rekenVakZichtbaar")) rekenVakZichtbaar = ((Boolean)interactiePanelLaunchState.get("rekenVakZichtbaar")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("oplossingenRegelZichtbaar")) oplossingenRegelZichtbaar = ((Boolean)interactiePanelLaunchState.get("oplossingenRegelZichtbaar")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
@@ -811,8 +807,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
                 logIDField.setVisible(logOption);
 	            //logObjectivesButton.setVisible(logOption);
 	            logIDField.setText(logID);
-	            logObjectivesButton.setChoices(logObjectives);
-	            logObjectivesButton.setObjectives(smObjectives);
+                logObjectivesButton.setEditState(interactiePanelLaunchState);
                 
               //  casAntwCB.setSelected(casAntw);
                 boxMetRandCB.setSelected(boxMetRand);
@@ -848,6 +843,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
                 onafhankelijkPV.setText(""+puntenOnafhankelijk);
     }
     
+    @SuppressWarnings("unchecked")
     public Hashtable getEditState()
     {   
         Hashtable interactiePanelLaunchState = new Hashtable();
@@ -867,7 +863,6 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 			boolean onafhankelijkNodig = false;
             int puntenEindOplossing = 10;
             int scoreMax = 0;
-            int[][] scoreMaxObjectives = null;
             Hashtable[] answerModels;
             boolean hasFeedback;
             boolean feedbackSize;
@@ -878,9 +873,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
             boolean teltMee = true;
             boolean logOption = false;
 			String logID = "";
-			boolean[][] logObjectives = null;
-			String[] smObjectives = null;
-            double eqTestValueMin = 0;
+			double eqTestValueMin = 0;
 			double eqTestValueMax = 5;
 			boolean boxMetRand = true;
 			boolean rekenVakZichtbaar = true;
@@ -964,9 +957,6 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
             teltMee = teltMeeCB.isSelected();
             logOption = logCB.isSelected();
 			logID = logIDField.getText();
-			logObjectives = logObjectivesButton.getChoices();
-			smObjectives = logObjectivesButton.getObjectives();
-			
 			//casAntw = casAntwCB.isSelected();
 			boxMetRand = boxMetRandCB.isSelected();
 			rekenVakZichtbaar = rekenVakZichtbaarCB.isSelected();
@@ -974,17 +964,7 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 			formuleToolBijFocus = formuleToolBijFocusCB.isSelected();
 			
 			if(!teltMee)scoreMax = 0;
-			
-			if(logObjectives!=null)
-			{	scoreMaxObjectives = new int[logObjectives.length][];
-				for(int j=0 ; j<scoreMaxObjectives.length; j++)
-				{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-					for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-					{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-					}
-				}
-			}
-            
+			            
             eqTestValueMin = this.eqTestValueMin;
 			eqTestValueMax = this.eqTestValueMax;
             
@@ -1017,15 +997,9 @@ public class StelselAntwoordVakEditPanel extends JLayeredPane implements Interac
 			interactiePanelLaunchState.put("rekenVakZichtbaar", new Boolean(rekenVakZichtbaar));
 			interactiePanelLaunchState.put("oplossingenRegelZichtbaar", new Boolean(oplossingenRegelZichtbaar));
 			interactiePanelLaunchState.put("formuleToolBijFocus", new Boolean(formuleToolBijFocus));
-			if(logObjectives!=null)
-	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
-	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
-                try {
-                  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
-                } catch(Exception e) {}
-	        }
-			
-			
+            
+            interactiePanelLaunchState.putAll(logObjectivesButton.getEditState(scoreMax));
+                
         return interactiePanelLaunchState;
     }
     public void destroy()

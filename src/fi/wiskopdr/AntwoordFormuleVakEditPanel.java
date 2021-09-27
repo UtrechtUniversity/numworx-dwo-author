@@ -1039,11 +1039,6 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				boolean logOption = false;
 				String logID = "";
 				String logIDLabel = "";
-				boolean[][] logObjectives = null;
-				String[] smObjectives = null;
-				String[] smDeselections = null;
-				String[] smForeknowledge = null;
-				boolean hasObjectives = false;
 				double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
 				int aantalDecRm = 10;
@@ -1091,21 +1086,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
                 if(tips){
                 	if(interactiePanelLaunchState.containsKey("ideasInstellingen")) ideasInstellingen = (Hashtable)interactiePanelLaunchState.get("ideasInstellingen");
                 }
-                if(interactiePanelLaunchState.containsKey("logObjectives")) 
-                	try	{	
-        				logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
-        			} catch(Exception ex){
-        			}
-                    try {
-                        smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
-                        smDeselections = (String[]) interactiePanelLaunchState.get(Constants.DESELECTIONS);
-                        smForeknowledge = (String[]) interactiePanelLaunchState.get(Constants.FOREKNOWLEDGE);
-                    } catch(Exception ex) {}
-                
-        		if(interactiePanelLaunchState.containsKey("hasObjectives"))
-        			hasObjectives = ((Boolean)interactiePanelLaunchState.get("hasObjectives")).booleanValue();
-        		else
-        			hasObjectives = logObjectives != null;
+        		if(interactiePanelLaunchState.containsKey("hasObjectives")) {} else {}
         		if(interactiePanelLaunchState.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])interactiePanelLaunchState.get("antwoordSubStrings");
                 if(interactiePanelLaunchState.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[])interactiePanelLaunchState.get("antwoordFuncStrings");
                 
@@ -1210,10 +1191,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	            logIDField.setText(logID);
 	            logIDLabelField.setText(logIDLabel);
 	            
-	            logObjectivesButton.setChoices(logObjectives); // this order!
-	            logObjectivesButton.setObjectives(smObjectives);
-	            logObjectivesButton.setDeselections(smDeselections);
-	            logObjectivesButton.setForeknowledge(smForeknowledge);
+                logObjectivesButton.setEditState(interactiePanelLaunchState);
 	           	            
 	            aantalDecRmField.setVisible(rmKnop);
 	            aantalDecRmLabel.setVisible(rmKnop);
@@ -1382,10 +1360,6 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			logID = logIDField.getText();
 			logIDLabel = logIDLabelField.getText();
 			logObjectives = logObjectivesButton.getChoices();
-			String[] smObjectives = logObjectivesButton.getObjectives();
-			String[] smDeselections = logObjectivesButton.getDeselections();
-			String[] smForeknowledge = logObjectivesButton.getForeknowledge();
-			
 			puntenGelijkwaardig = this.puntenGelijkwaardig;
 			puntenHerleiding = this.puntenHerleiding;
 			puntenExact = this.puntenExact;
@@ -1406,15 +1380,6 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
             }
 			if(!teltMee)scoreMax = 0;
 			
-			if(logObjectives!=null)
-			{	scoreMaxObjectives = new int[logObjectives.length][];
-				for(int j=0 ; j<scoreMaxObjectives.length; j++)
-				{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-					for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-					{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-					}
-				}
-			}
 			subKnop = this.subKnop;
 			subKnopExtra = this.subKnopExtra;
 			rmKnop = rmKnopCB.isSelected();
@@ -1465,15 +1430,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			if(tips){
 				interactiePanelLaunchState.put("ideasInstellingen",ideasInstellingen);
 	        }
-	        if(logObjectives!=null)
-	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
-	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
-	        	try {
-	        	  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
-	        	  interactiePanelLaunchState.put(Constants.DESELECTIONS, smDeselections);
-	        	  if (smForeknowledge != null) interactiePanelLaunchState.put(Constants.FOREKNOWLEDGE, smForeknowledge);
-	        	} catch(Exception e) {}
-	        }
+            
+            interactiePanelLaunchState.putAll(logObjectivesButton.getEditState(scoreMax));
+                
 	        interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
             interactiePanelLaunchState.put("antwoordFuncStrings",antwoordFuncStrings);
             

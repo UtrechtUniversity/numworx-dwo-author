@@ -405,8 +405,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 boolean teltMee = true;
                 boolean logOption = false;
 				String logID = "";
-				boolean[][] logObjectives = null;
-				String[] smObjectives = null;
 				Hashtable changedTexts = new Hashtable();
                 double eqTestValueMin = 0;
 				double eqTestValueMax = 5;
@@ -439,8 +437,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 				if(interactiePanelLaunchState.containsKey("uitw")) uitw = ((Boolean)interactiePanelLaunchState.get("uitw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("casAntw")) casAntw = ((Boolean)interactiePanelLaunchState.get("casAntw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
-				if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
-				if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
                 this.puntenCorrect = puntenCorrect;
                 this.puntenBeginstoffen = puntenBeginstoffen;
                 this.puntenProducten = puntenProducten;
@@ -501,8 +497,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                 logIDField.setVisible(logOption);
 	            //logObjectivesButton.setVisible(logOption);
 	            logIDField.setText(logID);
-	            logObjectivesButton.setChoices(logObjectives);
-	            logObjectivesButton.setObjectives(smObjectives);
+                logObjectivesButton.setEditState(interactiePanelLaunchState);
                 
                 boxMetRandCB.setSelected(boxMetRand);
 	            //startLabel.setVisible(uitw);
@@ -525,6 +520,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
                     
     }
     
+    @SuppressWarnings("unchecked")
     public Hashtable getEditState()
     {   
         Hashtable interactiePanelLaunchState = new Hashtable();
@@ -539,7 +535,6 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
         	int aftrekVereenvoudigbaar = 0;
         	int aftrekOnjuistePijl = 0;
             int scoreMax = 0;
-            int[][] scoreMaxObjectives = null;
             boolean formuleToolBijFocus = false;
             Hashtable[] answerModels;
             boolean hasFeedback;
@@ -550,9 +545,7 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             boolean teltMee = true;
             boolean logOption = false;
 			String logID = "";
-			boolean[][] logObjectives = null;
-			String[] smObjectives = null;
-            double eqTestValueMin = 0;
+			double eqTestValueMin = 0;
 			double eqTestValueMax = 5;
 			boolean uitw = false;
 			boolean boxMetRand = true;
@@ -635,24 +628,11 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
             teltMee = teltMeeCB.isSelected();
             logOption = logCB.isSelected();
 			logID = logIDField.getText();
-			logObjectives = logObjectivesButton.getChoices();
-			smObjectives = logObjectivesButton.getObjectives();
-			
 			boxMetRand = boxMetRandCB.isSelected();
 			
 			
 			if(!teltMee)scoreMax = 0;
-			
-			if(logObjectives!=null)
-			{	scoreMaxObjectives = new int[logObjectives.length][];
-				for(int j=0 ; j<scoreMaxObjectives.length; j++)
-				{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-					for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-					{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-					}
-				}
-			}
-            
+			            
             //changedTexts = this.changedTexts;
             
             eqTestValueMin = this.eqTestValueMin;
@@ -680,14 +660,9 @@ public class ReactieVergelijkingVakEditPanel extends JLayeredPane implements Int
 			interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
-			if(logObjectives!=null)
-	        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
-	        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
-                try {
-                  interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
-                } catch(Exception e) {}
-	        }
-			
+            
+            interactiePanelLaunchState.putAll(logObjectivesButton.getEditState(scoreMax));
+                
         return interactiePanelLaunchState;
     }
     public void destroy()

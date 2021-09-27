@@ -520,12 +520,6 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		boolean formuleMode = false;
 		boolean formuleToolBijFocus = false;
 		boolean boxMetRand = true;
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
-        
-		
-		
-		
 		if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
 		if(interactiePanelLaunchState.containsKey("startString")) startString = (String)interactiePanelLaunchState.get("startString");
 		if(interactiePanelLaunchState.containsKey("scoreMax")) scoreMax = ((Integer)interactiePanelLaunchState.get("scoreMax")).intValue();
@@ -539,8 +533,6 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		if(interactiePanelLaunchState.containsKey("formuleMode")) formuleMode = ((Boolean)interactiePanelLaunchState.get("formuleMode")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("formuleToolBijFocus")) formuleToolBijFocus = ((Boolean)interactiePanelLaunchState.get("formuleToolBijFocus")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
-		if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
-		if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
 		this.puntenGelijkwaardig = puntenGelijkwaardig;
 		this.answerModels = answerModels;
 		
@@ -578,8 +570,7 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
         logIDLabelField.setText(logIDLabel);
-        logObjectivesButton.setChoices(logObjectives);
-        logObjectivesButton.setObjectives(smObjectives);
+        logObjectivesButton.setEditState(interactiePanelLaunchState);
        
         formuleModeCB.setSelected(formuleMode);
         formuleToolBijFocusCB.setVisible(formuleMode);
@@ -591,14 +582,14 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
         
 	}
 	
-	public Hashtable getEditState()
+  @SuppressWarnings("unchecked")
+  public Hashtable getEditState()
 	{	
 		Hashtable interactiePanelLaunchState = new Hashtable();
         
         
 		String antwoordString = null;
 		int scoreMax = 0;
-		int[][] scoreMaxObjectives = null;
 		Hashtable[] answerModels;
 		boolean hasFeedback;
 		boolean check = true;
@@ -606,9 +597,6 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		boolean logOption = false;
 		String logID = "";
 		String logIDLabel = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
-		
 		boolean formuleMode = false;
 		boolean formuleToolBijFocus = false;
 		boolean boxMetRand = true;		
@@ -627,21 +615,10 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		logOption = logCB.isSelected();
 		logID = logIDField.getText();
 		logIDLabel = logIDLabelField.getText();
-		logObjectives = logObjectivesButton.getChoices();
-		smObjectives = logObjectivesButton.getObjectives();
 		formuleMode = formuleModeCB.isSelected();
 		formuleToolBijFocus = formuleToolBijFocusCB.isSelected();
 		boxMetRand = boxMetRandCB.isSelected();
 		
-		if(logObjectives!=null)
-		{	scoreMaxObjectives = new int[logObjectives.length][];
-			for(int j=0 ; j<scoreMaxObjectives.length; j++)
-			{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-				{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-				}
-			}
-		}
 		
 		interactiePanelLaunchState.put("antwoordString",antwoordString);
 		interactiePanelLaunchState.put("scoreMax",new Integer(scoreMax));
@@ -655,15 +632,9 @@ public class AntwoordTekstVakEditPanel extends JLayeredPane implements Interacti
 		interactiePanelLaunchState.put("formuleMode",new Boolean(formuleMode));
 		interactiePanelLaunchState.put("formuleToolBijFocus",new Boolean(formuleToolBijFocus));
 		interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
-		if(logObjectives!=null)
-        {	interactiePanelLaunchState.put("logObjectives",logObjectives);
-        	interactiePanelLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
-            try {
-              interactiePanelLaunchState.put(Constants.OBJECTIVES, smObjectives);
-            } catch(Exception e) {}
-        }
-		
-		
+
+		interactiePanelLaunchState.putAll(logObjectivesButton.getEditState(scoreMax));
+				
 		return interactiePanelLaunchState;
 	}
 	public void destroy()

@@ -287,8 +287,6 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		boolean check = true;
 		boolean teltMee = true;
 		boolean view = false;
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		String knopImageString = "";
 		
 	    if(h.containsKey("aantalValueObjects")) aantalValueObjects = ((Integer)h.get("aantalValueObjects")).intValue();
@@ -301,8 +299,6 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		if(h.containsKey("check")) check = ((Boolean)h.get("check")).booleanValue();
 		if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
 		if(h.containsKey("view")) view = ((Boolean)h.get("view")).booleanValue();
-		if(h.containsKey("logObjectives")) logObjectives = (boolean[][])h.get("logObjectives");
-		if(h.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) h.get(Constants.OBJECTIVES);
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		
 	    this.aantalValueObjects = aantalValueObjects;
@@ -323,8 +319,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
         logIDField.setVisible(logOption);
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
-        logObjectivesButton.setChoices(logObjectives);
-        logObjectivesButton.setObjectives(smObjectives);
+        logObjectivesButton.setEditState(h);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
         
@@ -352,8 +347,6 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		String[] formuleStrings = null;
 		boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		boolean view = false;
@@ -367,22 +360,10 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 	    formuleStrings = formuleEditor.geefRegels();
 	    logOption = logCB.isSelected();
 		logID = logIDField.getText();
-		logObjectives = logObjectivesButton.getChoices();
-		smObjectives = logObjectivesButton.getObjectives();
 		check = checkCB.isSelected();
 		teltMee = teltMeeCB.isSelected();
 		view = viewCB.isSelected();
-		
-		if(logObjectives!=null)
-		{	scoreMaxObjectives = new int[logObjectives.length][];
-			for(int j=0 ; j<scoreMaxObjectives.length; j++)
-			{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-				{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-				}
-			}
-		}
-	    
+			    
 		Hashtable h = new Hashtable();
 		h.put("aantalValueObjects", new Integer(aantalValueObjects));
 		h.put("scoreMax", new Integer(scoreMax));
@@ -394,13 +375,9 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		h.put("check",new Boolean(check));
 		h.put("teltMee",new Boolean(teltMee));
 		h.put("view",new Boolean(view));
-		if(logObjectives!=null)
-		{	h.put("logObjectives",logObjectives);
-    		h.put("scoreMaxObjectives",scoreMaxObjectives);
-            try {
-              h.put(Constants.OBJECTIVES, smObjectives);
-            } catch(Exception e) {}
-		}
+        
+        h.putAll(logObjectivesButton.getEditState(scoreMax));
+            
 		h.put("knopImageString", knopImageString);
 		
 		return h;

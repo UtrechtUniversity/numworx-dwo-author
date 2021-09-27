@@ -900,7 +900,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		objectivesViewBtn.setAction(new ObjectivesViewAction("Leerdoelen overzicht", objectivesButton, opdrNavStruct));
 		boxh.add(objectivesViewBtn);
         boxh.add(Box.createRigidArea(new Dimension(9,0)));
-        if (WiskOpdr.isExperimental())
+        if (WiskOpdr.isPremium())
           boxv4.add(boxh);
 		
 		//boxv4.createVerticalGlue();
@@ -1441,7 +1441,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		{	objectivesButton.setObjectives(objectives);
 			objectivesButton.setCategories(categorieString);
 			pilotObjectivesCB.setSelected(pilotObjectives);
-			if(WiskOpdr.isExperimental() && WiskOpdr.isPremium())
+			if(WiskOpdr.isPremium())
 			{
 			  objectivesButton.setStudentModelID(studentModelId);
 			  WiskOpdr.studentModelSupplier = 

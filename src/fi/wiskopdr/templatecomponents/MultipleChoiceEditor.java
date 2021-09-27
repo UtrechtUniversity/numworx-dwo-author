@@ -489,13 +489,10 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		
 		boolean[] juisteSelecties = null;
 		int scoreMax = 0;
-	    int[][] scoreMaxObjectives = null;
 	    boolean randomizePositions = false;
 		boolean multiSelections = false;
 		boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		boolean checkFormule = false;
@@ -524,8 +521,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    multiSelections = multiSelectionsCB.isSelected();
 	    logOption = logCB.isSelected();
 		logID = logIDField.getText();
-		logObjectives = logObjectivesButton.getChoices();
-		smObjectives = logObjectivesButton.getObjectives();
 		check = checkCB.isSelected();
 		teltMee = teltMeeCB.isSelected();
 		//checkFormule = checkFormuleCB.isSelected();
@@ -536,16 +531,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		breedte = intFromText(breedte, breedteTF.getText());
 		
 		MCwidgetID = this.MCwidgetID;
-		
-		if(logObjectives!=null) {
-			scoreMaxObjectives = new int[logObjectives.length][];
-			for(int j=0 ; j<scoreMaxObjectives.length; j++)	{	
-				scoreMaxObjectives[j] = new int[logObjectives[j].length];
-				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)	{	
-					if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-				}
-			}
-		}
 		
 		if(logMisconceptions!=null)	{	
 			for(int i=0 ; i<aantalSelectables ; i++)
@@ -570,13 +555,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		preferences.put("teltMee",new Boolean(teltMee));
 		//preferences.put("checkFormule",new Boolean(checkFormule));
 		//preferences.put("formuleStrings", formuleStrings);
-		if(logObjectives!=null) {	
-			preferences.put("logObjectives",logObjectives);
-	    	preferences.put("scoreMaxObjectives",scoreMaxObjectives);
-            try {
-            	preferences.put(Constants.OBJECTIVES, smObjectives);
-            } catch(Exception e) {}
-	    }
+        
+        preferences.putAll(logObjectivesButton.getEditState(scoreMax));
+            
 		if(logMisconceptions!=null) {	
 			preferences.put("logMisconceptions",logMisconceptions);
         }
@@ -604,8 +585,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		boolean multiSelections = false;
 		boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		boolean checkFormule = false;
@@ -633,8 +612,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		if(preferences.containsKey("teltMee")) teltMee = ((Boolean)preferences.get("teltMee")).booleanValue();
 		if(preferences.containsKey("checkFormule")) checkFormule = ((Boolean)preferences.get("checkFormule")).booleanValue();
 		if(preferences.containsKey("formuleStrings")) formuleStrings = (String[])preferences.get("formuleStrings");
-		if(preferences.containsKey("logObjectives")) logObjectives = (boolean[][])preferences.get("logObjectives");
-		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		if(preferences.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])preferences.get("logMisconceptions");
 		
@@ -672,8 +649,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         logIDLabelLabel.setVisible(logOption);
         logIDLabelField.setVisible(logOption);
         logIDField.setText(logID);
-        logObjectivesButton.setChoices(logObjectives);
-        logObjectivesButton.setObjectives(smObjectives);
+        logObjectivesButton.setEditState(preferences);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
         logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());

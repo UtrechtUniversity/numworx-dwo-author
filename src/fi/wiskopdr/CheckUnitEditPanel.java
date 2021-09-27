@@ -401,8 +401,6 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		boolean multiSelections = false;
 		boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		boolean checkFormule = false;
@@ -420,8 +418,6 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
 		if(h.containsKey("checkFormule")) checkFormule = ((Boolean)h.get("checkFormule")).booleanValue();
 		if(h.containsKey("formuleStrings")) formuleStrings = (String[])h.get("formuleStrings");
-		if(h.containsKey("logObjectives")) logObjectives = (boolean[][])h.get("logObjectives");
-		if(h.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) h.get(Constants.OBJECTIVES);
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		if(h.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])h.get("logMisconceptions");
 		
@@ -434,25 +430,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 	    randomizePositionsCB.setSelected(randomizePositions);
 	    multiSelectionsCB.setSelected(multiSelections);
 	    this.logMisconceptions = logMisconceptions;
-	    
-//	    for(int i=0 ; i<aantalSelectables ; i++)
-//		{
-//		    selectableCheckboxes[i] = new JCheckBox("Nr "+(i+1));
-//		    selectableCheckboxes[i].setSelected(juisteSelecties[i]);
-//            selectableCheckboxes[i].setOpaque(false);
-//            selectableCheckboxes[i].setBounds(10,80+i*25,60,20);
-//            add(selectableCheckboxes[i],0);
-//            
-//            if(logMisconceptions!=null)
-//            {   logMisconceptionsButtons[i] = new ObjectiveChoiceButton(WiskOpdr.rb.getString("OPT_misconceptions"),WiskOpdr.misconceptions, WiskOpdr.mccCategorieString);
-//			    logMisconceptionsButtons[i].setBounds(100,80+i*25,100,20);
-//			    logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
-//			    add(logMisconceptionsButtons[i]);
-//		    }
-//		}
-//	    enableMisconceptions();
-	    
-	    
+
 	    maakCheckboxes();
 	    for(int i=0 ; i<aantalSelectables ; i++) {
 	    	selectableCheckboxes[i].setSelected(juisteSelecties[i]);
@@ -464,28 +442,14 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 	    
 	    logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
-        //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
-        logObjectivesButton.setChoices(logObjectives);
-        logObjectivesButton.setObjectives(smObjectives);
+        logObjectivesButton.setEditState(h);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
         checkFormuleCB.setSelected(checkFormule);
         if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
         formuleEditor.setVisible(checkFormule);
         selectableCBBox.setVisible(!checkFormule);
-        
-        
-//        knopImageButton.setPopupButtonImage(knopImage);
-//    	iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
-//    	if(knopImageString!=null && !"".equals(knopImageString)) {
-//    		knopImage = iconman.getImage(knopImageString);
-//    		knopImageButton.setPopupButtonImage(knopImage);
-//    	}
-//    	else {
-//    		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
-//    	}
-//    	this.knopImageString = knopImageString;
         
         knopImageButton.setPopupButtonImage(knopImage);
     	iconman = new Iconan(WiskOpdr.applet, (Component)mainPanel, (Hashtable)TekstImageVak.getImageMap());
@@ -507,13 +471,10 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 	{
 	    boolean[] juisteSelecties = null;
 	    int scoreMax = 0;
-	    int[][] scoreMaxObjectives = null;
 	    boolean randomizePositions = false;
 		boolean multiSelections = false;
 		boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		boolean checkFormule = false;
@@ -532,23 +493,12 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 	    multiSelections = multiSelectionsCB.isSelected();
 	    logOption = logCB.isSelected();
 		logID = logIDField.getText();
-		logObjectives = logObjectivesButton.getChoices();
-		smObjectives = logObjectivesButton.getObjectives();
 		check = checkCB.isSelected();
 		teltMee = teltMeeCB.isSelected();
 		checkFormule = checkFormuleCB.isSelected();
 		formuleStrings = formuleEditor.geefRegels();
 		logMisconceptions = this.logMisconceptions;
 		
-		if(logObjectives!=null)
-		{	scoreMaxObjectives = new int[logObjectives.length][];
-			for(int j=0 ; j<scoreMaxObjectives.length; j++)
-			{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-				{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-				}
-			}
-		}
 		
 		if(logMisconceptions!=null)
 		{	for(int i=0 ; i<aantalSelectables ; i++)
@@ -567,13 +517,9 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		h.put("teltMee",new Boolean(teltMee));
 		h.put("checkFormule",new Boolean(checkFormule));
 		h.put("formuleStrings", formuleStrings);
-		if(logObjectives!=null)
-	    {	h.put("logObjectives",logObjectives);
-	    	h.put("scoreMaxObjectives",scoreMaxObjectives);
-            try {
-              h.put(Constants.OBJECTIVES, smObjectives);
-            } catch(Exception e) {}
-	    }
+        
+        h.putAll(logObjectivesButton.getEditState(scoreMax));
+            
 		if(logMisconceptions!=null)
         {	h.put("logMisconceptions",logMisconceptions);
         }

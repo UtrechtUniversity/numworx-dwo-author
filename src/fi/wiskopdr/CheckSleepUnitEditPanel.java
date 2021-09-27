@@ -237,8 +237,6 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		boolean relocate = false;
 		boolean view = false;
 		boolean verzamelDoel = false;
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		String knopImageString = "";
 		
 	    if(h.containsKey("aantalSleepObjects")) aantalSleepObjects = ((Integer)h.get("aantalSleepObjects")).intValue();
@@ -257,8 +255,6 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		if(h.containsKey("relocate")) relocate = ((Boolean)h.get("relocate")).booleanValue();
 		if(h.containsKey("view")) view = ((Boolean)h.get("view")).booleanValue();
 		if(h.containsKey("verzamelDoel")) verzamelDoel = ((Boolean)h.get("verzamelDoel")).booleanValue();
-		if(h.containsKey("logObjectives")) logObjectives = (boolean[][])h.get("logObjectives");
-		if(h.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) h.get(Constants.OBJECTIVES);
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		
 		this.knopImageString = knopImageString;
@@ -280,8 +276,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
         logIDField.setVisible(logOption);
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
-        logObjectivesButton.setChoices(logObjectives);
-        logObjectivesButton.setObjectives(smObjectives);
+        logObjectivesButton.setEditState(h);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
         relocateCB.setVisible(snapToTarget);
@@ -389,12 +384,12 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		return i;
 	}
 	
-	public Hashtable getEditState()
+  @SuppressWarnings("unchecked")
+  public Hashtable getEditState()
 	{
 	    int aantalSleepObjects;
 	    int aantalDoelObjects;
 	    int scoreMax = 0;
-	    int[][] scoreMaxObjectives = null;
 	    boolean randomizePositions = false;
 		boolean snapToTarget = false;
 		int acceptedMarge = 0;
@@ -403,8 +398,6 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		String[] formuleStrings = null;
 		boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		boolean relocate = false;
@@ -424,24 +417,12 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 	    formuleStrings = formuleEditor.geefRegels();
 	    logOption = logCB.isSelected();
 		logID = logIDField.getText();
-		logObjectives = logObjectivesButton.getChoices();
-		smObjectives = logObjectivesButton.getObjectives();
 		check = checkCB.isSelected();
 		teltMee = teltMeeCB.isSelected();
 		relocate = relocateCB.isSelected();
 		view = viewCB.isSelected();
 		verzamelDoel = verzamelDoelCB.isSelected();
-		
-		if(logObjectives!=null)
-		{	scoreMaxObjectives = new int[logObjectives.length][];
-			for(int j=0 ; j<scoreMaxObjectives.length; j++)
-			{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-				{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-				}
-			}
-		}
-	    
+			    
 		Hashtable h = new Hashtable();
 		h.put("aantalSleepObjects", new Integer(aantalSleepObjects));
 		h.put("aantalDoelObjects", new Integer(aantalDoelObjects));
@@ -459,13 +440,9 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		h.put("relocate",new Boolean(relocate));
 		h.put("view",new Boolean(view));
 		h.put("verzamelDoel",new Boolean(verzamelDoel));
-		if(logObjectives!=null)
-        {	h.put("logObjectives",logObjectives);
-        	h.put("scoreMaxObjectives",scoreMaxObjectives);
-            try {
-              h.put(Constants.OBJECTIVES, smObjectives);
-            } catch(Exception e) {}
-        }
+        
+        h.putAll(logObjectivesButton.getEditState(scoreMax));
+            
 		h.put("knopImageString", knopImageString);
 		
 		return h;

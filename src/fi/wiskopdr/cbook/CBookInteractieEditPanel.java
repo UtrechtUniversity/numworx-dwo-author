@@ -136,10 +136,7 @@ public class CBookInteractieEditPanel extends JPanel implements
 			logging.setSelected(Boolean.TRUE.equals(getProperty(WidgetBridge.LOGGING)));
 		}
 		
-		boolean[][] logObjectives = OpdrNavStruct.toBooleanArrayArray(b.get(CBookInteractiePanel.LOG_OBJECTIVES));
-		String[] smObjectives = OpdrNavStruct.toStringArray(b.get(fi.wiskopdr.domainmodel.Constants.OBJECTIVES));
-        logObjectivesButton.setChoices(logObjectives);
-        logObjectivesButton.setObjectives(smObjectives);
+        logObjectivesButton.setEditState(b);
 
 		
 	}
@@ -161,10 +158,9 @@ public class CBookInteractieEditPanel extends JPanel implements
 		}
 		if(logObjectivesButton.isVisible())
 		{
-			launchData.put(CBookInteractiePanel.LOG_OBJECTIVES, logObjectivesButton.getChoices());
-			try {
-              launchData.put(fi.wiskopdr.domainmodel.Constants.OBJECTIVES, logObjectivesButton.getObjectives());
-            } catch (Exception e) {}
+          
+		  launchData.putAll(logObjectivesButton.getEditState(maxScore));
+              
 		}
 		
 		return launchData;

@@ -12,6 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import fi.wiskopdr.InteractiePanelContainerIF;
+import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.domainmodel.Constants;
@@ -277,8 +278,6 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		boolean multiSelections = false;
 		boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		//boolean checkFormule = false;
@@ -299,8 +298,6 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		if(preferences.containsKey("teltMee")) teltMee = ((Boolean)preferences.get("teltMee")).booleanValue();
 		//if(preferences.containsKey("checkFormule")) checkFormule = ((Boolean)preferences.get("checkFormule")).booleanValue();
 		//if(preferences.containsKey("formuleStrings")) formuleStrings = (String[])preferences.get("formuleStrings");
-		if(preferences.containsKey("logObjectives")) logObjectives = (boolean[][])preferences.get("logObjectives");
-		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		if(preferences.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])preferences.get("logMisconceptions");
 		if(preferences.containsKey("MCwidgetID")) crossWidgetId = (String)preferences.get("MCwidgetID");
@@ -310,6 +307,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 			juisteSelecties = new boolean[itemCount];
 		
 		Hashtable<String,Object> ipLaunchState = new Hashtable<String,Object>();
+        ipLaunchState.putAll(ObjectiveChoiceButton.copyEditState(preferences));
 		ipLaunchState.put("juisteSelecties", juisteSelecties);
 		ipLaunchState.put("knopImageString", "controleerknop");
 		ipLaunchState.put("juisteSelecties", juisteSelecties);
@@ -322,16 +320,6 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		ipLaunchState.put("teltMee",new Boolean(teltMee));
 		//ipLaunchState.put("checkFormule",new Boolean(checkFormule));
 		//ipLaunchState.put("formuleStrings", formuleStrings);
-		if(logObjectives!=null)
-	    {	ipLaunchState.put("logObjectives",logObjectives);
-	    	//ipLaunchState.put("scoreMaxObjectives",scoreMaxObjectives);
-            try {
-              ipLaunchState.put(Constants.OBJECTIVES, smObjectives);
-            } catch(Exception e) {}
-	    }
-		if(logMisconceptions!=null)
-        {	ipLaunchState.put("logMisconceptions",logMisconceptions);
-        }
 //		if("".equals(knopImageString))
 //			ipLaunchState.put("knopImageString", "controleerknop");
 //		else

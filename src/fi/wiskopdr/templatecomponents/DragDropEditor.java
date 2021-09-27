@@ -466,11 +466,8 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		boolean view = false;
 		boolean relocate = false;
 		int scoreMax = 0;
-	    int[][] scoreMaxObjectives = null;
 	    boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		//boolean checkFormule = false;
@@ -497,25 +494,13 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		scoreMax = intFromText(scoreMax, maxScoreTF.getText());
 		logOption = logCB.isSelected();
 		logID = logIDField.getText();
-		logObjectives = logObjectivesButton.getChoices();
-		smObjectives = logObjectivesButton.getObjectives();
 		check = checkCB.isSelected();
 		teltMee = teltMeeCB.isSelected();
 		volledigeBreedte = volledigeBreedteCB.isSelected();
 		breedte = intFromText(breedte, breedteTF.getText());
 		
 		DDwidgetID = this.DDwidgetID;
-		
-		if(logObjectives!=null) {
-			scoreMaxObjectives = new int[logObjectives.length][];
-			for(int j=0 ; j<scoreMaxObjectives.length; j++)	{	
-				scoreMaxObjectives[j] = new int[logObjectives[j].length];
-				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)	{	
-					if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-				}
-			}
-		}
-		
+				
 		Hashtable<String,Object> preferences = new Hashtable<String,Object>();
 		
 		preferences.put("itemCount", new Integer(itemCount));
@@ -535,13 +520,9 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		preferences.put("logID",logID);
 		preferences.put("check",new Boolean(check));
 		preferences.put("teltMee",new Boolean(teltMee));
-		if(logObjectives!=null) {	
-			preferences.put("logObjectives",logObjectives);
-	    	preferences.put("scoreMaxObjectives",scoreMaxObjectives);
-            try {
-            	preferences.put(Constants.OBJECTIVES, smObjectives);
-            } catch(Exception e) {}
-	    }
+        
+		preferences.putAll(logObjectivesButton.getEditState(scoreMax));
+            
 		preferences.put("knopImageString", knopImageString);
 		
 		preferences.put("volledigeBreedte", new Boolean(volledigeBreedte));
@@ -567,11 +548,8 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		boolean view = false;
 		boolean relocate = false;
 		int scoreMax = 0;
-	    int[][] scoreMaxObjectives = null;
 	    boolean logOption = false;
 		String logID = "";
-		boolean[][] logObjectives = null;
-		String[] smObjectives = null;
 		boolean check = true;
 		boolean teltMee = true;
 		//boolean checkFormule = false;
@@ -600,8 +578,6 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 		if(preferences.containsKey("teltMee")) teltMee = ((Boolean)preferences.get("teltMee")).booleanValue();
 		//if(preferences.containsKey("checkFormule")) checkFormule = ((Boolean)preferences.get("checkFormule")).booleanValue();
 		//if(preferences.containsKey("formuleStrings")) formuleStrings = (String[])preferences.get("formuleStrings");
-		if(preferences.containsKey("logObjectives")) logObjectives = (boolean[][])preferences.get("logObjectives");
-		if(preferences.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) preferences.get(Constants.OBJECTIVES);
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		
 		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
@@ -626,8 +602,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
         logIDLabelLabel.setVisible(logOption);
         logIDLabelField.setVisible(logOption);
         logIDField.setText(logID);
-        logObjectivesButton.setChoices(logObjectives);
-        logObjectivesButton.setObjectives(smObjectives);
+        logObjectivesButton.setEditState(preferences);
         checkCB.setSelected(check);
         teltMeeCB.setSelected(teltMee);
         logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
