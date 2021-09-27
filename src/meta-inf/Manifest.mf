@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: fi.tegels.Tegels
-Trusted-Only: true
-Permissions: all-permissions
-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost
-Application-Name: Tegels
-Caller-Allowable-Codebase: *.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost
