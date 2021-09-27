@@ -1,10 +1,4 @@
--injars ..\output\classes
--outjars ..\output\jar\verknippen.jar
-
--libraryjars <java.home>\lib\rt.jar
--libraryjars ..\lib\mayscript.jar
-
--target 1.6
+-target 1.8
 
 -keeppackagenames
 
