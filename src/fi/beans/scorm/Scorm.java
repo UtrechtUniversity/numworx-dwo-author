@@ -16,7 +16,6 @@ public abstract class Scorm
       return (SCORM12APIInterface)applet.getParent();
 
     String API = applet.getParameter( "API" );
-    if (API != null && API.equals("fi.beans.scorm.JSScormAPI")) return new JSScormAPI(applet);
     if (API != null) {
       // sequence for new API(applet);
       Class c = Class.forName( API );
