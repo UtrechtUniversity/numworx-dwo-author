@@ -50,8 +50,8 @@
 				<Trusted-Only>true</Trusted-Only>
 				<Permissions>all-permissions</Permissions>
 				<Codebase>*.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org</Codebase>
-				<Application-Name>MozArch</Application-Name>
-				<Bundle-Name>MozArch</Bundle-Name>
+				<Application-Name>Mozaik</Application-Name>
+				<Bundle-Name>Mozaik</Bundle-Name>
 				<Caller-Allowable-Codebase>*.science.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org</Caller-Allowable-Codebase>
 				<Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>
  				<Private-Package>*</Private-Package>
