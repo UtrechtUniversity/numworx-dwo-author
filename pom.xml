@@ -307,9 +307,7 @@
 		<dependency>
 			<groupId>fi.mozarch</groupId>
 			<artifactId>mozarch</artifactId>
-			<version>0.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/output/jar/mozarch.jar</systemPath>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.tegels</groupId>
@@ -319,16 +317,12 @@
 		<dependency>
 			<groupId>fi.geomalgebra</groupId>
 			<artifactId>geomalgebra</artifactId>
-			<version>0.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/output/jar/geomalgebra.jar</systemPath>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.stroomdiagrammen</groupId>
 			<artifactId>stroomdiagrammen</artifactId>
-			<version>0.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/output/jar/stroomdiagrammen.jar</systemPath>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.statistiek</groupId>
@@ -349,9 +343,7 @@
 		<dependency>
 			<groupId>fi.doorziendwo</groupId>
 			<artifactId>doorziendwo</artifactId>
-			<version>0.0.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/output/jar/doorziendwo.jar</systemPath>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

@@ -1,1 +1,0 @@
-jar -i wiskopdr.jar
