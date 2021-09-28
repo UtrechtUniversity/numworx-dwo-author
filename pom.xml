@@ -55,7 +55,7 @@
 				<Caller-Allowable-Codebase>*.science.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org</Caller-Allowable-Codebase>
 				<Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>
  				<Private-Package>*</Private-Package>
- 				<Export-Package>fi.verknippen</Export-Package>
+ 				<Export-Package>fi.mozarch</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
  				<Fragment-Host>fi.wiskopdr.WiskOpdr</Fragment-Host>
           	</instructions>
