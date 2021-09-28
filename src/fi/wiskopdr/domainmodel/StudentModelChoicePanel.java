@@ -625,7 +625,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
           leaf.setValue(ids.containsKey(leaf.getId()));
         }
       }
-    }
+    } else 
+      ids = new HashMap<>(); // initial empty, expected not null
 
     updateGraph();
     graph.setDeselections(deselections);
