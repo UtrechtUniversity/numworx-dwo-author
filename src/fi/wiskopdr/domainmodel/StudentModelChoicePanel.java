@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 //import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,10 +47,10 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeCellEditor;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import fi.wiskopdr.ObjectiveChoices;
@@ -269,11 +268,32 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       
     }
 
+//    private void insertMethod(InvisibleNode parent, InvisibleNode node) {
+//      Node unode = (Node) node.getUserObject();
+//      NodeVector uparent = (NodeVector) parent.getUserObject();
+//      parent.add(node);
+//      uparent.add(unode);
+//    }
+
     private void insertMethod(InvisibleNode parent, InvisibleNode node) {
-      Node unode = (Node) node.getUserObject();
-      NodeVector uparent = (NodeVector) parent.getUserObject();
+      int count = parent.getChildCount();
+      String title = node.toString();
+      for (int i = 0; i < count; i++) {
+        TreeNode child = parent.getChildAt(i);
+        if (compareMethod(title, child.toString()) < 0) {
+          parent.insert(node, i);
+          return;
+        }
+      }
       parent.add(node);
-      uparent.add(unode);
+    }
+
+    private int compareMethod(String as, String bs) {
+      boolean wa = as == BEGRIPPEN_EN_VAKTAAL;
+      boolean wb = bs == BEGRIPPEN_EN_VAKTAAL;
+      if (wa && !wb) return +1;
+      if (!wa && wb) return -1;
+      return as.compareTo(bs);
     }
 
     public StudentMethod getActive() {
