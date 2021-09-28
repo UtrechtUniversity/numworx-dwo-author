@@ -1300,6 +1300,7 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 					GraphNode g = new GraphNode(id, parent, leaf.toString());
 					g.setMethodeInfo(leaf.getMethode());
 					System.out.println("methodeinfo: "+leaf.getMethode());
+					g.setMethodeInfos(leaf.getMethodeInfos());
 					graphMap.put(id, g);
 					leaves.add(leaf);
 					g.setVisible(visible);

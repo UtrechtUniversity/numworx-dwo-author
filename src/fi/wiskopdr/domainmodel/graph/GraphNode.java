@@ -159,10 +159,16 @@ public class GraphNode {
 	public Point getLocation() {
 		if (methodeInfos.isEmpty())
 			return null;
-		DomStudentModelMethodInfo info = methodeInfos.values().iterator().next();
-		if (info.getX() == null || info.getY() == null)
-			return null;
-		return new Point(info.getX().intValue(), info.getY().intValue());
+//		DomStudentModelMethodInfo info = methodeInfos.values().iterator().next();
+//		if (info.getX() == null || info.getY() == null)
+//			return null; // FIXME niet goed. Er kan een andere methode zijn met WEL een positie
+//		return new Point(info.getX().intValue(), info.getY().intValue());
+		
+		for (DomStudentModelMethodInfo info: methodeInfos.values()) {
+		  if (info.getX() != null && info.getY() != null)
+		    return new Point(info.getX().intValue(), info.getY().intValue());
+		}
+		return null;
 	}
 
 	public Point getLocation(String key) {
