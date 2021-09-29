@@ -1086,7 +1086,6 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
                 if(tips){
                 	if(interactiePanelLaunchState.containsKey("ideasInstellingen")) ideasInstellingen = (Hashtable)interactiePanelLaunchState.get("ideasInstellingen");
                 }
-        		if(interactiePanelLaunchState.containsKey("hasObjectives")) {} else {}
         		if(interactiePanelLaunchState.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])interactiePanelLaunchState.get("antwoordSubStrings");
                 if(interactiePanelLaunchState.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[])interactiePanelLaunchState.get("antwoordFuncStrings");
                 

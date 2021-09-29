@@ -23,7 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractCellEditor;
@@ -56,6 +58,7 @@ import javax.swing.tree.TreePath;
 import fi.wiskopdr.ObjectiveChoices;
 import fi.wiskopdr.ObjectivesViewAction;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.domainmodel.filter.FilterAction;
 import fi.wiskopdr.domainmodel.graph.Graph;
 import fi.beans.numworxlf.JScrollPane;
 import fi.beans.numworxlf.JRadioButton;
@@ -64,6 +67,19 @@ import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JCheckBox;
 
 public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices, TreeSelectionListener, AutoCloseable {
+  
+  private static final Logger LOG = Logger.getLogger(StudentModelChoicePanel.class.getName());
+  
+  public class FilterConsumer implements Consumer<Map<String, Map<String, Collection<Number>>>> {
+
+    @Override
+    public void accept(Map<String, Map<String, Collection<Number>>> t) {
+      LOG.info("accept filter " + t);
+      methodListener.filter(t);
+    }
+
+  }
+
   private class LeafNodeEditor extends AbstractCellEditor implements TreeCellEditor {
 
     private final class editorListener implements ItemListener {
@@ -268,6 +284,38 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       
     }
 
+    public void filter(Map<String, Map<String, Collection<Number>>> t) {
+      if (methodModel != null) {
+        if (t.isEmpty()) {
+          methodModel.activateFilter(false);
+        } else {
+          methodModel.activateFilter(true);
+          InvisibleNode root = (InvisibleNode) methodModel.getRoot();
+          Map<String, Collection<Number>> books = t.getOrDefault(activeMethod, Collections.emptyMap());
+          int bookcount = root.getChildCount();
+          for (int i = 0; i < bookcount; i++) {
+            InvisibleNode book = (InvisibleNode) root.getChildAt(i);
+            boolean showbook = books.containsKey(book.toString());
+            book.setVisible(showbook);
+            if (showbook) {
+              Collection<Number> chapters = books.get(book.toString());
+              int chaptercount = book.getChildCount();
+              for (int j = 0; j < chaptercount; j++) {
+                InvisibleNode node = (InvisibleNode) book.getChildAt(j);
+                node.setVisible(false);
+              }
+              for (Number j : chapters) {
+                ((InvisibleNode) book.getChildAt(j.intValue()-1)).setVisible(true);
+              }
+            }
+          }
+        }
+        
+        
+      }
+
+    }
+
 //    private void insertMethod(InvisibleNode parent, InvisibleNode node) {
 //      Node unode = (Node) node.getUserObject();
 //      NodeVector uparent = (NodeVector) parent.getUserObject();
@@ -323,6 +371,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
   final Supplier<StudentModel> studentModel;
   private JButton filterBtn;
+  private FilterAction filterAction;
   static final String WISKOPDR_SIG = "H4sIAAAAAA";
   static final String JSON_SIG = "{";
   private static final Font font = new Font("SansSerif", Font.PLAIN, 12);
@@ -362,7 +411,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     tree.setEditable(true);
     tree.setCellRenderer(new ChoiceCellRenderer());
     methods = new JCheckBox("Geen methode");
-    filterBtn = new JButton("Filter");
+    filterAction = new FilterAction(this, new FilterConsumer());
+    filterBtn = new JButton(filterAction);
     methods.setEnabled(false);
     methods.addItemListener(methodListener);
     graph = new Graph();
@@ -614,6 +664,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       methods.setEnabled(activeMethod != null);
       methodListener.setActive(studentMethod);
       filterBtn.setEnabled(activeMethod != null);
+      filterAction.setActiveMethod(activeMethod);
       graph.setModel(model, null, studentMethod);
     }
 // old style
