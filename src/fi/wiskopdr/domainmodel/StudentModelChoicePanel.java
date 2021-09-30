@@ -19,6 +19,7 @@ import java.util.Enumeration;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,13 +71,100 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   
   private static final Logger LOG = Logger.getLogger(StudentModelChoicePanel.class.getName());
   
+  
+  static void insert(NodeVector vector, InvisibleNode node) {
+    for(Object child: vector) {
+      if (child instanceof NodeVector) {
+        InvisibleNode parent = new InvisibleNode(child);
+        insert((NodeVector)child, parent);
+        node.add(parent);
+      } else {
+        node.add(new InvisibleNode(child, false, true));
+      }
+    }
+  
+}
+
+  
   public class FilterConsumer implements Consumer<Map<String, Map<String, Collection<Number>>>> {
 
     @Override
     public void accept(Map<String, Map<String, Collection<Number>>> t) {
       LOG.info("accept filter " + t);
       methodListener.filter(t);
+      if (t.isEmpty()) {
+        model.activateFilter(false);
+        if (model.getRoot() != root)
+            model.setRoot(root);
+    } else {
+        model.activateFilter(true);
+        model.setRoot(filter(root, t, activeMethod));
     }
+    model.nodeStructureChanged((TreeNode) model.getRoot());
+    }
+    
+    boolean contains(Map<String, Map<String, Collection<Number>>> filter,
+                            Map<String, Map<String, Collection<Number>>> methodes, String activeMethod) {
+                        String currentKey = key(activeMethod); //XXX let op, is dit okay
+                        for (Map.Entry<String, Map<String, Collection<Number>>> entry : filter.entrySet()) {
+                            if (entry.getKey() == null) {
+                              //if (methodes.values().stream().allMatch(Map::isEmpty)) return true;
+                              if ( methodes.entrySet().stream().allMatch(e -> e.getValue().isEmpty()||!e.getKey().equals(currentKey))) return true;
+                              continue;
+                            }         
+                            Map<String, Collection<Number>> map = methodes.getOrDefault(entry.getKey(), Collections.emptyMap());
+                            if (map.isEmpty())
+                            { 
+                              continue;
+                            }
+                            for (Map.Entry<String, Collection<Number>> m : entry.getValue().entrySet()) {
+                                Collection<Number> chapters = new TreeSet<>(map.getOrDefault(m.getKey(), Collections.emptySet()));
+// Integer(1) not equals Long(1L)   
+                                Collection<Number> value = m.getValue();
+                                retainAllOf(chapters, value);
+                                if (!chapters.isEmpty())
+                                    return true;
+                            }
+                        }
+                        return false;
+                    }
+
+    private void retainAllOf(Collection<Number> numberset, Collection<Number> value) {
+      if (value.isEmpty()) {
+        numberset.clear();
+      }
+      if (numberset.isEmpty())
+        return;
+      
+      Iterator<Number> iter = numberset.iterator();
+      while (iter.hasNext()) {
+        Number number = (Number) iter.next();
+        int i = number.intValue();
+        if (value.stream().allMatch(t -> t.intValue() != i)) iter.remove();
+        
+      }
+    }
+ 
+    InvisibleNode filter(InvisibleNode parent, Map<String, Map<String, Collection<Number>>> filter, String activeMethod) {
+      InvisibleNode node;
+      node = parent;
+        @SuppressWarnings("unchecked")
+        Enumeration<InvisibleNode> children = (Enumeration) node.children();
+        while (children.hasMoreElements()) {
+            InvisibleNode object = children.nextElement();
+            filter(object, filter, activeMethod);
+        }
+      if (node.isLeaf() && !node.getAllowsChildren()) {
+          NodeLeaf leaf = (NodeLeaf) node.getUserObject();
+          Map<String, Map<String, Collection<Number>>> methodes = leaf.getMethode();
+          node.setVisible(contains(filter, methodes, activeMethod));
+      } else {
+          int cnt = node.getChildCount(true);
+          node.setVisible(cnt != 0);
+      }
+
+      return node;
+  }
 
   }
 
@@ -274,7 +362,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
           
           
           
-          methodModel = new InvisibleTreeModel(root);       
+          methodModel = new InvisibleTreeModel(root);
+          filterAction.doFilter();
         }
         
         tree.setModel(methodModel);
@@ -291,7 +380,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         } else {
           methodModel.activateFilter(true);
           InvisibleNode root = (InvisibleNode) methodModel.getRoot();
-          Map<String, Collection<Number>> books = t.getOrDefault(activeMethod, Collections.emptyMap());
+          Map<String, Collection<Number>> books = t.getOrDefault(key(activeMethod), Collections.emptyMap());
           int bookcount = root.getChildCount();
           for (int i = 0; i < bookcount; i++) {
             InvisibleNode book = (InvisibleNode) root.getChildAt(i);
@@ -309,9 +398,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
               }
             }
           }
-        }
-        
-        
+        }        
+        methodModel.nodeStructureChanged((TreeNode) methodModel.getRoot());
       }
 
     }
@@ -359,8 +447,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   
   
   JTree tree;
-  DefaultTreeModel model;
-  DynamicUtilTreeNode root;
+  InvisibleTreeModel model;
+  InvisibleNode root;
   JLabel leerdoelTitelLabel, title;
   JTextArea description;
   JButton graphButton;
@@ -527,6 +615,13 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   }
 
   
+  String key(String id) {
+    if (id == null) return id;
+    String[] split = id.split(";", 3);
+    return split[2];
+  }
+
+
   private void packWindow() {
     ((Window) SwingUtilities.getAncestorOfClass(Window.class, this)).pack();
 }
@@ -656,8 +751,9 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       StudentModel smodel = studentModel.get();
       activeMethod = smodel.activeMethod;
       NodeVector v = new NodeVector(smodel);
-      root = new DynamicUtilTreeNode(v, v);
-      model = new DefaultTreeModel(root);   
+      root = new InvisibleNode(v);
+      insert(v, root);
+      model = new InvisibleTreeModel(root);   
       tree.setModel(model);
       StudentMethod studentMethod = WiskOpdr.applet.getStudentMethod(activeMethod);
       methods.setText(studentMethod.getMethod());

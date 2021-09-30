@@ -1338,12 +1338,19 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 		else if(soortInteractiePanel == 39)
 		{	if(interactiePanel==null || !(interactiePanel instanceof GeogebraPanel))
-			{	GeogebraPanel geogebraPanel = new GeogebraPanel();
-				interactiePanel = geogebraPanel;
-				geogebraPanel.setInstanceId(getCrossWidgetId());
-				geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
-				geogebraPanel.setBackground(getBackground());
-				interactiePanel.addActionListener(this);
+			{
+		        try {
+                  GeogebraPanel geogebraPanel = new GeogebraPanel();
+                  interactiePanel = geogebraPanel;
+                  geogebraPanel.setInstanceId(getCrossWidgetId());
+                  geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
+                  geogebraPanel.setBackground(getBackground());
+                  interactiePanel.addActionListener(this);
+                } catch (Exception e) {
+                  LOG.log(Level.SEVERE, "Geogebra error", e);
+                  interactiePanel = null;
+                  return;
+                }
 			}
 		}
 		else if(soortInteractiePanel == 12)

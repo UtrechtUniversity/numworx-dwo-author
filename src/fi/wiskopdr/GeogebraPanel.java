@@ -180,8 +180,9 @@ System.out.println("applet = " + geogebraApplet);System.out.flush();
 				geogebraApplet.setBackground(WiskOpdr.bgcolor);
 				geogebraApplet.setLanguage(WiskOpdr.language);
 				geogebraApplet.setBorder(null); // weet niet wat de default is?
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
+				if (geogebraApplet == null ) return;
 			}
 			p.removeAll();
 			if(editapplet) makeDefaultParamValues(2);
@@ -983,9 +984,11 @@ System.out.println("end refresh geogebra");System.out.flush();
 	}
     
     public void destroy() {
-  		p.remove(geogebraApplet);
-  		geogebraApplet.destroy();
-		geogebraApplet = null;
+  		if (geogebraApplet != null) {
+  		  p.remove(geogebraApplet);
+          geogebraApplet.destroy();
+          geogebraApplet = null;
+  		}
 		//System.gc();
 		System.out.println("destroyed");
     }
