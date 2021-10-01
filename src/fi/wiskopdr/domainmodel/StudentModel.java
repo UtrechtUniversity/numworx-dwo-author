@@ -75,11 +75,20 @@ public class StudentModel {
     return result;
 }
 
+@SuppressWarnings("unchecked")
 protected static String getTitle(JSONObject info) {
     try {
-      return (String) ((Map) info.get("title")).get(WiskOpdr.language.toString());
+      Map<String,String> title = (Map<String,String>) info.get("title");
+      String locale = WiskOpdr.language.toString();
+      String language = title.getOrDefault(locale,"");
+// fallback to en/nl
+      if (language.isEmpty())
+        language = title.getOrDefault("en", "");
+      if (language.isEmpty() || "Untitled".equals(language))
+        language = title.getOrDefault("nl", "Untitled");
+      return language;
     } catch (Exception e) {
-      return null;
+      return "Untitled";
     }
 }
 protected static String getDescription0(JSONObject info) {
