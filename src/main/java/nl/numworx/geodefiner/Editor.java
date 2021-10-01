@@ -93,21 +93,29 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 	private RandomPanel random;
 	private final CheckDWOPanel checkDWO;
 	
-	void setChoices(boolean[][] choices) {
-		checkDWO.setChoices(choices);
-	}
+//	void setChoices(boolean[][] choices) {
+//		checkDWO.setChoices(choices);
+//	}
 
-	boolean[][] getChoices() {
-		return checkDWO.getChoices();
+//	boolean[][] getChoices() {
+//		return checkDWO.getChoices();
+//	}
+	
+//	void setObjectives(String[] objectives) {
+//		checkDWO.setObjectives(objectives);
+//	}
+	
+	void setObjectivesState(Map<String,Object> map) {
+		checkDWO.setObjectivesState(map);
 	}
 	
-	void setObjectives(String[] objectives) {
-		checkDWO.setObjectives(objectives);
+	Map<String,Object> getObjectivesState() {
+		return checkDWO.getObjectivesState(getMaxScore());
 	}
 	
-	String[] getObjectives() {
-		return checkDWO.getObjectives();
-	}
+//	String[] getObjectives() {
+//		return checkDWO.getObjectives();
+//	}
 
 	private final CheckObjectsPanel checkObjects;
 	private ToolboxPanel toolbox;

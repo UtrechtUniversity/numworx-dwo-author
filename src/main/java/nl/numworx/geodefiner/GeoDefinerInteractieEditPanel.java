@@ -38,35 +38,15 @@ public class GeoDefinerInteractieEditPanel extends JPanel implements
 
 	public void setEditState(Hashtable b) {
 		editor.setLaunchData(b);
-		boolean[][] logObjectives = (boolean[][]) b.get("logObjectives");
-		editor.setChoices(logObjectives);
-		String[] smObjectives = (String[]) b.get(fi.wiskopdr.domainmodel.Constants.OBJECTIVES); 
-		editor.setObjectives(smObjectives);
+		editor.setObjectivesState(b);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Hashtable getEditState() {
 		Hashtable map = new Hashtable( editor.getLaunchData() );
 		int scoreMax = editor.getMaxScore();
-		boolean[][] logObjectives; String[] smObjectives;
-		logObjectives = editor.getChoices();
-		smObjectives = editor.getObjectives();
 		map.put("scoreMax", scoreMax);
-        if(logObjectives!=null)
-        {	map.put("logObjectives",logObjectives);
-			int[][] scoreMaxObjectives;
-    		scoreMaxObjectives = new int[logObjectives.length][];
-    		for(int j=0 ; j<scoreMaxObjectives.length; j++)
-    		{	scoreMaxObjectives[j] = new int[logObjectives[j].length];
-				for(int i=0 ; i<scoreMaxObjectives[j].length ; i++)
-				{	if(logObjectives[j][i]) scoreMaxObjectives[j][i] = scoreMax;
-				}
-    		}
-        	map.put("scoreMaxObjectives",scoreMaxObjectives);
-        }
-        if (smObjectives != null && smObjectives.length > 0) {
-        	map.put(fi.wiskopdr.domainmodel.Constants.OBJECTIVES, smObjectives);
-        }
+		map.putAll(editor.getObjectivesState());
 		return map;
 	}
 

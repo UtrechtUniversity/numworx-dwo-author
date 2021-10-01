@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -32,7 +33,6 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.openmath.Expression;
 import fi.wiskopdr.ObjectiveChoiceButton;
-import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
 @SuppressWarnings("serial")
@@ -174,15 +174,15 @@ public class CheckDWOPanel extends JPanel implements ChangeListener, ActionListe
 	  logID.setText(id);
 	}
 	
-	public void setChoices(boolean[][] choices) {
-		if(objBtn != null)
-			objBtn.setChoices(choices);
-	}
-
-	public void setObjectives(String[] objectives) {
-		if (objBtn != null)
-			objBtn.setObjectives(objectives);
-	}
+//	public void setChoices(boolean[][] choices) {
+//		if(objBtn != null)
+//			objBtn.setChoices(choices);
+//	}
+//
+//	public void setObjectives(String[] objectives) {
+//		if (objBtn != null)
+//			objBtn.setObjectives(objectives);
+//	}
 	
 	public boolean[][] getChoices() {
 		if(objBtn != null)
@@ -194,6 +194,19 @@ public class CheckDWOPanel extends JPanel implements ChangeListener, ActionListe
 		if (objBtn != null)
 			return objBtn.getObjectives();
 		return null;
+	}
+	
+	public void setObjectivesState(Map<String, Object> map) {
+		if (objBtn != null) {
+			objBtn.setEditState(map);
+		}
+	}
+	
+	public Map getObjectivesState(int scoreMax) {
+		if (objBtn != null) {
+			return objBtn.getEditState(scoreMax);
+		}
+		return Collections.emptyMap();
 	}
 
 	public Map<String,Object> toMap() {
