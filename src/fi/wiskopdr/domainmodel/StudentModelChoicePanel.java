@@ -753,7 +753,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       NodeVector v = new NodeVector(smodel);
       root = new InvisibleNode(v);
       insert(v, root);
-      model = new InvisibleTreeModel(root);   
+      model = new InvisibleTreeModel(root, true);   
       tree.setModel(model);
       StudentMethod studentMethod = WiskOpdr.applet.getStudentMethod(activeMethod);
       methods.setText(studentMethod.getMethod());
