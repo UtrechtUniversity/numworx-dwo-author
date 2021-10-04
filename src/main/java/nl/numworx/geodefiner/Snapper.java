@@ -33,9 +33,11 @@ public final class Snapper extends nl.numworx.geodefiner.common.Snapper implemen
 			this.test = false;
 			Vector<Punt> points = viewer.getModel().getPunten();
 			for(Punt p: points) {
-				p.visit(test);
-				if (this.test)
+				if (p.isDefined() && p.isVisible()) {
+				  p.visit(test);
+				  if (this.test)
 					return true; // no gravity at points.
+				}
 			}
 			return false;
 		}
