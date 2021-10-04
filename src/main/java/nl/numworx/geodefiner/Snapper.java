@@ -26,21 +26,21 @@ public final class Snapper extends nl.numworx.geodefiner.common.Snapper implemen
 			this.viewer = viewer;
 		}
 		
-		private boolean testHits(MouseEvent ev) {
-			HitTester test = viewer.getHitTester().copy();
-			test.setXY(ev.getX(), ev.getY());
-			test.setVisitor(this);
-			this.test = false;
-			Vector<Punt> points = viewer.getModel().getPunten();
-			for(Punt p: points) {
-				if (p.isDefined() && p.isVisible()) {
-				  p.visit(test);
-				  if (this.test)
-					return true; // no gravity at points.
-				}
-			}
-			return false;
-		}
+//		private boolean testHits(MouseEvent ev) {
+//			HitTester test = viewer.getHitTester().copy();
+//			test.setXY(ev.getX(), ev.getY());
+//			test.setVisitor(this);
+//			this.test = false;
+//			Vector<Punt> points = viewer.getModel().getPunten();
+//			for(Punt p: points) {
+//				if (p.isDefined() && p.isVisible()) {
+//				  p.visit(test);
+//				  if (this.test)
+//					return true; // no gravity at points.
+//				}
+//			}
+//			return false;
+//		}
 		
 		
 		public void translate(MouseEvent ev) {
@@ -63,7 +63,7 @@ public final class Snapper extends nl.numworx.geodefiner.common.Snapper implemen
 				//System.out.println(" " + x);
 				if(y > SNAP || y < -SNAP) y = 0;
 
-				if ( (x != 0 || y != 0) && !testHits(ev) )
+				//if ( (x != 0 || y != 0) && !testHits(ev) )
 					ev.translatePoint(-x, -y);
 			}
 // Keep mouse inside panel

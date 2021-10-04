@@ -248,6 +248,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		destroy();
 		init();
 		installLaunchData();
+		setAssessmentMode(mode); // reset checkbutton.setVisisble voor toets
 		start();
 	}
 
