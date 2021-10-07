@@ -1,3 +1,4 @@
+# FIXME deze is niet goed. fi.mozarch.Punt moet worden bewaard even uitgezet
 -target 1.8
 
 -keeppackagenames
