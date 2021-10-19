@@ -123,6 +123,8 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
         logIDField = makeTextField(520,5,60,20,"0",false);
         logIDLabelField = makeTextField(520,25,60,20,"",false);
         logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
+        logObjectivesButton = new ObjectiveChoiceButton();
+        logObjectivesButton.setVisible(false);
  		
         // Hulp setting
         titleHulpLabel = new JLabel(WiskOpdr.rb.getString("TEEP_editorOptiesLabel"));
@@ -160,7 +162,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		// plaatsComponenten settingBox
 		Component[] r41 = {titleLoggingLabel, 	hgl()};
 		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
-		Component[] r43 = {ra(25,0), 			maxScoreLabel, 		ra(5,0),	maxScoreField,	hgl()};
+		Component[] r43 = {ra(25,0), 			maxScoreLabel, 		ra(5,0),	maxScoreField,	ra(10, 0), logObjectivesButton, hgl()};
 		Component[] r44 = {logCB, 				ra(5,0), logIDField, ra(5,0), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
 		Component[] r45 = {titleHulpLabel, 		hgl()};
 		Component[] r46 = {formuleEditorCB, 	ra(5,0),	hgl(),	hbFormInvoer};
@@ -273,7 +275,8 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
  		return helpButton;
 	}
 	
-	public Hashtable getEditState()
+	@SuppressWarnings({"rawtypes", "unchecked"})
+    public Hashtable getEditState()
 	{	
 		boolean balkZichtbaar = true;
 		boolean rekenTool = false;
@@ -307,6 +310,10 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		h.put("logID", logID);
 		h.put("checkDocent", new Boolean(checkDocent));
 		h.put("scoreMax", new Integer(scoreMax));
+		
+		if (ObjectiveChoiceButton.hasObjectiveChoices()) {
+		  h.putAll(logObjectivesButton.getEditState(scoreMax));
+		}
 		
 		return h;
 	}
@@ -353,7 +360,11 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
         checkCB.setSelected(checkDocent);
         maxScoreLabel.setVisible(checkCB.isSelected());
     	maxScoreField.setVisible(checkCB.isSelected());
+    	logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices() && checkCB.isSelected());
     	maxScoreField.setText(""+scoreMax);
+    	if (ObjectiveChoiceButton.hasObjectiveChoices()) {
+    	  logObjectivesButton.setEditState(h);
+    	}
 
 		
 		//grafiekPanel.zetFormulesZichtbaar(formulesZichtbaar);
@@ -435,6 +446,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		else if(e.getSource()==checkCB)
 	    {   maxScoreLabel.setVisible(checkCB.isSelected());
 	    	maxScoreField.setVisible(checkCB.isSelected());
+	    	logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices() && checkCB.isSelected());
 	    	if(!checkCB.isSelected())
 	    		maxScoreField.setText("0");
 	    }
