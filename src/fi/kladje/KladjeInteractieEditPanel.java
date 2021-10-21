@@ -10,11 +10,12 @@ import java.util.Hashtable;
 import javax.swing.*;
 
 import fi.beans.wiskopdrbeans.*;
+import fi.wiskopdr.ObjectiveChoiceButton;
 
 public class KladjeInteractieEditPanel extends JPanel implements InteractieEditPanel,
 																	ActionListener	
 {	
-	int editWidth = 190;
+	int editWidth = 250;
 	int editHeight = 500; 
 	int klipBreedte = 500; // startbreedte spip
 	int klipHoogte = 450; // starthoogte spip
@@ -42,6 +43,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 	private JCheckBox checkCB;
 	private JLabel scoreLabel;
 	private JTextField scoreTF;
+	private ObjectiveChoiceButton objectiveBtn;
 	
 	private boolean check;
 	
@@ -134,10 +136,6 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		achtergrondGroep.add(ruitjes80Button);
 		
 		currentY += height + 2 * offset;
-		
-		
-		
-		
 		
 		lijnTekenenBox = new JCheckBox(Kladje.rb.getString("lijnTekenenTekst"), true);
 		lijnTekenenBox.setFont(theFont);
@@ -257,6 +255,10 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		scoreTF.setBounds(currentX+90, currentY, 40, height);
 		scoreTF.setVisible(false);
 		add(scoreTF);
+		objectiveBtn = new ObjectiveChoiceButton();
+		objectiveBtn.setBounds(currentX+90+44, currentY, objectiveBtn.getPreferredSize().width, height);
+		objectiveBtn.setVisible(false);
+		add(objectiveBtn);
 		
 		currentY += height;
 		
@@ -304,6 +306,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			checkCB.setLocation(klip.getSize().width + offset, checkCB.getLocation().y);
 			scoreLabel.setLocation(klip.getSize().width + offset+30, scoreLabel.getLocation().y);
 			scoreTF.setLocation(klip.getSize().width + offset+90, scoreTF.getLocation().y);
+			objectiveBtn.setLocation(klip.getSize().width + offset+90+44, scoreTF.getLocation().y);
 		}
 	}
 	
@@ -405,6 +408,12 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			scoreMax = ((Integer) b.get("scoreMax")).intValue();
 			scoreTF.setText(""+scoreMax);
 		}
+		if (ObjectiveChoiceButton.hasObjectiveChoices())
+		{
+			objectiveBtn.setVisible(checkCB.isSelected());
+			objectiveBtn.setEditState(b);
+		} else 
+			objectiveBtn.setVisible(false);
 		
 		// HIER !!
 		klip.setEditState(b);		
@@ -419,6 +428,8 @@ System.out.println("kliep getEditState");
 		
 		try {
 			scoreMax = Integer.parseInt(scoreTF.getText());
+			if (scoreMax > 0 && objectiveBtn.hasObjectiveChoices())
+				h.putAll(objectiveBtn.getEditState(scoreMax));
 		}
 		catch(Exception e) {}
 		check = checkCB.isSelected();	
@@ -568,6 +579,7 @@ System.out.println("kliep getEditState");
 			scoreLabel.setVisible(checkCB.isSelected());
 			scoreTF.setVisible(checkCB.isSelected());
 			scoreTF.setText("0");
+			objectiveBtn.setVisible(checkCB.isSelected() && objectiveBtn.hasObjectiveChoices());
 		}
 
 	}

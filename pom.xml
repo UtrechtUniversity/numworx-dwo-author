@@ -16,6 +16,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jarsigner.skip>true</jarsigner.skip>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 	</properties>
 	<build>
 		<finalName>kladje</finalName>
@@ -32,6 +34,41 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
+			</plugin>
+        <plugin>   
+		  <groupId>org.apache.felix</groupId>
+		  <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.5.3</version>
+		  <executions>
+		    <execution>
+		      <id>bundle-manifest</id>
+		      <phase>process-classes</phase>
+		      <goals>    
+		        <goal>manifest</goal>
+		      </goals>   
+		    </execution>
+		  </executions>
+       	  <configuration>
+       	    <niceManifest>true</niceManifest>
+          	<instructions>
+				<_snapshot>${osgi.qualifier}</_snapshot>
+          		<Bundle-SymbolicName>fi.kladje.Kladje</Bundle-SymbolicName>
+ 				<Main-Class>fi.kladje.Kladje</Main-Class>
+				<Bundle-Name>Kladje</Bundle-Name>
+ 				<Private-Package>*</Private-Package>
+ 				<Export-Package>fi.kladje</Export-Package>
+ 				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
+          	</instructions>
+          </configuration>
+         </plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+        		<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.github.wvengen</groupId>
@@ -142,9 +179,16 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.c-book</groupId>
-			<artifactId>cbookif</artifactId>
-			<version>1.0.2</version>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<version>0.3.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>nl.uu.fi.dwo</groupId>
+			<artifactId>DWO-commons-lib</artifactId>
+			<version>2.5.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
