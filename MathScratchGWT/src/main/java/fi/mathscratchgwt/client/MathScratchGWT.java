@@ -228,18 +228,18 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 	}
 
 	
-    private Map<String,Object> lastAttempt = Collections.emptyMap();
+    private HashMap<String,Object> lastAttempt;
     private boolean isAttempt;
     private HashMap<String,Object> setAttempt(HashMap<String,Object> attempt) {
-    	if (isAttempt && comRoot != null && !lastAttempt.equals(attempt)) {
+    	if (isAttempt && comRoot != null && !attempt.equals(lastAttempt)) {
     		lastAttempt = attempt;
     		comRoot.fireEvent(new CBookEvent(this, "logOption", Collections.emptyMap())); // no score, no response, no success
     	}
     	return attempt;
     }
-    private HashMap<String,Object> initAttempt(HashMap<String,Object> attempt) {
-    	if (isAttempt) lastAttempt = attempt;
-    	return attempt;
+    private void initAttempt() {
+    	if (isAttempt) lastAttempt = mathScratchField.getState(false);
+    	return;
     }
 
 	
@@ -252,9 +252,10 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 	public void setState(HashMap<String, Object> h) {
 		if(h == null||h.isEmpty()) {
 			mathScratchField.addToHistory();
+			initAttempt();
 			return;
 		}
-		initAttempt(h);
+		initAttempt();
 		mathScratchField.setState(h, false);
 	}
 
