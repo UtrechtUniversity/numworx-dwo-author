@@ -20,6 +20,7 @@ import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JRadioButton;
 import fi.beans.numworxlf.JTextField;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 
@@ -43,6 +44,7 @@ public class MathScratchEditPanel extends JPanel implements InteractieEditPanel,
     private JTextField maxScoreField;
     private JCheckBox logCB;
  	private JTextField logIDField;
+ 	private ObjectiveChoiceButton objectiveBtn;
  	
  	// Settings
  	private JLabel titleSettingsLabel;
@@ -107,6 +109,9 @@ public class MathScratchEditPanel extends JPanel implements InteractieEditPanel,
      	maxScoreField.setPreferredSize(new Dimension(50,22));
      	maxScoreField.setMaximumSize(new Dimension(50,22));
      	maxScoreField.setVisible(false);
+     	
+     	objectiveBtn = new ObjectiveChoiceButton();
+     	objectiveBtn.setVisible(false);
      	
      	logCB = new JCheckBox(MathScratch.rb.getString("logCB"));
      	logCB.addActionListener(this);
@@ -179,7 +184,7 @@ public class MathScratchEditPanel extends JPanel implements InteractieEditPanel,
 		
 		Component[] r11 = {titleLoggingLabel, hgl()};
 		Component[] r12 = {checkCB, hgl() };
-		Component[] r13 = {ra(25,0), maxScoreLabel, ra(10,0), maxScoreField, hgl() };
+		Component[] r13 = {ra(25,0), maxScoreLabel, ra(10,0), maxScoreField, ra(4,0), objectiveBtn, hgl() };
 		Component[] r14 = {logCB, ra(10,0), logIDField, hgl() };
 		Component[] r15 = {titleSettingsLabel, hgl()};
 		Component[] r16 = {drawingCB, hgl() };
@@ -266,6 +271,7 @@ public class MathScratchEditPanel extends JPanel implements InteractieEditPanel,
 			checkCBRA.setVisible(check);
 			maxScoreLabel.setVisible(check);
 			maxScoreField.setVisible(check);
+			objectiveBtn.setVisible(check && ObjectiveChoiceButton.hasObjectiveChoices());
 		}
 		if(e.getSource()==logCB) {
 			boolean log = logCB.isSelected();
@@ -340,6 +346,8 @@ public class MathScratchEditPanel extends JPanel implements InteractieEditPanel,
 		h.put("grid", new Boolean(gridCB.isSelected()));
 		h.put("scaleWriting", new Boolean(scaleWritingCB.isSelected()));
 		h.put("writingScale", new Double(writingScale));
+		if (objectiveBtn.hasObjectiveChoices() && scoreMax>0)
+			h.putAll(objectiveBtn.getEditState(scoreMax));
 		return h;
 	}
 
@@ -405,6 +413,8 @@ public class MathScratchEditPanel extends JPanel implements InteractieEditPanel,
 		checkCBRA.setVisible(check);
 		maxScoreLabel.setVisible(check);
 		maxScoreField.setVisible(check);
+		objectiveBtn.setEditState(h);
+		objectiveBtn.setVisible(check && ObjectiveChoiceButton.hasObjectiveChoices());
 		
 		boolean log = logCB.isSelected();
 		logIDField.setVisible(log);

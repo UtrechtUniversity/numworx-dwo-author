@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.swing.JApplet;
-
+import fi.beans.mainframe.JApplet;
 import fi.beans.mainframe.MainFrame;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;

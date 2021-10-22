@@ -1,5 +1,6 @@
 package fi.mathscratchgwt.client;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -22,6 +23,7 @@ import com.google.gwt.user.client.ui.Widget;
 import nl.uu.fi.dwo.interaction.client.InteractionStub;
 import nl.uu.fi.dwo.interaction.client.InteractionView;
 import nl.uu.fi.dwo.interaction.client.JSONUtilities;
+import nl.uu.fi.dwo.interaction.client.LessonMode;
 import nl.uu.fi.dwo.interaction.client.OpdrNavIF;
 import nl.uu.fi.dwo.interaction.client.Stub;
 import nl.uu.fi.dwo.interaction.client.event.CBookEvent;
@@ -118,6 +120,7 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 		
 		if (launchState.containsKey("logOption")) {
 			boolean logOption = ((Boolean) launchState.getBoolean("logOption"));
+			isAttempt = logOption || launchState.containsKey("smObjectives");
 		}
 		if (launchState.containsKey("logID")) {
 			String logID = ((String) launchState.getString("logID"));
@@ -224,9 +227,25 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 		comRoot.fireEvent(new CBookEvent(this,"text.strokecode",map));
 	}
 
+	
+    private Map<String,Object> lastAttempt = Collections.emptyMap();
+    private boolean isAttempt;
+    private HashMap<String,Object> setAttempt(HashMap<String,Object> attempt) {
+    	if (isAttempt && comRoot != null && !lastAttempt.equals(attempt)) {
+    		lastAttempt = attempt;
+    		comRoot.fireEvent(new CBookEvent(this, "logOption", Collections.emptyMap())); // no score, no response, no success
+    	}
+    	return attempt;
+    }
+    private HashMap<String,Object> initAttempt(HashMap<String,Object> attempt) {
+    	if (isAttempt) lastAttempt = attempt;
+    	return attempt;
+    }
+
+	
 	@Override
 	public HashMap<String, Object> getState() {
-		return mathScratchField.getState();
+		return setAttempt(mathScratchField.getState());
 	}
 
 	@Override
@@ -235,6 +254,7 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 			mathScratchField.addToHistory();
 			return;
 		}
+		initAttempt(h);
 		mathScratchField.setState(h, false);
 	}
 
@@ -272,13 +292,15 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 	@Override
 	public void setCommunicationRoot(OpdrNavIF comRoot) {
 		this.comRoot = comRoot;
-//		premium = comRoot.getContext().getBoolean("premium", premium); // installeer hier premium feature.
-//// doe er wat mee...		
-//		if ( premium ) {
-//			GWT.log("met een premium abonnement");
-//		} else {
-//			GWT.log("zonder een premium abonnement");
-//		}
+		boolean premium = comRoot.getContext().getBoolean("premium", false); // installeer hier premium feature.
+		// doe er wat mee...		
+		if ( premium ) {
+			GWT.log("met een premium abonnement");
+			if (comRoot.getLessonMode() != LessonMode.normal) isAttempt = false;
+		} else {
+			GWT.log("zonder een premium abonnement");
+			isAttempt = false;
+		}
 		
 		comRoot.addCBookEventListener("drawing", this);
 		comRoot.addCBookEventListener("action.setCorrect", this);

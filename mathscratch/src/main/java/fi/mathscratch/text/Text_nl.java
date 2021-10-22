@@ -16,7 +16,7 @@ public class Text_nl extends java.util.ListResourceBundle {
 		{	"areaHeight", "hoogte"},
 		{	"titleLoggingLabel", "Nakijken / Logging"},
 		{	"checkCB", "Nakijken (door docent)"},
-		{	"maxScoreLabel", "Maximale score"},
+		{	"maxScoreLabel", "Score"},
 		{	"logCB", "LogID"},
 		{	"titleSettingsLabel", "Instellingen"},
 		{	"drawingCB", "Tekeningen"},

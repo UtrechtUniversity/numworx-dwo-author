@@ -14,7 +14,7 @@ public class Text_en extends java.util.ListResourceBundle {
 		{	"areaHeight", "height"},
 		{	"titleLoggingLabel", "Check / Logging"},
 		{	"checkCB", "Check (by teacher)"},
-		{	"maxScoreLabel", "Maximum score"},
+		{	"maxScoreLabel", "Score"},
 		{	"logCB", "LogID"},
 		{	"titleSettingsLabel", "Settings"},
 		{	"drawingCB", "Drawings"},
