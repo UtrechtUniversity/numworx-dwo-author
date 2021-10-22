@@ -57,6 +57,11 @@
     <fields>;
     <methods>;
 }
+-keep class fi.wiskopdr.ObjectiveChoiceButton{
+	<methods>;
+}
+
+
 
 -keep class fi.beans.*.* {
     <fields>;
