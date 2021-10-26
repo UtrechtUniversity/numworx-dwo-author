@@ -418,11 +418,22 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         TreeNode child = parent.getChildAt(i);
         if (compareMethod(title, child.toString()) < 0) {
           parent.insert(node, i);
+          insertUO(parent, node);
           return;
         }
       }
       parent.add(node);
     }
+
+    private void insertUO(InvisibleNode parent, InvisibleNode node) {
+      Object po = parent.getUserObject();
+      Object no = node.getUserObject();
+      if (po instanceof NodeVector && no instanceof Node) {
+        NodeVector vp = (NodeVector) po;
+        vp.addElement( (Node) no);
+      }
+  
+}
 
     private int compareMethod(String as, String bs) {
       boolean wa = as == BEGRIPPEN_EN_VAKTAAL;
