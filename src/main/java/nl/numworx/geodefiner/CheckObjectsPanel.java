@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-import java.util.EventObject;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,13 +24,17 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
+import fi.euclides.event.NameMapper;
 import fi.euclides.event.Tracker;
 import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.model.Destroyable;
+import fi.euclides.model.Label;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 import fi.wiskopdr.formuleobjects.FormuleVak;
 import nl.numworx.geodefiner.common.CheckObject;
 import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Randomizer;
+import nl.numworx.geodefiner.common.math.Expression;
 import nl.tue.win.riaca.openmath.lang.OMObject;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 
@@ -223,6 +226,11 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 				FormuleParser fp = new FormuleParser(string.substring(2));
 				OMObject expr = fp.expr();
 				assert expr != null; // assertionError
+				Expression interpreter = tracker.adapt(Expression.class);
+				NameMapper mapper = tracker.getMapper();
+				Label test = new Label();
+				Destroyable alt = interpreter.interpret(expr, test, mapper);
+				test.destroy();
 			} catch(Throwable e) {
 				Logger.getLogger(getClass().getName()).log(Level.WARNING, "stopCellEditing", e);
 				firePropertyChange(new PropertyChangeEvent(vak, "feedback", string, e));
@@ -241,8 +249,11 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		
 	}
 
+	private final Tracker tracker;
+	
 	@Inject CheckObjectsPanel(Tracker tracker) {
 		super(new BorderLayout());
+		this.tracker = tracker;
 		setName("CheckObjects");
 		checkObjects = new CheckObjectList(tracker);
 		CheckObject obj = new CheckObject(0);

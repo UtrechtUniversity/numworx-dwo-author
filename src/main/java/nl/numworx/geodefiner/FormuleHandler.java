@@ -8,7 +8,6 @@ import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.event.EventHandler;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;
-import fi.euclides.swing.AWTViewer;
 
 public class FormuleHandler extends EventHandler {
 

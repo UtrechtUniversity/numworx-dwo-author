@@ -5,11 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Collections;
-import java.util.Map;
-
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.swing.Box;
 import javax.swing.JPanel;
 
