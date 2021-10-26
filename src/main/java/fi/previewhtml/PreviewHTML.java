@@ -213,26 +213,28 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 		browser.loadURL(url);
 	}
 
-	@SuppressWarnings("restriction")
 	@Override
 	public void stop() {
-		browser.loadURL(null);
+		SimpleSwingBrowser local = browser;
+		if (local == null) return;
+		local.loadURL(null);
 		int cnt = 10;
-		synchronized(browser) {
+		synchronized(local) {
 			while( cnt-- > 0 && inited )
 				try {
-					browser.wait(10000);
+					local.wait(10000);
 				} catch (InterruptedException e) {
 				}
 		}
-        browser.setApi(null);
-        browser.setConsole(null);
+        local.setApi(null);
+        local.setConsole(null);
 		System.out.println("Preview stopped " + cnt);
 	}
 
 	@Override
 	public void destroy() {
-		browser.removeMembers();
+		SimpleSwingBrowser local = browser;
+		if (local != null) local.removeMembers();
 		removeAll();
 		browser = null;
 		System.gc();
