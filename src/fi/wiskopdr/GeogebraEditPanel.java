@@ -79,7 +79,6 @@ class GeogebraEditPanel extends JPanel implements InteractieEditPanel , ActionLi
 		optiesPanel.setMaximumSize(new Dimension(200,800));
 
         optiesPanel.setAlignmentY(0.0f); // align at top
-        geogebraPanel.setAlignmentY(0.0f);
 		
 		hb.add(optiesPanel);
 		
@@ -149,6 +148,7 @@ class GeogebraEditPanel extends JPanel implements InteractieEditPanel , ActionLi
 		geogebraPanel.buildGUI();
 		geogebraPanel.setInstanceId(id);
 		geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
+        geogebraPanel.setAlignmentY(0.0f);
 		c.add(geogebraPanel);
 		setGeogebraBounds();
 	}

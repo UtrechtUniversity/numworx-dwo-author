@@ -29,6 +29,7 @@ public class Geogebra3EditPanel extends GeogebraEditPanel
 		geogebraPanel.setInstanceId(id);
 		geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
 		geogebraPanel.refreshGeogebra();
+        geogebraPanel.setAlignmentY(0.0f);
 		c.add(geogebraPanel);
 		setGeogebraBounds();
 	}
