@@ -517,6 +517,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     graph = new Graph();
     
     graph.addActionListener(new GraphTreeAction(tree));
+    graph.addActionListener(this::updateGraph);
 
     JSplitPane leftBox = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     leftBox.setBorder(BorderFactory.createEmptyBorder());
@@ -659,7 +660,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   private JScrollPane scroll;
   private JSlider slider;
   private List<String> objectives;
-  private List<String> deselections = Collections.emptyList();
+  private List<String> deselections = Collections.emptyList(), deselections0 = deselections;
   private Collection<String> foreknowledge;
   
   public List<String> getObjectives() {
@@ -699,12 +700,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     if (objectives == null) objectives = new ArrayList<>();
     else objectives = new ArrayList<>(objectives);
 
-    this.deselections = objectives;
+    this.deselections = this.deselections0 = objectives;
   }
   
   @Override
   public List<String> getDeselections() {
-    return this.deselections;
+    return this.deselections0;
   }
   
   
@@ -722,7 +723,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     this.choices = choices;
     this.ids = null;  // if you forget setObjectives!
     this.objectives = null;
-    this.deselections = Collections.emptyList();
+    this.deselections = this.deselections0 = Collections.emptyList();
   }
 
   @Override
@@ -733,8 +734,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     //ids = new HashMap<>();
     getObjectives(root.getUserObject(), ids);
     objectives = createObjectives();
-    deselections = graph.getDeselections();
-    foreknowledge = calculateForeknowledge();
+    deselections = deselections0 = graph.getDeselections();
+    foreknowledge = calculateForeknowledge(deselections0);
 // old style
     int x = studentModel.get().categories.length;
     int y = studentModel.get().getMaxObjectives();
@@ -808,7 +809,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
     updateGraph();
     graph.setDeselections(deselections);
-    foreknowledge = calculateForeknowledge();
+    foreknowledge = calculateForeknowledge(deselections);
     model.nodeStructureChanged(root);
 
     @SuppressWarnings("unchecked")
@@ -826,12 +827,20 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     return this;
   }
 
-
+  private void updateGraph(ActionEvent e ) {
+    if ("deselections".equals(e.getActionCommand()))
+    {
+      deselections = graph.getDeselections();
+      updateGraph();
+    }
+  }
+  
   private void updateGraph() {
 
 // mogelijke optimalisatie: kennis tree eenmalig opbouwen uit ids.keyset en dan bijwerken.    
     Set<String> kennis = calculateKennis();
     Set<String> voorkennis = ObjectivesViewAction.metVoorkennis(kennis, studentModel.get());
+    voorkennis.removeAll(deselections);
     graph.graphNodes
       .forEach(n -> {
         boolean on = voorkennis.contains(n.getID());
@@ -947,7 +956,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
   }
 
-    private Collection<String> calculateForeknowledge() {
+    private Collection<String> calculateForeknowledge(List<String> deselections) {
       Set<String> kennis = calculateKennis();
       Set<String> voorkennis = ObjectivesViewAction.metVoorkennis(kennis, studentModel.get());
       voorkennis.removeAll(deselections);

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,6 +65,11 @@ public class ObjectivesViewAction extends AbstractAction {
       buildChoices();
       btn.strategy.setChoices(choices);
       btn.strategy.setObjectives(toList(objectives)); // show exclusief voorkennis, maximum factor
+      Set<String> all = metVoorkennis(objectives, objectivesButton.getStudentModel());
+      all.removeAll(voorkennis);
+      List<String> deselections = new ArrayList<>(all);
+      btn.strategy.setDeselections(deselections);
+      btn.strategy.setForeknowledge(voorkennis);
       btn.strategy.setTitle(getValue(Action.NAME).toString());
       Component t = btn.strategy.makeGUI();
       t.setEnabled(false);
@@ -130,7 +136,7 @@ public class ObjectivesViewAction extends AbstractAction {
       choices = new boolean[0][0];
     }
     this.objectives = new TreeSet<>();
-    
+    this.voorkennis = new TreeSet<>();
     Map state = editor.getEditState();
     int aantal = editor.geefAantalOpdrachten(0);
     for (int i = 0; i < aantal; i++) {
@@ -141,7 +147,8 @@ public class ObjectivesViewAction extends AbstractAction {
       Map[] data = (Map[])mapi.get("interactiePanelLaunchData");
       updatechoices(data);
     }
-    this.voorkennis = metVoorkennis(this.objectives, objectivesButton.getStudentModel());
+    if (this.voorkennis.isEmpty())
+      this.voorkennis = metVoorkennis(this.objectives, objectivesButton.getStudentModel());
   }
 
   static Set<String> strip(Collection<String> ids) {
@@ -200,11 +207,20 @@ public class ObjectivesViewAction extends AbstractAction {
     boolean[][] choices = (boolean[][]) state.get("logObjectives");
     if (choices != null) updatechoices(choices);
     String[] list = (String[]) state.get(Constants.OBJECTIVES);
+    Set<String> local = new HashSet<>();
     if (list != null) {
       for (int i = 0; i < list.length; i++) {
         String string = list[i];
-        objectives.add(string);       
+        objectives.add(string);
+        local.add(string);
       }
+    }
+    list = (String[]) state.get(Constants.FOREKNOWLEDGE);
+    if (list != null) {
+      for(String item: list) voorkennis.add(item);
+    } else {
+      if (!local.isEmpty())
+        voorkennis.addAll(metVoorkennis(local, objectivesButton.getStudentModel()));
     }
   }
 

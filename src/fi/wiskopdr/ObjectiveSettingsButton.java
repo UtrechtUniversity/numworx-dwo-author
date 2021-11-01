@@ -10,17 +10,12 @@ import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-//import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.opdrnav.PlusMinKnop;
 import fi.beans.numworxlf.JScrollPane;

@@ -1,11 +1,8 @@
 package fi.wiskopdr.domainmodel.graph;
 
 import java.awt.AWTEventMulticaster;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -44,7 +41,6 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import fi.beans.numworxlf.JButton;
-import fi.beans.numworxlf.JComboBox;
 import fi.wiskopdr.domainmodel.DomStudentModelMethodInfo;
 import fi.wiskopdr.domainmodel.InvisibleNode;
 import fi.wiskopdr.domainmodel.InvisibleTreeModel;
@@ -1466,7 +1462,10 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 			voorkennisButton.setVisible(true);
 			verbergVoorkennis();
 			if(voorkennisTree)
-				verbergVoorkennisTree();
+			{
+			  verbergVoorkennisTree();
+			  produceAction("deselections");
+			}
 		}
 		if(e.getSource()==miVoorkennis) {
 			if(voorkennisArea)
