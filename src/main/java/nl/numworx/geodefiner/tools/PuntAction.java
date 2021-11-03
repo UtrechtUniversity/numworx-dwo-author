@@ -16,7 +16,7 @@ public class PuntAction extends fi.euclides.swing.PuntAction {
 
 	public PuntAction(String name, String icon, EventHandler handler, AWTViewer viewer, UIShim<Destroyable, UIEditor> model) {
 		super(name, icon, handler, viewer);
-		if (GeoDefiner.isExperimental && GeoDefiner.isPremium) {
+		if (GeoDefiner.isPremium) {
 			putValue("model", model);
 			putValue("config", new PuntConfig(editImage, this));
 		}

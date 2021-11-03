@@ -2,9 +2,8 @@ package nl.numworx.geodefiner;
 
 import java.awt.Component;
 
-import javax.swing.JOptionPane;
-
 import nl.tue.win.riaca.openmath.lang.OMObject;
+import fi.beans.numworxlf.JOptionPane;
 import fi.euclides.event.EventHandler;
 import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.formuleobjects.ParseException;

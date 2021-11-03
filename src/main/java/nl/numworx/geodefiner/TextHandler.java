@@ -3,9 +3,7 @@ package nl.numworx.geodefiner;
 import java.awt.Component;
 import java.util.Vector;
 
-import javax.inject.Inject;
-import javax.swing.JOptionPane;
-
+import fi.beans.numworxlf.JOptionPane;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Punt;

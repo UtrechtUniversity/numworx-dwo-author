@@ -7,10 +7,10 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import fi.beans.numworxlf.JOptionPane;
 import fi.euclides.model.Destroyable;
 import nl.numworx.geodefiner.common.UIShim;
 import nl.numworx.geodefiner.ui.UIEditor;

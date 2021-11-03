@@ -100,11 +100,7 @@ public abstract class EditModule {
 	@Provides @Singleton static JToolBar toolbar() {
 		return new JToolBar();
 	}
-	
-//	@Provides static ToolboxPanel toolboxPanel(Instance instance) {
-//		return instance.getToolboxPanel();
-//	}
-	
+		
 	@Provides @Singleton @Named("context") static  Optional<JPopupMenu> popup(
 	    @Named("open") Provider<Action> safeAction,
 	    @Named("safe") Provider<Action> openAction,

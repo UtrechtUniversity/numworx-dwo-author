@@ -4,8 +4,7 @@ import java.awt.Component;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-import javax.swing.JOptionPane;
-
+import fi.beans.numworxlf.JOptionPane;
 import fi.euclides.model.Punt;
 import fi.euclides.model.math.Numbers;
 import nl.numworx.geodefiner.common.AbstractCirkelLabelHandler;

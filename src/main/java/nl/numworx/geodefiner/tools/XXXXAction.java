@@ -15,7 +15,7 @@ public class XXXXAction extends fi.euclides.swing.XXXAction {
 
 	public XXXXAction(String name, String icon, EventHandler handler, AWTViewer viewer, UIShim<? extends Destroyable, UIEditor> uimodel) {
 		super(name, icon, handler, viewer);
-		if (GeoDefiner.isExperimental && GeoDefiner.isPremium) {
+		if (GeoDefiner.isPremium) {
 			putValue("model", uimodel);
 			handler.setDecorator(uimodel);
 			putValue("config", new PuntConfig(editImage, this));
