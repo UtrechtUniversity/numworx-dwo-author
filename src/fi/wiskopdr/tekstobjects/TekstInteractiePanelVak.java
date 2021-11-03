@@ -803,10 +803,6 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				}
 			} 
 			{
-			
-			
-			
-			
 			Iterator<Map<String, String>> iter = connections.iterator();
 			while(iter.hasNext()){ 
 				Map<String, String> type = iter.next();

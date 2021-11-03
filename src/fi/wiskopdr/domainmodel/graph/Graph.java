@@ -110,6 +110,7 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 
 	public Graph() {
 		setLayout(null);
+		//setBackground(new Color(227,229,234));
 		setBackground(LeerdomeinGraphPanel.colorGray3);
 		setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		

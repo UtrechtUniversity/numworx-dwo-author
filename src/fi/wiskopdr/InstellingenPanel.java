@@ -53,7 +53,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox eerderGeenCorrCB;
 	private JCheckBox significantieCB;
 	private JCheckBox objectivesCB;
-	private JCheckBox pilotObjectivesCB;
+	//private JCheckBox pilotObjectivesCB;
 	private JCheckBox misconceptionsCB;
 	private JCheckBox fontOverervingCB;
 	private JCheckBox fontOverervingFormCB;
@@ -853,19 +853,19 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boxh.setAlignmentY(Component.LEFT_ALIGNMENT);
 		boxh.add(Box.createHorizontalGlue());
 		
-		pilotObjectivesCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_pilotObjectives"));
-		pilotObjectivesCB.setVisible(false);
-		pilotObjectivesCB.addActionListener(this);
-		pilotObjectivesCB.setOpaque(false);
-		pilotObjectivesCB.setFont(font);
-		pilotObjectivesCB.setForeground(WiskOpdr.fgcolorEditor);
-		pilotObjectivesCB.setSelected(false);
-		boxh.add(pilotObjectivesCB);
-		boxh.add(Box.createRigidArea(new Dimension(20,0)));
+//		pilotObjectivesCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_pilotObjectives"));
+//		pilotObjectivesCB.setVisible(false);
+//		pilotObjectivesCB.addActionListener(this);
+//		pilotObjectivesCB.setOpaque(false);
+//		pilotObjectivesCB.setFont(font);
+//		pilotObjectivesCB.setForeground(WiskOpdr.fgcolorEditor);
+//		pilotObjectivesCB.setSelected(false);
+//		boxh.add(pilotObjectivesCB);
+//		boxh.add(Box.createRigidArea(new Dimension(20,0)));
 		
 		objectivesButton = new ObjectiveSettingsButton();
-		objectivesButton.setPreferredSize(new Dimension(100,24));
-		objectivesButton.setMaximumSize(new Dimension(100,24));
+		//objectivesButton.setPreferredSize(new Dimension(140,24));
+		//objectivesButton.setMaximumSize(new Dimension(140,24));
 		objectivesButton.setVisible(false);
 		boxh.add(objectivesButton);
 		boxh.add(Box.createRigidArea(new Dimension(10,0)));
@@ -894,14 +894,17 @@ public class InstellingenPanel extends JPanel implements ActionListener
 //		boxh.add(Box.createHorizontalGlue());
 		//boxv4.add(boxh);
 		//boxv4.add(Box.createVerticalStrut(60));
-		boxh.add(Box.createHorizontalGlue());
-		objectivesViewBtn = new WiskOpdrButton("Leerdoelen overzicht");
+		
+		objectivesViewBtn = new WiskOpdrButton(WiskOpdr.rb.getString("OPT_objectivesViewButton"));
 		objectivesViewBtn.setVisible(false);
-		objectivesViewBtn.setAction(new ObjectivesViewAction("Leerdoelen overzicht", objectivesButton, opdrNavStruct));
-		boxh.add(objectivesViewBtn);
-        boxh.add(Box.createRigidArea(new Dimension(9,0)));
-        if (WiskOpdr.isPremium())
-          boxv4.add(boxh);
+		objectivesViewBtn.setAction(new ObjectivesViewAction(WiskOpdr.rb.getString("OPT_objectivesViewButton"), objectivesButton, opdrNavStruct));
+		boxh.add(Box.createRigidArea(new Dimension(30,0)));
+        boxh.add(objectivesViewBtn);
+        boxh.add(Box.createHorizontalGlue());
+        if (WiskOpdr.isPremium()) {  
+	        	boxv4.add(Box.createVerticalStrut(5));
+	        	boxv4.add(boxh);
+        }
 		
 		//boxv4.createVerticalGlue();
 		
@@ -1133,7 +1136,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		hasMisconceptions = misconceptionsCB.isSelected();
 		objectives = objectivesButton.getObjectives();
 		studentModelId = objectivesButton.getStudentModelID();
-		pilotObjectives = pilotObjectivesCB.isSelected();
+		//pilotObjectives = pilotObjectivesCB.isSelected();
 		misconceptions = misconceptionsButton.getObjectives();
 		categorieString = objectivesButton.getCategories();
 		mccCategorieString = misconceptionsButton.getCategories();
@@ -1435,12 +1438,12 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		significantieCB.setSelected(significantie);
 		objectivesCB.setSelected(hasObjectives);
 		objectivesButton.setVisible(hasObjectives);
-		pilotObjectivesCB.setVisible(hasObjectives);
-		objectivesViewBtn.setVisible(hasObjectives);
+		//pilotObjectivesCB.setVisible(hasObjectives);
+		objectivesViewBtn.setVisible(hasObjectives && studentModelId!=null);
 		if(hasObjectives)
 		{	objectivesButton.setObjectives(objectives);
 			objectivesButton.setCategories(categorieString);
-			pilotObjectivesCB.setSelected(pilotObjectives);
+			//pilotObjectivesCB.setSelected(pilotObjectives);
 			if(WiskOpdr.isPremium())
 			{
 			  objectivesButton.setStudentModelID(studentModelId);
@@ -1625,8 +1628,8 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(e.getSource()==objectivesCB)
 		{
 			objectivesButton.setVisible(objectivesCB.isSelected());
-			pilotObjectivesCB.setVisible(objectivesCB.isSelected());
-			objectivesViewBtn.setVisible(objectivesCB.isSelected());
+			//pilotObjectivesCB.setVisible(objectivesCB.isSelected());
+			//objectivesViewBtn.setVisible(objectivesCB.isSelected());
 		}
 		if(e.getSource()==misconceptionsCB)
 		{

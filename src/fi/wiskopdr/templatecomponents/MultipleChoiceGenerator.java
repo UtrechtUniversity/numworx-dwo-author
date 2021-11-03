@@ -56,6 +56,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		int tabWidth = initialTabWidth;
 		int rowSpace = initialRowSpace;
 		boolean hasPrefix = initialHasPrefix;
+		//String MCwidgetID = Long.toHexString(Double.doubleToLongBits(Math.random()));
 		
 		initPreferences = new Hashtable<String,Object>();
 		initPreferences.put("itemCount", new Integer(itemCount));
@@ -63,6 +64,7 @@ public class MultipleChoiceGenerator implements TComponentGenerator, ActionListe
 		initPreferences.put("tabWidth", new Integer(tabWidth));
 		initPreferences.put("rowSpace", new Integer(rowSpace));
 		initPreferences.put("hasPrefix", new Boolean(hasPrefix));
+		//initPreferences.put("MCwidgetID", MCwidgetID);
 		
 		
 		

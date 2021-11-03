@@ -422,6 +422,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_eerderGeenCorr" , "Geen correctiemogelijkheid eerdere pagina's"},
 				{"OPT_significantie" , "Checkmogelijkheid significante getallen"},
 				{"OPT_objectives" , "Leerdoelen"},
+				{"OPT_objectivesButton" , "Kies leerdomein"},
+				{"OPT_objectivesViewButton" , "Gekoppelde leerdoelen"},
 				{"OPT_pilotObjectives", "Pilot"},
 				{"OPT_misconceptions" , "Foutenanalyse"},
 				{"OPT_fontOvererving" , "Font-overerving tekstvakken"},
@@ -451,7 +453,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OBJ_kolomMinderButton", "Verwijder kolom"},
 				{"OBJ_leerdoelInstellingen", "Instellingen leerdoelen"},
 				{"OBJ_gebruikAanwezigLeerdomein", "Gebruik aanwezig leerdomein"},
-				{"OBJ_gebruikEigenLeerdoelen", "Gebruik eigen leerdoelen"},
+				{"OBJ_gebruikEigenLeerdoelen", "Gebruik eigen leerdoelen voor deze activiteit"},
 				{"OBJ_koppelLeerdoelTitel", "Koppel aan leerdoelen"},
 				
 				{"MCC_misconception", "Foutenanalyse"},

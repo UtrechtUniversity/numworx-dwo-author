@@ -64,7 +64,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 	
 		
 	public ObjectiveSettingsButton(){	
-		this(WiskOpdr.rb.getString("OPT_objectives"), WiskOpdr.rb.getString("OBJ_leerdoel"), WiskOpdr.rb.getString("OBJ_categorie"));
+		this(WiskOpdr.rb.getString("OPT_objectivesButton"), WiskOpdr.rb.getString("OBJ_leerdoel"), WiskOpdr.rb.getString("OBJ_categorie"));
 	}
 	
 	public ObjectiveSettingsButton(String buttonLabel, String rowLabel, String columnLabel){	
