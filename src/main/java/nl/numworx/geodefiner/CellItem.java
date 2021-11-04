@@ -59,9 +59,6 @@ public class CellItem extends JPanel {
 
 		public void actionPerformed(ActionEvent e) {
 			UIEditor editor = getEditor();
-			Object defaultOption = Messages.getString("save");
-			Object[] options = { defaultOption, Messages.getString("delete"), Messages.getString("cancel") };
-			Icon icon = iconOf(getCell().item);
 			String name = viewer.toString(getCell().item);
 // local patches: e, grid
 			if("e".equals(name))
@@ -69,13 +66,26 @@ public class CellItem extends JPanel {
 			else if ("$#@".equals(name))
 				name = "grid";
 			editor.setName(name);
+			actionTail(editor, name);
+		}
+
+		public void actionTail(UIEditor editor, String name) {
+			Icon icon = iconOf(getCell().item);
+			Object defaultOption = Messages.getString("save");
+			Object[] options = { defaultOption, Messages.getString("delete"), Messages.getString("cancel") };
 			int ok = 
 					canDelete ?
 							JOptionPane.showOptionDialog(CellItem.this, editor, name, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, icon, options, defaultOption)
 					:		JOptionPane.showConfirmDialog(CellItem.this, editor, name, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, icon);
 					
 			if(ok == JOptionPane.YES_OPTION) {
-				editor.commit();
+				if (editor.verify(viewer)) 
+					editor.commit();
+				else 
+				{
+					actionTail(editor, name); 
+					return;
+				}
 				viewer.paint();
 			} else if ( ok == JOptionPane.NO_OPTION) {
 				CellItem.this.

@@ -20,13 +20,21 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import nl.numworx.geodefiner.GeoDefiner;
+import nl.numworx.geodefiner.common.Randomizer;
+import nl.numworx.geodefiner.common.math.Expression;
 import nl.numworx.geodefiner.merge.RenameAction;
 import nl.numworx.geodefiner.merge.RenameAction.RenamePane;
 import nl.numworx.geodefiner.ui.color.ColorChooser;
+import nl.tue.win.riaca.openmath.lang.OMObject;
 import fi.euclides.event.NameMapper;
+import fi.euclides.event.Tracker;
+import fi.euclides.expr.InterpretException;
 import fi.euclides.formuleobjects.FormuleParser;
+import fi.euclides.formuleobjects.ParseException;
 import fi.euclides.formuleobjects.Token;
+import fi.euclides.formuleobjects.TokenMgrError;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.Label;
 import fi.euclides.util.Messages;
 import fi.wiskopdr.formuleobjects.FormuleEditor;
 
@@ -129,15 +137,22 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor implements Rena
 		add(hbox);
 		add(chooser);
 	}
-
+		
+	
+	
+	
 	@Override
 	public void commit() {
 		model.color = chooser.getColor();
-		model.visibility.setString ( visibilityEditor.formuleVak.toString()) ;
+		model.visibility.setString ( getVisibility()) ;
 		model.trail = trails.isSelected();
 		model.log = log.isSelected();
 		model.install();
         model.getRename().ifPresent(RenameAction::doRename);
+	}
+
+	public String getVisibility() {
+		return visibilityEditor.formuleVak.toString();
 	}
 
 	JTextField getNameField() {
@@ -147,6 +162,33 @@ public class ColorPane<T extends ColorModel<?>> extends UIEditor implements Rena
 	@Override
 	public Destroyable getItem() {
 		return model.item;
+	}
+
+	@Override
+	public boolean verify(Tracker t) {
+		String v = getVisibility();
+		if ("$f@".equals(v))
+			return super.verify(t); // empty
+		Randomizer r = t.adapt(Randomizer.class);
+		if (r != null) v = r.randomize(v);
+		FormuleParser parser = new FormuleParser(v.substring(2));
+		try {
+			OMObject object = parser.logic();
+			Expression expr = t.adapt(Expression.class);
+			Label l = new Label();
+			expr.interpret(object, l, t.getMapper());
+			l.destroy();
+		} catch (TokenMgrError e) { // TODO zet feedback tekst
+			return false;
+		} catch (ParseException e) {
+			return false;
+		} catch (InterpretException e) {
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
+
+		return super.verify(t);
 	}
 
 }
