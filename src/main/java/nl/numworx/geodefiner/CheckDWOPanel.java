@@ -14,12 +14,12 @@ import javax.inject.Named;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import fi.beans.numworxlf.JCheckBox;
+import fi.beans.numworxlf.JFormattedTextField;
+
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import fi.beans.numworxlf.JTextField;
-import fi.beans.numworxlf.NumworxTextFieldUI;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -90,7 +90,6 @@ public class CheckDWOPanel extends JPanel implements ChangeListener, ActionListe
 		checkDWO.addChangeListener(this);
 		extern.addChangeListener(this);
 		score = new JFormattedTextField(DEFAULT_SCORE);
-		score.setUI(NumworxTextFieldUI.createUI(score));
 		score.setColumns(5);
 		score.setMaximumSize(score.getPreferredSize());
 		formule = new FormuleEditor(false);

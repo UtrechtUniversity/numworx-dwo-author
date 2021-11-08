@@ -6,9 +6,8 @@ import java.util.Locale;
 import javax.swing.Box;
 import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JComboBox;
-import fi.beans.numworxlf.NumworxTextFieldUI;
+import fi.beans.numworxlf.JFormattedTextField;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
 import nl.numworx.geodefiner.common.PointType;
@@ -29,7 +28,7 @@ class PointPane<T extends PointModel> extends ColorPane<T> {
 		type = new JComboBox<PointType>(PointType.values());
 		type.setSelectedItem(model.type);
 		NumberFormat format = NumberFormat.getIntegerInstance(Locale.US);
-		sizeField = new JFormattedTextField(format);sizeField.setUI(NumworxTextFieldUI.createUI(sizeField));
+		sizeField = new JFormattedTextField(format);
 		sizeField.setValue(Integer.valueOf(model.size == null ? 5 : model.size.intValue()));
 		sizeField.setColumns(5);
 		sizeField.setMaximumSize(sizeField.getPreferredSize());
@@ -43,17 +42,19 @@ class PointPane<T extends PointModel> extends ColorPane<T> {
 		rigid.setSelected(!model.rigid);			
 		Box panel = Box.createHorizontalBox();
 		panel.add( new JLabel(Messages.getString("PointPane.1"))); panel.add(sizeField);panel.add(new JLabel("px"));panel.add(Box.createGlue());
-		add(Box.createVerticalStrut(10));
-		add(panel);
+		content.add(Box.createVerticalStrut(10));
+		content.add(panel);
 		panel = Box.createHorizontalBox();
 		if (item != null)
 			panel.add(new JLabel(Messages.getString("PointPane.2")));
 		panel.add(rigid); panel.add(Box.createGlue());
-		add(Box.createVerticalStrut(10));
-		add(panel );
+		content.add(Box.createVerticalStrut(10));
+		content.add(panel );
 
 		panel.validate();
 		panel.setSize(panel.getPreferredSize());
+		
+		setSizes();
 		}
 
 	public void commit() {

@@ -105,7 +105,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			switch(columnIndex) {
 			case 1: checkObjects.getElementAt(rowIndex).setFormule(aValue.toString()); break;
-			case 2: checkObjects.getElementAt(rowIndex).setMaxScore((Integer)aValue); break;
+			case 2: checkObjects.getElementAt(rowIndex).setMaxScore((Number)aValue); break;
 			}
 		}
 
@@ -170,6 +170,8 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 			} 
 		};
 		String value;
+		private int row;
+		
 		@Override
 		public Object getCellEditorValue() {
 			return value;
@@ -187,6 +189,8 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 			else if (!f.startsWith("$f"))
 				f = "$f" + f + "@";
 			value = f;
+			this.row = row;
+			
 			Color fg = Color.black;
 			Color bg = Color.white;
 //			if(isSelected) {
@@ -219,7 +223,11 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		public boolean stopCellEditing() {
 			value = vak.formuleVak.toString();
 			if("$f@".equals(value))
+			{
+				model.setValueAt(0, row, 2);
+				model.fireTableCellUpdated(row, 2);
 				return super.stopCellEditing();
+			}
 			String string = value;
 			try {
 				string = randomizer.randomize(string);
@@ -259,7 +267,6 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		CheckObject obj = new CheckObject(0);
 // Sample
 		obj.setFormule("$f@");
-		obj.setMaxScore(5);
 		checkObjects.addElement(obj);
 		model = new CheckObjectsModel();
 		table = new JTable(model);
@@ -288,7 +295,6 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if ( "+".equals(e.getActionCommand())) {
 			CheckObject o = new CheckObject(model.getRowCount());
-			o.setMaxScore(5);
 			model.addElement(o);
 			return;
 		}

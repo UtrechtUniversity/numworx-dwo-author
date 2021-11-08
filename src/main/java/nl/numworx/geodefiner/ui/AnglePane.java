@@ -24,7 +24,7 @@ class AnglePane extends TextPane<AngleModel> {
 		hbox.add(degField);
 		ButtonGroup group = new ButtonGroup();
 		group.add(degField); group.add(radField);
-		hbox.add(Box.createGlue()); add(hbox);
+		hbox.add(Box.createGlue()); content.add(hbox); setSizes();
 		
 	}
 	@Override

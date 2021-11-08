@@ -14,14 +14,12 @@ import javax.swing.Box;
 import javax.swing.Icon;
 import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JComboBox;
-import fi.beans.numworxlf.NumworxTextFieldUI;
+import fi.beans.numworxlf.JFormattedTextField;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import fi.euclides.util.Messages;
-import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.common.Align;
 
 public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon, ItemListener {
@@ -43,7 +41,6 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 		alignBox.setSelectedItem(model.align);
 		preview.add(sampleLabel);
 		fontSize = new JFormattedTextField(NumberFormat.getInstance(Locale.US));
-		fontSize.setUI(NumworxTextFieldUI.createUI(fontSize));
 		fontSize.setValue(model.font.getSize2D()+0.0);
 		fontSize.setColumns(5);
 		fontSize.setMaximumSize(fontSize.getPreferredSize());
@@ -69,24 +66,25 @@ public class TextPane<T extends TextModel> extends ColorPane<T> implements Icon,
 			}
 		});
 		chooser.setPreviewPanel(preview);
-		add(Box.createVerticalStrut(10));
+		content.add(Box.createVerticalStrut(10));
 		Box hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("TextPane.2")));
 		hbox.add(alignBox);
 		hbox.add(Box.createGlue());
-		add(hbox);
+		content.add(hbox);
 		hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("TextPane.3")));
 		hbox.add(fontSize);
 		hbox.add(new JLabel("px"));
 		hbox.add(Box.createGlue());
-		add(hbox);
+		content.add(hbox);
 		hbox = Box.createHorizontalBox();
 		hbox.add(new JLabel(Messages.getString("TextPane.4")));
 		hbox.add(alwaysF);
 		hbox.add(herleid);
 		hbox.add(Box.createGlue());
-		add(hbox);
+		content.add(hbox);
+		setSizes();
 	}
 	@Override
 	public void commit() {

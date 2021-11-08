@@ -7,9 +7,8 @@ import java.util.Locale;
 import javax.swing.Box;
 import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JComboBox;
-import fi.beans.numworxlf.NumworxTextFieldUI;
+import fi.beans.numworxlf.JFormattedTextField;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
 import fi.euclides.util.Messages;
@@ -30,22 +29,23 @@ public class LinePane<M extends LineModel> extends ColorPane<M> {
 		type   = new JComboBox<LineType>(LineType.values());
 		type.setSelectedItem(model.type);
 		NumberFormat format = NumberFormat.getInstance(Locale.US);
-		widthField = new JFormattedTextField(format); widthField.setUI(NumworxTextFieldUI.createUI(widthField));
+		widthField = new JFormattedTextField(format);
 		widthField.setValue(model.width);
 		widthField.setColumns(5);
 		widthField.setMaximumSize(widthField.getPreferredSize());
 		rigid = new JCheckBox(Messages.getString("rigid"));
 		rigid.setSelected(!model.rigid);			
 		panel.add(sample); panel.add(type);panel.add(Box.createGlue());
-		add(panel);
+		content.add(panel);
 		panel = Box.createHorizontalBox();
 		panel.add(new JLabel(Messages.getString("LinePane.2")));panel.add(widthField);panel.add(new JLabel("px"));
 		panel.add(Box.createGlue());
-		add(panel);
+		content.add(panel);
 		panel = Box.createHorizontalBox();
 		panel.add(new JLabel(Messages.getString("PointPane.2"))); panel.add(rigid); panel.add(Box.createGlue());
-		add(Box.createVerticalStrut(10));
-		if (model.item != null) add(panel);
+		content.add(Box.createVerticalStrut(10));
+		if (model.item != null) content.add(panel);
+		setSizes();
 	}
 	public void commit() {
 		commitFields(widthField);

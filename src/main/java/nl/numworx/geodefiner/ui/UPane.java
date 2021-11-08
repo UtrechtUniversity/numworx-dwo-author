@@ -1,10 +1,9 @@
 package nl.numworx.geodefiner.ui;
 
 import javax.swing.Box;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
-import fi.beans.numworxlf.NumworxTextFieldUI;
+import fi.beans.numworxlf.JFormattedTextField;
 import fi.euclides.model.HorizontalPunt;
 import fi.euclides.model.math.Numbers;
 import nl.numworx.geodefiner.Messages;
@@ -17,7 +16,6 @@ class UPane extends PointPane<UModel> {
 	public UPane(UModel model) {
 		super(model);
 		dField = new JFormattedTextField();
-		dField.setUI(NumworxTextFieldUI.createUI(dField));
 		u = (HorizontalPunt) model.item;
 		dField.setValue(u.getDistance().doubleValue());dField.setColumns(5);
 		dField.setMaximumSize(dField.getPreferredSize());
@@ -25,7 +23,8 @@ class UPane extends PointPane<UModel> {
 		panel.add(new JLabel(Messages.getString("UPane.0"))); //$NON-NLS-1$
 		panel.add(dField);
 		panel.add(new JLabel("px"));panel.add(Box.createGlue()); //$NON-NLS-1$
-		add(panel);
+		content.add(panel);
+		setSizes();
 	}
 
 	@Override

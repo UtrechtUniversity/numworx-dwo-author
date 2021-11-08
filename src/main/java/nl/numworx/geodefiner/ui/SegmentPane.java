@@ -19,7 +19,8 @@ class SegmentPane extends LinePane<SegmentModel> {
 		panel.add(new JLabel(Messages.getString("SegmentPane.1")));
 		panel.add(tips);
 		panel.add(Box.createGlue());
-		add(panel);
+		content.add(panel);
+		setSizes();
 	}
 
 	Tips[] tips() {

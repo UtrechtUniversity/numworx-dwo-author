@@ -18,7 +18,8 @@ public class AxesPane extends LinePane<AxesModel> {
 		hbox.add(new JLabel(Messages.getString("AxesPane.1"))); //$NON-NLS-1$
 		hbox.add(numbers);
 		hbox.add(Box.createGlue());
-		add(hbox);
+		content.add(hbox);
+		setSizes();
 	}
 
 	@Override

@@ -20,7 +20,8 @@ public class GridPane extends LinePane<GridModel> {
 		hbox.add(new JLabel(Messages.getString("GridPane.1")));
 		hbox.add(gravity);
 		hbox.add(Box.createGlue());
-		add(hbox);
+		content.add(hbox);
+		setSizes();
 	}
 
 	@Override
