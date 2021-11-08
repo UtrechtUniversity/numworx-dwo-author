@@ -19,7 +19,6 @@ import fi.euclides.formuleobjects.FormuleParser;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.Model;
-import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.openmath.LocusModelF;
 import fi.euclides.proof.LabelTester;
@@ -53,7 +52,7 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 	}
 	
 	public int getMaxScore() {
-		return isEmpty() ? 0 : maxScore;
+		return maxScore;
 	}
 	public String getFormule() {
 		return formule;
