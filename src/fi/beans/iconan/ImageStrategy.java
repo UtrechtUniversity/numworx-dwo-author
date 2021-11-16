@@ -133,10 +133,8 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
     }
     
     public synchronized int getWidth(String name)
-    {
-        Integer w = (Integer) parent.namemap.get(parent.suffix(name) + "/w");
-        if (w == null)
-          w = (Integer)parent.namemap.get(parent.strip(name) + "/w");
+    { 
+      Integer w = parent.getSuffix(name, "/w");
         if(w != null)
             return w.intValue();
         Image img = parent.getImage(name);
@@ -147,9 +145,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
 
     public synchronized int getHeight(String name)
     {
-        Integer w = (Integer) parent.namemap.get(parent.suffix(name) + "/h");
-        if (w == null)
-          w = (Integer) parent.namemap.get(parent.strip(name) + "/h");
+        Integer w = parent.getSuffix(name, "/h");
         if(w != null)
             return w.intValue();
         Image img = parent.getImage(name);

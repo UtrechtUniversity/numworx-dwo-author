@@ -4,11 +4,9 @@ import java.applet.Applet;
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -36,6 +34,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -57,7 +56,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -66,13 +64,13 @@ import fi.beans.numworxlf.JCheckBox;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrButton;
 import fi.wiskopdr.WiskOpdrTextField;
-import fi.wiskopdr.tekstobjects.TekstImageVak;
 
 @SuppressWarnings("serial")
 public class Iconan extends JPanel implements ActionListener, FocusListener, ListSelectionListener {
 
 	private Component component;
-	final Hashtable<String,Object> namemap;
+	final Hashtable<String,Object> namemap, xnamemap;
+	
 	private Strategy imageStrategy, svgStrategy;
 	
 	Hashtable<String,Image> imagemap;
@@ -146,7 +144,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			if(name != null)
 			{
 			  //namemap.put(name + "/w", (previewWidth));
-			  namemap.put(suffix(name)+"/w", (previewWidth));
+			  xnamemap.put(suffix(name)+"/w", (previewWidth));
 			}
 			previewCanvas.repaint();
 			return true;
@@ -158,7 +156,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			if(name != null)
 			{
 			  //namemap.put(name + "/h", (previewHeight));
-              namemap.put(suffix(name) + "/h", (previewHeight));
+              xnamemap.put(suffix(name) + "/h", (previewHeight));
 			}
 			previewCanvas.repaint();
 			return true;
@@ -168,7 +166,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		  String name = previewName;
 		  if (name != null) {
 		    //namemap.put(name + "/v", volBreedte);
-		    namemap.put(suffix(name), volBreedte);
+		    xnamemap.put(suffix(name), volBreedte);
 		  }
 		  return true;
 		}
@@ -220,20 +218,24 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 //					namemap.put(selected + "/w", Integer.parseInt(widthField.getText()));
 //					namemap.put(selected + "/h", Integer.parseInt(heightField.getText()));
 //					namemap.put(selected + "/v", volBreedteCB.isSelected());
-					Iterator<String> keys = namemap.keySet().iterator();
-					while (keys.hasNext()) {
-                      String string = (String) keys.next();
-                      if (string.contains("" + SUFFIX + suffix)) keys.remove();                     
-                    }
-					namemap.put(suffix(selected) + "/w", Integer.parseInt(widthField.getText()));
-					namemap.put(suffix(selected) + "/h", Integer.parseInt(heightField.getText()));
-					namemap.put(suffix(selected) + "/v", volBreedteCB.isSelected());
+//					Iterator<String> keys = namemap.keySet().iterator();
+//					while (keys.hasNext()) {
+//                      String string = (String) keys.next();
+//                      if (string.contains("" + SUFFIX + suffix + "/")) keys.remove();                     
+//                    }
+					xnamemap.put(suffix(selected) + "/w", Integer.parseInt(widthField.getText()));
+					xnamemap.put(suffix(selected) + "/h", Integer.parseInt(heightField.getText()));
+					xnamemap.put(suffix(selected) + "/v", volBreedteCB.isSelected());
 				} else {
 					selected = "";
 					al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "cancel"));
 					return;
-				}				
-				al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, suffix(selected)));
+				}	
+				int w = Integer.parseInt(widthField.getText());
+				int h = Integer.parseInt(heightField.getText());
+				String v = volBreedteCB.isSelected() ? "v":"";
+				String selected_suffix = selected + SUFFIX + "w" + w + "h" + h + v;
+				al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, selected_suffix));
 			}
 			if(imageDialog!=null)
 				imageDialog.setVisible(false);
@@ -469,6 +471,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	}
 
 	public boolean isVolBreedte(String name) {
+      if(xnamemap.containsKey(suffix(name) + "/v")) {
+        return Boolean.TRUE.equals(xnamemap.get(suffix(name) + "/v"));
+      }
       if(namemap.containsKey(suffix(name) + "/v")) {
         return Boolean.TRUE.equals(namemap.get(suffix(name) + "/v"));
       }
@@ -709,6 +714,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		this.applet = Applet;
 		this.component = component;
 		this.namemap = namemap;
+		this.xnamemap = new Hashtable<String, Object>();
 		this.chooseImage = chooseImage;
 		setLocale(component.getLocale());
 		imagemap = new Hashtable<>();
@@ -746,6 +752,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	public Iconan(Applet applet) {
 		this.applet = applet;
 		namemap = new Hashtable<>();
+		xnamemap = new Hashtable<>();
 		imagemap = new Hashtable<String, Image>();
 		initialize();
 	}
@@ -1201,8 +1208,25 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		} else {
 		  int s = imagename.indexOf(SUFFIX);
 		  if (s>0) {
-		    suffix = Long.parseLong(imagename.substring(s+1));
-		    shortname = imagename.substring(0,s);
+		    String param = imagename.substring(s+1);
+            shortname = imagename.substring(0,s);
+		    try {
+		      if (param.startsWith("w")) {
+		        Scanner scan = new Scanner(param);
+		        scan.useDelimiter("[hwv]");
+		        suffix = ++nextSuffix;
+		        int wint = scan.nextInt();
+		        int hint = scan.nextInt();
+		        boolean v = scan.hasNext();
+                xnamemap.put(suffix(shortname) + "/w", wint);
+                xnamemap.put(suffix(shortname) + "/h", hint);
+                xnamemap.put(suffix(shortname) + "/v", v);
+                scan.close();
+		      } else
+                suffix = Long.parseLong(param);
+            } catch (NumberFormatException e) {
+              suffix = ++nextSuffix;
+            }
 		  } else {
 		    suffix = ++nextSuffix;
 		  }
@@ -1250,7 +1274,6 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		setPreview(null);
 		widthField.setText("");
 		widthField.setColumns(5);
-
 		heightField.setText("");
 	}
 
@@ -1258,6 +1281,26 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
   public void dispose() {
     svgStrategy.dispose();
     imageStrategy.dispose();
+  }
+
+  public Integer getSuffix(String name, String ext) {
+    if (name.contains(SUFFIX+"w")) {
+      int i = name.indexOf(SUFFIX);
+      name = name.substring(i+1);
+      try (Scanner scan = new Scanner(name)) {
+        scan.useDelimiter("[vwh]");
+        i = scan.nextInt();
+        if ("/w".equals(ext)) return i;
+        return scan.nextInt(); // "/h"
+      }
+    }
+    
+    Integer w = (Integer) xnamemap.get(suffix(name) + ext);
+    if (w == null)
+      w = (Integer) namemap.get(suffix(name) + ext);
+      if (w == null)
+        w = (Integer)namemap.get(strip(name) + ext);
+     return w;
   }
 	
 }
