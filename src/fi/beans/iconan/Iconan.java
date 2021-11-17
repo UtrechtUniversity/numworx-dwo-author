@@ -19,7 +19,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -32,6 +35,7 @@ import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -75,7 +79,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	
 	Hashtable<String,Image> imagemap;
 	private ActionListener al;
-	private JButton newBtn, okBtn, cancelBtn, closeBtn, rmBtn, urlBtn, chngBtn;
+	private JButton newBtn, okBtn, cancelBtn, closeBtn, rmBtn, urlBtn, chngBtn, downBtn;
 	JTextField widthField, heightField;
 	JCheckBox  volBreedteCB;
 	JLabel widthLabel, heightLabel;
@@ -256,10 +260,12 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			rebuildList();
 		} else if (e.getSource()==rmBtn)
 		{
-			String selected = (String) list.getSelectedValue();
-			if(null != selected)
+			int[] selectedList =  list.getSelectedIndices();
+			for(int i = selectedList.length-1; i >= 0; i--) 
 			{
-				dataModel.remove(list.getSelectedIndex());
+			    int index = selectedList[i];
+			    String selected = dataModel.getElementAt(index);
+				dataModel.remove(index);
 				previewName = null;
 				setPreview(null);
 				imagemap.remove(selected);
@@ -270,6 +276,49 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 				namemap.remove(selected + "/t");
 				namemap.remove(selected);
 			}
+		} else if (e.getSource() == downBtn) {
+            String selected = (String) list.getSelectedValue();
+            if (selected == null) return;
+            if (fd == null) fd = new JFileChooser();
+            URI suri = (URI) namemap.get(selected + "/f");
+            if (suri != null) fd.setSelectedFile(new File(suri));
+            else {
+              String url = (String) namemap.get(selected + "/u");
+              int index = url.indexOf('#');
+              if (index >= 0) url = url.substring(0,index);
+              index = url.indexOf('?');
+              if (index >= 0) url = url.substring(0,index);
+              index = url.lastIndexOf('/');
+              if (index >= 0) url = url.substring(index+1);
+              if (url.isEmpty()) url = selected;
+              fd.setSelectedFile(new File(url));
+            }
+            String t = fd.getDialogTitle();
+            fd.setDialogTitle("Download " + selected);
+            int result = fd.showSaveDialog(this);
+            fd.setDialogTitle(t);
+            if( result != JFileChooser.APPROVE_OPTION)
+              return;
+            File file = fd.getSelectedFile();
+            try (FileOutputStream out = new FileOutputStream(file)) {
+              byte[] data = (byte[]) namemap.get(selected);
+              if (data.length == 0) {
+                String url = (String) namemap.get(selected + "/u");
+                URLConnection uc = openConnection(new URL(getCDN(),url));
+                int len = uc.getContentLength();
+                DataInputStream in = new DataInputStream(uc.getInputStream());
+                data = new byte[len];
+                in.readFully(data);
+                in.close();
+              }
+              out.write(data);
+            } catch (FileNotFoundException e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+            } catch (IOException e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+            }
 		}
 
 	}
@@ -295,6 +344,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 				namemap.remove(selected + "/h");
 		// als 'u' niet begint met codebase, bewaar volledige naam
 				namemap.put(selected + "/u", getURI(u));
+				namemap.put(selected + "/t", type);
+				strategies.remove(selected);
+				imagemap.remove(selected);
 				selectPreview(selected);
 			}
 			return;
@@ -315,9 +367,11 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			if( result != JFileChooser.APPROVE_OPTION)
 				return;
 			File file = fd.getSelectedFile();
+
 			URL u = file.toURI().toURL();
 			URLConnection uc = openConnection(u);
 			String type = uc.getContentType();
+			type = retype(file.getName(), type);
 			if(! type.startsWith("image/"))
 				throw new IOException(file + ":" + type);
 
@@ -328,10 +382,13 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			fis.close();
 			// strip extension.
 			namemap.put(selected, data);
+			imagemap.remove(selected);
+            strategies.remove(selected);
 			namemap.remove(selected + "/w");
 			namemap.remove(selected + "/h");
 			namemap.remove(selected + "/u");
 			namemap.put(selected + "/f", file.toURI());
+			namemap.put(selected + "/t", type);
 			selectPreview(selected);
 			return;
 		}
@@ -364,7 +421,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			bottomPanel.setBackground(WiskOpdr.colorGray2);
 			bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 			Component[] comp = {okBtn, hst(20), cancelBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField, hst(5), volBreedteCB };
-			Component[] compBeheer = {closeBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField};
+			Component[] compBeheer = {closeBtn, hst(20), downBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField};
 			if(chooseImage) 
 				bottomPanel.add(hb(comp));
 			else
@@ -806,6 +863,14 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		closeBtn.setForeground(WiskOpdr.colorGray3);
 		closeBtn.setPreferredSize(new Dimension(70,24));
 		closeBtn.setMaximumSize(new Dimension(70,24));
+
+        downBtn = new WiskOpdrButton("Download");
+        downBtn.setBackground(WiskOpdr.colorBlue1);
+        downBtn.setForeground(WiskOpdr.colorGray3);
+        downBtn.setPreferredSize(new Dimension(70,24));
+        downBtn.setMaximumSize(new Dimension(70,24));
+        downBtn.setEnabled(false);
+        downBtn.setVisible(WiskOpdr.isExperimental() && WiskOpdr.isPremium());
 		
 		rmBtn = new WiskOpdrButton(WiskOpdr.rb.getString("verwijderKnopLabel"));
 		rmBtn.setMaximumSize(new Dimension(120,22));
@@ -863,6 +928,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		okBtn.addActionListener(this);	
 		cancelBtn.addActionListener(this);
 		closeBtn.addActionListener(this);
+		downBtn.addActionListener(this);
 		rmBtn.addActionListener(this);
 		chngBtn.addActionListener(this);
         previewCanvas.setSize(250,250);
@@ -1019,19 +1085,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		URL u = file.toURI().toURL();
 		URLConnection uc = openConnection(u);
 		String type = uc.getContentType();
-// Not automatic. Why?
-		try {
-		InputStream mime = getClass().getClassLoader().getResourceAsStream("META-INF/mime.types");
-// FIXME java.activation not available by default
-		MimetypesFileTypeMap map = new MimetypesFileTypeMap(mime);
-		mime.close();
-		String type4 = map.getContentType(filename);
-		
-		if( type4 != null && type4.startsWith("image"))
-			type = type4;		
-		} catch (Throwable e) {
-		  Logger.getLogger(getClass().getName()).warning("MimeTypesFileTypeMap: " + e );
-		}
+		type = retype(filename, type);
 		if(! type.startsWith("image/"))
 			throw new IOException(file + ":" + type);
 
@@ -1045,6 +1099,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		if(ext > 0)
 			filename = filename.substring(0, ext);
 		namemap.put(filename, data);
+		strategies.remove(filename);
+		imagemap.remove(filename);
 		namemap.put(filename + "/t", type);
 		namemap.remove(filename + "/w");
 		namemap.remove(filename + "/v");		
@@ -1053,6 +1109,22 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		namemap.put(filename + "/f", file.toURI());
 		return filename;
 	}
+  private String retype(String filename, String type) {
+    // Not automatic. Why?
+		try {
+		InputStream mime = getClass().getClassLoader().getResourceAsStream("META-INF/mime.types");
+// FIXME java.activation not available by default
+		MimetypesFileTypeMap map = new MimetypesFileTypeMap(mime);
+		mime.close();
+		String type4 = map.getContentType(filename);
+		
+		if( type4 != null && type4.startsWith("image"))
+			type = type4;		
+		} catch (Throwable e) {
+		  Logger.getLogger(getClass().getName()).warning("MimeTypesFileTypeMap: " + e );
+		}
+    return type;
+  }
 
 	private String last;
 	private String newURLImage() throws IOException {
@@ -1157,7 +1229,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		list = new JList<String>(dataModel);
 		list.addListSelectionListener(this);
 		list.setCellRenderer(new MyListRenderer());
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		Enumeration<String> keys = namemap.keys();
 		while (keys.hasMoreElements()) {
 			String key = keys.nextElement();
@@ -1259,6 +1331,17 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
+	    int[] indices = list.getSelectedIndices();
+	    boolean single = indices.length == 1;
+	    chngBtn.setEnabled(single);
+	    downBtn.setEnabled(single);
+	    okBtn.setEnabled(indices.length < 2); // only if single/none
+
+	    if (!single) {
+	      deselectPreview();
+	      return;
+	    }
+	  
 		int index = list.getSelectedIndex();
 		if(index >= 0)
 		{
