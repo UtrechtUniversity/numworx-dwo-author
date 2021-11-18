@@ -144,7 +144,7 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 			File json = new File(directory, naam);
 			FileWriter out = new FileWriter(json);
 			Hashtable launchData = scormEditComponent.getLaunchData();
-			JSONEncoder.encode(launchData, out);
+			JSONEncoder.encode(launchData, out, getClass().getClassLoader());
 			out.close();
 		}
 	}
@@ -164,7 +164,7 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 			ci.putNextEntry(entry);
 			Hashtable launchData = scormEditComponent.getLaunchData();
 			Writer out  = new OutputStreamWriter(ci);
-			JSONEncoder.encode(launchData, out);
+			JSONEncoder.encode(launchData, out, getClass().getClassLoader());
 			out.flush();
 			ci.closeEntry();
 			String[] resources = { "ref/html/player.txt", "ref/html/player.html", "ref/script/player.js", "ref/style/player.css"};
