@@ -298,6 +298,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
+			<artifactId>DWO-commons-lib</artifactId>
+			<version>2.5.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>nl.uu.fi.dwo</groupId>
 			<artifactId>DWOJClient</artifactId>
 			<version>2.5.0</version>
 			<scope>runtime</scope>
@@ -454,12 +460,6 @@
 			<groupId>fi.mathscratch</groupId>
 			<artifactId>mathscratch</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>nl.uu.fi.dwo</groupId>
-			<artifactId>DWO-commons-lib</artifactId>
-			<version>2.5.0</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
