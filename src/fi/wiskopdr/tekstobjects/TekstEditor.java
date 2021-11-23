@@ -31,6 +31,7 @@ import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.iconan.Iconan;
 import fi.beans.numworxlf.JScrollPane;
 
 
@@ -112,6 +113,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	
 	private JPopupMenu instellingenPopup;
 	private JMenuItem instellingenButton;
+	private JMenuItem afbeeldingenButton;
 
 	
     public TekstEditor()
@@ -205,6 +207,9 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		instellingenButton = new JMenuItem("Instellingen");
 		instellingenButton.addActionListener(this);
 		instellingenPopup.add(instellingenButton);
+		afbeeldingenButton = new JMenuItem("Afbeeldingen");
+		afbeeldingenButton.addActionListener(this);
+		instellingenPopup.add(afbeeldingenButton);
 		
 		headerPanel = new JPanel(){
 //			public void paintComponent(Graphics g)
@@ -1281,7 +1286,15 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(e.getSource()==instellingenButton) {
 			produceAction("instellingen");
 		}
+		if(e.getSource()==afbeeldingenButton) {
+			if(iconman==null)
+				iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap(), false);
+			iconman.editImage(null, this, this);
+		}
+		
+		
 	}
+	private Iconan iconman;
 	
 	public void setEnlarged(boolean b)
 	{	enlarged = b;
