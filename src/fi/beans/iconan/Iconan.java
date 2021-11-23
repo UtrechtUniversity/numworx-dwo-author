@@ -531,6 +531,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
       if(xnamemap.containsKey(suffix(name) + "/v")) {
         return Boolean.TRUE.equals(xnamemap.get(suffix(name) + "/v"));
       }
+      if(name.contains(SUFFIX+"w")) return name.endsWith("v");
+
       if(namemap.containsKey(suffix(name) + "/v")) {
         return Boolean.TRUE.equals(namemap.get(suffix(name) + "/v"));
       }
@@ -1289,6 +1291,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		        suffix = ++nextSuffix;
 		        int wint = scan.nextInt();
 		        int hint = scan.nextInt();
+		        scan.useDelimiter("");
 		        boolean v = scan.hasNext();
                 xnamemap.put(suffix(shortname) + "/w", wint);
                 xnamemap.put(suffix(shortname) + "/h", hint);
