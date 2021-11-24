@@ -489,4 +489,9 @@ System.out.println("aES found");
     
 	public void actionPerformed(ActionEvent e)
 	{}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		return null;
+	}
 }
