@@ -340,7 +340,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
               nodes.put(key,  benv);
             }
           }
-          Enumeration<DefaultMutableTreeNode> all = ((DefaultMutableTreeNode) model.getRoot()).depthFirstEnumeration();
+          Enumeration<DefaultMutableTreeNode> all = (Enumeration) ((DefaultMutableTreeNode) model.getRoot()).depthFirstEnumeration();
           while( all.hasMoreElements() ) {
             Object o = all.nextElement().getUserObject();
             if (o instanceof NodeLeaf) {
@@ -795,7 +795,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
  // new style 
     if (ids != null) {
       @SuppressWarnings("unchecked")
-      Enumeration<DefaultMutableTreeNode> all = root.depthFirstEnumeration();
+      Enumeration<DefaultMutableTreeNode> all = (Enumeration) root.depthFirstEnumeration();
       while (all.hasMoreElements()) {
         DefaultMutableTreeNode node = all.nextElement();
         Object u = node.getUserObject();
@@ -813,7 +813,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     model.nodeStructureChanged(root);
 
     @SuppressWarnings("unchecked")
-    Enumeration<DefaultMutableTreeNode> all = root.depthFirstEnumeration();
+    Enumeration<DefaultMutableTreeNode> all = (Enumeration) root.depthFirstEnumeration();
     while (all.hasMoreElements()) {
       DefaultMutableTreeNode node = all.nextElement();
       Object u = node.getUserObject();
@@ -855,7 +855,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   private Set<String> calculateKennis() {
     Set<String> kennis = new TreeSet<>();
     @SuppressWarnings("unchecked")
-    Enumeration<DefaultMutableTreeNode> e = root.depthFirstEnumeration();
+    Enumeration<DefaultMutableTreeNode> e = (Enumeration) root.depthFirstEnumeration();
     while (e.hasMoreElements()) {
       DefaultMutableTreeNode node = e.nextElement();
       if (!node.isLeaf()) continue;
