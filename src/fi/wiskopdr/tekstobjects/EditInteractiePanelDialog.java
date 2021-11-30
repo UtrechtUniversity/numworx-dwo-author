@@ -906,6 +906,9 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 				}
 				
 			}
+            switch(soortInteractiePanel) { 
+              case 62: getCrossWidgetId(); break; // NEEDS XWIDGETID
+            }
 			//interactieEditPanel.start();
 		}
     	if(interactieEditPanel!=null) 
