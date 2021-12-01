@@ -547,7 +547,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    		menu.add(checkButtonsSubMenu);
 	    }
 	    else
-	    	menu.add(item);
+	    {
+	      if (skipItem(setNr, i))
+	        menu.add(item);
+	    }
 	    if(setNr==0) {
 	      if(i==7) {
 	    	  		
@@ -639,7 +642,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
       menu.add(hb,0);
 	}
 	
-	public static int AntwoordvakkenSetNr = 0;
+	private static boolean skipItem(int setNr, int i) {
+	  i = interactiePanelSets[setNr][i];
+	  // 62: upload widget is een premium experimental feature
+      return WiskOpdr.isExperimental() && WiskOpdr.isPremium() || i != 62 ;
+  }
+
+  public static int AntwoordvakkenSetNr = 0;
 	public static int AppletsSetNr = 1;
 	public static int GrafiekenSetNr = 2;
 	public static int TekstvakkenSetNr = 3;
