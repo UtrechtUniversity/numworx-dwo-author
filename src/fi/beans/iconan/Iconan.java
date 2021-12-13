@@ -32,21 +32,27 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -63,23 +69,132 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import fi.beans.iconan.text.Text;
 import fi.beans.numworxlf.JCheckBox;
+import fi.beans.private_base64code.StringCodeObject;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrButton;
 import fi.wiskopdr.WiskOpdrTextField;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 
 @SuppressWarnings("serial")
 public class Iconan extends JPanel implements ActionListener, FocusListener, ListSelectionListener {
 
-	private Component component;
+	static class Garbage extends AbstractAction implements Action {
+	  private OpdrNavStructEdit onsEdit;
+	  private Set<String> keys;
+	  private DefaultListSelectionModel model;
+	  private DefaultListModel<String> data;
+	  
+    Garbage(OpdrNavStructEdit onsEdit, DefaultListModel<String> dataModel, DefaultListSelectionModel selection) {
+      super("Opruimen");
+      this.onsEdit = onsEdit;
+      this.model = selection;
+      this.data  = dataModel;
+      setEnabled(true);
+    }
+
+    private void tagString(String value) {
+      if (value.startsWith("H4sIA")) {
+        tag(StringCodeObject.decodeStringToObject(value,getClass().getClassLoader()));       
+      }
+      int i = value.indexOf("$I");
+      while(i >= 0) {
+          int j = value.indexOf('@', i);
+          if(j < 0) j = i;
+          String key = value.substring(i+2,j);
+          int k = key.indexOf(SUFFIX);
+          if (k > 0) 
+            keys.add(key.substring(0,k));
+          else 
+            keys.add(key);         
+          i = value.indexOf("$I", j+1);
+      }
+  }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      Hashtable<String,Object> h = onsEdit.getEditState();
+      keys = new TreeSet<>();
+      for (Map.Entry<String, Object> entry : h.entrySet()) {
+        if (entry.getKey().startsWith("opdracht_")) {
+          tag(entry.getValue());
+        }
+      }
+      retainImages();
+
+    }
+
+    private void retainImages() {
+      model.setValueIsAdjusting(true);
+      model.addSelectionInterval(0, data.size()-1);
+      for (String key: keys) {
+        int i = data.indexOf(key);
+        model.removeSelectionInterval(i, i);
+      }
+      model.setValueIsAdjusting(false);
+    }
+
+    private boolean tagValue(String key, Map map) {
+      Object value = map.get(key);
+      if(value != null && !"".equals(value)) {
+          key = value.toString();
+          int k = key.indexOf(SUFFIX);
+          if (k > 0) 
+            keys.add(key.substring(0,k));
+          else
+            keys.add(key);           
+          return true;
+      }
+      return false;
+  }
+    private boolean recognizeMap(Map map) {
+      if(map.containsKey("@type")) return true; // recognize @type=java:XXXX maps
+      tagValue("knopImageString", map);
+      tagValue("knopImageString1", map);
+      tagValue("knopImageString2", map);
+      tagValue("popupImageString", map);
+      return false;
+  }
+    @SuppressWarnings("rawtypes")
+    private void tagMap(Map map) {
+        if( !recognizeMap(map)) {
+            for(Object elem: map.values()) tag(elem);
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void tag(Object value) {
+        if(value instanceof String) {
+            tagString( (String) value);
+        } else
+        if(value instanceof Object[]) {
+            Object[] array = (Object[]) value;
+            for(Object elem: array) tag(elem);
+        } else
+        if (value instanceof Collection) {
+            Collection collection = (Collection) value;
+            for(Object elem: collection) tag(elem);
+        } else
+        if (value instanceof Map) {
+            Map map = (Map) value;
+            tagMap(map);
+        }
+        
+    }
+
+  }
+
+  private Component component;
 	final Hashtable<String,Object> namemap, xnamemap;
 	
 	private Strategy imageStrategy, svgStrategy;
 	
 	Hashtable<String,Image> imagemap;
 	private ActionListener al;
-	private JButton newBtn, okBtn, cancelBtn, closeBtn, rmBtn, urlBtn, chngBtn, downBtn;
+	private JButton newBtn, okBtn, cancelBtn, closeBtn, rmBtn, urlBtn, chngBtn, downBtn, garbageBtn;
 	JTextField widthField, heightField;
 	JCheckBox  volBreedteCB;
 	JLabel widthLabel, heightLabel;
@@ -421,7 +536,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 			bottomPanel.setBackground(WiskOpdr.colorGray2);
 			bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 			Component[] comp = {okBtn, hst(20), cancelBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField, hst(5), volBreedteCB };
-			Component[] compBeheer = {closeBtn, hst(20), downBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField};
+			Component[] compBeheer = {closeBtn, hst(20), downBtn, hst(20), garbageBtn, hgl(), widthLabel, hst(5), widthField, hst(10), heightLabel, hst(5), heightField};
 			if(chooseImage) 
 				bottomPanel.add(hb(comp));
 			else
@@ -782,6 +897,15 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		nextSuffix();
 	}
 
+	
+	
+	public Iconan(WiskOpdr wiskopdr, OpdrNavStructEdit onsEdit, Hashtable namemap, boolean chooseImage) {
+	  this((Applet) wiskopdr, (Component) onsEdit, namemap, chooseImage);
+	  garbageBtn.setAction(new Garbage(onsEdit, dataModel, selectionModel));
+	}
+	
+	
+	
 	private void nextSuffix() {
 	  nextSuffix = 0;
       if (namemap != null) {
@@ -873,7 +997,17 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
         downBtn.setMaximumSize(new Dimension(70,24));
         downBtn.setEnabled(false);
         downBtn.setVisible(WiskOpdr.isExperimental() && WiskOpdr.isPremium());
-		
+
+        garbageBtn = new WiskOpdrButton("Opruimen");
+        garbageBtn.setBackground(WiskOpdr.colorBlue1);
+        garbageBtn.setForeground(WiskOpdr.colorGray3);
+        garbageBtn.setPreferredSize(new Dimension(70,24));
+        garbageBtn.setMaximumSize(new Dimension(70,24));
+        garbageBtn.setEnabled(false);
+        garbageBtn.setVisible(WiskOpdr.isExperimental() && WiskOpdr.isPremium());
+
+        
+        
 		rmBtn = new WiskOpdrButton(WiskOpdr.rb.getString("verwijderKnopLabel"));
 		rmBtn.setMaximumSize(new Dimension(120,22));
 		rmBtn.setPreferredSize(new Dimension(80,22));
@@ -1228,7 +1362,9 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 	private JList<String> buildList() {
 		dataModel = new DefaultListModel<String>();
+		selectionModel = new DefaultListSelectionModel();
 		list = new JList<String>(dataModel);
+		list.setSelectionModel(selectionModel);
 		list.addListSelectionListener(this);
 		list.setCellRenderer(new MyListRenderer());
 		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -1245,6 +1381,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	private JList<String> list;
 	private JPanel newPnl, editPnl;
 	private DefaultListModel<String> dataModel;
+	private DefaultListSelectionModel selectionModel;
 	
 	
 
