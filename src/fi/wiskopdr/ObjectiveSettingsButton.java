@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -21,6 +22,7 @@ import fi.wiskopdr.opdrnav.PlusMinKnop;
 import fi.beans.numworxlf.JScrollPane;
 import fi.beans.numworxlf.JComboBox;
 
+@SuppressWarnings("serial")
 public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionListener
 {
 	private Font font = new Font("SansSerif",Font.PLAIN,13);
@@ -107,34 +109,31 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 	
 	private void makeObjects(){   
     	objectives = null;
-    	String[] newObjects = null;
     	for(int j=0 ; j<maxCategories ; j++)
     	{	String checkObject = objectiveTextFields[j][0].getText();
    			if(checkObject==null || "".equals(checkObject.trim()))
    			{	objectives = new String[j][];
    				break;
    			}
-   			if(objectives == null)
-   				objectives = new String[maxCategories][];
     	}
+        if(objectives == null)
+          objectives = new String[maxCategories][];
     	for(int j=0 ; j<objectives.length ; j++)
-    	{	newObjects = new String[maxObjectives];
-	        for(int i=0 ; i<maxObjectives ; i++){   
+    	{	
+// we stoppen nu bij het eerste lege veld,
+// gewenst is dat we stopen bij het laatste lege veld
+    	
+    	  ArrayList<String> strings = new ArrayList<>(maxObjectives);
+    	  for(int i=0 ; i<aantalRijen ; i++){   
 	        	String checkObject = objectiveTextFields[j][i].getText();
 	       		if(checkObject!=null && !"".equals(checkObject.trim())){	
-	       			newObjects[i] = checkObject;
-	            }
-	            else{   
-	            	objectives[j] = new String[i];
-	            	break;
+	       			strings.add(checkObject);
 	            }
 	        }
 	        if(objectives[j]==null){
-	        	objectives[j] = new String[maxObjectives];
+	        	objectives[j] = new String[strings.size()];
 	        }
-	        for(int i=0 ; i<objectives[j].length ; i++){
-	        	objectives[j][i] = newObjects[i];
-	        }
+	        strings.toArray(objectives[j]);
     	}
     	categorieString = null;
     	categorieString = new String[objectives.length];
@@ -369,6 +368,7 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
 		
 			if(objectives != null && objectives.length > 0)
 			{	aantalKolommen = objectives.length;
+			    aantalRijen = 1;
 				for(int i = 0; i < objectives.length; i++)
 						if(objectives[i] != null && objectives[i].length > aantalRijen)
 							aantalRijen = objectives[i].length;
