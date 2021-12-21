@@ -695,6 +695,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		boolean hasAntwoordVak = true;
 		Hashtable[] interactiePanelLaunchData = null;
 		scoreMax = 0;
+		boolean checkDocent = false;
 		int[][] scoreMaxObjectives = null;
 
 		// Voor de oude editorversie:
@@ -830,6 +831,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
             //System.out.println("LaunchData ip Panels: "+ interactiePanelLaunchData[i + 5].toString());
             
             Hashtable launchState = (Hashtable)editState.get("interactiePanelLaunchState");
+            if ( Boolean.TRUE.equals(launchState.get("checkDocent")))
+                checkDocent = true;
             if ( Boolean.TRUE.equals(launchState.get("premium")))
                 premium = true;
             if(launchState.containsKey("logID")) {
@@ -880,6 +883,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		h.put("hasAntwoordVak", new Boolean(hasAntwoordVak));
 		h.put("interactiePanelLaunchData", interactiePanelLaunchData);
 		h.put("scoreMax", new Integer(scoreMax));
+		if (checkDocent)
+		  h.put("checkDocent", Boolean.TRUE);
 		if (scoreMaxObjectives != null)
 			h.put("scoreMaxObjectives", scoreMaxObjectives);
 		if (premium)

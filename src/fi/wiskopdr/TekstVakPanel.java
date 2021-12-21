@@ -1997,6 +1997,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				scoreMaxObjectives[i] = new int[WiskOpdr.objectives[i].length];
 		}
 		boolean premium = false;
+		boolean checkDocent = false;
 		Vector v = geefInteractiePanels();
 		interactiePanelLaunchData = new Hashtable[v.size()];
 		for (int i = 0; i < v.size(); i++)
@@ -2006,6 +2007,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			  Map launchState = (Map)interactiePanelLaunchData[i].get("interactiePanelLaunchState");
 			  premium = Boolean.TRUE.equals(launchState.get("premium"));
 			}
+            if (!checkDocent && interactiePanelLaunchData[i]!=null) {
+              Map launchState = (Map)interactiePanelLaunchData[i].get("interactiePanelLaunchState");
+              checkDocent = Boolean.TRUE.equals(launchState.get("checkDocent"));
+            }
 			scoreMax += ((InteractiePanelContainerIF) v.elementAt(i)).getScoreMax();
 			int[][] ob = ((InteractiePanelContainerIF) v.elementAt(i)).getScoreMaxObjectives();
 
@@ -2151,6 +2156,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		
 		if (premium) {
 		  h.put("premium", Boolean.TRUE);
+		}
+		if (checkDocent) {
+		  h.put("checkDocent", Boolean.TRUE);
 		}
 		
 		return h;
