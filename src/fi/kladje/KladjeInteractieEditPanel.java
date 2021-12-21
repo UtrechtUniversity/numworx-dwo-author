@@ -12,6 +12,7 @@ import javax.swing.*;
 import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.ObjectiveChoiceButton;
 
+@SuppressWarnings("serial")
 public class KladjeInteractieEditPanel extends JPanel implements InteractieEditPanel,
 																	ActionListener	
 {	
@@ -397,7 +398,10 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			fiButton.setInstellingen(formuleInstellingen);
 		}
 		
-		if (b.containsKey("check")) {
+		if (b.containsKey("checkDocent")) { // official keyword
+			check = Boolean.TRUE.equals(b.get("checkDocent"));
+			checkCB.setSelected(check);
+		} else if (b.containsKey("check")) { // legacy
 			check = ((Boolean) b.get("check")).booleanValue();
 			checkCB.setSelected(check);
 		}
@@ -434,7 +438,8 @@ System.out.println("kliep getEditState");
 		catch(Exception e) {}
 		check = checkCB.isSelected();	
 		
-		h.put("check", new Boolean(check));
+		//h.put("check", check); // legacy
+		h.put("checkDocent", check); // official name
 		h.put("scoreMax", new Integer(scoreMax));
 		
 		h.put("klipBreedte", new Integer(klipBreedte));
