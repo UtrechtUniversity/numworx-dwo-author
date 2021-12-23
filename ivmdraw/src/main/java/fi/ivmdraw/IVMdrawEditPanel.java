@@ -524,7 +524,7 @@ public class IVMdrawEditPanel extends JPanel implements InteractieEditPanel, Act
 		if(h.containsKey("feedbackCase3b")) feedbackCase3b = (String)h.get("feedbackCase3b");
 		if(h.containsKey("feedbackCase4a")) feedbackCase4a = (String)h.get("feedbackCase4a");
 		if(h.containsKey("feedbackCase4b")) feedbackCase4b = (String)h.get("feedbackCase4b");
-		if(h.containsKey("feedbackCase5")) feedbackCase5 = (String)h.get("feedbackCase6");
+		if(h.containsKey("feedbackCase5")) feedbackCase5 = (String)h.get("feedbackCase5");
 		if(h.containsKey("feedbackCase6")) feedbackCase6 = (String)h.get("feedbackCase6");
 		if(h.containsKey("feedbackCase7")) feedbackCase7 = (String)h.get("feedbackCase7");
 		
