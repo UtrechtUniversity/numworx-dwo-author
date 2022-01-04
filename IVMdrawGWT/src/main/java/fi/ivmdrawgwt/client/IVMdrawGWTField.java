@@ -185,7 +185,7 @@ public class IVMdrawGWTField {
 			strokeContainerHistory.add(sc);
 			if((owner.getCheck()||owner.getFeedbackVisible()) && correctVaasNummer!=0) // "owner.feedbackVisible" voor backward compatibiliteit (check werd pas later ingevoerd)
 				handleClassification(new LineData(sc.getLastStroke().getIntParsePoints()), false);
-			historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (sCnt+1) + " " + (owner.getGoedFoutVisible() && owner.getCorrectGraph() ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : ""));
+			historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (sCnt+1) + " " + (owner.getFeedbackVisible() && owner.getCorrectGraph() ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : ""));
 		}
 		
 		int historySelection = -1;
@@ -586,7 +586,7 @@ public class IVMdrawGWTField {
 
 		processIVM();
 		paint();
-		historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (historyList.getItemCount()+1) + " " + (owner.getGoedFoutVisible() && owner.getCorrectGraph() ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : "") );
+		historyList.addItem(IVMdrawGWT.rb.pogingTekst() + " " + (historyList.getItemCount()+1) + " " + (owner.getFeedbackVisible() && owner.getCorrectGraph() ? "(" + IVMdrawGWT.rb.correctTekst() + ")" : "") );
 		historyList.setVisible(owner.getHistoryVisible() && strokeContainerHistory.size()>0);
 		historyList.setSelectedIndex(historyList.getItemCount()-1);
 		
