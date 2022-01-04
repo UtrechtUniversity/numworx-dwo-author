@@ -141,6 +141,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     // Opmaak
  	private JLabel titleOpmaakLabel;
  	private JCheckBox boxMetRandCB;
+ 	private JCheckBox pastHoogteAanCB;
  	
     // contextVars
  	private JCheckBox contextVarCB;
@@ -255,6 +256,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			formuleToolBijFocusCB.setVisible(true);
 			uitwCB.setVisible(true);
 			boxMetRandCB.setVisible(true);
+			pastHoogteAanCB.setVisible(false);
 			//feedbackCB.setVisible(false);
 			
 			hbRekenmach.setVisible(false);
@@ -493,6 +495,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
     	titleOpmaakLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
     	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
+    	pastHoogteAanCB = makeCheckBox(690,120,80,20,WiskOpdr.rb.getString("TVEP_pasAanH"),false,true);
     	
     	// HelpKnoppen
     	hbCheck = makeHelpButton(HELP_0_URL_CHECK);
@@ -602,8 +605,9 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 		Box settingsBox;
 		if(soort==0) {
 			Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand_0};
+			Component[] r425 = {pastHoogteAanCB, 		ra(5,0),	hgl()};
 			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),vst(3),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
-					hb(r410),hb(r411),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20), hb(r422),vst(5),hb(r424), vgl()};
+					hb(r410),hb(r411),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20), hb(r422),vst(5),hb(r424),hb(r425), vgl()};
 			settingsBox = vb(k4);
 		}
 		else {
@@ -1047,6 +1051,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
                 Hashtable ideasInstellingen = new Hashtable();
                 boolean eigenOpdr = false;
                 boolean boxMetRand = true;
+                boolean pastHoogteAan = false;
                 String[] antwoordSubStrings = null;
                 String[] antwoordFuncStrings = null;
                 boolean scoreCumulatief = false;
@@ -1081,6 +1086,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				if(interactiePanelLaunchState.containsKey("uitw")) uitw = ((Boolean)interactiePanelLaunchState.get("uitw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("eigenOpdr")) eigenOpdr = ((Boolean)interactiePanelLaunchState.get("eigenOpdr")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
+				if(interactiePanelLaunchState.containsKey("pastHoogteAan")) pastHoogteAan = ((Boolean)interactiePanelLaunchState.get("pastHoogteAan")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("tips")) tips = ((Boolean)interactiePanelLaunchState.get("tips")).booleanValue();
                 if(tips){
@@ -1174,6 +1180,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 	            
 	            uitwCB.setSelected(uitw);
 	            boxMetRandCB.setSelected(boxMetRand);
+	            pastHoogteAanCB.setSelected(pastHoogteAan);
 	            eigenOpdrCB.setSelected(eigenOpdr);
 	            rmKnopCB.setVisible(uitw||stappen);
 	            rmKnopCB.setSelected(rmKnop);
@@ -1271,6 +1278,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			Hashtable ideasInstellingen = new Hashtable();
 			boolean eigenOpdr = false;
 			boolean boxMetRand = true;
+			boolean pastHoogteAan = false;
 			String[] antwoordSubStrings = null;
             String[] antwoordFuncStrings = null;
             boolean scoreCumulatief = false;
@@ -1386,6 +1394,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			uitw = uitwCB.isSelected();
 			eigenOpdr = eigenOpdrCB.isSelected();
 			boxMetRand = boxMetRandCB.isSelected();
+			pastHoogteAan = pastHoogteAanCB.isSelected();
 			
 			eqTestValueMin = this.eqTestValueMin;
 			eqTestValueMax = this.eqTestValueMax;
@@ -1424,6 +1433,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
 			interactiePanelLaunchState.put("eigenOpdr",new Boolean(eigenOpdr));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
+			interactiePanelLaunchState.put("pastHoogteAan",new Boolean(pastHoogteAan));
 			interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
 			interactiePanelLaunchState.put("tips",new Boolean(tips));
 			if(tips){

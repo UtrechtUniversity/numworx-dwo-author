@@ -159,6 +159,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 	private JLabel titleOpmaakLabel;
 	private JCheckBox pijlCB;
 	private JCheckBox boxMetRandCB;
+	private JCheckBox pastHoogteAanCB;
 	
     private boolean pijl = true;
     
@@ -504,11 +505,12 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
         
         // GUI Opmaak box
         titleOpmaakLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleOpmaakLabel"));
-    	titleOpmaakLabel.setForeground(WiskOpdr.colorBlue1);
-    	titleOpmaakLabel.setFont(font.deriveFont(Font.BOLD, 16));
-    	
-    	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
-    	pijlCB = makeCheckBox(500,95,130,20,WiskOpdr.rb.getString("pijlCBLabel"),true,true);
+	    	titleOpmaakLabel.setForeground(WiskOpdr.colorBlue1);
+	    	titleOpmaakLabel.setFont(font.deriveFont(Font.BOLD, 16));
+	    	
+	    	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
+	    	pastHoogteAanCB = makeCheckBox(690,120,80,20,WiskOpdr.rb.getString("TVEP_pasAanH"),false,true);
+        	pijlCB = makeCheckBox(500,95,130,20,WiskOpdr.rb.getString("pijlCBLabel"),true,true);
     	
 		hbCheck = makeHelpButton(HELP_1_URL_CHECK);
 	    hbTeltMee = makeHelpButton(HELP_1_URL_TELTMEE);
@@ -598,8 +600,9 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 		Component[] r424 = {boxMetRandCB, 		hgl(),	hbRand};
 		Box settingsBox;
 		if(soort==1) {
+			Component[] r425 = {pastHoogteAanCB, 		ra(5,0),	hgl()};
 			Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),vst(3),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),hb(r49),
-					hb(r410),hb(r411),hb(r412),hb(r413),hb(r414),hb(r415),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20), hb(r422),vst(5),hb(r423),hb(r424)};
+					hb(r410),hb(r411),hb(r412),hb(r413),hb(r414),hb(r415),hb(r416),hb(r417),hb(r418),hb(r419),hb(r420), vst(20), hb(r422),vst(5),hb(r423),hb(r424),hb(r425)};
 			settingsBox = vb(k4);
 		}
 		else {
@@ -1069,6 +1072,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				boolean uitw = false;
 				boolean casAntw = false;
 				boolean boxMetRand = true;
+				boolean pastHoogteAan = false;
 				boolean scoreCumulatief = false;
 				
                 if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
@@ -1127,6 +1131,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				if(interactiePanelLaunchState.containsKey("uitw")) uitw = ((Boolean)interactiePanelLaunchState.get("uitw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("casAntw")) casAntw = ((Boolean)interactiePanelLaunchState.get("casAntw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
+				if(interactiePanelLaunchState.containsKey("pastHoogteAan")) pastHoogteAan = ((Boolean)interactiePanelLaunchState.get("pastHoogteAan")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
 				
                 this.vorm = vorm;
@@ -1233,6 +1238,8 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
                 uitwCB.setSelected(uitw);
                 casAntwCB.setSelected(casAntw);
                 boxMetRandCB.setSelected(boxMetRand);
+                pastHoogteAanCB.setSelected(pastHoogteAan);
+	            
 	            //startLabel.setVisible(uitw);
 				//startEditor.setVisible(uitw);
                 
@@ -1345,6 +1352,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			boolean uitw = false;
 			boolean casAntw = false;
 			boolean boxMetRand = true;
+			boolean pastHoogteAan = false;
 			boolean scoreCumulatief = false;
 			
             getAnswerModel();
@@ -1471,6 +1479,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			uitw = uitwCB.isSelected();
 			casAntw = casAntwCB.isSelected();
 			boxMetRand = boxMetRandCB.isSelected();
+			pastHoogteAan = pastHoogteAanCB.isSelected();
 			
 			
 			if(!teltMee)scoreMax = 0;
@@ -1523,6 +1532,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
 			interactiePanelLaunchState.put("casAntw",new Boolean(casAntw));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
+			interactiePanelLaunchState.put("pastHoogteAan",new Boolean(pastHoogteAan));
 			interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
             
             interactiePanelLaunchState.putAll(logObjectivesButton.getEditState(scoreMax));
