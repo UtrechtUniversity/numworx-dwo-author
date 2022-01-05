@@ -5,28 +5,30 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
-import fi.beans.base64code.*;
-import fi.beans.ideas.*;
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.HelpButton;
 import fi.wiskopdr.HelpButtonPanelIF;
-import fi.wiskopdr.IdeasInstellingenButton;
 import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrButton;
 import fi.wiskopdr.WiskOpdrCheckbox;
 import fi.wiskopdr.WiskOpdrTextField;
-import fi.wiskopdr.AntwoordVergelijkingVakEditPanel.EditorComponentListener;
-import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
+import fi.beans.numworxlf.JLabel;
+import fi.beans.numworxlf.JOptionPane;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
-import fi.beans.wiskopdrbeans.InteractiePanel;
 
 
 public class StelselAntwoordVakEditPanel extends JLayeredPane implements InteractieEditPanel, ActionListener,  MouseListener, MouseMotionListener, HelpButtonPanelIF

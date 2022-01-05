@@ -4,22 +4,23 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
-import org.cbook.cbookif.CBookWidgetEditIF;
-
-import fi.beans.base64code.*;
-import fi.beans.ideas.Exercise;
-import fi.beans.ideas.IdeasIF;
-import fi.beans.ideas.RuleIF;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
-import fi.wiskopdr.AntwoordVergelijkingVakEditPanel.EditorComponentListener;
-import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
-import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.numworxlf.JOptionPane;
 import fi.beans.stringutils.StringUtils;
 
 

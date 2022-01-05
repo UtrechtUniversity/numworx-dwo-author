@@ -16,7 +16,6 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.cbook.cbookif.CBookEvent;
@@ -24,6 +23,7 @@ import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
 import fi.beans.ideas.RuleIF;
+import fi.beans.numworxlf.JOptionPane;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;

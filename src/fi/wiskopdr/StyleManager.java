@@ -1,18 +1,16 @@
 package fi.wiskopdr;
 
 import java.awt.AWTEventMulticaster;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
-import java.util.Map;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import fi.beans.numworxlf.JOptionPane;
 
 public class StyleManager extends JPanel implements ActionListener {
 

@@ -13,7 +13,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -21,6 +20,7 @@ import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.opdrnav.PlusMinKnop;
 import fi.beans.numworxlf.JScrollPane;
 import fi.beans.numworxlf.JComboBox;
+import fi.beans.numworxlf.JOptionPane;
 
 @SuppressWarnings("serial")
 public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionListener

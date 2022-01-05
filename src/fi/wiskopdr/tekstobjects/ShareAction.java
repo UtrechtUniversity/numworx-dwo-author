@@ -20,9 +20,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import fi.beans.base64code.StringCodeObject;
+import fi.beans.numworxlf.JOptionPane;
 import fi.wiskopdr.WiskOpdr;
 
 public class ShareAction extends AbstractAction {

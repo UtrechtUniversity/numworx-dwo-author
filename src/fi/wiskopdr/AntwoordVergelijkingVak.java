@@ -13,7 +13,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -22,7 +21,6 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -31,6 +29,7 @@ import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
 import fi.beans.ideas.RuleIF;
+import fi.beans.numworxlf.JOptionPane;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;

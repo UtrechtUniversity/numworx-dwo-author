@@ -13,13 +13,12 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 import org.cbook.cbookif.CBookContext;
-import org.cbook.cbookif.CBookWidgetEditIF;
 import org.cbook.cbookif.Constants;
 
+import fi.beans.numworxlf.JOptionPane;
 import fi.beans.wiskopdrbeans.CBookAware;
 
 public class InfoButton extends JButton implements Action, Icon, Constants {
