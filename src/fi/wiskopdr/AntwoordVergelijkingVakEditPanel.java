@@ -1131,7 +1131,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 				if(interactiePanelLaunchState.containsKey("uitw")) uitw = ((Boolean)interactiePanelLaunchState.get("uitw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("casAntw")) casAntw = ((Boolean)interactiePanelLaunchState.get("casAntw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
-				if(interactiePanelLaunchState.containsKey("pastHoogteAan")) pastHoogteAan = ((Boolean)interactiePanelLaunchState.get("pastHoogteAan")).booleanValue();
+				if(interactiePanelLaunchState.containsKey("pasAanH")) pastHoogteAan = ((Boolean)interactiePanelLaunchState.get("pasAanH")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
 				
                 this.vorm = vorm;
@@ -1532,7 +1532,7 @@ public class AntwoordVergelijkingVakEditPanel extends JLayeredPane implements In
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
 			interactiePanelLaunchState.put("casAntw",new Boolean(casAntw));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
-			interactiePanelLaunchState.put("pastHoogteAan",new Boolean(pastHoogteAan));
+			interactiePanelLaunchState.put("pasAanH",new Boolean(pastHoogteAan));
 			interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
             
             interactiePanelLaunchState.putAll(logObjectivesButton.getEditState(scoreMax));

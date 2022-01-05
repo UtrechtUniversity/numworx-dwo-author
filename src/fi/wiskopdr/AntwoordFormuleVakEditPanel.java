@@ -1087,7 +1087,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 				if(interactiePanelLaunchState.containsKey("uitw")) uitw = ((Boolean)interactiePanelLaunchState.get("uitw")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("eigenOpdr")) eigenOpdr = ((Boolean)interactiePanelLaunchState.get("eigenOpdr")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
-				if(interactiePanelLaunchState.containsKey("pastHoogteAan")) pastHoogteAan = ((Boolean)interactiePanelLaunchState.get("pastHoogteAan")).booleanValue();
+				if(interactiePanelLaunchState.containsKey("pasAanH")) pastHoogteAan = ((Boolean)interactiePanelLaunchState.get("pasAanH")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
 				if(interactiePanelLaunchState.containsKey("tips")) tips = ((Boolean)interactiePanelLaunchState.get("tips")).booleanValue();
                 if(tips){
@@ -1434,7 +1434,7 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
 			interactiePanelLaunchState.put("eigenOpdr",new Boolean(eigenOpdr));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
-			interactiePanelLaunchState.put("pastHoogteAan",new Boolean(pastHoogteAan));
+			interactiePanelLaunchState.put("pasAanH",new Boolean(pastHoogteAan));
 			interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
 			interactiePanelLaunchState.put("tips",new Boolean(tips));
 			if(tips){
