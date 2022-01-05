@@ -1,8 +1,11 @@
 package fi.wiskopdr.tekstobjects;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import fi.beans.base64code.StringCodeObject;
 
 /**
  * Depth first iterator on Maps.
@@ -17,7 +20,10 @@ class DeepIterator implements Iterator<Map<?,?>> {
 	
 	public DeepIterator(Map<?,?> map) {
       values = map.values().iterator();
-  }
+    }
+	public DeepIterator(Iterable<?> iterable) {
+	  values = iterable.iterator();
+	}
 
   @Override
 	public boolean hasNext() {
@@ -30,10 +36,18 @@ class DeepIterator implements Iterator<Map<?,?>> {
  
       while(values.hasNext()) {
         Object o = values.next();
+        if (o instanceof String  && o.toString().startsWith("H4sIA")) {
+          o  = StringCodeObject.decodeStringToObject((String) o);
+        }
         if (o instanceof Map) {
           next = (Map<?, ?>) o;
           stack = new DeepIterator(next);
           return true;
+        }
+        if (o instanceof Object[]) o = Arrays.asList((Object[]) o);
+        if (o instanceof Iterable) {
+          stack = new DeepIterator( (Iterable<?>) o);
+          return hasNext();
         }
       }
       return false;   

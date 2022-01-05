@@ -1,10 +1,12 @@
 package fi.wiskopdr.tekstobjects;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import fi.beans.base64code.StringCodeObject;
 import junit.framework.TestCase;
 
 public class DeepIteratorTest extends TestCase {
@@ -37,4 +39,20 @@ public class DeepIteratorTest extends TestCase {
   
   }
 
+  public void testCollections() { 
+    DeepIterator i;
+    HashMap h = new LinkedHashMap();
+    h.put("h",  Arrays.asList(Collections.EMPTY_MAP));
+    h.put("hh", new Object[] { Collections.EMPTY_MAP, "oops", Collections.EMPTY_MAP });
+    h.put("hhh", StringCodeObject.encodeObjectToString(Collections.EMPTY_MAP));
+    i = new DeepIterator(h);
+    assertEquals(Collections.EMPTY_MAP, i.next());
+    assertEquals(Collections.EMPTY_MAP, i.next());
+    assertEquals(Collections.EMPTY_MAP, i.next());
+    assertEquals(Collections.EMPTY_MAP, i.next());
+    assertFalse(i.hasNext());
+    
+  }
+  
+  
 }
