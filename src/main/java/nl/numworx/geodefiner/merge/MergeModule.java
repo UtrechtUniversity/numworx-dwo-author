@@ -17,6 +17,6 @@ public abstract class MergeModule {
   @Binds @Named("open") abstract Action openAction(OpenAction action);
 
   @Provides @Singleton static JFileChooser filechooser() {
-    return new JFileChooser();
+    return new fi.beans.numworxlf.JFileChooser();
   }
 }
