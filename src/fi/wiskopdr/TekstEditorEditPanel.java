@@ -58,6 +58,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 	// Opmaak
   	private JLabel titleOpmaakLabel;
   	private JCheckBox boxMetRandCB;
+  	private JCheckBox pastHoogteAanCB;
 	private boolean formuleEditorAan, rekenTool, grafTool;
 	
 	// Helpbuttons
@@ -140,6 +141,8 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
     	titleOpmaakLabel.setFont(font.deriveFont(Font.BOLD, 16));
     	
     	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
+    	pastHoogteAanCB = makeCheckBox(690,120,80,20,WiskOpdr.rb.getString("TVEP_pasAanH"),false,true);
+        
     	
     	hbCheck = makeHelpButton(HELP_4_URL_CHECK);
 	    hbLogID = makeHelpButton(HELP_4_URL_LOGID);
@@ -169,9 +172,10 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		Component[] r47 = {rekenToolCB, 		ra(5,0),	hgl(),	hbRekenmachine};
 		Component[] r48 = {titleOpmaakLabel, 	hgl()};
 		Component[] r49 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand};
+		Component[] r410 = {pastHoogteAanCB, 		ra(5,0),	hgl()};
 		
 		Component[] k4 = {hb(r41),vst(10),hb(r42),hb(r43),hb(r44),vst(20),hb(r45),vst(10),hb(r46),hb(r47),
-				vst(20),hb(r48),vst(10),hb(r49), vgl()};
+				vst(20),hb(r48),vst(10),hb(r49),hb(r410), vgl()};
 		settingsBox = vb(k4);
 		
 		// boxes plaatsen
@@ -282,6 +286,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		boolean rekenTool = false;
 		boolean grafTool = false;
 		boolean boxMetRand = true;
+		boolean pastHoogteAan = false;
 		boolean logOption;
 		String  logID;
 		boolean checkDocent = false;
@@ -291,6 +296,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		rekenTool = this.rekenTool;
 		grafTool = this.grafTool;
 		boxMetRand = boxMetRandCB.isSelected();
+		pastHoogteAan = pastHoogteAanCB.isSelected();
 		logOption = logCB.isSelected();
 		logID = logIDField.getText();
 		checkDocent = checkCB.isSelected();
@@ -302,6 +308,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		h.put("rekenTool", new Boolean(rekenTool));
 		h.put("grafTool", new Boolean(grafTool));
 		h.put("boxMetRand", new Boolean(boxMetRand));
+		h.put("pasAanH",new Boolean(pastHoogteAan));
 		if(logOption) {
 			h.put("logOption", Boolean.TRUE);
 		} else {
@@ -325,6 +332,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		boolean grafTool = false;
 		boolean checkDocent = false;
 		boolean boxMetRand = true;
+		boolean pastHoogteAan = false;
 		boolean logOption = false;
 		int scoreMax = 0;
 		String logID = "";
@@ -333,6 +341,8 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		if(h.containsKey("rekenTool")) rekenTool = ((Boolean)h.get("rekenTool")).booleanValue();
 		if(h.containsKey("grafTool")) grafTool = ((Boolean)h.get("grafTool")).booleanValue();
 		if(h.containsKey("boxMetRand")) boxMetRand = ((Boolean)h.get("boxMetRand")).booleanValue();
+		if(h.containsKey("pasAanH")) pastHoogteAan = ((Boolean)h.get("pasAanH")).booleanValue();
+		
 		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
 		if(h.containsKey("logID")) logID = (String)h.get("logID");
 		if(h.containsKey("checkDocent")) checkDocent = ((Boolean)h.get("checkDocent")).booleanValue();
@@ -351,6 +361,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 //		grafToolCB.setSelected(grafTool);
 
 		boxMetRandCB.setSelected(boxMetRand);
+		pastHoogteAanCB.setSelected(pastHoogteAan);
 		
         logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
