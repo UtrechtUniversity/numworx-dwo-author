@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 
 import javax.swing.Icon;
@@ -147,11 +147,8 @@ public class SVGStrategy implements Strategy {
       byte[] data= new byte[in.available()];
       in.read(data);
       in.close();
-      String content = new String(data, "UTF-8");
+      String content = new String(data, StandardCharsets.UTF_8);
       simpleSwingBrowser.loadContent(content, "image/svg+xml");
-    } catch (UnsupportedEncodingException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
