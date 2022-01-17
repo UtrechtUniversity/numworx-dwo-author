@@ -72,6 +72,7 @@ import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JFileChooser;
 import fi.beans.numworxlf.JOptionPane;
 import fi.beans.private_base64code.StringCodeObject;
+import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrButton;
 import fi.wiskopdr.WiskOpdrTextField;
@@ -122,8 +123,25 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
           tag(entry.getValue());
         }
       }
+      keys.add("controleerknop");
+      tagValues(TekstVakPanel.templatePages);
+      tagValues(TekstVakPanel.templateComponents);
+      
+      
       retainImages();
 
+    }
+
+    private void tagValues(Map<String, String> pages) {
+      if (pages != null) {
+        for (String value: pages.values()) {
+          if (value.startsWith("$V") && value.endsWith("@")) {
+            value = value.substring(2, value.length()-1);
+          }
+          tagString(value);
+        }
+      }
+      
     }
 
     private void retainImages() {
