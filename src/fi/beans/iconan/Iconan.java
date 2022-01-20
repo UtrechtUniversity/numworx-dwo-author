@@ -1013,7 +1013,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
         downBtn.setPreferredSize(new Dimension(70,24));
         downBtn.setMaximumSize(new Dimension(70,24));
         downBtn.setEnabled(false);
-        downBtn.setVisible(WiskOpdr.isExperimental() && WiskOpdr.isPremium());
+        downBtn.setVisible(WiskOpdr.isPremium());
 
         garbageBtn = new WiskOpdrButton("Opruimen");
         garbageBtn.setBackground(WiskOpdr.colorBlue1);
