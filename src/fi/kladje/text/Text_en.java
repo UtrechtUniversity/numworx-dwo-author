@@ -24,7 +24,15 @@ public class Text_en extends java.util.ListResourceBundle
             { "checkCBLabel" , "Check (by teacher)" },
             { "scoreLabel" , "Score" },
             
-            { "CBA_drawing", "drawing"},
+            {	"titleLoggingLabel", "Check / Logging"},
+	    		{	"checkCB", "Check (by teacher)"},
+	    		{	"maxScoreLabel", "Maximum score"},
+	    		{	"logCB", "LogID"},
+	    		{	"titleSettingsLabel", "Settings"},
+	    		
+	    		{	"toolBarOnTopTekst", "Toolbar on top"},
+            
+            { "CBA_drawing", "drawing/formulas"},
             { "CBA_double.translationX", "translation x"},
             { "CBA_double.translationY", "translation y"},
             { "CBA_equation", "equation/expression"},

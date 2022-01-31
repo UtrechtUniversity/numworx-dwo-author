@@ -35,6 +35,17 @@ public class Kladje extends fi.beans.mainframe.JApplet implements WiskOpdrApplet
 	public static boolean isExperimental;
 	public static boolean isPremium;
 	
+	public static Color colorBlue1 = new Color(49,71,112);
+	public static Color colorBlue2 = new Color(38,115,182);
+	public static Color colorBlue3 = new Color(120,150,202);
+	public static Color colorBlue4 = new Color(180,195,228);
+	public static Color colorBlue5 = new Color(211,229,244);
+	public static Color colorBlue6 = new Color(229,240,249);
+	
+	public static Color colorGray1 = new Color(206,207,208);
+	public static Color colorGray2 = new Color(221,223,225);
+	public static Color colorGray3 = new Color(237,239,241);
+	
 	public static void main(String[] args)    
 	{	int width = 500;
         int height = 450;
@@ -129,53 +140,102 @@ public class Kladje extends fi.beans.mainframe.JApplet implements WiskOpdrApplet
 		au = new AppletUtil(this);
 		MediaTracker tr = new MediaTracker(this);
 		
-		penDefault  = au.getImage("resources/teken_penknop_default.gif");
+//		penDefault  = au.getImage("resources/teken_penknop_default.gif");
+//		tr.addImage(penDefault, 0);
+//		penRollover  = au.getImage("resources/teken_penknop_rollover.gif");
+//		tr.addImage(penRollover, 0);
+//		penSelected  = au.getImage("resources/teken_penknop_selected.gif");
+//		tr.addImage(penSelected, 0);
+//		
+//		gumDefault  = au.getImage("resources/teken_gumknop_default.gif");
+//		tr.addImage(gumDefault, 0);
+//		gumRollover  = au.getImage("resources/teken_gumknop_rollover.gif");
+//		tr.addImage(gumRollover, 0);
+//		gumSelected  = au.getImage("resources/teken_gumknop_selected.gif");
+//		tr.addImage(gumSelected, 0);
+//		
+//		lijnDefault  = au.getImage("resources/teken_lijn_default.gif");
+//		tr.addImage(lijnDefault, 0);
+//		lijnRollover  = au.getImage("resources/teken_lijn_rollover.gif");
+//		tr.addImage(lijnRollover, 0);
+//		lijnSelected  = au.getImage("resources/teken_lijn_selected.gif");
+//		tr.addImage(lijnSelected, 0);
+//		
+//		rechthoekDefault  = au.getImage("resources/teken_rechthoek_default.gif");
+//		tr.addImage(rechthoekDefault, 0);
+//		rechthoekRollover  = au.getImage("resources/teken_rechthoek_rollover.gif");
+//		tr.addImage(rechthoekRollover, 0);
+//		rechthoekSelected  = au.getImage("resources/teken_rechthoek_selected.gif");
+//		tr.addImage(rechthoekSelected, 0);
+//		
+//		cirkelDefault  = au.getImage("resources/teken_cirkel_default.gif");
+//		tr.addImage(cirkelDefault, 0);
+//		cirkelRollover  = au.getImage("resources/teken_cirkel_rollover.gif");
+//		tr.addImage(cirkelRollover, 0);
+//		cirkelSelected  = au.getImage("resources/teken_cirkel_selected.gif");
+//		tr.addImage(cirkelSelected, 0);
+//				
+//		tekstDefault  = au.getImage("resources/teken_tekst_default.gif");
+//		tr.addImage(tekstDefault, 0);
+//		tekstRollover  = au.getImage("resources/teken_tekst_rollover.gif");
+//		tr.addImage(tekstRollover, 0);
+//		tekstSelected  = au.getImage("resources/teken_tekst_selected.gif");
+//		tr.addImage(tekstSelected, 0);
+//		
+//		selecterenDefault  = au.getImage("resources/teken_selecteren_default.gif");
+//		tr.addImage(selecterenDefault, 0);
+//		selecterenRollover  = au.getImage("resources/teken_selecteren_rollover.gif");
+//		tr.addImage(selecterenRollover, 0);
+//		selecterenSelected  = au.getImage("resources/teken_selecteren_selected.gif");
+//		tr.addImage(selecterenSelected, 0);
+		
+		penDefault  = au.getImage("resources/teken_penknop_up.png");
 		tr.addImage(penDefault, 0);
-		penRollover  = au.getImage("resources/teken_penknop_rollover.gif");
+		penRollover  = au.getImage("resources/teken_penknop_up.png");
 		tr.addImage(penRollover, 0);
-		penSelected  = au.getImage("resources/teken_penknop_selected.gif");
+		penSelected  = au.getImage("resources/teken_penknop_down.png");
 		tr.addImage(penSelected, 0);
 		
-		gumDefault  = au.getImage("resources/teken_gumknop_default.gif");
+		gumDefault  = au.getImage("resources/teken_gumknop_up.png");
 		tr.addImage(gumDefault, 0);
-		gumRollover  = au.getImage("resources/teken_gumknop_rollover.gif");
+		gumRollover  = au.getImage("resources/teken_gumknop_up.png");
 		tr.addImage(gumRollover, 0);
-		gumSelected  = au.getImage("resources/teken_gumknop_selected.gif");
+		gumSelected  = au.getImage("resources/teken_gumknop_down.png");
 		tr.addImage(gumSelected, 0);
 		
-		lijnDefault  = au.getImage("resources/teken_lijn_default.gif");
+		lijnDefault  = au.getImage("resources/teken_lijn_up.png");
 		tr.addImage(lijnDefault, 0);
-		lijnRollover  = au.getImage("resources/teken_lijn_rollover.gif");
+		lijnRollover  = au.getImage("resources/teken_lijn_up.png");
 		tr.addImage(lijnRollover, 0);
-		lijnSelected  = au.getImage("resources/teken_lijn_selected.gif");
+		lijnSelected  = au.getImage("resources/teken_lijn_down.png");
 		tr.addImage(lijnSelected, 0);
 		
-		rechthoekDefault  = au.getImage("resources/teken_rechthoek_default.gif");
+		rechthoekDefault  = au.getImage("resources/teken_rechthoek_up.png");
 		tr.addImage(rechthoekDefault, 0);
-		rechthoekRollover  = au.getImage("resources/teken_rechthoek_rollover.gif");
+		rechthoekRollover  = au.getImage("resources/teken_rechthoek_up.png");
 		tr.addImage(rechthoekRollover, 0);
-		rechthoekSelected  = au.getImage("resources/teken_rechthoek_selected.gif");
+		rechthoekSelected  = au.getImage("resources/teken_rechthoek_down.png");
 		tr.addImage(rechthoekSelected, 0);
 		
-		cirkelDefault  = au.getImage("resources/teken_cirkel_default.gif");
+		cirkelDefault  = au.getImage("resources/teken_cirkel_up.png");
 		tr.addImage(cirkelDefault, 0);
-		cirkelRollover  = au.getImage("resources/teken_cirkel_rollover.gif");
+		cirkelRollover  = au.getImage("resources/teken_cirkel_up.png");
 		tr.addImage(cirkelRollover, 0);
-		cirkelSelected  = au.getImage("resources/teken_cirkel_selected.gif");
+		cirkelSelected  = au.getImage("resources/teken_cirkel_down.png");
 		tr.addImage(cirkelSelected, 0);
 				
-		tekstDefault  = au.getImage("resources/teken_tekst_default.gif");
+		tekstDefault  = au.getImage("resources/teken_tekst_up.png");
 		tr.addImage(tekstDefault, 0);
-		tekstRollover  = au.getImage("resources/teken_tekst_rollover.gif");
+		tekstRollover  = au.getImage("resources/teken_tekst_up.png");
 		tr.addImage(tekstRollover, 0);
-		tekstSelected  = au.getImage("resources/teken_tekst_selected.gif");
+		tekstSelected  = au.getImage("resources/teken_tekst_down.png");
 		tr.addImage(tekstSelected, 0);
 		
-		selecterenDefault  = au.getImage("resources/teken_selecteren_default.gif");
+		selecterenDefault  = au.getImage("resources/teken_selecteren_up.png");
 		tr.addImage(selecterenDefault, 0);
-		selecterenRollover  = au.getImage("resources/teken_selecteren_rollover.gif");
+		selecterenRollover  = au.getImage("resources/teken_selecteren_up.png");
 		tr.addImage(selecterenRollover, 0);
-		selecterenSelected  = au.getImage("resources/teken_selecteren_selected.gif");
+		selecterenSelected  = au.getImage("resources/teken_selecteren_down.png");
 		tr.addImage(selecterenSelected, 0);
 		
 		tekenCursor  = au.getImage("resources/tekencursor.gif");

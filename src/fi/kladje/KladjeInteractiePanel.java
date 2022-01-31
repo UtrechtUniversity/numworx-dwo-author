@@ -37,10 +37,11 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	
 	Image formuleDefault, formuleRollover, formuleSelected, lijnDefault, lijnRollover, lijnSelected, rechthoekDefault, rechthoekRollover, rechthoekSelected,
 		  cirkelDefault, cirkelRollover, cirkelSelected, tekstDefault, tekstRollover, tekstSelected,
-		  selecterenDefault, selecterenRollover, selecterenSelected;
+		  selecterenDefault, selecterenRollover, selecterenSelected, kleurKeuzeIm, binKnopIm, terugKnopIm;
 	ImageIcon lijnDefaultIcon, lijnRolloverIcon, lijnSelectedIcon, rechthoekDefaultIcon, rechthoekRolloverIcon, rechthoekSelectedIcon,
 			  cirkelDefaultIcon, cirkelRolloverIcon, cirkelSelectedIcon, tekstDefaultIcon, tekstRolloverIcon, tekstSelectedIcon,
-			  selecterenDefaultIcon, selecterenRolloverIcon, selecterenSelectedIcon, formuleDefaultIcon, formuleRolloverIcon, formuleSelectedIcon;
+			  selecterenDefaultIcon, selecterenRolloverIcon, selecterenSelectedIcon, formuleDefaultIcon, formuleRolloverIcon, formuleSelectedIcon,
+			  kleurKeuzeIcon, binKnopIcon, terugKnopIcon;
 	
 	Image lijnCursor, rechthoekCursor, cirkelCursor, tekstCursor, selecterenCursor;
 	ImageIcon lijnCursorIcon, rechthoekCursorIcon, cirkelCursorIcon, tekstCursorIcon, selecterenCursorIcon; 
@@ -48,7 +49,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	Image roteerLinksom, roteerRechtsom, vergroot, verklein;
 	ImageIcon roteerLinksomIcon, roteerRechtsomIcon, vergrootIcon, verkleinIcon;
 	
-	protected static Color bgColor = new Color(220, 220, 220);
+	protected static Color bgColor = new Color(231, 233, 235);
 	
 //	Color[] kleuren = {Color.black, Color.white, Color.gray, Color.lightGray, Color.red,     Color.orange,
 //			   Color.yellow,Color.green, Color.cyan, Color.blue,      Color.magenta, Color.pink};
@@ -57,7 +58,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	                   Color.green, Color.cyan, Color.blue, Color.magenta};
 	
 	KladjeVeld kladjeVeld;
-	int bottomHeight = 30;
+	int bottomHeight = 35;
 	int offSet = 5;
 	
 	JToggleButton tekenButton, lijnButton, rechthoekButton, cirkelButton, tekstButton, formuleButton, selecterenButton;
@@ -65,6 +66,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	JButton undoButton, wisButton;
 	JToggleButton[] kleurKeuzeButtons;
 	ButtonGroup kleurKeuzeGroup;
+	JButton kleurKeuzeButton;
 
 	JButton roteerLinksomButton, roteerRechtsomButton, vergrootButton, verkleinButton;
 	
@@ -90,6 +92,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	boolean tekstTekenen = true;
 	boolean formuleOptie = false;
 	boolean ivmOptie = false;
+	boolean toolBarOnTop;
 //	boolean selecteren = true;
 	
 	boolean roteren = true;
@@ -103,6 +106,7 @@ public class KladjeInteractiePanel extends JPanel implements InteractiePanel, In
 	
 	public KladjeInteractiePanel()
 	{
+		setBorder(BorderFactory.createDashedBorder(Color.LIGHT_GRAY));
 		setLayout(null);
 		//setBackground(bgColor);
 		setOpaque(false);
@@ -112,32 +116,32 @@ System.out.println("klip " + getBackground().toString());
 		
 		// echte initiatie vind pas plaats na setBounds
 		
-		java.net.URL imageURL = Kladje.class.getResource("resources/teken_penknop_default.gif");
+		java.net.URL imageURL = Kladje.class.getResource("resources/teken_penknop_up.png");
 		if (imageURL != null) 
 		{
 			penDefaultIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_penknop_default.gif");
+			System.out.println("Error reading teken_penknop_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_penknop_rollover.gif");
+		imageURL = Kladje.class.getResource("resources/teken_penknop_up.png");
 		if (imageURL != null) 
 		{
 			penRolloverIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_penknop_rollover.gif");
+			System.out.println("Error reading teken_penknop_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_penknop_selected.gif");
+		imageURL = Kladje.class.getResource("resources/teken_penknop_down.png");
 		if (imageURL != null) 
 		{
 			penSelectedIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_penknop_selected.gif");
+			System.out.println("Error reading teken_penknop_down.png");
 		}
 
 		imageURL = Kladje.class.getResource("resources/teken_gumknop_default.gif");
@@ -169,175 +173,201 @@ System.out.println("klip " + getBackground().toString());
 		}
 		
 		
-		imageURL = Kladje.class.getResource("resources/teken_lijn_default.gif");
+		imageURL = Kladje.class.getResource("resources/teken_lijn_up.png");
 		if (imageURL != null) 
 		{
 			lijnDefaultIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_lijn_default.gif");
+			System.out.println("Error reading teken_lijn_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_lijn_rollover.gif");
+		imageURL = Kladje.class.getResource("resources/teken_lijn_up.png");
 		if (imageURL != null) 
 		{
 			lijnRolloverIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_lijn_rollover.gif");
+			System.out.println("Error reading teken_lijn_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_lijn_selected.gif");
+		imageURL = Kladje.class.getResource("resources/teken_lijn_down.png");
 		if (imageURL != null) 
 		{
 			lijnSelectedIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_lijn_selected.gif");
+			System.out.println("Error reading teken_lijn_down.png");
 		}
 		
 
-		imageURL = Kladje.class.getResource("resources/teken_rechthoek_default.gif");
+		imageURL = Kladje.class.getResource("resources/teken_rechthoek_up.png");
 		if (imageURL != null) 
 		{
 			rechthoekDefaultIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_rechthoek_default.gif");
+			System.out.println("Error reading teken_rechthoek_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_rechthoek_rollover.gif");
+		imageURL = Kladje.class.getResource("resources/teken_rechthoek_up.png");
 		if (imageURL != null) 
 		{
 			rechthoekRolloverIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_rechthoek_rollover.gif");
+			System.out.println("Error reading teken_rechthoek_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_rechthoek_selected.gif");
+		imageURL = Kladje.class.getResource("resources/teken_rechthoek_down.png");
 		if (imageURL != null) 
 		{
 			rechthoekSelectedIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_rechthoek_selected.gif");
+			System.out.println("Error reading teken_rechthoek_down.pngf");
 		}
 
-		imageURL = Kladje.class.getResource("resources/teken_cirkel_default.gif");
+		imageURL = Kladje.class.getResource("resources/teken_cirkel_up.png");
 		if (imageURL != null) 
 		{
 			cirkelDefaultIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_cirkel_default.gif");
+			System.out.println("Error reading teken_cirkel_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_cirkel_rollover.gif");
+		imageURL = Kladje.class.getResource("resources/teken_cirkel_up.png");
 		if (imageURL != null) 
 		{
 			cirkelRolloverIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_cirkel_rollover.gif");
+			System.out.println("Error reading teken_cirkel_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_cirkel_selected.gif");
+		imageURL = Kladje.class.getResource("resources/teken_cirkel_down.png");
 		if (imageURL != null) 
 		{
 			cirkelSelectedIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_cirkel_selected.gif");
+			System.out.println("Error reading teken_cirkel_down.png");
 		}
 
-		imageURL = Kladje.class.getResource("resources/teken_tekst_default.gif");
+		imageURL = Kladje.class.getResource("resources/teken_tekst_up.png");
 		if (imageURL != null) 
 		{
 			tekstDefaultIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_tekst_default.gif");
+			System.out.println("Error reading teken_tekst_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_tekst_rollover.gif");
+		imageURL = Kladje.class.getResource("resources/teken_tekst_up.png");
 		if (imageURL != null) 
 		{
 			tekstRolloverIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_tekst_rollover.gif");
+			System.out.println("Error reading teken_tekst_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_tekst_selected.gif");
+		imageURL = Kladje.class.getResource("resources/teken_tekst_down.png");
 		if (imageURL != null) 
 		{
 			tekstSelectedIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_tekst_selected.gif");
+			System.out.println("Error reading teken_tekst_down.png");
 		}
 		
-		imageURL = Kladje.class.getResource("resources/teken_formule_default.gif");
+		imageURL = Kladje.class.getResource("resources/teken_formule_up.png");
 		if (imageURL != null) 
 		{
 			formuleDefaultIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_formule_default.gif");
+			System.out.println("Error reading teken_formule_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_formule_rollover.gif");
+		imageURL = Kladje.class.getResource("resources/teken_formule_up.png");
 		if (imageURL != null) 
 		{
 			formuleRolloverIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_formule_rollover.gif");
+			System.out.println("Error reading teken_formule_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_formule_selected.gif");
+		imageURL = Kladje.class.getResource("resources/teken_formule_down.png");
 		if (imageURL != null) 
 		{
 			formuleSelectedIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_formule_selected.gif");
+			System.out.println("Error reading teken_formule_down.png");
 		}
 		
-		imageURL = Kladje.class.getResource("resources/teken_selecteren_default.gif");
+		imageURL = Kladje.class.getResource("resources/teken_selecteren_up.png");
 		if (imageURL != null) 
 		{
 			selecterenDefaultIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_selecteren_default.gif");
+			System.out.println("Error reading teken_selecteren_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_selecteren_rollover.gif");
+		imageURL = Kladje.class.getResource("resources/teken_selecteren_up.png");
 		if (imageURL != null) 
 		{
 			selecterenRolloverIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_selecteren_rollover.gif");
+			System.out.println("Error reading teken_selecteren_up.png");
 		}
-		imageURL = Kladje.class.getResource("resources/teken_selecteren_selected.gif");
+		imageURL = Kladje.class.getResource("resources/teken_selecteren_down.png");
 		if (imageURL != null) 
 		{
 			selecterenSelectedIcon = new ImageIcon(imageURL);
 		}
 		else 
 		{
-			System.out.println("Error reading teken_selecteren_selected.gif");
+			System.out.println("Error reading teken_selecteren_down.png.gif");
 		}
-		
+		imageURL = Kladje.class.getResource("resources/regenboog3.png");
+		if (imageURL != null) 
+		{
+			kleurKeuzeIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading regenboog3.png");
+		}
+		imageURL = Kladje.class.getResource("resources/binknop.png");
+		if (imageURL != null) 
+		{
+			binKnopIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading binknop.png");
+		}
+		imageURL = Kladje.class.getResource("resources/terug.png");
+		if (imageURL != null) 
+		{
+			terugKnopIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading terug.png");
+		}
 		
 		imageURL = Kladje.class.getResource("resources/tekencursor.gif");
 		if (imageURL != null) 
@@ -524,10 +554,18 @@ System.out.println("klip " + getBackground().toString());
 	public void paintComponent(Graphics g)
 	{
 		g.setColor(bgColor);
-		g.fillRect(0, getSize().height - bottomHeight, getSize().width, bottomHeight);
+		if(toolBarOnTop) {
+			g.fillRect(0, 0, getSize().width, bottomHeight);
+		}
+		else
+			g.fillRect(0, getSize().height - bottomHeight, getSize().width, bottomHeight);
 	}
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
 	{
+		boolean toolBarOnTop = false;
+		if (b.containsKey("toolBarOnTop"))
+			toolBarOnTop = ((Boolean) b.get("toolBarOnTop")).booleanValue();
+		zetToolBarOnTop(toolBarOnTop);
 		boolean kleurkeuze = true;
 		if (b.containsKey("kleurkeuze"))
 			kleurkeuze = ((Boolean) b.get("kleurkeuze")).booleanValue();
@@ -627,6 +665,10 @@ System.out.println("klip " + getBackground().toString());
 	
 	public void setEditState(Hashtable b)
 	{
+		boolean toolBarOnTop = false;
+		if (b.containsKey("toolBarOnTop"))
+			toolBarOnTop = ((Boolean) b.get("toolBarOnTop")).booleanValue();
+		zetToolBarOnTop(toolBarOnTop);
 		boolean kleurkeuze = true;
 		if (b.containsKey("kleurkeuze"))
 			kleurkeuze = ((Boolean) b.get("kleurkeuze")).booleanValue();
@@ -725,6 +767,7 @@ System.out.println("klip " + getBackground().toString());
 		//Hashtable h = new Hashtable();
 		Hashtable h = kladjeVeld.getState();
 		
+		h.put("toolBarOnTop", new Boolean(toolBarOnTop));
 		h.put("kleurkeuze", new Boolean(kleurkeuze));
 		h.put("lijnen", new Boolean(lijnen));
 		h.put("ruitjes", new Boolean(ruitjes));
@@ -756,17 +799,17 @@ System.out.println("klip " + getBackground().toString());
 	
 	public InteractieEditPanel getEditPanel()
 	{
-		return new KladjeInteractieEditPanel();
+		return new KladjeInteractieEditPanel(this);
 	}
 		
 	public void zetKleurkeuze(boolean b)
 	{
 		kleurkeuze = b;
-		for (int i = 0; i < kleurKeuzeButtons.length; i++)
-		{	noSetBounds = true;
-			kleurKeuzeButtons[i].setVisible(kleurkeuze);
-		}
-		
+//		for (int i = 0; i < kleurKeuzeButtons.length; i++)
+//		{	noSetBounds = true;
+//			kleurKeuzeButtons[i].setVisible(kleurkeuze);
+//		}
+		kleurKeuzeButton.setVisible(kleurkeuze);
 		
 	}
 	
@@ -822,6 +865,11 @@ System.out.println("klip " + getBackground().toString());
 		layoutBottom();
 	}
 	
+	public void zetToolBarOnTop(boolean b) {
+		toolBarOnTop = b;
+		
+		layoutBottom();
+	}
 	public void zetIvmOptie(boolean b)
 	{
 		ivmOptie = b;
@@ -890,8 +938,15 @@ System.out.println("klip " + getBackground().toString());
 	{
 // dit kan wel iets eenvoudiger, vgl Grafiek3DTest	
 		
-		int currentX = tekenButton.getLocation().x + tekenButton.getSize().width + offSet;
-		int currentY = getSize().height - offSet - 20; 
+		int currentX = selecterenButton.getLocation().x + selecterenButton.getSize().width + 2*offSet;
+		int currentY = getSize().height - offSet - 25; 
+		if(toolBarOnTop)
+			currentY = offSet;
+		
+		selecterenButton.setLocation(offSet, currentY);
+		
+		tekenButton.setLocation(currentX, currentY);
+		currentX += tekenButton.getSize().width + offSet;
 		
 		if (lijnTekenen)
 		{
@@ -920,6 +975,13 @@ System.out.println("klip " + getBackground().toString());
 			currentX += tekstButton.getSize().width + offSet;
 			
 		}
+		if (kleurkeuze)
+		{
+			currentX += tekstButton.getSize().width + 3*offSet;
+			kleurKeuzeButton.setLocation(currentX, currentY);
+			currentX += tekstButton.getSize().width + offSet;
+			
+		}
 		
 		if (formuleOptie)
 		{
@@ -927,14 +989,10 @@ System.out.println("klip " + getBackground().toString());
 			currentX += formuleButton.getSize().width + offSet;
 			
 		}
-		selecterenButton.setLocation(currentX, currentY);
-		currentX += selecterenButton.getSize().width + 3 * offSet;
 		
-		undoButton.setLocation(currentX, currentY);
-		currentX += undoButton.getSize().width + 2 * offSet;
+		undoButton.setLocation(getWidth()-50-2*offSet, currentY);
 		
-		wisButton.setLocation(currentX, currentY);
-		currentX += wisButton.getSize().width + 3 * offSet;
+		wisButton.setLocation(getWidth()-25-offSet, currentY);
 		
 		for (int i = 0; i < kleurKeuzeButtons.length; i++)
 		{	kleurKeuzeButtons[i].setLocation(currentX + 20 * i, currentY); 
@@ -957,6 +1015,8 @@ System.out.println("klip " + getBackground().toString());
 			currentX += verkleinButton.getSize().width + offSet;
 		}
 		
+		kladjeVeld.zetToolBarOnTop(toolBarOnTop);
+		kladjeVeld.setLocation(0, toolBarOnTop ? bottomHeight : 0);
 		
 
 		
@@ -983,18 +1043,37 @@ System.out.println("klip " + getBackground().toString());
 		if (kladjeVeld == null) 
 		{	//kladjeVeld = new KladjeVeld(b - 2 * offSet, h - offSet - bottomHeight);
 			//kladjeVeld.setLocation(offSet, offSet);
+			
 			kladjeVeld = new KladjeVeld(b, h - bottomHeight);
-			kladjeVeld.setLocation(0, 0);
+			kladjeVeld.setLocation(0, toolBarOnTop ? bottomHeight : 0);
 			kladjeVeld.addActionListener(this);
+			kladjeVeld.zetToolBarOnTop(toolBarOnTop);
 			add(kladjeVeld);
 //System.out.println("kladjeVeld created");
 			tekenGumGroup = new ButtonGroup();
 
+			if (selecterenDefault != null && selecterenRollover != null && selecterenSelected != null)
+			{
+				selecterenButton = new JToggleButton(new ImageIcon(selecterenDefault), false);
+				selecterenButton.setRolloverIcon(new ImageIcon(selecterenRollover));
+				selecterenButton.setSelectedIcon(new ImageIcon(selecterenSelected));
+				
+			}
+			else
+			{
+				selecterenButton = new JToggleButton("S");
+			}
+			selecterenButton.setBorder(null);
+			selecterenButton.setBounds(offSet, toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
+			add(selecterenButton);
+			selecterenButton.addActionListener(new TekenGumAL());
+			
 			tekenButton = new JToggleButton(new ImageIcon(penDefault), true);
 			tekenButton.setRolloverIcon(new ImageIcon(penRollover));
 			tekenButton.setSelectedIcon(new ImageIcon(penSelected));
 			tekenButton.setBorder(null);
-			tekenButton.setBounds(2 * offSet, getSize().height - offSet - 20, 20, 20);
+			tekenButton.setBounds(selecterenButton.getLocation().x + selecterenButton.getSize().width + 2*offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
 			add(tekenButton);
 			tekenButton.addActionListener(new TekenGumAL());
 
@@ -1022,7 +1101,7 @@ System.out.println("klip " + getBackground().toString());
 			}
 			lijnButton.setBorder(null);
 			lijnButton.setBounds(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
-		                        getSize().height - offSet - 20, 20, 20);
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
 			add(lijnButton);
 			lijnButton.addActionListener(new TekenGumAL());
 			
@@ -1040,7 +1119,7 @@ System.out.println("klip " + getBackground().toString());
 			}
 			rechthoekButton.setBorder(null);
 			rechthoekButton.setBounds(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
-		                              getSize().height - offSet - 20, 20, 20);
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
 			add(rechthoekButton);
 			rechthoekButton.addActionListener(new TekenGumAL());
 
@@ -1057,7 +1136,7 @@ System.out.println("klip " + getBackground().toString());
 			}
 			cirkelButton.setBorder(null);
 			cirkelButton.setBounds(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
-		                           getSize().height - offSet - 20, 20, 20);
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
 			add(cirkelButton);
 			cirkelButton.addActionListener(new TekenGumAL());
 			
@@ -1074,7 +1153,7 @@ System.out.println("klip " + getBackground().toString());
 			}
 			tekstButton.setBorder(null);
 			tekstButton.setBounds(cirkelButton.getLocation().x + cirkelButton.getSize().width + offSet, 
-		                           getSize().height - offSet - 20, 20, 20);
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
 			add(tekstButton);
 			tekstButton.addActionListener(new TekenGumAL());
 			
@@ -1092,26 +1171,11 @@ System.out.println("klip " + getBackground().toString());
 			}
 			formuleButton.setBorder(null);
 			formuleButton.setBounds(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
-		                           getSize().height - offSet - 20, 20, 20);
-			add(formuleButton);
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 20, 20);
+			//add(formuleButton);
 			formuleButton.addActionListener(new TekenGumAL());
 			
-			if (selecterenDefault != null && selecterenRollover != null && selecterenSelected != null)
-			{
-				selecterenButton = new JToggleButton(new ImageIcon(selecterenDefault), false);
-				selecterenButton.setRolloverIcon(new ImageIcon(selecterenRollover));
-				selecterenButton.setSelectedIcon(new ImageIcon(selecterenSelected));
-				
-			}
-			else
-			{
-				selecterenButton = new JToggleButton("S");
-			}
-			selecterenButton.setBorder(null);
-			selecterenButton.setBounds(formuleButton.getLocation().x + formuleButton.getSize().width + offSet, 
-		                           getSize().height - offSet - 20, 20, 20);
-			add(selecterenButton);
-			selecterenButton.addActionListener(new TekenGumAL());
+			
 			
 			
 			tekenGumGroup.add(tekenButton);
@@ -1124,19 +1188,25 @@ System.out.println("klip " + getBackground().toString());
 			tekenGumGroup.add(selecterenButton);
 			
 
-			undoButton = new JButton(Kladje.rb.getString("terugTekst"));
+			kleurKeuzeButton = new JButton(kleurKeuzeIcon);//Kladje.rb.getString("terugTekst"));
+			kleurKeuzeButton.setFont(theFont);
+			kleurKeuzeButton.setBounds(tekstButton.getLocation().x + tekstButton.getSize().width + 4*offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
+			add(kleurKeuzeButton);
+			kleurKeuzeButton.addActionListener(this);
+			kleurKeuzeButton.setVisible(kleurkeuze);
+			
+			undoButton = new JButton(terugKnopIcon);//Kladje.rb.getString("terugTekst"));
 			int width = theFM.stringWidth(Kladje.rb.getString("terugTekst")) + 35;
 			undoButton.setFont(theFont);
-			undoButton.setBounds(selecterenButton.getLocation().x + selecterenButton.getSize().width + 3 * offSet,
-					             getSize().height - 20 - offSet, width, 20);
+			undoButton.setBounds(getSize().width - 50 - 2*offSet, toolBarOnTop ? offSet : getSize().height - 25 - offSet, 25,25);
 			add(undoButton);
 			undoButton.addActionListener(this);
 			
-			wisButton = new JButton(Kladje.rb.getString("wisTekst"));
+			wisButton = new JButton(binKnopIcon);//Kladje.rb.getString("wisTekst"));
 			width = theFM.stringWidth(Kladje.rb.getString("wisTekst")) + 35;
 			wisButton.setFont(theFont);
-			wisButton.setBounds(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
-					            getSize().height - 20 - offSet, width, 20);
+			wisButton.setBounds(getSize().width - 25 - offSet, toolBarOnTop ? offSet : getSize().height - 25 - offSet, 25,25);
 			add(wisButton);
 			wisButton.addActionListener(this);
 			
@@ -1170,7 +1240,7 @@ System.out.println("klip " + getBackground().toString());
 				add(kleurKeuzeButtons[i]);
 				kleurKeuzeButtons[i].addActionListener(this);
 				//noSetBounds = true;
-				//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+				kleurKeuzeButtons[i].setVisible(false);
 				kleurKeuzeGroup.add(kleurKeuzeButtons[i]);
 			}
 			kleurKeuzeButtons[0].setSelected(true);
@@ -1228,31 +1298,32 @@ System.out.println("klip " + getBackground().toString());
 		else
 		{	//kladjeVeld.setSize(b - 2 * offSet, h - offSet - bottomHeight);
 			kladjeVeld.setSize(b, h - bottomHeight);
-			tekenButton.setLocation(2 * offSet, getSize().height - offSet - 20);
+			kladjeVeld.zetToolBarOnTop(toolBarOnTop);
+			kladjeVeld.setLocation(0, toolBarOnTop ? bottomHeight : 0);
+			
+			selecterenButton.setLocation(offSet, toolBarOnTop ? offSet : getSize().height - offSet - 25);
+			tekenButton.setLocation(selecterenButton.getLocation().x + selecterenButton.getSize().width + 2*offSet, toolBarOnTop ? offSet : getSize().height - offSet - 25);
 //			gumButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
 //		            			  getSize().height - offSet - 20);
 			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
-      			  getSize().height - offSet - 20);
+					toolBarOnTop ? offSet : getSize().height - offSet - 25);
 			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
-      			  getSize().height - offSet - 20);
+					toolBarOnTop ? offSet : getSize().height - offSet - 25);
 			cirkelButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
-      			  getSize().height - offSet - 20);
+					toolBarOnTop ? offSet : getSize().height - offSet - 25);
 			tekstButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + offSet, 
-	      			  getSize().height - offSet - 20);
+					toolBarOnTop ? offSet : getSize().height - offSet - 25);
 			formuleButton.setLocation(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
-	      			  getSize().height - offSet - 20);
-			selecterenButton.setLocation(formuleButton.getLocation().x + formuleButton.getSize().width + offSet, 
-	      			  getSize().height - offSet - 20);
+					toolBarOnTop ? offSet : getSize().height - offSet - 20);
 			
-			undoButton.setLocation(selecterenButton.getLocation().x + selecterenButton.getSize().width + 3 * offSet,
-      			  getSize().height - 20 - offSet);
-			wisButton.setLocation(undoButton.getLocation().x + undoButton.getSize().width + 2 * offSet,
-		            			  getSize().height - 20 - offSet);
+			undoButton.setLocation(getSize().width - 50 - 2*offSet, toolBarOnTop ? offSet : getSize().height - 25 - offSet);
+			wisButton.setLocation(getSize().width - 25 - offSet, toolBarOnTop ? offSet : getSize().height - 25 - offSet);
 			for (int i = 0; i < kleurKeuzeButtons.length; i++)
 			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
 						                         getSize().height - 20 - offSet);
-				//kleurKeuzeButtons[i].setVisible(kleurkeuze);
+				kleurKeuzeButtons[i].setVisible(false);
 			}
+			kleurKeuzeButton.setVisible(kleurkeuze);
 			
 			roteerLinksomButton.setSize(roteerLinksomButton.getSize().width, getSize().height - 20 - offSet);
 			roteerRechtsomButton.setSize(roteerRechtsomButton.getSize().width, getSize().height - 20 - offSet);
@@ -1609,6 +1680,16 @@ System.out.println("kladjeVeld sized");
 			}
 		}
 		
+		if (e.getSource() == kleurKeuzeButton)
+		{
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(kleurKeuzeButton.getLocation().x + kleurKeuzeButton.getSize().width + offSet + 20 * i, 
+						kleurKeuzeButton.getLocation().y+3);
+				kleurKeuzeButtons[i].setVisible(!kleurKeuzeButtons[i].isVisible());
+			}
+		}
+		
+			
 		if (e.getSource() == wisButton)
 		{
 			kladjeVeld.wis(true);

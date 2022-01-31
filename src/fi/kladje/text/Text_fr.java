@@ -24,6 +24,14 @@ public class Text_fr extends java.util.ListResourceBundle
             { "checkCBLabel" , "Check (by teacher)" },
             { "scoreLabel" , "Score" },
             
+            {	"titleLoggingLabel", "Check / Logging"},
+	    		{	"checkCB", "Check (by teacher)"},
+	    		{	"maxScoreLabel", "Maximum score"},
+	    		{	"logCB", "LogID"},
+	    		{	"titleSettingsLabel", "Settings"},
+	    		
+	    		{	"toolBarOnTopTekst", "Toolbar on top"},
+            
             { "CBA_drawing", "drawing"},
             { "CBA_double.translationX", "translation x"},
             { "CBA_double.translationY", "translation y"},

@@ -9,7 +9,19 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import fi.beans.numworxlf.JButton;
+import fi.beans.numworxlf.JCheckBox;
+import fi.beans.numworxlf.JOptionPane;
+import fi.beans.numworxlf.JRadioButton;
+import fi.beans.numworxlf.JScrollPane;
+import fi.beans.numworxlf.JTextField;
+
+
 
 public class FormuleInstellingenButton extends JButton implements ActionListener
 {

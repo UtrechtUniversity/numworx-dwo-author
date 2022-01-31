@@ -15,6 +15,7 @@ public class KladjeVeld extends JPanel
 	
 	boolean lijnen = false;
 	boolean ruitjes = false;
+	boolean toolBarOnTop = false;
 	
 	static boolean roteren = true;
 	static boolean schalen = true;
@@ -570,6 +571,10 @@ System.out.println("returned " + (numHistories - 1));
 		
 	}
 	
+	public void zetToolBarOnTop(boolean b ) {
+		toolBarOnTop = b;
+	}
+	
 	public void zetLijnen(boolean b)
 	{	lineDistance = 20;
 		lijnen = b;
@@ -790,7 +795,7 @@ System.out.println("returned " + (numHistories - 1));
 			int hSteps = getSize().width / lineDistance;
 			for (int hCnt = 1; hCnt <= hSteps; hCnt++)
 			{
-				g2D.drawLine(hCnt * lineDistance, 0, hCnt * lineDistance, getSize().height - 5);
+				g2D.drawLine(hCnt * lineDistance, toolBarOnTop ? 5 : 0, hCnt * lineDistance, getSize().height - (toolBarOnTop ? 0 : 5));
 			}
 			
 		}
