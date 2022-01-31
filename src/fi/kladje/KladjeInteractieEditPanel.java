@@ -44,6 +44,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
  	private JLabel titleLoggingLabel;
     private JCheckBox checkCB;
     private Component checkCBRA = ra(0,5);
+    private Component objectiveCBRA = ra(0,5);
     private JLabel maxScoreLabel;
     private JTextField maxScoreField;
     private JCheckBox logCB;
@@ -130,6 +131,10 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
      	maxScoreField.setMaximumSize(new Dimension(50,22));
      	maxScoreField.setVisible(false);
      	
+     	objectiveBtn = new ObjectiveChoiceButton();
+		objectiveBtn.setVisible(false);
+		objectiveCBRA.setVisible(false);
+		
      	logCB = new JCheckBox(Kladje.rb.getString("logCB"));
      	logCB.addActionListener(this);
      	
@@ -203,10 +208,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		titleLayoutLabel = new JLabel(Kladje.rb.getString("titleLayoutLabel"));
 		titleLayoutLabel.setForeground(Kladje.colorBlue1);
 		titleLayoutLabel.setFont(font.deriveFont(Font.BOLD, 16));
-		objectiveBtn = new ObjectiveChoiceButton();
-		//objectiveBtn.setBounds(currentX+90+44, currentY, objectiveBtn.getPreferredSize().width, height);
-		objectiveBtn.setVisible(false);
-		add(objectiveBtn);
+		
 		
 		achtergrondGroep = new ButtonGroup();
 		
@@ -252,6 +254,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		Component[] r11 = {titleLoggingLabel, hgl()};
 		Component[] r12 = {checkCB, hgl() };
 		Component[] r13 = {ra(25,0), maxScoreLabel, ra(10,0), maxScoreField, hgl() };
+		Component[] r13a = {ra(25,0), objectiveBtn, hgl() };
 		Component[] r14 = {logCB, ra(10,0), logIDField, hgl() };
 		Component[] r15 = {titleSettingsLabel, hgl()};
 		Component[] r16 = {lijnTekenenBox, hgl() };
@@ -275,7 +278,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		
 		
 		
-		Component[] k2 = {hb(r11), vst(10), hb(r12), checkCBRA, hb(r13), vst(5), hb(r14), vst(15), 
+		Component[] k2 = {hb(r11), vst(10), hb(r12), checkCBRA, hb(r13), vst(5),hb(r13a), objectiveCBRA, hb(r14), vst(15), 
 				hb(r15), vst(10), hb(r16), vst(5), hb(r17), vst(5), hb(r18), vst(5), hb(r19), vst(5), hb(r110), vst(5), hb(r111), vst(5), hb(r112), vst(5),
 				hb(r113), vst(15), hb(r115), vst(10), hb(r116), vst(5), hb(r117), hb(r118), hb(r119), hb(r120), vgl()};
 		
@@ -438,6 +441,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 			check = ((Boolean) b.get("check")).booleanValue();
 			checkCB.setSelected(check);
 		}
+		checkCBRA.setVisible(checkCB.isSelected());
 		maxScoreLabel.setVisible(checkCB.isSelected());
 		maxScoreField.setVisible(checkCB.isSelected());
 		
@@ -460,6 +464,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		{
 			objectiveBtn.setVisible(checkCB.isSelected());
 			objectiveBtn.setEditState(b);
+			objectiveCBRA.setVisible(checkCB.isSelected());
 		} else 
 			objectiveBtn.setVisible(false);
 		
@@ -653,7 +658,9 @@ System.out.println("kliep getEditState");
 			maxScoreLabel.setVisible(checkCB.isSelected());
 			maxScoreField.setVisible(checkCB.isSelected());
 			maxScoreField.setText("0");
+			checkCBRA.setVisible(checkCB.isSelected());
 			objectiveBtn.setVisible(checkCB.isSelected() && objectiveBtn.hasObjectiveChoices());
+			objectiveCBRA.setVisible(checkCB.isSelected() && objectiveBtn.hasObjectiveChoices());
 		}
 		else if (e.getSource() == logCB)
 		{
