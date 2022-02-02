@@ -19,14 +19,13 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
 
+import fi.beans.numworxlf.JComboBox;
+import fi.beans.numworxlf.JLabel;
 import fi.wiskopdr.WiskOpdr;
 
 

@@ -1,7 +1,6 @@
 package fi.graphtool;
 
 import java.awt.*;
-import java.applet.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -15,7 +14,7 @@ import fi.beans.base64code.*;
 import fi.beans.wiskopdrbeans.*;
 import fi.wiskopdr.WiskOpdr;
 
-public class GraphTool extends Applet implements ScormAppletIF, WiskOpdrApplet { 
+public class GraphTool extends fi.beans.mainframe.JApplet implements ScormAppletIF, WiskOpdrApplet { 
 
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;

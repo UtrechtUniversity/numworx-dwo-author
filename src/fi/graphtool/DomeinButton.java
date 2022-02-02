@@ -16,14 +16,12 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
 import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
+import fi.beans.numworxlf.JButton;
+import fi.beans.numworxlf.JLabel;
+import fi.beans.numworxlf.JScrollPane;
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleParser;

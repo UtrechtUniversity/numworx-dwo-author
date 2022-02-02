@@ -18,14 +18,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 
 
 import javax.swing.JColorChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
+import fi.beans.numworxlf.JCheckBox;
+import fi.beans.numworxlf.JLabel;
 import fi.beans.stringutils.StringUtils;
 //import fi.wiskopdr.GrafiekComponent;
 //import fi.wiskopdr.VergelijkingVak;

@@ -10,14 +10,14 @@ import java.awt.event.WindowEvent;
 import java.util.Hashtable;
 
 import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 
+import fi.beans.numworxlf.JButton;
+import fi.beans.numworxlf.JCheckBox;
+import fi.beans.numworxlf.JTextField;
 import fi.wiskopdr.DialogFacade;
 
 public class FormuleEditorOptiesButton extends JButton implements ActionListener
@@ -190,7 +190,7 @@ public class FormuleEditorOptiesButton extends JButton implements ActionListener
 	{	JCheckBox checkbox = new JCheckBox(GraphTool.rb.getString(s));
 		checkbox.setPreferredSize(new Dimension(250, 20));
 		checkbox.setFont(theFont);
-		checkbox.setBackground(getBackground());
+		//checkbox.setBackground(getBackground());
 		checkbox.setSelected(selected);
 		checkbox.addActionListener(this);
 		parent.add(checkbox);

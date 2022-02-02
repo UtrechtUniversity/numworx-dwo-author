@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -24,17 +23,15 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 
+import fi.beans.numworxlf.JComboBox;
+import fi.beans.numworxlf.JLabel;
+import fi.beans.numworxlf.JTextField;
 import fi.wiskopdr.expressies.Expressie;
-import fi.wiskopdr.formuleobjects.FormuleParser;
 
 
 public class TabelComponent extends JPanel implements ActionListener, MouseListener{
