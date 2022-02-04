@@ -471,7 +471,7 @@ public class KladjeInteractieEditPanel extends JPanel implements InteractieEditP
 		// HIER !!
 		klip.setEditState(b);
 		
-		((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)this)).pack();
+		((JDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
 		
 		
 	}
@@ -666,7 +666,7 @@ System.out.println("kliep getEditState");
 		{
 			logIDField.setVisible(logCB.isSelected());
 		}
-		((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)this)).pack();
+		((JDialog)SwingUtilities.getAncestorOfClass(JDialog.class,(Component)this)).pack();
 		
 	}
 
