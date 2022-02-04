@@ -35,14 +35,21 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		return instance;
 	}
 	
+	public void setSavedLabel(boolean saved) {
+		String t = saved ? "Saved" :"NOT saved";
+		savedLabel.setText(t);
+		savedLabel.setForeground(saved ? new Color(51,74,112) : Color.red);
+	}
+	
 	public void setSizeLabel(int size) {
+		setSavedLabel(true);
 		String t;
 		if(size < 3000)
 			t=MessageFormat.format("{0}B", (size));
 		else 
 			t=MessageFormat.format("{0}kB", (size+512)/1024);
 		sizeLabel.setText(t);
-		sizeLabel.setForeground(size < 3000000 ? Color.black : Color.red);
+		sizeLabel.setForeground(size < 3000000 ? new Color(51,74,112) : Color.red);
 	}
 	
 	public void setSizeLabel(Map o) {
@@ -102,6 +109,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public boolean useLocation;
 	
 	private JLabel sizeLabel;
+	private JLabel savedLabel;
 	private JButton imagesButton;
 	private DialogFacade imageDialog;
 	private Iconan iconman;
@@ -340,11 +348,17 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		imagesButton.setForeground(new Color(255,255,255));
         add(imagesButton,0);
 		
+        savedLabel = new JLabel("Saved");
+        savedLabel.setFont(font);//sizeLabel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
+        savedLabel.setForeground(new Color(51,74,112));
+        savedLabel.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 42, 100, 22);
+ 		add(savedLabel,0);
+     		
 		sizeLabel = new JLabel("123,456Mb");
 // styling
 		sizeLabel.setFont(font);//sizeLabel.setBorder(BorderFactory.createLoweredSoftBevelBorder());
 		sizeLabel.setForeground(new Color(51,74,112));
-		sizeLabel.setBounds(actKeuzePanelX + 125, actKeuzePanelY + aantalActiviteiten * 20 - 42, 100, 22);
+		sizeLabel.setBounds(actKeuzePanelX + 225, actKeuzePanelY + aantalActiviteiten * 20 - 42, 100, 22);
 		add(sizeLabel,0);
 		
 		instellingenKnop = new WiskOpdrButton(WiskOpdr.rb.getString("optiesButtonLabel"));
@@ -676,12 +690,13 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		nieuweOpdrKnop.setBounds(orPosX + 25 * aantalOpdrachten[activiteitNr] + 30, orPosY - 1, 20, 20);
 		nivPositieKnop.setBounds(actKeuzePanelX - 20, actKeuzePanelY + aantalActiviteiten * 20 - 20, 12, 16);
 		opdrPositieKnop.setBounds(orPosX + 25 * opdrachtNr, orPosY + 25, 20, 16);
-		modeChoice.setBounds(190, h-40, 140, 24);
+		modeChoice.setBounds(185, h-40, 140, 24);
 		gekoppeldeOpdrCB.setBounds(10, orPosY + 30, 50, 15);
 		gekoppeldeOpdrCB.addItemListener(this);
 		instellingenKnop.setBounds(10, h - 40, 160, 24);
-		sizeLabel.setBounds(480, h-40, 60, 24);
-		imagesButton.setBounds(350,h-40,120,24);
+		savedLabel.setBounds(517, h-40, 70, 24);
+		sizeLabel.setBounds(470, h-40, 60, 24);
+		imagesButton.setBounds(340,h-40,120,24);
 	}
 	
 	/**
