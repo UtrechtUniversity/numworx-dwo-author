@@ -53,6 +53,7 @@ import fi.wiskopdr.AntwoordKeuzeVak;
 import fi.wiskopdr.AntwoordTekstVak;
 import fi.wiskopdr.AntwoordVergelijkingVak;
 import fi.wiskopdr.AntwoordVergelijkingVakEditPanel;
+import fi.wiskopdr.BerekeningVak;
 import fi.wiskopdr.CheckButtonPanel;
 import fi.wiskopdr.CheckSleepUnitPanel;
 import fi.wiskopdr.CheckUnitPanel;
@@ -879,6 +880,14 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		  hoogteTF.setText("300");
 		  if(interactieEditPanel != null) interactieEditPanel.zetBreedte(400);
 		  if(interactieEditPanel != null) interactieEditPanel.zetHoogte(57);
+		}
+		else if(soortInteractiePanel == 63)
+		{
+		  interactieEditPanel = (new BerekeningVak()).getEditPanel();
+		  breedteTF.setText("100");
+		  hoogteTF.setText("24");
+		  if(interactieEditPanel != null) interactieEditPanel.zetBreedte(100);
+		  if(interactieEditPanel != null) interactieEditPanel.zetHoogte(24);
 		}
 		else if(soortInteractiePanel == 45)//GraphTool
 		{  		//if((""+soortInteractiePanel).equals(TekstInteractiePanelVak.wiskOpdrInteractiePanels[30][1]))
