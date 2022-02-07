@@ -1,50 +1,39 @@
 package fi.wiskopdr;
 
-import java.applet.*;
-//import java.awt.*;
-import java.io.*;
-import java.net.URI;
-import java.text.MessageFormat;
-import java.util.*;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FileDialog;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.print.PageFormat;
-import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+//import java.awt.*;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.text.MessageFormat;
+import java.util.Hashtable;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.dwomaccess.JSONEncoder;
-import fi.beans.mainframe.*;
-import fi.beans.scorm.*;
-import fi.wiskopdr.opdrnav.OpdrNavStruct;
-
-import java.util.zip.*;
-
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.StreamPrintService;
-import javax.print.StreamPrintServiceFactory;
-import javax.print.attribute.AttributeSet;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.Destination;
-import javax.print.attribute.standard.PrinterName;
-import javax.swing.Box;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import org.w3c.dom.DocumentFragment;
+import fi.beans.mainframe.MainFrame;
+import fi.beans.scorm.ScormEditComponentIF;
 
 public class ScormEditMainFrame extends MainFrame implements ActionListener
 {
@@ -62,7 +51,7 @@ public class ScormEditMainFrame extends MainFrame implements ActionListener
 	private int opdr;
 	private int act;
 	
-	public ScormEditMainFrame(Applet applet,int width, int height )
+	public ScormEditMainFrame(WiskOpdr applet,int width, int height )
 	{	super( applet, width, height );
 		this.setBackground(Color.white);
 		

@@ -37,7 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.Box;
-import javax.swing.JApplet;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -56,6 +55,7 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.ideas.IdeasClient;
 import fi.beans.ideas.IdeasIF;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.Parameter;
 import fi.beans.scorm.PartialScoreIF;
 import fi.beans.scorm.SCORM12APIInterface;
@@ -1994,5 +1994,18 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
       studentModelSupplier = () -> studentModel2;
     else
       studentModelSupplier = null;   
+  }
+
+
+
+
+
+  @Override
+  public void firePropertyChange(String propertyName, long oldValue, long newValue) {
+    if ("saved".equals(propertyName))
+    {
+      OpdrNavStructEdit.getInstance().setSavedLabel(newValue > 0L);
+    }
+    super.firePropertyChange(propertyName, oldValue, newValue);
   }
 }

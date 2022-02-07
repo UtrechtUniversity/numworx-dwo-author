@@ -14,7 +14,6 @@ import java.awt.event.*;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicMenuBarUI;
-import javax.swing.plaf.basic.BasicMenuItemUI;
 import javax.swing.plaf.basic.BasicMenuUI;
 
 import fi.beans.base64code.StringCodeObject;
@@ -25,7 +24,6 @@ import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.tekstobjects.ShareAction;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
-import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
 public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, ActionListener, ItemListener, TabletOwner, ClipboardOwner {
 	
@@ -42,7 +40,6 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	}
 	
 	public void setSizeLabel(int size) {
-		setSavedLabel(true);
 		String t;
 		if(size < 3000)
 			t=MessageFormat.format("{0}B", (size));
