@@ -34,6 +34,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	}
 	
 	public void setSavedLabel(boolean saved) {
+	  if (savedLabel == null) return;  // soms too early
 		String t = saved ? "Saved" :"NOT saved";
 		savedLabel.setText(t);
 		savedLabel.setForeground(saved ? new Color(51,74,112) : Color.red);
