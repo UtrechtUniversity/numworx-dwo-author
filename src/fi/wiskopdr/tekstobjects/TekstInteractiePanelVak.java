@@ -119,6 +119,7 @@ import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.samengesteldestappen.SamengesteldeStappenPanel;
 import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
 import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
+import fi.wiskopdr.strategievak.StrategieVakPanel;
 import fi.wiskopdr.symbolen.SymboolPanel;
 import fi.wiskopdr.tekstobjects.TekstEditor.TComponentAction;
 import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
@@ -424,7 +425,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	   
 	public static int[][] interactiePanelSets =
 	    {
-	        {2,0,3,1,53,63,4,13,14,60,12,16,33,49},//,52
+	        {2,0,3,1,53,63,64,4,13,14,60,12,16,33,49},//,52
 	        {35,5,6,24,15,46,11,10,39,20,25,56,59,54,58,42,41,61,27,22,43,50,30,48,40,31,32,26,62,19},
 	        //{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59,25},
 	        //{0,1,2,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,
@@ -520,12 +521,13 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				"Math scratch [test]",
 				"Upload bestanden [test]",
 				"Vak voor berekening [test]",
+				"Strategie-antwoordvak [test]",
 			};
 		return s;
 	}
 	
 	public static void makeJMenu(TekstEditor te, String title, JPopupMenu menu, int setNr) {
-	  boolean[][] separators = {{false,false,false,false,false,true,false,true,true,true,false,false,false,false},{},{},
+	  boolean[][] separators = {{false,false,false,false,false,false,true,false,true,true,true,false,false,false,false},{},{},
 			  					{true,false}};
 			  
 	  String[] itemNames = new String[TekstInteractiePanelVak.interactiePanelSets[setNr].length];
@@ -540,9 +542,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    item.setFont(new Font("SansSerif",Font.PLAIN,13));
 	    item.setBorder(BorderFactory.createEmptyBorder(1, 0, 1, 0));
 	   
-	    if(setNr==0 && i>9) {
+	    if(setNr==0 && i>10) {
 	    	checkButtonsSubMenu.add(item);
-	    	if(i==10)
+	    	if(i==11)
 	    		menu.add(checkButtonsSubMenu);
 	    }
 	    else
@@ -551,7 +553,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	        menu.add(item);
 	    }
 	    if(setNr==0) {
-	      if(i==8) {
+	      if(i==9) {
 	    	  		
 	    	  	JMenu dragDropSubMenu = new JMenu(WiskOpdr.rb.getString("TCOMP_multip"));
 	          dragDropSubMenu.setForeground(new Color(49,71,112));
@@ -644,7 +646,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private static boolean skipItem(int setNr, int i) {
 	  i = interactiePanelSets[setNr][i];
 	  // 62: upload widget is een premium experimental feature
-      return WiskOpdr.isExperimental() && WiskOpdr.isPremium() || (i != 62 && i !=63) ;
+      return WiskOpdr.isExperimental() && WiskOpdr.isPremium() || (i != 62 && i != 63 && i != 64) ;
   }
 
   public static int AntwoordvakkenSetNr = 0;
@@ -1506,6 +1508,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
                 interactiePanel.addActionListener(this);
             }
         }
+		else if(soortInteractiePanel == 64)
+        {
+            if(interactiePanel == null || !(interactiePanel instanceof StrategieVakPanel))
+            {
+                interactiePanel = new StrategieVakPanel();
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+            }
+        }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if((""+soortInteractiePanel).equals(wiskOpdrInteractiePanels[i][1]))
@@ -2332,6 +2343,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             if(interactiePanel == null || !(interactiePanel instanceof BerekeningVak))
             {
                 interactiePanel = new BerekeningVak();
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+            }
+        }
+		else if(soortInteractiePanel == 64)
+        {
+            if(interactiePanel == null || !(interactiePanel instanceof StrategieVakPanel))
+            {
+                interactiePanel = new StrategieVakPanel();
                 ((Component)interactiePanel).setBackground(getBackground());
                 interactiePanel.addActionListener(this);
             }

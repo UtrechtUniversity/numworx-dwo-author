@@ -85,6 +85,7 @@ import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.samengesteldestappen.SamengesteldeStappenPanel;
 import fi.wiskopdr.scheikundeobjects.ReactieVergelijkingVak;
 import fi.wiskopdr.stelselsvergelijkingen.StelselAntwoordVak;
+import fi.wiskopdr.strategievak.StrategieVakPanel;
 import fi.wiskopdr.symbolen.SymboolPanel;
 
 
@@ -888,6 +889,14 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		  hoogteTF.setText("24");
 		  if(interactieEditPanel != null) interactieEditPanel.zetBreedte(100);
 		  if(interactieEditPanel != null) interactieEditPanel.zetHoogte(24);
+		}
+		else if(soortInteractiePanel == 64)
+		{
+		  interactieEditPanel = (new StrategieVakPanel()).getEditPanel();
+		  breedteTF.setText("400");
+		  hoogteTF.setText("57");
+		  if(interactieEditPanel != null) interactieEditPanel.zetBreedte(400);
+		  if(interactieEditPanel != null) interactieEditPanel.zetHoogte(57);
 		}
 		else if(soortInteractiePanel == 45)//GraphTool
 		{  		//if((""+soortInteractiePanel).equals(TekstInteractiePanelVak.wiskOpdrInteractiePanels[30][1]))
