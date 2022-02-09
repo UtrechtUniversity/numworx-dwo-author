@@ -47,7 +47,6 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
     int offset = 10;
     
 	JComboBox symboolKeuzeBox;
-	JCheckBox statistiekCB;
 	private TekstEditor[] keuzeVelden;
 	private JLabel[] nrLabels;
 	private JCheckBox[] vereistCB;
@@ -76,14 +75,7 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 	    
 	    int currentX = stappenBreedte + 2 * offset;
 		int currentY = offset;
-		
-		statistiekCB = new JCheckBox(WiskOpdr.rb.getString("Steps_statistics"));
-        statistiekCB.setBounds(currentX, currentY, cbWidth, cbHeight);
-        statistiekCB.setOpaque(false);
-        statistiekCB.setFont(theFont);
-        add(statistiekCB);
         
-        currentY += cbHeight + offset;
         makeLabel(currentX, currentY, 180, cbHeight, WiskOpdr.rb.getString("Steps_nrOfSteps"), true); 
 		
         currentX += 180;
@@ -194,7 +186,6 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 	{
 		if(symboolKeuzeBox == null)
 			return;
-		statistiekCB.setLocation(2 * offset, statistiekCB.getLocation().y);
 	}
 	
 	public JLabel makeLabel(int x, int y, int b, int h, String text, boolean visible)
@@ -449,15 +440,10 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 	
 	@Override
 	public void setEditState(Hashtable h) {
-		boolean statistiek = false;
 		Hashtable[] steps = null;
 		int scoreMax = 10;
 		boolean[] stepRequired = null;
 		
-		if(h.containsKey("ideasStatistiek"))
-			statistiek = ((Boolean) h.get("ideasStatistiek")).booleanValue();
-		
-		statistiekCB.setSelected(statistiek);
 		if(h.containsKey("scoreMax"))
 		  scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		this.scoreMax = scoreMax;
@@ -521,7 +507,6 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 	public Hashtable getEditState() {
 		
 	    ArrayList<String>[] stepContents = null;
-	    boolean ideasStatistiek = false;
 	    int scoreMax = 10;
         
 	    getStepContent();
@@ -561,7 +546,6 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
           steps[i].put("stepContent", stepContents[i]);
         }
         
-        ideasStatistiek = statistiekCB.isSelected();
         try
         {   scoreMax = Integer.parseInt(scoreTF.getText());
         }   
@@ -569,7 +553,6 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
         
         Hashtable h = new Hashtable();
         h.put("steps", steps);
-        h.put("ideasStatistiek", new Boolean(ideasStatistiek));
         h.put("scoreMax", new Integer(scoreMax));
         h.put("stepRequired", stepRequired);
         

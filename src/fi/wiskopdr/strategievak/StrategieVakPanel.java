@@ -6,6 +6,8 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -33,18 +35,14 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
     boolean[] stepRequired = null;
     TekstVakPanel stappenVak;
     JPanel choiceLine;
-    JButton backButton;
-    JButton hintButton;
     //TODO for later: support random variables
     
     int offset = 5;
-    int labelWidth = 52;
+    int labelWidth = 30;
     int labelHeight = 27;
     int buttonWidth = 20;
     int buttonHeight = 24;
-    
-    boolean ideasStatistiek = true;
-    
+        
     ArrayList<Integer> selectedSteps = new ArrayList<Integer>();
     
     private String[] randomVars;
@@ -60,8 +58,17 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
       for(int i = 0; i < nrOfSteps; i++)
       {
         TekstVak vak = stappenVak.geefTekstVak(i, 0);
-        TekstInteractiePanelVak stapVak = new TekstInteractiePanelVak(vak, makeStepBox("" + (i + 1))); 
+        TekstInteractiePanelVak stapVak = new TekstInteractiePanelVak(vak, makeStepBox("-")); 
         vak.insert(stapVak.toCompleteString());
+        final int index = i;
+        vak.addMouseListener(new MouseAdapter() {
+
+          @Override
+          public void mouseReleased(MouseEvent e) {
+            System.out.println("remove " + index);
+          }
+          
+        });
       }
       this.add(stappenVak);
       stappenVak.setBounds(0, 0, stappenVak.getWidth(), stappenVak.getHeight());
@@ -75,7 +82,7 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
       
       
       int currentX = 0;     
-      JLabel actieLabel = new JLabel(WiskOpdr.rb.getString("Steps_action") + ":");
+      JLabel actieLabel = new JLabel("+");
       actieLabel.setBounds(currentX, 0, labelWidth, labelHeight);
       actieLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
       actieLabel.setOpaque(true);
@@ -88,42 +95,15 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
       keuzeVak.setBounds(currentX, 2, width - currentX - 2 * buttonWidth - 2 * offset, 24); 
       choiceLine.add(keuzeVak);
       
-      URL u = WiskOpdr.class.getResource("resources/StapTerug.png");
-      ImageIcon backIcon = null;
-      if(u != null)
-          backIcon = new ImageIcon(u, "backIcon");
-      backButton = new JButton(backIcon);
-      backButton.setBackground(new Color(220, 220, 220));
-      backButton.setBorder(BorderFactory.createLineBorder(new Color(128, 128, 128)));
-      backButton.setBounds(width - buttonWidth, 2, buttonWidth, buttonHeight);
-      backButton.addActionListener(this);
-      choiceLine.add(backButton);
-      
-      hintButton = new JButton("?");
-      hintButton.setFont(new Font("SansSerif", Font.BOLD, 16));
-      hintButton.setBackground(new Color(220, 220, 220));
-      hintButton.setBorder(BorderFactory.createLineBorder(new Color(128, 128, 128)));
-      hintButton.setBounds(width - 2 * buttonWidth - offset, 2, buttonWidth, buttonHeight);
-      hintButton.addActionListener(this);
-      choiceLine.add(hintButton);
-      
+            
       add(choiceLine);
        
 	}
 	
 	public void refillChoiceLine()
 	{
-	  choiceLine.remove(hintButton);
 	  int width = choiceLine.getWidth();
-	  backButton.setBounds(width - buttonWidth, 2, buttonWidth, buttonHeight);
-	  if(ideasStatistiek)
-	  {
-	    choiceLine.add(hintButton);
-	    hintButton.setBounds(width - 2 * buttonWidth - offset, 2, buttonWidth, buttonHeight);
-        keuzeVak.setSize(width - labelWidth - 2 * buttonWidth - 3 * offset, keuzeVak.getHeight());
-	  }
-	  else
-	      keuzeVak.setSize(width - labelWidth - buttonWidth - 2 * offset, keuzeVak.getHeight());
+	  keuzeVak.setSize(width - labelWidth - 2 * offset, keuzeVak.getHeight());
 	  
 	}
 	
@@ -138,7 +118,7 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
           teksten[i][j] = "";
       }
       double[] breedtes = new double[2];
-      breedtes[0] = 52;
+      breedtes[0] = labelWidth;
       breedtes[1] = 100;
       
       double[] hoogtes = new double[number];
@@ -180,15 +160,7 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
       return launchData;
     }
 	
-	
-	public void zetIdeasStatistiek(boolean b)
-	{
-	  this.ideasStatistiek = b;
-	  stappenVak.setIdeasStatistiek(b);
-	  refillChoiceLine();
-	  
-	}
-		
+			
 	@Override
     public InteractieEditPanel getEditPanel()
     {
@@ -211,13 +183,9 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
 
     this.randomVars = randomVars;
     this.randomValues = randomValues;
-    boolean ideasStatistiek = false;
     int scoreMax = 10;
     boolean[] stepRequired = null;
-    if(h.containsKey("ideasStatistiek"))
-      ideasStatistiek = ((Boolean)h.get("ideasStatistiek")).booleanValue();
     
-    zetIdeasStatistiek(ideasStatistiek);
     if(h.containsKey("maxScore"))
       scoreMax = ((Integer)h.get("scoreMax")).intValue();
     if(h.containsKey("stepRequired"))
@@ -225,8 +193,7 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
     this.scoreMax = scoreMax;
     this.stepRequired = stepRequired;
     keuzeVak.zetOpdracht(h, randomVars, randomValues);
-    stappenVak.
-    zetMaat();
+    stappenVak.zetMaat();
     
   }
 
@@ -240,10 +207,6 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
 
   @Override
   public void setEditState(Hashtable h) {
-    boolean ideasStatistiek = false;
-    if(h.containsKey("ideasStatistiek"))
-      ideasStatistiek = ((Boolean)h.get("ideasStatistiek")).booleanValue();
-    zetIdeasStatistiek(ideasStatistiek);
     zetMaat();
   }
 
@@ -266,14 +229,7 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
     super.setBounds(x, y,  b,  h);
     int width = this.getWidth();
     choiceLine.setBounds(0, stappenVak.getHeight() + offset, width, choiceLine.getHeight());
-    backButton.setBounds(width - buttonWidth, 2, buttonWidth, buttonHeight);
-    if(ideasStatistiek)
-    {
-        hintButton.setBounds(width - 2 * buttonWidth - offset, 2, buttonWidth, buttonHeight);
-        keuzeVak.setSize(width - labelWidth - 2 * buttonWidth - 3 * offset, keuzeVak.getHeight());
-    }
-    else
-      keuzeVak.setSize(width - labelWidth - buttonWidth - 2 * offset, keuzeVak.getHeight());
+    keuzeVak.setSize(width - labelWidth - 2 * offset, keuzeVak.getHeight());
     stappenVak.zetBreedte(width);
   }
 
@@ -426,14 +382,7 @@ public class StrategieVakPanel extends JPanel implements InteractiePanel, Action
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    if(e.getSource() == backButton)
-    {
-      stappenVak.backStep();
-      if(selectedSteps.size() > 0)
-        selectedSteps.remove(selectedSteps.size() - 1);
-      zetMaat();
-      kijkNa();
-    }
+ 
     produceAction(e.getActionCommand());
   }
 	
