@@ -461,7 +461,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 */
 	public static void setLaunchDataChanged() {
 		WiskOpdr.launchDataChanged = true;
-		OpdrNavStructEdit.getInstance().setSavedLabel(false);
+		OpdrNavStructEdit instance = OpdrNavStructEdit.getInstance();
+        if (instance != null) instance.setSavedLabel(false);
 		//System.out.println("launchDataChanged");
 	}
 
