@@ -260,6 +260,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"checkAfzonderlijkLabel" , "Check afzonderlijk"},
 				{"checkOpSamenhangLabel" , "Check op samenhang"},
 				{"boxMetRand" , "Rand zichtbaar"},
+				{"meerregelig" , "Meer regels mogelijk"},
 				{"keuzeVakKiesLabel" , "Kies"},
 				{"verzamelDoelCBLabel" , "Doelobject als verzamelgebied"},
 				{"oplossingenRegelZichtbaar", "Oplossingenregel zichtbaar"},

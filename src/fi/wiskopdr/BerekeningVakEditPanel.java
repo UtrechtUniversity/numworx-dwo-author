@@ -143,6 +143,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
     // Opmaak
  	private JLabel titleOpmaakLabel;
  	private JCheckBox boxMetRandCB;
+ 	private JCheckBox meerregeligCB;
  	private JCheckBox pastHoogteAanCB;
  	
     // contextVars
@@ -419,6 +420,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 	    	titleOpmaakLabel.setFont(font.deriveFont(Font.BOLD, 16));
 	    	
 	    	boxMetRandCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("boxMetRand"),true,true);
+	    	meerregeligCB = makeCheckBox(690,95,80,20,WiskOpdr.rb.getString("meerregelig"),false,true);
 	    	pastHoogteAanCB = makeCheckBox(690,120,80,20,WiskOpdr.rb.getString("TVEP_pasAanH"),false,true);
 	    	
 	    	// HelpKnoppen
@@ -485,8 +487,9 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		Box settingsBox;
 		
 		Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand_2};
+		Component[] r425 = {meerregeligCB, 		ra(5,0),	hgl()};
 		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),vst(3),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),
-				hb(r410),hb(r411),hb(r418), vst(20),hb(r421), hb(r422),vst(5),hb(r424), vgl()};
+				hb(r410),hb(r411),hb(r418), vst(20),hb(r421), hb(r422),vst(5),hb(r424),hb(r425), vgl()};
 		settingsBox = vb(k4);
 				
 		settingsBox.setMaximumSize(new Dimension(500,800));
@@ -885,6 +888,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		double eqTestValueMax = 5;
 		int aantalDecRm = 10;
 		boolean boxMetRand = true;
+		boolean meerregelig = false;
         boolean pastHoogteAan = false;
         String[] antwoordSubStrings = null;
         String[] antwoordFuncStrings = null;
@@ -913,6 +917,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		if(interactiePanelLaunchState.containsKey("eqTestValueMax")) eqTestValueMax = ((Double)interactiePanelLaunchState.get("eqTestValueMax")).doubleValue();
 		if(interactiePanelLaunchState.containsKey("aantalDecRm")) aantalDecRm = ((Integer)interactiePanelLaunchState.get("aantalDecRm")).intValue();
 		if(interactiePanelLaunchState.containsKey("boxMetRand")) boxMetRand = ((Boolean)interactiePanelLaunchState.get("boxMetRand")).booleanValue();
+		if(interactiePanelLaunchState.containsKey("meerregelig")) meerregelig = ((Boolean)interactiePanelLaunchState.get("meerregelig")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("pasAanH")) pastHoogteAan = ((Boolean)interactiePanelLaunchState.get("pasAanH")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
 		
@@ -981,6 +986,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
         logCB.setSelected(logOption);
         
         boxMetRandCB.setSelected(boxMetRand);
+        meerregeligCB.setSelected(meerregelig);
         pastHoogteAanCB.setSelected(pastHoogteAan);
         rmKnopCB.setVisible(true);
         rmKnopCB.setSelected(rmKnop);
@@ -1062,6 +1068,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 			double eqTestValueMax = 5;
 			int aantalDecRm = 10;
 			boolean boxMetRand = true;
+			boolean meerregelig = false;
 			boolean pastHoogteAan = false;
 			String[] antwoordSubStrings = null;
             String[] antwoordFuncStrings = null;
@@ -1159,6 +1166,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 			rmKnop = rmKnopCB.isSelected();
 						
 			boxMetRand = boxMetRandCB.isSelected();
+			meerregelig = meerregeligCB.isSelected();
 			pastHoogteAan = pastHoogteAanCB.isSelected();
 			
 			eqTestValueMin = this.eqTestValueMin;
@@ -1188,6 +1196,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 			interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
 			interactiePanelLaunchState.put("aantalDecRm",new Integer(aantalDecRm));
 			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
+			interactiePanelLaunchState.put("meerregelig",new Boolean(meerregelig));
 			interactiePanelLaunchState.put("pasAanH",new Boolean(pastHoogteAan));
 			interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
 			

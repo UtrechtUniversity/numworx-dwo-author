@@ -241,6 +241,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"checkAfzonderlijkLabel" , "Check separately"},
 				{"checkOpSamenhangLabel" , "Check in coherence"},
 				{"boxMetRand" , "Border"},
+				{"meerregelig" , "More rules possible"},
 				{"keuzeVakKiesLabel" , "Choose"},
 				{"verzamelDoelCBLabel" , "Target object as collection area"},
 				{"oplossingenRegelZichtbaar", "Solution bar visible"},
