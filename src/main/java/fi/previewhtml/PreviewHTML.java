@@ -14,7 +14,6 @@ import java.util.Hashtable;
 import java.util.Locale;
 
 import javax.swing.Box;
-import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
@@ -23,6 +22,7 @@ import fi.beans.browser.PrintStreamConsole;
 import fi.beans.browser.SimpleSwingBrowser;
 import fi.beans.browser.Status;
 import fi.beans.copyright.FIButton;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.DataType;
 import fi.beans.scorm.Parameter;
 import fi.beans.scorm.SCORM12APIInterface;
