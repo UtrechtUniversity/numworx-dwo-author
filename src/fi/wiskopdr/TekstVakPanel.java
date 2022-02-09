@@ -2,16 +2,13 @@ package fi.wiskopdr;
 
 import java.awt.AWTEventMulticaster;
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -34,12 +31,8 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.border.Border;
 
@@ -48,9 +41,7 @@ import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 import org.json.fimple.JSONArray;
 
-import fi.beans.base64code.StringCodeObject;
 import fi.beans.iconan.Iconan;
-import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -4664,13 +4655,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	  
 	  stappen[stapNr] = text;
       stapNr++;
-      
-      /*Vector w = geefInteractiePanels();
-      Hashtable[] interactiePanelStates = new Hashtable[w.size()];
-      for (int i = 0; i < w.size(); i++)
-      {   interactiePanelStates[i] = ((InteractiePanelContainerIF) w.elementAt(i)).getState();
-      }*/
-      
+            
       tekstVakken[stapNr-1][aantalKolommen-1].insert(text);
       
       Vector vStapNr = tekstVakken[stapNr-1][aantalKolommen-1].geefInteractiePanels();
