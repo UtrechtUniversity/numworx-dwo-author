@@ -178,6 +178,13 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		    headerPanel.remove(epsilonKnop);
         }
     }
+
+	protected void withIconan() { // studentmode MET plaatje
+	        headerPanel.add(plaatjeKnop);
+	        //plaatjeKnop.setBounds(...)
+	        plaatjeKnop.setBounds(grafiekKnop.getBounds());
+	}
+	
 	public TekstEditor(boolean scrollbar, boolean form, boolean beperkt)
 	{
 		this(scrollbar,form, beperkt,new LoggingTekstVak());

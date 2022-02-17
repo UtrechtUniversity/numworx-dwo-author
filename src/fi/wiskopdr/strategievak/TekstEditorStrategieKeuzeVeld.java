@@ -1,10 +1,7 @@
 package fi.wiskopdr.strategievak;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-
 import fi.wiskopdr.tekstobjects.TekstEditor;
-import fi.wiskopdr.tekstobjects.TekstVak;
 
 public class TekstEditorStrategieKeuzeVeld extends TekstEditor {
 
@@ -14,6 +11,7 @@ public class TekstEditorStrategieKeuzeVeld extends TekstEditor {
   public TekstEditorStrategieKeuzeVeld(StrategieVakEditPanel parent, int rangNr)
   {
     super();
+    withIconan();
     this.parent = parent;
     this.rangNr = rangNr;
   }
