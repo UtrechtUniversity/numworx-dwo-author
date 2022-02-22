@@ -487,7 +487,7 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
         {
           ArrayList<String> content = new ArrayList<String>();
           try{
-           content = (ArrayList<String>) steps[i].get("stepContent");
+           content.addAll( (ArrayList<String>) steps[i].get("stepContent"));
           }
           catch(Exception e)
           {

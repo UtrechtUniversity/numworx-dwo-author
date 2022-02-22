@@ -450,9 +450,8 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		if(h.containsKey("stepRequired"))
 		  stepRequired = (boolean[]) h.get("stepRequired");
 		if(stepRequired != null && stepRequired.length > 0)
-		{   for(int i = 0; i < stepRequired.length; i++)
-		    {   this.stepRequired[i] = stepRequired[i];
-		    }
+		{   
+		  System.arraycopy(stepRequired, 0, this.stepRequired, 0, stepRequired.length);
 		}
 		
 		scoreTF.setText("" + scoreMax);
@@ -473,7 +472,7 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
         {
           ArrayList<String> content = new ArrayList<String>();
           try{
-           content = (ArrayList<String>) steps[i].get("stepContent");
+           content.addAll ( (ArrayList<String>) steps[i].get("stepContent"));
           }
           catch(Exception e)
           {
