@@ -5,11 +5,19 @@ import java.util.Hashtable;
 
 import javax.swing.JLayeredPane;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class BerekeningVak extends JLayeredPane implements InteractiePanel{
+public class BerekeningVak extends JLayeredPane implements InteractiePanel, CBookAware{
 
+    private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);
+  
+  
 	@Override
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues) {
 		// TODO Auto-generated method stub
@@ -152,5 +160,57 @@ public class BerekeningVak extends JLayeredPane implements InteractiePanel{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+    public void acceptCBookEvent(CBookEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void addCBookEventListener(CBookEventListener listener,
+            String command) {
+        cbookEventHandler.addCBookEventListener(listener, command);
+        
+    }
+
+    @Override
+    public void removeCBookEventListener(CBookEventListener listener,
+            String command) {
+        cbookEventHandler.removeCBookEventListener(listener, command);
+        
+    }
+
+    @Override
+    public String[] getAcceptedCmds() {
+        String[] s = {//org.cbook.cbookif.Constants.USER_INPUT,
+                "action.setNotEditable",
+                "double", 
+                "expression",
+                "equation", //is equation/expression from Kladje
+                "action.check"};
+        return s;
+    }
+
+    @Override
+    public String[] getSendCmds() {
+        String[] s = {//org.cbook.cbookif.Constants.USER_INPUT ,
+                "integer", 
+                "double", 
+                "expression", 
+                "action.correct",
+                "action.half",
+                "action.false",
+                "action.false_2"};
+        return s;
+    }
+
+    @Override
+    public String getLocalizedCmd(String cmd) {
+        String localizedCmd = WiskOpdr.rb.getString(CBA_PREFIX + cmd);
+        if(localizedCmd==null)
+            return cmd;
+        return localizedCmd;
+    }
 
 }
