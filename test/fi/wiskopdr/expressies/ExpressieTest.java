@@ -44,18 +44,31 @@ public class ExpressieTest {
   @Test
   public void ongelijkTest() {
     
-    assertTrue (decide( "1>0"));
-    assertFalse(decide(" 2x>2x"));
+    assertFalse (decide( "1>0"));
+    assertFalse(decide("2x>2x"));
+    assertFalse (decide( "0<1<2"));
+    assertFalse(decide("0<x<2"));
   }
+  
+  @Test
+  public void multipleTest() {
+    assertTrue ( decide("x=2x or 2=2"));
+    assertTrue ( decide("x=x or 2=3 "));
+ }
+  
 
   private boolean decide(String s) {
 
       boolean casNodig = s.contains("$i") || s.contains("$T") || s.contains("$P");
 
       if (casNodig) return false;
-    
       VergelijkingMeerv vgl = FormuleParser.parseVergelijking("$f" + s + "@");
-	  Vector namen = vgl.geefVarN();
+// Alleen = 
+      if (vgl == null || vgl.isOngelijkheid()) {
+         return false;
+       }
+      
+      Vector namen = vgl.geefVarN();
 	  if (namen.contains("i")) {
 	    // complex? 
 	    return vgl.isOplossing(new BasisExpressie("i"), "i");
@@ -67,9 +80,6 @@ public class ExpressieTest {
 	  if (namen.size()==1) {
 	       String var = namen.get(0).toString();
 	       boolean result =  vgl.isOplossing(new BasisExpressie(var), var);
-//	       if (result) return true;
-//	       double[] subst = { Math.PI, Math.E, 12.34, 5431.2356, -432.4521 };
-//	       result = vgl.isOplossing(subst);
 	       return result;
 	  }
 	  
