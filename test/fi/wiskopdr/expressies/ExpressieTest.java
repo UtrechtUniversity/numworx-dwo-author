@@ -59,7 +59,7 @@ public class ExpressieTest {
 
   private boolean decide(String s) {
 
-      boolean casNodig = s.contains("$i") || s.contains("$T") || s.contains("$P");
+      boolean casNodig = s.contains("$i") || s.contains("$T") || s.contains("$P") || s.contains("$S");
 
       if (casNodig) return false;
       VergelijkingMeerv vgl = FormuleParser.parseVergelijking("$f" + s + "@");
