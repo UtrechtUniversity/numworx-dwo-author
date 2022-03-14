@@ -89,7 +89,7 @@ public class GraphEdge {
 
 		for (String scode: source.getVisibleSet()) {
 			for (String tcode: target.getVisibleSet()) {
-				if(scode.equals(tcode) || source.getVisibleSet().size()==1 && target.getVisibleSet().size()==1 || source.getTempLocation()!=null) { //&& scode.equals(tcode)
+				if(Objects.equals(scode, tcode) || source.getVisibleSet().size()==1 && target.getVisibleSet().size()==1 || source.getTempLocation()!=null) { //&& scode.equals(tcode)
 					boolean sameChapters = Objects.equals(scode, tcode);
 					
 					Point sourceLocation = source.getLocation(scode);
