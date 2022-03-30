@@ -968,6 +968,10 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"Steps_content", "Stapinhoud"},
 				{"Steps_required", "Vereist"},
 				
+				{"Strategy_nrOfSteps", "Aantal knoppen"},
+				{"Strategy_name", "Toolbar knoppen"},
+				{"Strategy_content", "Component bij knop"},
+				
 				// opdr nav struct
 				{"ONS_timeisup", "De tijd is om"},
 				{"ONS_timeready", "Op tijd klaar"},
