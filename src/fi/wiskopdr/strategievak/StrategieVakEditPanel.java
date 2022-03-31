@@ -6,7 +6,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -22,10 +25,12 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 //import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import fi.beans.numworxlf.JScrollPane;
 import fi.beans.numworxlf.JTextField;
@@ -97,20 +102,15 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
   	private JLabel logIDLabelLabel;
   	private ObjectiveChoiceButton logObjectivesButton;
   	
- // Antwoord editor
-  	private FormuleEditor antwoordvak;
-  	private JPanel antwoordEditorPanel;
   	private JLabel titleAntwoordLabel;
   	private Box antwoordBox;
+  	private JTabbedPane tabbedPane;
+  	private JCheckBox formuleAntwoordModelCB;
+  	private JCheckBox vergelijkingAntwoordModelCB;
+  	private JPanel formuleAntwoordTabblad;
+  	private JPanel vergelijkingAntwoordTabblad;
+    
   	
-  	private OpdrachtNrRij tabbladTab;
-  	private PlusMinKnop aantalTabsKnop;
-    private PlusMinKnop tabPositieKnop;
-      
-    private int aantalAnswerModels = 1;
-    private Hashtable[] answerModels;
-    private Hashtable resAnswerModel = new Hashtable();
-    private int answerModelNr = 0;
      
  // Helpbuttons
     private static String HELP_14_URL_CHECK = WiskOpdr.rb.getString("HELP_14_URL_CHECK");
@@ -121,6 +121,10 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 	private HelpButton hbTeltMee = makeHelpButton(HELP_14_URL_TELTMEE);
 	private HelpButton hbLogID = makeHelpButton(HELP_14_URL_LOGID);
     
+	// AntwoordManagers
+	private FormuleAntwoordManager formuleAntwoordManager;
+	private VergelijkingAntwoordManager vergelijkingAntwoordManager;
+	
     // Overige attributen (wellicht overbodig geworden
 	int stappenBreedte = 0;
     int stappenHoogte = 400;
@@ -154,7 +158,12 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 	public StrategieVakEditPanel()
 	{
 		setLayout(new BorderLayout());
+		formuleAntwoordManager = new FormuleAntwoordManager(this);
+		vergelijkingAntwoordManager = new VergelijkingAntwoordManager(this);
+        
 		makeGUI();
+		
+		
 		
         stepContents = new ArrayList[aantalKeuzes];
         for(int i = 0; i < aantalKeuzes; i++)
@@ -236,9 +245,9 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
         componentEditorPanel.setLayout(null);
         componentEditorPanel.add(componentEditor);
         componentEditorPanel.addComponentListener(new EditorComponentListener());
-        componentEditorPanel.setPreferredSize(new Dimension(450,173));
+        componentEditorPanel.setPreferredSize(new Dimension(450,140));
         componentEditorPanel.setMaximumSize(new Dimension(2835,173));
-        componentEditorPanel.setMinimumSize(new Dimension(450,173));
+        componentEditorPanel.setMinimumSize(new Dimension(450,140));
         
       	knopTab = new OpdrachtNrRij(aantalKeuzes, 0, 0);
         knopTab.setSize(knopTab.getSize().width, 23);
@@ -254,9 +263,9 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
      	titleLoggingLabel.setForeground(WiskOpdr.colorBlue1);
      	titleLoggingLabel.setFont(font.deriveFont(Font.BOLD, 16));
      	
-     	checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
-         teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
-         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
+     	checkCB = makeCheckBox(WiskOpdr.rb.getString("checkCBLabel"),true,true);
+         teltMeeCB = makeCheckBox(WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
+         logCB = makeCheckBox(WiskOpdr.rb.getString("logCBLabel"),false,true);
          logIDField = makeTextField(520,5,60,20,"0",false);
          logIDLabelField = makeTextField(520,25,60,20,"",false);
          //ScoringLabel = makeLabel(320,385,160,20,WiskOpdr.rb.getString("score"),true);
@@ -288,44 +297,52 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
          logObjectivesButton.setPreferredSize(new Dimension(120,22));
          logObjectivesButton.setMaximumSize(new Dimension(120,22));
      	
-         // GUI antwoordBox
-         titleAntwoordLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
+         formuleAntwoordModelCB = makeCheckBox("Formule-antwoordmodel",false, false);
+         vergelijkingAntwoordModelCB = makeCheckBox("Vergelijking-antwoordmodel",false, false);
+         
+         titleAntwoordLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleAntwoordenLabel"));
          titleAntwoordLabel.setForeground(WiskOpdr.colorBlue1);
          titleAntwoordLabel.setFont(font.deriveFont(Font.BOLD, 16));
-         titleAntwoordLabel.setBounds(0,-3,140,20);
-     	
-         antwoordvak = new FormuleEditor(true);
-         antwoordvak.setBounds(0,20,435,150);
-         antwoordvak.setFont(font);
-         antwoordvak.addActionListener(this);
          
-         antwoordEditorPanel = new JPanel();
-         antwoordEditorPanel.setLayout(null);
-         antwoordEditorPanel.add(titleAntwoordLabel);
-         antwoordEditorPanel.add(antwoordvak);
-         antwoordEditorPanel.addComponentListener(new EditorComponentListener());
-         antwoordEditorPanel.setPreferredSize(new Dimension(450,140));
-         antwoordEditorPanel.setMaximumSize(new Dimension(2835,170));
-         antwoordEditorPanel.setMinimumSize(new Dimension(450,170));
+         tabbedPane = new JTabbedPane();
+         tabbedPane.setUI(new BasicTabbedPaneUI() {
+             @Override
+             protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected)  {
+                 if(isSelected)g.setColor(WiskOpdr.colorBlue1);
+                 else g.setColor(Color.white);
+                 g.fillRect(x, y, w,h);
+             }
+             @Override
+             protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
+             }
+             @Override
+             protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
+                 g.setColor(WiskOpdr.colorBlue4);
+                 g.drawRect(x, y, w, h);
+             }
+             @Override
+             protected void paintText(Graphics gr, int tabPlacement, Font font, FontMetrics metrics, int tabIndex, String title, Rectangle textRect, boolean isSelected) {
+               Graphics2D g = (Graphics2D)gr;
+               ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+               ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+             
+               if(isSelected)g.setColor(Color.white);
+                 else g.setColor(WiskOpdr.colorBlue1);
+                 g.setFont(font);
+                 g.drawString(title, textRect.x, textRect.y+textRect.height-2);
+             }
+         });
+         tabbedPane.setForeground(WiskOpdr.colorBlue1);
+         tabbedPane.setBorder(BorderFactory.createEmptyBorder(0, -10, 0, 0));
+         //tabbedPane.setBounds(0, 0, 1, 1);
+         tabbedPane.setMaximumSize(new Dimension(400,1200));
+         tabbedPane.setOpaque(false);
          
-         tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
-         tabbladTab.setSize(tabbladTab.getSize().width, 23);
-         tabbladTab.setTab(true);
-         tabbladTab.setScoresVisible(false);
-         tabbladTab.addActionListener(this);
-         tabbladTab.setBackground(new Color(210,210,210));
-         tabbladTab.setSelected(1);
-         antwoordEditorPanel.add(tabbladTab,0);
-         
-         aantalTabsKnop = new PlusMinKnop(250+25*aantalAnswerModels+5 ,24,20,16,PlusMinKnop.HORIZONTAAL);
-         aantalTabsKnop.setBackground(new Color(210,210,210));
-         aantalTabsKnop.addActionListener(this);
-         antwoordEditorPanel.add(aantalTabsKnop,0);
-         
-         tabPositieKnop = new PlusMinKnop(246+25*answerModelNr+5 ,0,20,16,PlusMinKnop.HORIZONTAAL);
-         tabPositieKnop.addActionListener(this);
-         antwoordEditorPanel.add(tabPositieKnop,0);
-         
+         formuleAntwoordTabblad = formuleAntwoordManager.getPanel();
+         formuleAntwoordTabblad.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+         vergelijkingAntwoordTabblad = vergelijkingAntwoordManager.getPanel();
+         vergelijkingAntwoordTabblad.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        
          
        	removeAll();
  	    plaatsGUI();
@@ -337,17 +354,19 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		Component[] r11 = {titleKeuzeTekstenLabel, 	hgl()};
 		Component[] r12 = {aantalKeuzesLabel, ra(10,0), aantalKeuzesTF, 	hgl()};
 		Component[] r13 = {basisKeuzeVeldenPanel, 	hgl()};
-		Component[] k1 = {hb(r11), vst(20),hb(r12), vst(10),hb(r13), vgl()};
+		Component[] k1 = {hb(r11), vst(20),hb(r12), vst(10),hb(r13)};
 		keuzeTekstenBox = vb(k1);
 		
 		// plaats compoenenten antwoordbox
-		Component[] r31 = {antwoordEditorPanel, hgl()};
-		Component[] k3 = {hb(r31)};
+		Component[] r30 = {titleAntwoordLabel, hgl() };
+		Component[] r31 = {tabbedPane, hgl()};
+		Component[] k3 = {hb(r30), vst(5),hb(r31)};
 		antwoordBox = vb(k3);
+		antwoordBox.setVisible(false);
 		
 		Component[] r21 = {titleComponentLabel, 	hgl()};
-		Component[] r22 = {componentEditorPanel, 	hgl()};
-		Component[] k2 = {hb(r21), vst(20),hb(r22), vst(20), antwoordBox, vgl()};
+		Component[] r22 = {componentEditorPanel};
+		Component[] k2 = {hb(r21), vst(20),hb(r22), vst(20),antwoordBox, vgl()};
 		componentBox = vb(k2);
 		
 		// plaatsComponenten loggingBox
@@ -359,7 +378,10 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		Component[] r43 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
 		Component[] r44 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField,  ra(5,0),	hgl(),	hbLogID};
 		Component[] r45 = {ra(6,0),			logObjectivesButton, hgl()};
-		Component[] k4 = {hb(r41),vst(20),hb(r42),vst(3),hb(r42a),vst(3),hb(r42b),vst(3),hb(r42c),vst(3),hb(r43),vst(3),hb(r44),vst(3),hb(r45), vgl()};
+		Component[] r46 = {formuleAntwoordModelCB, hgl()};
+		Component[] r47 = {vergelijkingAntwoordModelCB, hgl()};
+		
+		Component[] k4 = {hb(r41),vst(20),hb(r42),vst(3),hb(r42a),vst(3),hb(r42b),vst(3),hb(r42c),vst(3),hb(r43),vst(3),hb(r44),vst(3),hb(r45),vst(65),hb(r46),vst(3),hb(r47), vgl()};
 		Box loggingBox = vb(k4);	
 		
 		// boxes plaatsen
@@ -433,15 +455,13 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		return textField;
 	}
 	
-	public JCheckBox makeCheckBox(int x, int y, int b, int h, String text, boolean selected, boolean visible)
+	public JCheckBox makeCheckBox(String text, boolean selected, boolean visible)
 	{	JCheckBox checkbox = new JCheckBox(text);
-		checkbox.setBounds(x,y,b,h);
 		checkbox.setFont(font);
 		checkbox.setOpaque(false);
 		checkbox.addActionListener(this);
 		checkbox.setSelected(selected);
 		checkbox.setVisible(visible);
-		add(checkbox,0);
 		return checkbox;
 	}
 	
@@ -582,7 +602,7 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 			logIDLabelField.setVisible(logCB.isSelected());	
 	    		logIDLabelLabel.setVisible(logCB.isSelected());
 	    		repaint();
-	    		((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+	    		pack();
 	    }
 		else if(e.getSource()==checkCB) {   
 			scoreLabel.setVisible(checkCB.isSelected() && checkDocentRB.isSelected());
@@ -592,99 +612,47 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		    	logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices() && checkCB.isSelected());
 		    	if(!checkCB.isSelected())
 		    		scoreTF.setText("0");
-		    	
-		    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
-			    
+		    	antwoordBox.setVisible(checkCB.isSelected() && checkAutomatischRB.isSelected());
+		    	pack(); 
 	    }
 		else if(e.getSource()==checkAutomatischRB) { 
 			scoreLabel.setVisible(!checkAutomatischRB.isSelected());
 			scoreTF.setVisible(!checkAutomatischRB.isSelected());
+			antwoordBox.setVisible(checkAutomatischRB.isSelected());
+			formuleAntwoordModelCB.setVisible(checkAutomatischRB.isSelected());
+			vergelijkingAntwoordModelCB.setVisible(checkAutomatischRB.isSelected());
+			pack();
 		}
 		else if(e.getSource()==checkDocentRB) { 
 			scoreLabel.setVisible(checkDocentRB.isSelected());
 			scoreTF.setVisible(checkDocentRB.isSelected());
+			antwoordBox.setVisible(checkAutomatischRB.isSelected());
+			formuleAntwoordModelCB.setVisible(checkAutomatischRB.isSelected());
+            vergelijkingAntwoordModelCB.setVisible(checkAutomatischRB.isSelected());
+            pack();
 		}
-//		else if(e.getSource() == tabbladTab)
-//		{	int nr = Integer.parseInt(e.getActionCommand())-1;
-//			if(answerModelNr != nr) 
-//			{
-//				getAnswerModel();
-//				answerModelNr = nr;
-//				setAnswerModel();
-//				tabPositieKnop.setLocation(246+25*answerModelNr+5 ,0);
-//			}
-//			
-//		}
-//		else if(e.getSource() == tabPositieKnop)
-//		{	if(e.getActionCommand().equals("plus") && answerModelNr<aantalAnswerModels-1) 
-//			{	resAnswerModel = new Hashtable();
-//				fillAnswerModel(resAnswerModel);
-//				answerModels[answerModelNr] = answerModels[answerModelNr+1];
-//				answerModels[answerModelNr+1] = resAnswerModel;
-//				answerModelNr++;
-//				tabbladTab.setSelected(answerModelNr+1);
-//				tabPositieKnop.setLocation(246+25*answerModelNr+5 ,0);
-//			}
-//			if(e.getActionCommand().equals("min") && answerModelNr>0) 
-//			{	resAnswerModel = new Hashtable();
-//				fillAnswerModel(resAnswerModel);
-//				answerModels[answerModelNr] = answerModels[answerModelNr-1];
-//				answerModels[answerModelNr-1] = resAnswerModel;
-//				answerModelNr--;
-//				tabbladTab.setSelected(answerModelNr+1);
-//				tabPositieKnop.setLocation(246+25*answerModelNr+5 ,0);
-//			}
-//			
-//		}
-//		else if(e.getSource() == aantalTabsKnop)
-//		{	if(e.getActionCommand().equals("min") && aantalAnswerModels>1)
-//			{	//remove(opdrContainers[activiteitNr][aantalOpdrachten[activiteitNr]-1]);
-//				//opdrContainers[activiteitNr][aantalOpdrachten[activiteitNr]-1] = null;
-//				aantalAnswerModels--;
-//				if(answerModelNr>aantalAnswerModels-1) answerModelNr--;
-//				setAnswerModel();
-//				aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,24);
-//				antwoordEditorPanel.remove(tabbladTab);
-//				tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
-//				tabbladTab.setTab(true);
-//				tabbladTab.setScoresVisible(false);
-//				tabbladTab.setSize(tabbladTab.getSize().width, 23);
-//				tabbladTab.addActionListener(this);
-//				tabbladTab.setBackground(new Color(210,210,210));
-//				tabbladTab.setSelected(answerModelNr+1);
-//				antwoordEditorPanel.add(tabbladTab,0);
-//				Hashtable[] answerModelsNew = new Hashtable[aantalAnswerModels];
-//				for(int i=0 ; i<aantalAnswerModels ; i++)
-//				{	answerModelsNew[i] = answerModels[i];
-//				}
-//				answerModels = answerModelsNew;
-//				repaint();
-//				
-//			}
-//			if(e.getActionCommand().equals("plus") && aantalAnswerModels<20)
-//			{	aantalAnswerModels++;
-//				aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,24);
-//				antwoordEditorPanel.remove(tabbladTab);
-//				tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
-//				tabbladTab.setTab(true);
-//				tabbladTab.setScoresVisible(false);
-//				tabbladTab.setSize(tabbladTab.getSize().width, 23);
-//				tabbladTab.addActionListener(this);
-//				tabbladTab.setBackground(new Color(210,210,210));
-//				tabbladTab.setSelected(answerModelNr+1);
-//				antwoordEditorPanel.add(tabbladTab,0);
-//				Hashtable[] answerModelsNew = new Hashtable[aantalAnswerModels];
-//				for(int i=0 ; i<aantalAnswerModels-1 ; i++)
-//				{	answerModelsNew[i] = answerModels[i];
-//				}
-//				answerModels = answerModelsNew;
-//				repaint();
-//			}
-//			antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,450),140));
-//			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
-//		}
-		
+		else if(e.getSource()==formuleAntwoordModelCB) { 
+		  if(formuleAntwoordModelCB.isSelected()) {
+		     tabbedPane.add("Formule-antwoordmodel", formuleAntwoordTabblad);
+	      }
+		  else
+		    tabbedPane.remove(formuleAntwoordTabblad);
+		  pack();
+		}
+		else if(e.getSource()==vergelijkingAntwoordModelCB) { 
+		  if(vergelijkingAntwoordModelCB.isSelected()) {
+		    tabbedPane.add("Vergelijking-antwoordmodel", vergelijkingAntwoordTabblad);
+		  }
+		  else 
+		    tabbedPane.remove(vergelijkingAntwoordTabblad);
+		  pack();
+		}
 	}
+	
+	public void pack() {
+	  ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+    }
+	
 	
 	public void aantalKeuzeVeldenAction()
 	{
@@ -811,15 +779,29 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		String logID = "";
 		String logIDLabel = "";
 		boolean checkExternal = false;
+		boolean hasFormuleAnswerModel = false;
+        boolean hasVergelijkingAnswerModel = false;
+		Hashtable formuleAntwoordModel = null;
+		Hashtable vergelijkingAntwoordModel = null;
 		
 		if(h.containsKey("scoreMax")) scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		if(h.containsKey("stepRequired")) stepRequired = (boolean[]) h.get("stepRequired");
 		if(h.containsKey("check")) check = ((Boolean)h.get("check")).booleanValue();
-		if(h.containsKey("checkDocent")) checkDocent = ((Boolean)h.get("checkDocent")).booleanValue();
 		if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
+		if(h.containsKey("checkDocent")) checkDocent = ((Boolean)h.get("checkDocent")).booleanValue();
+		if(h.containsKey("hasFormuleAnswerModel")) hasFormuleAnswerModel = ((Boolean)h.get("hasFormuleAnswerModel")).booleanValue();
+		if(h.containsKey("hasVergelijkingAnswerModel")) hasVergelijkingAnswerModel = ((Boolean)h.get("hasVergelijkingAnswerModel")).booleanValue();
+        if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
 		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
 		if(h.containsKey("logID")) logID = (String)h.get("logID");
 		if(h.containsKey("logIDLabel")) logIDLabel = (String)h.get("logIDLabel");
+		if(check && !checkDocent) {
+		  if(h.containsKey("formuleAntwoordModel")) formuleAntwoordModel = (Hashtable)h.get("formuleAntwoordModel");
+		  formuleAntwoordManager.setEditState(formuleAntwoordModel);
+		  if(h.containsKey("vergelijkingAntwoordModel")) vergelijkingAntwoordModel = (Hashtable)h.get("vergelijkingAntwoordModel");
+          vergelijkingAntwoordManager.setEditState(vergelijkingAntwoordModel);
+	        
+		}
 		
 		if(stepRequired != null && stepRequired.length > 0) {   
 		  System.arraycopy(stepRequired, 0, this.stepRequired, 0, stepRequired.length);
@@ -880,9 +862,14 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
         logIDLabelField.setText(logIDLabel);
         logObjectivesButton.setEditState(h);
         
+        teltMeeCB.setSelected(teltMee);
         checkCB.setSelected(check);
         checkDocentRB.setSelected(checkDocent);
-        checkAutomatischRB.setSelected(!checkDocent);
+        checkAutomatischRB.setSelected(check && !checkDocent);
+        formuleAntwoordModelCB.setVisible(check && !checkDocent);
+        vergelijkingAntwoordModelCB.setVisible(check && !checkDocent);
+        formuleAntwoordModelCB.setSelected(hasFormuleAnswerModel);
+        vergelijkingAntwoordModelCB.setSelected(hasVergelijkingAnswerModel);
         scoreLabel.setVisible(checkCB.isSelected() && checkDocentRB.isSelected());
         scoreTF.setVisible(checkCB.isSelected() && checkDocentRB.isSelected());
         checkAutomatischRB.setVisible(checkCB.isSelected());
@@ -890,9 +877,15 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 	    	logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices() && checkCB.isSelected());
 	    	if(!checkCB.isSelected())
 	    		scoreTF.setText("0");
+    	antwoordBox.setVisible(check && !checkDocent);
     	
-    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
-	    
+    	if(formuleAntwoordModelCB.isSelected()) 
+             tabbedPane.add("Formule-antwoordmodel", formuleAntwoordTabblad);
+          
+        if(vergelijkingAntwoordModelCB.isSelected()) 
+            tabbedPane.add("Vergelijking-antwoordmodel", vergelijkingAntwoordTabblad);
+          
+    	pack();
 	}
 
 	@Override
@@ -906,6 +899,10 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		String logID = "";
 		String logIDLabel = "";
 		boolean checkDocent = true;
+		boolean hasFormuleAnswerModel = false;
+		boolean hasVergelijkingAnswerModel = false;
+		Hashtable formuleAntwoordModel = null;
+		Hashtable vergelijkingAntwoordModel = null;
         
 	    getStepContent();
         stepContents = this.stepContents;
@@ -955,18 +952,32 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		logID = logIDField.getText();	
 		logIDLabel = logIDLabelField.getText();
 		checkDocent = checkDocentRB.isSelected();
+		hasFormuleAnswerModel = formuleAntwoordModelCB.isSelected();
+		hasVergelijkingAnswerModel = vergelijkingAntwoordModelCB.isSelected();
+		
         
         Hashtable h = new Hashtable();
         h.put("steps", steps);
-        h.put("scoreMax", new Integer(scoreMax));
         h.put("stepRequired", stepRequired);
         h.put("check",new Boolean(check));
         h.put("checkDocent",new Boolean(checkDocent));
+        h.put("hasFormuleAnswerModel",new Boolean(hasFormuleAnswerModel));
+        h.put("hasVergelijkingAnswerModel",new Boolean(hasVergelijkingAnswerModel));
 		h.put("teltMee",new Boolean(teltMee));
 		h.put("logOption",new Boolean(logOption));
 		h.put("logID",logID);
 		h.put("logIDLabel",logIDLabel);
 		h.putAll(logObjectivesButton.getEditState(scoreMax));
+		if(check && !checkDocent) {
+		  formuleAntwoordModel = formuleAntwoordManager.getEditState();
+		  scoreMax = formuleAntwoordManager.getScoreMax();
+	      h.put("formuleAntwoordModel",formuleAntwoordModel);
+	      vergelijkingAntwoordModel = vergelijkingAntwoordManager.getEditState();
+          scoreMax += vergelijkingAntwoordManager.getScoreMax();
+          h.put("vergelijkingAntwoordModel",vergelijkingAntwoordModel);
+		}
+		h.put("scoreMax", new Integer(scoreMax));
+        
         
         return h;
 	}
@@ -1057,11 +1068,7 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		    		  int h = componentEditorPanel.getHeight();
 		    		  componentEditor.setBounds(0,20,w,h-20);
 		    	  }
-		    	  if(e.getSource()==antwoordEditorPanel) {
-	 	    		  int w = antwoordEditorPanel.getWidth();
-	 	    		  int h = antwoordEditorPanel.getHeight();
-	 	    		  antwoordvak.setBounds(0,20,w,h-20);
-	 	    	  }
+		    	  
 	    	  }
 	      @Override
 	      public void componentMoved(ComponentEvent e) {
