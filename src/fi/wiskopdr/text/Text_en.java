@@ -267,6 +267,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"FEV_titleStartLabel", "Start equation"},
 				{"FEF_titleStartLabel", "Start expression"},
 				{"FEV_titleAntwoordLabel", "Correct answer"},
+				{"FEV_titleAntwoordenLabel", "Correct answers"},
 				{"FEV_titleAntwoordNrLabel", "Answer"},
 				{"FEV_titleContextLabel", "Context variables"},
 				{"FEV_titleFeedbackLabel", "Feedback text"},

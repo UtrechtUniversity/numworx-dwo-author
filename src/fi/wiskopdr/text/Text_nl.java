@@ -286,6 +286,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"FEV_titleStartLabel", "Startvergelijking"},
 				{"FEF_titleStartLabel", "Startexpressie"},
 				{"FEV_titleAntwoordLabel", "Juiste antwoord"},
+				{"FEV_titleAntwoordenLabel", "Juiste antwoorden"},
 				{"FEV_titleAntwoordNrLabel", "Antwoord"},
 				{"FEV_titleContextLabel", "Contextvariabelen"},
 				{"FEV_titleFeedbackLabel", "Feedbacktekst"},
