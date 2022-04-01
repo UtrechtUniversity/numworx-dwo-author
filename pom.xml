@@ -467,6 +467,12 @@
 			<artifactId>mathscratch</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+    		<groupId>javax.activation</groupId>
+    		<artifactId>activation</artifactId>
+    		<version>1.1.1</version>
+    		<optional>true</optional>
+		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
 	<profiles>
@@ -498,11 +504,6 @@
 	    		<version>2.2.7</version>
 	    		<scope>runtime</scope>
 			</dependency>
-		<dependency>
-    		<groupId>javax.activation</groupId>
-    		<artifactId>activation</artifactId>
-    		<version>1.1.1</version>
-		</dependency>
 		</dependencies>
 	</profile>
 	<profile>
