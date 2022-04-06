@@ -22,6 +22,7 @@ import java.awt.event.WindowEvent;
 import java.util.Hashtable;
 
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -29,10 +30,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import fi.beans.numworxlf.JOptionPane;
+import fi.beans.numworxlf.JRadioButton;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.wiskopdr.AntwoordFormuleVakEditPanel.EditorComponentListener;
@@ -44,6 +47,8 @@ import fi.wiskopdr.opdrnav.ActKeuzePanel;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.wiskopdr.opdrnav.OpdrachtNrRij;
 import fi.wiskopdr.opdrnav.PlusMinKnop;
+import fi.wiskopdr.strategievak.FormuleAntwoordManager;
+import fi.wiskopdr.strategievak.VergelijkingAntwoordManager;
 import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 import fi.wiskopdr.tekstobjects.TekstEditor;
 
@@ -120,7 +125,12 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
     // Logging/Nakijken
  	private JLabel titleLoggingLabel;
     private JCheckBox checkCB;
+    private JRadioButton checkAutomatischRB;
+    private JRadioButton checkDocentRB;
     private JCheckBox teltMeeCB;
+    private JTextField scoreTF;
+    private JLabel scoreLabel;
+    private int scoreMax = 10;
      
     private JCheckBox logCB;
  	private JTextField logIDField;
@@ -154,6 +164,20 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
     private FormuleEditor antwoordSubstitutiesVak;
     private JButton functiesButton;
     private FormuleEditor antwoordFunctiesVak;
+    
+   
+    private Box antwoordModelBox;
+//    private JLabel titleAntwoordLabel;
+//    private Box antwoordBox;
+//    private JTabbedPane tabbedPane;
+//    private JCheckBox formuleAntwoordModelCB;
+//    private JCheckBox vergelijkingAntwoordModelCB;
+//    private JPanel formuleAntwoordTabblad;
+//    private JPanel vergelijkingAntwoordTabblad;
+    
+    // AntwoordManagers
+    private FormuleAntwoordManager formuleAntwoordManager;
+    private VergelijkingAntwoordManager vergelijkingAntwoordManager;
      
  	// Helpbuttons
     private static String HELP_0_URL_2 = WiskOpdr.rb.getString("HELP_0_URL_2");
@@ -343,10 +367,26 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
     	
 		// Logging/Nakijken
 		titleLoggingLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"));
-    	    titleLoggingLabel.setForeground(WiskOpdr.colorBlue1);
-    	    titleLoggingLabel.setFont(font.deriveFont(Font.BOLD, 16));
-    	
-    	    checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
+  	    titleLoggingLabel.setForeground(WiskOpdr.colorBlue1);
+  	    titleLoggingLabel.setFont(font.deriveFont(Font.BOLD, 16));
+  	    
+    	checkAutomatischRB = new JRadioButton("Automatisch nakijken");
+        checkAutomatischRB.addActionListener(this);
+        checkDocentRB = new JRadioButton("Nakijken door docent");
+        checkDocentRB.addActionListener(this);
+        checkAutomatischRB.setSelected(true);
+        ButtonGroup buttonGroup = new ButtonGroup();
+        buttonGroup.add(checkAutomatischRB);
+        buttonGroup.add(checkDocentRB);
+        
+        scoreLabel = new JLabel("Score");
+        scoreLabel.setForeground(WiskOpdr.colorBlue1);
+        scoreLabel.setFont(font);
+        scoreLabel.setVisible(false);
+        
+        scoreTF = makeTextField(520,25,60,20,"" + scoreMax,false);
+        
+  	    checkCB = makeCheckBox(5,5,200,20,WiskOpdr.rb.getString("checkCBLabel"),true,true);
         teltMeeCB = makeCheckBox(225,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"),true,true);
         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
         logIDField = makeTextField(520,5,60,20,"0",false);
@@ -472,7 +512,10 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		// plaatsComponenten settingBox
 		Component[] r41 = {titleLoggingLabel, 	hgl()};
 		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
-		Component[] r43 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r42a = {ra(20,0), checkAutomatischRB,         ra(5,0),    hgl(),  hbCheck};
+		Component[] r42b = {ra(20,0), checkDocentRB,           ra(5,0),    hgl(),  hbCheck};
+		Component[] r42c = {ra(50,0), scoreLabel, ra(5,0), scoreTF,   hgl()           };
+        Component[] r43 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
 		Component[] r44 = {logCB, 				ra(5,10), 	logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, 	ra(5,0),	hgl(),	hbLogID};
 		Component[] r45 = {ra(6,0),			logObjectivesButton, hgl()};
 		Component[] r46 = {titleHulpLabel, 		hgl()};
@@ -488,7 +531,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		
 		Component[] r424 = {boxMetRandCB, 		ra(5,0),	hgl(),	hbRand_2};
 		Component[] r425 = {meerregeligCB, 		ra(5,0),	hgl()};
-		Component[] k4 = {hb(r41),vst(5),hb(r42),hb(r43),hb(r44),vst(3),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),
+		Component[] k4 = {hb(r41),vst(5),hb(r42),vst(3),hb(r42a),vst(3),hb(r42b),vst(3),hb(r42c),vst(3),hb(r43),hb(r44),vst(3),hb(r45),vst(20),hb(r46),vst(5),hb(r47),hb(r48),
 				hb(r410),hb(r411),hb(r418), vst(20),hb(r421), hb(r422),vst(5),hb(r424),hb(r425), vgl()};
 		settingsBox = vb(k4);
 				
@@ -541,7 +584,10 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		Box boxh = Box.createHorizontalBox();
 		mainPanel.add(boxh);
 		
+		antwoordModelBox = Box.createVerticalBox();
 		Box boxv1 = Box.createVerticalBox();
+		boxv1.add(ra(450,0));
+		boxv1.add(antwoordModelBox);
 		boxh.add(boxv1);
 		boxh.add(Box.createHorizontalStrut(20));
 		boxh.add(settingsBox);
@@ -553,9 +599,9 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		
 		Box boxh2 = Box.createHorizontalBox();
 		Box boxh3 = Box.createHorizontalBox();
-		boxv1.add(boxh2);
-		boxv1.add(Box.createVerticalStrut(20));
-		boxv1.add(boxh3);
+		antwoordModelBox.add(boxh2);
+		antwoordModelBox.add(Box.createVerticalStrut(20));
+		antwoordModelBox.add(boxh3);
 		
 		boxh2.add(antwoordBox);
 		
@@ -880,6 +926,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		String vormString = "$f@";
 		boolean rmKnop = false;
 		boolean check = true;
+		boolean checkDocent = true;
 		boolean teltMee = true;
 		boolean logOption = false;
 		String logID = "";
@@ -909,7 +956,8 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		if(interactiePanelLaunchState.containsKey("vormString")) vormString = (String)interactiePanelLaunchState.get("vormString");
 		if(interactiePanelLaunchState.containsKey("rmKnop")) rmKnop = ((Boolean)interactiePanelLaunchState.get("rmKnop")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("check")) check = ((Boolean)interactiePanelLaunchState.get("check")).booleanValue();
-		if(interactiePanelLaunchState.containsKey("teltMee")) teltMee = ((Boolean)interactiePanelLaunchState.get("teltMee")).booleanValue();
+		if(interactiePanelLaunchState.containsKey("checkDocent")) checkDocent = ((Boolean)interactiePanelLaunchState.get("checkDocent")).booleanValue();
+        if(interactiePanelLaunchState.containsKey("teltMee")) teltMee = ((Boolean)interactiePanelLaunchState.get("teltMee")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("logOption")) logOption = ((Boolean)interactiePanelLaunchState.get("logOption")).booleanValue();
 		if(interactiePanelLaunchState.containsKey("logID")) logID = (String)interactiePanelLaunchState.get("logID");
 		if(interactiePanelLaunchState.containsKey("logIDLabel")) logIDLabel = (String)interactiePanelLaunchState.get("logIDLabel");
@@ -982,6 +1030,24 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		formuleToolBijFocusCB.setSelected(formuleToolBijFocus);
 		    
         checkCB.setSelected(check);
+        checkDocentRB.setSelected(checkDocent);
+        checkAutomatischRB.setSelected(check && !checkDocent);
+//        formuleAntwoordModelCB.setVisible(check && !checkDocent);
+//        vergelijkingAntwoordModelCB.setVisible(check && !checkDocent);
+//        formuleAntwoordModelCB.setSelected(hasFormuleAnswerModel);
+//        vergelijkingAntwoordModelCB.setSelected(hasVergelijkingAnswerModel);
+        scoreLabel.setVisible(checkCB.isSelected() && checkDocentRB.isSelected());
+        scoreTF.setVisible(checkCB.isSelected() && checkDocentRB.isSelected());
+        checkAutomatischRB.setVisible(checkCB.isSelected());
+        checkDocentRB.setVisible(checkCB.isSelected());
+            logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices() && checkCB.isSelected());
+            if(!checkCB.isSelected())
+                scoreTF.setText("0");
+        antwoordModelBox.setVisible(check && !checkDocent);
+        feedbackCB.setVisible(check && !checkDocent);
+        contextVarCB.setVisible(check && !checkDocent);
+        
+        
         teltMeeCB.setSelected(teltMee);
         logCB.setSelected(logOption);
         
@@ -1059,6 +1125,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 			boolean subKnopExtra = false;
 			boolean rmKnop = false;
 			boolean check = true;
+			boolean checkDocent = true;
 			boolean teltMee = true;
 			boolean logOption = false;
 			String logID = "";
@@ -1138,6 +1205,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
     		}
 			
 			check = checkCB.isSelected();
+			checkDocent = checkDocentRB.isSelected();
 			teltMee = teltMeeCB.isSelected();
 			logOption = logCB.isSelected();
 			logID = logIDField.getText();
@@ -1188,7 +1256,8 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 			interactiePanelLaunchState.put("vormString",vormString);
 			interactiePanelLaunchState.put("rmKnop",new Boolean(rmKnop));
 			interactiePanelLaunchState.put("check",new Boolean(check));
-			interactiePanelLaunchState.put("teltMee",new Boolean(teltMee));
+			interactiePanelLaunchState.put("checkDocent",new Boolean(checkDocent));
+		    interactiePanelLaunchState.put("teltMee",new Boolean(teltMee));
 			interactiePanelLaunchState.put("logOption",new Boolean(logOption));
 			interactiePanelLaunchState.put("logID",logID);
 			interactiePanelLaunchState.put("logIDLabel",logIDLabel);
@@ -1512,7 +1581,40 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 	    {   logIDField.setVisible(logCB.isSelected());
 	    		logIDLabelField.setVisible(logCB.isSelected());
 	    		logIDLabelLabel.setVisible(logCB.isSelected());
-	    	}
+	    }
+		else if(e.getSource()==checkCB) {   
+          scoreLabel.setVisible(checkCB.isSelected() && checkDocentRB.isSelected());
+              scoreTF.setVisible(checkCB.isSelected() && checkDocentRB.isSelected());
+              checkAutomatischRB.setVisible(checkCB.isSelected());
+              checkDocentRB.setVisible(checkCB.isSelected());
+              logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices() && checkCB.isSelected());
+              if(!checkCB.isSelected())
+                  scoreTF.setText("0");
+              antwoordModelBox.setVisible(checkCB.isSelected() && checkAutomatischRB.isSelected());
+              feedbackCB.setVisible(checkCB.isSelected() && checkAutomatischRB.isSelected());
+              contextVarCB.setVisible(checkCB.isSelected() && checkAutomatischRB.isSelected());
+              pack(); 
+        }
+        else if(e.getSource()==checkAutomatischRB) { 
+            scoreLabel.setVisible(!checkAutomatischRB.isSelected());
+            scoreTF.setVisible(!checkAutomatischRB.isSelected());
+            antwoordModelBox.setVisible(checkAutomatischRB.isSelected());
+            feedbackCB.setVisible(checkAutomatischRB.isSelected());
+            contextVarCB.setVisible(checkAutomatischRB.isSelected());
+            //formuleAntwoordModelCB.setVisible(checkAutomatischRB.isSelected());
+            //vergelijkingAntwoordModelCB.setVisible(checkAutomatischRB.isSelected());
+            pack();
+        }
+        else if(e.getSource()==checkDocentRB) { 
+            scoreLabel.setVisible(checkDocentRB.isSelected());
+            scoreTF.setVisible(checkDocentRB.isSelected());
+            antwoordModelBox.setVisible(checkAutomatischRB.isSelected());
+            feedbackCB.setVisible(checkAutomatischRB.isSelected());
+            contextVarCB.setVisible(checkAutomatischRB.isSelected());
+            //formuleAntwoordModelCB.setVisible(checkAutomatischRB.isSelected());
+            //vergelijkingAntwoordModelCB.setVisible(checkAutomatischRB.isSelected());
+            pack();
+        }
 		else if(e.getSource()==rmKnopCB)
 	    {   aantalDecRmField.setVisible(rmKnopCB.isSelected());
 	    	aantalDecRmLabel.setVisible(rmKnopCB.isSelected());
@@ -1622,6 +1724,9 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 			 
 		}
 	}
+	public void pack() {
+      ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+    }
 	
 	public void setFeedbackOption(boolean b)
 	{
