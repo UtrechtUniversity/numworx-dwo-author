@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -24,6 +25,7 @@ import java.util.Hashtable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
@@ -36,12 +38,14 @@ import fi.beans.numworxlf.JScrollPane;
 import fi.beans.numworxlf.JTextField;
 import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JLabel;
+import fi.beans.numworxlf.JOptionPane;
 import fi.beans.numworxlf.JRadioButton;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.wiskopdr.HelpButton;
 import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.WiskOpdrButton;
 import fi.wiskopdr.WiskOpdrCheckbox;
 import fi.wiskopdr.WiskOpdrTextField;
 import fi.wiskopdr.AntwoordKeuzeVakEditPanel.EditorComponentListener;
@@ -110,7 +114,14 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
   	private JPanel formuleAntwoordTabblad;
   	private JPanel vergelijkingAntwoordTabblad;
     
-  	
+ // contextVars
+    private JCheckBox contextVarCB;
+    private JLabel titleContextLabel;
+    private Box contextBox;
+    private JButton substitutiesButton;
+    private FormuleEditor antwoordSubstitutiesVak;
+    private JButton functiesButton;
+    private FormuleEditor antwoordFunctiesVak;
      
  // Helpbuttons
     private static String HELP_14_URL_CHECK = WiskOpdr.rb.getString("HELP_14_URL_CHECK");
@@ -297,6 +308,42 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
          logObjectivesButton.setPreferredSize(new Dimension(120,22));
          logObjectivesButton.setMaximumSize(new Dimension(120,22));
      	
+      // GUI contextVar box
+         titleContextLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleContextLabel"));
+         titleContextLabel.setForeground(WiskOpdr.colorBlue1);
+         titleContextLabel.setFont(font.deriveFont(Font.BOLD, 16));
+         
+         contextVarCB = makeCheckBox(WiskOpdr.rb.getString("contextVarCBLabel"),false,true);
+         
+         antwoordSubstitutiesVak = new FormuleEditor(true);
+         antwoordSubstitutiesVak.setBounds(15,270,570,150);
+         antwoordSubstitutiesVak.setFont(font);
+         antwoordSubstitutiesVak.addActionListener(this);
+         antwoordSubstitutiesVak.setMultiLine(true);
+         antwoordSubstitutiesVak.setResizable(true);
+         
+         substitutiesButton = new WiskOpdrButton(WiskOpdr.rb.getString("substitutiesButtonLabel"));
+         substitutiesButton.setBounds(10,305,150,20);
+         substitutiesButton.setPreferredSize(new Dimension(150,22));
+         substitutiesButton.setMaximumSize(new Dimension(150,22));
+         substitutiesButton.setMargin(new Insets(3,2,3,2));
+         substitutiesButton.addActionListener(this);
+         
+         antwoordFunctiesVak = new FormuleEditor(true);
+         antwoordFunctiesVak.setBounds(125,270,570,150);
+         antwoordFunctiesVak.setFont(font);
+         antwoordFunctiesVak.addActionListener(this);
+         antwoordFunctiesVak.setMultiLine(true);
+         antwoordFunctiesVak.setResizable(true);
+         
+         functiesButton = new WiskOpdrButton(WiskOpdr.rb.getString("functiesButtonLabel"));
+         functiesButton.setMaximumSize(new Dimension(150,22));
+         functiesButton.setBounds(180,305,150,20);
+         functiesButton.setPreferredSize(new Dimension(150,22));
+         functiesButton.setMargin(new Insets(3,2,3,2));
+         functiesButton.addActionListener(this);
+         
+         
          formuleAntwoordModelCB = makeCheckBox("Formule-antwoordmodel",false, false);
          vergelijkingAntwoordModelCB = makeCheckBox("Vergelijking-antwoordmodel",false, false);
          
@@ -357,6 +404,16 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		Component[] k1 = {hb(r11), vst(20),hb(r12), vst(10),hb(r13)};
 		keuzeTekstenBox = vb(k1);
 		
+		//plaats componenten contextbox
+        Component[] r51 = {titleContextLabel};
+        Component[] r52 = {substitutiesButton};
+        Component[] r53 = {functiesButton};
+        
+        Component[] k5 = {hb(r51),vst(15),hb(r52),vst(10),hb(r53), ra(10,20),vgl()};
+        
+        Component[] h1 = {vb(k5), hgl()};
+        contextBox = hb(h1);
+		
 		// plaats compoenenten antwoordbox
 		Component[] r30 = {titleAntwoordLabel, hgl() };
 		Component[] r31 = {tabbedPane, hgl()};
@@ -381,8 +438,11 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		Component[] r46 = {formuleAntwoordModelCB, hgl()};
 		Component[] r47 = {vergelijkingAntwoordModelCB, hgl()};
 		
-		Component[] k4 = {hb(r41),vst(20),hb(r42),vst(3),hb(r42a),vst(3),hb(r42b),vst(3),hb(r42c),vst(3),hb(r43),vst(3),hb(r44),vst(3),hb(r45),vst(65),hb(r46),vst(3),hb(r47), vgl()};
+		Component[] k4 = {hb(r41),vst(20),hb(r42),vst(3),hb(r42a),vst(3),hb(r42b),vst(3),hb(r42c),vst(3),hb(r43),vst(3),hb(r44),vst(3),hb(r45),vst(45),hb(r46),vst(3),hb(r47), vgl()};
 		Box loggingBox = vb(k4);	
+		
+		loggingBox.add(vst(40));
+		loggingBox.add(contextBox);
 		
 		// boxes plaatsen
 		Box boxh = Box.createHorizontalBox();
@@ -609,7 +669,9 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		    	scoreTF.setVisible(checkCB.isSelected() && checkDocentRB.isSelected());
 		    	checkAutomatischRB.setVisible(checkCB.isSelected());
 		    	checkDocentRB.setVisible(checkCB.isSelected());
-		    	logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices() && checkCB.isSelected());
+		    	formuleAntwoordModelCB.setVisible(checkCB.isSelected() && checkAutomatischRB.isSelected());
+	             vergelijkingAntwoordModelCB.setVisible(checkCB.isSelected() && checkAutomatischRB.isSelected());
+	              logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices() && checkCB.isSelected());
 		    	if(!checkCB.isSelected())
 		    		scoreTF.setText("0");
 		    	antwoordBox.setVisible(checkCB.isSelected() && checkAutomatischRB.isSelected());
@@ -783,6 +845,8 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
         boolean hasVergelijkingAnswerModel = false;
 		Hashtable formuleAntwoordModel = null;
 		Hashtable vergelijkingAntwoordModel = null;
+		String[] antwoordSubStrings = null;
+        String[] antwoordFuncStrings = null;
 		
 		if(h.containsKey("scoreMax")) scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		if(h.containsKey("stepRequired")) stepRequired = (boolean[]) h.get("stepRequired");
@@ -795,13 +859,18 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
 		if(h.containsKey("logID")) logID = (String)h.get("logID");
 		if(h.containsKey("logIDLabel")) logIDLabel = (String)h.get("logIDLabel");
-		if(check && !checkDocent) {
+		if(h.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])h.get("antwoordSubStrings");
+        if(h.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[])h.get("antwoordFuncStrings");
+        if(check && !checkDocent) {
 		  if(h.containsKey("formuleAntwoordModel")) formuleAntwoordModel = (Hashtable)h.get("formuleAntwoordModel");
 		  formuleAntwoordManager.setEditState(formuleAntwoordModel);
 		  if(h.containsKey("vergelijkingAntwoordModel")) vergelijkingAntwoordModel = (Hashtable)h.get("vergelijkingAntwoordModel");
           vergelijkingAntwoordManager.setEditState(vergelijkingAntwoordModel);
 	        
 		}
+        
+        antwoordSubstitutiesVak.zetRegels(antwoordSubStrings);
+        antwoordFunctiesVak.zetRegels(antwoordFuncStrings);
 		
 		if(stepRequired != null && stepRequired.length > 0) {   
 		  System.arraycopy(stepRequired, 0, this.stepRequired, 0, stepRequired.length);
@@ -899,10 +968,16 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		String logID = "";
 		String logIDLabel = "";
 		boolean checkDocent = true;
+		String[] antwoordSubStrings = null;
+        String[] antwoordFuncStrings = null;
 		boolean hasFormuleAnswerModel = false;
 		boolean hasVergelijkingAnswerModel = false;
 		Hashtable formuleAntwoordModel = null;
 		Hashtable vergelijkingAntwoordModel = null;
+        
+		antwoordSubStrings = antwoordSubstitutiesVak.geefRegels();
+        antwoordFuncStrings = antwoordFunctiesVak.geefRegels();
+        formuleAntwoordManager.setContextVars(antwoordSubStrings, antwoordFuncStrings);
         
 	    getStepContent();
         stepContents = this.stepContents;
@@ -954,7 +1029,19 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		checkDocent = checkDocentRB.isSelected();
 		hasFormuleAnswerModel = formuleAntwoordModelCB.isSelected();
 		hasVergelijkingAnswerModel = vergelijkingAntwoordModelCB.isSelected();
-		
+		formuleAntwoordManager.setContextVars(antwoordSubStrings, antwoordFuncStrings);
+        vergelijkingAntwoordManager.setContextVars(antwoordSubStrings, antwoordFuncStrings);
+        for (int i = 0; i < antwoordFuncStrings.length; i++)
+        {
+            if(antwoordFuncStrings[i]==null || antwoordFuncStrings[i].equals("$f@"))
+                break;
+            String[] functieDelen = antwoordFuncStrings[i].split("=");
+            if(functieDelen.length!=2) {
+                JOptionPane.showMessageDialog(this, "Syntax van functiedefinitie klopt niet");
+                break;
+            }
+            System.out.println(functieDelen[0].substring(2));
+        }
         
         Hashtable h = new Hashtable();
         h.put("steps", steps);
@@ -967,6 +1054,9 @@ public class StrategieVakEditPanel extends JPanel implements InteractieEditPanel
 		h.put("logOption",new Boolean(logOption));
 		h.put("logID",logID);
 		h.put("logIDLabel",logIDLabel);
+		h.put("antwoordSubStrings",antwoordSubStrings);
+        h.put("antwoordFuncStrings",antwoordFuncStrings);
+        
 		h.putAll(logObjectivesButton.getEditState(scoreMax));
 		if(check && !checkDocent) {
 		  formuleAntwoordModel = formuleAntwoordManager.getEditState();

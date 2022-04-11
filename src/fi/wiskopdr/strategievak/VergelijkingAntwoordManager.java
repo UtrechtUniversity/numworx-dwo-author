@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import fi.beans.stringutils.StringUtils;
+import fi.wiskopdr.BerekeningVakEditPanel;
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrCheckbox;
@@ -35,6 +36,7 @@ public class VergelijkingAntwoordManager implements ActionListener {
 
   private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
   private StrategieVakEditPanel strategieVakEditPanel;
+  private BerekeningVakEditPanel berekeningVakEditPanel;
   
   // Basis GUI
   private JPanel mainPanel;
@@ -53,6 +55,9 @@ public class VergelijkingAntwoordManager implements ActionListener {
    private Hashtable[] answerModels;
    private Hashtable resAnswerModel = new Hashtable();
    private int answerModelNr = 0;
+   
+   private String[] antwoordSubStrings = null;
+   private String[] antwoordFuncStrings = null;
   
    // VormEditor
    private FormuleEditor vormEditor;
@@ -103,6 +108,13 @@ public class VergelijkingAntwoordManager implements ActionListener {
    
    public VergelijkingAntwoordManager(StrategieVakEditPanel strategieVakEditPanel) {
      this.strategieVakEditPanel = strategieVakEditPanel;
+     makeGUI();
+     
+     answerModels = new Hashtable[aantalAnswerModels];
+   }
+   
+   public VergelijkingAntwoordManager(BerekeningVakEditPanel berekeningVakEditPanel) {
+     this.berekeningVakEditPanel = berekeningVakEditPanel;
      makeGUI();
      
      answerModels = new Hashtable[aantalAnswerModels];
@@ -380,9 +392,10 @@ public class VergelijkingAntwoordManager implements ActionListener {
      
      scoreCumulatief = scoreCumulatiefCB.isSelected();
      interactiePanelLaunchState.put("answerModels",answerModels);
-     
      interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
-     
+     interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
+     interactiePanelLaunchState.put("antwoordFuncStrings",antwoordFuncStrings);
+    
      return interactiePanelLaunchState;
    }
    
@@ -392,6 +405,8 @@ public class VergelijkingAntwoordManager implements ActionListener {
      
      if(interactiePanelLaunchState.containsKey("answerModels")) answerModels = (Hashtable[])interactiePanelLaunchState.get("answerModels");
      if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
+     if(interactiePanelLaunchState.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])interactiePanelLaunchState.get("antwoordSubStrings");
+     if(interactiePanelLaunchState.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[])interactiePanelLaunchState.get("antwoordFuncStrings");
      
      if(answerModels != null) {   
        this.answerModels = new Hashtable[answerModels.length];
@@ -802,6 +817,11 @@ public class VergelijkingAntwoordManager implements ActionListener {
       goedFoutIP.setItem(goedHalfFout);
       
       updateFeedbackTitelLabel();
+  }
+  
+  public void setContextVars(String[] subVars, String[] funcVars) {
+    this.antwoordSubStrings = subVars;
+    this.antwoordFuncStrings = funcVars;
   }
   
   private void getAnswerModel()
