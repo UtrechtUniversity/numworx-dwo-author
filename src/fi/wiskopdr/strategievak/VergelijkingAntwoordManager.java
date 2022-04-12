@@ -11,6 +11,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Hashtable;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -67,6 +68,7 @@ public class VergelijkingAntwoordManager implements ActionListener {
    private DialogFacade vormEditorPopupFrame;
   
    // Feedback editor
+   private JCheckBox feedbackCB;
    private TekstEditor feedbackEditor;
    private JCheckBox feedbackSizeCB;
    private JLabel titleFeedbackLabel;
@@ -96,6 +98,7 @@ public class VergelijkingAntwoordManager implements ActionListener {
    private int puntenExact = 0;
    private int puntenSignificant = 0;
    private int puntenFeedback = 0;
+   private boolean hasFeedback;
    
    static boolean  significantieAan=false;
   
@@ -105,6 +108,10 @@ public class VergelijkingAntwoordManager implements ActionListener {
    private Box scoringBox;
    private JTextField  feedbackPV;
    private JCheckBox scoreCumulatiefCB;
+   
+   public static void zetSignificantieAan(boolean b)
+   {   significantieAan = b;
+   }
    
    public VergelijkingAntwoordManager(StrategieVakEditPanel strategieVakEditPanel) {
      this.strategieVakEditPanel = strategieVakEditPanel;
@@ -123,7 +130,7 @@ public class VergelijkingAntwoordManager implements ActionListener {
    private void makeGUI() {
      // Main
      mainPanel = new JPanel(new BorderLayout());
-     mainPanel.setBackground(WiskOpdr.colorGray3);
+     mainPanel.setBackground(WiskOpdr.colorGray4);
      
   // GUI antwoordBox
      titleAntwoordLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
@@ -137,6 +144,7 @@ public class VergelijkingAntwoordManager implements ActionListener {
      antwoordvak.addActionListener(this);
      
      antwoordEditorPanel = new JPanel();
+     antwoordEditorPanel.setBackground(WiskOpdr.colorGray4);
      antwoordEditorPanel.setLayout(null);
      //antwoordEditorPanel.add(titleAntwoordLabel);
      antwoordEditorPanel.add(antwoordvak);
@@ -185,6 +193,11 @@ public class VergelijkingAntwoordManager implements ActionListener {
      vormEditorPanel.addComponentListener(new EditorComponentListener());
 
    //GUI Feedback editor
+     
+     feedbackCB = makeCheckBox(WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
+     feedbackCB.setBounds(0,-2,240,20);
+     antwoordEditorPanel.add(feedbackCB);
+     
      titleFeedbackTekstLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
      titleFeedbackTekstLabel.setForeground(WiskOpdr.colorBlue1);
      titleFeedbackTekstLabel.setFont(font.deriveFont(Font.BOLD, 16));
@@ -245,7 +258,7 @@ public class VergelijkingAntwoordManager implements ActionListener {
   // plaats compoenenten antwoordbox
      //Component[] r30 = {titleAntwoordLabel, hgl() };
      Component[] r31 = {ra(0,130),   antwoordEditorPanel};
-     Component[] k3 = {hb(r31)};
+     Component[] k3 = {vst(10),hb(r31)};
      antwoordBox = vb(k3);
      
   // plaats componenten feedback box
@@ -293,7 +306,11 @@ public class VergelijkingAntwoordManager implements ActionListener {
      mainPanel.add(boxh);
      
      Box boxv1 = Box.createVerticalBox();
+     boxh.add(ra(20,0));
      boxh.add(boxv1);
+     boxh.add(ra(20,0));
+     boxh.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, WiskOpdr.colorBlue4));
+     
      
      Box boxh2 = Box.createHorizontalBox();
      Box boxh3 = Box.createHorizontalBox();
@@ -313,6 +330,7 @@ public class VergelijkingAntwoordManager implements ActionListener {
      //boxh3.add(Box.createHorizontalGlue());
      boxh3.add(feedbackBox);
    
+     setFeedbackOption(false);
    }
    
    private Box hb(Component[] c) {
@@ -383,6 +401,22 @@ public class VergelijkingAntwoordManager implements ActionListener {
    
    public Hashtable getEditState()  {
      Hashtable interactiePanelLaunchState = new Hashtable();
+     
+     String antwoordString = null;
+     String vormString = "$f@";
+     boolean vorm = false;
+     boolean exact = false;
+     boolean significant = false;
+     int puntenGelijkwaardig = 10;
+     int puntenVorm = 0;
+     int puntenExact = 0; 
+     int puntenSignificant = 0; 
+     boolean eindOplossingNodig = true;
+     int puntenEindOplossing = 10;
+     boolean hasFeedback = false;
+     double eqTestValueMin = 0;
+     double eqTestValueMax = 5;
+     
      Hashtable[] answerModels;
      boolean scoreCumulatief = false;
      
@@ -390,7 +424,67 @@ public class VergelijkingAntwoordManager implements ActionListener {
      answerModels = this.answerModels;
      if(answerModels!=null)setAnswerModel(answerModels[0]);
      
+     antwoordString = antwoordvak.geefFormuleVak().toString();
+     String[] vormStrings = vormEditor.geefRegels();
+     if(vormStrings.length==1) vormString = vormEditor.geefFormuleVak().toString();
+     else
+     {   vormString = "$f";
+         for(int i=0 ; i<vormStrings.length ; i++)
+         {   vormString = vormString + vormStrings[i].substring(2,vormStrings[i].length()-1) + "::";
+         }
+         vormString = vormString.substring(0,vormString.length()-2) + "@";
+     }
+     vorm = this.vorm;
+     exact = this.exact;
+     significant = this.significant;
+     
+     try {
+         puntenGelijkwaardig = Integer.parseInt(gelijkwaardigPV.getText());
+         this.puntenGelijkwaardig = puntenGelijkwaardig;
+     }   
+     catch(Exception ex) {}
+     try {
+         puntenVorm = Integer.parseInt(vormPV.getText());
+         this.puntenVorm = puntenVorm;
+     }   
+     catch(Exception ex) {}
+     try {
+         puntenExact = Integer.parseInt(exactPV.getText());
+         this.puntenExact = puntenExact;
+     }   
+     catch(Exception ex) {}
+     try {
+         puntenSignificant = Integer.parseInt(significantPV.getText());
+         this.puntenSignificant = puntenSignificant;
+     }   
+     catch(Exception ex) {}
+     try {
+         puntenEindOplossing = Integer.parseInt(eindOplossingPV.getText());
+         this.puntenEindOplossing = puntenEindOplossing;
+     }   
+     catch(Exception ex) {}
+     
+     puntenGelijkwaardig = this.puntenGelijkwaardig;
+     puntenVorm = this.puntenVorm;
+     puntenExact = this.puntenExact;
+     puntenSignificant = this.puntenSignificant;
+     eindOplossingNodig = this.eindOplossingNodig;
+     puntenEindOplossing = this.puntenEindOplossing;
+     hasFeedback = this.hasFeedback;
+     
      scoreCumulatief = scoreCumulatiefCB.isSelected();
+     interactiePanelLaunchState.put("antwoordString",antwoordString);
+     interactiePanelLaunchState.put("vorm",new Boolean(vorm));
+     interactiePanelLaunchState.put("exact",new Boolean(exact));
+     interactiePanelLaunchState.put("significant",new Boolean(significant));
+     interactiePanelLaunchState.put("puntenGelijkwaardig",new Integer(puntenGelijkwaardig));
+     interactiePanelLaunchState.put("puntenVorm",new Integer(puntenVorm));
+     interactiePanelLaunchState.put("puntenExact",new Integer(puntenExact));
+     interactiePanelLaunchState.put("puntenSignificant",new Integer(puntenSignificant));
+     interactiePanelLaunchState.put("eindOplossingNodig",new Boolean(eindOplossingNodig));
+     interactiePanelLaunchState.put("puntenEindOplossing",new Integer(puntenEindOplossing));
+     interactiePanelLaunchState.put("eqTestValueMin",new Double(eqTestValueMin));
+     interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
      interactiePanelLaunchState.put("answerModels",answerModels);
      interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
      interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
@@ -400,13 +494,52 @@ public class VergelijkingAntwoordManager implements ActionListener {
    }
    
    public void setEditState(Hashtable interactiePanelLaunchState) {
+     String antwoordString = "$f@";
+     String vormString = "$f@";
+     boolean vorm = false;
+     boolean exact = false;
+     boolean significant = false;
+     int puntenGelijkwaardig = 10;
+     int puntenVorm = 0;
+     int puntenExact = 0;
+     int puntenSignificant = 0;
+     boolean eindOplossingNodig = true;
+     int puntenEindOplossing = 10;
+     boolean hasFeedback = false;
+     double eqTestValueMin = 0;
+     double eqTestValueMax = 5;
      Hashtable[] answerModels = null;
      boolean scoreCumulatief = false;
      
+     if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
+     if(interactiePanelLaunchState.containsKey("vormString")) vormString = (String)interactiePanelLaunchState.get("vormString");
+     if(interactiePanelLaunchState.containsKey("vorm")) vorm = ((Boolean)interactiePanelLaunchState.get("vorm")).booleanValue();
+     if(interactiePanelLaunchState.containsKey("exact")) exact = ((Boolean)interactiePanelLaunchState.get("exact")).booleanValue();
+     if(interactiePanelLaunchState.containsKey("significant")) significant = ((Boolean)interactiePanelLaunchState.get("significant")).booleanValue();
+     if(interactiePanelLaunchState.containsKey("puntenGelijkwaardig")) puntenGelijkwaardig = ((Integer)interactiePanelLaunchState.get("puntenGelijkwaardig")).intValue();
+     if(interactiePanelLaunchState.containsKey("puntenVorm")) puntenVorm = ((Integer)interactiePanelLaunchState.get("puntenVorm")).intValue();
+     if(interactiePanelLaunchState.containsKey("puntenExact")) puntenExact = ((Integer)interactiePanelLaunchState.get("puntenExact")).intValue();
+     if(interactiePanelLaunchState.containsKey("puntenSignificant")) puntenSignificant = ((Integer)interactiePanelLaunchState.get("puntenSignificant")).intValue();
+     if(interactiePanelLaunchState.containsKey("eindOplossingNodig")) eindOplossingNodig = ((Boolean)interactiePanelLaunchState.get("eindOplossingNodig")).booleanValue();
+     if(interactiePanelLaunchState.containsKey("puntenEindOplossing")) puntenEindOplossing = ((Integer)interactiePanelLaunchState.get("puntenEindOplossing")).intValue();
+     if(interactiePanelLaunchState.containsKey("hasFeedback")) hasFeedback = ((Boolean)interactiePanelLaunchState.get("hasFeedback")).booleanValue();
+     if(interactiePanelLaunchState.containsKey("eqTestValueMin")) eqTestValueMin = ((Double)interactiePanelLaunchState.get("eqTestValueMin")).doubleValue();
+     if(interactiePanelLaunchState.containsKey("eqTestValueMax")) eqTestValueMax = ((Double)interactiePanelLaunchState.get("eqTestValueMax")).doubleValue();
      if(interactiePanelLaunchState.containsKey("answerModels")) answerModels = (Hashtable[])interactiePanelLaunchState.get("answerModels");
      if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
      if(interactiePanelLaunchState.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])interactiePanelLaunchState.get("antwoordSubStrings");
      if(interactiePanelLaunchState.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[])interactiePanelLaunchState.get("antwoordFuncStrings");
+     
+     this.vorm = vorm;
+     this.exact = exact;
+     this.significant = significant;
+     this.puntenGelijkwaardig = puntenGelijkwaardig;
+     this.puntenVorm = puntenVorm;
+     this.puntenExact = puntenExact;
+     this.puntenSignificant = puntenSignificant;
+     this.eindOplossingNodig = eindOplossingNodig;
+     this.puntenEindOplossing = puntenEindOplossing;
+     
      
      if(answerModels != null) {   
        this.answerModels = new Hashtable[answerModels.length];
@@ -414,36 +547,91 @@ public class VergelijkingAntwoordManager implements ActionListener {
          {   this.answerModels[i] = answerModels[i];
          }
      }
+     
+     this.eqTestValueMin = eqTestValueMin;
+     this.eqTestValueMax = eqTestValueMax;
+     this.hasFeedback = hasFeedback;
+
      scoreCumulatiefCB.setSelected(scoreCumulatief);
      
-     aantalAnswerModels = answerModels.length;
-     antwoordEditorPanel.remove(tabbladTab);
-     tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
-     tabbladTab.setTab(true);
-     tabbladTab.setScoresVisible(false);
-     tabbladTab.setSize(tabbladTab.getSize().width, 23);
-     tabbladTab.addActionListener(this);
-     tabbladTab.setBackground(new Color(210,210,210));
-     tabbladTab.setSelected(answerModelNr+1);
-     antwoordEditorPanel.add(tabbladTab,0);
-     aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,24);
+     if(hasFeedback) {
+       aantalAnswerModels = answerModels.length;
+       antwoordEditorPanel.remove(tabbladTab);
+       tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
+       tabbladTab.setTab(true);
+       tabbladTab.setScoresVisible(false);
+       tabbladTab.setSize(tabbladTab.getSize().width, 23);
+       tabbladTab.addActionListener(this);
+       tabbladTab.setBackground(new Color(210,210,210));
+       tabbladTab.setSelected(answerModelNr+1);
+       antwoordEditorPanel.add(tabbladTab,0);
+       aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,24);
+       
+       answerModelNr = 0;
+       setAnswerModel();
+       antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,450),140));
+     }
      
-     answerModelNr = 0;
-     setAnswerModel();
-     antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,450),140));
-
+     antwoordvak.geefFormuleVak().vulVak(antwoordString);
+     
+     String[] vormStrings = StringUtils.split(vormString, "::");
+     for(int i=0 ; i<vormStrings.length ; i++)
+     {   if(i==0) vormStrings[i] = vormStrings[i] + "@";
+         else if(i==vormStrings.length-1) vormStrings[i] = "$f" + vormStrings[i];
+         else  vormStrings[i] = "$f" + vormStrings[i] + "@";
+     }
+     vormEditor.zetRegels(vormStrings);
+     
+     setFeedbackOption(hasFeedback);
+     feedbackCB.setSelected(hasFeedback);
+     
+     if(hasFeedback) {
+       ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+       return;
+     }
+     
+     eindOplossingCB.setSelected(eindOplossingNodig);
+     eindOplossingPV.setVisible(eindOplossingNodig);
+     eindOplossingPV.setText(""+puntenEindOplossing);
+         
+     gelijkwaardigPV.setText(""+puntenGelijkwaardig);
+                     
+     exactCB.setSelected(exact);
+     exactPV.setVisible(exact);
+     exactPV.setText(""+puntenExact);
+     
+     significantCB.setSelected(significant);
+     significantPV.setVisible(significant && significantieAan);
+     significantPV.setText(""+puntenSignificant);
+     
+                    
+     vormCB.setSelected(vorm);
+     vormPV.setVisible(vorm);
+     vormPV.setText(""+puntenVorm);
+         
+     vormEditor.setVisible(vorm);
+     vormBox.setVisible(vorm);
+         
+     exactCB.setSelected(exact);
+     exactPV.setVisible(exact);
+     exactPV.setText(""+puntenExact);
+  
    }
    
    public int getScoreMax() {
-     int scoreMax = puntenFeedback;
-     if(scoreCumulatiefCB.isSelected()) {
-         scoreMax = 0;
-         for(int i=0 ; i<answerModels.length ; i++) {
-             scoreMax += (Integer)answerModels[i].get("puntenFeedback");
-         }
+     int scoreMax = puntenGelijkwaardig + puntenVorm + puntenEindOplossing + puntenExact;
+     if(hasFeedback) {
+       scoreMax = puntenFeedback;
+       if(scoreCumulatiefCB.isSelected()) {
+           scoreMax = 0;
+           for(int i=0 ; i<answerModels.length ; i++) {
+               scoreMax += (Integer)answerModels[i].get("puntenFeedback");
+           }
+       }
      }
-     return scoreMax;
+      return scoreMax;
    }
+   
    
   @Override
   public void actionPerformed(ActionEvent e) {
@@ -457,6 +645,13 @@ public class VergelijkingAntwoordManager implements ActionListener {
             tabPositieKnop.setLocation(246+25*answerModelNr+5 ,0);
         }
         
+    }
+    else if(e.getSource()==feedbackCB)
+    {   setFeedbackOption(feedbackCB.isSelected());
+        if(berekeningVakEditPanel!=null)
+          berekeningVakEditPanel.pack();
+        if(strategieVakEditPanel!=null)
+          strategieVakEditPanel.pack();
     }
     else if(e.getSource() == tabPositieKnop)
     {   if(e.getActionCommand().equals("plus") && answerModelNr<aantalAnswerModels-1) 
@@ -676,6 +871,41 @@ public class VergelijkingAntwoordManager implements ActionListener {
         }
     }
     
+  }
+  
+  public void setFeedbackOption(boolean b)
+  {
+      hasFeedback = b;
+      tabbladTab.setVisible(b);
+      feedbackEditor.setVisible(b);
+      if(feedbackBox!=null)
+        feedbackBox.setVisible(b);
+      //feedbackSizeCB.setVisible(b);
+      //feedbackLabel.setVisible(b);
+      aantalTabsKnop.setVisible(b);
+      tabPositieKnop.setVisible(b);
+      feedbackPV.setVisible(b);
+      goedFoutIP.setVisible(b);
+      if(scoringBox!=null)
+        scoringBox.setVisible(b);
+      titleVerificatieScoreLabel.setVisible(!b);
+      //puntenLabel.setVisible(!b);
+      
+      gelijkwaardigPV.setVisible(!b);
+      if(b || vorm)vormPV.setVisible(!b);
+      if(b || eindOplossingNodig) eindOplossingPV.setVisible(!b);
+      if(b || exact)exactPV.setVisible(!b);
+      if(b || significant && significantieAan) significantPV.setVisible(!b);
+      
+      if(!b)
+          scoreCumulatiefCB.setSelected(false);
+      
+      //eindOplossingCB.setVisible(!b);
+      //vormCB.setVisible(b);
+      
+      answerModelNr = 0;
+      tabbladTab.setSelected(answerModelNr+1);
+      if(b)setAnswerModel();
   }
   
   private Hashtable fillAnswerModel(Hashtable h)

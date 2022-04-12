@@ -11,6 +11,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Hashtable;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -67,6 +68,7 @@ public class FormuleAntwoordManager implements ActionListener {
   private DialogFacade vormEditorPopupFrame;
 
   // Feedback editor
+  private JCheckBox feedbackCB;
   private TekstEditor feedbackEditor;
   private JCheckBox feedbackSizeCB;
   private JLabel titleFeedbackLabel;
@@ -95,6 +97,7 @@ public class FormuleAntwoordManager implements ActionListener {
   private int puntenExact = 0;
   private int puntenSignificant = 0;
   private int puntenFeedback = 0;
+  private boolean hasFeedback;
 
   //private boolean hasFeedback = true;
   
@@ -108,6 +111,10 @@ public class FormuleAntwoordManager implements ActionListener {
   static boolean   significantieAan=false;
   
 
+  public static void zetSignificantieAan(boolean b)
+  {   significantieAan = b;
+  }
+  
   public FormuleAntwoordManager(StrategieVakEditPanel strategieVakEditPanel) {
     this.strategieVakEditPanel = strategieVakEditPanel;
     makeGUI();
@@ -125,7 +132,7 @@ public class FormuleAntwoordManager implements ActionListener {
   private void makeGUI() {
     // Main
     mainPanel = new JPanel(new BorderLayout());
-    mainPanel.setBackground(WiskOpdr.colorGray3);
+    mainPanel.setBackground(WiskOpdr.colorGray4);
     
     // GUI antwoordBox
     titleAntwoordLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
@@ -139,13 +146,16 @@ public class FormuleAntwoordManager implements ActionListener {
     antwoordvak.addActionListener(this);
     
     antwoordEditorPanel = new JPanel();
+    //antwoordEditorPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, WiskOpdr.colorBlue3));
+    
     antwoordEditorPanel.setLayout(null);
-    //antwoordEditorPanel.add(titleAntwoordLabel);
+    antwoordEditorPanel.setBackground(WiskOpdr.colorGray4);
     antwoordEditorPanel.add(antwoordvak);
     antwoordEditorPanel.addComponentListener(new EditorComponentListener());
     antwoordEditorPanel.setPreferredSize(new Dimension(450,140));
     antwoordEditorPanel.setMaximumSize(new Dimension(2835,170));
     antwoordEditorPanel.setMinimumSize(new Dimension(450,170));
+    
     
     tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
     tabbladTab.setSize(tabbladTab.getSize().width, 23);
@@ -187,6 +197,10 @@ public class FormuleAntwoordManager implements ActionListener {
     vormEditorPanel.addComponentListener(new EditorComponentListener());
  
   //GUI Feedback editor
+    feedbackCB = makeCheckBox(WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
+    feedbackCB.setBounds(0,-2,240,20);
+    antwoordEditorPanel.add(feedbackCB);
+    
     titleFeedbackTekstLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
     titleFeedbackTekstLabel.setForeground(WiskOpdr.colorBlue1);
     titleFeedbackTekstLabel.setFont(font.deriveFont(Font.BOLD, 16));
@@ -234,7 +248,7 @@ public class FormuleAntwoordManager implements ActionListener {
         feedbackPV = makeTextField("0",false);
         scoreCumulatiefCB =  makeCheckBox(WiskOpdr.rb.getString("scoreCumulatiefCBLabel"),false,true);
         
-    
+        
     
     plaatsGUI();
   }
@@ -243,8 +257,11 @@ public class FormuleAntwoordManager implements ActionListener {
  // plaats compoenenten antwoordbox
     //Component[] r30 = {titleAntwoordLabel, hgl() };
     Component[] r31 = {ra(0,130),   antwoordEditorPanel};
-    Component[] k3 = {hb(r31)};
+    Component[] r32 = {feedbackCB,hgl()};
+    Component[] k3 = {vst(10),hb(r31)};
     antwoordBox = vb(k3);
+    
+    
     
  // plaats componenten feedback box
     Component[] r51 = {titleFeedbackLabel,  ra(5,10),   hgl()};
@@ -291,14 +308,20 @@ public class FormuleAntwoordManager implements ActionListener {
     mainPanel.add(boxh);
     
     Box boxv1 = Box.createVerticalBox();
+    boxh.add(ra(20,0));
     boxh.add(boxv1);
+    boxh.add(ra(20,0));
+    boxh.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, WiskOpdr.colorBlue3));
+    
     
     Box boxh2 = Box.createHorizontalBox();
+    
     Box boxh3 = Box.createHorizontalBox();
     
     boxv1.add(boxh2);
     boxv1.add(Box.createVerticalStrut(20));
     boxv1.add(boxh3);
+    boxv1.add(Box.createVerticalStrut(10));
     
     boxh2.add(antwoordBox);
     
@@ -310,6 +333,8 @@ public class FormuleAntwoordManager implements ActionListener {
     boxh3.add(vormBox);
     //boxh3.add(Box.createHorizontalGlue());
     boxh3.add(feedbackBox);
+    
+    setFeedbackOption(false);
   }
   
   private Box hb(Component[] c) {
@@ -380,14 +405,76 @@ private Component ra(int w, int h) {
   
   public Hashtable getEditState()  {
     Hashtable interactiePanelLaunchState = new Hashtable();
+    
+    String antwoordString = null;
+    String vormString = "$f@";
+    boolean herleiding = false;
+    boolean exact = false;
+    boolean significant = false;
+    double eqTestValueMin = 0;
+    double eqTestValueMax = 5;
+    int puntenGelijkwaardig = 10;
+    int puntenHerleiding = 0;
+    int puntenExact = 0; 
+    int puntenSignificant = 0; 
+    boolean hasFeedback = false;
     Hashtable[] answerModels;
     boolean scoreCumulatief = false;
     
+    antwoordString = antwoordvak.geefFormuleVak().toString();
+    String[] vormStrings = vormEditor.geefRegels();
+    if(vormStrings.length==1) vormString = vormEditor.geefFormuleVak().toString();
+    else {   vormString = "$f";
+        for(int i=0 ; i<vormStrings.length ; i++) {   
+          vormString = vormString + vormStrings[i].substring(2,vormStrings[i].length()-1) + "::";
+        }
+        vormString = vormString.substring(0,vormString.length()-2) + "@";
+    }
+    herleiding = this.herleiding;
+    exact = this.exact;
+    significant = this.significant;
+    try {   
+      puntenGelijkwaardig = Integer.parseInt(gelijkwaardigPV.getText());
+       this.puntenGelijkwaardig = puntenGelijkwaardig;
+    }   
+    catch(Exception ex) {}
+    try {   
+      puntenHerleiding = Integer.parseInt(herleidingPV.getText());
+       this.puntenHerleiding = puntenHerleiding;
+    }   
+    catch(Exception ex) {}
+    try {   
+      puntenExact = Integer.parseInt(exactPV.getText());
+        this.puntenExact = puntenExact;
+    }   
+    catch(Exception ex) {}
+    try {   
+      puntenSignificant = Integer.parseInt(significantPV.getText());
+        this.puntenSignificant = puntenSignificant;
+    }   
+    catch(Exception ex) {}
+    
     getAnswerModel();
     answerModels = this.answerModels;
-    if(answerModels!=null)setAnswerModel(answerModels[0]);
+    if(answerModels!=null)
+      setAnswerModel(answerModels[0]);
     
+    hasFeedback = this.hasFeedback;
     scoreCumulatief = scoreCumulatiefCB.isSelected();
+    
+    interactiePanelLaunchState.put("antwoordString",antwoordString);
+    interactiePanelLaunchState.put("vormString",vormString);
+    interactiePanelLaunchState.put("herleiding",new Boolean(herleiding));
+    interactiePanelLaunchState.put("exact",new Boolean(exact));
+    interactiePanelLaunchState.put("significant",new Boolean(significant));
+    interactiePanelLaunchState.put("puntenGelijkwaardig",new Integer(puntenGelijkwaardig));
+    interactiePanelLaunchState.put("puntenHerleiding",new Integer(puntenHerleiding));
+    interactiePanelLaunchState.put("puntenExact",new Integer(puntenExact));
+    interactiePanelLaunchState.put("puntenSignificant",new Integer(puntenSignificant));
+    interactiePanelLaunchState.put("hasFeedback",new Boolean(hasFeedback));
+    interactiePanelLaunchState.put("eqTestValueMin",new Double(eqTestValueMin));
+    interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
+
     interactiePanelLaunchState.put("answerModels",answerModels);
     interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
     interactiePanelLaunchState.put("antwoordSubStrings",antwoordSubStrings);
@@ -397,13 +484,47 @@ private Component ra(int w, int h) {
   }
   
   public void setEditState(Hashtable interactiePanelLaunchState) {
+    String antwoordString = null;
+    String vormString = "$f@";
+    boolean herleiding = false;
+    boolean exact = false;
+    boolean significant = false;
+    double eqTestValueMin = 0;
+    double eqTestValueMax = 5;
+    int puntenGelijkwaardig = 10;
+    int puntenHerleiding = 0;
+    int puntenExact = 0; 
+    int puntenSignificant = 0; 
+    boolean formuleToolBijFocus = false;
+    boolean hasFeedback = false;
     Hashtable[] answerModels = null;
     boolean scoreCumulatief = false;
+    
+    if(interactiePanelLaunchState.containsKey("antwoordString")) antwoordString = (String)interactiePanelLaunchState.get("antwoordString");
+    if(interactiePanelLaunchState.containsKey("vormString")) vormString = (String)interactiePanelLaunchState.get("vormString");
+    if(interactiePanelLaunchState.containsKey("herleiding")) herleiding = ((Boolean)interactiePanelLaunchState.get("herleiding")).booleanValue();
+    if(interactiePanelLaunchState.containsKey("exact")) exact = ((Boolean)interactiePanelLaunchState.get("exact")).booleanValue();
+    if(interactiePanelLaunchState.containsKey("significant")) significant = ((Boolean)interactiePanelLaunchState.get("significant")).booleanValue();
+    if(interactiePanelLaunchState.containsKey("puntenGelijkwaardig")) puntenGelijkwaardig = ((Integer)interactiePanelLaunchState.get("puntenGelijkwaardig")).intValue();
+    if(interactiePanelLaunchState.containsKey("puntenHerleiding")) puntenHerleiding = ((Integer)interactiePanelLaunchState.get("puntenHerleiding")).intValue();
+    if(interactiePanelLaunchState.containsKey("puntenExact")) puntenExact = ((Integer)interactiePanelLaunchState.get("puntenExact")).intValue();
+    if(interactiePanelLaunchState.containsKey("puntenSignificant")) puntenSignificant = ((Integer)interactiePanelLaunchState.get("puntenSignificant")).intValue();
+    if(interactiePanelLaunchState.containsKey("hasFeedback")) hasFeedback = ((Boolean)interactiePanelLaunchState.get("hasFeedback")).booleanValue();
+    if(interactiePanelLaunchState.containsKey("eqTestValueMin")) eqTestValueMin = ((Double)interactiePanelLaunchState.get("eqTestValueMin")).doubleValue();
+    if(interactiePanelLaunchState.containsKey("eqTestValueMax")) eqTestValueMax = ((Double)interactiePanelLaunchState.get("eqTestValueMax")).doubleValue();
     
     if(interactiePanelLaunchState.containsKey("answerModels")) answerModels = (Hashtable[])interactiePanelLaunchState.get("answerModels");
     if(interactiePanelLaunchState.containsKey("scoreCumulatief")) scoreCumulatief = ((Boolean)interactiePanelLaunchState.get("scoreCumulatief")).booleanValue();
     if(interactiePanelLaunchState.containsKey("antwoordSubStrings")) antwoordSubStrings = (String[])interactiePanelLaunchState.get("antwoordSubStrings");
     if(interactiePanelLaunchState.containsKey("antwoordFuncStrings")) antwoordFuncStrings = (String[])interactiePanelLaunchState.get("antwoordFuncStrings");
+    
+    this.herleiding = herleiding;
+    this.exact = exact;
+    this.significant = significant;
+    this.puntenGelijkwaardig = puntenGelijkwaardig;
+    this.puntenHerleiding = puntenHerleiding;
+    this.puntenExact = puntenExact;
+    this.puntenSignificant = puntenSignificant;
     
     if(answerModels != null) {   
       this.answerModels = new Hashtable[answerModels.length];
@@ -413,33 +534,71 @@ private Component ra(int w, int h) {
     }
     scoreCumulatiefCB.setSelected(scoreCumulatief);
     
-    aantalAnswerModels = answerModels.length;
-    antwoordEditorPanel.remove(tabbladTab);
-    tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
-    tabbladTab.setTab(true);
-    tabbladTab.setScoresVisible(false);
-    tabbladTab.setSize(tabbladTab.getSize().width, 23);
-    tabbladTab.addActionListener(this);
-    tabbladTab.setBackground(new Color(210,210,210));
-    tabbladTab.setSelected(answerModelNr+1);
-    antwoordEditorPanel.add(tabbladTab,0);
-    aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,24);
+    if(hasFeedback) {
+      aantalAnswerModels = answerModels.length;
+      antwoordEditorPanel.remove(tabbladTab);
+      tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
+      tabbladTab.setTab(true);
+      tabbladTab.setScoresVisible(false);
+      tabbladTab.setSize(tabbladTab.getSize().width, 23);
+      tabbladTab.addActionListener(this);
+      tabbladTab.setBackground(new Color(210,210,210));
+      tabbladTab.setSelected(answerModelNr+1);
+      antwoordEditorPanel.add(tabbladTab,0);
+      aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,24);
+      
+      answerModelNr = 0;
+      setAnswerModel();
+      antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,450),140));
+    }
     
-    answerModelNr = 0;
-    setAnswerModel();
-    antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,450),140));
-
+    antwoordvak.geefFormuleVak().vulVak(antwoordString);
+    String[] vormStrings = StringUtils.split(vormString, "::");
+    for(int i=0 ; i<vormStrings.length ; i++)
+    {   if(i==0) vormStrings[i] = vormStrings[i] + "@";
+        else if(i==vormStrings.length-1) vormStrings[i] = "$f" + vormStrings[i];
+        else  vormStrings[i] = "$f" + vormStrings[i] + "@";
+    }
+    vormEditor.zetRegels(vormStrings);
+    
+    gelijkwaardigPV.setText(""+puntenGelijkwaardig);
+    
+    setFeedbackOption(hasFeedback);
+    feedbackCB.setSelected(hasFeedback);
+    if(hasFeedback) {
+         ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+        return;
+    }
+    
+    herleidingCB.setSelected(herleiding);
+    herleidingPV.setVisible(herleiding);
+    herleidingPV.setText(""+puntenHerleiding);
+    
+    vormEditor.setVisible(herleiding);
+    vormBox.setVisible(herleiding);
+    
+    exactCB.setSelected(exact);
+    exactPV.setVisible(exact);
+    exactPV.setText(""+puntenExact);
+    
+    significantCB.setSelected(significant);
+    significantPV.setVisible(significant && significantieAan);
+    significantPV.setText(""+puntenSignificant);
+    
   }
   
   public int getScoreMax() {
-    int scoreMax = puntenFeedback;
-    if(scoreCumulatiefCB.isSelected()) {
-        scoreMax = 0;
-        for(int i=0 ; i<answerModels.length ; i++) {
-            scoreMax += (Integer)answerModels[i].get("puntenFeedback");
-        }
+    int scoreMax = puntenGelijkwaardig + puntenHerleiding + puntenExact;
+    if(hasFeedback) {
+      scoreMax = puntenFeedback;
+      if(scoreCumulatiefCB.isSelected()) {
+          scoreMax = 0;
+          for(int i=0 ; i<answerModels.length ; i++) {
+              scoreMax += (Integer)answerModels[i].get("puntenFeedback");
+          }
+      }
     }
-    return scoreMax;
+     return scoreMax;
   }
 
   @Override
@@ -455,6 +614,16 @@ private Component ra(int w, int h) {
             tabPositieKnop.setLocation(246+25*answerModelNr+5 ,0);
         }
         
+    }
+    else if(e.getSource()==feedbackCB)
+    {   setFeedbackOption(feedbackCB.isSelected());
+        if(berekeningVakEditPanel!=null)
+          berekeningVakEditPanel.pack();
+        if(strategieVakEditPanel!=null)
+          strategieVakEditPanel.pack();
+    }
+    else if(e.getSource()==scoreCumulatiefCB) {   
+      updateFeedbackTitelLabel();
     }
     else if(e.getSource() == tabPositieKnop)
     {   if(e.getActionCommand().equals("plus") && answerModelNr<aantalAnswerModels-1) 
@@ -527,7 +696,7 @@ private Component ra(int w, int h) {
     else if(e.getSource()==herleidingCB)
     {   boolean b = herleidingCB.isSelected();
         herleiding = b; //herleiding wordt gebruikt voor vormen en moet op false blijven staan
-       // if(!hasFeedback && answerModelNr==0)herleidingPV.setVisible(b);
+        if(!hasFeedback && answerModelNr==0)herleidingPV.setVisible(b);
         // herleidingsKeuze.setVisible(b);
         vormEditor.setVisible(b);
         vormBox.setVisible(b);
@@ -543,10 +712,10 @@ private Component ra(int w, int h) {
     else if(e.getSource()==exactCB)
     {   boolean b = exactCB.isSelected();
         exact = b;
-//        if(!hasFeedback && answerModelNr==0) {
-//            exactPV.setVisible(b);
-//            verificatieBox.validate();
-//        }
+        if(!hasFeedback && answerModelNr==0) {
+            exactPV.setVisible(b);
+            verificatieBox.validate();
+       }
         if(b)
         {   gelijkwaardigPV.setText("0");
             exactPV.setText("10");
@@ -564,16 +733,14 @@ private Component ra(int w, int h) {
             puntenExact = 0;
         }   
     }
-    else if(e.getSource()==significantCB)
-    {
-        boolean b = significantCB.isSelected();
-        significant = b;
-//        if(!hasFeedback && answerModelNr==0)
-//        if(!hasFeedback && answerModelNr==0) {
-//            significantPV.setVisible(b);
-//            significantPV.validate();
-//        }
+    else if(e.getSource()==significantCB) {
+        significant = significantCB.isSelected();
+        if(!hasFeedback && answerModelNr==0) {
+            significantPV.setVisible(significant);
+            significantPV.validate();
+        }
     }
+    
   }
   
   private Hashtable fillAnswerModel(Hashtable h)
@@ -741,7 +908,37 @@ private Component ra(int w, int h) {
       
       //logMisconceptionsButton.setChoices(logMisconceptions);
       
-      //updateFeedbackTitelLabel();
+      updateFeedbackTitelLabel();
+  }
+  
+  public void setFeedbackOption(boolean b)
+  {
+      hasFeedback = b;
+      tabbladTab.setVisible(b);
+      feedbackEditor.setVisible(b);
+      if(feedbackBox!=null)
+            feedbackBox.setVisible(b);
+      //feedbackSizeCB.setVisible(b);
+      //feedbackLabel.setVisible(b);
+      aantalTabsKnop.setVisible(b);
+      tabPositieKnop.setVisible(b);
+      feedbackPV.setVisible(b);
+      goedFoutIP.setVisible(b);
+      if(scoringBox!=null)
+          scoringBox.setVisible(b);
+      titleVerificatieScoreLabel.setVisible(!b);
+      //puntenLabel.setVisible(!b);
+      gelijkwaardigPV.setVisible(!b);
+      if(b || herleiding) herleidingPV.setVisible(!b);
+      if(b || exact) exactPV.setVisible(!b);
+      if(b || significant && significantieAan) significantPV.setVisible(!b);
+      
+      if(!b)
+              scoreCumulatiefCB.setSelected(false);
+      
+      answerModelNr = 0;
+      tabbladTab.setSelected(answerModelNr+1);
+      if(b)setAnswerModel();
   }
   
   private void getAnswerModel()
@@ -758,6 +955,28 @@ private Component ra(int w, int h) {
   public void setContextVars(String[] subVars, String[] funcVars) {
     this.antwoordSubStrings = subVars;
     this.antwoordFuncStrings = funcVars;
+  }
+  
+  private void updateFeedbackTitelLabel()
+  {   String feedbackNrString = "";
+      if(hasFeedback && answerModelNr>0) {
+          feedbackNrString += (answerModelNr+1);
+          titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
+          titleFeedbackLabel.setText(WiskOpdr.rb.getString("feedbackLabel") + " " + feedbackNrString);
+          titleVerificatieLabel.setText(WiskOpdr.rb.getString("FEV_titleVerificatieLabel") + " " + feedbackNrString);
+          titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
+          titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
+          scoringBox.validate();
+     }
+      else {
+          titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
+          titleFeedbackLabel.setText(WiskOpdr.rb.getString("feedbackLabel"));
+          titleVerificatieLabel.setText(WiskOpdr.rb.getString("FEV_titleVerificatieLabel"));
+          titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
+          titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+          titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + (hasFeedback && !scoreCumulatiefCB.isSelected() ? " max" : " 1"));
+          scoringBox.validate();
+     }
   }
     
   public class EditorComponentListener implements ComponentListener {

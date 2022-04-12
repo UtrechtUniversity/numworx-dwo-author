@@ -342,7 +342,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
         tabbedPane.setForeground(WiskOpdr.colorBlue1);
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(0, -10, 0, 0));
         //tabbedPane.setBounds(0, 0, 1, 1);
-        tabbedPane.setMaximumSize(new Dimension(400,1200));
+        tabbedPane.setMaximumSize(new Dimension(1200,1200));
         tabbedPane.setOpaque(false);
         
         formuleAntwoordTabblad = formuleAntwoordManager.getPanel();
@@ -878,7 +878,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
 		{
 			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
 		}
-
+		
 		else if(e.getSource()==contextVarCB)
         {   contextBox.setVisible(contextVarCB.isSelected());
         		((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
