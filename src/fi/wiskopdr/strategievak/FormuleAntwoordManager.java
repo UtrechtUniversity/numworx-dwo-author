@@ -311,7 +311,7 @@ public class FormuleAntwoordManager implements ActionListener {
     boxh.add(ra(20,0));
     boxh.add(boxv1);
     boxh.add(ra(20,0));
-    boxh.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, WiskOpdr.colorBlue3));
+    boxh.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, WiskOpdr.colorBlue4));
     
     
     Box boxh2 = Box.createHorizontalBox();

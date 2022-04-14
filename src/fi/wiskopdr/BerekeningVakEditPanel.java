@@ -619,9 +619,11 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
         if(interactiePanelLaunchState.containsKey("hasFormuleAnswerModel")) hasFormuleAnswerModel = ((Boolean)interactiePanelLaunchState.get("hasFormuleAnswerModel")).booleanValue();
         if(interactiePanelLaunchState.containsKey("hasVergelijkingAnswerModel")) hasVergelijkingAnswerModel = ((Boolean)interactiePanelLaunchState.get("hasVergelijkingAnswerModel")).booleanValue();
         
-        if(check && !checkDocent) {
+        if(check && !checkDocent && hasFormuleAnswerModel) {
           if(interactiePanelLaunchState.containsKey("formuleAntwoordModel")) formuleAntwoordModel = (Hashtable)interactiePanelLaunchState.get("formuleAntwoordModel");
           formuleAntwoordManager.setEditState(formuleAntwoordModel);
+        }
+        if(check && !checkDocent && hasVergelijkingAnswerModel) {
           if(interactiePanelLaunchState.containsKey("vergelijkingAntwoordModel")) vergelijkingAntwoordModel = (Hashtable)interactiePanelLaunchState.get("vergelijkingAntwoordModel");
           vergelijkingAntwoordManager.setEditState(vergelijkingAntwoordModel);
             
@@ -782,10 +784,12 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
             interactiePanelLaunchState.put("hasFormuleAnswerModel",new Boolean(hasFormuleAnswerModel));
             interactiePanelLaunchState.put("hasVergelijkingAnswerModel",new Boolean(hasVergelijkingAnswerModel));
             
-            if(check && !checkDocent) {
+            if(check && !checkDocent && hasFormuleAnswerModel) {
               formuleAntwoordModel = formuleAntwoordManager.getEditState();
               scoreMax = formuleAntwoordManager.getScoreMax();
               interactiePanelLaunchState.put("formuleAntwoordModel",formuleAntwoordModel);
+            }
+            if(check && !checkDocent && hasVergelijkingAnswerModel) {
               vergelijkingAntwoordModel = vergelijkingAntwoordManager.getEditState();
               scoreMax += vergelijkingAntwoordManager.getScoreMax();
               interactiePanelLaunchState.put("vergelijkingAntwoordModel",vergelijkingAntwoordModel);

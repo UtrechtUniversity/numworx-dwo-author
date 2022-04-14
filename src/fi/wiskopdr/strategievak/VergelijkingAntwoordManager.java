@@ -728,7 +728,8 @@ public class VergelijkingAntwoordManager implements ActionListener {
     else if(e.getSource()==vormCB)
     {   boolean b = vormCB.isSelected();
         vorm = b; 
-        vormEditor.setVisible(b);
+        if(!hasFeedback && answerModelNr==0)vormPV.setVisible(b);
+          vormEditor.setVisible(b);
         vormBox.setVisible(b);
         if(b)
         {   eindOplossingNodig = false;
@@ -777,11 +778,15 @@ public class VergelijkingAntwoordManager implements ActionListener {
     {   boolean b = exactCB.isSelected();
         exact = b;
             
-        
+        if(!hasFeedback && answerModelNr==0) {
+          exactPV.setVisible(b);
+          verificatieBox.validate();
+      }
         
         if(b)
         {   eindOplossingNodig = true;
             eindOplossingCB.setSelected(true);
+            if(!hasFeedback)eindOplossingPV.setVisible(true);
             
             vorm = false;
             vormCB.setSelected(false);
@@ -815,9 +820,14 @@ public class VergelijkingAntwoordManager implements ActionListener {
     {
         boolean b = significantCB.isSelected();
         significant = b;
+        if(!hasFeedback && answerModelNr==0) {
+          significantPV.setVisible(b);
+          verificatieBox.validate();
+      }
         if(b)
         {   eindOplossingNodig = true;
             eindOplossingCB.setSelected(true);
+            if(!hasFeedback)eindOplossingPV.setVisible(true);
             eindOplossingPV.setText("10");
             puntenEindOplossing = 10;
         }
@@ -825,6 +835,10 @@ public class VergelijkingAntwoordManager implements ActionListener {
     else if(e.getSource()==eindOplossingCB)
     {   boolean b = eindOplossingCB.isSelected();
         eindOplossingNodig = b;
+        if(!hasFeedback && answerModelNr==0) {
+          eindOplossingPV.setVisible(b);
+          verificatieBox.validate();
+        }
         if(b)
         {   vorm = false;
             vormCB.setSelected(false);
