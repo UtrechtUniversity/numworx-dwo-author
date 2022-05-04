@@ -42,6 +42,7 @@ public class GridPane extends LinePane<GridModel> implements ItemListener {
 
 	@Override
 	public void commit() {
+		commitFields(snapField);
 		model.gravity = gravity.isSelected();
 		model.snap = ((Number) snapField.getValue()).intValue();
 		super.commit();
