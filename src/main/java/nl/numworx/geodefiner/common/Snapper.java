@@ -5,7 +5,8 @@ import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.math.Numbers;
 
 public abstract class Snapper {
-	protected final int SNAP = 5;
+	public final static int DEFAULT_SNAP = 5;
+	protected int SNAP = DEFAULT_SNAP;
 
 	protected boolean gravity;
 	
@@ -15,6 +16,10 @@ public abstract class Snapper {
 
 	public boolean isGravity() {
 		return gravity;
+	}
+	
+	public void setSnap(int s) {
+		this.SNAP = s;
 	}
 	
 	public void snap(FreePoint fp, Model model) {
