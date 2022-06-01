@@ -59,7 +59,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 
 		@Override
 		public int getColumnCount() {
-			return 3;
+			return 4;
 		}
 
 		@Override
@@ -68,12 +68,13 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 			case 0: return "Object_" + (rowIndex + 1);
 			case 1: return checkObjects.getElementAt(rowIndex).getFormule();
 			case 2: return checkObjects.getElementAt(rowIndex).getMaxScore();
+			case 3: return checkObjects.getElementAt(rowIndex).getMarge();
 			}
 			return null;
 		}
 
-		final String[] names = { "NAME", "VALUE", "SCORE" };
-		final Class[] classes = { String.class, String.class, Integer.class };
+		final String[] names = { "NAME", "VALUE", "SCORE", "MARGE" };
+		final Class[] classes = { String.class, String.class, Integer.class, Double.class };
 		/* (non-Javadoc)
 		 * @see javax.swing.table.AbstractTableModel#getColumnName(int)
 		 */
@@ -106,6 +107,7 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 			switch(columnIndex) {
 			case 1: checkObjects.getElementAt(rowIndex).setFormule(aValue.toString()); break;
 			case 2: checkObjects.getElementAt(rowIndex).setMaxScore((Number)aValue); break;
+			case 3: checkObjects.getElementAt(rowIndex).setMarge((Number) aValue); break;
 			}
 		}
 
