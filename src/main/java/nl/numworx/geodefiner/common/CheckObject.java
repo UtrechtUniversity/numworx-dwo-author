@@ -78,6 +78,11 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 				setMaxScore(map.getInt("score"));
 		else 
 			setMaxScore(0);
+		if (map.containsKey("marge")) {
+			setMarge(map.getDouble("marge"));
+		} else {
+			setMarge(null);
+		}
 		if(map.containsKey("value")) 
 				setFormule(map.getString("value"));
 		else
@@ -90,6 +95,7 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 			map.put("score", maxScore);
 		if(!formule.isEmpty())
 			map.put("value", formule);
+		map.put("marge", marge.doubleValue());
 		return map;
 	}
 	
@@ -191,7 +197,7 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 		//if(item == this.item) return present;
 		if(eq == null || !cache.isDefined())
 			return Label.UNKNOWN;
-		Numbers test = Numbers.ONE;
+		Numbers test = Numbers.NaN;
 		synchronized(eq) {
 			eq.reset();
 			item.visit(eq);
@@ -281,6 +287,21 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 	@Override
 	public int compareTo(CheckObject o) {
 		return Integer.signum(order-o.order);
+	}
+
+	public double getMarge() {
+		return marge.doubleValue();
+	}
+	public void setMarge(Number marge) {
+		if (marge == null) {
+			this.marge = Numbers.createDouble(0.01);
+		} else if (marge instanceof Integer) { // byte/short?
+			this.marge = Numbers.createInteger(marge.intValue());
+		} else if (marge instanceof Long) {
+			this.marge = Numbers.createRational(marge.longValue(), 1L);
+		} else {
+			this.marge = Numbers.createDouble(marge.doubleValue());
+		}
 	}
 	
 }
