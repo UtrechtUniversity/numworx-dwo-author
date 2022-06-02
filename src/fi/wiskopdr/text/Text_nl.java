@@ -602,8 +602,8 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_lineText_InteractieSoorten", "Interactiesoorten"},
                 {"TVEP_lineText_InteractieVerwerking", "Interactieverwerking"},
                 
-                {"TVEP_respToggleWidthLabel", "minimale totale breedte"},
-                {"TVEP_respMinLabel", "min"},
+                {"TVEP_respToggleWidthLabel", "Togglebreedte parentvak"},
+                {"TVEP_respMinLabel", "toggle bij"},
                 {"TVEP_respMaxLabel", "max"},
                 {"TVEP_respConstantLabel", "constante"},
                 {"TVEP_respFactorLabel", "factor"},

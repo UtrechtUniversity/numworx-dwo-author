@@ -392,7 +392,6 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		//add(optionsPanel,0);
 		
 		tabbedPane = new JTabbedPane();
-		//tabbedPane.setBackground(getBackground());
 		tabbedPane.setUI(new BasicTabbedPaneUI() {
             @Override
             protected void paintTabBackground(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected)  {
@@ -402,16 +401,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
             }
             @Override
             protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
-            //	g.setColor(WiskOpdr.colorBlue4);
-            	//g.drawLine(1, 20, 1, tabbedPane.getHeight());
-            //	g.setColor(WiskOpdr.colorBlue4);
-            //g.drawRect(0, this.getTabBounds(selectedIndex,new Rectangle()).height, tabbedPane.getWidth()-1, tabbedPane.getHeight()-this.getTabBounds(0,new Rectangle()).height-1);
             }
             @Override
             protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
             	g.setColor(WiskOpdr.colorBlue4);
-            	//if(isSelected)g.drawRect(0, 0, tabbedPane.getWidth()-1, tabbedPane.getHeight()-1);
-            	//else 
             	g.drawRect(x, y, w, h);
             }
             @Override
@@ -425,19 +418,6 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
             	g.setFont(font);
             	g.drawString(title, textRect.x, textRect.y+textRect.height-2);
             }
-//            protected void paintContentBorderTopEdge(Graphics g, int tabPlacement,int selectedIndex,int x, int y,int w,int h) {
-//              g.setColor(WiskOpdr.colorBlue4);
-//              g.fillRect(x,y,w+1,1);
-//              g.setColor(WiskOpdr.colorGray3);
-//              g.fillRect(x,y+1,w+1,h);
-//            }
-//            protected void paintContentBorderLeftEdge(Graphics g, int tabPlacement,int selectedIndex,int x, int y,int w,int h) {
-//              g.setColor(WiskOpdr.colorBlue4);
-//              g.fillRect(x,y,1,100);
-//              g.setColor(WiskOpdr.colorGray1);
-//              g.fillRect(x+1,y,5,100+1);
-//            }
-
         });
 		tabbedPane.setForeground(WiskOpdr.colorBlue1);
 		tabbedPane.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
@@ -952,7 +932,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		responsiveToggleWidthLabel.setFont(ifFont);
 		responsiveToggleWidthLabel.setVisible(false);
 		
-		responsiveToggleWidthTF = new WiskOpdrTextField("");
+		responsiveToggleWidthTF = new WiskOpdrTextField("800");
 		responsiveToggleWidthTF.setPreferredSize(new Dimension(50,20));
 		responsiveToggleWidthTF.setFont(ifFont);
 		responsiveToggleWidthTF.addActionListener(this);
@@ -1180,15 +1160,16 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component[] r212 = {ra(35,0),	logIDLabelLabel, ra(5,0),logIDLabelField,	 hgl()  };
 		Component[] r123 = {templateModeEditCB,ra(10,0),hgl()};
         Component[] r124 = {templateModeFillCB,ra(10,0),hgl()};
-        Component[] r125 = {responsiveCB,  ra(10,0),   hgl(), responsiveMinLabel, ra(5,0), responsiveMinWidthTF,  ra(10,0), responsiveMaxLabel, ra(5,0), responsiveMaxWidthTF};
-        Component[] r126 = {  hgl(), responsiveFactorLabel, ra(5,0), responsiveFactorTF,  ra(10,0), responsiveConstantLabel, ra(5,0), responsiveConstantTF};
+        Component[] r125 = {responsiveCB, ra(10,0), responsiveToggleWidthLabel, ra(10,0), responsiveToggleWidthTF, hgl()};
+        Component[] r126 = {  ra(110,0), responsiveMinLabel, ra(5,0), responsiveMinWidthTF,  hgl(),ra(10,0), responsiveMaxLabel, ra(5,0), responsiveMaxWidthTF};
+        Component[] r126a = { ra(110,0), responsiveFactorLabel, ra(5,0), responsiveFactorTF, hgl(), ra(10,0), responsiveConstantLabel, ra(5,0), responsiveConstantTF};
         Component[] r127 = {fullScreenCB,  ra(10,0),   hgl()};
 		
 		selectionObjectBoxIP = hb(r23);	
 		vd = 3;
 		Component[] k2 = {hb(kenmerkenLine), ra(0,vd),hb(r21), ra(0,vd), hb(r22), ra(0,15), hb(soortenLine),ra(0,vd), selectionObjectBoxIP, ra(0,vd), hb(r24), ra(0,vd), hb(r25), 
 				ra(0,vd), hb(r26), ra(0,vd), hb(r27),  ra(0,vd), hb(r118),hb(r119),hb(r120),hb(r121),ra(0,15), hb(verwerkingLine), ra(0,vd),hb(r28), ra(0,vd), hb(r29), ra(0,vd), hb(r210), 
-				ra(0,vd), hb(r211), ra(0,vd), hb(r212), spaceTest1, hb(testLine), hb(r123),spaceTest2, hb(r124),spaceTest3, hb(r125),ra(0,vd), hb(r126),ra(0,vd), hb(r127),vgl()};
+				ra(0,vd), hb(r211), ra(0,vd), hb(r212), spaceTest1, hb(testLine), hb(r123),spaceTest2, hb(r124),spaceTest3, hb(r125),ra(0,vd), hb(r126a),ra(0,vd), hb(r126),ra(0,vd), hb(r127),vgl()};
 		
 		Box interactionOptionsBox = vb(k2);
 		interactionOptionsPanel.add(interactionOptionsBox);
@@ -2161,12 +2142,18 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     	if(layerNr<layerChoice.getItemCount())
     		layerChoice.setSelectedIndex(layerNr);
     	
+    	double responsiveToggleWidthMust = (responsiveMinWidth - responsiveConstant)/responsiveFactor;
+    	if(Math.abs(responsiveToggleWidthMust - responsiveToggleWidth) > 2)
+    	  responsiveToggleWidth = (int)Math.round(responsiveToggleWidthMust);
+    	
     	responsiveCB.setSelected(responsive);
     	responsiveToggleWidthTF.setVisible(responsive);
     	responsiveToggleWidthTF.setText(""+responsiveToggleWidth);
+    	responsiveToggleWidthLabel.setVisible(responsive);
     	responsiveMinLabel.setVisible(responsive);
     	responsiveMinWidthTF.setVisible(responsive);
     	responsiveMinWidthTF.setText(""+responsiveMinWidth);
+    	responsiveMinWidthTF.setEnabled(false);
     	responsiveMaxLabel.setVisible(responsive);
     	responsiveMaxWidthTF.setVisible(responsive);
     	responsiveMaxWidthTF.setText(""+responsiveMaxWidth);
@@ -2333,6 +2320,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         	}
         if(e.getSource().equals(responsiveToggleWidthTF))
         {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
+            responsiveMinWidth = (int)(responsiveFactor*responsiveToggleWidth + responsiveConstant);
+            responsiveMinWidthTF.setText("" + responsiveMinWidth);
             updateTekstVakPanel();
         }
         if(e.getSource().equals(responsiveMinWidthTF))
@@ -2345,10 +2334,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         }
         if(e.getSource().equals(responsiveConstantTF))
         {   responsiveConstant = Integer.parseInt(responsiveConstantTF.getText());
+            responsiveMinWidth = (int)(responsiveFactor*responsiveToggleWidth + responsiveConstant);
+            responsiveMinWidthTF.setText("" + responsiveMinWidth);
             updateTekstVakPanel();
         }
         if(e.getSource().equals(responsiveFactorTF))
         {   responsiveFactor = Double.parseDouble(responsiveFactorTF.getText());
+            responsiveMinWidth = (int)(responsiveFactor*responsiveToggleWidth + responsiveConstant);
+            responsiveMinWidthTF.setText("" + responsiveMinWidth);
             updateTekstVakPanel();
         }
     }
@@ -3005,6 +2998,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 	    if(e.getSource().equals(responsiveCB))
         {   responsive = responsiveCB.isSelected();
+            responsiveToggleWidthLabel.setVisible(responsive);
+            responsiveToggleWidthTF.setVisible(responsive);
             responsiveMinLabel.setVisible(responsive);
             responsiveMinWidthTF.setVisible(responsive);
             responsiveMaxLabel.setVisible(responsive);
@@ -3022,22 +3017,28 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         
 	    if(e.getSource().equals(responsiveToggleWidthTF))
         {   responsiveToggleWidth = Integer.parseInt(responsiveToggleWidthTF.getText());
+            responsiveMinWidth = (int)(responsiveFactor*responsiveToggleWidth + responsiveConstant);
+            responsiveMinWidthTF.setText("" + responsiveMinWidth);
             updateTekstVakPanel();
         }
-	    if(e.getSource().equals(responsiveMinWidthTF))
-        {  	responsiveMinWidth = Integer.parseInt(responsiveMinWidthTF.getText());
-       		updateTekstVakPanel();
+        if(e.getSource().equals(responsiveMinWidthTF))
+        {   responsiveMinWidth = Integer.parseInt(responsiveMinWidthTF.getText());
+            updateTekstVakPanel();
         }
-	    if(e.getSource().equals(responsiveMaxWidthTF))
+        if(e.getSource().equals(responsiveMaxWidthTF))
         {   responsiveMaxWidth = Integer.parseInt(responsiveMaxWidthTF.getText());
-       		updateTekstVakPanel();
+            updateTekstVakPanel();
         }
-	    if(e.getSource().equals(responsiveConstantTF))
+        if(e.getSource().equals(responsiveConstantTF))
         {   responsiveConstant = Integer.parseInt(responsiveConstantTF.getText());
-       		updateTekstVakPanel();
+            responsiveMinWidth = (int)(responsiveFactor*responsiveToggleWidth + responsiveConstant);
+            responsiveMinWidthTF.setText("" + responsiveMinWidth);
+            updateTekstVakPanel();
         }
-	    if(e.getSource().equals(responsiveFactorTF))
+        if(e.getSource().equals(responsiveFactorTF))
         {   responsiveFactor = Double.parseDouble(responsiveFactorTF.getText());
+            responsiveMinWidth = (int)(responsiveFactor*responsiveToggleWidth + responsiveConstant);
+            responsiveMinWidthTF.setText("" + responsiveMinWidth);
             updateTekstVakPanel();
         }
 	}
