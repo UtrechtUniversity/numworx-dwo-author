@@ -227,6 +227,7 @@ TOKEN:
                  | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd"|"rnq"
                  | "sgf" | "binomcdf" | "binompdf" | "invNorm"| "normalcdf" | "poissoncdf" | "poissonpdf"
                  | "exists" | "dragging" | "conic"
+                 | "color" | "linetype"
                  ) >
 | < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln"|"log"|"sec"|"csc"|"cot") >
 | < SUCHTHAT : "suchthat" >
