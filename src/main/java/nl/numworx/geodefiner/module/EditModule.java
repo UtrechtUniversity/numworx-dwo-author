@@ -37,6 +37,7 @@ import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.HerleidList;
 import nl.numworx.geodefiner.Instance;
 import nl.numworx.geodefiner.InstanceViewer;
+import nl.numworx.geodefiner.IsColor;
 import nl.numworx.geodefiner.ToolboxPanel;
 import nl.numworx.geodefiner.WiskOpdrRandomizer;
 import nl.numworx.geodefiner.common.CheckObjectList;
@@ -135,6 +136,9 @@ public abstract class EditModule {
 	    
 	    @Provides @IntoMap @StringKey("list1.list") static
 	    LabelDelegate herleidList() { return new HerleidList(); }
+
+	    @Provides @IntoMap @StringKey("geodefiner.color") static
+		LabelDelegate isColor() { return new IsColor(); }
 
 	    @Provides @Singleton static
 	    Definitions definitions(InstanceViewer tracker, UIModelFactory fac) {

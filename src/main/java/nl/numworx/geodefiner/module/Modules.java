@@ -27,6 +27,7 @@ import fi.euclides.swing.AWTViewer;
 import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.HerleidList;
 import nl.numworx.geodefiner.InstanceViewer;
+import nl.numworx.geodefiner.IsColor;
 import nl.numworx.geodefiner.WiskOpdrRandomizer;
 import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.DefaultRandomizer;
@@ -69,6 +70,10 @@ public abstract class Modules {
 	
 	@Provides @IntoMap @StringKey("list1.list") static
 	LabelDelegate herleidList() { return new HerleidList(); }
+	
+	@Provides @IntoMap @StringKey("geodefiner.color") static
+	LabelDelegate isColor() { return new IsColor(); }
+	
 	
 	@Provides @Singleton static
 	ToC toc() { return new ToC(); }

@@ -48,7 +48,7 @@ public class ColorHandler extends EventHandler {
 
 	JPanel panel;
 	JRadioButton[] radios = new JRadioButton[8];
-	Color colors[]= {
+	static Color colors[]= {
 			new Color(69,123,59),
 			new Color(49,100,186),
 			new Color(194,62,56),
@@ -92,6 +92,9 @@ public class ColorHandler extends EventHandler {
 				String name = getTracker().getMapper().toString(p);
 				Map<String,Object> pstate = state.computeIfAbsent(name, k -> new TreeMap<>());
 				pstate.put("color", value.getRGB());
+// shortcut
+				IsColor iscolor = p.adapt(IsColor.class);
+				if (iscolor != null) iscolor.updateColor();
 			}
 			getModel().clearSelection();
 		});

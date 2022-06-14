@@ -319,6 +319,8 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 	}
 
 	public List toList() {
+		if (table.isEditing())
+		     table.getCellEditor().stopCellEditing();
 		return checkObjects.toList();
 	}
 
