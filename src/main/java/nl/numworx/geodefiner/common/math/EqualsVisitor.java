@@ -23,6 +23,9 @@ import nl.numworx.geodefiner.common.UnnamedPoint;
 import nl.numworx.geodefiner.common.Volgpunt;
 
 public class EqualsVisitor implements Visitor {
+	
+	
+	public final static Numbers INFINITY = Numbers.createDouble(Double.POSITIVE_INFINITY);
 
 	private static Numbers bracket(Numbers x1, Numbers y1, Lijn l) {
 		Numbers x2 = l.getX1n();
@@ -43,11 +46,11 @@ public class EqualsVisitor implements Visitor {
 		return Numbers.abs(Numbers.sub(model.getO().getX(), model.getU().getX()));
 	}
 
-	Numbers test = Numbers.ONE;
+	private Numbers test = INFINITY;
 	final private Destroyable b;
 	
 	public void reset() {
-		test = Numbers.ONE;
+		test = INFINITY;
 	}
 
 	public Numbers test() {
@@ -66,10 +69,10 @@ public class EqualsVisitor implements Visitor {
 	@Override
 	public void visitPunt(Punt p) {
 		if (b instanceof NamedPoint) {
-			test = ((NamedPoint) b).similar(p) ? Numbers.ZERO : Numbers.ONE;
+			test = ((NamedPoint) b).similar(p) ? Numbers.ZERO : INFINITY;
 		} else
 		if (b instanceof UnnamedPoint) {
-		  test = ((UnnamedPoint) b).similar(p) ? Numbers.ZERO : Numbers.ONE;
+		  test = ((UnnamedPoint) b).similar(p) ? Numbers.ZERO : INFINITY;
 		} else
 		if (b instanceof Punt) {
 			Punt pb = (Punt) b;
@@ -88,11 +91,11 @@ public class EqualsVisitor implements Visitor {
 	@Override
 	public void visitLijn(Lijn a) {
 		if (a instanceof Ray ^ b instanceof Ray) {
-			test = Numbers.ONE;
+			test = INFINITY;
 			return;
 		}
-		test = a .equals(b) ? Numbers.ZERO : Numbers.ONE;
-		if (test == Numbers.ONE && b instanceof Lijn && !(b instanceof Segment))
+		test = a .equals(b) ? Numbers.ZERO : INFINITY;
+		if (test == INFINITY && b instanceof Lijn && !(b instanceof Segment))
 		{
 			Lijn lb = (Lijn) b;
 			Numbers scale = Numbers.hypot(lb.getDXn(), lb.getDYn());
@@ -100,6 +103,7 @@ public class EqualsVisitor implements Visitor {
 							    bracket(a.getX2n(),a.getY2n(), lb)
 					);
 			test = Numbers.div(test, scale);
+			test = Numbers.div(test, getScale());
 			if(a instanceof Ray && lb instanceof Ray) {
 				test = Numbers.div (Numbers.add(test, puntenTest(((Ray) a).getP1(),((Ray) lb).getP1())),Numbers.TWO);
 			}
@@ -108,11 +112,11 @@ public class EqualsVisitor implements Visitor {
 
 	@Override
 	public void visitCirkel(Cirkel a) {
-		test = a .same(b) ? Numbers.ZERO : Numbers.ONE;
-		if (test == Numbers.ONE && b instanceof Cirkel) {
+		test = a .same(b) ? Numbers.ZERO : INFINITY;
+		if (test == INFINITY && b instanceof Cirkel) {
 			Cirkel cb = (Cirkel) b;
 			test = puntenTest(cb.getCenter(), a.getCenter());
-			Numbers rtest = Numbers.abs(Numbers.sub(a.getR2n(), cb.getR2n()));
+			Numbers rtest = Numbers.createDouble(Math.abs(a.getD() - cb.getD())/2.0);
 			rtest = Numbers.div(rtest, getScale());
 			test = Numbers.add(test, rtest);
 		}
@@ -120,8 +124,8 @@ public class EqualsVisitor implements Visitor {
 
 	@Override
 	public void visitSegment(Segment a) {
-		test = a .equals(b) ? Numbers.ZERO : Numbers.ONE;
-		if ( test == Numbers.ONE && b instanceof Segment) {
+		test = a .equals(b) ? Numbers.ZERO : INFINITY;
+		if ( test == INFINITY && b instanceof Segment) {
 			Punt a1 = a.getP1(); Punt a2 = a.getP2();
 			Punt b1 = ((PuntenLijn) b).getP1();
 			Punt b2 = ((PuntenLijn) b).getP2();
@@ -136,7 +140,7 @@ public class EqualsVisitor implements Visitor {
 	@Override
 	public void visitLabel(Label label) {
 		if(b instanceof NamedPoint) {
-			test = ((NamedPoint) b).similar(label) ? Numbers.ZERO : Numbers.ONE;
+			test = ((NamedPoint) b).similar(label) ? Numbers.ZERO : INFINITY;
 		} else
 		
 		
@@ -194,23 +198,23 @@ public class EqualsVisitor implements Visitor {
 				return;
 			}
 		}
-		test = Numbers.ONE; // False!
+		test = INFINITY; // False!
 	}
 
 	@Override
 	public void visitKegelsnede(Kegelsnede2 a) {
-		test = a .equals(b) ? Numbers.ZERO : Numbers.ONE;			
+		test = a .equals(b) ? Numbers.ZERO : INFINITY;			
 	}
 
 	@Override
 	public void visitLocus(Locus a) {
-		test = a .same(b) ? Numbers.ZERO : Numbers.ONE;			
+		test = a .same(b) ? Numbers.ZERO : INFINITY;			
 	}
 
 	@Override
 	public void visitBoog(Boog a) {
-		test = a .equals(b) ? Numbers.ZERO : Numbers.ONE;
-		if (test == Numbers.ONE && b instanceof Boog) {
+		test = a .equals(b) ? Numbers.ZERO : INFINITY;
+		if (test == INFINITY && b instanceof Boog) {
 			Boog o = (Boog) b;
 			Punt oA = Boog.startOf(o);
 			Punt oC = Boog.endOf(o);

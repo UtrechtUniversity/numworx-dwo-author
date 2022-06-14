@@ -197,7 +197,7 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 		//if(item == this.item) return present;
 		if(eq == null || !cache.isDefined())
 			return Label.UNKNOWN;
-		Numbers test = Numbers.NaN;
+		Numbers test;
 		synchronized(eq) {
 			eq.reset();
 			item.visit(eq);

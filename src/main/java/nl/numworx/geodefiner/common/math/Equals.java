@@ -27,7 +27,7 @@ class Equals extends LabelTester {
 		Destroyable b = depend[1];
 		EqualsVisitor eq = new EqualsVisitor(b, getTracker());
 		if(a != null) a.visit(eq);
-		Numbers test = eq.test;
+		Numbers test = eq.test();
 		setState(l, test, marge);
 		return true;
 	}
