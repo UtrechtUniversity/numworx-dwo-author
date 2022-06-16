@@ -2,10 +2,8 @@ package nl.numworx.geodefiner.module;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.WeakHashMap;
 
-import javax.annotation.Nullable;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -29,7 +27,6 @@ import nl.numworx.geodefiner.HerleidList;
 import nl.numworx.geodefiner.InstanceViewer;
 import nl.numworx.geodefiner.IsColor;
 import nl.numworx.geodefiner.IsLineType;
-import nl.numworx.geodefiner.WiskOpdrRandomizer;
 import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.DefaultRandomizer;
 import nl.numworx.geodefiner.common.Instance;
@@ -38,7 +35,6 @@ import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.math.Expression;
 import nl.numworx.geodefiner.common.math.ToC;
 import nl.numworx.geodefiner.merge.RenameAction;
-import nl.numworx.geodefiner.merge.RenameActionImpl;
 import nl.numworx.geodefiner.ui.Models;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 
