@@ -28,6 +28,7 @@ import nl.numworx.geodefiner.Definitions;
 import nl.numworx.geodefiner.HerleidList;
 import nl.numworx.geodefiner.InstanceViewer;
 import nl.numworx.geodefiner.IsColor;
+import nl.numworx.geodefiner.IsLineType;
 import nl.numworx.geodefiner.WiskOpdrRandomizer;
 import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.DefaultRandomizer;
@@ -74,6 +75,8 @@ public abstract class Modules {
 	@Provides @IntoMap @StringKey("geodefiner.color") static
 	LabelDelegate isColor() { return new IsColor(); }
 	
+    @Provides @IntoMap @StringKey("geodefiner.linetype") static
+	LabelDelegate isLineType() { return new IsLineType(); }
 	
 	@Provides @Singleton static
 	ToC toc() { return new ToC(); }
