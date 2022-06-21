@@ -25,6 +25,7 @@ import fi.euclides.util.DefaultAdapter;
 import nl.numworx.geodefiner.ColorHandler.ColorIcon;
 import nl.numworx.geodefiner.common.LineType;
 import nl.numworx.geodefiner.ui.LineModel;
+import nl.numworx.geodefinergwt.client.IsLineType;
 
 public class DashHandler extends EventHandler {
 
@@ -93,6 +94,8 @@ public class DashHandler extends EventHandler {
 				String name = getTracker().getMapper().toString(p);
 				Map<String,Object> pstate = state.computeIfAbsent(name, k -> new TreeMap<>());
 				pstate.put("type", value.name());
+				IsLineType linetype = p.adapt(IsLineType.class);
+				if (linetype != null) linetype.updateLineType();
 			}
 			getModel().clearSelection();
 		});

@@ -5,7 +5,7 @@ import java.awt.Stroke;
 
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
-import fi.euclides.model.math.Numbers;
+import fi.euclides.util.DefaultAdapter;
 import nl.numworx.geodefiner.common.LineType;
 
 public class IsLineType extends nl.numworx.geodefiner.common.math.IsLineType {
@@ -40,6 +40,13 @@ public class IsLineType extends nl.numworx.geodefiner.common.math.IsLineType {
 	public void updateLineType() {
 		test(label);
 		if (chain != null) chain.updateLineType();
+	}
+
+	@Override
+	public boolean define(Label l) {
+		DefaultAdapter adapter = DefaultAdapter.getDefault(l.getDepend()[0]);
+		adapter.put(new IsLineType(l, adapter.adapt(IsLineType.class)));
+		return super.define(l);
 	}
 	
 }
