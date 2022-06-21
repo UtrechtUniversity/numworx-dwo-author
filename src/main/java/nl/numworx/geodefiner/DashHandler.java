@@ -22,10 +22,8 @@ import fi.beans.numworxlf.JRadioButton;
 import fi.euclides.event.EventHandler;
 import fi.euclides.model.Destroyable;
 import fi.euclides.util.DefaultAdapter;
-import nl.numworx.geodefiner.ColorHandler.ColorIcon;
 import nl.numworx.geodefiner.common.LineType;
 import nl.numworx.geodefiner.ui.LineModel;
-import nl.numworx.geodefinergwt.client.IsLineType;
 
 public class DashHandler extends EventHandler {
 
