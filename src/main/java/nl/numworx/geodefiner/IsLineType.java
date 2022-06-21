@@ -36,18 +36,6 @@ public class IsLineType extends nl.numworx.geodefiner.common.math.IsLineType {
 		return LineType.SOLID;
 	}
 
-	@Override
-	protected LineType getLineTypeB(Destroyable b) {
-		if (b instanceof Label) {
-			Label l = (Label) b;
-			Numbers value = l.value;
-			int n = value.intValue();
-			if (n >= 0 && n < LineType.values().length) {
-				return LineType.values()[n];
-			}
-		}
-		return getLineTypeA(b);
-	}
 
 	public void updateLineType() {
 		test(label);
