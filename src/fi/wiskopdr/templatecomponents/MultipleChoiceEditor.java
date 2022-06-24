@@ -95,6 +95,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
     private JLabel titleFeedbackTekstLabel;
     private ActKeuzePanel goedFoutIP;
     private Box feedbackBox;
+    private JLabel titleScoreLabel;
     
 	// instellingen
 	private JLabel titleSettingsLabel;
@@ -168,6 +169,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		makeGUI();
 		makeFrame();
 		answerModels = new Hashtable[aantalAnswerModels];
+		//answerModels[0] = new Hashtable();
 	}
 	
 	public void setTekstVak(TekstVak tekstVak) {
@@ -306,7 +308,14 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         feedbackEditor.setFont(font);
         feedbackEditor.addActionListener(this);
         feedbackEditor.setBackground(new Color(255,255,200));
-       
+        
+        feedbackPV = makeTextField("0",50,24,this);
+        feedbackPV.setVisible(false);
+        
+        titleScoreLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+        titleScoreLabel.setForeground(WiskOpdr.colorBlue1);
+        titleScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
+        titleScoreLabel.setVisible(false);
         
 		//mainPanel  //settings
 		titleSettingsLabel = makeLabel(WiskOpdr.rb.getString("settingsLabel"), font.deriveFont(Font.BOLD, 16));
@@ -354,12 +363,12 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         setFeedbackOption(false);
                 
         //plaats componenten mainPanel
-        Component[] r11 = {antwoordEditorPanel,     ra(10,0),   hbAntwoord,     hgl()};
+        Component[] r11 = {antwoordEditorPanel,      hgl()};
         
         //Component[] r11 = {titleAntwoordLabel, 	ra(10,0),	hbAntwoord, 	hgl()};
 		Component[] r12 = {selectableCBBox, 	hgl()};
 		
-		Component[] k1 = {hb(r11),  hb(r12), vst(15), vgl()};
+		Component[] k1 = {hb(r12), vst(15), vgl()};
 		
 		// plaats componenten feedback box
         Component[] r51 = {titleFeedbackLabel,  ra(5,10),   hgl()};
@@ -373,7 +382,14 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         
         Component[] h5 = {ra(20,0),vb(k51),hst(10), vb(k52)};
         feedbackBox = hb(h5);
-		
+        feedbackBox.setVisible(false);
+        
+        Component[] k7 = {vb(k1),  feedbackBox};
+        Box hbox = hb(k7);
+        
+        Component[] r70 = {titleScoreLabel,    ra(10,10),      feedbackPV, hgl()};
+        Component[] k8 = {hb(r11),hbox,ra(10,10), hb(r70), vgl()};
+        
 		Component[] r21 = {titleSettingsLabel, 	hgl()};
 		Component[] r22 = {itemCountLabel, 		ra(10,10), 	hgl(), 	itemCountTF};
 		Component[] r23 = {multiSelectionsCB, 	ra(5,0),	hgl(),	hbMeervoudig};
@@ -397,7 +413,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		
 		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(5), hb(r35a), vst(10), hb(r36), vgl()};
 		
-		Component[] main = {vb(k1), hst(50), vb(k2), hst(50), vb(k3)};
+		Component[] main = {vb(k8), hst(50), vb(k2), hst(50), vb(k3)};
 		mainPanel.add(hb(main));
 		
 		Box hb = Box.createHorizontalBox();
@@ -599,6 +615,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		String[] formuleStrings = null;
 		String knopImageString = "";
 		boolean[][][] logMisconceptions = null;
+		boolean hasFeedback = false;
 		
 		boolean volledigeBreedte = true;
 		int breedte = 300;
@@ -610,6 +627,10 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		rowSpace = intFromText(rowSpace, rowSpaceTF.getText());
 		hasPrefix = hasPrefixCB.isSelected();
 		
+		 getAnswerModel();
+	     if(answerModels!=null)setAnswerModel(answerModels[0]);
+	       
+	        
 		knopImageString = this.knopImageString;
 	    juisteSelecties = new boolean[aantalSelectables];
 	    for(int i=0 ; i<aantalSelectables ; i++) {  
@@ -637,7 +658,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 				logMisconceptions[i] = logMisconceptionsButtons[i].getChoices();
 		}
 		
-		Hashtable preferences = new Hashtable();
+		hasFeedback = feedbackCB.isSelected();
+        
+        Hashtable preferences = new Hashtable();
 		
 		preferences.put("itemCount", new Integer(itemCount));
 		preferences.put("listNumberType", new Integer(listNumberType));
@@ -657,6 +680,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		//preferences.put("formuleStrings", formuleStrings);
         
         preferences.putAll(logObjectivesButton.getEditState(scoreMax));
+        
+        preferences.put("hasFeedback",new Boolean(hasFeedback));
+        if(answerModels!=null)preferences.put("answerModels",answerModels);
             
 		if(logMisconceptions!=null) {	
 			preferences.put("logMisconceptions",logMisconceptions);
@@ -696,6 +722,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		int breedte = 300;
 		String MCwidgetID = null;
 		
+		Hashtable[] answerModels = null;
+        boolean hasFeedback = false;
+		
 		if(preferences.containsKey("itemCount")) itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		if(preferences.containsKey("listNumberType")) listNumberType = ((Integer)preferences.get("listNumberType")).intValue()+1;
 		if(preferences.containsKey("tabWidth")) tabWidth = ((Integer)preferences.get("tabWidth")).intValue();
@@ -719,6 +748,34 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
 		if(preferences.containsKey("MCwidgetID")) MCwidgetID = (String)preferences.get("MCwidgetID");
 		
+		if(preferences.containsKey("answerModels")) answerModels = (Hashtable[])preferences.get("answerModels");
+        if(preferences.containsKey("hasFeedback")) hasFeedback = ((Boolean)preferences.get("hasFeedback")).booleanValue();
+        
+        if(answerModels != null)
+        {   this.answerModels = new Hashtable[answerModels.length];
+            for(int i=0 ; i<answerModels.length ; i++)
+            {   this.answerModels[i] = answerModels[i];
+            }
+        } 
+        feedbackCB.setSelected(hasFeedback);
+        if(hasFeedback)
+        {   aantalAnswerModels = answerModels.length;
+            antwoordEditorPanel.remove(tabbladTab);
+            tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
+            tabbladTab.setTab(true);
+            tabbladTab.setScoresVisible(false);
+            tabbladTab.setSize(tabbladTab.getSize().width, 23);
+            tabbladTab.addActionListener(this);
+            tabbladTab.setBackground(new Color(210,210,210));
+            tabbladTab.setSelected(answerModelNr+1);
+            antwoordEditorPanel.add(tabbladTab,0);
+            aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,24);
+            
+            answerModelNr = 0;
+            setAnswerModel();
+            antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,450),140));
+        }
+        
 		itemCountTF.setText(""+itemCount);
 		listNumberTypeComboBox.setSelectedIndex(listNumberType);
 		tabWidthTF.setText(""+tabWidth);
@@ -776,6 +833,8 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    
 	    this.MCwidgetID = MCwidgetID;
 	    
+	    setFeedbackOption(hasFeedback);
+	    
 		frame.setVisible(true);
 		frame.pack();
 		//frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
@@ -783,16 +842,50 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
  	    int xD = (screenSize.width-frame.getSize().width)/2;
  	    int yD = (screenSize.height-frame.getSize().height)/2;
  	    frame.setLocation(xD, yD);
+ 	    
+ 	   
 	}
 	
 	private Hashtable fillAnswerModel(Hashtable h)
     {
+  	    boolean[] juisteSelecties = new boolean[aantalSelectables];
+        for(int i=0 ; i<aantalSelectables ; i++) {  
+            juisteSelecties[i] = selectableCheckboxes[i].isSelected();
+        }
+        String feedback = feedbackEditor.getText();
+        int puntenFeedback = (Integer.parseInt(feedbackPV.getText()));
         
+        int goedHalfFout = goedFoutIP.geefKeuze()-1;
+
+        h.put("juisteSelecties", juisteSelecties);
+	    h.put("feedback", feedback);
+	    h.put("puntenFeedback", new Integer(puntenFeedback));
+	    h.put("goedHalfFout", new Integer(goedHalfFout));
         return h;
     }
 	
 	private void setAnswerModel(Hashtable h)
     {   
+	    boolean[] juisteSelecties = new boolean[aantalSelectables];
+	    if(h.containsKey("juisteSelecties")) juisteSelecties = (boolean[])h.get("juisteSelecties");
+	    for(int i=0 ; i<aantalSelectables ; i++) {  
+            selectableCheckboxes[i].setSelected(juisteSelecties[i]);
+        }
+	    String feedback = "";
+	    if(h.containsKey("feedback")) feedback = (String)h.get("feedback");
+	    
+	    int puntenFeedback = 0;
+	    if(h.containsKey("puntenFeedback")) puntenFeedback = ((Integer)h.get("puntenFeedback")).intValue();
+        
+	    int goedHalfFout = 2;
+	    if(h.containsKey("goedHalfFout")) goedHalfFout = ((Integer)h.get("goedHalfFout")).intValue();
+	        
+	    feedbackEditor.zetTekst(feedback);
+        feedbackEditor.layoutTekst();
+        feedbackPV.setText(""+puntenFeedback);
+        goedFoutIP.setItem(goedHalfFout);
+       
+        updateFeedbackTitelLabel();
     }
     
     private void getAnswerModel()
@@ -805,18 +898,56 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
          setAnswerModel(answerModels[answerModelNr]);    
     }
     
+    private void updateFeedbackTitelLabel()
+    {   String feedbackNrString = "";
+        boolean hasFeedback = feedbackCB.isSelected();
+        if(hasFeedback && answerModelNr>0) {
+            feedbackNrString += (answerModelNr+1);
+            titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
+            titleFeedbackLabel.setText(WiskOpdr.rb.getString("feedbackLabel") + " " + feedbackNrString);
+            titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
+            titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
+            feedbackBox.validate();
+            System.out.println("in updateFeedbackTitelLabel if");
+       }
+        else {
+            titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
+            titleFeedbackLabel.setText(WiskOpdr.rb.getString("feedbackLabel"));
+            titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
+            titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+            titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + (hasFeedback  ? " max" : " 1"));
+            feedbackBox.validate();
+            System.out.println("in updateFeedbackTitelLabel else");
+       }
+    }
+    
     public void setFeedbackOption(boolean b)
     {
       tabbladTab.setVisible(b);
       aantalTabsKnop.setVisible(b);
       tabPositieKnop.setVisible(b);
+      goedFoutIP.setVisible(b);
+      feedbackPV.setVisible(b);
+      goedFoutIP.setVisible(b);
+      titleScoreLabel.setVisible(b);
+      
       if(!b) {
-        antwoordEditorPanel.setPreferredSize(new Dimension(200,24));
+        antwoordEditorPanel.setPreferredSize(new Dimension(150,24));
         antwoordEditorPanel.setBorder(BorderFactory.createEmptyBorder());
       }
       else {
-        antwoordEditorPanel.setPreferredSize(new Dimension(350,80));
+        antwoordEditorPanel.setPreferredSize(new Dimension(400,80));
         antwoordEditorPanel.setBorder(BorderFactory.createMatteBorder(0,0,1,0,WiskOpdr.colorBlue3));
+      }
+      if(feedbackBox!=null)
+        feedbackBox.setVisible(b);
+      
+      answerModelNr = 0;
+      tabbladTab.setSelected(answerModelNr+1);
+      
+      if(b) {
+        getAnswerModel();
+        setAnswerModel();
       }
       
 //        hasFeedback = b;
@@ -877,7 +1008,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	  if(e.getSource() == tabbladTab)
       {   int nr = Integer.parseInt(e.getActionCommand())-1;
           if(answerModelNr != nr) 
-          {
+          {     
               getAnswerModel();
               answerModelNr = nr;
               setAnswerModel();
@@ -948,6 +1079,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
               {   answerModelsNew[i] = answerModels[i];
               }
               answerModels = answerModelsNew;
+              answerModels[aantalAnswerModels-1] = fillAnswerModel(new Hashtable());
               antwoordEditorPanel.repaint();
           }
           antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(150+25*aantalAnswerModels+40,350),80));
