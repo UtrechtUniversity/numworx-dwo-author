@@ -88,6 +88,11 @@ public class EqualsVisitor implements Visitor {
 		return test;
 	}
 
+	
+	static Numbers max(Numbers a, Numbers b) {
+		if (Numbers.signum(Numbers.sub(a, b))>0) return a; else return b;
+	}
+	
 	@Override
 	public void visitLijn(Lijn a) {
 		if (a instanceof Ray ^ b instanceof Ray) {
@@ -99,13 +104,19 @@ public class EqualsVisitor implements Visitor {
 		{
 			Lijn lb = (Lijn) b;
 			Numbers scale = Numbers.hypot(lb.getDXn(), lb.getDYn());
-			test = Numbers.add( bracket(a.getX1n(),a.getY1n(), lb), 
+			test = max( bracket(a.getX1n(),a.getY1n(), lb), 
 							    bracket(a.getX2n(),a.getY2n(), lb)
 					);
 			test = Numbers.div(test, scale);
+// andersom ook!
+			Numbers testba = max(bracket(lb.getX1n(), lb.getY1n(), a),bracket(lb.getX2n(), lb.getY2n(), a)); 
+			testba = Numbers.div(testba, Numbers.hypot(a.getDXn(), a.getDYn()));
+// take max
+			test = max(test, testba);
+
 			test = Numbers.div(test, getScale());
 			if(a instanceof Ray && lb instanceof Ray) {
-				test = Numbers.div (Numbers.add(test, puntenTest(((Ray) a).getP1(),((Ray) lb).getP1())),Numbers.TWO);
+				test = max(test, puntenTest(((Ray) a).getP1(),((Ray) lb).getP1()));
 			}
 		}
 	}
@@ -129,8 +140,8 @@ public class EqualsVisitor implements Visitor {
 			Punt a1 = a.getP1(); Punt a2 = a.getP2();
 			Punt b1 = ((PuntenLijn) b).getP1();
 			Punt b2 = ((PuntenLijn) b).getP2();
-			Numbers t1 = Numbers.add(puntenTest(a1,b1),puntenTest(a2,b2));
-			Numbers t2 = Numbers.add(puntenTest(a1,b2),puntenTest(a2,b1));
+			Numbers t1 = max(puntenTest(a1,b1),puntenTest(a2,b2));
+			Numbers t2 = max(puntenTest(a1,b2),puntenTest(a2,b1));
 			// minimum nemen
 			int s = Numbers.signum(Numbers.sub(t1, t2));
 			if(s < 0) test = t1; else  test = t2;

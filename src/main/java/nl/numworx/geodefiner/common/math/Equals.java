@@ -2,7 +2,6 @@ package nl.numworx.geodefiner.common.math;
 
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
-import fi.euclides.model.math.Exact;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelTester;
 
