@@ -761,7 +761,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         if(hasFeedback)
         {   aantalAnswerModels = answerModels.length;
             antwoordEditorPanel.remove(tabbladTab);
-            tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 250,20);
+            tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 150,20);
             tabbladTab.setTab(true);
             tabbladTab.setScoresVisible(false);
             tabbladTab.setSize(tabbladTab.getSize().width, 23);
@@ -769,11 +769,11 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
             tabbladTab.setBackground(new Color(210,210,210));
             tabbladTab.setSelected(answerModelNr+1);
             antwoordEditorPanel.add(tabbladTab,0);
-            aantalTabsKnop.setLocation(250+25*aantalAnswerModels+5 ,24);
+            aantalTabsKnop.setLocation(150+25*aantalAnswerModels+5 ,24);
             
             answerModelNr = 0;
             setAnswerModel();
-            antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,450),140));
+            antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,400),80));
         }
         
 		itemCountTF.setText(""+itemCount);
@@ -835,6 +835,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    
 	    setFeedbackOption(hasFeedback);
 	    
+	    if(hasFeedback)
+	      frame.setSize(950 , 450);
+	
 		frame.setVisible(true);
 		frame.pack();
 		//frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
@@ -908,7 +911,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
             titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
             titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
             feedbackBox.validate();
-            System.out.println("in updateFeedbackTitelLabel if");
        }
         else {
             titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
@@ -917,7 +919,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
             titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
             titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + (hasFeedback  ? " max" : " 1"));
             feedbackBox.validate();
-            System.out.println("in updateFeedbackTitelLabel else");
        }
     }
     
