@@ -290,7 +290,8 @@ public class MultipleChoiceGenerator_1 implements TComponentGenerator, ActionLis
 		String knopImageString = "";
 		boolean[][][] logMisconceptions = null;
 		String crossWidgetId = null;
-		
+		boolean hasFeedback = false;
+        Hashtable[] answerModels = null;
 		
 		int itemCount = ((Integer)preferences.get("itemCount")).intValue();
 		if(preferences.containsKey("juisteSelecties")) juisteSelecties = (boolean[])preferences.get("juisteSelecties");
@@ -306,7 +307,9 @@ public class MultipleChoiceGenerator_1 implements TComponentGenerator, ActionLis
 		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
 		if(preferences.containsKey("logMisconceptions")) logMisconceptions = (boolean[][][])preferences.get("logMisconceptions");
 		if(preferences.containsKey("MCwidgetID")) crossWidgetId = (String)preferences.get("MCwidgetID");
-		
+		if(preferences.containsKey("hasFeedback")) hasFeedback = ((Boolean)preferences.get("hasFeedback")).booleanValue();
+        if(preferences.containsKey("answerModels")) answerModels = ((Hashtable[])preferences.get("answerModels"));
+        
 		
 		if(juisteSelecties==null)
 			juisteSelecties = new boolean[itemCount];
@@ -323,6 +326,8 @@ public class MultipleChoiceGenerator_1 implements TComponentGenerator, ActionLis
 		ipLaunchState.put("logID",logID);
 		ipLaunchState.put("check",new Boolean(check));
 		ipLaunchState.put("teltMee",new Boolean(teltMee));
+		ipLaunchState.put("hasFeedback",new Boolean(hasFeedback));
+        if(answerModels!=null)ipLaunchState.put("answerModels",answerModels);
 		//ipLaunchState.put("checkFormule",new Boolean(checkFormule));
 		//ipLaunchState.put("formuleStrings", formuleStrings);
 		if(logMisconceptions!=null)

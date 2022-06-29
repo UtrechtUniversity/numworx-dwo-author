@@ -20,6 +20,7 @@ import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -77,6 +78,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	private JLabel titleAntwoordLabel;
 	private JPanel antwoordEditorPanel;
 	private JCheckBox[] selectableCheckboxes;
+	private ButtonGroup buttonGroup = new ButtonGroup();
 	private Box selectableCBBox;
 	private ObjectiveChoiceButton[] logMisconceptionsButtons;
 	
@@ -169,7 +171,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		makeGUI();
 		makeFrame();
 		answerModels = new Hashtable[aantalAnswerModels];
-		//answerModels[0] = new Hashtable();
 	}
 	
 	public void setTekstVak(TekstVak tekstVak) {
@@ -310,6 +311,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         feedbackEditor.setBackground(new Color(255,255,200));
         
         feedbackPV = makeTextField("0",50,24,this);
+        feedbackPV.addFocusListener(goedFoutIP);
         feedbackPV.setVisible(false);
         
         titleScoreLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
@@ -629,15 +631,17 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		
 		 getAnswerModel();
 	     if(answerModels!=null)setAnswerModel(answerModels[0]);
-	       
-	        
+	          
 		knopImageString = this.knopImageString;
 	    juisteSelecties = new boolean[aantalSelectables];
 	    for(int i=0 ; i<aantalSelectables ; i++) {  
 	    	juisteSelecties[i] = selectableCheckboxes[i].isSelected();
 	    }
 	    
+	   
 	    scoreMax = intFromText(scoreMax, maxScoreTF.getText());
+	    if(hasFeedback)
+	      scoreMax = intFromText(scoreMax, feedbackPV.getText());
 	    randomizePositions = randomizePositionsCB.isSelected();
 	    multiSelections = multiSelectionsCB.isSelected();
 	    logOption = logCB.isSelected();
@@ -789,6 +793,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    aantalSelectables = juisteSelecties.length;
 	    randomizePositionsCB.setSelected(randomizePositions);
 	    multiSelectionsCB.setSelected(multiSelections);
+	    
 	    this.logMisconceptions = logMisconceptions;
 	    
 	    
@@ -799,6 +804,17 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 	    		logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
 		}
 	    enableMisconceptions();
+	    
+	    if(!multiSelections) {
+          for(int i=0 ; i<aantalSelectablesMax ; i++) {
+              buttonGroup.add(selectableCheckboxes[i]) ;
+          }
+        }
+        else {
+            for(int i=0 ; i<aantalSelectablesMax ; i++) {
+              buttonGroup.remove(selectableCheckboxes[i]) ;
+            }
+        }
 	    
 	    maxScoreTF.setText(""+scoreMax);
 	    logCB.setSelected(logOption);
@@ -845,8 +861,6 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
  	    int xD = (screenSize.width-frame.getSize().width)/2;
  	    int yD = (screenSize.height-frame.getSize().height)/2;
  	    frame.setLocation(xD, yD);
- 	    
- 	   
 	}
 	
 	private Hashtable fillAnswerModel(Hashtable h)
@@ -894,11 +908,16 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
     private void getAnswerModel()
     {   if(answerModels==null)return;
         answerModels[answerModelNr] = fillAnswerModel(new Hashtable());
+        if(answerModelNr==0) 
+          maxScoreTF.setText(feedbackPV.getText());
     }
     
     private void setAnswerModel()
     {   if(answerModels==null)return;
-         setAnswerModel(answerModels[answerModelNr]);    
+         setAnswerModel(answerModels[answerModelNr]);
+         
+         
+         
     }
     
     private void updateFeedbackTitelLabel()
@@ -932,6 +951,9 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
       goedFoutIP.setVisible(b);
       titleScoreLabel.setVisible(b);
       
+      maxScoreLabel.setVisible(!b);
+      maxScoreTF.setVisible(!b);
+      
       if(!b) {
         antwoordEditorPanel.setPreferredSize(new Dimension(150,24));
         antwoordEditorPanel.setBorder(BorderFactory.createEmptyBorder());
@@ -950,7 +972,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         getAnswerModel();
         setAnswerModel();
       }
-      
+           
 //        hasFeedback = b;
 //        if(!b) logMisconceptionsButton.setVisible(false);
 //        tabbladTab.setVisible(b);
@@ -1118,6 +1140,17 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		}
 		else if(e.getSource()==multiSelectionsCB) {   
 			enableMisconceptions();
+			boolean b = multiSelectionsCB.isSelected();
+			if(!b) {
+    			for(int i=0 ; i<aantalSelectablesMax ; i++) {
+    		        buttonGroup.add(selectableCheckboxes[i]) ;
+    		    }
+			}
+			else {
+			    for(int i=0 ; i<aantalSelectablesMax ; i++) {
+                  buttonGroup.remove(selectableCheckboxes[i]) ;
+			    }
+            }
 	    }
 		else if(e.getSource()==hasPrefixCB) {   
 			tabWidthLabel.setVisible(hasPrefixCB.isSelected());
@@ -1217,6 +1250,10 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 				maakCheckboxes();
 			}
 		}
+		if(e.getSource()==feedbackPV && answerModelNr==0) {
+		    maxScoreTF.setText(feedbackPV.getText());
+		}
+	        
 	}
 
 	@Override

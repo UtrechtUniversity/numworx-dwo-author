@@ -176,7 +176,7 @@ public class ActKeuzePanel extends JPanel implements ItemListener, ActionListene
 	public void focusLost(FocusEvent e)
 	{	
 		for (int i = 0; i<aantalCheckboxen; i++) 
-		{	if(e.getSource()==editFields[i])
+		{	if(editFields!=null && e.getSource()==editFields[i])
 			{	checkboxen[i].setLabel(editFields[i].getText());
 				editFields[i].setVisible(false);
 				if(actionListener!=null)
