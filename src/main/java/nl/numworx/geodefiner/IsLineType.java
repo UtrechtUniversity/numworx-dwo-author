@@ -22,7 +22,7 @@ public class IsLineType extends nl.numworx.geodefiner.common.math.IsLineType {
 	}
 
 	@Override
-	protected LineType getLineTypeA(Destroyable a) {
+	public LineType getLineTypeA(Destroyable a) {
 		Stroke stroke = a.adapt(Stroke.class);
 		if (stroke == null) return LineType.SOLID;
 		if (stroke instanceof BasicStroke) {

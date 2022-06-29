@@ -88,7 +88,7 @@ public class DashHandler extends EventHandler {
 		Optional<LineType> get = getDash();
 		get.ifPresent(value -> {
 			for(Destroyable p: selection) {
-				DefaultAdapter.getDefault(p).put(Stroke.class, LineModel.getStroke(value));
+				DefaultAdapter.getDefault(p).put(Stroke.class, LineModel.getStroke(value, LineModel.getLineWidth(p)));
 				String name = getTracker().getMapper().toString(p);
 				Map<String,Object> pstate = state.computeIfAbsent(name, k -> new TreeMap<>());
 				pstate.put("type", value.name());

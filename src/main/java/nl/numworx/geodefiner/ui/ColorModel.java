@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import nl.numworx.geodefiner.GeoDefiner;
 import nl.numworx.geodefiner.common.Randomizer;
@@ -113,6 +114,24 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 		return new ColorPane<ColorModel<?>>(this);
 	}
 
+	@Override
+	public void fromLightMap(ObjectMap map) {
+		if (map.containsKey("color")) {
+			color = new Color ( map.getInt("color"), true);
+		} else {
+			color = item.adapt(Color.class);
+			if (color == null) color = Color.black;
+		}
+	}
+	
+	@Override
+	public Map<String,Object> toLightMap() {
+		Map<String,Object> m = new TreeMap<>();
+		m.put("color", color.getRGB());
+		return m;
+	}
+	
+	
 	public String getVisibility() {
 		return visibility.getString();
 	}

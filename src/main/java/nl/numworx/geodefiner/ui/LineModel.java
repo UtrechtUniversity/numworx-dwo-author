@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import nl.numworx.geodefiner.IsLineType;
 import nl.numworx.geodefiner.common.LineType;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.merge.RenameAction;
@@ -82,6 +83,7 @@ public class LineModel extends ColorModel<Destroyable> {
 		return stroke;
 	}
 
+	@Deprecated
 	public static Stroke getStroke(LineType type) {
 		return getStroke(type, 1.0f);
 	}
@@ -101,5 +103,33 @@ public class LineModel extends ColorModel<Destroyable> {
 		adapter.put(Stroke.class, stroke);
 		
 		super.installLight();
+	}
+	
+	@Override
+	public void fromLightMap(ObjectMap map) {
+		super.fromLightMap(map);
+		if (map.containsKey("type")) {
+			type = LineType.valueOf(map.getString("type"));
+		} else {
+			type = new IsLineType().getLineTypeA(item);
+		}
+		width = getLineWidth(item);
+	}
+	
+	public static float getLineWidth(Destroyable item) {
+		float width;
+		Stroke s = item.adapt(Stroke.class);
+		if (s instanceof BasicStroke) {
+			width = ((BasicStroke) s).getLineWidth();
+		} else
+			width = 1.0f;
+		return width;
+	}
+
+	@Override
+	public Map<String,Object> toLightMap() {
+		Map<String,Object> m = super.toLightMap();
+		m.put("type", type.name());
+		return m;
 	}
 }
