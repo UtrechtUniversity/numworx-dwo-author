@@ -387,9 +387,9 @@ public abstract class Instance /*implements Observer*/ {
 				if (d == null) continue;
 				ObjectMap value = configuration.getObjectMap(name);
 				UIModel<?,?> model = uiModelFactory.lightBuild(d);
-				model.fromMap(value);
+				model.fromLightMap(value);
 				model.installLight();
-				getStateConfiguration().put(name, model.toMap());
+				getStateConfiguration().put(name, model.toLightMap());
 			}
 		}
 	}

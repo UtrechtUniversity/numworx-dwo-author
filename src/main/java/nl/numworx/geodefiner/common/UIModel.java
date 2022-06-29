@@ -18,4 +18,6 @@ public interface UIModel<T extends Destroyable, U> {
 	UIModel<T, U> set(Tracker tracker);
 	default void installLight() { }
 	void install(Destroyable buildPunt);
+	default void fromLightMap(ObjectMap value) { fromMap(value); }
+	default Map<String, Object> toLightMap() { return toMap(); }
 }
