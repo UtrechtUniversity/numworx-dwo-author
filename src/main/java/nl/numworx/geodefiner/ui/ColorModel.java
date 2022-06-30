@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 import nl.numworx.geodefiner.GeoDefiner;
+import nl.numworx.geodefiner.IsColor;
 import nl.numworx.geodefiner.common.Randomizer;
 import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.merge.RenameAction;
@@ -69,6 +70,13 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 				tme.printStackTrace();
 			}
 		}
+		isColor(item);
+	}
+
+	private void isColor(Destroyable d) {
+		IsColor is = d.adapt(IsColor.class);
+		if (is != null) 
+			is.updateColor();
 	}
 
 	public void install() {
@@ -78,6 +86,7 @@ public class ColorModel<T extends Destroyable> implements UIModel<T, UIEditor> {
 
 	public void installLight() {
 		DefaultAdapter.getDefault(item).put(color);
+		isColor(item);
 	}
 	
 	public UIModel<T, UIEditor> init(T item) {

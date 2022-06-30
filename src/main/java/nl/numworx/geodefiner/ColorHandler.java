@@ -49,11 +49,11 @@ public class ColorHandler extends EventHandler {
 	JPanel panel;
 	JRadioButton[] radios = new JRadioButton[8];
 	static Color colors[]= {
-			new Color(69,123,59),
-			new Color(49,100,186),
-			new Color(194,62,56),
-			new Color(204,104,46),
-			new Color(99,89,203),
+			new Color(0x7fcc99),
+			new Color(0x7ddfff),
+			new Color(0xff7f7f),
+			new Color(0xffe67f),
+			new Color(0xc97dff),
 			new Color(100,100,100),
 			Color.black,
 			new Color(180,180,180),
