@@ -2,6 +2,8 @@ package fi.wiskopdr;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Hashtable;
@@ -21,7 +23,10 @@ import javax.swing.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.formuleobjects.*;
+import fi.wiskopdr.opdrnav.ActKeuzePanel;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
+import fi.wiskopdr.opdrnav.OpdrachtNrRij;
+import fi.wiskopdr.opdrnav.PlusMinKnop;
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
 
@@ -42,6 +47,25 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
     //mainPanel  //juiste antwoord
   	private JLabel titleAntwoordLabel;
   	private FormuleEditor formuleEditor;
+  	private JPanel antwoordEditorPanel;
+  	
+  	 private OpdrachtNrRij tabbladTab;
+     private PlusMinKnop aantalTabsKnop;
+     private PlusMinKnop tabPositieKnop;
+     
+     private int aantalAnswerModels = 1;
+     private Hashtable[] answerModels;
+     private Hashtable resAnswerModel = new Hashtable();
+     private int answerModelNr = 0;
+     
+     //Feedback editor
+     private TekstEditor feedbackEditor;
+     private JLabel titleFeedbackLabel;
+     private JLabel titleFeedbackTekstLabel;
+     private ActKeuzePanel goedFoutIP;
+     private Box feedbackBox;
+     private JLabel titleScoreLabel;
+     private JTextField  feedbackPV;
    	
   	//mainPanel  // instellingen
   	private JLabel titleSettingsLabel;
@@ -76,6 +100,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
  	private JTextField logIDLabelField;
  	private JLabel logIDLabelLabel;
  	private ObjectiveChoiceButton logObjectivesButton;	
+ 	private JCheckBox feedbackCB;
   	
  	// Hulp
  	private JLabel titleHulpLabel;
@@ -117,6 +142,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		setBounds(0,0,780,480);
 		
 		makeGUI();
+		answerModels = new Hashtable[aantalAnswerModels];
 	}
 	
 	private void makeGUI() {
@@ -127,11 +153,79 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		
 		//mainPanel  //juiste antwoord
 		titleAntwoordLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"), font.deriveFont(Font.BOLD, 16));
+		titleAntwoordLabel.setBounds(0,-3,140,20);
 		titleAntwoordLabel.setVisible(false);
+		
 		formuleEditor = new FormuleEditor(true);
+		formuleEditor.setBounds(0,20,450,300);
 		formuleEditor.setMultiLine(true);
-		formuleEditor.setPreferredSize(new Dimension(340,200));
-		formuleEditor.setVisible(false);
+		//formuleEditor.setPreferredSize(new Dimension(340,300));
+		//formuleEditor.setVisible(false);
+		
+		antwoordEditorPanel = new JPanel();
+        antwoordEditorPanel.setLayout(null);
+        antwoordEditorPanel.add(titleAntwoordLabel);
+        antwoordEditorPanel.add(formuleEditor);
+        antwoordEditorPanel.setBorder(BorderFactory.createMatteBorder(0,0,1,0,WiskOpdr.colorBlue3));
+        //antwoordEditorPanel.add(antwoordvak);
+        antwoordEditorPanel.addComponentListener(new EditorComponentListener());
+        antwoordEditorPanel.setPreferredSize(new Dimension(450,220));
+        antwoordEditorPanel.setMaximumSize(new Dimension(2835,420));
+        antwoordEditorPanel.setVisible(false);
+        
+        tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 160,20);
+        tabbladTab.setSize(tabbladTab.getSize().width, 23);
+        tabbladTab.setTab(true);
+        tabbladTab.setScoresVisible(false);
+        tabbladTab.addActionListener(this);
+        tabbladTab.setBackground(new Color(210,210,210));
+        tabbladTab.setSelected(1);
+        tabbladTab.setVisible(false);
+        antwoordEditorPanel.add(tabbladTab,0);
+        
+        aantalTabsKnop = new PlusMinKnop(160+25*aantalAnswerModels+5 ,24,20,16,PlusMinKnop.HORIZONTAAL);
+        aantalTabsKnop.setBackground(new Color(210,210,210));
+        aantalTabsKnop.addActionListener(this);
+        aantalTabsKnop.setVisible(false);
+        antwoordEditorPanel.add(aantalTabsKnop,0);
+        
+        tabPositieKnop = new PlusMinKnop(156+25*answerModelNr+5 ,0,20,16,PlusMinKnop.HORIZONTAAL);
+        tabPositieKnop.addActionListener(this);
+        tabPositieKnop.setVisible(false);
+        antwoordEditorPanel.add(tabPositieKnop,0);
+        
+        
+        //mainPanel //GUI Feedback editor
+        titleFeedbackTekstLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
+        titleFeedbackTekstLabel.setForeground(WiskOpdr.colorBlue1);
+        titleFeedbackTekstLabel.setFont(font.deriveFont(Font.BOLD, 16));
+        
+        titleFeedbackLabel = new JLabel(WiskOpdr.rb.getString("feedbackLabel"));
+        titleFeedbackLabel.setForeground(WiskOpdr.colorBlue1);
+        titleFeedbackLabel.setFont(font.deriveFont(Font.BOLD, 16));
+        
+        String[] items = {WiskOpdr.rb.getString("goedLabel"),WiskOpdr.rb.getString("halfLabel"),WiskOpdr.rb.getString("foutLabel")};
+        goedFoutIP = new ActKeuzePanel(items,440,420,70,80);
+        goedFoutIP.setPreferredSize(new Dimension(100,80));
+        
+        feedbackEditor = new TekstEditor(false,true,true);
+        feedbackEditor.setPreferredSize(new Dimension(200,120));
+        feedbackEditor.setMaximumSize(new Dimension(2280,160));
+        feedbackEditor.setBounds(5,350,280,110);
+        feedbackEditor.setFont(font);
+        feedbackEditor.addActionListener(this);
+        feedbackEditor.setBackground(new Color(255,255,200));
+        
+        feedbackPV = makeTextField("0",50,24,this);
+        feedbackPV.addFocusListener(goedFoutIP);
+        feedbackPV.addFocusListener(this);
+        feedbackPV.setVisible(false);
+        
+        titleScoreLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+        titleScoreLabel.setForeground(WiskOpdr.colorBlue1);
+        titleScoreLabel.setFont(font.deriveFont(Font.BOLD, 16));
+        titleScoreLabel.setVisible(false);
+        
 		
 		//mainPanel  //settings
 		titleSettingsLabel = makeLabel(WiskOpdr.rb.getString("settingsLabel"), font.deriveFont(Font.BOLD, 16));
@@ -152,7 +246,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		imageKnopLabel = makeLabel(WiskOpdr.rb.getString("editImageKnopLabel"), font);
 		
 		knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
-		knopImageButton.setPreferredSize(new Dimension(80,22));
+		knopImageButton.setPreferredSize(new Dimension(100,22));
 		knopImageButton.addActionListener(this);
 				
 		//mainPanel  // logging / nakijken
@@ -172,6 +266,9 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
         logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
+        feedbackCB = makeCheckBox(WiskOpdr.rb.getString("feedbackCBLabel"),false,this);
+        feedbackCB.setVisible(false);
+        
         
         // mainPanel    //Hulp
         titleHulpLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"), font.deriveFont(Font.BOLD, 16));
@@ -184,11 +281,30 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 	
 	public void plaatsGUI() {
 		//plaats componenten mainPanel
-		Component[] r11 = {titleAntwoordLabel, 	ra(10,0),	hbAntwoord, 	hgl()};
-		Component[] r12 = {formuleEditor, 	hgl()};
-			
-		Component[] k1 = {hb(r11), vst(15), hb(r12),  vst(15), vgl()};
+//		Component[] r11 = {titleAntwoordLabel, 	ra(10,0),	hbAntwoord, 	hgl()};
+//		Component[] r12 = {formuleEditor, 	hgl()};
+//     Component[] k1 = {hb(r11), vst(15), hb(r12),  vst(15), vgl()};
+      
+	   
+	    
+	 // plaats componenten feedback box
+        Component[] r51 = {titleFeedbackLabel,  ra(5,10),   hgl()};
+        Component[] r52 = {goedFoutIP,              hgl()};
+        Component[] r52a = { titleScoreLabel, ra(5,10), feedbackPV, hgl()};
         
+        Component[] r53 = {titleFeedbackTekstLabel,         hgl()};
+        Component[] r54 = {ra(0,110),           feedbackEditor};
+        
+        Component[] k51 = {hb(r51),ra(0,5),hb(r52),ra(0,5),hb(r52a), vgl()};
+        Component[] k52 = {hb(r53),ra(0,5),hb(r54), vgl()};
+        
+        Component[] h5 = {ra(20,0),vb(k51),ra(10,0), vb(k52)};
+        feedbackBox = hb(h5);
+        feedbackBox.setVisible(false);
+        
+        Component[] r11 = {antwoordEditorPanel};
+        Component[] k1 = {hb(r11), ra(0,15), feedbackBox, vgl()};
+		
 		Component[] r21 = {titleSettingsLabel, 		hgl()};
 		Component[] r22 = {aantalSleepObjectsLabel, ra(10,10), 	hgl(), aantalSleepObjectsTF	};
 		Component[] r23 = {aantalDoelObjectsLabel, 	ra(10,10), 	hgl(), aantalDoelObjectsTF	};
@@ -209,13 +325,14 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		Component[] r33 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
 		Component[] r34 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
 		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
-		Component[] r36 = {ra(6,0),			logObjectivesButton, hgl()};
+		Component[] r35a = {feedbackCB,                 ra(5,10),    hgl()};
+        Component[] r36 = {ra(6,0),			logObjectivesButton, hgl()};
 		Component[] r37 = {titleHulpLabel, 		hgl()};
 		Component[] r38 = {viewCB, 				ra(5,0),	hgl(),	hbView};
 		
-		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vst(30), hb(r37), vst(15), hb(r38),vgl()};
+		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(5), hb(r35a), vst(10),hb(r36), vst(30), hb(r37), vst(15), hb(r38),vgl()};
 		
-		Component[] main = {vb(k2), hst(50), vb(k1), hst(50), vb(k3)};
+		Component[] main = {vb(k2), ra(50,0), vb(k1),ra(50,0), vb(k3)};
 		mainPanel.add(hb(main));
 	}
 	
@@ -238,6 +355,8 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		boolean view = false;
 		boolean verzamelDoel = false;
 		String knopImageString = "";
+		Hashtable[] answerModels = null;
+        boolean hasFeedback = false;
 		
 	    if(h.containsKey("aantalSleepObjects")) aantalSleepObjects = ((Integer)h.get("aantalSleepObjects")).intValue();
 	    if(h.containsKey("aantalDoelObjects")) aantalDoelObjects = ((Integer)h.get("aantalDoelObjects")).intValue();
@@ -256,7 +375,34 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		if(h.containsKey("view")) view = ((Boolean)h.get("view")).booleanValue();
 		if(h.containsKey("verzamelDoel")) verzamelDoel = ((Boolean)h.get("verzamelDoel")).booleanValue();
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
-		
+		if(h.containsKey("answerModels")) answerModels = (Hashtable[])h.get("answerModels");
+        if(h.containsKey("hasFeedback")) hasFeedback = ((Boolean)h.get("hasFeedback")).booleanValue();
+        
+        if(answerModels != null)
+        {   this.answerModels = new Hashtable[answerModels.length];
+            for(int i=0 ; i<answerModels.length ; i++)
+            {   this.answerModels[i] = answerModels[i];
+            }
+        } 
+        feedbackCB.setSelected(hasFeedback);
+        if(hasFeedback)
+        {   aantalAnswerModels = answerModels.length;
+            antwoordEditorPanel.remove(tabbladTab);
+            tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 160,20);
+            tabbladTab.setTab(true);
+            tabbladTab.setScoresVisible(false);
+            tabbladTab.setSize(tabbladTab.getSize().width, 23);
+            tabbladTab.addActionListener(this);
+            tabbladTab.setBackground(new Color(210,210,210));
+            tabbladTab.setSelected(answerModelNr+1);
+            antwoordEditorPanel.add(tabbladTab,0);
+            aantalTabsKnop.setLocation(160+25*aantalAnswerModels+5 ,24);
+            
+            answerModelNr = 0;
+            setAnswerModel();
+            antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(160+25*aantalAnswerModels+40,400),320));
+        }
+        
 		this.knopImageString = knopImageString;
 	    this.aantalSleepObjects = aantalSleepObjects;
 	    this.aantalDoelObjects = aantalDoelObjects;
@@ -270,7 +416,8 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 	    checkFormuleCB.setSelected(checkFormule);
 	    formuleEditor.geefFormuleVak().vulVak(formuleString);
 	    if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
-	    formuleEditor.setVisible(checkFormule);
+	    antwoordEditorPanel.setVisible(checkFormule);
+	    feedbackCB.setVisible(checkFormule);
 	    
 	    logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
@@ -296,6 +443,9 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
     	else {
     		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
     	}
+    	
+    	setFeedbackOption(hasFeedback);
+        
     	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 
     }
@@ -404,11 +554,19 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		boolean view = false;
 		boolean verzamelDoel = false;
 		String knopImageString = "";
+		Hashtable[] answerModels = null;
+        boolean hasFeedback = false;
+        
+        getAnswerModel();
+        if(answerModels!=null)setAnswerModel(answerModels[0]);
+        
 		
 		knopImageString = this.knopImageString;
 		aantalSleepObjects = Integer.parseInt(aantalSleepObjectsTF.getText());
 		aantalDoelObjects = Integer.parseInt(aantalDoelObjectsTF.getText());
-		scoreMax = Integer.parseInt(maxScoreTF.getText());
+		scoreMax = intFromText(scoreMax, maxScoreTF.getText());
+	        if(hasFeedback)
+	          scoreMax = intFromText(scoreMax, feedbackPV.getText());
 	    randomizePositions = randomizePositionsCB.isSelected();
 	    snapToTarget = snapToTargetCB.isSelected();
 	    acceptedMarge = Integer.parseInt(acceptedMargeTF.getText());
@@ -422,7 +580,9 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		relocate = relocateCB.isSelected();
 		view = viewCB.isSelected();
 		verzamelDoel = verzamelDoelCB.isSelected();
-			    
+		hasFeedback = feedbackCB.isSelected();
+		answerModels = this.answerModels;
+		
 		Hashtable h = new Hashtable();
 		h.put("aantalSleepObjects", new Integer(aantalSleepObjects));
 		h.put("aantalDoelObjects", new Integer(aantalDoelObjects));
@@ -440,6 +600,10 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		h.put("relocate",new Boolean(relocate));
 		h.put("view",new Boolean(view));
 		h.put("verzamelDoel",new Boolean(verzamelDoel));
+		
+		h.put("hasFeedback",new Boolean(hasFeedback));
+        if(answerModels!=null)h.put("answerModels",answerModels);
+        
         
         h.putAll(logObjectivesButton.getEditState(scoreMax));
             
@@ -493,6 +657,90 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		{
 			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
 		}
+    	else if(e.getSource() == tabbladTab)
+        {   int nr = Integer.parseInt(e.getActionCommand())-1;
+            if(answerModelNr != nr) 
+            {
+                getAnswerModel();
+                answerModelNr = nr;
+                setAnswerModel();
+                tabPositieKnop.setLocation(156+25*answerModelNr+5 ,0);
+            }
+            
+        }
+        else if(e.getSource() == tabPositieKnop)
+        {   if(e.getActionCommand().equals("plus") && answerModelNr<aantalAnswerModels-1) 
+            {   resAnswerModel = new Hashtable();
+                fillAnswerModel(resAnswerModel);
+                answerModels[answerModelNr] = answerModels[answerModelNr+1];
+                answerModels[answerModelNr+1] = resAnswerModel;
+                answerModelNr++;
+                tabbladTab.setSelected(answerModelNr+1);
+                tabPositieKnop.setLocation(156+25*answerModelNr+5 ,0);
+            }
+            if(e.getActionCommand().equals("min") && answerModelNr>0) 
+            {   resAnswerModel = new Hashtable();
+                fillAnswerModel(resAnswerModel);
+                answerModels[answerModelNr] = answerModels[answerModelNr-1];
+                answerModels[answerModelNr-1] = resAnswerModel;
+                answerModelNr--;
+                tabbladTab.setSelected(answerModelNr+1);
+                tabPositieKnop.setLocation(156+25*answerModelNr+5 ,0);
+            }
+            
+        }
+        else if(e.getSource() == aantalTabsKnop)
+        {   if(e.getActionCommand().equals("min") && aantalAnswerModels>1)
+            {   //remove(opdrContainers[activiteitNr][aantalOpdrachten[activiteitNr]-1]);
+                //opdrContainers[activiteitNr][aantalOpdrachten[activiteitNr]-1] = null;
+                aantalAnswerModels--;
+                if(answerModelNr>aantalAnswerModels-1) answerModelNr--;
+                setAnswerModel();
+                aantalTabsKnop.setLocation(160+25*aantalAnswerModels+5 ,24);
+                antwoordEditorPanel.remove(tabbladTab);
+                tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 160,20);
+                tabbladTab.setTab(true);
+                tabbladTab.setScoresVisible(false);
+                tabbladTab.setSize(tabbladTab.getSize().width, 23);
+                tabbladTab.addActionListener(this);
+                tabbladTab.setBackground(new Color(210,210,210));
+                tabbladTab.setSelected(answerModelNr+1);
+                antwoordEditorPanel.add(tabbladTab,0);
+                Hashtable[] answerModelsNew = new Hashtable[aantalAnswerModels];
+                for(int i=0 ; i<aantalAnswerModels ; i++)
+                {   answerModelsNew[i] = answerModels[i];
+                }
+                answerModels = answerModelsNew;
+                antwoordEditorPanel.repaint();
+                
+            }
+            if(e.getActionCommand().equals("plus") && aantalAnswerModels<20)
+            {   aantalAnswerModels++;
+                aantalTabsKnop.setLocation(160+25*aantalAnswerModels+5 ,24);
+                antwoordEditorPanel.remove(tabbladTab);
+                tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 160,20);
+                tabbladTab.setTab(true);
+                tabbladTab.setScoresVisible(false);
+                tabbladTab.setSize(tabbladTab.getSize().width, 23);
+                tabbladTab.addActionListener(this);
+                tabbladTab.setBackground(new Color(210,210,210));
+                tabbladTab.setSelected(answerModelNr+1);
+                antwoordEditorPanel.add(tabbladTab,0);
+                Hashtable[] answerModelsNew = new Hashtable[aantalAnswerModels];
+                for(int i=0 ; i<aantalAnswerModels-1 ; i++)
+                {   answerModelsNew[i] = answerModels[i];
+                }
+                answerModels = answerModelsNew;
+                answerModels[aantalAnswerModels-1] = fillAnswerModel(new Hashtable());
+                antwoordEditorPanel.repaint();
+            }
+            antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(200+25*aantalAnswerModels+40,450),220));
+            ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+        }
+        else if(e.getSource()==feedbackCB)
+        {   setFeedbackOption(feedbackCB.isSelected());
+            ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+        }
 		else if(e.getSource()==aantalSleepObjectsTF)
 		{	aantalSleepObjects = Integer.parseInt(aantalSleepObjectsTF.getText());
 		}
@@ -502,24 +750,28 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 		else if(e.getSource()==checkVastCB)
 		{	checkFormuleCB.setSelected(!checkVastCB.isSelected());
 			titleAntwoordLabel.setVisible(!checkVastCB.isSelected());
-			formuleEditor.setVisible(!checkVastCB.isSelected());
+			//formuleEditor.setVisible(!checkVastCB.isSelected());
 			viewCB.setVisible(checkVastCB.isSelected());
 			titleHulpLabel.setVisible(checkVastCB.isSelected());
 			if(!checkVastCB.isSelected())viewCB.setSelected(false);
 			hbView.setVisible(helpVisible && !checkFormuleCB.isSelected());
 			hbAntwoord.setVisible(helpVisible && checkFormuleCB.isSelected());
+			feedbackCB.setVisible(checkFormuleCB.isSelected());
+			antwoordEditorPanel.setVisible(checkFormuleCB.isSelected());
 			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 
 		}
 		else if(e.getSource()==checkFormuleCB)
 		{	checkVastCB.setSelected(!checkFormuleCB.isSelected());
-			formuleEditor.setVisible(!checkVastCB.isSelected());
+			//formuleEditor.setVisible(!checkVastCB.isSelected());
 			hbAntwoord.setVisible(helpVisible && checkFormuleCB.isSelected());
 			hbView.setVisible(helpVisible && !checkFormuleCB.isSelected());
 			titleAntwoordLabel.setVisible(!checkVastCB.isSelected());
 			viewCB.setVisible(checkVastCB.isSelected());
 			titleHulpLabel.setVisible(checkVastCB.isSelected());
 			if(!checkVastCB.isSelected())viewCB.setSelected(false);
+			feedbackCB.setVisible(checkFormuleCB.isSelected());
+			antwoordEditorPanel.setVisible(checkFormuleCB.isSelected());
 			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 
 		}
@@ -538,15 +790,13 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 			boolean b = verzamelDoelCB.isSelected();
 			checkVastCB.setEnabled(!b);
 			checkFormuleCB.setEnabled(!b);
-			
 			if (b)
 				checkVastCB.setSelected(!b);
 			if (b)
 				checkFormuleCB.setSelected(b);
-			
-			formuleEditor.setVisible(!checkVastCB.isSelected());
-			titleAntwoordLabel.setVisible(!checkVastCB.isSelected());
-			viewCB.setVisible(checkVastCB.isSelected());
+			antwoordEditorPanel.setVisible(checkFormuleCB.isSelected());
+			feedbackCB.setVisible(checkFormuleCB.isSelected());
+            viewCB.setVisible(checkVastCB.isSelected());
 			titleHulpLabel.setVisible(checkVastCB.isSelected());
 			if(!checkVastCB.isSelected())viewCB.setSelected(false);
 			((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
@@ -579,6 +829,153 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 	        imageDialog.setVisible(false);
 	}
     
+    private Hashtable fillAnswerModel(Hashtable h)
+    {
+        String formuleString = "$f@";
+        String[] formuleStrings = null;    
+        
+        formuleString = formuleEditor.geefFormuleVak().toString();
+        formuleStrings = formuleEditor.geefRegels();
+        String feedback = feedbackEditor.getText();
+        int puntenFeedback = (Integer.parseInt(feedbackPV.getText()));
+        
+        int goedHalfFout = goedFoutIP.geefKeuze()-1;
+  
+        
+        h.put("formuleString", formuleString);
+        h.put("formuleStrings", formuleStrings);
+        h.put("feedback", feedback);
+        h.put("puntenFeedback", new Integer(puntenFeedback));
+        h.put("goedHalfFout", new Integer(goedHalfFout));
+      
+        return h;
+    }
+    
+    private void setAnswerModel(Hashtable h)
+    {   
+        String formuleString = "$f@";
+        if(h.containsKey("formuleString")) 
+            formuleString = (String)h.get("formuleString");
+        
+        String[] formuleStrings = null;
+        if(h.containsKey("formuleStrings")) formuleStrings = (String[])h.get("formuleStrings");
+       
+        String feedback = "";
+        if(h.containsKey("feedback")) feedback = (String)h.get("feedback");
+        
+        int puntenFeedback = 0;
+        if(h.containsKey("puntenFeedback")) puntenFeedback = ((Integer)h.get("puntenFeedback")).intValue();
+        
+        int goedHalfFout = 2;
+        if(h.containsKey("goedHalfFout")) goedHalfFout = ((Integer)h.get("goedHalfFout")).intValue();
+            
+        formuleEditor.geefFormuleVak().vulVak(formuleString);
+        if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
+        feedbackEditor.zetTekst(feedback);
+        feedbackEditor.layoutTekst();
+        feedbackPV.setText(""+puntenFeedback);
+        goedFoutIP.setItem(goedHalfFout);
+       
+        updateFeedbackTitelLabel();
+    }
+    
+    private void getAnswerModel()
+    {   if(answerModels==null)return;
+        answerModels[answerModelNr] = fillAnswerModel(new Hashtable());
+        if(answerModelNr==0) 
+          maxScoreTF.setText(feedbackPV.getText());
+    }
+    
+    private void setAnswerModel()
+    {   if(answerModels==null)return;
+         setAnswerModel(answerModels[answerModelNr]);
+         
+         
+         
+    }
+    
+    private void updateFeedbackTitelLabel()
+    {   String feedbackNrString = "";
+        boolean hasFeedback = feedbackCB.isSelected();
+        if(hasFeedback && answerModelNr>0) {
+            feedbackNrString += (answerModelNr+1);
+            titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel") + " " + feedbackNrString);
+            titleFeedbackLabel.setText(WiskOpdr.rb.getString("feedbackLabel") + " " + feedbackNrString);
+            titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordNrLabel") + " " + feedbackNrString);
+            titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + " " + feedbackNrString);
+            feedbackBox.validate();
+       }
+        else {
+            titleFeedbackTekstLabel.setText(WiskOpdr.rb.getString("FEV_titleFeedbackLabel"));
+            titleFeedbackLabel.setText(WiskOpdr.rb.getString("feedbackLabel"));
+            titleAntwoordLabel.setText(WiskOpdr.rb.getString("FEV_titleAntwoordLabel"));
+            titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
+            titleScoreLabel.setText(WiskOpdr.rb.getString("FEV_titleScoringLabel") + (hasFeedback  ? " max" : " 1"));
+            feedbackBox.validate();
+       }
+    }
+    
+    public void setFeedbackOption(boolean b)
+    {
+      tabbladTab.setVisible(b);
+      aantalTabsKnop.setVisible(b);
+      tabPositieKnop.setVisible(b);
+      goedFoutIP.setVisible(b);
+      feedbackPV.setVisible(b);
+      goedFoutIP.setVisible(b);
+      titleScoreLabel.setVisible(b);
+      
+      maxScoreLabel.setVisible(!b);
+      maxScoreTF.setVisible(!b);
+      
+      if(!b) {
+        antwoordEditorPanel.setPreferredSize(new Dimension(450,220));
+        antwoordEditorPanel.setBorder(BorderFactory.createEmptyBorder());
+      }
+      else {
+        antwoordEditorPanel.setPreferredSize(new Dimension(450,220));
+        antwoordEditorPanel.setBorder(BorderFactory.createMatteBorder(0,0,1,0,WiskOpdr.colorBlue3));
+      }
+      if(feedbackBox!=null)
+        feedbackBox.setVisible(b);
+      
+      answerModelNr = 0;
+      tabbladTab.setSelected(answerModelNr+1);
+      
+      if(b) {
+        getAnswerModel();
+        setAnswerModel();
+      }
+           
+//        hasFeedback = b;
+//        if(!b) logMisconceptionsButton.setVisible(false);
+//        tabbladTab.setVisible(b);
+//        feedbackEditor.setVisible(b);
+//        if(feedbackBox!=null)
+//              feedbackBox.setVisible(b);
+//        feedbackSizeCB.setVisible(b);
+//        //feedbackLabel.setVisible(b);
+//        aantalTabsKnop.setVisible(b);
+//        tabPositieKnop.setVisible(b);
+//        feedbackPV.setVisible(b);
+//        goedFoutIP.setVisible(b);
+//        if(scoringBox!=null)
+//            scoringBox.setVisible(b);
+//        titleVerificatieScoreLabel.setVisible(!b);
+//        puntenLabel.setVisible(!b);
+//        gelijkwaardigPV.setVisible(!b);
+//        if(b || herleiding) herleidingPV.setVisible(!b);
+//        if(b || exact) exactPV.setVisible(!b);
+//        if(b || significant && significantieAan) significantPV.setVisible(!b);
+//        
+//        if(!b)
+//                scoreCumulatiefCB.setSelected(false);
+//        
+//        answerModelNr = 0;
+//        tabbladTab.setSelected(answerModelNr+1);
+//        if(b)setAnswerModel();
+    }
+
 // methoden TabletOwner
     
     public void zetTabletUser(FormuleVakHouder formuleVakHouder)
@@ -636,7 +1033,9 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		// TODO Auto-generated method stub
+	  if(e.getSource()==feedbackPV && answerModelNr==0) {
+        maxScoreTF.setText(feedbackPV.getText());
+      }
 		
 	}
 
@@ -665,4 +1064,35 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 	}
     
     // einde methode TabletOwner
+	
+	public class EditorComponentListener implements ComponentListener {
+
+      @Override
+      public void componentResized(ComponentEvent e) {
+          if(e.getSource()==antwoordEditorPanel) {
+              int w = antwoordEditorPanel.getWidth();
+              int h = antwoordEditorPanel.getHeight();
+              formuleEditor.setBounds(0,20,w,h-20);
+          }
+          
+        
+      }
+     @Override
+      public void componentMoved(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+
+      @Override
+      public void componentShown(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+
+      @Override
+      public void componentHidden(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+}
 }
