@@ -4028,7 +4028,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public Expressie geefSleepObjectWaarde()
 	{
-		Expressie waarde = null;
+		Expressie waarde = new BasisExpressie(0);
 		if (sleepObjecten != null && sleepdoel)
 		{
 			for (int i = 0; i < sleepObjecten.length; i++)
