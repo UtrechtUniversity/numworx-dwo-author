@@ -312,6 +312,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         
         feedbackPV = makeTextField("0",50,24,this);
         feedbackPV.addFocusListener(goedFoutIP);
+        feedbackPV.addFocusListener(this);
         feedbackPV.setVisible(false);
         
         titleScoreLabel = new JLabel(WiskOpdr.rb.getString("FEV_titleScoringLabel"));
