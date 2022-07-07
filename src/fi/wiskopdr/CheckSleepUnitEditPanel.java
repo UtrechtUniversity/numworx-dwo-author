@@ -414,6 +414,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 	    acceptedMargeTF.setText(""+acceptedMarge);
 	    checkVastCB.setSelected(!checkFormule);
 	    checkFormuleCB.setSelected(checkFormule);
+	    formuleEditor.verwijderRegels();
 	    formuleEditor.geefFormuleVak().vulVak(formuleString);
 	    if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
 	    antwoordEditorPanel.setVisible(checkFormule);
@@ -869,7 +870,8 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
         
         int goedHalfFout = 2;
         if(h.containsKey("goedHalfFout")) goedHalfFout = ((Integer)h.get("goedHalfFout")).intValue();
-            
+        
+        formuleEditor.verwijderRegels();
         formuleEditor.geefFormuleVak().vulVak(formuleString);
         if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
         feedbackEditor.zetTekst(feedback);
