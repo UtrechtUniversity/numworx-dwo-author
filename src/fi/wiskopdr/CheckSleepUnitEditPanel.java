@@ -558,7 +558,8 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
         boolean hasFeedback = false;
         
         getAnswerModel();
-        if(answerModels!=null)setAnswerModel(answerModels[0]);
+        if(this.answerModels!=null)
+            setAnswerModel(this.answerModels[0]);
         
 		
 		knopImageString = this.knopImageString;
