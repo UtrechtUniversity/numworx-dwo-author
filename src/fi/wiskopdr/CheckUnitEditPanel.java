@@ -2,6 +2,8 @@ package fi.wiskopdr;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Hashtable;
@@ -46,6 +48,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
     //mainPanel  //juiste antwoord
   	private JLabel titleAntwoordLabel;
   	private JPanel antwoordEditorPanel;
+  	private Component antwoordPanelBox;
   	private JCheckBox[] selectableCheckboxes;
   	private ButtonGroup buttonGroup = new ButtonGroup();
   	private Box selectableCBBox;
@@ -147,18 +150,24 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		maakCheckboxes();
 		
 		formuleEditor = new FormuleEditor(true);
+		formuleEditor.setBounds(0,20,350,200);
 		formuleEditor.setMultiLine(true);
-		formuleEditor.setPreferredSize(new Dimension(340,200));
+		//formuleEditor.setPreferredSize(new Dimension(340,200));
 		formuleEditor.setVisible(false);
+		
         
 		antwoordEditorPanel = new JPanel();
         antwoordEditorPanel.setLayout(null);
         antwoordEditorPanel.add(titleAntwoordLabel);
+        antwoordEditorPanel.add(formuleEditor);
         antwoordEditorPanel.setBorder(BorderFactory.createMatteBorder(0,0,1,0,WiskOpdr.colorBlue3));
         //antwoordEditorPanel.add(antwoordvak);
-        //antwoordEditorPanel.addComponentListener(new EditorComponentListener());
-        antwoordEditorPanel.setPreferredSize(new Dimension(350,80));
-        antwoordEditorPanel.setMaximumSize(new Dimension(2835,80));
+        antwoordEditorPanel.addComponentListener(new EditorComponentListener());
+        antwoordEditorPanel.setPreferredSize(new Dimension(150,24));
+        antwoordEditorPanel.setMaximumSize(new Dimension(2835,220));
+        
+        antwoordPanelBox = ra(0,200);
+        antwoordPanelBox.setVisible(false);
         
         tabbladTab = new OpdrachtNrRij(aantalAnswerModels, 150,20);
         tabbladTab.setSize(tabbladTab.getSize().width, 23);
@@ -253,12 +262,12 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
         
    private void plaatsGUI() {   
         //plaats componenten mainPanel
-        Component[] r11 = {antwoordEditorPanel,      hgl()};
+        Component[] r11 = {antwoordPanelBox, antwoordEditorPanel};
         // Component[] r11 = {titleAntwoordLabel, 	ra(10,0),	hbAntwoord, 	hgl()};
 		Component[] r12 = {selectableCBBox, 	hgl()};
-		Component[] r13 = {formuleEditor, 	hgl()};
+		//Component[] r13 = {formuleEditor, 	hgl()};
 		
-		Component[] k1 = {hb(r11), vst(15), hb(r12), hb(r13), vst(15)};
+		Component[] k1 = {hb(r11), vst(15), hb(r12), vst(15)};
 		
 		// plaats componenten feedback box
         Component[] r51 = {titleFeedbackLabel,  ra(5,10),   hgl()};
@@ -274,11 +283,11 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
         feedbackBox = hb(h5);
         feedbackBox.setVisible(false);
         
-        Component[] k7 = {vb(k1),  feedbackBox};
+        Component[] k7 = {vb(k1),   feedbackBox};
         Box hbox = hb(k7);
         
         Component[] r70 = {titleScoreLabel,    ra(10,10),      feedbackPV, hgl()};
-        Component[] k8 = {hb(r11),hbox,ra(10,10), hb(r70), vgl()};
+        Component[] k8 = {hb(r11),vst(15),hbox,ra(10,10), hb(r70), vgl()};
         
         Component[] r21 = {titleSettingsLabel, 	hgl()};
 		Component[] r22 = {itemCountLabel, 		ra(10,10), 	hgl(), 	itemCountTF};
@@ -492,7 +501,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
             
             answerModelNr = 0;
             setAnswerModel();
-            antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,400),80));
+            antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,400),220));
         }
         
 	    if(juisteSelecties==null) return;
@@ -534,6 +543,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
         checkFormuleCB.setSelected(checkFormule);
         if(formuleStrings!=null)formuleEditor.zetRegels(formuleStrings);
         formuleEditor.setVisible(checkFormule);
+        antwoordPanelBox.setVisible(checkFormule);
         selectableCBBox.setVisible(!checkFormule);
         
         knopImageButton.setPopupButtonImage(knopImage);
@@ -756,13 +766,18 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
       maxScoreLabel.setVisible(!b);
       maxScoreTF.setVisible(!b);
       
-      if(!b) {
-        antwoordEditorPanel.setPreferredSize(new Dimension(150,24));
-        antwoordEditorPanel.setBorder(BorderFactory.createEmptyBorder());
+      boolean checkFormule = checkFormuleCB.isSelected();
+      if(checkFormule) {
+        antwoordEditorPanel.setPreferredSize(new Dimension(350,220));
+       antwoordEditorPanel.setBorder(BorderFactory.createEmptyBorder());
+      }
+      else if(b){
+        antwoordEditorPanel.setPreferredSize(new Dimension(400,42));
+        antwoordEditorPanel.setBorder(BorderFactory.createMatteBorder(0,0,1,0,WiskOpdr.colorBlue3));
       }
       else {
-        antwoordEditorPanel.setPreferredSize(new Dimension(400,80));
-        antwoordEditorPanel.setBorder(BorderFactory.createMatteBorder(0,0,1,0,WiskOpdr.colorBlue3));
+        antwoordEditorPanel.setPreferredSize(new Dimension(150,24));
+        antwoordEditorPanel.setBorder(BorderFactory.createEmptyBorder());
       }
       if(feedbackBox!=null)
         feedbackBox.setVisible(b);
@@ -855,8 +870,12 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
               answerModels[aantalAnswerModels-1] = fillAnswerModel(new Hashtable());
               antwoordEditorPanel.repaint();
           }
-          antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(150+25*aantalAnswerModels+40,350),80));
-          ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
+          if(checkFormuleCB.isSelected())
+            antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(150+25*aantalAnswerModels+40,350),220));
+          else
+            antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(150+25*aantalAnswerModels+40,350),42));
+             
+            ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 
       }
       else if(e.getSource()==feedbackCB)
@@ -885,8 +904,17 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 	    }
 		else if(e.getSource()==checkFormuleCB)
 	    {   formuleEditor.setVisible(checkFormuleCB.isSelected()); 
+	        antwoordPanelBox.setVisible(checkFormuleCB.isSelected()); 
+	        formuleEditor.setBounds(0,20,350,200);
+	        formuleEditor.setSize(350,200);
 	    	selectableCBBox.setVisible(!checkFormuleCB.isSelected());
-	    	enableMisconceptions();
+	    	if(checkFormuleCB.isSelected()) 
+	    	  antwoordEditorPanel.setPreferredSize(new Dimension(350,220));
+	    	else if(feedbackCB.isSelected())
+	    	  antwoordEditorPanel.setPreferredSize(new Dimension(350,42));
+	    	else
+	    	  antwoordEditorPanel.setPreferredSize(new Dimension(150,24));
+	        enableMisconceptions();
 	    	((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).pack();
 
 	    }
@@ -938,7 +966,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 				int imHeight = iconman.getHeight(knopImageString);
 				if(imWidth == -1) imWidth = 20;
 				if(imHeight == -1) imHeight = 20;
-				knopImageButton.setPreferredSize(new Dimension(Math.max(imWidth,80),Math.max(imHeight,22)));
+				knopImageButton.setPreferredSize(new Dimension(Math.max(imWidth,80),Math.max(imHeight,220)));
 	         }
 	        else {
 	    		knopImageButton.setPopupButtonImage(null);
@@ -989,5 +1017,36 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 	@Override
 	public String geefHelpURL() {
 		return HELP_12_URL;
+	}
+	
+	public class EditorComponentListener implements ComponentListener {
+
+      @Override
+      public void componentResized(ComponentEvent e) {
+          if(e.getSource()==antwoordEditorPanel) {
+              int w = antwoordEditorPanel.getWidth();
+              int h = antwoordEditorPanel.getHeight();
+              formuleEditor.setBounds(0,20,w,h-20);
+          }
+          
+        
+      }
+     @Override
+      public void componentMoved(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+
+      @Override
+      public void componentShown(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
+
+      @Override
+      public void componentHidden(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        
+      }
 	}
 }
