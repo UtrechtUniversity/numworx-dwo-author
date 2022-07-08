@@ -485,6 +485,16 @@
 				<extras.process>none</extras.process>
 			</properties>
 		</profile>
+		<profile>
+			<id>notebook</id>
+			<dependencies>
+				<dependency>
+					<groupId>nl.numworx.notebook</groupId>
+					<version>0.0.1-SNAPSHOT</version>
+					<artifactId>notebook</artifactId>
+				</dependency>
+			</dependencies>
+		</profile>
 	<profile>
 		<id>java17</id>
  		<properties>

@@ -346,64 +346,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{ "fi.ivmdraw.IVMdraw" , "59" },
 		{ "fi.mathscratch.MathScratch" , "61" },
 		{ "nl.numworx.uploadwidget.UploadWidget", "62" },
+		{ "nl.numworx.notebook.Notebook", "65" },
 	};
 	
-//	public static String[][] wiskOpdrInteractiePanels = 
-//	    {
-//	        //{ "fi.wiskopdr.AntwoordFormuleVak" , "Formulevak met stappen" },
-//	        //{ "fi.wiskopdr.AntwoordVergelijkingVak" , "Vergelijkingvak met stappen" },
-//	        //{ "fi.wiskopdr.SimpelAntwoordFormuleVak" , "Simpel formulevak" },
-//	        //{ "fi.wiskopdr.SimpelAntwoordVergelijkingVak" , "Simpel vergelijkingvak" },
-//	        //{ "fi.wiskopdr.tekstobjectsTekstEditor" , "Tekst-antwoordvak" },
-//	        { "fi.algebrapijlenopdr.AlgebraPijlenOpdr" , "AlgebraPijlen" },
-//	        { "fi.nabouwenaanzichten.NabouwenAanzichten" , "Blokkenbouwen" },
-//	        { "fi.flowdiagrams.FlowDiagrams" , "Stroomdiagrammen" },
-//	        { "fi.balansfruit.BalansFruitApplet" , "Fruitbalans" },
-//	        { "fi.doorziendwo.DoorzienDWO" , "Doorzien" },
-//	        { "fi.vergroten.Vergroten" , "Vergroten" },
-//	        { "fi.vangen.Vangen" , "Vangen" },
-//	        { "fi.verknippen.Verknippen" , "Verknippen" },
-//	        { "fi.geomalgebra.GeomAlgebra" , "Geom.algebra 2d" },
-//	        { "fi.geomalgebra1d.GeomAlgebra1d" , "Geom.algebra 1d" },
-//	        { "fi.normaleverdeling.NormaleVerdeling" , "Normale verdeling" },
-//	        { "fi.tinyplayerapplet.TinyPlayerApplet" , "mp3-player" },
-//	        { "fi.binomverdeling.BinomVerdeling" , "Binominale verdeling" },
-//	        { "fi.tekenveelvlakopdr.TekenVeelvlakOpdr" , "Tekenveelvlak" },
-//	        { "fi.mozarch.MozArch" , "Mozaik" },
-//	        { "fi.geodefull.GeodeFull" , "Veelvlakken" },
-//	        { "fi.figuursnijden.Snijden" , "Eerlijk verdelen" },
-//	        { "fi.statistiek.Statistiek" , "Statistische representaties" },
-//	        { "fi.stroomdiagrammen.Stroomdiagrammen" , "Stroomdiagrammen Nieuw" },
-//	        { "fi.tegels.Tegels" , "Tegels" },
-//	        { "fi.omtrekapplet.OmtrekApplet" , "Omtrek applet" },
-//	        { "fi.algebraexpressies.AlgebraExpressies" , "Algebra Expressies" },
-//	        { "fi.oppervlaktealgebra.OppervlakteAlgebra" , "Oppervlakte-algebra" },
-//	        { "fi.blokkenprogramma.BlokkenProgramma" , "Blokkenprogramma" },
-//	        { "fi.grafiek3dtest.Grafiek3DTest" , "Grafieken 3D" },
-//	        { "fi.spot_problems_dwo.Spot_Problems_dwo" , "Stippelalgebra" },
-//	        { "fi.kladje.Kladje" , "Kladje" },
-//	        { "fi.kansbomen.Kansbomen" , "Kansbomen" },
-//	        { "fi.calculatordwo.CalculatorDwo" , "Rekenmachine" },
-//	        { "fi.formstruct.FormStruct" , "[test] FormStruct" },
-//	        { "fi.graphtool.GraphTool" , "[test] GraphTool" },
-//	        { "fi.draaibank.Draaibank" , "[test] Draaibank" },
-//	        { "fi.waarmakersdwo.WaarmakersDwo" , "[test] Waarmaker" },
-//	        { "fi.statsim.StatSim" , "[test] Statistiek Simulaties" },
-//	        { "fi.sliderwidget.SliderWidget" , "[test] Slider" },
-//	        { "fi.dataplot.DataPlot" , "[test] DataPlot" },
-//	        { "fi.javalogoweb.JavaLogoWeb" , "[test] JavaLogoWeb" },
-//	        { "fi.heks.Heks" , "[test] Heks" },
-//	        { "nl.numworx.geodefiner.GeoDefiner", "[test] GeoDefiner" },
-//	        { "fi.javalogoweb3d.JavaLogoWeb3d" , "[test] JavaLogoWeb3d" },
-//	        { "fi.ivmdraw.IVMdraw" , "[test] IVMdraw" },
-//	    };
-	
-	//public static String[] interactiePanelClassNames =
-	//{	 "fi.nabouwenaanzichten.NabouwenAanzichten" , 
-	//	 "fi.flowdiagrams.FlowDiagrams" , 
-	//	 "fi.wiskopdr.GrafiekPanel",
-	//	 "fi.wiskopdr.GrafiekTekenPanel"
-	//};
 	
 	public static String[] interactiePanelDescriptions = makeStaticDescriptions();
 
@@ -426,7 +371,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	public static int[][] interactiePanelSets =
 	    {
 	        {2,0,3,1,53,63,64,4,13,14,60,12,16,33,49},//,52
-	        {35,5,6,24,15,46,11,10,39,20,25,56,59,54,58,42,41,61,27,22,43,50,30,48,40,31,32,26,62,19},
+	        {35,5,6,24,15,46,11,10,39,20,25,56,59,54,58,42,41,61,27,22,65,43,50,30,48,40,31,32,26,62,19},
 	        //{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59,25},
 	        //{0,1,2,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,
 	        {45},
@@ -522,6 +467,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				"Upload bestanden [test]",
 				"Vak voor berekening [test]",
 				"Strategie-antwoordvak [test]",
+				"Notebook [test]"
 			};
 		return s;
 	}
@@ -646,7 +592,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private static boolean skipItem(int setNr, int i) {
 	  i = interactiePanelSets[setNr][i];
 	  // 62: upload widget is een premium experimental feature
-      return WiskOpdr.isExperimental() && WiskOpdr.isPremium() || (i != 62 && i != 63 && i != 64) ;
+	  // 65: notebook alleen op dev-omgeving
+      return WiskOpdr.isExperimental() && WiskOpdr.isPremium() || (i != 62 && i != 63 && i != 64 && i != 65) ;
   }
 
   public static int AntwoordvakkenSetNr = 0;
