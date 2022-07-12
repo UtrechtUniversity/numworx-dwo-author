@@ -19,5 +19,8 @@ public interface TrackerContext extends Adaptee {
     Track t = getTrack();
     return t != null && t.isTracked(p);
   }
+  
+  default void enter() {}
+  default void exit() {}
 
 }
