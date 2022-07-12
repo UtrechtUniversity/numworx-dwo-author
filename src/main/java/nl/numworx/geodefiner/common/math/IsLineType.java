@@ -10,8 +10,10 @@ import nl.numworx.geodefiner.common.LineType;
 
 public abstract class IsLineType extends LabelTester {
 
+	public static final String LINE_TYPE = "linetype";
+
 	public IsLineType() {
-		super("linetype");
+		super(LINE_TYPE);
 	}
 
 	@Override
@@ -38,7 +40,7 @@ public abstract class IsLineType extends LabelTester {
 		Destroyable depend[] = l.getDepend();
 		LineType a = getLineTypeA(depend[0]);
 		LineType b = getLineTypeB(depend[1]);
-		boolean is  = Objects.equals(a, b);
+		boolean is  = Objects.equals(a, b) && depend[0].isDefined() && depend[1].isDefined();
 		return setState(l, is?Numbers.ZERO:Numbers.ONE, 0.0);
 	}
 

@@ -110,7 +110,10 @@ class GeneralDestroyable extends Destroyable implements Indexed<Destroyable> {
 	public <T> T adapt(Class<T> clz) {
 //		if ( clz.isInstance(delegate))
 //			return (T) delegate;
-		return super.adapt(clz);
+		T adapt = super.adapt(clz);
+		if (adapt == null && delegate != null)
+			adapt = delegate.adapt(clz);
+		return adapt;
 	}
 
 	@Override

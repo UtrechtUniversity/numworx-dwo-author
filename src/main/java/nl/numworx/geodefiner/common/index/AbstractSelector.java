@@ -14,6 +14,8 @@ import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.util.Observable;
+import nl.numworx.geodefiner.common.math.IsColor;
+import nl.numworx.geodefiner.common.math.IsLineType;
 
 abstract class AbstractSelector<T extends Destroyable> implements Visitor, Selector {
 	
@@ -126,7 +128,9 @@ abstract class AbstractSelector<T extends Destroyable> implements Visitor, Selec
         		&& indexed.getDelegate() != null
         		) {
             indexed.setVisible(indexed.getDelegate().isVisible());
-        } 
+        } else if (arg == IsLineType.LINE_TYPE || arg == IsColor.COLOR) {
+        	get().forceChanged(arg);
+        }
 //        else if (arg == Destroyable.VISIBLE) {
 //        	System.out.println("NPE avoided");
 //        }

@@ -10,8 +10,10 @@ import fi.euclides.util.Observable;
 
 public abstract class IsColor extends LabelTester {
 
+	public static final String COLOR = "color";
+
 	protected IsColor() {
-		super("color");
+		super(COLOR);
 	}
 
 	@Override
@@ -27,7 +29,7 @@ public abstract class IsColor extends LabelTester {
 		Destroyable depend[] = l.getDepend();
 		Object a = getColorA(depend[0]);
 		Object b = getColorB(depend[1]);
-		boolean is  = Objects.equals(a, b);
+		boolean is  = Objects.equals(a, b) && depend[0].isDefined() && depend[1].isDefined();
 		return setState(l, is?Numbers.ZERO:Numbers.ONE, 0.0);
 	}
 
@@ -42,6 +44,10 @@ public abstract class IsColor extends LabelTester {
 
 	@Override
 	public void update(Observable observable, Object arg) {
+		if (arg == COLOR && observable instanceof Label) {
+			test( (Label) observable);
+			return;
+		}
 		// TODO Auto-generated method stub
 		super.update(observable, arg);
 	}
