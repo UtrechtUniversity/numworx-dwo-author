@@ -38,10 +38,14 @@ public abstract class Destroyable extends Observable implements Observer, Adapte
 			}
 		}
 		dstate=2;
-		setChanged();
-		notifyObservers(DESTROY);
+		forceChanged(DESTROY);
 		setIndex(0);
 		dstate = 3;
+	}
+
+	public void forceChanged(Object arg) {
+		setChanged();
+		notifyObservers(arg);
 	}
 	
 	abstract public void visit(Visitor v);
