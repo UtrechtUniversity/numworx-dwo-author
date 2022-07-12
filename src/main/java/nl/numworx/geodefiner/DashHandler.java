@@ -92,8 +92,10 @@ public class DashHandler extends EventHandler {
 				String name = getTracker().getMapper().toString(p);
 				Map<String,Object> pstate = state.computeIfAbsent(name, k -> new TreeMap<>());
 				pstate.put("type", value.name());
-				IsLineType linetype = p.adapt(IsLineType.class);
-				if (linetype != null) linetype.updateLineType();
+//				IsLineType linetype = p.adapt(IsLineType.class);
+//				if (linetype != null) linetype.updateLineType();
+				p.forceChanged(IsLineType.LINE_TYPE);
+				
 			}
 			getModel().clearSelection();
 		});

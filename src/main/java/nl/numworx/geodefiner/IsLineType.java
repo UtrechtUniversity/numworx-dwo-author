@@ -6,9 +6,11 @@ import java.awt.Stroke;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.util.DefaultAdapter;
+import fi.euclides.util.Observable;
+import fi.euclides.util.Observer;
 import nl.numworx.geodefiner.common.LineType;
 
-public class IsLineType extends nl.numworx.geodefiner.common.math.IsLineType {
+public class IsLineType extends nl.numworx.geodefiner.common.math.IsLineType implements Observer {
 
 	private IsLineType chain;
 	private Label label;
@@ -44,11 +46,26 @@ public class IsLineType extends nl.numworx.geodefiner.common.math.IsLineType {
 
 	@Override
 	public boolean define(Label l) {
-		DefaultAdapter adapter = DefaultAdapter.getDefault(l.getDepend()[0]);
-		adapter.put(new IsLineType(l, adapter.adapt(IsLineType.class)));
-		adapter = DefaultAdapter.getDefault(l.getDepend()[1]);
-		adapter.put(new IsLineType(l, adapter.adapt(IsLineType.class)));
+//		Destroyable[] depend = l.getDepend();
+//		DefaultAdapter adapter = DefaultAdapter.getDefault(depend[0]);
+//		adapter.put(new IsLineType(l, adapter.adapt(IsLineType.class)));
+//		adapter = DefaultAdapter.getDefault(depend[1]);
+//		adapter.put(new IsLineType(l, adapter.adapt(IsLineType.class)));
+//		depend[0].addObserver(this);
+//		depend[1].addObserver(this);
 		return super.define(l);
+	}
+
+	@Override
+	public void update(Observable observable, Object arg) {
+		if (arg == LINE_TYPE && observable instanceof Label) {
+//			IsLineType linetype = observable.adapt(IsLineType.class);
+//			if (linetype != null) linetype.updateLineType();
+//			return;
+			test ( (Label)observable );
+			return;
+		}
+		super.update(observable, arg);
 	}
 	
 }

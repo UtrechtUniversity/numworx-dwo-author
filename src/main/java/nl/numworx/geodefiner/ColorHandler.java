@@ -93,8 +93,9 @@ public class ColorHandler extends EventHandler {
 				Map<String,Object> pstate = state.computeIfAbsent(name, k -> new TreeMap<>());
 				pstate.put("color", value.getRGB());
 // shortcut
-				IsColor iscolor = p.adapt(IsColor.class);
-				if (iscolor != null) iscolor.updateColor();
+//				IsColor iscolor = p.adapt(IsColor.class);
+//				if (iscolor != null) iscolor.updateColor();
+				p.forceChanged(IsColor.COLOR);
 			}
 			getModel().clearSelection();
 		});
