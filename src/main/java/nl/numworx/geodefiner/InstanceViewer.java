@@ -16,8 +16,12 @@ import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 import java.util.WeakHashMap;
 
@@ -965,5 +969,56 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
     public void toTrail(Destroyable key, Vector<Destroyable> values) {
       for(Destroyable copy: values) copyTrailAttributes(key, copy);
     }
+
+    int entered = 0;
+    Set<Destroyable> select;
+    @Override
+	public void enter() {
+    	if (entered == 0) select = new TreeSet<>(this::compare);
+		entered ++;
+	}
+
+    private int compare(Destroyable a, Destroyable b) {
+    	return Integer.signum(a.getIndex()-b.getIndex());
+    }
+    
+	@Override
+	public void exit() {
+		entered --;
+		if (entered == 0) {
+			int sum = 0;
+			Iterator<Destroyable> i = select.iterator();
+			Collection<Destroyable> from = getModel().getSelect();
+			int n = 1;
+			while (i.hasNext()) {
+				Destroyable d = i.next();
+				if (from.contains(d)) sum |= n;
+				n += n;
+			} 
+			sum = sum ^ (sum-1); n = 1; i = select.iterator();
+			while (i.hasNext()) {
+				Destroyable d = i.next();
+				if ((n & sum) != 0) super.toggle(d);
+				n += n;
+			}			
+
+			select = null;
+		}
+	}
+
+	@Override
+	public void clearSelection() {
+		if (entered == 0)
+			super.clearSelection();
+	}
+
+	@Override
+	public void toggle(Destroyable d) {
+		if (entered == 0)
+			super.toggle(d);
+		else {
+			select.add(d);
+		}
+	}
     
 }
