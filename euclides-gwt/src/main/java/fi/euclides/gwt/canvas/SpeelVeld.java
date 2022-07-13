@@ -1,7 +1,11 @@
 package fi.euclides.gwt.canvas;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -31,6 +35,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Adapter;
+import fi.euclides.util.DComparator;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.event.DescriptionBuilder;
 import fi.euclides.gwt.DelayMouse;
@@ -75,7 +80,10 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
     @Override
     public void toggle(Destroyable d) {
-      getModel().toggle(d);
+    	if (entered == 0)
+    		getModel().toggle(d);
+    	else
+    		select.add(d);
     }
 
     @Override
@@ -102,9 +110,40 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
     @Override
     public boolean isTracked(Destroyable p) {
-      // TODO Auto-generated method stub
       return track != null && track.isTracked(p);
     }
+
+    private int entered = 0;
+    private Set<Destroyable> select;
+    @Override
+	public void enter() {
+    	if (entered == 0) select = new TreeSet<>(new DComparator());
+		entered ++;
+	}
+    
+	@Override
+	public void exit() {
+		entered --;
+		if (entered == 0) {
+			int sum = 0;
+			Iterator<Destroyable> i = select.iterator();
+			Collection<Destroyable> from = selection();
+			int n = 1;
+			while (i.hasNext()) {
+				Destroyable d = i.next();
+				if (from.contains(d)) sum |= n;
+				n += n;
+			} 
+			sum = sum ^ (sum-1); n = 1; i = select.iterator();
+			while (i.hasNext()) {
+				Destroyable d = i.next();
+				if ((n & sum) != 0) getModel().toggle(d);
+				n += n;
+			}			
+
+			select = null;
+		}
+	}
 
   }
 
