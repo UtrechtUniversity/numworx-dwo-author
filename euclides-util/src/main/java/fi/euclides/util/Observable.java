@@ -1,64 +1,6 @@
 package fi.euclides.util;
 
-import java.util.Vector;
-
 public class Observable extends java.util.Observable {
-
-	private boolean changed;
-	private Vector<Observer> obs  = new Vector<Observer>();
-	
-	protected void setChanged() {
-		changed = true;
-	}
-	
-	
-	public void notifyObservers(Object arg) {
-		if(!changed)
-			return;
-		changed = false;
-		Observer[] observers;
-		synchronized(obs) {
-			observers = new Observer[obs.size()];
-			obs.copyInto(observers);
-		}
-		for (int i = 0; i < observers.length; i++) {
-			observers[i].update(this,arg);
-		}
-		
-	}
-	public void notifyObservers() {
-		notifyObservers(null);
-	}
-
-	public void addObserver(Observer observer) {
-		if(!contains(observer))
-			obs.addElement(observer);
-		
-	}
-
-	/**
-	 * contains met identity equality.
-	 * @param observer
-	 * @return true if observer == obs.element
-	 */
-	private boolean contains(Observer observer) {
-		int len = obs.size();
-		for(int i = 0; i < len; i++)
-		{
-			if( observer == obs.get(i))
-				return true;
-		}
-		return false;
-	}
-	
-	public void deleteObserver(Observer observer) {
-		int len = obs.size();
-		for(int i = 0 ; i < len; i++)
-			if(observer == obs.get(i))
-			{	obs.remove(i);
-				break;
-			}
-	}
 
 	/**
 	 * Prototype pattern. Platform dependent
@@ -92,4 +34,12 @@ public class Observable extends java.util.Observable {
 		return null;
 	}
 	
+	public void addObserver(Observer observer) {
+		super.addObserver(observer);
+	}
+
+	public void deleteObserver(Observer observer) {
+		super.deleteObserver(observer);
+	}
+
 }
