@@ -56,16 +56,5 @@ public class IsLineType extends nl.numworx.geodefiner.common.math.IsLineType imp
 		return super.define(l);
 	}
 
-	@Override
-	public void update(Observable observable, Object arg) {
-		if (arg == LINE_TYPE && observable instanceof Label) {
-//			IsLineType linetype = observable.adapt(IsLineType.class);
-//			if (linetype != null) linetype.updateLineType();
-//			return;
-			test ( (Label)observable );
-			return;
-		}
-		super.update(observable, arg);
-	}
 	
 }

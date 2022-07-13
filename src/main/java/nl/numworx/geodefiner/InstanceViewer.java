@@ -17,8 +17,6 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -58,6 +56,7 @@ import fi.euclides.proof.LabelDelegate;
 import fi.euclides.swing.AWTViewer;
 import fi.euclides.util.Adaptee;
 import fi.euclides.util.Adapter;
+import fi.euclides.util.DComparator;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
@@ -974,13 +973,9 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
     Set<Destroyable> select;
     @Override
 	public void enter() {
-    	if (entered == 0) select = new TreeSet<>(this::compare);
+    	if (entered == 0) select = new TreeSet<>(new DComparator());
 		entered ++;
 	}
-
-    private int compare(Destroyable a, Destroyable b) {
-    	return Integer.signum(a.getIndex()-b.getIndex());
-    }
     
 	@Override
 	public void exit() {
@@ -1004,12 +999,6 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 
 			select = null;
 		}
-	}
-
-	@Override
-	public void clearSelection() {
-		if (entered == 0)
-			super.clearSelection();
 	}
 
 	@Override
