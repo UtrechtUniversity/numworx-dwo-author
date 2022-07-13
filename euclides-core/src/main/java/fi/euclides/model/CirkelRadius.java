@@ -3,7 +3,6 @@ package fi.euclides.model;
 import java.io.IOException;
 
 import fi.euclides.model.math.Numbers;
-import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
 public class CirkelRadius extends Cirkel {
