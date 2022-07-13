@@ -48,7 +48,6 @@ public abstract class IsColor extends LabelTester {
 			test( (Label) observable);
 			return;
 		}
-		// TODO Auto-generated method stub
 		super.update(observable, arg);
 	}
 

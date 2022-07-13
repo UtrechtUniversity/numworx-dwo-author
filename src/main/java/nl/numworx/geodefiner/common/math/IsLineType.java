@@ -6,6 +6,7 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.Label;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.LabelTester;
+import fi.euclides.util.Observable;
 import nl.numworx.geodefiner.common.LineType;
 
 public abstract class IsLineType extends LabelTester {
@@ -50,6 +51,15 @@ public abstract class IsLineType extends LabelTester {
 		Destroyable[] depend = l.getDepend();
 		l.setString( string + "(" + s(depend[0]) + "," + s(depend[1]) + ")");		
 		return true;
+	}
+
+	@Override
+	public void update(Observable observable, Object arg) {
+		if (arg == LINE_TYPE && observable instanceof Label) {
+			test ( (Label)observable );
+			return;
+		}
+		super.update(observable, arg);
 	}
 
 }

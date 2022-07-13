@@ -395,17 +395,6 @@ public class CheckObjectList extends Groep implements Observer {
 		System.err.println("you cannot destroy this");
 	}
 
-	@Override
-	public void addObserver(Observer observer) {
-		// TODO Auto-generated method stub
-		super.addObserver(observer);
-	}
-
-	@Override
-	public void deleteObserver(Observer observer) {
-		// TODO Auto-generated method stub
-		super.deleteObserver(observer);
-	}
 
 	public void destroyAll() {
 		stop();
