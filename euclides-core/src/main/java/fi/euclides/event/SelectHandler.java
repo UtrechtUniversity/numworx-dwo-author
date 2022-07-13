@@ -105,7 +105,9 @@ public class SelectHandler extends EventHandler {
 	public void pointerClicked(Numbers x, Numbers y, TrackerContext context) {
 		getSelectContext(context).click=true;
 		//testLijn=true;
+		context.enter();
 		testHits(x.doubleValue(),y.doubleValue(),context);
+		context.exit();
 		getSelectContext(context).click=false;
 		//testLijn=false;
 	}
