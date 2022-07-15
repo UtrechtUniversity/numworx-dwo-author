@@ -169,7 +169,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<euclidesVersion>0.0.5-SNAPSHOT</euclidesVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<daggerVersion>2.11</daggerVersion>
+		<daggerVersion>2.42</daggerVersion>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 	</properties>

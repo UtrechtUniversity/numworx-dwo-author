@@ -56,6 +56,7 @@ import nl.numworx.geodefiner.tools.PuntAction;
 import nl.numworx.geodefiner.tools.XXXXAction;
 import nl.numworx.geodefiner.ui.AngleModel;
 import nl.numworx.geodefiner.ui.CircleModel;
+import nl.numworx.geodefiner.ui.DashModel;
 import nl.numworx.geodefiner.ui.LineModel;
 import nl.numworx.geodefiner.ui.PointModel;
 import nl.numworx.geodefiner.ui.RayModel;
@@ -246,9 +247,10 @@ public abstract class ToolBoxModule implements Tools {
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(LINE_PALETTE) static 
-	Action line_palette(Instance instance, AWTViewer viewer) {
-		EventHandler handler = new DashHandler(Messages.getString("ToolBoxModule.73"), instance.getStateConfiguration()); //$NON-NLS-1$
-		return new XXXAction(Messages.getString("ToolBoxModule.74"), "/dashedline-active.png", handler, viewer); //$NON-NLS-1$ //$NON-NLS-2$
+	Action line_palette(Instance instance, AWTViewer viewer, DashModel model) {
+		EventHandler handler = new DashHandler(Messages.getString("ToolBoxModule.73"), instance.getStateConfiguration(), model); //$NON-NLS-1$
+		UIShim<Destroyable, UIEditor> shim = new UIShim<>(model, instance.getStateConfiguration(), viewer);
+		return new XXXXAction(Messages.getString("ToolBoxModule.74"), "/dashedline-active.png", handler, viewer, shim); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	@Provides @Singleton @IntoMap @IntKey(ANGLE_POINT) static

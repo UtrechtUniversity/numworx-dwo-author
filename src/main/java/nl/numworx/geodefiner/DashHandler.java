@@ -23,6 +23,7 @@ import fi.euclides.event.EventHandler;
 import fi.euclides.model.Destroyable;
 import fi.euclides.util.DefaultAdapter;
 import nl.numworx.geodefiner.common.LineType;
+import nl.numworx.geodefiner.ui.DashModel;
 import nl.numworx.geodefiner.ui.LineModel;
 
 public class DashHandler extends EventHandler {
@@ -59,14 +60,16 @@ public class DashHandler extends EventHandler {
 
 	JPanel panel;
 	JRadioButton[] radios = new JRadioButton[LineType.values().length];
+	final private DashModel model;
 	
 	private Map<String, Map<String, Object>> state;
 	private ButtonGroup group;
-	public DashHandler(String string, Map<String, Map<String, Object>> state) {
+	public DashHandler(String string, Map<String, Map<String, Object>> state, DashModel m) {
 		super(string);
 		this.state = state;
+		this.model = m;
 		group = new ButtonGroup();
-		panel = new JPanel(new GridLayout(radios.length,1,4,4));
+		panel = new JPanel(new GridLayout(0,1,4,4));
 		for(int i = 0; i < radios.length; i++) {
 			radios[i] = new JRadioButton(null, new DashIcon(LineType.values()[i]));
 			radios[i].setText(null);
@@ -104,6 +107,13 @@ public class DashHandler extends EventHandler {
 	private Optional<LineType> getDash() {
 		Component c = getTracker().adapt(Component.class);
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.CENTER)); p.add(panel);
+		panel.removeAll();
+		for (int i = 0; i < radios.length; i++) {
+			JRadioButton r = radios[i];
+			if (model.isSelected(i))
+				panel.add(r);			
+		}
+		panel.invalidate();
 		int ok = JOptionPane.showConfirmDialog(c, p, string, JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 		if (ok == JOptionPane.OK_OPTION)
 		{
