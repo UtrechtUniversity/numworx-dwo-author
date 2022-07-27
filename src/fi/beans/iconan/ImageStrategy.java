@@ -3,6 +3,7 @@ package fi.beans.iconan;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.LayoutManager;
 import java.awt.image.ImageObserver;
 
 import javax.swing.Icon;
@@ -13,23 +14,42 @@ import javax.swing.JPanel;
 
 class ImageStrategy implements Strategy {
 
-  private class ImageComponent extends JComponent {
-
-    private Image image;
-
-    public ImageComponent(Image image, int width, int height) {
-      setSize(Math.max(0, width), Math.max(height,0));
-      setPreferredSize(getSize());
-      this.image = image;
-      setOpaque(false); // transparant!
+  class PreviewCanvas extends JPanel {
+    PreviewCanvas(LayoutManager layout) {
+      super(layout);
     }
 
-    public void paintComponent(Graphics g) {
-      try {
-        g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-      } catch (Exception e) {
-        java.util.logging.Logger.getLogger(getClass().getName()).severe("drawImage " + e);
-      }
+    public void paint(Graphics g) {
+        if(preview != null)
+        {
+            int w = parent.previewWidth;
+            int h = parent.previewHeight;
+//scale down to fit.
+            if(w > getWidth())
+            {
+                h = h * getWidth()/w;
+                w = getWidth();
+            }
+            if (h > getHeight())
+            {
+                w = w * getHeight()/h;
+                h = getHeight();
+            }
+            int x = (getWidth() - w)/2;
+            int y = (getHeight() - h)/2;
+
+            if(w < getWidth() || h < getHeight())
+            {
+                g.setColor(getBackground());
+                g.fillRect(0, 0, getWidth(), getHeight());
+            }
+            
+            g.drawImage(preview, x, y, w, h, getBackground(), this);
+        }
+        else {
+            g.setColor(Color.green);
+            g.fillRect(0, 0, getWidth(), getHeight());
+        }
     }
   }
 
@@ -90,41 +110,7 @@ System.err.println("Error in imageUpdate " + name + " flag = " + infoflags);
     
 }
   Image preview; 
-  JPanel previewCanvas = new JPanel(null) { 
-    
-    public void paint(Graphics g) {
-        if(preview != null)
-        {
-            int w = parent.previewWidth;
-            int h = parent.previewHeight;
-//scale down to fit.
-            if(w > getWidth())
-            {
-                h = h * getWidth()/w;
-                w = getWidth();
-            }
-            if (h > getHeight())
-            {
-                w = w * getHeight()/h;
-                h = getHeight();
-            }
-            int x = (getWidth() - w)/2;
-            int y = (getHeight() - h)/2;
-
-            if(w < getWidth() || h < getHeight())
-            {
-                g.setColor(getBackground());
-                g.fillRect(0, 0, getWidth(), getHeight());
-            }
-            
-            g.drawImage(preview, x, y, w, h, getBackground(), this);
-        }
-        else {
-            g.setColor(Color.green);
-            g.fillRect(0, 0, getWidth(), getHeight());
-        }
-    }
-};
+  JPanel previewCanvas = new PreviewCanvas(null);
 
     final Iconan parent;
   

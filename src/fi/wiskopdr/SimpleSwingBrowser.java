@@ -18,7 +18,7 @@ import nl.numworx.swingbrowser.api.SwingBrowserProvider;
 //@SuppressWarnings("restriction")
 public class SimpleSwingBrowser implements WindowListener {
   
-    private static final SwingBrowserProvider BROWSER_PROVIDER = new SwingBrowserProvider();
+    public static final SwingBrowserProvider BROWSER_PROVIDER = new SwingBrowserProvider();
     final protected SwingBrowser browser;
 	private Component observer;
 	

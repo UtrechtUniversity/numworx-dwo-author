@@ -3,6 +3,8 @@ package fi.beans.iconan;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,23 +24,38 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fi.wiskopdr.SimpleSwingBrowser;
+import nl.numworx.swingbrowser.api.SwingBrowser;
 
 public class SVGStrategy implements Strategy {
 	
     
-  
+    class ScaledImageComponent extends ImageComponent {
+
+      final int width, height;
+      ScaledImageComponent(BufferedImage image, int width, int height) {
+        super(image, width, height);
+        this.height = image.getHeight();
+        this.width = image.getWidth();
+      }
+
+      @Override
+      public void paintComponent(Graphics g) {
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), 0, 0, width, height, this);
+      }
+      
+    }
   
   
   
 	private static final String SVG = "http://www.w3.org/2000/svg";
 	private final Iconan parent;
-    private SimpleSwingBrowser _browser;
+    private SwingBrowser _browser;
     /**
      * Lqzy initialization
      * @return svg browser
      */
-    private synchronized SimpleSwingBrowser getBrowser() {
-      if(_browser==null) _browser = new SimpleSwingBrowser();
+    private synchronized SwingBrowser getBrowser() {
+      if(_browser==null) _browser = SimpleSwingBrowser.BROWSER_PROVIDER.getFactory().newBrowser();
       return _browser;
     }
     
@@ -45,7 +63,10 @@ public class SVGStrategy implements Strategy {
 	@Override
     public void dispose() {
       if (_browser != null) {
-        _browser.dispose();
+        try {
+          _browser.close();
+        } catch (IOException e) {
+        }
         _browser = null;
       }
     }
@@ -139,8 +160,16 @@ public class SVGStrategy implements Strategy {
   }
 
   
-  private JComponent getPreviewPanel(String name, SimpleSwingBrowser simpleSwingBrowser) {
-    InputStream in = new ByteArrayInputStream((byte[])parent.namemap.get(parent.strip(name)));
+  private ImageComponent getPreviewPanel(String name, SwingBrowser simpleSwingBrowser) {
+    String sname = parent.strip(name);
+    Image im = parent.imagemap.get(sname);
+    if (im instanceof BufferedImage) {
+      BufferedImage buf = (BufferedImage)im;
+      return new ScaledImageComponent(buf, buf.getWidth(), buf.getHeight());      
+    }
+    
+    
+    InputStream in = new ByteArrayInputStream((byte[])parent.namemap.get(sname));
 // add unzip?
     //in = new GzipInputStream(in);
     try {
@@ -148,19 +177,22 @@ public class SVGStrategy implements Strategy {
       in.read(data);
       in.close();
       String content = new String(data, StandardCharsets.UTF_8);
-      simpleSwingBrowser.loadContent(content, "image/svg+xml");
+      int w = getWidth(name);
+      int h = getHeight(name);
+      simpleSwingBrowser.setSize(w, h);
+      simpleSwingBrowser.loadContentAndWait(content, "image/svg+xml");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     } 
- 
-    return simpleSwingBrowser.getBrowserPanel();
+    BufferedImage buf = simpleSwingBrowser.bitmap().get();
+    parent.imagemap.put(sname, buf);
+    return new ScaledImageComponent(buf, buf.getWidth(), buf.getHeight());
   }
 
   @Override
   public JComponent getComponent(String name) {
-    SimpleSwingBrowser browser = new SimpleSwingBrowser();
-    JComponent result = getPreviewPanel(name, browser);
+    JComponent result = getPreviewPanel(name, getBrowser());
     result.setSize(Math.max(getWidth(name),0), Math.max(getHeight(name),0));
     result.setPreferredSize(result.getSize());
     return result;
@@ -169,34 +201,14 @@ public class SVGStrategy implements Strategy {
   @Override
   public Icon getIcon(final String name) {
     
-    SimpleSwingBrowser browser = new SimpleSwingBrowser();
-    JComponent component = getPreviewPanel(name, browser);
-    
-    return new Icon() {
-      {
-        component.setSize(getIconWidth(), getIconHeight());
-        component.doLayout();
-       
-      }
-      @Override
-      public void paintIcon(Component c, Graphics g, int x, int y) {
-        browser.setRepaintObserver(c);
-        g = g.create();
-        g.translate(x, y);
-        g.clipRect(0, 0, getIconWidth(), getIconHeight());
-        component.print(g);
-        g.dispose();
-      }
-
-      @Override
-      public int getIconWidth() {
-        return Math.max(1, getWidth(name));
-      }
-
-      @Override
-      public int getIconHeight() {
-        return Math.max(getHeight(name),1);
-      } };
+    ImageComponent component = getPreviewPanel(name, getBrowser());
+    Image image = component.image;
+    int w = getWidth(name);
+    int h = getHeight(name);
+    if(w > 0 && h > 0) {
+        image = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+    }
+    return new ImageIcon(image);
   }
 	
 }
