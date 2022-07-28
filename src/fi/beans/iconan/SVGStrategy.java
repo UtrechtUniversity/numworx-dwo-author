@@ -40,7 +40,20 @@ public class SVGStrategy implements Strategy {
 
       @Override
       public void paintComponent(Graphics g) {
-        g.drawImage(image, 0, 0, getWidth(), getHeight(), 0, 0, width, height, this);
+        int w = getWidth();
+        int h = getHeight();
+        int x = 0;
+        int y = 0;
+        if (w * height > h * width) {
+          int d = w - h * width / height;
+          x = d/2;
+          w = w - d;
+        } else {
+          int d = h - w * height / width;
+          y = d/2;
+          h = h - d;
+        }
+        g.drawImage(image, x, y, w, h, 0, 0, width, height, this);
       }
       
     }

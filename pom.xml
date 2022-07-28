@@ -294,6 +294,7 @@
 		<extras.verify>verify</extras.verify>
 		<extras.process>process-classes</extras.process>
 		<extras.sign>none</extras.sign>
+		<jxb>7.5</jxb>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -441,11 +442,28 @@
 			<artifactId>geodefiner</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
+  	<dependency>
+  		<groupId>com.teamdev.jxbrowser</groupId>
+  		<artifactId>jxbrowser-swing</artifactId>
+  		<version>${jxb}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.teamdev.jxbrowser</groupId>
+  		<artifactId>jxbrowser-cross-platform</artifactId>
+  		<version>${jxb}</version>
+ 	    <type>pom</type>
+  	</dependency>
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
 			<artifactId>swingbrowser-jxb</artifactId>
 			<version>0.0.11-SNAPSHOT</version>
 			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.teamdev.jxbrowser</groupId>
+					<artifactId>jxbrowser-cross-platform</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
