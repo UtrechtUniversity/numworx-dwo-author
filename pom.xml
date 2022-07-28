@@ -446,12 +446,14 @@
   		<groupId>com.teamdev.jxbrowser</groupId>
   		<artifactId>jxbrowser-swing</artifactId>
   		<version>${jxb}</version>
+  		<scope>runtime</scope>
   	</dependency>
   	<dependency>
   		<groupId>com.teamdev.jxbrowser</groupId>
   		<artifactId>jxbrowser-cross-platform</artifactId>
   		<version>${jxb}</version>
  	    <type>pom</type>
+ 	    <scope>runtime</scope>
   	</dependency>
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
