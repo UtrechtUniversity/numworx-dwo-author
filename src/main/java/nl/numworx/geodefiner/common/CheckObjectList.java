@@ -155,6 +155,7 @@ public class CheckObjectList extends Groep implements Observer {
 			
 			// something added
 			if(arg instanceof Destroyable) {
+				setNagekeken(false);
 				Destroyable d = (Destroyable)arg;
 				userItems.put(d,null);
 				d.addObserver(this);
@@ -188,6 +189,7 @@ public class CheckObjectList extends Groep implements Observer {
 				
 			}
 		} else if(arg == Destroyable.DESTROY) {
+			setNagekeken(false);
 			observable.deleteObserver(this);
 			CheckObject co = findCO(observable);
 			if(co != null && co != observable) 
