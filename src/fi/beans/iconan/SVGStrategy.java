@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import javax.swing.Icon;
@@ -47,11 +48,11 @@ public class SVGStrategy implements Strategy {
         if (w * height > h * width) {
           int d = w - h * width / height;
           x = d/2;
-          w = w - d;
+          w = w - d/2;
         } else {
           int d = h - w * height / width;
           y = d/2;
-          h = h - d;
+          h = h - d/2;
         }
         g.drawImage(image, x, y, w, h, 0, 0, width, height, this);
       }
@@ -190,17 +191,29 @@ public class SVGStrategy implements Strategy {
       in.read(data);
       in.close();
       String content = new String(data, StandardCharsets.UTF_8);
-      int w = getWidth(name);
-      int h = getHeight(name);
+      int w = getWidth(sname);
+      int h = getHeight(sname);
       simpleSwingBrowser.setSize(w, h);
       simpleSwingBrowser.loadContentAndWait(content, "image/svg+xml");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     } 
-    BufferedImage buf = simpleSwingBrowser.bitmap().get();
-    parent.imagemap.put(sname, buf);
+    Optional<BufferedImage> bitmap = simpleSwingBrowser.bitmap();
+    BufferedImage buf;
+    if (bitmap.isPresent()) {
+      buf = bitmap.get();
+      parent.imagemap.put(sname, buf);
+    } else 
+    {
+      System.err.println("Failure for " + name);
+      buf = new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB);
+    }
+    
+    
+    
     return new ScaledImageComponent(buf, buf.getWidth(), buf.getHeight());
+    
   }
 
   @Override

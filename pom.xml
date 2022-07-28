@@ -294,7 +294,7 @@
 		<extras.verify>verify</extras.verify>
 		<extras.process>process-classes</extras.process>
 		<extras.sign>none</extras.sign>
-		<jxb>7.5</jxb>
+		<jxb>7.13</jxb>
 	</properties>
 	<dependencies>
 		<dependency>
