@@ -303,10 +303,12 @@ public class CheckObjectList extends Groep implements Observer {
 	}
 	
 	public void removeFeedback() {
+		boolean b = false;
 		for(CheckObject co: list) {
-			co.removeFeedback();
+			b |= co.removeFeedback();
 		}
-		tracker.paint();
+		if (b)
+			tracker.paint();
 	}
 
 	/**
@@ -359,6 +361,7 @@ public class CheckObjectList extends Groep implements Observer {
 	public void setNagekeken(boolean b) {
 		if(instance != null)
 			instance.setNagekeken(b);
+		if (!b) removeFeedback(); // mag altijd
 	}
 	public void setInstance(Instance instance) {
 		this.instance = instance;

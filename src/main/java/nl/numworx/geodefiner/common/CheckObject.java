@@ -258,8 +258,10 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 		this.item = item;
 	}
 
-	void removeFeedback() {
+	boolean removeFeedback() {
+		boolean b = false;
 		if(item != null) {
+			b = item.adapt(CheckObject.class) != null;
 			DefaultAdapter.getDefault(item).put(CheckObject.class,null);
 //			if(cache instanceof Label) {
 //				boolean free = VrijPunt.TYPE == ((Label) cache).getP().key();
@@ -269,6 +271,7 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 //				}
 //			}
 		}
+		return b;
 	}
 
 	void feedback() {
