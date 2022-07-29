@@ -192,7 +192,7 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
         
        
        	if(knopImageString!=null && !"".equals(knopImageString))
-       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 			Image knopImage = iconman.getImage(knopImageString);
 	    	checkButton.setPopupButtonImage(knopImage);
 		    int imWidth = iconman.getWidth(knopImageString);
@@ -234,7 +234,7 @@ public class CheckValueUnitPanel extends JPanel implements InteractiePanel, Acti
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		
 		if(knopImageString!=null && !"".equals(knopImageString))
-		{   Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+		{   Iconan iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 			Image knopImage = iconman.getImage(knopImageString);
 	    	checkButton.setPopupButtonImage(knopImage);
 	    	int imWidth = iconman.getWidth(knopImageString);

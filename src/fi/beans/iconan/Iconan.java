@@ -1,6 +1,5 @@
 package fi.beans.iconan;
 
-import java.applet.Applet;
 import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -68,6 +67,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import fi.beans.iconan.text.Text;
+import fi.beans.mainframe.JApplet;
 import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JFileChooser;
 import fi.beans.numworxlf.JOptionPane;
@@ -209,7 +209,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	
 	private Strategy imageStrategy, svgStrategy;
 	
-	Hashtable<String,Image> imagemap;
+	ImageCache imagemap;
 	private ActionListener al;
 	private JButton newBtn, okBtn, cancelBtn, closeBtn, rmBtn, urlBtn, chngBtn, downBtn, garbageBtn;
 	JTextField widthField, heightField;
@@ -217,7 +217,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	JLabel widthLabel, heightLabel;
 	int previewWidth = 32, previewHeight = 32;
 	private JPanel previewCanvas = new JPanel(new BorderLayout()); //{ previewCanvas.setBorder(BorderFactory.createEtchedBorder()); }
-	private Applet applet;
+	private JApplet applet;
 	private boolean emptyStart = true;
 	private boolean chooseImage = true;
 	long suffix;
@@ -877,20 +877,20 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	 * @param namemap
 	 */
 	@SuppressWarnings("rawtypes")
-	public Iconan(Applet component, Hashtable namemap) {
-		this(component, component, namemap);
+	public Iconan(JApplet component, Hashtable namemap, ImageCache cache) {
+		this(component, component, namemap, cache);
 	}
 	
 	/**
 	 * @deprecated 
 	 */
 	@SuppressWarnings("rawtypes")
-	public Iconan(Component component, Hashtable namemap) {
-		this(null, component, namemap);
+	Iconan(Component component, Hashtable namemap) {
+		this(null, component, namemap, null);
 	}
 	
-	public Iconan(Applet Applet, Component component, Hashtable namemap) {
-	  this(Applet,component, namemap, true);
+	public Iconan(JApplet Applet, Component component, Hashtable namemap, ImageCache cache) {
+	  this(Applet,component, namemap, cache, true);
 	}
 	
 	/**
@@ -901,14 +901,14 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	 * @param namemap
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Iconan(Applet Applet, Component component, Hashtable namemap, boolean chooseImage) {	
+	public Iconan(JApplet Applet, Component component, Hashtable namemap, ImageCache cache, boolean chooseImage) {	
 		this.applet = Applet;
 		this.component = component;
 		this.namemap = namemap;
 		this.xnamemap = new Hashtable<String, Object>();
 		this.chooseImage = chooseImage;
 		setLocale(component.getLocale());
-		imagemap = new Hashtable<>();
+		imagemap = cache == null ? new SimpleCache() : cache;
 		initialize();
 		reLocale();
 		nextSuffix();
@@ -916,8 +916,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 	
 	
-	public Iconan(WiskOpdr wiskopdr, OpdrNavStructEdit onsEdit, Hashtable namemap, boolean chooseImage) {
-	  this((Applet) wiskopdr, (Component) onsEdit, namemap, chooseImage);
+	public Iconan(WiskOpdr wiskopdr, OpdrNavStructEdit onsEdit, Hashtable namemap, ImageCache cache, boolean chooseImage) {
+	  this((JApplet) wiskopdr, (Component) onsEdit, namemap, cache, chooseImage);
 	  garbageBtn.setAction(new Garbage(onsEdit, dataModel, selectionModel));
 	}
 	
@@ -949,11 +949,11 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		this(null);
 	}
 	
-	public Iconan(Applet applet) {
+	public Iconan(JApplet applet) {
 		this.applet = applet;
 		namemap = new Hashtable<>();
 		xnamemap = new Hashtable<>();
-		imagemap = new Hashtable<String, Image>();
+		imagemap = new SimpleCache();
 		initialize();
 	}
 
@@ -1344,7 +1344,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
 	private URL getCodeBase() {
 		
-		Applet applet = getApplet(component);
+		JApplet applet = getApplet(component);
 		if(applet != null)
 		{
 			URL u = applet.getCodeBase();
@@ -1355,7 +1355,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	}
 	
 	private URL getDocumentBase() {
-		Applet applet = getApplet(component);
+		JApplet applet = getApplet(component);
 		if(applet != null)
 			return applet.getDocumentBase();
 		else
@@ -1369,12 +1369,12 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	
 	
 
-	private Applet getApplet(Component parent) {
+	private JApplet getApplet(Component parent) {
 		if(applet != null)
 			return applet;
-		while(parent != null && !(parent instanceof Applet))
+		while(parent != null && !(parent instanceof JApplet))
 			parent = parent.getParent();
-		return applet = (Applet)parent;
+		return applet = (JApplet)parent;
 	}
 
 	private JList<String> buildList() {

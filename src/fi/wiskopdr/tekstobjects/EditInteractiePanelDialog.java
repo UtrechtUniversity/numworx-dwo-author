@@ -617,7 +617,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
     	this.popupImageString = popupImageString;
     	
     	imageButton.setPopupButtonImage(popupImage);
-    	iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+    	iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
     	if(popupImageString!=null && !"".equals(popupImageString)) {
     		popupImage = iconman.getImage(popupImageString);
     		imageButton.setPopupButtonImage(popupImage);
@@ -1077,7 +1077,7 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 
     public void editImage() {
     	if(iconman==null)
-			iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+			iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 		iconman.editImage(popupImageString, this, this);
 		
 //        if(imageDialog == null)

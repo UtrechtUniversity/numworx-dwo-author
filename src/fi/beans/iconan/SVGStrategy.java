@@ -48,11 +48,11 @@ public class SVGStrategy implements Strategy {
         if (w * height > h * width) {
           int d = w - h * width / height;
           x = d/2;
-          w = w - d/2;
+          w = w - x;
         } else {
           int d = h - w * height / width;
           y = d/2;
-          h = h - d/2;
+          h = h - y;
         }
         g.drawImage(image, x, y, w, h, 0, 0, width, height, this);
       }

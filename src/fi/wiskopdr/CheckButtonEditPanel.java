@@ -142,7 +142,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		volgendeCB.setSelected(actionNextPage);
 		
 		knopImageButton.setPopupButtonIcon(knopImage);
-	    iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+	    iconman = new Iconan(WiskOpdr.applet, (Component)this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 	    if(knopImageString!=null && !"".equals(knopImageString)) {
 	    	knopImage = iconman.getIcon(knopImageString);
 	    	knopImageButton.setPopupButtonIcon(knopImage);
@@ -213,7 +213,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	
 	public void editImage() {
 		if(iconman==null)
-			iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+			iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 		iconman.editImage(knopImageString, this, this);
 		
 //        if(imageDialog == null)

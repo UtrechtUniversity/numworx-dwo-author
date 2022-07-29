@@ -435,7 +435,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 	
 	public void editImage() {
 		if(iconman==null)
-			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
+			iconman = new Iconan(WiskOpdr.applet, mainPanel, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 		iconman.editImage(knopImageString, mainPanel, this);
 		
 //        if(imageDialog == null) {
@@ -607,7 +607,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
         teltMeeCB.setSelected(teltMee);
         logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
         knopImageButton.setPopupButtonImage(knopImage);
-    	iconman = new Iconan(WiskOpdr.applet, (Component)mainPanel, (Hashtable)TekstImageVak.getImageMap());
+    	iconman = new Iconan(WiskOpdr.applet, mainPanel, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
     	if(knopImageString!=null && !"".equals(knopImageString)) {
     		knopImage = iconman.getImage(knopImageString);
     		knopImageButton.setPopupButtonImage(knopImage);

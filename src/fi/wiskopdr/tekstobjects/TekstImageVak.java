@@ -18,7 +18,10 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import fi.beans.base64code.StringCodeObject;
+import fi.beans.iconan.DefaultImageCache;
 import fi.beans.iconan.Iconan;
+import fi.beans.iconan.ImageCache;
+import fi.beans.iconan.SimpleCache;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
 
@@ -31,18 +34,25 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 	private int startX, startY;
 	private boolean eersteKeer = true;
 	
-	public static void setImageMap(Object map)
+	public static void setImageMap(Object map, ImageCache cache)
 	{
 		if(map != null)
 			imagemap = (Hashtable)map;
+		imagecache = cache;
 	}
 
-	public static Object getImageMap()
+	public static Hashtable getImageMap()
 	{
 		return imagemap;
 	}
 	
+	public static ImageCache getImageCache() {
+	  return imagecache;
+	}
+	
 	static private Hashtable imagemap = new Hashtable();
+	static private ImageCache imagecache = new DefaultImageCache();
+
 	private Dialog imageDialog;
 	private Iconan iconman;
 	
@@ -68,11 +78,12 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 	{	if(s==null || s.equals(""))return;
 		Object o = StringCodeObject.decodeStringToObject(s);
 		imagemap = (Hashtable)o;
+		imagecache = new DefaultImageCache();
 	}
 
 	public void editImage() {
 		if(iconman==null)
-			iconman = new Iconan(WiskOpdr.applet, tekstVak, (Hashtable)TekstImageVak.getImageMap());
+			iconman = new Iconan(WiskOpdr.applet, tekstVak, getImageMap(), getImageCache());
 		iconman.editImage(imagename, tekstVak, this);
 		
 //		if(imageDialog == null)
@@ -160,7 +171,7 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 		imagename = s;
 		if(iconman == null)
 		{
-			iconman = new Iconan(WiskOpdr.applet, imagemap);
+			iconman = new Iconan(WiskOpdr.applet, imagemap, imagecache);
 		}
 		if(image != null) 
 		  remove(image);

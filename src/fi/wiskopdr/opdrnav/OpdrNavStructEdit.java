@@ -1283,7 +1283,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 		if(e.getSource()==imagesButton)
 		{
 			if(iconman==null)
-				iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap(), false);
+				iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache(), false);
 			iconman.editImage(null, this, this);
 //		  if(imageDialog == null)
 //	        {

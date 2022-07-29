@@ -2118,7 +2118,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		tekstVakPanel.setInterlinie(interlinie);
 		
 		knopImageButton1.setPopupButtonImage(knopImage1);
-    	iconman1 = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+    	iconman1 = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
     	if(knopImageString1!=null && !"".equals(knopImageString1)) {
     		knopImage1 = iconman1.getImage(knopImageString1);
     		knopImageButton1.setPopupButtonImage(knopImage1);
@@ -2128,7 +2128,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     	}
     	
     	knopImageButton2.setPopupButtonImage(knopImage2);
-    	iconman2 = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+    	iconman2 = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
     	if(knopImageString2!=null && !"".equals(knopImageString2)) {
     		knopImage2 = iconman2.getImage(knopImageString2);
     		knopImageButton2.setPopupButtonImage(knopImage2);
@@ -3272,7 +3272,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         	
         	Frame f = JOptionPane.getFrameForComponent(this);
 			imageDialog1 = new JDialog(f,"title", true);
-			iconman1 = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+			iconman1 = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
             imageDialog1.setContentPane(iconman1);
             imageDialog1.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
             imageDialog1.pack();
@@ -3288,7 +3288,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
         	
         	Frame f = JOptionPane.getFrameForComponent(this);
 			imageDialog2 = new JDialog(f,"title", true);
-			iconman2 = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+			iconman2 = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
             imageDialog2.setContentPane(iconman2);
             imageDialog2.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
             imageDialog2.pack();

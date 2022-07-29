@@ -833,7 +833,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
         //formuleEditor.setVisible(checkFormule);
         
         knopImageButton.setPopupButtonImage(knopImage);
-    	iconman = new Iconan(WiskOpdr.applet, (Component)mainPanel, (Hashtable)TekstImageVak.getImageMap());
+    	iconman = new Iconan(WiskOpdr.applet, mainPanel, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
     	if(knopImageString!=null && !"".equals(knopImageString)) {
     		knopImage = iconman.getImage(knopImageString);
     		knopImageButton.setPopupButtonImage(knopImage);
@@ -1160,7 +1160,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 			listNumberTypeComboBox.setVisible(hasPrefixCB.isSelected());
 	    }
 		else if(e.getSource()==knopImageButton) {   
-			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
+			iconman = new Iconan(WiskOpdr.applet, mainPanel, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 			iconman.editImage(knopImageString, mainPanel, this);
 	    }
 	    else if(e.getSource()==iconman) {

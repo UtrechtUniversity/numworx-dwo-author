@@ -7,6 +7,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 
+import fi.beans.iconan.ImageCache;
+import fi.beans.iconan.SimpleCache;
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.expressies.Expressie;
 import fi.wiskopdr.formuleobjects.FormuleParser;
@@ -86,6 +88,7 @@ public class WiskOpdrGlobalVarState {
 	
 	//static vars TekstImageVak
 	private Object imagemap = new Hashtable();
+	private ImageCache imagecache = new SimpleCache();
 	
 	//static vars TekstInteractiePanelVak
 	private TekstInteractiePanelVak potentialSource;
@@ -150,6 +153,7 @@ public class WiskOpdrGlobalVarState {
 		stateMap = ShareAction.getSharedState();
 		
 		imagemap = TekstImageVak.getImageMap();
+		imagecache = TekstImageVak.getImageCache();
 		
 		potentialSource = TekstInteractiePanelVak.potentialSource;
 		potentialDest = TekstInteractiePanelVak.potentialDest;
@@ -222,7 +226,7 @@ public class WiskOpdrGlobalVarState {
 		ShareAction.init(shareMapData);
 		ShareAction.setSharedState(stateMap);
 		
-		TekstImageVak.setImageMap(imagemap);
+		TekstImageVak.setImageMap(imagemap, imagecache);
 		
 		TekstInteractiePanelVak.potentialSource = potentialSource;
 		TekstInteractiePanelVak.potentialDest = potentialDest;

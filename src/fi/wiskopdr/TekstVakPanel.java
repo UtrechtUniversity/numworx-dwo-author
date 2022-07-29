@@ -1341,7 +1341,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		klapUitButton.setSize(checkUitklapVak?30:15,15);
 		
 		if(knopImageString1!=null && !"".equals(knopImageString1))
-       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 			Icon knopImage1 = iconman.getIcon(knopImageString1);
 	    	if(knopImage1!=null) 
 	    		klapUitButton.setIcon((knopImage1));
@@ -1353,7 +1353,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		}
 		
 		if(knopImageString2!=null && !"".equals(knopImageString2))
-       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 			Icon knopImage2 = iconman.getIcon(knopImageString2);
 			if(knopImage2!=null) 
 	    		klapUitButton.setSelectedIcon((knopImage2));

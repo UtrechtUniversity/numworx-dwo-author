@@ -1549,7 +1549,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         				popupButton.setBounds(0,0,20,20);
         				
         				if(popupImageString!=null && !"".equals(popupImageString))
-        				{   iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+        				{   iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 	        		    	if(popupImageString!=null && !"".equals(popupImageString))popupImage = iconman.getImage(popupImageString);
 	        		    	if( popupImage != null) 
 	        		    	  popupButton.setPopupButtonImage(popupImage);
@@ -2359,7 +2359,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    				if("MW".equals(WiskOpdr.deployVariant) && (soortInteractiePanel==8 || soortInteractiePanel==9 || soortInteractiePanel==10))popupButton.setBounds(0,0,50,50);
 	    				
 	    				if(popupImageString!=null && !"".equals(popupImageString))
-	    				{   iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+	    				{   iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 	        		    	if(popupImageString!=null && !"".equals(popupImageString))
 	        		    	  popupImage = iconman.getImage(popupImageString);
 	        		    	if(popupImage == null) {

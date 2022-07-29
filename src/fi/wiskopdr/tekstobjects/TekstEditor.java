@@ -1295,7 +1295,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		}
 		if(e.getSource()==afbeeldingenButton) {
 			if(iconman==null)
-				iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap(), false);
+				iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache(), false);
 			iconman.editImage(null, this, this);
 		}
 		

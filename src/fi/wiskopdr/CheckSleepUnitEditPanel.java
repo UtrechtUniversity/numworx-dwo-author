@@ -436,7 +436,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
         checkVastCB.setEnabled(!verzamelDoel);
 		
 		knopImageButton.setPopupButtonImage(knopImage);
-    	iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+    	iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
     	if(knopImageString!=null && !"".equals(knopImageString)) {
     		knopImage = iconman.getImage(knopImageString);
     		knopImageButton.setPopupButtonImage(knopImage);
@@ -635,7 +635,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
     
     public void editImage() {
     	if(iconman==null)
-			iconman = new Iconan(WiskOpdr.applet, this, (Hashtable)TekstImageVak.getImageMap());
+			iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 		iconman.editImage(knopImageString, this, this);
 		
 //        if(imageDialog == null)
@@ -805,7 +805,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 
 		}
 		else if(e.getSource()==knopImageButton) {   
-			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
+			iconman = new Iconan(WiskOpdr.applet, mainPanel, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 			iconman.editImage(knopImageString, mainPanel, this);
 	    }
 	    else if(e.getSource()==iconman) {

@@ -85,7 +85,7 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 		this.actionNextPage = actionNextPage;
 		
 		if(knopImageString!=null && !"".equals(knopImageString))
-       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+       	{  	Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 			Icon knopImage = iconman.getIcon(knopImageString);
 	    	checkButton.setPopupButtonIcon(knopImage);
 		    int imWidth = iconman.getWidth(knopImageString);
@@ -111,7 +111,7 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		
 		if(knopImageString!=null && !"".equals(knopImageString))
-		{   Iconan iconman = new Iconan(WiskOpdr.applet, (Component)this, (Hashtable)TekstImageVak.getImageMap());
+		{   Iconan iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 			Icon knopImage = iconman.getIcon(knopImageString);
 	    	checkButton.setPopupButtonIcon(knopImage);
 	    	int imWidth = iconman.getWidth(knopImageString);
