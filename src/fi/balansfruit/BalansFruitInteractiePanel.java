@@ -25,6 +25,7 @@ import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
 
+@SuppressWarnings("serial")
 public class BalansFruitInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel, ActionListener, 
 																  MouseListener,CBookAware
 {
@@ -1080,6 +1081,13 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 		@Override
 		public String getLocalizedCmd(String cmd) {
 			return BalansFruitApplet.rb.getString(CBA_PREFIX + cmd);
+		}
+
+
+		@Override
+		public int[][] getScoreObjectives() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	
 }

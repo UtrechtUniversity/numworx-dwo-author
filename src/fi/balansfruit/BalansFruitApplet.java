@@ -1,25 +1,28 @@
 package fi.balansfruit;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.net.URL;
+import java.applet.Applet;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.TextField;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.applet.*;
+import java.net.URL;
 // import java.awt.image.*;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-// import java.applet.AudioClip;
-// import fi.balansfruit.tekst.*;
-import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;
-import fi.beans.lwmobjects_swing.*;
+import fi.beans.lwmobjects_swing.LWMBufferPanel;
+import fi.beans.lwmobjects_swing.LWMButton;
+import fi.beans.lwmobjects_swing.LWMContainer;
+import fi.beans.lwmobjects_swing.LWMMouseHandler;
+import fi.beans.lwmobjects_swing.MovePermissions;
 import fi.beans.scorm.Parameter;
 import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.scorm.Scorm;
-import fi.beans.scorm.ScormAppletIF;
 import fi.beans.scorm.ScormEditComponentIF;
-import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
@@ -64,6 +67,7 @@ import fi.beans.wiskopdrbeans.WiskOpdrApplet;
  * @version 1, 29 augustus 2000, 13 maart 2007
  */
 
+@SuppressWarnings("serial")
 public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApplet
 {	// Constants
 	public static int MAXAANTAL = 10;			// max aantal per soort
@@ -104,6 +108,7 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 	private Image balansRechts;
 	private Image wisknopImage;
 	
+	@SuppressWarnings("rawtypes")
 	private Hashtable defaultParamValues, launchData;
 	
 	protected static ResourceBundle rb;
@@ -136,6 +141,7 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
  */
 	
  
+	@SuppressWarnings("rawtypes")
 	public void init()
 	{	
 		//instelling taal
@@ -234,6 +240,7 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 	
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void loadImages(Hashtable images,String[] imageNames)
 	{	//AppletUtil au = new AppletUtil(applet);
 		MediaTracker tr = new MediaTracker(applet);
@@ -274,6 +281,7 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 		return applet.getToolkit().createImage(buffer); 
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Hashtable makeDefaultParamValues(int variant)
 	{	
 		
@@ -353,6 +361,7 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 		return value;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public String getState()
 	{	String text = null;
 	
@@ -432,7 +441,7 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 		gewichten = new double[aantalSoorten];
 		
 	// plaatjes en bijbehorende gewichten inlezen
-		URL docBase = getDocumentBase();
+		//URL docBase = getDocumentBase();
 		URL codeBase = getCodeBase();			
 		String paramAantal;
 		String paramGewicht;
@@ -487,6 +496,7 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 		main.jeKanStarten();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public void setState(String s)
 	{	//decodeer de string
 		Object o = StringCodeObject.decodeStringToObject(s);
@@ -507,7 +517,8 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 	{	return false;
 	}
 
-    public ScormEditComponentIF getEditComponent(Hashtable launchdata)
+    @SuppressWarnings("rawtypes")
+	public ScormEditComponentIF getEditComponent(Hashtable launchdata)
     {	return null;
     }
     

@@ -1,9 +1,6 @@
 package fi.balansfruit;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import fi.beans.lwmobjects_swing.*;
+import fi.beans.lwmobjects_swing.LWMContainer;
 
 /**
  * De onzichtbare Container voor fruit op een van de twee schalen van de balans.

@@ -1,9 +1,8 @@
 package fi.balansfruit;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import fi.beans.lwmobjects_swing.*;
+import java.awt.Image;
+
+import fi.beans.lwmobjects_swing.LWMObject;
 
 /**
  * Een stukje fruit.
