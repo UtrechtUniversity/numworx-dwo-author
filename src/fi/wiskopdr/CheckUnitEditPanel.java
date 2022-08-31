@@ -580,9 +580,14 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 		boolean[][][] logMisconceptions = null;
 		boolean hasFeedback = false;
 		
-		 getAnswerModel();
-         if(answerModels!=null)setAnswerModel(answerModels[0]);
-	    
+		hasFeedback = feedbackCB.isSelected();
+		
+		if(hasFeedback) {
+          getAnswerModel();
+            if(answerModels!=null)
+              setAnswerModel(answerModels[0]);
+        }
+		 
 		knopImageString = this.knopImageString;
 	    juisteSelecties = new boolean[aantalSelectables];
 	    for(int i=0 ; i<aantalSelectables ; i++)
@@ -609,7 +614,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 			}
 		}
 		
-		hasFeedback = feedbackCB.isSelected();
+		
 	    	    
 		Hashtable h = new Hashtable();
 		h.put("juisteSelecties", juisteSelecties);
@@ -682,11 +687,14 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
             juisteSelecties[i] = selectableCheckboxes[i].isSelected();
         }
         String feedback = feedbackEditor.getText();
-        int puntenFeedback = (Integer.parseInt(feedbackPV.getText()));
+        int puntenFeedback = intFromText(0,feedbackPV.getText());
         
         int goedHalfFout = goedFoutIP.geefKeuze()-1;
+        
+        String[] formuleStrings = formuleEditor.geefRegels();
 
         h.put("juisteSelecties", juisteSelecties);
+        h.put("formuleStrings", formuleStrings);
         h.put("feedback", feedback);
         h.put("puntenFeedback", new Integer(puntenFeedback));
         h.put("goedHalfFout", new Integer(goedHalfFout));
@@ -700,15 +708,20 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
         for(int i=0 ; i<aantalSelectables ; i++) {  
             selectableCheckboxes[i].setSelected(juisteSelecties[i]);
         }
+        
         String feedback = "";
         if(h.containsKey("feedback")) feedback = (String)h.get("feedback");
+        
+        String[] formuleStrings = null;
+        if(h.containsKey("formuleStrings")) formuleStrings = (String[])h.get("formuleStrings");
         
         int puntenFeedback = 0;
         if(h.containsKey("puntenFeedback")) puntenFeedback = ((Integer)h.get("puntenFeedback")).intValue();
         
         int goedHalfFout = 2;
         if(h.containsKey("goedHalfFout")) goedHalfFout = ((Integer)h.get("goedHalfFout")).intValue();
-            
+       
+        formuleEditor.zetRegels(formuleStrings);
         feedbackEditor.zetTekst(feedback);
         feedbackEditor.layoutTekst();
         feedbackPV.setText(""+puntenFeedback);

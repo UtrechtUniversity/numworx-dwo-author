@@ -630,9 +630,14 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 		rowSpace = intFromText(rowSpace, rowSpaceTF.getText());
 		hasPrefix = hasPrefixCB.isSelected();
 		
-		 getAnswerModel();
-	     if(answerModels!=null)setAnswerModel(answerModels[0]);
-	          
+		hasFeedback = feedbackCB.isSelected();
+		
+		if(hasFeedback) {
+		   getAnswerModel();
+    	     if(answerModels!=null)
+    	       setAnswerModel(answerModels[0]);
+		}
+	        
 		knopImageString = this.knopImageString;
 	    juisteSelecties = new boolean[aantalSelectables];
 	    for(int i=0 ; i<aantalSelectables ; i++) {  
@@ -663,7 +668,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
 				logMisconceptions[i] = logMisconceptionsButtons[i].getChoices();
 		}
 		
-		hasFeedback = feedbackCB.isSelected();
+		
         
         Hashtable preferences = new Hashtable();
 		
@@ -871,7 +876,7 @@ public class MultipleChoiceEditor implements TComponentEditor, ActionListener, F
             juisteSelecties[i] = selectableCheckboxes[i].isSelected();
         }
         String feedback = feedbackEditor.getText();
-        int puntenFeedback = (Integer.parseInt(feedbackPV.getText()));
+        int puntenFeedback = intFromText(0,feedbackPV.getText());
         
         int goedHalfFout = goedFoutIP.geefKeuze()-1;
 
