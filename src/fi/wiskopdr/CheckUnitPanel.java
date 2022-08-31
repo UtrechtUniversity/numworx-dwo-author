@@ -260,6 +260,7 @@ public class CheckUnitPanel extends JPanel implements InteractiePanel, ActionLis
 			if(imHeight == -1) imHeight = 20;
 			checkButton.setSize(imWidth,imHeight);
 			zetMaat();
+			iconman.dispose();
 	    }
 	}
 	

@@ -945,7 +945,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
   /**
 	 * @deprecated gebruik Iconan(Applet)
 	 */
-	public Iconan() {
+	Iconan() {
 		this(null);
 	}
 	
@@ -1541,6 +1541,12 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
       if (w == null)
         w = (Integer)namemap.get(strip(name) + ext);
      return w;
+  }
+
+  @Override
+  protected void finalize() throws Throwable {
+    dispose();
+    super.finalize();
   }
 	
 }

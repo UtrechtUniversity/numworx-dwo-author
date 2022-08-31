@@ -810,6 +810,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 	public void stop() {
 		//opdrEditContainer.stop();
 		repaint();
+	    if (iconman != null) iconman.dispose(); // cleanup
 	}
 
 	/**

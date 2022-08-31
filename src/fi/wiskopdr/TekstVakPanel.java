@@ -1350,6 +1350,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if(imWidth == -1) imWidth = checkUitklapVak?30:15;
 			if(imHeight == -1) imHeight = 15;
 			klapUitButton.setSize(imWidth,imHeight);
+			iconman.dispose();
 		}
 		
 		if(knopImageString2!=null && !"".equals(knopImageString2))
@@ -1357,6 +1358,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			Icon knopImage2 = iconman.getIcon(knopImageString2);
 			if(knopImage2!=null) 
 	    		klapUitButton.setSelectedIcon((knopImage2));
+			iconman.dispose();
 		}
 		
 		klapUitButton.setSelected(!ingeklapt);	

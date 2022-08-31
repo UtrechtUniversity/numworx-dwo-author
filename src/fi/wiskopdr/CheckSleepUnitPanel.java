@@ -284,6 +284,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 			if(imHeight == -1) imHeight = 20;
 			checkButton.setSize(imWidth,imHeight);
 			zetMaat();
+			iconman.dispose();
 	    }
 	}
 	
@@ -358,6 +359,7 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 			if(imHeight == -1) imHeight = 20;
 			checkButton.setSize(imWidth,imHeight);
 			zetMaat();
+			iconman.dispose();
 	    }
     }
 	

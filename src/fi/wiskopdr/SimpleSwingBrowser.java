@@ -25,7 +25,7 @@ public class SimpleSwingBrowser implements WindowListener {
 	public void setRepaintObserver(Component c) {
 	  observer = c;
 	}
-	private void repaint(RefreshEvent e) {
+	protected void repaint(RefreshEvent e) {
 	  if (observer != null) 
 	    observer.repaint();
 	}
@@ -58,7 +58,7 @@ public class SimpleSwingBrowser implements WindowListener {
 	}
 
 	public void loadContent(final String content, final String type) {
-	  browser.loadContent(content, type);
+	  browser.loadContentAndWait(content, type);
 	}
 
 	public void loadContent(String content) {

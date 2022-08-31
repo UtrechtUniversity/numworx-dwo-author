@@ -201,8 +201,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-
+      if (iconman != null) iconman.dispose(); // cleanup
 	}
 
 	@Override

@@ -2220,7 +2220,11 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
     
 	public void zetMode(int mode){}
 	
-    public void stop(){}
+    public void stop(){
+      if (iconman1 != null) iconman1.dispose(); // cleanup
+      if (iconman2 != null) iconman2.dispose(); // cleanup
+
+    }
     
     public void start(){
     	setSize(getPreferredSize());

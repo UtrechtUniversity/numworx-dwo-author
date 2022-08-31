@@ -1,19 +1,20 @@
 package fi.beans.iconan;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,36 +25,67 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fi.wiskopdr.SimpleSwingBrowser;
+import nl.numworx.swingbrowser.api.SwingBrowser;
 
-public class SVGStrategy implements Strategy {
+public class SVGStrategyImage implements Strategy {
 	
     
-  
+    class ScaledImageComponent extends ImageComponent {
+
+      final int width, height;
+      ScaledImageComponent(BufferedImage image, int width, int height) {
+        super(image, width, height);
+        this.height = image.getHeight();
+        this.width = image.getWidth();
+      }
+
+      @Override
+      public void paintComponent(Graphics g) {
+        int w = getWidth();
+        int h = getHeight();
+        int x = 0;
+        int y = 0;
+        if (w * height > h * width) {
+          int d = w - h * width / height;
+          x = d/2;
+          w = w - x;
+        } else {
+          int d = h - w * height / width;
+          y = d/2;
+          h = h - y;
+        }
+        g.drawImage(image, x, y, w, h, 0, 0, width, height, this);
+      }
+      
+    }
   
   
   
 	private static final String SVG = "http://www.w3.org/2000/svg";
 	private final Iconan parent;
-    private SimpleSwingBrowser _browser;
+    private SwingBrowser _browser;
     /**
      * Lqzy initialization
      * @return svg browser
      */
-    private synchronized SimpleSwingBrowser getBrowser() {
-      if(_browser==null) _browser = new SimpleSwingBrowser();
+    private synchronized SwingBrowser getBrowser() {
+      if(_browser==null) _browser = SimpleSwingBrowser.BROWSER_PROVIDER.getFactory().newBrowser();
       return _browser;
     }
     
 
 	@Override
-    public synchronized void dispose() {
+    public void dispose() {
       if (_browser != null) {
-        _browser.dispose();
+        try {
+          _browser.close();
+        } catch (IOException e) {
+        }
         _browser = null;
       }
     }
 
-  SVGStrategy(Iconan parent) {
+  SVGStrategyImage(Iconan parent) {
 		this.parent = parent;
 	}
 	
@@ -142,8 +174,16 @@ public class SVGStrategy implements Strategy {
   }
 
   
-  private JComponent getPreviewPanel(String name, SimpleSwingBrowser simpleSwingBrowser) {
-    InputStream in = new ByteArrayInputStream((byte[])parent.namemap.get(parent.strip(name)));
+  private ImageComponent getPreviewPanel(String name, SwingBrowser simpleSwingBrowser) {
+    String sname = parent.strip(name);
+    Image im = parent.imagemap.get(sname);
+    if (im instanceof BufferedImage) {
+      BufferedImage buf = (BufferedImage)im;
+      return new ScaledImageComponent(buf, buf.getWidth(), buf.getHeight());      
+    }
+    
+    
+    InputStream in = new ByteArrayInputStream((byte[])parent.namemap.get(sname));
 // add unzip?
     //in = new GzipInputStream(in);
     try {
@@ -151,83 +191,50 @@ public class SVGStrategy implements Strategy {
       in.read(data);
       in.close();
       String content = new String(data, StandardCharsets.UTF_8);
-      simpleSwingBrowser.loadContent(content, "image/svg+xml");
+      int w = getWidth(sname);
+      int h = getHeight(sname);
+      simpleSwingBrowser.setSize(w, h);
+      simpleSwingBrowser.loadContentAndWait(content, "image/svg+xml");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     } 
- 
-    return simpleSwingBrowser.getBrowserPanel();
+    Optional<BufferedImage> bitmap = simpleSwingBrowser.bitmap();
+    BufferedImage buf;
+    if (bitmap.isPresent()) {
+      buf = bitmap.get();
+      parent.imagemap.put(sname, buf);
+    } else 
+    {
+      System.err.println("Failure for " + name);
+      buf = new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB);
+    }
+    
+    
+    
+    return new ScaledImageComponent(buf, buf.getWidth(), buf.getHeight());
+    
   }
 
   @Override
   public JComponent getComponent(String name) {
-    SimpleSwingBrowser browser = new SimpleSwingBrowser();
-    JPanel panel = new JPanel(new BorderLayout()) {
-      private Image img;
-      private int cnt;
-
-      @Override
-      public void paint(Graphics g) {
-        if (cnt++ < 1) { /// iets te experimenteel
-          super.paint(g);
-          return;
-        }
-        
-        if (img == null) {
-          img = createImage(getWidth(), getHeight());
-          Graphics gg = img.getGraphics();
-          super.paint(gg);
-          gg.dispose();
-          browser.dispose();
-          removeAll();
-        }
-        g.drawImage(img, 0, 0, this);
-      }
-      
-    };
-    panel.setDoubleBuffered(false);
-    panel.setOpaque(false);
-    JComponent result = getPreviewPanel(name, browser);
+    JComponent result = getPreviewPanel(name, getBrowser());
     result.setSize(Math.max(getWidth(name),0), Math.max(getHeight(name),0));
     result.setPreferredSize(result.getSize());
-    panel.add(result);
-    panel.setSize(result.getSize());
-    panel.setPreferredSize(result.getSize());
-    return panel;
+    return result;
   }
 
   @Override
   public Icon getIcon(final String name) {
     
-    SimpleSwingBrowser browser = new SimpleSwingBrowser();
-    JComponent component = getPreviewPanel(name, browser);
-    
-    return new Icon() {
-      {
-        component.setSize(getIconWidth(), getIconHeight());
-        component.doLayout();
-       
-      }
-      @Override
-      public void paintIcon(Component c, Graphics g, int x, int y) {
-        browser.setRepaintObserver(c);
-        g = g.create();
-        g.translate(x, y);
-        g.clipRect(0, 0, getIconWidth(), getIconHeight());
-        component.print(g);
-        g.dispose();
-      }
-
-      @Override
-      public int getIconWidth() {
-        return Math.max(1, getWidth(name));
-      }
-
-      @Override
-      public int getIconHeight() {
-        return Math.max(getHeight(name),1);
-      } };
+    ImageComponent component = getPreviewPanel(name, getBrowser());
+    Image image = component.image;
+    int w = getWidth(name);
+    int h = getHeight(name);
+    if(w > 0 && h > 0) {
+        image = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+    }
+    return new ImageIcon(image);
   }
 	
 }

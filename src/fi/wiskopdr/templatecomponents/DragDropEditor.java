@@ -431,6 +431,7 @@ public class DragDropEditor implements TComponentEditor, ActionListener, FocusLi
 	
 	public void dispose( ) {
 		frame.dispose();
+		if (iconman != null) iconman.dispose();
 	}
 	
 	public void editImage() {

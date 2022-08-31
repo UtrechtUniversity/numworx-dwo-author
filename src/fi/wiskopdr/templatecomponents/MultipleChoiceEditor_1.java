@@ -546,6 +546,7 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
 	
 	public void dispose( ) {
 		frame.dispose();
+		if (iconman != null) iconman.dispose();
 	}
 	
 	public void maakCheckboxes() {

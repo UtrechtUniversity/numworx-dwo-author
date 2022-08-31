@@ -94,6 +94,7 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 			if(imHeight == -1) imHeight = 20;
 			checkButton.setSize(imWidth,imHeight);
 			zetMaat();
+			iconman.dispose();
 	    }
 	}
 
@@ -120,6 +121,7 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 			if(imHeight == -1) imHeight = 20;
 			checkButton.setSize(imWidth,imHeight);
 			zetMaat();
+			iconman.dispose();
 	    }
 
 	}

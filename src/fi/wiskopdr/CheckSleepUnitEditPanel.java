@@ -627,7 +627,9 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
     
 	public void zetMode(int mode){}
 	
-    public void stop(){}
+    public void stop(){
+      if (iconman != null) iconman.dispose(); // cleanup
+    }
     
     public void start(){}
     

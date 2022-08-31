@@ -100,6 +100,7 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
 //		imageDialog.show();
 
 		zetMaat();
+		iconman.dispose();
 	}
 
 	public void paint(Graphics g)
@@ -181,6 +182,7 @@ public class TekstImageVak extends TekstDeelVak implements MouseListener, MouseM
           image.setBounds(0, 0, getWidth(), getHeight());
 		}
 		zetMaat();
+		iconman.dispose();
 	}
 	
 	public void setBounds(int x, int y, int w , int h) { // Layoutmanager

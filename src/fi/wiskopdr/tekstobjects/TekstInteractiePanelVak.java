@@ -612,8 +612,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	private JButton popupJButton;
 	private Image popupImage;
 	private String popupImageString;
-	private Iconan iconman;
-		
+
 	public TekstInteractiePanelVak(TekstVak tv, int setNr, int soort)
     {
 	  this(tv);
@@ -1549,7 +1548,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         				popupButton.setBounds(0,0,20,20);
         				
         				if(popupImageString!=null && !"".equals(popupImageString))
-        				{   iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
+        				{   Iconan iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 	        		    	if(popupImageString!=null && !"".equals(popupImageString))popupImage = iconman.getImage(popupImageString);
 	        		    	if( popupImage != null) 
 	        		    	  popupButton.setPopupButtonImage(popupImage);
@@ -1563,6 +1562,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	        				if(imHeight == -1) imHeight = 20;
 	        				popupJButton.setSize(imWidth,imHeight);
 	        		    	//popupButton.setSize(popupImage.getWidth(null), popupImage.getHeight(null));
+	        				iconman.dispose();
         				}
                         popupJButton.setBorder(BorderFactory.createLineBorder(Color.gray));
                         //popupJButton.addActionListener(this);
@@ -2359,7 +2359,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	    				if("MW".equals(WiskOpdr.deployVariant) && (soortInteractiePanel==8 || soortInteractiePanel==9 || soortInteractiePanel==10))popupButton.setBounds(0,0,50,50);
 	    				
 	    				if(popupImageString!=null && !"".equals(popupImageString))
-	    				{   iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
+	    				{   Iconan iconman = new Iconan(WiskOpdr.applet, this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
 	        		    	if(popupImageString!=null && !"".equals(popupImageString))
 	        		    	  popupImage = iconman.getImage(popupImageString);
 	        		    	if(popupImage == null) {
@@ -2376,6 +2376,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	        				if(imWidth == -1) imWidth = 20;
 	        				if(imHeight == -1) imHeight = 20;
 	        				popupJButton.setSize(imWidth,imHeight);
+	        				iconman.dispose();
 	    				}
                         popupJButton.addActionListener(this);
 	    			}
