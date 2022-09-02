@@ -32,7 +32,7 @@ public class CheckObject extends Observable implements Observer, Comparable<Chec
 	int present = Label.UNKNOWN;
 	private Destroyable item, cache;
 	String formule = "";
-	Numbers marge = Numbers.createDouble(0.01);
+	Numbers marge = Numbers.createDouble(0.05);
 	private EqualsVisitor eq;
 	private List<Destroyable> depend = Collections.emptyList();
 	
