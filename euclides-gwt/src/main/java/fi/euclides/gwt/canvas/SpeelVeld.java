@@ -385,7 +385,16 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	}
 
 	EventHandler handler;
+	protected EventHandler getHandler() {
+		return handler;
+	}
+
 	private boolean moved;
+	
+	protected boolean isMoved() {
+		return moved;
+	}
+
 	private AbstractViewer extra;
 	protected int offX;
 	protected int offY;
@@ -561,6 +570,13 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	public void setBackground(String string) {		
+	}
+
+	/**
+	 * @param moved the moved to set
+	 */
+	protected void setMoved(boolean moved) {
+		this.moved = moved;
 	}
 
 }
