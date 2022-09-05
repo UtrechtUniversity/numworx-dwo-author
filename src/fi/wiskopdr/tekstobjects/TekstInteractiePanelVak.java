@@ -104,6 +104,7 @@ import fi.wiskopdr.GrafiekPanel;
 import fi.wiskopdr.ImageComponent;
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.ReviewInteractiePanel;
+import fi.wiskopdr.ScoreWidget;
 import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
 import fi.wiskopdr.TekstVakPanel;
@@ -371,7 +372,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	public static int[][] interactiePanelSets =
 	    {
 	        {2,0,3,1,53,63,64,4,13,14,60,12,16,33,49},//,52
-	        {35,5,6,24,15,46,11,10,39,20,25,56,59,54,58,42,41,61,27,22,65,43,50,30,48,40,31,32,26,62,19},
+	        {35,5,6,24,15,46,11,10,39,20,25,56,59,54,58,42,41,61,27,22,65,43,50,66,30,48,40,31,32,26,62,19},
 	        //{5,6,7,11,15,17,18,19,20,21,22,23,24,26,27,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,45,46,47,48,50,51,54,56,57,58,59,25},
 	        //{0,1,2,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,
 	        {45},
@@ -467,7 +468,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 				"Upload bestanden [test]",
 				"Vak voor berekening [test]",
 				"Strategie-antwoordvak [test]",
-				"Notebook [test]"
+				"Notebook [test]",
+				"Score-widget [test]"
 			};
 		return s;
 	}
@@ -1463,6 +1465,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
                 interactiePanel.addActionListener(this);
             }
         }
+		else if(soortInteractiePanel == 66)
+        {
+            if(interactiePanel == null || !(interactiePanel instanceof ScoreWidget))
+            {
+                interactiePanel = new ScoreWidget();
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+            }
+        }
 		else if(soortInteractiePanel > 4)
 		{  	for(int i=0 ; i<TekstInteractiePanelVak.wiskOpdrInteractiePanels.length ; i++)
 			{	if((""+soortInteractiePanel).equals(wiskOpdrInteractiePanels[i][1]))
@@ -2299,6 +2310,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
             if(interactiePanel == null || !(interactiePanel instanceof StrategieVakPanel))
             {
                 interactiePanel = new StrategieVakPanel();
+                ((Component)interactiePanel).setBackground(getBackground());
+                interactiePanel.addActionListener(this);
+            }
+        }
+		else if(soortInteractiePanel == 66)
+        {
+            if(interactiePanel == null || !(interactiePanel instanceof ScoreWidget))
+            {
+                interactiePanel = new ScoreWidget();
                 ((Component)interactiePanel).setBackground(getBackground());
                 interactiePanel.addActionListener(this);
             }

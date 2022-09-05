@@ -662,7 +662,19 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"GSEP_horizontaal" , "Horizontaal"},
 				{"GSEP_eenheid" , "Eenheid"},
 				
+				//ScoreWidgetEditPanel
+				{"SWEP_titleSettingsLabel" , "Kies pagina"},
+				{"SWEP_thisActiviteitButton" , "Deze activiteit"},
+				{"SWEP_thisModuleButton" , "Deze module"},
+				{"SWEP_activiteitIdButton" , "Activiteit met ID"},
+				{"SWEP_moduleIdButton" , "Module met ID"},
+				{"SWEP_activiteitNrLabel" , "Activiteitnummer"},
+				{"SWEP_paginaNrLabel" , "Paginanummer"},
 				
+				{"SWEP_titleKeuzeLabel" , "Kies getoonde informatie"},
+                {"SWEP_scoreButton" , "Score"},
+                {"SWEP_goedFoutButton" , "Goed/fout"},
+                
 				
 				//TekstEditorEditPanel
 				{"TEEP_menuBalkOptie" , "Formule-editor"},

@@ -64,6 +64,7 @@ import fi.wiskopdr.GetallenlijnSprongPanel;
 import fi.wiskopdr.GrafiekPanel;
 import fi.wiskopdr.HelpButton;
 import fi.wiskopdr.HelpButtonPanelIF;
+import fi.wiskopdr.ScoreWidget;
 import fi.wiskopdr.SimpelAntwoordFormuleVak;
 import fi.wiskopdr.SimpelAntwoordVergelijkingVak;
 import fi.wiskopdr.TabletOwningLayeredPane;
@@ -898,6 +899,14 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 		  if(interactieEditPanel != null) interactieEditPanel.zetBreedte(400);
 		  if(interactieEditPanel != null) interactieEditPanel.zetHoogte(57);
 		}
+		else if(soortInteractiePanel == 66)
+        {
+          interactieEditPanel = (new ScoreWidget()).getEditPanel();
+          breedteTF.setText("20");
+          hoogteTF.setText("20");
+          if(interactieEditPanel != null) interactieEditPanel.zetBreedte(20);
+          if(interactieEditPanel != null) interactieEditPanel.zetHoogte(20);
+        }
 		else if(soortInteractiePanel == 45)//GraphTool
 		{  		//if((""+soortInteractiePanel).equals(TekstInteractiePanelVak.wiskOpdrInteractiePanels[30][1]))
 				{	interactieEditPanel = maakInteractieEditPanel(TekstInteractiePanelVak.wiskOpdrInteractiePanels[30][0], WiskOpdr.language);
