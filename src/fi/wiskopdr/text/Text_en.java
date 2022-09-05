@@ -583,6 +583,19 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_respConstantLabel", "constant"},
                 {"TVEP_respFactorLabel", "factor"},
                 
+              //ScoreWidgetEditPanel
+                {"SWEP_titleSettingsLabel" , "Choose page"},
+                {"SWEP_thisActiviteitButton" , "This activity"},
+                {"SWEP_thisModuleButton" , "This module"},
+                {"SWEP_activiteitIdButton" , "Activity with ID"},
+                {"SWEP_moduleIdButton" , "Module with ID"},
+                {"SWEP_activiteitNrLabel" , "Activity number"},
+                {"SWEP_paginaNrLabel" , "Page number"},
+                
+                {"SWEP_titleKeuzeLabel" , "Kies getoonde informatie"},
+                {"SWEP_scoreButton" , "Score"},
+                {"SWEP_goedFoutButton" , "Goed/fout"},
+                
                 //Style Manager
                 {"SM_titelLabel", "Manage Styles"},
                 {"SM_addStyleButton", "Save settings as new style"},
