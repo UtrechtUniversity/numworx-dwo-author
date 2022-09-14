@@ -174,6 +174,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private int sleepdoelMarge = 10;
 	private boolean sleepSnap = false;
 	private boolean selected = false;
+	private boolean inactive = false;
 
 	private Point[] doelPosities;
 	private TekstVakPanel[] sleepObjecten;
@@ -743,6 +744,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean draaibaar = false;
 		boolean sleepdoel = false;
 		boolean sleepHandle = false;
+		boolean inactive = false;
 		String checkExpressieString = "$f@";
 		int ipId = 0;
 		int interlinie = 0;
@@ -903,6 +905,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			sleepdoel = ((Boolean) h.get("sleepdoel")).booleanValue();
 		if (h.containsKey("sleepHandle"))
 			sleepHandle = ((Boolean) h.get("sleepHandle")).booleanValue();
+		if (h.containsKey("inactive"))
+		  inactive = ((Boolean) h.get("inactive")).booleanValue();
 		if (h.containsKey("checkExpressieString"))
 			checkExpressieString = (String) h.get("checkExpressieString");
 		if (h.containsKey("ipId"))
@@ -1058,6 +1062,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.draaibaar = draaibaar;
 		this.sleepdoel = sleepdoel;
 		this.sleepHandle = sleepHandle;
+		this.inactive = inactive;
 		this.checkExpressieString = checkExpressieString;
 		this.ipId = ipId;
 		this.interlinie = interlinie;
@@ -1844,6 +1849,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean draaibaar = false;
 		boolean sleepdoel = false;
 		boolean sleepHandle = false;
+		boolean inactive = false;
 		String checkExpressieString = "$f@";
 		int ipId = 0;
 		int interlinie = 0;
@@ -1925,6 +1931,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		draaibaar = this.draaibaar;
 		sleepdoel = this.sleepdoel;
 		sleepHandle = this.sleepHandle;
+		inactive = this.inactive;
 		checkExpressieString = this.checkExpressieString;
 		ipId = this.ipId;
 		locationX = this.locationX;
@@ -2075,6 +2082,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("draaibaar", new Boolean(draaibaar));
 		h.put("sleepdoel", new Boolean(sleepdoel));
 		h.put("sleepHandle", new Boolean(sleepHandle));
+		h.put("inactive", new Boolean(inactive));
 		h.put("checkExpressieString", checkExpressieString);
 		h.put("ipId", new Integer(ipId));
 		h.put("interlinie", new Integer(interlinie));
@@ -2711,6 +2719,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean draaibaar = false;
 		boolean sleepdoel = false;
 		boolean sleepHandle = false;
+		boolean inactive = false;
 		String checkExpressieString = "$f@";
 		int ipId = 0;
 		int interlinie = 0;
@@ -2868,6 +2877,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			sleepdoel = ((Boolean) h.get("sleepdoel")).booleanValue();
 		if (h.containsKey("sleepHandle"))
 			sleepHandle = ((Boolean) h.get("sleepHandle")).booleanValue();
+		if (h.containsKey("inactive"))
+		  inactive = ((Boolean) h.get("inactive")).booleanValue();
 		if (h.containsKey("checkExpressieString"))
 			checkExpressieString = (String) h.get("checkExpressieString");
 		if (h.containsKey("ipId"))
@@ -3002,6 +3013,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.draaibaar = draaibaar;
 		this.sleepdoel = sleepdoel;
 		this.sleepHandle = sleepHandle;
+		this.inactive = inactive;
 		this.checkExpressieString = checkExpressieString;
 		this.ipId = ipId;
 		this.interlinie = interlinie;
@@ -4747,6 +4759,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				"text.content",
 				"action.zoom",
 				"action.unzoom",
+				"action.setActive",
+				"action.setInactive",
 		};
 		return acceptedCommands;
 	}

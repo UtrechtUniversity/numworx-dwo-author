@@ -943,6 +943,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_action.popup", "Actie: popup"},
 				{"CBA_action.zoom", "Actie: volledig scherm [Test]"},
 				{"CBA_action.unzoom", "Actie: normaal scherm [Test]"},
+				{"CBA_action.setActive", "Actie: zet actief"},
+				{"CBA_action.setInactive", "Actie: zet inactief"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},
