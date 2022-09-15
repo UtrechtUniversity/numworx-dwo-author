@@ -134,6 +134,15 @@
 	<fields>;
 }
 
+-keep class javax.inject.Provider {
+	<methods>;
+}
+-keep class dagger.MembersInjector {
+	<methods>;
+}
+-keep class dagger.Lazy {
+	<methods>;
+}
 
 
 # Keep - Applications. Keep all application classes, along with their 'main'

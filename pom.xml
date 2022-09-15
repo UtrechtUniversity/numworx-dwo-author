@@ -94,7 +94,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<proguardVersion>6.0</proguardVersion>
+					<proguardVersion>6.1</proguardVersion>
 					<options>
 						<option>-verbose</option>
 						<option>-dontwarn</option>
@@ -129,8 +129,7 @@
 					</exclusions>
 					<proguardInclude>toolfiles/config.pro</proguardInclude>
 					<libs>
-						<lib>${java.home}/lib/rt.jar</lib>
-<!-- 						<lib>${java.home}/lib/jsse.jar</lib> -->
+						<lib>${proguard.lib}</lib>
 					</libs>
 					<addMavenDescriptor>false</addMavenDescriptor>
 				</configuration>
@@ -138,7 +137,7 @@
 					<dependency>
 						<groupId>net.sf.proguard</groupId>
 						<artifactId>proguard-base</artifactId>
-						<version>5.2</version>
+						<version>6.1.0</version>
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>
@@ -294,6 +293,7 @@
 		<extras.verify>verify</extras.verify>
 		<extras.process>process-classes</extras.process>
 		<extras.sign>none</extras.sign>
+		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>
 		<jxb>7.13</jxb>
 	</properties>
 	<dependencies>
@@ -580,6 +580,12 @@
 		</build>
 	
 	
+	</profile>
+	<profile>
+		<id>running11</id>
+		<properties>
+			<proguard.lib>${java.home}/jmods</proguard.lib>
+		</properties>
 	</profile>
 	</profiles>
   <distributionManagement>
