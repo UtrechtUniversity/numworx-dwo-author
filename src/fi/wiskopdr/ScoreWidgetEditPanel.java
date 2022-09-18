@@ -95,13 +95,13 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     
     activiteitIdTF = new JTextField("");
     activiteitIdTF.setFont(font);
-    activiteitIdTF.setPreferredSize(new Dimension(50,22));
-    activiteitIdTF.setMaximumSize(new Dimension(50,22));
+    activiteitIdTF.setPreferredSize(new Dimension(60,22));
+    activiteitIdTF.setMaximumSize(new Dimension(60,22));
     
     moduleIdTF = new JTextField("");
     moduleIdTF.setFont(font);
-    moduleIdTF.setPreferredSize(new Dimension(50,22));
-    moduleIdTF.setMaximumSize(new Dimension(50,22));
+    moduleIdTF.setPreferredSize(new Dimension(60,22));
+    moduleIdTF.setMaximumSize(new Dimension(60,22));
     
     activiteitNrLabel = new JLabel(WiskOpdr.rb.getString("SWEP_activiteitNrLabel"));
     activiteitNrLabel.setForeground(WiskOpdr.colorBlue1);
