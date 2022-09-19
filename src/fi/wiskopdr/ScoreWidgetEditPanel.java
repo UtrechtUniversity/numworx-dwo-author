@@ -15,6 +15,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JLabel;
 import fi.beans.numworxlf.JRadioButton;
 import fi.beans.numworxlf.JTextField;
@@ -43,8 +44,10 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   private ButtonGroup buttonGroup1;
   private JLabel activiteitNrLabel;
   private JLabel paginaNrLabel;
+  private JLabel paginaTitelLabel;
   private JTextField activiteitNrTF;
   private JTextField paginaNrTF;
+  private JTextField paginaTitelTF;
   private JTextField activiteitIdTF;
   private JTextField moduleIdTF;
   
@@ -52,6 +55,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   private JRadioButton scoreRB;
   private JRadioButton goedFoutRB;
   private ButtonGroup buttonGroup2;
+  
+  private JCheckBox toonTitelCB;
   
   public ScoreWidgetEditPanel() {
     makeGUI();
@@ -118,10 +123,19 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     paginaNrLabel.setForeground(WiskOpdr.colorBlue1);
     paginaNrLabel.setFont(font);
     
+    paginaTitelLabel = new JLabel(WiskOpdr.rb.getString("SWEP_paginaTitelLabel"));
+    paginaTitelLabel.setForeground(WiskOpdr.colorBlue1);
+    paginaTitelLabel.setFont(font);
+    
     paginaNrTF = new JTextField("");
     paginaNrTF.setFont(font);
     paginaNrTF.setPreferredSize(new Dimension(50,22));
     paginaNrTF.setMaximumSize(new Dimension(50,22));
+    
+    paginaTitelTF = new JTextField("");
+    paginaTitelTF.setFont(font);
+    paginaTitelTF.setPreferredSize(new Dimension(150,22));
+    paginaTitelTF.setMaximumSize(new Dimension(150,22));
     
     titleKeuzeLabel = new JLabel(WiskOpdr.rb.getString("SWEP_titleKeuzeLabel"));
     titleKeuzeLabel.setForeground(WiskOpdr.colorBlue1);
@@ -137,6 +151,9 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     buttonGroup2.add(scoreRB);
     buttonGroup2.add(goedFoutRB);
     
+    toonTitelCB = new JCheckBox(WiskOpdr.rb.getString("SWEP_toonTitelCB"));
+    scoreRB.setSelected(false);
+    
     plaatsGUI();
   }
   
@@ -149,15 +166,17 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     Component[] r15 = {moduleIdRB, ra(10,0), moduleIdTF, hgl()};
     Component[] r16 = {activiteitNrLabel, ra(10,0), activiteitNrTF, hgl()};
     Component[] r17 = {paginaNrLabel, ra(10,0), paginaNrTF, hgl()};
+    Component[] r18 = {paginaTitelLabel, ra(10,0), paginaTitelTF, hgl()};
     
     Component[] k1 = {hb(r11), vst(10), hb(r12), vst(5), hb(r13), vst(5), hb(r14), vst(5), hb(r15), 
-                      vst(10), hb(r16), vst(5), hb(r17), vgl()};
+                      vst(10), hb(r16), vst(5), hb(r17), vst(5), hb(r18), vgl()};
     
     Component[] r21 = {titleKeuzeLabel, hgl()};
     Component[] r22 = {goedFoutRB, hgl()};
     Component[] r23 = {scoreRB, hgl()};
+    Component[] r24 = {toonTitelCB, hgl()};
  
-    Component[] k2 = {hb(r21), vst(10), hb(r22), vst(5), hb(r23), vgl()};
+    Component[] k2 = {hb(r21), vst(10), hb(r22), vst(5), hb(r23), vst(10), hb(r24),vgl()};
     
     Component[] rr = {vb(k1), hgl(), ra(100,0), vb(k2), hgl()};
     
@@ -204,15 +223,19 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     int choicePageMode = 0;
     int activiteitNr = 0;
     int paginaNr = 0;
+    String paginaTitel = "";
     int activiteitID = 0;
     int moduleID = 0;
     boolean score = false;
     boolean goedFout = false;
+    boolean toonTitel = false;
     
     if(h.containsKey("choicePageMode"))
       choicePageMode = (int)h.get("choicePageMode");
     if(h.containsKey("activiteitNr"))
       activiteitNr = (int)h.get("activiteitNr");
+    if(h.containsKey("paginaTitel"))
+      paginaTitel = (String)h.get("paginaTitel");
     if(h.containsKey("paginaNr"))
       paginaNr = (int)h.get("paginaNr");
     if(h.containsKey("activiteitID"))
@@ -223,6 +246,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       score = (boolean)h.get("score");
     if(h.containsKey("goedFout"))
       goedFout = (boolean)h.get("goedFout");
+    if(h.containsKey("toonTitel"))
+      toonTitel = (boolean)h.get("toonTitel");
     
     thisActiviteitRB.setSelected(choicePageMode==0);
     thisModuleRB.setSelected(choicePageMode==1);
@@ -231,8 +256,10 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     
     scoreRB.setSelected(score);
     goedFoutRB.setSelected(goedFout);
+    toonTitelCB.setSelected(toonTitel);
     
     paginaNrTF.setText(""+paginaNr);
+    paginaTitelTF.setText(""+paginaTitel);
     activiteitNrTF.setText(""+activiteitNr);
     activiteitIdTF.setText(""+activiteitID);
     moduleIdTF.setText(""+moduleID);
@@ -275,13 +302,17 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    int choicePageMode = 0;
    int activiteitNr = 0;
    int paginaNr = 0;
+   String paginaTitel = "";
    int activiteitID = 0;
    int moduleID = 0;
    boolean score = false;
    boolean goedFout = false;
+   boolean toonTitel;
    
    choicePageMode = getChoicePageMode();
    paginaNr = intFromText(paginaNr, paginaNrTF.getText());
+   paginaTitel = paginaTitelTF.getText();
+   toonTitel = toonTitelCB.isSelected();
    if(choicePageMode!=0 && choicePageMode!=2)
      activiteitNr = intFromText(activiteitNr, activiteitNrTF.getText());
    if(choicePageMode==2)
@@ -289,17 +320,19 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    if(choicePageMode==3)
      moduleID = intFromText(moduleID, moduleIdTF.getText());
     
-   score = scoreRB.isSelected();
+    score = scoreRB.isSelected();
     goedFout = goedFoutRB.isSelected();
     
     Hashtable h = new Hashtable();
     h.put("choicePageMode", new Integer(choicePageMode));
     h.put("activiteitNr", new Integer(activiteitNr));
     h.put("paginaNr", new Integer(paginaNr));
+    h.put("paginaTitel", paginaTitel);
     h.put("activiteitID", new Integer(activiteitID));
     h.put("moduleID", new Integer(moduleID));
     h.put("score", new Boolean(score));
     h.put("goedFout", new Boolean(goedFout));
+    h.put("toonTitel", new Boolean(toonTitel));
     
     System.out.println("H:"+h.toString());
     return h;

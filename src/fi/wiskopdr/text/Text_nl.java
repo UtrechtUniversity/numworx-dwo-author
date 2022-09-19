@@ -670,10 +670,12 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"SWEP_moduleIdButton" , "Module met ID"},
 				{"SWEP_activiteitNrLabel" , "Activiteitnummer"},
 				{"SWEP_paginaNrLabel" , "Paginanummer"},
+				{"SWEP_paginaTitelLabel" , "Paginatitel"},
 				
 				{"SWEP_titleKeuzeLabel" , "Kies getoonde informatie"},
                 {"SWEP_scoreButton" , "Score"},
                 {"SWEP_goedFoutButton" , "Goed/fout"},
+                {"SWEP_toonTitelCB" , "Toon paginatitel"},
                 
 				
 				//TekstEditorEditPanel

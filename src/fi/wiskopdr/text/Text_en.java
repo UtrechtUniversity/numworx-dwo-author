@@ -591,10 +591,12 @@ public class Text_en extends java.util.ListResourceBundle
                 {"SWEP_moduleIdButton" , "Module with ID"},
                 {"SWEP_activiteitNrLabel" , "Activity number"},
                 {"SWEP_paginaNrLabel" , "Page number"},
+                {"SWEP_paginaTitelLabel" , "Page title"},
                 
-                {"SWEP_titleKeuzeLabel" , "Kies getoonde informatie"},
+                {"SWEP_titleKeuzeLabel" , "Choose information to show"},
                 {"SWEP_scoreButton" , "Score"},
-                {"SWEP_goedFoutButton" , "Goed/fout"},
+                {"SWEP_goedFoutButton" , "Correct/incorrect"},
+                {"SWEP_toonTitelCB" , "Show page title"},
                 
                 //Style Manager
                 {"SM_titelLabel", "Manage Styles"},
