@@ -1,6 +1,5 @@
 package fi.balansfruit;
 
-import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.MediaTracker;
@@ -19,6 +18,7 @@ import fi.beans.lwmobjects_swing.LWMButton;
 import fi.beans.lwmobjects_swing.LWMContainer;
 import fi.beans.lwmobjects_swing.LWMMouseHandler;
 import fi.beans.lwmobjects_swing.MovePermissions;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.Parameter;
 import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.scorm.Scorm;
@@ -68,7 +68,7 @@ import fi.beans.wiskopdrbeans.WiskOpdrApplet;
  */
 
 @SuppressWarnings("serial")
-public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApplet
+public class BalansFruitApplet extends JApplet implements  Runnable , WiskOpdrApplet
 {	// Constants
 	public static int MAXAANTAL = 10;			// max aantal per soort
 	
@@ -115,7 +115,7 @@ public class BalansFruitApplet extends Applet implements  Runnable , WiskOpdrApp
 	protected SCORM12APIInterface api;
 	private TextField textField;
 	
-	public static Applet applet;
+	public static JApplet applet;
 	
 	// ResourceBundle voor internationalisatie
 	// static ResourceBundle rb;

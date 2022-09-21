@@ -1,7 +1,6 @@
 package fi.balansfruit;
 
 import java.awt.*;
-import java.applet.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionListener;
@@ -68,7 +67,6 @@ public class BalansFruitInteractiePanel extends JPanel implements InteractiePane
 	private Image balansRechts;
 	private Image wisknopImage;
 	
-	private Applet applet;
 	protected Hashtable defaultParamValues, launchData;
 	
 	private boolean fixedOptie=false;
