@@ -4,6 +4,11 @@
   <artifactId>PreviewHTML</artifactId>
   <version>0.0.2-SNAPSHOT</version>
   <name>HTML Previewer with Scorm support</name>
+  <parent>
+	  <groupId>fi.wiskopdr</groupId>
+	  <artifactId>WiskOpdrParent</artifactId>
+	  <version>1.0.0-SNAPSHOT</version>
+  </parent>
   <properties>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -15,7 +20,6 @@
   	<dependency>
   		<groupId>nl.uu.fi.dwo</groupId>
   		<artifactId>DWO-commons-lib</artifactId>
-  		<version>2.5.3</version>
   	</dependency>
 	<dependency>
 		<groupId>nl.numworx.swingbrowser</groupId>
@@ -26,7 +30,6 @@
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
 			<artifactId>DWOJClient</artifactId>
-			<version>2.5.4</version>
 			<scope>test</scope>
 		</dependency>
   </dependencies>
