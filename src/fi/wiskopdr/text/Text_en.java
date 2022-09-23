@@ -277,6 +277,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{"FEV_titleLoggingLabel", "Checking / logging"},
 				{"FEV_titleScoringLabel", "Score"},
 				{"FEV_titleVormLabel", "Correct forms"},
+				{"FEV_termenVormVrijCB", "Free sequence terms"},
 				
 				{"AKV_titleTekstenLabel", "List of choices"},
 				
@@ -596,7 +597,9 @@ public class Text_en extends java.util.ListResourceBundle
                 {"SWEP_titleKeuzeLabel" , "Choose information to show"},
                 {"SWEP_scoreButton" , "Score"},
                 {"SWEP_goedFoutButton" , "Correct/incorrect"},
-                {"SWEP_toonTitelCB" , "Show page title"},
+                {"SWEP_toonTitelCB" , "Page title"},
+                {"SWEP_titleLinkLabel" , "Link naar page"},
+                {"SWEP_linkActiveCB" , "Link active"},
                 
                 //Style Manager
                 {"SM_titelLabel", "Manage Styles"},

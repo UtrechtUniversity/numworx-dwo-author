@@ -52,11 +52,12 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   private JTextField moduleIdTF;
   
   private JLabel titleKeuzeLabel;
-  private JRadioButton scoreRB;
-  private JRadioButton goedFoutRB;
-  private ButtonGroup buttonGroup2;
-  
+  private JCheckBox scoreRB;
+  private JCheckBox goedFoutRB;
   private JCheckBox toonTitelCB;
+  
+  private JLabel titleLinkLabel;
+  private JCheckBox linkActiveCB;
   
   public ScoreWidgetEditPanel() {
     makeGUI();
@@ -141,17 +142,22 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     titleKeuzeLabel.setForeground(WiskOpdr.colorBlue1);
     titleKeuzeLabel.setFont(font.deriveFont(Font.BOLD, 16));
     
-    goedFoutRB = new JRadioButton(WiskOpdr.rb.getString("SWEP_goedFoutButton"));
+    goedFoutRB = new JCheckBox(WiskOpdr.rb.getString("SWEP_goedFoutButton"));
     goedFoutRB.setSelected(true);
     
-    scoreRB = new JRadioButton(WiskOpdr.rb.getString("SWEP_scoreButton"));
+    scoreRB = new JCheckBox(WiskOpdr.rb.getString("SWEP_scoreButton"));
     scoreRB.setSelected(false);
     
-    buttonGroup2 = new ButtonGroup();
-    buttonGroup2.add(scoreRB);
-    buttonGroup2.add(goedFoutRB);
-    
     toonTitelCB = new JCheckBox(WiskOpdr.rb.getString("SWEP_toonTitelCB"));
+    toonTitelCB.setSelected(true);
+    
+    titleLinkLabel = new JLabel(WiskOpdr.rb.getString("SWEP_titleLinkLabel"));
+    titleLinkLabel.setForeground(WiskOpdr.colorBlue1);
+    titleLinkLabel.setFont(font.deriveFont(Font.BOLD, 16));
+    
+    linkActiveCB = new JCheckBox(WiskOpdr.rb.getString("SWEP_linkActiveCB"));
+    linkActiveCB.setSelected(true);
+    
     scoreRB.setSelected(false);
     
     plaatsGUI();
@@ -175,8 +181,10 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     Component[] r22 = {goedFoutRB, hgl()};
     Component[] r23 = {scoreRB, hgl()};
     Component[] r24 = {toonTitelCB, hgl()};
+    Component[] r25 = {titleLinkLabel, hgl()};
+    Component[] r26 = {linkActiveCB, hgl()};
  
-    Component[] k2 = {hb(r21), vst(10), hb(r22), vst(5), hb(r23), vst(10), hb(r24),vgl()};
+    Component[] k2 = {hb(r21), vst(10), hb(r22), vst(5), hb(r23), vst(5), hb(r24),vst(20), hb(r25), vst(10), hb(r26),vgl()};
     
     Component[] rr = {vb(k1), hgl(), ra(100,0), vb(k2), hgl()};
     
@@ -227,8 +235,9 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     int activiteitID = 0;
     int moduleID = 0;
     boolean score = false;
-    boolean goedFout = false;
-    boolean toonTitel = false;
+    boolean goedFout = true;
+    boolean toonTitel = true;
+    boolean linkActive = true;
     
     if(h.containsKey("choicePageMode"))
       choicePageMode = (int)h.get("choicePageMode");
@@ -248,6 +257,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       goedFout = (boolean)h.get("goedFout");
     if(h.containsKey("toonTitel"))
       toonTitel = (boolean)h.get("toonTitel");
+    if(h.containsKey("linkActive"))
+      linkActive = (boolean)h.get("linkActive");
     
     thisActiviteitRB.setSelected(choicePageMode==0);
     thisModuleRB.setSelected(choicePageMode==1);
@@ -257,6 +268,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     scoreRB.setSelected(score);
     goedFoutRB.setSelected(goedFout);
     toonTitelCB.setSelected(toonTitel);
+    
+    linkActiveCB.setSelected(linkActive);
     
     paginaNrTF.setText(""+paginaNr);
     paginaTitelTF.setText(""+paginaTitel);
@@ -306,8 +319,9 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    int activiteitID = 0;
    int moduleID = 0;
    boolean score = false;
-   boolean goedFout = false;
-   boolean toonTitel;
+   boolean goedFout = true;
+   boolean toonTitel = true;
+   boolean linkActive = true;
    
    choicePageMode = getChoicePageMode();
    paginaNr = intFromText(paginaNr, paginaNrTF.getText());
@@ -322,6 +336,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     
     score = scoreRB.isSelected();
     goedFout = goedFoutRB.isSelected();
+    linkActive = linkActiveCB.isSelected();
     
     Hashtable h = new Hashtable();
     h.put("choicePageMode", new Integer(choicePageMode));
@@ -333,6 +348,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     h.put("score", new Boolean(score));
     h.put("goedFout", new Boolean(goedFout));
     h.put("toonTitel", new Boolean(toonTitel));
+    h.put("linkActive", new Boolean(linkActive));
     
     System.out.println("H:"+h.toString());
     return h;

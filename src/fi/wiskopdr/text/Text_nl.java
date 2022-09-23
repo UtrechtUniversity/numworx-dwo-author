@@ -296,6 +296,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"FEV_titleLoggingLabel", "Nakijken / logging"},
 				{"FEV_titleScoringLabel", "Score"},
 				{"FEV_titleVormLabel", "Juiste vormen"},
+				{"FEV_termenVormVrijCB", "Vrije volgorde termen"},
 				
 				{"AKV_titleTekstenLabel", "Teksten keuzelijst"},
 				
@@ -675,7 +676,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"SWEP_titleKeuzeLabel" , "Kies getoonde informatie"},
                 {"SWEP_scoreButton" , "Score"},
                 {"SWEP_goedFoutButton" , "Goed/fout"},
-                {"SWEP_toonTitelCB" , "Toon paginatitel"},
+                {"SWEP_toonTitelCB" , "Paginatitel"},
+                {"SWEP_titleLinkLabel" , "Link naar pagina"},
+                {"SWEP_linkActiveCB" , "Link actief"},
                 
 				
 				//TekstEditorEditPanel
