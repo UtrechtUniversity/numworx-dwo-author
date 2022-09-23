@@ -1,6 +1,7 @@
 package fi.wiskopdr;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -12,17 +13,22 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class ScoreWidget extends JPanel implements InteractiePanel {
 
+  private String paginaTitel = "";
+  
   public void paintComponent(Graphics g) {
-    
+    g.setFont(new Font("SansSerif",Font.PLAIN, 14));
+    g.drawString(paginaTitel, 2, 14);
+    int x = getWidth() - 14;
     g.setColor(new Color(0,200,0));
-    g.fillOval(3,3,14,14);
+    g.fillOval(x,2,14,14);
     g.setColor(new Color(200,200,200));
-    g.drawOval(3,3,14,14);
+    g.drawOval(x,2,14,14);
   }
 
   @Override
-  public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues) {
-    // TODO Auto-generated method stub
+  public void zetOpdracht(Hashtable h, String[] randomVars, Hashtable randomValues) {
+    if(h.containsKey("paginaTitel"))
+      paginaTitel = (String)h.get("paginaTitel");
     
   }
 
@@ -34,7 +40,8 @@ public class ScoreWidget extends JPanel implements InteractiePanel {
 
   @Override
   public void setEditState(Hashtable h) {
-    // TODO Auto-generated method stub
+    if(h.containsKey("paginaTitel"))
+        paginaTitel = (String)h.get("paginaTitel");
     
   }
 
