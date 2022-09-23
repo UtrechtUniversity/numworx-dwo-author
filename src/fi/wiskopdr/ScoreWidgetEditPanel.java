@@ -313,8 +313,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   @Override
   public Hashtable getEditState() {
    int choicePageMode = 0;
-   int activiteitNr = 0;
-   int paginaNr = 0;
+   int activiteitNr = 1;
+   int paginaNr = 1;
    String paginaTitel = "";
    int activiteitID = 0;
    int moduleID = 0;
