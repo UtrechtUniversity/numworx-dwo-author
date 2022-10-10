@@ -735,7 +735,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
     private void getAnswerModel()
     {   if(answerModels==null)return;
         answerModels[answerModelNr] = fillAnswerModel(new Hashtable());
-        if(answerModelNr==0) 
+        if(answerModelNr==0 && feedbackCB.isSelected()) 
           maxScoreTF.setText(feedbackPV.getText());
     }
     
@@ -1010,7 +1010,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 				maakCheckboxes();
 			}
 		}
-		if(e.getSource()==feedbackPV && answerModelNr==0) {
+		if(feedbackCB.isSelected() && e.getSource()==feedbackPV && answerModelNr==0) {
           maxScoreTF.setText(feedbackPV.getText());
       }
 	}
