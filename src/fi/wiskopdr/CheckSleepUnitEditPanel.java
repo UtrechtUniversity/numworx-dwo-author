@@ -887,7 +887,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
     private void getAnswerModel()
     {   if(answerModels==null)return;
         answerModels[answerModelNr] = fillAnswerModel(new Hashtable());
-        if(answerModelNr==0) 
+        if(answerModelNr==0 && feedbackCB.isSelected()) 
           maxScoreTF.setText(feedbackPV.getText());
     }
     
@@ -1038,7 +1038,7 @@ public class CheckSleepUnitEditPanel extends JPanel implements InteractieEditPan
 
 	@Override
 	public void focusLost(FocusEvent e) {
-	  if(e.getSource()==feedbackPV && answerModelNr==0) {
+	  if(feedbackCB.isSelected() && e.getSource()==feedbackPV && answerModelNr==0) {
         maxScoreTF.setText(feedbackPV.getText());
       }
 		
