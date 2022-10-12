@@ -8,6 +8,7 @@ import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Definitions;
 import nl.numworx.geodefiner.common.GroupOf;
 import nl.numworx.geodefiner.common.HoekHandler;
+import nl.numworx.geodefiner.common.Integral;
 import nl.numworx.geodefiner.common.Polygon;
 import nl.numworx.geodefiner.common.State;
 import nl.numworx.geodefiner.common.Volgpunt;
@@ -134,6 +135,8 @@ public class Expression extends fi.euclides.openmath.Expression {
 		 m = MinMax.MIN();symbolmap.put("minmax1.min", m);
 		toc = new ToComplex();
 		toc.setTracker(tracker);
+		integralsum = new IntegralValue();
+		integralsum.setTracker(tracker);
 		symbolmap.put("combinat1.binomial", new Binomial());
 		install(new BinomCDF());
 		install(new BinomPDF());
@@ -156,7 +159,7 @@ public class Expression extends fi.euclides.openmath.Expression {
 		symbolmap.put("geodefiner."+value.getSubKey(), value);		
 	}
 
-	LabelValue toc;
+	LabelValue toc, integralsum;
 	public void copy(OMApplication oma, NameMapper mapper, Destroyable[] depend) {
 		int size = oma.getLength()-1;
 		for (int i = 0; i < size; i++) {
@@ -168,6 +171,10 @@ public class Expression extends fi.euclides.openmath.Expression {
 				if(depend instanceof Label[]) {
 					if(result instanceof Punt || result instanceof Segment) {
 						Label l = toc.define(new Destroyable[] { result });
+						depend[i] = l;
+						continue;
+					} else if (result instanceof Integral) {
+						Label l = integralsum.define(new Integral[] { (Integral) result });
 						depend[i] = l;
 						continue;
 					}
