@@ -14,6 +14,7 @@ public class AntwoordChecker
 	private static int HERLEIDING_1_LOG = 5;
 	private static int HERLEIDING_GEMAAKT_VAN_LOGX = 6;
 	
+	
 	private static boolean isHerleidingZH(Expressie gegevenExp, Expressie gevrExp)
 	{	Expressie gevrHerlExpressie = Algebra.herleid(Algebra.verwijderHaakjes(gevrExp));
 		boolean herleiding = false;
