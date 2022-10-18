@@ -331,7 +331,7 @@ public class AddLinkDialog extends Dialog implements ActionListener,
         		  URI uri = new URI(urls[0]);
         		  String scheme = uri.getScheme();
         		  if (scheme != null) {
-        		    java.util.List<String> allowed = Arrays.asList("http","https", "goto", "about");
+        		    java.util.List<String> allowed = Arrays.asList("http","https", "goto", "about", "action");
         		    if ( ! allowed.contains(scheme)) {
         		      throw new IllegalArgumentException(scheme);
         		    }
