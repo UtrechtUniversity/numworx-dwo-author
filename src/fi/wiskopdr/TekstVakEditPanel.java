@@ -1616,6 +1616,15 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
           h.put("responsiveMaxWidth", new Integer(responsiveMaxWidth));
         }
 		h.put("fullScreenOption", new Boolean(fullScreenOption));
+		
+		{
+		  boolean znn = Boolean.TRUE.equals(h.get("zichtbaarNaNakijken"));
+		  Number  sm = (Number) h.get("scoreMax");
+		  if (znn && sm.intValue()>0) {
+		    h.put("checkDocent", Boolean.TRUE);
+		  }
+		}
+		
 		return h;
 	}
 	
