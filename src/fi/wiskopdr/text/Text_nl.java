@@ -348,7 +348,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"blokkenProgrammaIpLabel" , "Blokkenprogramma"},
                 {"grafieken3DIpLabel" , "Grafieken 3D"},
                 {"spotProblemsIpLabel" , "Stippelalgebra"},
-                {"kladjeIpLabel" , "Kladje"},
+                {"kladjeIpLabel" , "Tekenen"},
                 {"kansbomenIpLabel" , "Kansbomen"},
                 {"rekenmachineIpLabel" , "Rekenmachine"},
                 {"formStructIpLabel" , "FormStruct"},
