@@ -218,11 +218,11 @@ public class PreviewHTML extends JApplet implements ScormAppletIF, ActionListene
 		SimpleSwingBrowser local = browser;
 		if (local == null) return;
 		local.loadURL(null);
-		int cnt = 10;
+		int cnt = 5;
 		synchronized(local) {
 			while( cnt-- > 0 && inited )
 				try {
-					local.wait(10000);
+					local.wait(5000);
 				} catch (InterruptedException e) {
 				}
 		}
