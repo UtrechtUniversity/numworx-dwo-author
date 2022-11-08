@@ -1593,8 +1593,9 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         			//if(volledigeBreedte)interactiePanel.setBounds(0,0,tekstVak.getSize().width-2*tekstVak.geefMarge(), hoogte);
     	        	//else interactiePanel.setBounds(0,0,breedte,hoogte);
         			Component fakeComponent = getFakeComponent(soortInteractiePanel, interactiePanelLaunchState);
-        			if(fakeComponent != null)
-        				add(fakeComponent);
+        			if(fakeComponent != null) {
+        			   add(fakeComponent);
+        			}
         			else	
         				add((Component)interactiePanel,0);
         			
@@ -2985,6 +2986,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			{	//if(interactiePanel!=null)remove((Component)interactiePanel);
 				removeAll();
 				setEditState(launchData);
+				if(interactiePanel instanceof CheckSleepUnitPanel) {
+				  Hashtable interactiePanelLaunchState = null;
+				  if(launchData.containsKey("interactiePanelLaunchState")) interactiePanelLaunchState = (Hashtable)launchData.get("interactiePanelLaunchState");
+                  ((CheckSleepUnitPanel)interactiePanel).checkEditState(this, interactiePanelLaunchState);
+                }
 			}
 			editInteractiePanelDialog.dispose();
 			editInteractiePanelDialog = null;

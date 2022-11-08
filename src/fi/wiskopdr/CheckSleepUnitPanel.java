@@ -360,8 +360,73 @@ public class CheckSleepUnitPanel extends JPanel implements InteractiePanel, Acti
 			checkButton.setSize(imWidth,imHeight);
 			zetMaat();
 			iconman.dispose();
-	    }
+	    }     
     }
+	
+	public void checkEditState(TekstInteractiePanelVak tipv, Hashtable h) {
+	  int aantalSleepObjects = 0;
+      int aantalDoelObjects = 0;
+      int scoreMax = 0;
+      boolean randomizePositions = false;
+      boolean snapToTarget = false;
+      int acceptedMarge = 10;
+      boolean checkFormule = false;
+      String formuleString = "$f@";
+      String[] formuleStrings = null;
+      boolean logOption = false;
+      String logID = "";
+      boolean check = true;
+      boolean teltMee = true;
+      boolean relocate = false;
+      boolean view = false;
+      boolean verzamelDoel = false;
+      boolean[][] logObjectives = null;
+      
+      if(h.containsKey("aantalSleepObjects")) aantalSleepObjects = ((Integer)h.get("aantalSleepObjects")).intValue();
+      if(h.containsKey("aantalDoelObjects")) aantalDoelObjects = ((Integer)h.get("aantalDoelObjects")).intValue();
+      if(h.containsKey("scoreMax")) scoreMax = ((Integer)h.get("scoreMax")).intValue();
+      if(h.containsKey("randomizePositions")) randomizePositions = ((Boolean)h.get("randomizePositions")).booleanValue();
+      if(h.containsKey("snapToTarget")) snapToTarget = ((Boolean)h.get("snapToTarget")).booleanValue();
+      if(h.containsKey("acceptedMarge")) acceptedMarge = ((Integer)h.get("acceptedMarge")).intValue();
+      if(h.containsKey("checkFormule")) checkFormule = ((Boolean)h.get("checkFormule")).booleanValue();
+      if(h.containsKey("formuleString")) formuleString = (String)h.get("formuleString");
+      if(h.containsKey("formuleStrings")) formuleStrings = (String[])h.get("formuleStrings");
+      if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
+      if(h.containsKey("logID")) logID = (String)h.get("logID");
+      if(h.containsKey("check")) check = ((Boolean)h.get("check")).booleanValue();
+      if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
+      if(h.containsKey("relocate")) relocate = ((Boolean)h.get("relocate")).booleanValue();
+      if(h.containsKey("view")) view = ((Boolean)h.get("view")).booleanValue();
+      if(h.containsKey("verzamelDoel")) verzamelDoel = ((Boolean)h.get("verzamelDoel")).booleanValue();
+      if(h.containsKey("logObjectives")) logObjectives = (boolean[][])h.get("logObjectives");
+      
+      if(aantalDoelObjects > aantalSleepObjects) {
+        JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nAantal sleepobjecten is kleiner dan het aantal doelobjecten");
+    }
+      
+	  Point[] doelPosities = new Point[aantalDoelObjects];
+      ipListDoel = new InteractiePanel[aantalDoelObjects];
+      for(int i=0 ; i<ipListDoel.length ; i++)
+      {   
+        System.out.println(""+ getParent());
+        ipListDoel[i] = tipv.zoekInteractiePanel(-(i+1));
+          if(ipListDoel[i]==null) {
+              JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle doelobjecten zijn aanwezig.\nDoelobject met ID="+(-(i+1))+" kan niet gevonden worden.");
+              break;
+          }
+          
+      }
+      
+      ipListSleep = new InteractiePanel[aantalSleepObjects];
+      for(int i=0 ; i<ipListSleep.length ; i++)
+      {   ipListSleep[i] = tipv.zoekInteractiePanel(i+1);
+          if(ipListSleep[i]==null) {
+              JOptionPane.showMessageDialog(this, "Sleep-unit fout.\nNiet alle sleepobjecten zijn aanwezig.\nSleepobject met ID="+(i+1)+" kan niet gevonden worden.");
+              break;
+          }
+          
+      }
+	}
 	
 	public Hashtable getState()
 	{   
