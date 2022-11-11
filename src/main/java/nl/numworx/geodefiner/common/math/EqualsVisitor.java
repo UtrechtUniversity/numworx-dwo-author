@@ -19,6 +19,7 @@ import fi.euclides.model.Visitor;
 import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import nl.numworx.geodefiner.common.NamedPoint;
+import nl.numworx.geodefiner.common.Tips;
 import nl.numworx.geodefiner.common.UnnamedPoint;
 import nl.numworx.geodefiner.common.Volgpunt;
 
@@ -137,14 +138,34 @@ public class EqualsVisitor implements Visitor {
 	public void visitSegment(Segment a) {
 		test = a .equals(b) ? Numbers.ZERO : INFINITY;
 		if ( test == INFINITY && b instanceof Segment) {
+			Tips ta = a.adapt(Tips.class); if (ta == null) ta = Tips.NOTIP;
+			Tips tb = b.adapt(Tips.class); if (tb == null) tb = Tips.NOTIP;
+			
+			
 			Punt a1 = a.getP1(); Punt a2 = a.getP2();
 			Punt b1 = ((PuntenLijn) b).getP1();
 			Punt b2 = ((PuntenLijn) b).getP2();
 			Numbers t1 = max(puntenTest(a1,b1),puntenTest(a2,b2));
 			Numbers t2 = max(puntenTest(a1,b2),puntenTest(a2,b1));
-			// minimum nemen
-			int s = Numbers.signum(Numbers.sub(t1, t2));
-			if(s < 0) test = t1; else  test = t2;
+			
+			switch (ta) {
+			case NOTIP:
+			case ATSTARTEND:
+				if (tb != ta) { test = INFINITY; break; }
+				// minimum nemen
+				int s = Numbers.signum(Numbers.sub(t1, t2));
+				if(s < 0) test = t1; else test = t2;
+				break;
+			case ATSTART:
+				if (tb == Tips.ATSTART) test = t1;
+				else if (tb == Tips.ATEND) test = t2;
+				else test = INFINITY;
+				break;
+			case ATEND:
+				if (tb == Tips.ATEND) test = t1;
+				else if (tb == Tips.ATSTART) test = t2;
+				else test = INFINITY;
+			}
 		}
 	}
 

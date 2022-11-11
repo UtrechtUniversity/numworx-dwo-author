@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -211,7 +212,7 @@ public class Definitions implements Observer /*, ListModel*/ {
 				}
 // $l := segment($P, $Q)
 				if (SEGMENT.isSame(f)) {
-					Destroyable l = model.buildSegment(depend);
+					Destroyable l = model.buildSegment(depend, Optional.empty());
 					n(l,"segment error");
 					installConfig(new CELL(text, l, var), config);
 					return;
@@ -582,7 +583,7 @@ private Label fx(Destroyable f) {
 		x1.setVisible(false);
 		x2.setVisible(false);
 		m.add(x2);
-		Segment s = m.buildSegment(new Punt[] { x1, x2 } );
+		Segment s = m.buildSegment( x1, x2 );
 		PuntOp<?> x3 = s.pointOn(x, x1.getY());
 		x3.setFree(true);
 		m.add(x3);
