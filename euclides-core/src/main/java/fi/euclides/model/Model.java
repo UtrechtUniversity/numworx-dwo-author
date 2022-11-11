@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 
 import fi.euclides.util.Hashtable;
@@ -392,6 +393,11 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 	}
 
 	public Lijn buildLijn() {
+		return buildLijn(Optional.empty());
+	}
+	
+	
+	public Lijn buildLijn(Optional<Visitor> decorator) {
 		if(select.size() == 1)
 		{
 			Object first = select.firstElement();
@@ -406,17 +412,17 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 		}
 		
 		
-		return twoPuntBuilder(new PuntenLijn(), true);
+		return twoPuntBuilder(new PuntenLijn(), true, decorator);
 	}
 	
 
-	private <T extends PuntenLijn> T twoPuntBuilder(T proto, boolean sort) {
+	private <T extends PuntenLijn> T twoPuntBuilder(T proto, boolean sort, Optional<Visitor> decorator) {
 		Destroyable s[] = new Destroyable[select.size()];
 		select.copyInto(s);
-		return twoPuntBuilder(proto, sort, s);
+		return twoPuntBuilder(proto, sort, s, decorator);
 	}
 	
-	private <T extends PuntenLijn> T twoPuntBuilder(T lijn, boolean sort, Destroyable[] select)
+	private <T extends PuntenLijn> T twoPuntBuilder(T lijn, boolean sort, Destroyable[] select, Optional<Visitor> decorator)
 	{
 		if(select.length == 2)
 		{
@@ -431,7 +437,7 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 					}
 					lijn.setP1(p1);
 					lijn.setP2(p2);
-					
+					decorator.ifPresent(lijn::visit);
 					add(lijn, lijnen);
 					return lijn;
 			}
@@ -462,9 +468,13 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 		return buildTriangle(s);
 	}
 		
-	public Segment buildSegment() {
-		return twoPuntBuilder(new Segment(), false);
+	public Segment buildSegment(Optional<Visitor> decorator) {
+		return twoPuntBuilder(new Segment(), false, decorator);
 	}
+	
+//	public Segment buildSegment() {
+//		return buildSegment(Optional.empty());
+//	}
 
 	private Destroyable add(Destroyable d, Vector vector) {
 		clearSelection();
@@ -901,7 +911,7 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 	}
 
 	public Ray buildRay() {
-		return twoPuntBuilder(new Ray(), false); 
+		return twoPuntBuilder(new Ray(), false, Optional.empty()); 
 		
 	}
 
@@ -957,14 +967,14 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 			}
 		}
 		
-		return twoPuntBuilder(new PuntenLijn(), true, depend);
+		return twoPuntBuilder(new PuntenLijn(), true, depend, Optional.empty());
 	}
 	
 	public Ray buildRay(Destroyable[] depend) {
-		return twoPuntBuilder(new Ray(), false, depend);
+		return twoPuntBuilder(new Ray(), false, depend, Optional.empty());
 	}
-	public Segment buildSegment(Destroyable[] depend) {
-		return twoPuntBuilder(new Segment(), false, depend);		
+	public Segment buildSegment(Destroyable[] depend, Optional<Visitor> decorator) {
+		return twoPuntBuilder(new Segment(), false, depend, decorator);		
 	}
 
 	public Cirkel buildCirkel(Destroyable[] depend) {
@@ -1077,7 +1087,7 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 	 * @return
 	 */
 	public Segment buildSegment(Punt p, Punt q) {
-		return twoPuntBuilder(new Segment(), true, new Punt[] { p, q  });
+		return twoPuntBuilder(new Segment(), true, new Punt[] { p, q  }, Optional.empty());
 	}
 
   @Override

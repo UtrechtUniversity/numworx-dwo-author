@@ -1,5 +1,6 @@
 package fi.euclides.event;
 
+import java.util.Optional;
 import java.util.Vector;
 
 import fi.euclides.util.Messages;
@@ -12,6 +13,7 @@ import fi.euclides.model.PuntenLijn;
 import fi.euclides.model.Ray;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
+import fi.euclides.model.Visitor;
 import fi.euclides.model.math.Numbers;
 
 public class AddLijnHandler extends EventHandler {
@@ -97,7 +99,8 @@ public class AddLijnHandler extends EventHandler {
 	private void build() {
 		switch(s) {
 		case SEGMENT:
-			visit(getModel().buildSegment());;
+			Optional<Visitor> decorator = Optional.ofNullable(getDecorator());
+			getModel().buildSegment(decorator);
 			return;
 		case RAY:
 			visit(getModel().buildRay());
