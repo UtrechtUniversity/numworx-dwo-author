@@ -1,11 +1,4 @@
--injars ..\output\classes
--outjars ..\output\jar\sliderwidget.jar
-
--libraryjars <java.home>\lib\rt.jar
--libraryjars ..\lib\mayscript.jar
--libraryjars ..\lib\classes
-
--target 1.6
+-target 1.8
 
 -keeppackagenames
 
