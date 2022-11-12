@@ -5,12 +5,11 @@ import java.applet.*;
 import java.awt.event.*;
 import java.util.Vector;
 
-import netscape.javascript.JSObject;
 
 public class LinkRegel extends TekstElement implements MouseListener, MouseMotionListener,KeyListener, FocusListener
 {	
 	private static Applet applet;
-	private JSObject window;
+	private Object window;
 	private FontMetrics fm;
 	private boolean caretVisible = false;
 	private KnipperDraad kd;
@@ -56,12 +55,12 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 		Applet ap = null;
 		if(ac!=null) ap = ac.getApplet("API");
 
-		try
-	    {	if(ap!=null) window = JSObject.getWindow(ap);
-	    } 
-	    catch( Exception e )
-    	{	e.printStackTrace(); 
-    	}
+//		try
+//	    {	if(ap!=null) window = JSObject.getWindow(ap);
+//	    } 
+//	    catch( Exception e )
+//    	{	e.printStackTrace(); 
+//    	}
 	}
 	
 	public Link getLink()
@@ -367,7 +366,7 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 	        args[3] = ""+link.getHeight();
 	        args[4] = "yes";
 	        String result = null;
-			if(window!=null) result = (String) window.call("NewPopUp", args);
+			//if(window!=null) result = (String) window.call("NewPopUp", args);
 	        //popUpVisible = true;
 			
 			System.out.println(args[0]);

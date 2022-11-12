@@ -1,10 +1,5 @@
--injars ..\output\classes
--outjars ..\output\jar\algebrapijlenopdr.jar
 
--libraryjars 'C:\Program Files (x86)\Java\jdk1.7.0_45\jre\lib\rt.jar'
--libraryjars ..\lib\mayscript.jar
-
--target 1.6
+-target 1.8
 
 -forceprocessing
 

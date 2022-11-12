@@ -14,6 +14,7 @@ import fi.beans.copyright.*;
 import fi.beans.base64code.*;
 import fi.beans.scorm.*;
 import fi.beans.mainframe.*;
+import fi.beans.mainframe.JApplet;
 import fi.beans.stringutils.*;
 import fi.beans.appletutil.*;
 import fi.beans.tooltip.ToolTipManager;

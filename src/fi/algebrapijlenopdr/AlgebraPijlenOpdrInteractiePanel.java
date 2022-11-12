@@ -546,4 +546,10 @@ public class AlgebraPijlenOpdrInteractiePanel extends JPanel
 			kijkNa();
 		}
 	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
