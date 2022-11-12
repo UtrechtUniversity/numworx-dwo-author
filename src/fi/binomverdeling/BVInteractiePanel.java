@@ -1944,4 +1944,10 @@ public class BVInteractiePanel extends JPanel implements InteractiePanel, Action
 		
 		ingevuld = false;
 	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
