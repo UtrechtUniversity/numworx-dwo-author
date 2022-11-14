@@ -5,10 +5,9 @@ import java.awt.event.*;
 import java.applet.*;
 import java.util.*;
 
-import javax.swing.*;
 
 import fi.beans.copyright.*;
-
+import fi.beans.mainframe.JApplet;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 // deze moet vanwege WiskOpdrApplet
 import fi.beans.wiskopdrbeans.InteractiePanel;
