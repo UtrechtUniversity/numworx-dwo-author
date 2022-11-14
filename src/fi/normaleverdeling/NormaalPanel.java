@@ -4250,5 +4250,11 @@ grensDecimals = findGrensDecimals();
 	public void zetHoogte(int h)
 	{	setBounds(getLocation().x, getLocation().y, getSize().width, h);
 	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
