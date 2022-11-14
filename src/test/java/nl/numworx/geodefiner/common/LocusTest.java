@@ -3,6 +3,7 @@ package nl.numworx.geodefiner.common;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -46,7 +47,7 @@ public class LocusTest {
 		Punt p1 = m.buildPunt(Numbers.ZERO, Numbers.TWO);
 		Punt p2 = m.buildPunt(Numbers.createInteger(100), Numbers.TWO);
 		m.toggle(p1);m.toggle(p2);
-		Segment s = m.buildSegment();
+		Segment s = m.buildSegment(Optional.empty());
 		m.toggle(s);
 		Punt po = m.buildPunt(Numbers.createInteger(30),Numbers.TWO);
 		Punt o = m.buildPunt(Numbers.ZERO, Numbers.ZERO);
