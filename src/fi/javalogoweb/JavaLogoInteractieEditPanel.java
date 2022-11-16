@@ -9,8 +9,10 @@ import java.util.Hashtable;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JLabel;
+
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
+
+import javax.swing.JLabel;
 
 
 	

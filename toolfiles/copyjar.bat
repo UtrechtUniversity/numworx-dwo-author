@@ -1,1 +1,0 @@
-:: geen dwo-applet

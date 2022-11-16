@@ -305,7 +305,6 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		
 	}
 
-	@Override
 	public int geefAsHoogte() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -585,6 +584,12 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	@Override
 	public String getLocalizedCmd(String cmd) {
 		return JavaLogoWeb.rb.getString(CBA_PREFIX + cmd);
+	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
