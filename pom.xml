@@ -72,19 +72,36 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+    		  <executions>
+		    <execution>
+		      <id>bundle-manifest</id>
+		      <phase>process-classes</phase>
+		      <goals>    
+		        <goal>manifest</goal>
+		      </goals>   
+		    </execution>
+		  </executions>
+				<configuration>
+       	    		<niceManifest>true</niceManifest>
+					<instructions>
+						<_snapshot>${osgi.qualifier}</_snapshot>
+						<Import-Package>*;resolution:=optional</Import-Package>
+						<Export-Package>*</Export-Package>
+						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar</Class-Path>
+						<Main-Class>fi.wiskopdr.WiskOpdr</Main-Class>
+						<Bundle-SymbolicName>fi.wiskopdr.WiskOpdr</Bundle-SymbolicName>
+					</instructions>
+				</configuration>
+			</plugin>
+			
+			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
 					<archive>
-						<manifest>
-							<addClasspath>false</addClasspath>
-							<classpathLayoutType>custom</classpathLayoutType>
-							<customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
-							<mainClass>fi.wiskopdr.WiskOpdr</mainClass>
-						</manifest>
-						<manifestEntries>
-							<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar</Class-Path>
-						</manifestEntries>
+      					<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
 					</archive>
 				</configuration>
 			</plugin>
@@ -301,7 +318,9 @@
 		<extras.process>process-classes</extras.process>
 		<extras.sign>none</extras.sign>
 		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>
-		<jxb>7.13</jxb>
+		<jxb>7.28.1</jxb>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -463,7 +482,7 @@
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
 			<artifactId>swingbrowser-jxb</artifactId>
-			<version>0.0.11-SNAPSHOT</version>
+			<version>0.0.11</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -475,7 +494,7 @@
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
 			<artifactId>swingbrowser-api</artifactId>
-			<version>0.0.11-SNAPSHOT</version>
+			<version>0.0.11</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.beans</groupId>
@@ -587,6 +606,9 @@
 	</profile>
 	<profile>
 		<id>running11</id>
+		<activation>
+			<jdk>[9,)</jdk>
+		</activation>
 		<properties>
 			<proguard.lib>${java.home}/jmods</proguard.lib>
 		</properties>
