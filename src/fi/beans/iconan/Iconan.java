@@ -71,7 +71,7 @@ import fi.beans.mainframe.JApplet;
 import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JFileChooser;
 import fi.beans.numworxlf.JOptionPane;
-import fi.beans.private_base64code.StringCodeObject;
+import fi.beans.base64code.StringCodeObject;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrButton;
@@ -97,7 +97,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 
     private void tagString(String value) {
       if (value.startsWith("H4sIA")) {
-        tag(StringCodeObject.decodeStringToObject(value,getClass().getClassLoader()));       
+        tag(StringCodeObject.decodeStringToObject(value));       
       }
       int i = value.indexOf("$I");
       while(i >= 0) {
