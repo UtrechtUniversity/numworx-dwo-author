@@ -87,8 +87,20 @@
        	    		<niceManifest>true</niceManifest>
 					<instructions>
 						<_snapshot>${osgi.qualifier}</_snapshot>
-						<Import-Package>*;resolution:=optional</Import-Package>
-						<Export-Package>*</Export-Package>
+<!-- uitzoeken welke optioneel zijn -->
+						<Import-Package>
+							fi.verknippen,
+							fi.graphtool,
+							fi.tegels,
+							fi.statistiek,
+							fi.geomalgebra,
+							fi.mozarch,
+							fi.doorziendwo,
+							fi.stroomdiagrammen,
+							!fi.beans.dwomaccess,
+							*,
+						</Import-Package>
+						<Export-Package>org.cbook.cbookif;version="1.0.2",*</Export-Package>
 						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar</Class-Path>
 						<Main-Class>fi.wiskopdr.WiskOpdr</Main-Class>
 						<Bundle-SymbolicName>fi.wiskopdr.WiskOpdr</Bundle-SymbolicName>
