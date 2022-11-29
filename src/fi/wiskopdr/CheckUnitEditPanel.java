@@ -485,6 +485,25 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
             {   this.answerModels[i] = answerModels[i];
             }
         } 
+        
+        if(juisteSelecties==null) return;
+        verwijderCheckboxes();
+        aantalSelectables = juisteSelecties.length;
+        itemCountTF.setText(""+aantalSelectables);
+        maxScoreTF.setText(""+scoreMax);
+        randomizePositionsCB.setSelected(randomizePositions);
+        multiSelectionsCB.setSelected(multiSelections);
+        this.logMisconceptions = logMisconceptions;
+
+        maakCheckboxes();
+        for(int i=0 ; i<aantalSelectables ; i++) {
+            selectableCheckboxes[i].setSelected(juisteSelecties[i]);
+            if(WiskOpdr.misconceptions!=null && logMisconceptionsButtons[i]!=null && logMisconceptions!=null)
+                logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
+        }
+        
+        enableMisconceptions();
+        
         feedbackCB.setSelected(hasFeedback);
         if(hasFeedback)
         {   aantalAnswerModels = answerModels.length;
@@ -504,24 +523,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
             antwoordEditorPanel.setPreferredSize(new Dimension(Math.max(250+25*aantalAnswerModels+40,400),220));
         }
         
-	    if(juisteSelecties==null) return;
-	    verwijderCheckboxes();
 	    
-	    aantalSelectables = juisteSelecties.length;
-	    itemCountTF.setText(""+aantalSelectables);
-	    maxScoreTF.setText(""+scoreMax);
-	    randomizePositionsCB.setSelected(randomizePositions);
-	    multiSelectionsCB.setSelected(multiSelections);
-	    this.logMisconceptions = logMisconceptions;
-
-	    maakCheckboxes();
-	    for(int i=0 ; i<aantalSelectables ; i++) {
-	    	selectableCheckboxes[i].setSelected(juisteSelecties[i]);
-	    	if(WiskOpdr.misconceptions!=null && logMisconceptionsButtons[i]!=null && logMisconceptions!=null)
-	    		logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
-		}
-	    
-	    enableMisconceptions();
 	    
 	    if(!multiSelections) {
           for(int i=0 ; i<aantalSelectablesMax ; i++) {

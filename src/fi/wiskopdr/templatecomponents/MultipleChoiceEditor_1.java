@@ -767,6 +767,25 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
             {   this.answerModels[i] = answerModels[i];
             }
         } 
+        
+        if(juisteSelecties==null) 
+          juisteSelecties = new boolean[itemCount];
+      
+        verwijderCheckboxes();
+        aantalSelectables = juisteSelecties.length;
+      //randomizePositionsCB.setSelected(randomizePositions);
+        multiSelectionsCB.setSelected(multiSelections);
+        this.logMisconceptions = logMisconceptions;
+        
+        
+        maakCheckboxes();
+        for(int i=0 ; i<aantalSelectables ; i++) {
+            selectableCheckboxes[i].setSelected(juisteSelecties[i]);
+            if(WiskOpdr.misconceptions!=null && logMisconceptionsButtons[i]!=null && logMisconceptions!=null)
+                logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
+        }
+        enableMisconceptions();
+      
         feedbackCB.setSelected(hasFeedback);
         if(hasFeedback)
         {   aantalAnswerModels = answerModels.length;
@@ -793,23 +812,7 @@ public class MultipleChoiceEditor_1 implements TComponentEditor, ActionListener,
 		rowSpaceTF.setText(""+rowSpace);
 		hasPrefixCB.setSelected(hasPrefix);
 		
-		if(juisteSelecties==null) 
-			juisteSelecties = new boolean[itemCount];
-	    
-		verwijderCheckboxes();
-	    aantalSelectables = juisteSelecties.length;
-	  //randomizePositionsCB.setSelected(randomizePositions);
-	    multiSelectionsCB.setSelected(multiSelections);
-	    this.logMisconceptions = logMisconceptions;
-	    
-	    
-	    maakCheckboxes();
-	    for(int i=0 ; i<aantalSelectables ; i++) {
-	    	selectableCheckboxes[i].setSelected(juisteSelecties[i]);
-	    	if(WiskOpdr.misconceptions!=null && logMisconceptionsButtons[i]!=null && logMisconceptions!=null)
-	    		logMisconceptionsButtons[i].setChoices(logMisconceptions[i]);
-		}
-	    enableMisconceptions();
+		
 	    
 	    if(!multiSelections) {
             for(int i=0 ; i<aantalSelectablesMax ; i++) {
