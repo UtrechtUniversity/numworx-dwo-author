@@ -54,6 +54,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   private JLabel titleKeuzeLabel;
   private JCheckBox scoreRB;
   private JCheckBox goedFoutRB;
+  private JCheckBox bezochtRB;
   private JCheckBox toonTitelCB;
   
   private JLabel titleLinkLabel;
@@ -151,6 +152,9 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     toonTitelCB = new JCheckBox(WiskOpdr.rb.getString("SWEP_toonTitelCB"));
     toonTitelCB.setSelected(true);
     
+    bezochtRB = new JCheckBox(WiskOpdr.rb.getString("SWEP_bezochtButton"));
+    bezochtRB.setSelected(false);
+    
     titleLinkLabel = new JLabel(WiskOpdr.rb.getString("SWEP_titleLinkLabel"));
     titleLinkLabel.setForeground(WiskOpdr.colorBlue1);
     titleLinkLabel.setFont(font.deriveFont(Font.BOLD, 16));
@@ -179,12 +183,13 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     
     Component[] r21 = {titleKeuzeLabel, hgl()};
     Component[] r22 = {goedFoutRB, hgl()};
+    Component[] r22a= {bezochtRB, hgl()};
     Component[] r23 = {scoreRB, hgl()};
     Component[] r24 = {toonTitelCB, hgl()};
     Component[] r25 = {titleLinkLabel, hgl()};
     Component[] r26 = {linkActiveCB, hgl()};
  
-    Component[] k2 = {hb(r21), vst(10), hb(r22), vst(5), hb(r23), vst(5), hb(r24),vst(20), hb(r25), vst(10), hb(r26),vgl()};
+    Component[] k2 = {hb(r21), vst(10), hb(r22), vst(5), hb(r22a), vst(5),hb(r23), vst(5), hb(r24),vst(20), hb(r25), vst(10), hb(r26),vgl()};
     
     Component[] rr = {vb(k1), hgl(), ra(100,0), vb(k2), hgl()};
     
@@ -236,6 +241,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     int moduleID = 0;
     boolean score = false;
     boolean goedFout = true;
+    boolean bezocht = false;
     boolean toonTitel = true;
     boolean linkActive = true;
     
@@ -255,6 +261,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       score = (boolean)h.get("score");
     if(h.containsKey("goedFout"))
       goedFout = (boolean)h.get("goedFout");
+    if(h.containsKey("bezocht"))
+      bezocht = (boolean)h.get("bezocht");
     if(h.containsKey("toonTitel"))
       toonTitel = (boolean)h.get("toonTitel");
     if(h.containsKey("linkActive"))
@@ -268,6 +276,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     scoreRB.setSelected(score);
     goedFoutRB.setSelected(goedFout);
     toonTitelCB.setSelected(toonTitel);
+    bezochtRB.setSelected(bezocht);
     
     linkActiveCB.setSelected(linkActive);
     
@@ -320,6 +329,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    int moduleID = 0;
    boolean score = false;
    boolean goedFout = true;
+   boolean bezocht = false;
    boolean toonTitel = true;
    boolean linkActive = true;
    
@@ -337,6 +347,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     score = scoreRB.isSelected();
     goedFout = goedFoutRB.isSelected();
     linkActive = linkActiveCB.isSelected();
+    bezocht = bezochtRB.isSelected();
     
     Hashtable h = new Hashtable();
     h.put("choicePageMode", new Integer(choicePageMode));
@@ -347,6 +358,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     h.put("moduleID", new Integer(moduleID));
     h.put("score", new Boolean(score));
     h.put("goedFout", new Boolean(goedFout));
+    h.put("bezocht", Boolean.valueOf(bezocht));
     h.put("toonTitel", new Boolean(toonTitel));
     h.put("linkActive", new Boolean(linkActive));
     

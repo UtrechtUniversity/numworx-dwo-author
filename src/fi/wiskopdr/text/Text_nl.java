@@ -676,6 +676,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"SWEP_titleKeuzeLabel" , "Kies getoonde informatie"},
                 {"SWEP_scoreButton" , "Score"},
                 {"SWEP_goedFoutButton" , "Goed/fout"},
+                {"SWEP_bezochtButton" , "Bezocht"},
                 {"SWEP_toonTitelCB" , "Paginatitel"},
                 {"SWEP_titleLinkLabel" , "Link naar pagina"},
                 {"SWEP_linkActiveCB" , "Link actief"},
