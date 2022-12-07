@@ -1,6 +1,7 @@
 package nl.numworx.geodefiner.tools;
 
 import javax.swing.ImageIcon;
+import javax.swing.event.ChangeEvent;
 
 import fi.euclides.event.EventHandler;
 import fi.euclides.model.Destroyable;
@@ -18,7 +19,23 @@ public class PuntAction extends fi.euclides.swing.PuntAction {
 		super(name, icon, handler, viewer);
 		if (GeoDefiner.isPremium) {
 			putValue("model", model);
-			putValue("config", new PuntConfig(editImage, this));
+			PuntConfig puntConfig = new PuntConfig(editImage, this) {
+				public void stateChanged(ChangeEvent e) {
+				}
+
+				@Override
+				public boolean isEnabled() {
+					return true;
+				}
+
+				@Override
+				public void setEnabled(boolean newValue) {
+					super.setEnabled(true);
+				}
+				
+			};
+			puntConfig.setEnabled(true);
+			putValue("config", puntConfig);
 		}
 	}
 

@@ -318,7 +318,17 @@ public class ToolboxPanel extends JPanel implements ItemListener, Tools {
 					result = list;
 					if(item > max && map != null) max = item;
 				}
-				
+			}
+		}
+// Altijd point als die is ingevuld, voor 
+		if (list.get(Tools.POINT) == null) {
+			Action action = actionsMap.get(Tools.POINT).get();
+			UIModel model = (UIModel) action.getValue("model");
+			if (model != null) {
+				Object map = model.toMap();
+				list.set(Tools.POINT, map);
+				result = list;
+				if (map != null && Tools.POINT > max) max = Tools.POINT;
 			}
 		}
 		list.setSize(max+1);
