@@ -659,6 +659,7 @@ public class Text_en extends java.util.ListResourceBundle
 				//TekstEditorEditPanel
 				{"TEEP_menuBalkOptie" , "Formula editor"},
 				{"TEEP_rekenToolOptie" , "Calculator"},
+                {"TEEP_regelnummersOptie", "Line numbers"},
 				{"TEEP_grafToolOptie" , "Graph tool"},
 				{"TEEP_titleStartLabel", "Tekst-answer-box"},
 				{"TEEP_checkDocentCBLabel", "Check (by teacher)"},
