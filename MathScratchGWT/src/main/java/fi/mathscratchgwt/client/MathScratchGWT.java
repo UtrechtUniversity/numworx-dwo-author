@@ -278,14 +278,10 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 
 	@Override
 	public void kijkNa() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void zetNagekeken(boolean b) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
