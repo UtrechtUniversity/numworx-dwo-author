@@ -266,7 +266,6 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 
 	@Override
 	public int[][] getScoreObjectives() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -274,8 +273,7 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 	public Boolean isCorrect() {
 		if(scoreMax==0)
 			return Boolean.TRUE;
-		return
-				null;
+		return null;
 	}
 
 	@Override
