@@ -275,7 +275,7 @@ public class MathScratchGWT implements EntryPoint,InteractionView, InteractionSt
 		if(scoreMax==0)
 			return Boolean.TRUE;
 		return
-				Boolean.FALSE;
+				null;
 	}
 
 	@Override
