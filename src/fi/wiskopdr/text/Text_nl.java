@@ -684,6 +684,14 @@ public class Text_nl extends java.util.ListResourceBundle
                 //ScoreWidgetEditPanel
                 {"LWEP_titleSettingsLabel" , "Kies leerdomein"},
                 {"LWEP_filterSettingsLabel" , "Kies filter"},
+                {"LWEP_settingsLabel" , "Instellingen"},
+                {"LWEP_leerdoelPopupCB" , "Popup voor leerdoelen"},
+                {"LWEP_voorkennisKnopCB" , "Voorkennisknop"},
+                {"LWEP_voorkennisMenuCB" , "Voorkennis snelmenu"},
+                {"LWEP_zoomKnoppenCB" , "Zoomknoppen"},
+                {"LWEP_filterHeaderCB" , "Filterheader"},
+                {"LWEP_scoreLabel" , "Score"},
+                {"LWEP_leerdoelScoreCB" , "Leerdoelscores zichtbaar"},
                 
 				//TekstEditorEditPanel
 				{"TEEP_menuBalkOptie" , "Formule-editor"},

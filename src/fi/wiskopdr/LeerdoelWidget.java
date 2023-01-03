@@ -2,6 +2,7 @@ package fi.wiskopdr;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -16,13 +17,16 @@ public class LeerdoelWidget extends JPanel implements InteractiePanel {
   private String paginaTitel = "";
   
   public void paintComponent(Graphics g) {
-    g.setFont(new Font("SansSerif",Font.PLAIN, 14));
-    g.drawString(paginaTitel, 2, 14);
-    int x = getWidth() - 14;
-    g.setColor(new Color(0,200,0));
-    g.fillOval(x,2,14,14);
-    g.setColor(new Color(200,200,200));
-    g.drawOval(x,2,14,14);
+    g.setFont(new Font("SansSerif",Font.PLAIN, 20));
+    FontMetrics fm = g.getFontMetrics();
+    String widgetTekst = "Leerdoel-widget";
+    int x = getWidth()/2 - fm.stringWidth(widgetTekst)/2;
+    int y = getHeight()/2 - fm.getHeight()/2;
+    g.setColor(new Color(220,220,220));
+    g.fillRect(0,0,getWidth(),getHeight());
+    g.setColor(new Color(150,150,150));
+    g.drawRect(1,1,getWidth()-2,getHeight()-2);
+    g.drawString(widgetTekst, x, y);
   }
 
   @Override

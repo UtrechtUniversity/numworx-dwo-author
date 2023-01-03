@@ -1,5 +1,6 @@
 package fi.wiskopdr.domainmodel.filter;
 
+import java.awt.Font;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,12 +35,14 @@ public class FilterPanel extends JPanel {
     super(null);
     BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
     setLayout(layout);
-    Border margin = BorderFactory.createEmptyBorder(0, 20, 0, 0);
+    Border margin = BorderFactory.createEmptyBorder(20, 20, 0, 0);
     JLabel l;
     if (activeMethod != null) {
       m = new AnyMethodAction();
       m.setMethode(WiskOpdr.applet.getStudentMethod(activeMethod));
-      l = new JLabel(m.getName());
+      l = new JLabel("Actieve methode: " + m.getName());
+      l.setForeground(WiskOpdr.colorBlue1);
+      l.setFont(new Font("SansSerif", Font.PLAIN, 14));
       l.setBorder(margin);
       add(l);
       add(mtab = m.getTab());
@@ -54,6 +57,8 @@ public class FilterPanel extends JPanel {
 //      add( mwtab);
     }
     l = new JLabel("Alle leerdoelen");
+    l.setForeground(WiskOpdr.colorBlue1);
+    l.setFont(new Font("SansSerif", Font.PLAIN, 14));
     l.setBorder(margin);
     add(l);
     rest.setBorder(margin);
