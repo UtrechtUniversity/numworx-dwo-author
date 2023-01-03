@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-//import javax.swing.JCheckBox;
+// import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -67,25 +67,28 @@ import fi.beans.numworxlf.Constants;
 import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JCheckBox;
 
-public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices, TreeSelectionListener, AutoCloseable {
-  
+public class StudentModelChoicePanel extends JPanel
+    implements
+      ObjectiveChoices,
+      TreeSelectionListener,
+      AutoCloseable {
+
   private static final Logger LOG = Logger.getLogger(StudentModelChoicePanel.class.getName());
-  
-  
+
+
   static void insert(NodeVector vector, InvisibleNode node) {
-    for(Object child: vector) {
+    for (Object child : vector) {
       if (child instanceof NodeVector) {
         InvisibleNode parent = new InvisibleNode(child);
-        insert((NodeVector)child, parent);
+        insert((NodeVector) child, parent);
         node.add(parent);
       } else {
         node.add(new InvisibleNode(child, false, true));
       }
     }
-  
-}
+  }
 
-  
+
   public class FilterConsumer implements Consumer<Map<String, Map<String, Collection<Number>>>> {
 
     @Override
@@ -94,77 +97,78 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       methodListener.filter(t);
       if (t.isEmpty()) {
         model.activateFilter(false);
-        if (model.getRoot() != root)
-            model.setRoot(root);
-    } else {
+        if (model.getRoot() != root) model.setRoot(root);
+      } else {
         model.activateFilter(true);
         model.setRoot(filter(root, t, activeMethod));
+      }
+      model.nodeStructureChanged((TreeNode) model.getRoot());
     }
-    model.nodeStructureChanged((TreeNode) model.getRoot());
-    }
-    
+
     boolean contains(Map<String, Map<String, Collection<Number>>> filter,
-                            Map<String, Map<String, Collection<Number>>> methodes, String activeMethod) {
-                        String currentKey = key(activeMethod); //XXX let op, is dit okay
-                        for (Map.Entry<String, Map<String, Collection<Number>>> entry : filter.entrySet()) {
-                            if (entry.getKey() == null) {
-                              //if (methodes.values().stream().allMatch(Map::isEmpty)) return true;
-                              if ( methodes.entrySet().stream().allMatch(e -> e.getValue().isEmpty()||!e.getKey().equals(currentKey))) return true;
-                              continue;
-                            }         
-                            Map<String, Collection<Number>> map = methodes.getOrDefault(entry.getKey(), Collections.emptyMap());
-                            if (map.isEmpty())
-                            { 
-                              continue;
-                            }
-                            for (Map.Entry<String, Collection<Number>> m : entry.getValue().entrySet()) {
-                                Collection<Number> chapters = new TreeSet<>(map.getOrDefault(m.getKey(), Collections.emptySet()));
-// Integer(1) not equals Long(1L)   
-                                Collection<Number> value = m.getValue();
-                                retainAllOf(chapters, value);
-                                if (!chapters.isEmpty())
-                                    return true;
-                            }
-                        }
-                        return false;
-                    }
+        Map<String, Map<String, Collection<Number>>> methodes, String activeMethod) {
+      String currentKey = key(activeMethod); // XXX let op, is dit okay
+      for (Map.Entry<String, Map<String, Collection<Number>>> entry : filter.entrySet()) {
+        if (entry.getKey() == null) {
+          // if (methodes.values().stream().allMatch(Map::isEmpty)) return true;
+          if (methodes.entrySet().stream()
+              .allMatch(e -> e.getValue().isEmpty() || !e.getKey().equals(currentKey)))
+            return true;
+          continue;
+        }
+        Map<String, Collection<Number>> map =
+            methodes.getOrDefault(entry.getKey(), Collections.emptyMap());
+        if (map.isEmpty()) {
+          continue;
+        }
+        for (Map.Entry<String, Collection<Number>> m : entry.getValue().entrySet()) {
+          Collection<Number> chapters =
+              new TreeSet<>(map.getOrDefault(m.getKey(), Collections.emptySet()));
+          // Integer(1) not equals Long(1L)
+          Collection<Number> value = m.getValue();
+          retainAllOf(chapters, value);
+          if (!chapters.isEmpty()) return true;
+        }
+      }
+      return false;
+    }
 
     private void retainAllOf(Collection<Number> numberset, Collection<Number> value) {
       if (value.isEmpty()) {
         numberset.clear();
       }
-      if (numberset.isEmpty())
-        return;
-      
+      if (numberset.isEmpty()) return;
+
       Iterator<Number> iter = numberset.iterator();
       while (iter.hasNext()) {
         Number number = (Number) iter.next();
         int i = number.intValue();
         if (value.stream().allMatch(t -> t.intValue() != i)) iter.remove();
-        
+
       }
     }
- 
-    InvisibleNode filter(InvisibleNode parent, Map<String, Map<String, Collection<Number>>> filter, String activeMethod) {
+
+    InvisibleNode filter(InvisibleNode parent, Map<String, Map<String, Collection<Number>>> filter,
+        String activeMethod) {
       InvisibleNode node;
       node = parent;
-        @SuppressWarnings("unchecked")
-        Enumeration<InvisibleNode> children = (Enumeration) node.children();
-        while (children.hasMoreElements()) {
-            InvisibleNode object = children.nextElement();
-            filter(object, filter, activeMethod);
-        }
+      @SuppressWarnings("unchecked")
+      Enumeration<InvisibleNode> children = (Enumeration) node.children();
+      while (children.hasMoreElements()) {
+        InvisibleNode object = children.nextElement();
+        filter(object, filter, activeMethod);
+      }
       if (node.isLeaf() && !node.getAllowsChildren()) {
-          NodeLeaf leaf = (NodeLeaf) node.getUserObject();
-          Map<String, Map<String, Collection<Number>>> methodes = leaf.getMethode();
-          node.setVisible(contains(filter, methodes, activeMethod));
+        NodeLeaf leaf = (NodeLeaf) node.getUserObject();
+        Map<String, Map<String, Collection<Number>>> methodes = leaf.getMethode();
+        node.setVisible(contains(filter, methodes, activeMethod));
       } else {
-          int cnt = node.getChildCount(true);
-          node.setVisible(cnt != 0);
+        int cnt = node.getChildCount(true);
+        node.setVisible(cnt != 0);
       }
 
       return node;
-  }
+    }
 
   }
 
@@ -172,131 +176,128 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
     private final class editorListener implements ItemListener {
       public void itemStateChanged(ItemEvent itemEvent) {
-           if (stopCellEditing()) {
-               fireEditingStopped();
-               updateGraph();
-               repaint();
-           }
-           itemEvent.getItemSelectable().removeItemListener(this);
-       }
+        if (stopCellEditing()) {
+          fireEditingStopped();
+          updateGraph();
+          repaint();
+        }
+        itemEvent.getItemSelectable().removeItemListener(this);
+      }
     }
 
     private static final int XWIDTH = 20; // positie [x]
-    private  ChoiceCellRenderer renderer = new ChoiceCellRenderer();
-    private  ChangeEvent changeEvent = null;
-    private  JTree tree;
-    private  NodeLeaf leaf;
+    private ChoiceCellRenderer renderer = new ChoiceCellRenderer();
+    private ChangeEvent changeEvent = null;
+    private JTree tree;
+    private NodeLeaf leaf;
 
-     public LeafNodeEditor(JTree tree) {
-         this.tree = tree;
-     }
+    public LeafNodeEditor(JTree tree) {
+      this.tree = tree;
+    }
 
-     public Object getCellEditorValue() {
-         JCheckBox checkbox = renderer.getLeafRenderer();
-         leaf.setValue(checkbox.isSelected());
-         return leaf;
-     }
+    public Object getCellEditorValue() {
+      JCheckBox checkbox = renderer.getLeafRenderer();
+      leaf.setValue(checkbox.isSelected());
+      return leaf;
+    }
 
-     @Override
-     public boolean isCellEditable(EventObject event) {
-         boolean returnValue = false;
-         if (event instanceof MouseEvent) {
-             MouseEvent mouseEvent = (MouseEvent) event;
-             TreePath path = tree.getPathForLocation(mouseEvent.getX(),
-                     mouseEvent.getY());
-             if (path != null) {
-                 Rectangle rect = tree.getPathBounds(path);
-                 int pos = mouseEvent.getX() - rect.x;
-                if (pos > XWIDTH) return false;
-                 Object node = path.getLastPathComponent();
-                 if ((node != null) && (node instanceof DefaultMutableTreeNode)) {
-                     DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
-                     Object userObject = treeNode.getUserObject();
-                     returnValue = ((treeNode.isLeaf()) && (userObject instanceof NodeLeaf));
-                 }
-             }
-         }
-         return returnValue;
-     }
+    @Override
+    public boolean isCellEditable(EventObject event) {
+      boolean returnValue = false;
+      if (event instanceof MouseEvent) {
+        MouseEvent mouseEvent = (MouseEvent) event;
+        TreePath path = tree.getPathForLocation(mouseEvent.getX(), mouseEvent.getY());
+        if (path != null) {
+          Rectangle rect = tree.getPathBounds(path);
+          int pos = mouseEvent.getX() - rect.x;
+          if (pos > XWIDTH) return false;
+          Object node = path.getLastPathComponent();
+          if ((node != null) && (node instanceof DefaultMutableTreeNode)) {
+            DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
+            Object userObject = treeNode.getUserObject();
+            returnValue = ((treeNode.isLeaf()) && (userObject instanceof NodeLeaf));
+          }
+        }
+      }
+      return returnValue;
+    }
 
-     public Component getTreeCellEditorComponent(JTree tree, Object value,
-             boolean selected, boolean expanded, boolean leaf, int row) {
-         Component editor = renderer.getTreeCellRendererComponent(tree, value,
-                 true, expanded, leaf, row, true);
-         // editor always selected / focused
-         ItemListener itemListener = new editorListener();
-         if (editor instanceof JCheckBox) {
-             ((JCheckBox) editor).addItemListener(itemListener);
-         }
-         this.leaf = (NodeLeaf) ((DefaultMutableTreeNode) value).getUserObject();
-         return editor;
-     }
- }
+    public Component getTreeCellEditorComponent(JTree tree, Object value, boolean selected,
+        boolean expanded, boolean leaf, int row) {
+      Component editor =
+          renderer.getTreeCellRendererComponent(tree, value, true, expanded, leaf, row, true);
+      // editor always selected / focused
+      ItemListener itemListener = new editorListener();
+      if (editor instanceof JCheckBox) {
+        ((JCheckBox) editor).addItemListener(itemListener);
+      }
+      this.leaf = (NodeLeaf) ((DefaultMutableTreeNode) value).getUserObject();
+      return editor;
+    }
+  }
 
-  public  class ChoiceCellRenderer implements TreeCellRenderer {
+  public class ChoiceCellRenderer implements TreeCellRenderer {
 
-    private JCheckBox    leafRenderer = new JCheckBox();
+    private JCheckBox leafRenderer = new JCheckBox();
     private JRadioButton nonLeafRenderer = new JRadioButton();
-    private Color selectionBorderColor, selectionForeground, selectionBackground,
-            textForeground, textBackground;
+    private Color selectionBorderColor, selectionForeground, selectionBackground, textForeground,
+        textBackground;
 
     protected JCheckBox getLeafRenderer() {
-        return leafRenderer;
+      return leafRenderer;
     }
 
     public ChoiceCellRenderer() {
-        Font fontValue;
-        fontValue = UIManager.getFont("Tree.font");
-        if (fontValue != null) {
-            leafRenderer.setFont(fontValue);
-            nonLeafRenderer.setFont(fontValue);
-        }
-        Boolean booleanValue = (Boolean) UIManager.get("Tree.drawsFocusBorderAroundIcon");
-        leafRenderer.setFocusPainted((booleanValue != null) && (booleanValue.booleanValue()));
-        nonLeafRenderer.setFocusPainted((booleanValue != null) && (booleanValue.booleanValue()));
-        selectionBorderColor = UIManager.getColor("Tree.selectionBorderColor");
-        selectionForeground = Color.WHITE;//UIManager.getColor("Tree.selectionForeground");
-        selectionBackground = WiskOpdr.colorBlue2;//UIManager.getColor("Tree.selectionBackground");
-        textForeground = WiskOpdr.colorBlue1;//UIManager.getColor("Tree.textForeground");
-        textBackground = UIManager.getColor("Tree.textBackground");
+      Font fontValue;
+      fontValue = UIManager.getFont("Tree.font");
+      if (fontValue != null) {
+        leafRenderer.setFont(fontValue);
+        nonLeafRenderer.setFont(fontValue);
+      }
+      Boolean booleanValue = (Boolean) UIManager.get("Tree.drawsFocusBorderAroundIcon");
+      leafRenderer.setFocusPainted((booleanValue != null) && (booleanValue.booleanValue()));
+      nonLeafRenderer.setFocusPainted((booleanValue != null) && (booleanValue.booleanValue()));
+      selectionBorderColor = UIManager.getColor("Tree.selectionBorderColor");
+      selectionForeground = Color.WHITE;// UIManager.getColor("Tree.selectionForeground");
+      selectionBackground = WiskOpdr.colorBlue2;// UIManager.getColor("Tree.selectionBackground");
+      textForeground = WiskOpdr.colorBlue1;// UIManager.getColor("Tree.textForeground");
+      textBackground = UIManager.getColor("Tree.textBackground");
     }
 
-    public Component getTreeCellRendererComponent(JTree tree, Object value,
-            boolean selected, boolean expanded, boolean leaf, int row,
-            boolean hasFocus) {
-        JToggleButton returnValue;
-        if (leaf) {
-          returnValue = leafRenderer;
-        } else
-          returnValue = nonLeafRenderer;
-    
-          String stringValue = tree.convertValueToText(value, selected,
-            expanded, leaf, row, false);
-          returnValue.setText(stringValue);
-          returnValue.setSelected(false);
-          returnValue.setEnabled(tree.isEnabled());
-          if (selected) {
-            returnValue.setForeground(selectionForeground);
-            returnValue.setBackground(selectionBackground);
-          } else {
-            returnValue.setForeground(textForeground);
-            returnValue.setBackground(textBackground);
-          }
-          if (value instanceof DefaultMutableTreeNode) {
-            Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
-            if (userObject instanceof Node) {
-              Node node = (Node) userObject;
-              String text = node.toString();
-              Double factor = null;
-              if (node instanceof NodeLeaf) factor = ids.get(((NodeLeaf) node).getId());
-              if (factor == null) factor = 1.0;
-              if (node.isValue() && node instanceof NodeLeaf && factor.doubleValue() <= 0.999)
-                text +=  " " + factor;
-              returnValue.setText(text);
-              returnValue.setSelected(node.isValue());
-            }
-          }
-        return returnValue;
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected,
+        boolean expanded, boolean leaf, int row, boolean hasFocus) {
+      JToggleButton returnValue;
+      if (leaf) {
+        returnValue = leafRenderer;
+      } else
+        returnValue = nonLeafRenderer;
+
+      String stringValue = tree.convertValueToText(value, selected, expanded, leaf, row, false);
+      returnValue.setText(stringValue);
+      returnValue.setSelected(false);
+      returnValue.setEnabled(tree.isEnabled());
+      if (selected) {
+        returnValue.setForeground(selectionForeground);
+        returnValue.setBackground(selectionBackground);
+      } else {
+        returnValue.setForeground(textForeground);
+        returnValue.setBackground(textBackground);
+      }
+      if (value instanceof DefaultMutableTreeNode) {
+        Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
+        if (userObject instanceof Node) {
+          Node node = (Node) userObject;
+          String text = node.toString();
+          Double factor = null;
+          if (node instanceof NodeLeaf) factor = ids.get(((NodeLeaf) node).getId());
+          if (factor == null) factor = 1.0;
+          if (node.isValue() && node instanceof NodeLeaf && factor.doubleValue() <= 0.999)
+            text += " " + factor;
+          returnValue.setText(text);
+          returnValue.setSelected(node.isValue());
+        }
+      }
+      return returnValue;
     }
 
   }
@@ -307,7 +308,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
     InvisibleTreeModel methodModel;
     StudentMethod active = new StudentMethod();
-    
+
     @Override
     public void itemStateChanged(ItemEvent e) {
       if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -315,62 +316,64 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
           Map<String, InvisibleNode> nodes = new HashMap<>();
           String method = active.getMethod();
           NodeVector uroot = new NodeVector(method);
-          DefaultMutableTreeNode root = new InvisibleNode(uroot); 
+          DefaultMutableTreeNode root = new InvisibleNode(uroot);
           List<String> books = active.getBooks();
           int bookcount = books.size();
-          for(int i = 0; i < bookcount; i++ ) {
+          for (int i = 0; i < bookcount; i++) {
             NodeVector ubook = new NodeVector(books.get(i));
             InvisibleNode book = new InvisibleNode(ubook);
             root.add(book);
             uroot.add(ubook);
             List<String> chapters = active.getChapters().get(i);
             int chapsize = chapters.size();
-            for(int j = 0; j < chapsize; j ++) {
+            for (int j = 0; j < chapsize; j++) {
               NodeVector uchap = new NodeVector(chapters.get(j));
               InvisibleNode chap = new InvisibleNode(uchap);
               book.add(chap);
               ubook.add(uchap);
-              String key = active.key() + "-" + book.toString() + "-" + (j+1);
+              String key = active.key() + "-" + book.toString() + "-" + (j + 1);
               nodes.put(key, chap);
               NodeVector ubenv = new NodeVector(BEGRIPPEN_EN_VAKTAAL);
               InvisibleNode benv = new InvisibleNode(ubenv);
               chap.add(benv);
               uchap.add(ubenv);
               key = key + "-W:";
-              nodes.put(key,  benv);
+              nodes.put(key, benv);
             }
           }
-          Enumeration<DefaultMutableTreeNode> all = (Enumeration) ((DefaultMutableTreeNode) model.getRoot()).depthFirstEnumeration();
-          while( all.hasMoreElements() ) {
+          Enumeration<DefaultMutableTreeNode> all =
+              (Enumeration) ((DefaultMutableTreeNode) model.getRoot()).depthFirstEnumeration();
+          while (all.hasMoreElements()) {
             Object o = all.nextElement().getUserObject();
             if (o instanceof NodeLeaf) {
-              NodeLeaf nl = (NodeLeaf)o;
+              NodeLeaf nl = (NodeLeaf) o;
               List<DomStudentModelMethodInfo> methodeInfos = nl.getMethodeInfos();
               if (methodeInfos == null) continue;
-              Set<String> infos = methodeInfos.stream().map(DomStudentModelMethodInfo::key).collect(Collectors.toSet());
-              String title = nl.toString();              
-              for(String mi : infos) {
-                if (title.startsWith("W:")) 
-                  mi += "-W:";
-                nodes.computeIfPresent(mi, (k, n) -> { 
+              Set<String> infos = methodeInfos.stream().map(DomStudentModelMethodInfo::key)
+                  .collect(Collectors.toSet());
+              String title = nl.toString();
+              for (String mi : infos) {
+                if (title.startsWith("W:")) mi += "-W:";
+                nodes.computeIfPresent(mi, (k, n) -> {
                   InvisibleNode node = new InvisibleNode(o, false, true);
-                  insertMethod(n,node);
-                  return n; });
+                  insertMethod(n, node);
+                  return n;
+                });
               }
             }
           }
-          
-          
-          
+
+
+
           methodModel = new InvisibleTreeModel(root);
           filterAction.doFilter();
         }
-        
+
         tree.setModel(methodModel);
       } else {
         tree.setModel(model);
       }
-      
+
     }
 
     public void filter(Map<String, Map<String, Collection<Number>>> t) {
@@ -380,7 +383,8 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
         } else {
           methodModel.activateFilter(true);
           InvisibleNode root = (InvisibleNode) methodModel.getRoot();
-          Map<String, Collection<Number>> books = t.getOrDefault(key(activeMethod), Collections.emptyMap());
+          Map<String, Collection<Number>> books =
+              t.getOrDefault(key(activeMethod), Collections.emptyMap());
           int bookcount = root.getChildCount();
           for (int i = 0; i < bookcount; i++) {
             InvisibleNode book = (InvisibleNode) root.getChildAt(i);
@@ -394,22 +398,22 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
                 node.setVisible(false);
               }
               for (Number j : chapters) {
-                ((InvisibleNode) book.getChildAt(j.intValue()-1)).setVisible(true);
+                ((InvisibleNode) book.getChildAt(j.intValue() - 1)).setVisible(true);
               }
             }
           }
-        }        
+        }
         methodModel.nodeStructureChanged((TreeNode) methodModel.getRoot());
       }
 
     }
 
-//    private void insertMethod(InvisibleNode parent, InvisibleNode node) {
-//      Node unode = (Node) node.getUserObject();
-//      NodeVector uparent = (NodeVector) parent.getUserObject();
-//      parent.add(node);
-//      uparent.add(unode);
-//    }
+    // private void insertMethod(InvisibleNode parent, InvisibleNode node) {
+    // Node unode = (Node) node.getUserObject();
+    // NodeVector uparent = (NodeVector) parent.getUserObject();
+    // parent.add(node);
+    // uparent.add(unode);
+    // }
 
     private void insertMethod(InvisibleNode parent, InvisibleNode node) {
       int count = parent.getChildCount();
@@ -430,10 +434,10 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       Object no = node.getUserObject();
       if (po instanceof NodeVector && no instanceof Node) {
         NodeVector vp = (NodeVector) po;
-        vp.addElement( (Node) no);
+        vp.addElement((Node) no);
       }
-  
-}
+
+    }
 
     private int compareMethod(String as, String bs) {
       boolean wa = as == BEGRIPPEN_EN_VAKTAAL;
@@ -450,13 +454,13 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     public void setActive(StudentMethod active) {
       this.active = active;
     }
-    
-    
-    
+
+
+
   }
-  
-  
-  
+
+
+
   JTree tree;
   InvisibleTreeModel model;
   InvisibleNode root;
@@ -478,7 +482,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   public StudentModelChoicePanel(Supplier<StudentModel> studentModel2) {
     super(new BorderLayout());
     this.studentModel = studentModel2;
-// North
+    // North
     Box north = Box.createHorizontalBox();
     north.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
     north.setOpaque(true);
@@ -515,7 +519,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     methods.setEnabled(false);
     methods.addItemListener(methodListener);
     graph = new Graph();
-    
+
     graph.addActionListener(new GraphTreeAction(tree));
     graph.addActionListener(this::updateGraph);
 
@@ -539,14 +543,14 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     hbox.add(Box.createGlue());
     vbox.add(hbox);
     leftBox.setTopComponent(vbox);
-    sp.setMinimumSize(new Dimension(400,300));
+    sp.setMinimumSize(new Dimension(400, 300));
     sp.setPreferredSize(sp.getMinimumSize());
 
     split.setLeftComponent(leftBox);
-    
+
     Box rightBox = Box.createVerticalBox();
     split.setRightComponent(rightBox);
-    	
+
     String descr = "";
     description = new JTextArea(descr, 10, 30);
     description.setLineWrap(true);
@@ -554,13 +558,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     description.setEditable(false);
     scroll = new JScrollPane(description);
     scroll.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue3));
-    //scroll.setMinimumSize(new Dimension(450,300));
-    scroll.setMaximumSize(new Dimension(450,500));
-    scroll.setPreferredSize(new Dimension(450,300));
-    if (descr!=null && descr.startsWith(WISKOPDR_SIG))
-    {
+    // scroll.setMinimumSize(new Dimension(450,300));
+    scroll.setMaximumSize(new Dimension(450, 500));
+    scroll.setPreferredSize(new Dimension(450, 300));
+    if (descr != null && descr.startsWith(WISKOPDR_SIG)) {
       JLabel panel = new JLabel("Unsupported description");
-      //panel.setPreferredSize(new Dimension(400,300));
+      // panel.setPreferredSize(new Dimension(400,300));
       scroll.setViewportView(panel);
     } else if (descr != null && descr.startsWith(JSON_SIG)) {
       DescriptionBrowser b = getBrowser();
@@ -576,57 +579,57 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     slider.setLabelTable(dict);
     slider.setPaintLabels(true);
     slider.setPaintTicks(true);
-    
+
     leerdoelTitelLabel = new JLabel(" ");
-	leerdoelTitelLabel.setForeground(Color.WHITE);
-	leerdoelTitelLabel.setBorder(BorderFactory.createEmptyBorder(4, 20, 4, 20));
-	leerdoelTitelLabel.setFont(new Font("SansSerif",Font.BOLD, 14));
-	leerdoelTitelLabel.setMaximumSize(new Dimension(450,30));
-	
-	Box hb = Box.createHorizontalBox();
-	hb.setOpaque(true);
-	hb.setBackground(WiskOpdr.colorBlue3);
-	hb.setMinimumSize(new Dimension(450,30));
-	hb.setMaximumSize(new Dimension(450,30));
-	
-	hb.add(leerdoelTitelLabel);
-	hb.add(Box.createHorizontalGlue());
-	
+    leerdoelTitelLabel.setForeground(Color.WHITE);
+    leerdoelTitelLabel.setBorder(BorderFactory.createEmptyBorder(4, 20, 4, 20));
+    leerdoelTitelLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+    leerdoelTitelLabel.setMaximumSize(new Dimension(450, 30));
+
+    Box hb = Box.createHorizontalBox();
+    hb.setOpaque(true);
+    hb.setBackground(WiskOpdr.colorBlue3);
+    hb.setMinimumSize(new Dimension(450, 30));
+    hb.setMaximumSize(new Dimension(450, 30));
+
+    hb.add(leerdoelTitelLabel);
+    hb.add(Box.createHorizontalGlue());
+
     rightBox.add(hb);
     rightBox.add(scroll);
     rightBox.add(slider);
-    
+
     tree.addTreeSelectionListener(this);
 
     graphButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-          if ("Graph".equals(graphButton.getText())) {
-              graphButton.setText("Hide Graph");
-              split.setResizeWeight(0);
-              split.setRightComponent(graph);
-              Dimension pref = sp.getPreferredSize();
-              pref.width = 380;
-              leftBox.setPreferredSize(pref);
-              graph.setPreferredSize(new Dimension(1000, 650));              
-              leftBox.setBottomComponent(rightBox);
-              
-              packWindow();
-          } else {
-              graphButton.setText("Graph");
-              split.setResizeWeight(0.5);
-              Dimension pref = sp.getPreferredSize();
-              pref.width = 580;
-              leftBox.setPreferredSize(pref);
-              split.setRightComponent(rightBox);
-              
-              packWindow();
-          }
+        if ("Graph".equals(graphButton.getText())) {
+          graphButton.setText("Hide Graph");
+          split.setResizeWeight(0);
+          split.setRightComponent(graph);
+          Dimension pref = sp.getPreferredSize();
+          pref.width = 380;
+          leftBox.setPreferredSize(pref);
+          graph.setPreferredSize(new Dimension(1000, 650));
+          leftBox.setBottomComponent(rightBox);
+
+          packWindow();
+        } else {
+          graphButton.setText("Graph");
+          split.setResizeWeight(0.5);
+          Dimension pref = sp.getPreferredSize();
+          pref.width = 580;
+          leftBox.setPreferredSize(pref);
+          split.setRightComponent(rightBox);
+
+          packWindow();
+        }
 
       }
-  });
+    });
   }
 
-  
+
   String key(String id) {
     if (id == null) return id;
     String[] split = id.split(";", 3);
@@ -636,11 +639,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
 
   private void packWindow() {
     ((Window) SwingUtilities.getAncestorOfClass(Window.class, this)).pack();
-}
+  }
 
   private volatile DescriptionBrowser cache;
+
   private synchronized DescriptionBrowser getBrowser() {
-    if (cache == null) cache = new DescriptionBrowser();   
+    if (cache == null) cache = new DescriptionBrowser();
     return cache;
   }
 
@@ -650,7 +654,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       cache = null;
     }
   }
-  
+
   public void setTitle(String title) {
     this.title.setText(title);
   }
@@ -662,23 +666,22 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   private List<String> objectives;
   private List<String> deselections = Collections.emptyList(), deselections0 = deselections;
   private Collection<String> foreknowledge;
-  
+
   public List<String> getObjectives() {
     return objectives;
   }
-  
-  private  List<String> createObjectives() {
+
+  private List<String> createObjectives() {
     if (ids == null) return null;
     return ids.entrySet().stream()
-        .map(e -> e.getKey() + (e.getValue() != null ? ("/" + e.getValue()): ""))
+        .map(e -> e.getKey() + (e.getValue() != null ? ("/" + e.getValue()) : ""))
         .collect(Collectors.toList());
   }
-  
+
   private void getObjectives(Object v, Map<String, Double> ids) {
     if (v instanceof NodeLeaf) {
       NodeLeaf leaf = (NodeLeaf) v;
-      if (!leaf.isValue())
-        ids.remove(leaf.getId());
+      if (!leaf.isValue()) ids.remove(leaf.getId());
     } else if (v instanceof NodeVector) {
       NodeVector vector = (NodeVector) v;
       vector.stream().forEach(item -> getObjectives(item, ids));
@@ -688,71 +691,73 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   public boolean[][] getChoices() {
     return choices;
   }
-  
+
   public void setObjectives(List<String> objectives) {
     this.objectives = objectives;
-    //makeGUI();
+    // makeGUI();
     setObjectives();
   }
-  
+
   @Override
   public void setDeselections(List<String> objectives) { // not null and copy
-    if (objectives == null) objectives = new ArrayList<>();
-    else objectives = new ArrayList<>(objectives);
+    if (objectives == null)
+      objectives = new ArrayList<>();
+    else
+      objectives = new ArrayList<>(objectives);
 
     this.deselections = this.deselections0 = objectives;
   }
-  
+
   @Override
   public List<String> getDeselections() {
     return this.deselections0;
   }
-  
-  
+
+
   private void setObjectives() {
     if (objectives != null) {
-    ids = new HashMap<>();
-    objectives.forEach(s -> {
-      String[] split = s.split("/");
-      ids.put(split[0], split.length>1 ? Double.valueOf(split[1]): null);
-    } );
+      ids = new HashMap<>();
+      objectives.forEach(s -> {
+        String[] split = s.split("/");
+        ids.put(split[0], split.length > 1 ? Double.valueOf(split[1]) : null);
+      });
     }
   }
-  
+
   public void setChoices(boolean[][] choices) {
     this.choices = choices;
-    this.ids = null;  // if you forget setObjectives!
+    this.ids = null; // if you forget setObjectives!
     this.objectives = null;
     this.deselections = this.deselections0 = Collections.emptyList();
   }
 
   @Override
   public void makeChoices() {
-// new style
+    // new style
     TreePath p = tree.getSelectionPath();
     if (p != null) savePath(p);
-    //ids = new HashMap<>();
+    // ids = new HashMap<>();
     getObjectives(root.getUserObject(), ids);
     objectives = createObjectives();
     deselections = deselections0 = graph.getDeselections();
     foreknowledge = calculateForeknowledge(deselections0);
-// old style
+    // old style
     int x = studentModel.get().categories.length;
     int y = studentModel.get().getMaxObjectives();
     choices = new boolean[x][y];
     NodeVector v = (NodeVector) root.getUserObject();
-    for (x = 0; x < v.size(); x ++) {
+    for (x = 0; x < v.size(); x++) {
       NodeVector w = (NodeVector) v.get(x);
       for (y = 0; y < w.size(); y++) {
         Object e = w.get(y);
         if (e instanceof NodeLeaf) {
           choices[x][y] = ((NodeLeaf) e).isValue();
         }
-        
+
       }
-      
+
     }
-    
+
   }
 
   @Override
@@ -765,7 +770,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       NodeVector v = new NodeVector(smodel);
       root = new InvisibleNode(v);
       insert(v, root);
-      model = new InvisibleTreeModel(root, true);   
+      model = new InvisibleTreeModel(root, true);
       tree.setModel(model);
       StudentMethod studentMethod = WiskOpdr.applet.getStudentMethod(activeMethod);
       methods.setText(studentMethod.getMethod());
@@ -775,12 +780,12 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       filterAction.setActiveMethod(activeMethod);
       graph.setModel(model, null, studentMethod);
     }
-// old style
+    // old style
     if (choices != null) {
       if (ids == null) ids = new HashMap<>();
       NodeVector v = (NodeVector) root.getUserObject();
-      int maxx = Math.min(v.size(),choices.length);
-      for (int x = 0; x < maxx; x ++) {
+      int maxx = Math.min(v.size(), choices.length);
+      for (int x = 0; x < maxx; x++) {
         NodeVector w = (NodeVector) v.get(x);
         int maxy = Math.min(w.size(), choices[x].length);
         for (int y = 0; y < maxy; y++) {
@@ -791,8 +796,9 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
             if (choices[x][y] && !ids.containsKey(id)) ids.put(id, null);
           }
         }
-    }}
- // new style 
+      }
+    }
+    // new style
     if (ids != null) {
       @SuppressWarnings("unchecked")
       Enumeration<DefaultMutableTreeNode> all = (Enumeration) root.depthFirstEnumeration();
@@ -804,7 +810,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
           leaf.setValue(ids.containsKey(leaf.getId()));
         }
       }
-    } else 
+    } else
       ids = new HashMap<>(); // initial empty, expected not null
 
     updateGraph();
@@ -827,27 +833,27 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     return this;
   }
 
-  private void updateGraph(ActionEvent e ) {
-    if ("deselections".equals(e.getActionCommand()))
-    {
+  private void updateGraph(ActionEvent e) {
+    if ("deselections".equals(e.getActionCommand())) {
       deselections = graph.getDeselections();
       updateGraph();
     }
   }
-  
+
   private void updateGraph() {
 
-// mogelijke optimalisatie: kennis tree eenmalig opbouwen uit ids.keyset en dan bijwerken.    
+    // mogelijke optimalisatie: kennis tree eenmalig opbouwen uit ids.keyset en dan bijwerken.
     Set<String> kennis = calculateKennis();
     Set<String> voorkennis = ObjectivesViewAction.metVoorkennis(kennis, studentModel.get());
     voorkennis.removeAll(deselections);
-    graph.graphNodes
-      .forEach(n -> {
-        boolean on = voorkennis.contains(n.getID());
-        n.setSuccesFailScore(on ? 100.0 : null);
-        if (on) n.setPartOfSelection(Boolean.valueOf(kennis.contains(n.getID())));
-        else n.setPartOfSelection(null);
-      });
+    graph.graphNodes.forEach(n -> {
+      boolean on = voorkennis.contains(n.getID());
+      n.setSuccesFailScore(on ? 100.0 : null);
+      if (on)
+        n.setPartOfSelection(Boolean.valueOf(kennis.contains(n.getID())));
+      else
+        n.setPartOfSelection(null);
+    });
     graph.repaint();
   }
 
@@ -862,7 +868,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       Object object = node.getUserObject();
       if (object instanceof NodeLeaf) {
         if (((NodeLeaf) object).isValue()) kennis.add(((NodeLeaf) object).getId());
-      }      
+      }
     }
     return kennis;
   }
@@ -870,15 +876,15 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
   @Override
   public void valueChanged(TreeSelectionEvent e) {
     TreePath[] paths = e.getPaths();
-    for( TreePath p: paths) {
-      if (! e.isAddedPath(p)) {
-        savePath(p);        
+    for (TreePath p : paths) {
+      if (!e.isAddedPath(p)) {
+        savePath(p);
       }
     }
     if (e.isAddedPath()) {
       TreePath path = tree.getSelectionPath();
       if (path == null) {
-    	  leerdoelTitelLabel.setText("");
+        leerdoelTitelLabel.setText("");
         description.setText("");
         scroll.setViewportView(description);
         return;
@@ -889,30 +895,30 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       if (u instanceof Node) {
         Double factor = null;
         if (u instanceof NodeLeaf) factor = ids.get(((NodeLeaf) u).getId());
-        if (factor == null) factor = 1.0; 
+        if (factor == null) factor = 1.0;
         slider.setValue(Math.round(slider.getMaximum() * factor.floatValue()));
-      
+
         String descr = ((Node) u).getDescription();
         if (descr == null) descr = "";
         if (descr.startsWith(WISKOPDR_SIG)) {
-//          WiskOpdrPanel panel = getWiskOpdrPanel(descr);
-//          scroll.setViewportView(panel);
-            JLabel panel = new JLabel("Unsupported description");
-            scroll.setViewportView(panel);
+          // WiskOpdrPanel panel = getWiskOpdrPanel(descr);
+          // scroll.setViewportView(panel);
+          JLabel panel = new JLabel("Unsupported description");
+          scroll.setViewportView(panel);
         } else if (descr.startsWith(JSON_SIG)) {
-            DescriptionBrowser b = getBrowser();
-            scroll.setViewportView(b.getBrowserPanel());
-            b.setDescription(descr);
-        
+          DescriptionBrowser b = getBrowser();
+          scroll.setViewportView(b.getBrowserPanel());
+          b.setDescription(descr);
+
         } else {
           description.setText(descr);
           scroll.setViewportView(description);
-        } 
+        }
       } else {
         description.setText("");
         scroll.setViewportView(description);
       }
-    }   
+    }
     repaint();
   }
 
@@ -920,7 +926,7 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
     Object u = node.getUserObject();
     if (u instanceof NodeLeaf) {
-      ids.put(((NodeLeaf) u).getId(), (double)slider.getValue()/slider.getMaximum());
+      ids.put(((NodeLeaf) u).getId(), (double) slider.getValue() / slider.getMaximum());
       model.nodeChanged(node);
     }
   }
@@ -945,34 +951,34 @@ public class StudentModelChoicePanel extends JPanel implements ObjectiveChoices,
       node.setSuccesFailScore(score);
     }
   }
-    
-    @Override
-    public void setSelection(Map<String, Boolean> map) {
-      for (fi.wiskopdr.domainmodel.graph.GraphNode node : graph.graphNodes) {
-        String id = node.getID();
-        Boolean selection = map.get(id);
-        node.setPartOfSelection(selection);
+
+  @Override
+  public void setSelection(Map<String, Boolean> map) {
+    for (fi.wiskopdr.domainmodel.graph.GraphNode node : graph.graphNodes) {
+      String id = node.getID();
+      Boolean selection = map.get(id);
+      node.setPartOfSelection(selection);
     }
 
   }
 
-    private Collection<String> calculateForeknowledge(List<String> deselections) {
-      Set<String> kennis = calculateKennis();
-      Set<String> voorkennis = ObjectivesViewAction.metVoorkennis(kennis, studentModel.get());
-      voorkennis.removeAll(deselections);
-      return voorkennis;
-    }
+  private Collection<String> calculateForeknowledge(List<String> deselections) {
+    Set<String> kennis = calculateKennis();
+    Set<String> voorkennis = ObjectivesViewAction.metVoorkennis(kennis, studentModel.get());
+    voorkennis.removeAll(deselections);
+    return voorkennis;
+  }
 
-    @Override
-    public Collection<String> getForeknowledge() {
-      return this.foreknowledge;
-    }
+  @Override
+  public Collection<String> getForeknowledge() {
+    return this.foreknowledge;
+  }
 
 
-    @Override
-    public void setForeknowledge(Collection<String> foreknowledge) {
-      this.foreknowledge = foreknowledge;
-    }
-  
-  
+  @Override
+  public void setForeknowledge(Collection<String> foreknowledge) {
+    this.foreknowledge = foreknowledge;
+  }
+
+
 }

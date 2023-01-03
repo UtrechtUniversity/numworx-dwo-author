@@ -30,7 +30,7 @@ public class FilterPanel extends JPanel {
 
   
   
-  FilterPanel(String activeMethod) {
+  public FilterPanel(String activeMethod) {
     super(null);
     BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
     setLayout(layout);
@@ -61,7 +61,7 @@ public class FilterPanel extends JPanel {
     
   }
 
-    Map<String,Map<String,Collection<Number>>> getFilter() {
+   public Map<String,Map<String,Collection<Number>>> getFilter() {
 //      Map<String, Set<Integer>> mwmap = mw.getMethodMap(mwtab);
 //      Map<String, Set<Integer>> genrmap = genr.getMethodMap(genrtab);
       Map<String,Map<String,Collection<Number>>> filter = new HashMap<>();
@@ -77,7 +77,7 @@ public class FilterPanel extends JPanel {
       return filter;
     }
   
-    void setFilter(Map<String,Map<String,Set<Integer>>> filter) {
+   public  void setFilter(Map<String,Map<String,Set<Integer>>> filter) {
       rest.setSelected(filter.containsKey(null));
       if (m != null) {
         Map<String, Set<Integer>> mwmap = filter.getOrDefault(m.getKey(), Collections.emptyMap());

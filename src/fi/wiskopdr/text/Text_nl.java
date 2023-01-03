@@ -357,14 +357,14 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"waarmakersIpLabel" , "Waarmakers"},
                 {"statSimIpLabel" , "Statistieksimulaties"},
                 {"stelselVakLabel", "Stelselantwoordvak"},
-                {"javaLogoIpLabel", "Programmeren JavaLogo"},
+                {"javaLogoIpLabel", "JavaLogo Programmeren"},
                 {"symboolIpLabel", "Vorm"},
                 {"samengesteldeStappenIpLabel", "Samengestelde stappen"},
                 {"checkButtonIpLabel", "Nakijkknop"},
                 {"sliderIpLabel", "Schuifknop"},
                 {"heksIpLabel", "Heks"},
                 {"geoDefinerIpLabel", "GeoDefiner"},
-                {"javaLogo3DIpLabel", "Programmeren JavaLogo 3D"},
+                {"javaLogo3DIpLabel", "JavaLogo 3D Programmeren"},
                 
                 {"checkButtonsMenuLabel", "Nakijkknoppen"},
                 
@@ -681,7 +681,10 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"SWEP_titleLinkLabel" , "Link naar pagina"},
                 {"SWEP_linkActiveCB" , "Link actief"},
                 
-				
+                //ScoreWidgetEditPanel
+                {"LWEP_titleSettingsLabel" , "Kies leerdomein"},
+                {"LWEP_filterSettingsLabel" , "Kies filter"},
+                
 				//TekstEditorEditPanel
 				{"TEEP_menuBalkOptie" , "Formule-editor"},
 				{"TEEP_rekenToolOptie" , "Rekenmachine"},
