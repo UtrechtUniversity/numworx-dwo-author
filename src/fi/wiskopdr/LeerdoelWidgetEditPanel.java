@@ -20,6 +20,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.json.fimple.JSONObject;
+
 import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JComboBox;
 import fi.beans.numworxlf.JLabel;
@@ -211,7 +213,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     if(h.containsKey("filter"))
       filter = (Map<String,Map<String,Collection<Number>>>)h.get("filter");
     if(h.containsKey("leerdoelPopup"))
-      leerdoelPopup = ((Boolean)h.get("leerdoelPopup")).booleanValue();
+      leerdoelPopup = ((Boolean)h.get("leerdoelPopup")).booleanValue(); // description popup
     if(h.containsKey("voorkennisKnop"))
       voorkennisKnop = ((Boolean)h.get("voorkennisKnop")).booleanValue();
     if(h.containsKey("voorkennisMenu"))
@@ -219,7 +221,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     if(h.containsKey("zoomKnoppen"))
       zoomKnoppen = ((Boolean)h.get("zoomKnoppen")).booleanValue();
     if(h.containsKey("filterHeader"))
-      filterHeader = ((Boolean)h.get("filterHeader")).booleanValue();
+      filterHeader = ((Boolean)h.get("filterHeader")).booleanValue(); // header met de filterselectie
     if(h.containsKey("leerdoelScore"))
       leerdoelScore = ((Boolean)h.get("leerdoelScore")).booleanValue();
     
@@ -287,7 +289,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     Hashtable h = new Hashtable();
     if(studentModelID!=null)
       h.put("studentModelID", studentModelID);
-    if(studentModelID!=null)
+    if(filter!=null)
       h.put("filter", filter);
     if(activeMethod!=null)
       h.put("activeMethod", activeMethod);
@@ -297,6 +299,11 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     h.put("zoomKnoppen", new Boolean(zoomKnoppen));
     h.put("filterHeader", new Boolean(filterHeader));
     h.put("leerdoelScore", new Boolean(leerdoelScore));
+    
+// extra
+    JSONObject p = WiskOpdr.applet.getDwoProfile();
+    p = (JSONObject) p.get("id");
+    h.put("dwoProfileID", p.get("idString"));
    
     return h;
   }
