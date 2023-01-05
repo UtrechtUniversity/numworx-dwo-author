@@ -82,10 +82,10 @@ public class FilterPanel extends JPanel {
       return filter;
     }
   
-   public  void setFilter(Map<String,Map<String,Set<Integer>>> filter) {
+   public  void setFilter(Map<String, Map<String, Collection<Number>>> filter) {
       rest.setSelected(filter.containsKey(null));
       if (m != null) {
-        Map<String, Set<Integer>> mwmap = filter.getOrDefault(m.getKey(), Collections.emptyMap());
+        Map<String, Collection<Number>> mwmap = filter.getOrDefault(m.getKey(), Collections.emptyMap());
         m.setMethodMap(mtab, mwmap);
       } else {
 //        Map<String, Set<Integer>> mwmap = filter.getOrDefault(mw.getKey(), Collections.emptyMap());

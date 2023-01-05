@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.swing.Box;
@@ -227,9 +228,12 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     }
     leerdomeinCombobox.setSelectedItem(studentModel);
     if(filter!=null)
-      if(studentModel!=null && studentModel.activeMethod == activeMethod) {
+      if(studentModel!=null && Objects.equals(studentModel.activeMethod, activeMethod)) {
+        if (filterPanel != null) {
+          filterPanelContainer.remove(filterPanel);
+        }
         filterPanel = new FilterPanel(studentModel.activeMethod);
-        //filterPanel.setFilter(filter); // werkt niet. Even aan Wim vragen 
+        filterPanel.setFilter(filter); // werkt niet. Even aan Wim vragen 
         filterPanelContainer.add(filterPanel);
         filterSettingsLabel.setVisible(true);
       }
