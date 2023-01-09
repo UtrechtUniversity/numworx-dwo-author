@@ -113,7 +113,10 @@ public class LineModel extends ColorModel<Destroyable> {
 		} else {
 			type = new IsLineType().getLineTypeA(item);
 		}
-		width = getLineWidth(item);
+		if (map.containsKey("width")) {
+			width = (float) map.getDouble("width");
+		} else
+			width = getLineWidth(item);
 	}
 	
 	public static float getLineWidth(Destroyable item) {
