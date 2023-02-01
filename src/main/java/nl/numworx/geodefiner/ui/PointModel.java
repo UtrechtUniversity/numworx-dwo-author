@@ -86,4 +86,19 @@ public class PointModel extends ColorModel<Destroyable> implements UIModel<Destr
 		if (size != null) adapter.put(size);
 		super.installLight();
 	}
+
+	@Override
+	public void fromLightMap(ObjectMap map) {
+		if(map.containsKey("size"))
+			size  = Float.valueOf(map.getInt("size"));
+		super.fromLightMap(map);
+	}
+
+	@Override
+	public Map<String, Object> toLightMap() {
+		Map<String, Object> map = super.toLightMap();
+		if (size != null) map.put("size", size);
+		return map;
+	}
+	
 }
