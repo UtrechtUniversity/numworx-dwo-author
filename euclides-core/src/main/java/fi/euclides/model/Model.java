@@ -437,6 +437,7 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 					}
 					lijn.setP1(p1);
 					lijn.setP2(p2);
+					lijn.setIndex(index+1); // vals spelen
 					decorator.ifPresent(lijn::visit);
 					add(lijn, lijnen);
 					return lijn;
