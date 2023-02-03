@@ -597,6 +597,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"SWEP_titleKeuzeLabel" , "Choose information to show"},
                 {"SWEP_scoreButton" , "Score"},
                 {"SWEP_goedFoutButton" , "Correct/incorrect"},
+                {"SWEP_cesuurLabel" , " Mastery score"},
                 {"SWEP_bezochtButton" , "Visited"},
                 {"SWEP_toonTitelCB" , "Page title"},
                 {"SWEP_titleLinkLabel" , "Link naar page"},

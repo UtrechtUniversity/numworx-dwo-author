@@ -57,6 +57,10 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   private JCheckBox bezochtRB;
   private JCheckBox toonTitelCB;
   
+  private JLabel cesuurLabel;
+  private JTextField cesuurTF;
+
+  
   private JLabel titleLinkLabel;
   private JCheckBox linkActiveCB;
   
@@ -144,8 +148,18 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     titleKeuzeLabel.setFont(font.deriveFont(Font.BOLD, 16));
     
     goedFoutRB = new JCheckBox(WiskOpdr.rb.getString("SWEP_goedFoutButton"));
+    goedFoutRB.addActionListener(this);
     goedFoutRB.setSelected(true);
     
+    cesuurLabel = new JLabel(WiskOpdr.rb.getString("SWEP_cesuurLabel"));
+    cesuurLabel.setForeground(WiskOpdr.colorBlue1);
+    cesuurLabel.setFont(font);
+   
+    cesuurTF = new JTextField("");
+    cesuurTF.setFont(font);
+    cesuurTF.setPreferredSize(new Dimension(50,22));
+    cesuurTF.setMaximumSize(new Dimension(50,22));
+     
     scoreRB = new JCheckBox(WiskOpdr.rb.getString("SWEP_scoreButton"));
     scoreRB.setSelected(false);
     
@@ -183,13 +197,14 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     
     Component[] r21 = {titleKeuzeLabel, hgl()};
     Component[] r22 = {goedFoutRB, hgl()};
-    Component[] r22a= {bezochtRB, hgl()};
+    Component[] r22a = {cesuurLabel, ra(10,0), cesuurTF, hgl()};
+    Component[] r22b= {bezochtRB, hgl()};
     Component[] r23 = {scoreRB, hgl()};
     Component[] r24 = {toonTitelCB, hgl()};
     Component[] r25 = {titleLinkLabel, hgl()};
     Component[] r26 = {linkActiveCB, hgl()};
  
-    Component[] k2 = {hb(r21), vst(10), hb(r22), vst(5), hb(r22a), vst(5),hb(r23), vst(5), hb(r24),vst(20), hb(r25), vst(10), hb(r26),vgl()};
+    Component[] k2 = {hb(r21), vst(10), hb(r22), vst(5), hb(r22a), vst(5), hb(r22b), vst(5),hb(r23), vst(5), hb(r24),vst(20), hb(r25), vst(10), hb(r26),vgl()};
     
     Component[] rr = {vb(k1), hgl(), ra(100,0), vb(k2), hgl()};
     
@@ -244,6 +259,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     boolean bezocht = false;
     boolean toonTitel = true;
     boolean linkActive = true;
+    int cesuur = 0;
     
     if(h.containsKey("choicePageMode"))
       choicePageMode = (int)h.get("choicePageMode");
@@ -267,6 +283,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       toonTitel = (boolean)h.get("toonTitel");
     if(h.containsKey("linkActive"))
       linkActive = (boolean)h.get("linkActive");
+    if(h.containsKey("cesuur"))
+      cesuur = (int)h.get("cesuur");
     
     thisActiviteitRB.setSelected(choicePageMode==0);
     thisModuleRB.setSelected(choicePageMode==1);
@@ -294,6 +312,12 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       activiteitNrLabel.setVisible(true);
       activiteitNrTF.setVisible(true);
     }
+    
+    cesuurLabel.setVisible(goedFout);
+   
+    cesuurTF.setText("" + cesuur);
+    cesuurTF.setVisible(goedFout);
+    
     ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
     
   }
@@ -332,6 +356,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    boolean bezocht = false;
    boolean toonTitel = true;
    boolean linkActive = true;
+   int cesuur = 0;
    
    choicePageMode = getChoicePageMode();
    paginaNr = intFromText(paginaNr, paginaNrTF.getText());
@@ -348,6 +373,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     goedFout = goedFoutRB.isSelected();
     linkActive = linkActiveCB.isSelected();
     bezocht = bezochtRB.isSelected();
+    cesuur = intFromText(0, cesuurTF.getText());
     
     Hashtable h = new Hashtable();
     h.put("choicePageMode", new Integer(choicePageMode));
@@ -361,6 +387,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     h.put("bezocht", Boolean.valueOf(bezocht));
     h.put("toonTitel", new Boolean(toonTitel));
     h.put("linkActive", new Boolean(linkActive));
+    h.put("cesuur", new Integer(cesuur));
     
     System.out.println("H:"+h.toString());
     return h;
@@ -400,6 +427,10 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     else {
       activiteitNrLabel.setVisible(true);
       activiteitNrTF.setVisible(true);
+    }
+    if(e.getSource()==goedFoutRB) {
+      cesuurLabel.setVisible(goedFoutRB.isSelected());
+      cesuurTF.setVisible(goedFoutRB.isSelected());
     }
     ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
     
