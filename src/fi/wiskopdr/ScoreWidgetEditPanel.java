@@ -259,7 +259,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     boolean bezocht = false;
     boolean toonTitel = true;
     boolean linkActive = true;
-    int cesuur = 0;
+    int cesuur = -1;
     
     if(h.containsKey("choicePageMode"))
       choicePageMode = (int)h.get("choicePageMode");
@@ -314,8 +314,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     }
     
     cesuurLabel.setVisible(goedFout);
-   
-    cesuurTF.setText("" + cesuur);
+    if(cesuur > -1)
+      cesuurTF.setText("" + cesuur);
     cesuurTF.setVisible(goedFout);
     
     ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
@@ -356,7 +356,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    boolean bezocht = false;
    boolean toonTitel = true;
    boolean linkActive = true;
-   int cesuur = 0;
+   int cesuur = -1;
    
    choicePageMode = getChoicePageMode();
    paginaNr = intFromText(paginaNr, paginaNrTF.getText());
@@ -373,7 +373,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     goedFout = goedFoutRB.isSelected();
     linkActive = linkActiveCB.isSelected();
     bezocht = bezochtRB.isSelected();
-    cesuur = intFromText(0, cesuurTF.getText());
+    cesuur = intFromText(-1, cesuurTF.getText());
     
     Hashtable h = new Hashtable();
     h.put("choicePageMode", new Integer(choicePageMode));
@@ -387,9 +387,9 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     h.put("bezocht", Boolean.valueOf(bezocht));
     h.put("toonTitel", new Boolean(toonTitel));
     h.put("linkActive", new Boolean(linkActive));
-    h.put("cesuur", new Integer(cesuur));
+    if(cesuur>-1)
+      h.put("cesuur", new Integer(cesuur));
     
-    System.out.println("H:"+h.toString());
     return h;
     
   }
