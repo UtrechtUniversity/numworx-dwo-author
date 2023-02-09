@@ -306,7 +306,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 	    aantalValueObjectsTF.setText(""+aantalValueObjects);
 	    maxScoreTF.setText(""+scoreMax);
 	    checkAfzonderlijkCB.setSelected(!checkSamen);
-	    viewCB.setVisible(checkSamen);
+	    viewCB.setVisible(!checkSamen);
         viewCB.setSelected(view && !checkSamen);
         titleHulpLabel.setVisible(checkSamen);
 	    checkSamenCB.setSelected(checkSamen);
@@ -437,7 +437,7 @@ public class CheckValueUnitEditPanel extends JPanel implements InteractieEditPan
 		{	checkSamenCB.setSelected(!checkAfzonderlijkCB.isSelected());
 			titleAntwoordLabel.setVisible(!checkAfzonderlijkCB.isSelected());
 			formuleEditor.setVisible(!checkAfzonderlijkCB.isSelected());
-			viewCB.setVisible(!checkAfzonderlijkCB.isSelected());
+			viewCB.setVisible(checkAfzonderlijkCB.isSelected());
 			hbView.setVisible(helpVisible && !checkAfzonderlijkCB.isSelected());
 			hbAntwoord.setVisible(helpVisible && !checkAfzonderlijkCB.isSelected());
 			titleHulpLabel.setVisible(!checkAfzonderlijkCB.isSelected());
