@@ -1,10 +1,15 @@
 package fi.wiskopdr.domainmodel.graph;
 
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.swing.AbstractButton;
 
 import fi.beans.numworxlf.JCheckBox;
 
@@ -14,11 +19,13 @@ public class VoorkennisDeselector implements ActionListener{
 	private Graph graph;
 	private GraphNode voorkennisTreeNode;
 	private Hashtable<JCheckBox, GraphNode> checkBoxNodes;
+	private Hashtable<GraphNode, JCheckBox> nodesCheckBox;
 	
 	public VoorkennisDeselector(Graph graph) {
 		this.graph = graph;
 		checkBoxes = new ArrayList<ArrayList<JCheckBox>>();
 		checkBoxNodes = new Hashtable<JCheckBox, GraphNode>();
+		nodesCheckBox = new Hashtable<>();
 	}
 	
 	public void initiate(GraphNode graphNode, ArrayList<ArrayList<GraphNode>> voorkennisNodes) {
@@ -31,14 +38,15 @@ public class VoorkennisDeselector implements ActionListener{
 				GraphNode gn = gnList.get(j);
 				if(graphNode==gn)
 					break;
-				checkBoxes.get(i).add(new JCheckBox());
+				JCheckBox cb = nodesCheckBox.computeIfAbsent(gn, k -> new JCheckBox());
+				checkBoxes.get(i).add(cb);
 				int x = -20+i%2*40 + 100 + (j+1)*(graph.getWidth()-200)/(gnList.size()+1);
 				int y = -7*gnList.size()+15*j + (voorkennisNodes.size() - (i))*(graph.getHeight()-50)/(voorkennisNodes.size());
-				checkBoxes.get(i).get(j).setBounds(x-12, y+12,24,17);
-				checkBoxes.get(i).get(j).setSelected(true);
-				checkBoxes.get(i).get(j).addActionListener(this);
-				graph.add(checkBoxes.get(i).get(j));
-				checkBoxNodes.put(checkBoxes.get(i).get(j), gn);
+				cb.setBounds(x-12, y+12,24,17);
+				cb.setSelected(true);
+				cb.addActionListener(this);
+				graph.add(cb);
+				checkBoxNodes.put(cb, gn);
 			}
 		}
 		setDeselections(voorkennisTreeNode.getDeselections());
@@ -56,50 +64,41 @@ public class VoorkennisDeselector implements ActionListener{
 		}
 		checkBoxes.clear();
 		checkBoxNodes.clear();
+		nodesCheckBox.clear();
 		voorkennisTreeNode = null;
 	}
 	
 	public ArrayList<String> getDeselections() {
 		ArrayList<String> deselections = new ArrayList<String>();
-		for(int i=0 ; i<checkBoxes.size() ; i++) {
-			ArrayList<JCheckBox> cbList = checkBoxes.get(i);
-			for(int j=0 ; j<cbList.size() ; j++) {
-				JCheckBox checkBox = cbList.get(j);
-				if(!checkBox.isSelected())
-					deselections.add(checkBoxNodes.get(checkBox).getID());
-			}
-		}
+	    for (Map.Entry<GraphNode, JCheckBox> entry: nodesCheckBox.entrySet()) {
+	      if (!entry.getValue().isSelected())
+	        deselections.add(entry.getKey().getID());
+	    }
 		return deselections;
 	}
+	public List<String> getSelections() {
+	  return nodesCheckBox
+	      .entrySet()
+	      .stream()
+	      .filter(e -> e.getValue().isSelected())
+	      .map(e -> e.getKey().getID())
+	      .collect(Collectors.toList());
+	}
 	
-	public void setDeselections(Iterable<String> deselections) {
+	
+	public void setDeselections(Collection<String> deselections) {
 		if(deselections==null)
 			return;
-		for(String ID : deselections) {
-			for(int i=0 ; i<checkBoxes.size() ; i++) {
-				ArrayList<JCheckBox> cbList = checkBoxes.get(i);
-				for(int j=0 ; j<cbList.size() ; j++) {
-					JCheckBox checkBox = cbList.get(j);
-					if(ID.equals(checkBoxNodes.get(checkBox).getID())) {
-						checkBox.setSelected(false);
-					}
-						
-				}
-			}
+		for (Map.Entry<GraphNode, JCheckBox> entry: nodesCheckBox.entrySet()) {
+		  if (deselections.contains(entry.getKey().getID()))
+		      entry.getValue().setSelected(false);
 		}
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		for(int i=0 ; i<checkBoxes.size() ; i++) {
-			ArrayList<JCheckBox> cbList = checkBoxes.get(i);
-			for(int j=0 ; j<cbList.size() ; j++) {
-				JCheckBox checkBox = cbList.get(j);
-				if(e.getSource()==checkBox) {
-					checkBoxNodes.get(checkBox).setBlur(!checkBox.isSelected());
-				}
-			}
-		}
+	    GraphNode node = checkBoxNodes.get(e.getSource());
+	    if (node != null) node.setBlur(!((AbstractButton) e.getSource()).isSelected());
 		graph.repaint();
 		
 	}

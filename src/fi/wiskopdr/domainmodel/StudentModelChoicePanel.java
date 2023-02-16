@@ -739,7 +739,7 @@ public class StudentModelChoicePanel extends JPanel
     // ids = new HashMap<>();
     getObjectives(root.getUserObject(), ids);
     objectives = createObjectives();
-    deselections = deselections0 = graph.getDeselections();
+    deselections = deselections0 = graph.getDeselections(calculateKennis());
     foreknowledge = calculateForeknowledge(deselections0);
     // old style
     int x = studentModel.get().categories.length;
@@ -835,7 +835,7 @@ public class StudentModelChoicePanel extends JPanel
 
   private void updateGraph(ActionEvent e) {
     if ("deselections".equals(e.getActionCommand())) {
-      deselections = graph.getDeselections();
+      deselections = graph.getDeselections(calculateKennis());
       updateGraph();
     }
   }
