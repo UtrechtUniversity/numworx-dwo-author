@@ -582,7 +582,7 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 
 	@Override
 	protected void drawImage(GeoImage image) {
-		// TODO Auto-generated method stub
+		image.shape().visit(this);
 		
 	}
 
