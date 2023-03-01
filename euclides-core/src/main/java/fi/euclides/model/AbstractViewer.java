@@ -157,6 +157,19 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 		trail = false;
 	}
 
+	public void visitImage(GeoImage image) {
+		selectColor(image);
+		trail = true; 
+		drawImage(image);
+		
+		if (getModel().getSelect().contains(image)) {
+			image.shape().visit(this);
+		}
+		
+		trail = false;
+	}
+	
+	
 	public void dragging() {
 	  setChanged();
 	  notifyObservers(track==null ? Collections.EMPTY_SET : track);
@@ -205,6 +218,8 @@ public abstract class AbstractViewer extends Observable implements Visitor, Trac
 	 * @param w
 	 */
 	protected abstract void drawCircle(double x, double y, double w);
+	
+	protected abstract void drawImage(GeoImage image);
 	
 	protected void drawArc(double x, double y, double w, double start, double length) {
 		drawCircle(x,y,w);

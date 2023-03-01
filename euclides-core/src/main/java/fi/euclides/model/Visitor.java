@@ -14,4 +14,5 @@ public interface Visitor {
 	void visitKegelsnede(Kegelsnede2 k);
 	void visitLocus(Locus l);
 	void visitBoog(Boog b);
+	default void visitImage(GeoImage image) { }
 }

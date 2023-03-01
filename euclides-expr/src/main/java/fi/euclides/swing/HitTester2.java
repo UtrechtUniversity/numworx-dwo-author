@@ -38,7 +38,7 @@ public class HitTester2 extends HitTester {
 		{
 			if(s.contains(lastx, lasty))
 			{
-				call(mp);
+				call(id(mp));
 			}
 			return;
 		}
@@ -51,7 +51,7 @@ public class HitTester2 extends HitTester {
 		}
 		if(p.contains(lastx, lasty))
 		{
-			call(mp);
+			call(id(mp));
 			return;
 		}
 		super.visitTriangle(mp);

@@ -8,6 +8,7 @@ import fi.euclides.model.Triangle;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
 import fi.euclides.model.Punt;
@@ -65,8 +66,13 @@ public class HitTester implements Visitor, SegmentVisitor  {
 	}
 	
 
-	MP tmp;
-	boolean tmpdone;
+	protected Destroyable id(Destroyable d) {
+		if (tmp != null) return tmp;
+		return d;
+	}
+	
+	protected Destroyable tmp;
+	protected boolean tmpdone;
 	public void visitLijn(Lijn lijn) {
 		double x1 = lijn.getX1();
 		double y1 = lijn.getY1();
@@ -162,7 +168,7 @@ public class HitTester implements Visitor, SegmentVisitor  {
 	}
 
 	public void visitMP(MP locus) {
-		tmp = locus;
+		if (tmp == null) tmp = locus;
 		tmpdone=false;
 		locus.visitSegments(this);
 		tmp = null;
@@ -224,4 +230,13 @@ public class HitTester implements Visitor, SegmentVisitor  {
 	protected void call(Destroyable d) {
 		d.visit(v);
 	}
+
+	@Override
+	public void visitImage(GeoImage image) {
+		tmp = image;
+		tmpdone = false;
+		image.shape().visit(this);
+	}
+	
+	
 }

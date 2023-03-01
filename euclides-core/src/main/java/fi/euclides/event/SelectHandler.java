@@ -8,6 +8,7 @@ import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Cirkel3;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Label;
 import fi.euclides.model.LabelTrack;
 import fi.euclides.model.Lijn;
@@ -63,6 +64,11 @@ public class SelectHandler extends EventHandler {
 			}
 		}
 		
+		public LineMover(Numbers lastx, Numbers lasty, GeoImage image) {
+			super(lastx, lasty);
+			pl = image;
+			ps = (Punt[]) image.getDepend();
+		}
 		/* (non-Javadoc)
 		 * @see fi.euclides.model.Punt#moveTo(fi.euclides.model.math.Numbers, fi.euclides.model.math.Numbers)
 		 */
@@ -265,7 +271,19 @@ public class SelectHandler extends EventHandler {
       }
     }
 
-    /*
+    
+    
+    
+    @Override
+	public void visitImage(GeoImage image) {
+		if (click)
+			super.visitImage(image);
+		else if (track == null) {
+			track = new Track(new LineMover(lastx, lasty, image));
+		}
+	}
+
+	/*
      * (non-Javadoc)
      * 
      * @see fi.euclides.event.EventHandler#visitCirkel(fi.euclides.model.Cirkel)
