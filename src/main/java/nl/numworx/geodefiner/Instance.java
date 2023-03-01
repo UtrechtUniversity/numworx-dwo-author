@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Stroke;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -26,12 +27,18 @@ import javax.swing.ToolTipManager;
 import nl.numworx.geodefiner.common.CheckObjectList;
 import nl.numworx.geodefiner.common.Check_DWO;
 import nl.numworx.geodefiner.common.DefaultRandomizer;
+import nl.numworx.geodefiner.common.GeoTriangle;
+import nl.numworx.geodefiner.common.Tools;
+import nl.numworx.geodefiner.common.UIModel;
 import nl.numworx.geodefiner.common.locus.Builder;
 import nl.numworx.geodefiner.module.Components;
 import nl.numworx.geodefiner.module.DaggerComponents;
 import nl.numworx.geodefiner.ui.UIModelFactory;
 import nl.numworx.geodefiner.ui.UserConfig;
+import nl.uu.fi.dwo.interaction.client.JSONUtilities;
 import nl.uu.fi.dwo.interaction.client.json.ObjectList;
+import nl.uu.fi.dwo.interaction.client.json.ObjectMap;
+
 import org.cbook.cbookif.AssessmentMode;
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventHandler;
@@ -48,6 +55,7 @@ import fi.euclides.model.Label;
 import fi.euclides.model.Locus;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
+import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 import fi.euclides.util.Observer;
 
@@ -207,7 +215,23 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 	@Override
 	public void setLaunchData(Map<String, ? extends Object> launchData,
-			Map<String, Number> random) {		
+			Map<String, Number> random) {
+
+// if launchdata contains Tools.GEO_TRIANGLE: 		
+		ObjectMap map = JSONUtilities.wrapMap(launchData);
+		if (map.containsKey("toolbox")) {
+			Collection<Integer> tools = map.getIntegerList("toolbox");
+			if (tools.contains(Tools.GEO_TRIANGLE)) {
+				GeoTriangle triangle = new GeoTriangle(getViewer());
+				triangle.setVisible(false);
+				getViewer().getMapper().rename(triangle, "geo");
+				UIModel<?, ?> uimodel = uiModelFactory.build(triangle);
+				uimodel.install();
+				getViewer().getModel().add(triangle);
+				
+			}
+		}
+		
 		super.setLaunchData(launchData, random);
         definitions.readonly = viewer.getModel().getIndex(); // readonly moet gezet na init definitions, niet idempotent, na of voor setState
 	}

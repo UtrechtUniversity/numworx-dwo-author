@@ -1,9 +1,11 @@
 package nl.numworx.geodefiner.module;
 
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import dagger.Module;
@@ -263,4 +265,23 @@ public abstract class ToolBoxModule implements Tools {
 		actions.set(AREA,new XXXAction(, viewer));
 
 */	
+	@Provides @Singleton @IntoMap @IntKey(GEO_TRIANGLE) static
+	Action geodriehoek(Instance instance, AWTViewer viewer) {
+		return new AbstractAction() {
+			{
+				putValue(NAME, "Geo");
+			}
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Destroyable d = viewer.getMapper().fromString("geo");
+				if (d != null) 
+				{	d.setVisible(!d.isVisible());
+					// repaint??
+				}
+			}
+			
+		};
+	}
+	
 }
