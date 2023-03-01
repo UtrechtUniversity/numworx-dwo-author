@@ -32,6 +32,7 @@ import fi.euclides.event.NameMapper;
 import fi.euclides.event.TrackerContext;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Adapter;
@@ -577,6 +578,12 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 	 */
 	protected void setMoved(boolean moved) {
 		this.moved = moved;
+	}
+
+	@Override
+	protected void drawImage(GeoImage image) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

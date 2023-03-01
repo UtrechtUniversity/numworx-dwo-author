@@ -34,6 +34,7 @@ import fi.euclides.gwt.ViewerWidget;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
@@ -379,5 +380,11 @@ public class SVGWidget extends AbstractViewer implements ViewerWidget, TrackerCo
   public void setTrack(Track track) {
     this.track = track;
   }
+
+@Override
+protected void drawImage(GeoImage image) {
+	// TODO Auto-generated method stub
+	
+}
 
 }
