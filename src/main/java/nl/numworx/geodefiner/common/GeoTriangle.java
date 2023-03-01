@@ -6,45 +6,48 @@ import fi.euclides.event.Tracker;
 import fi.euclides.model.Codec;
 import fi.euclides.model.Coordinaten;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Label;
-import fi.euclides.model.Locus;
-import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
-import fi.euclides.model.PuntOp;
 import fi.euclides.model.Segment;
-import fi.euclides.model.SegmentVisitor;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.VrijPunt;
+import fi.euclides.model.math.Complex;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 
-public class GeoTriangle extends Triangle {
+public abstract class GeoTriangle extends GeoImage {
 	
 	private final Tracker viewer;
+	private final Triangle t;
 
-	public GeoTriangle(Tracker viewer) {
-		super(3);
+	public GeoTriangle(Tracker viewer, double size) {
+		this.t = new Triangle(3);
 		this.viewer = viewer;
+		this.size = size;
+		DefaultAdapter adapter = new DefaultAdapter();
+		setAdapter(adapter); // Share
+		t.setAdapter(adapter);
 		
 		Punt o = viewer.getModel().getO();
 		Punt u = viewer.getModel().getU();
 		a = new Coordinaten(newLabel(), newLabel(), o, u);
 		a.setCy(Numbers.ZERO);
-		a.setCx(Numbers.createInteger(-size));
+		a.setCx(Numbers.createDouble(-size));
+		a.setFree(true);
 		b = new Coordinaten(newLabel(), newLabel(), o, u);
 		b.setCy(Numbers.ZERO);
-		b.setCx(Numbers.createInteger(size));
+		b.setCx(Numbers.createDouble(size));
+		b.setFree(true);
 		c = new Coordinaten(newLabel(), newLabel(), o, u);
 		c.setCx(Numbers.ZERO);
-		c.setCy(Numbers.createInteger(size));
-		
-		ab = new Segment(a, b);
-		bc = new Segment(b, c);
-		ca = new Segment(c, a);
-		setA(a);
-		setB(b);
-		setC(c);
+		c.setCy(Numbers.createDouble(size));
+		c.setFree(true);
+		t.setA(a);
+		t.setB(b);
+		t.setC(c);
 	}
 
 	private Label newLabel() {
@@ -55,29 +58,16 @@ public class GeoTriangle extends Triangle {
 
 	// model 
 	
-	int size = 7;
+	protected final double size;
 	
 	Coordinaten a, b, c;
-	Segment  ab, bc, ca;
 	
 	@Override
 	public boolean isDefined() {
 		return true;
 	}
 
-	@Override
-	public void visitSegments(SegmentVisitor v) {
-		v.visitSegment(ab);
-		v.visitSegment(bc);
-		v.visitSegment(ca);
-	}
-
 	public void update(Observable observable, Object arg) {
-	}
-
-	@Override
-	public String key() {
-		return "geo";
 	}
 
 	@Override
@@ -88,5 +78,31 @@ public class GeoTriangle extends Triangle {
 	public void read(Codec codec) throws IOException {
 	}
 
+	@Override
+	public void visit(Visitor v) {
+		t.visit(v);
+	}
 
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		t.setVisible(visible);
+	}
+
+	@Override
+	public Punt center() {
+		return new VrijPunt( (a.getXd()+b.getXd())/2.0, (a.getYd()+b.getYd())/2);
+	}
+
+	@Override
+	public Numbers rotation() {
+		Numbers r = Numbers.createComplex(Numbers.sub(b.getX(), a.getX())
+										, Numbers.sub(b.getY(), a.getY())
+										);
+		return r;
+	}
+
+	public Destroyable shape() {
+		return t;
+	}
 }

@@ -6,6 +6,7 @@ import fi.euclides.event.NameMapper;
 import fi.euclides.event.Tracker;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Model;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.proof.Const;
@@ -130,6 +131,12 @@ public class MockTracker  extends AbstractViewer implements Tracker, Adaptee {
 
 	@Override
 	protected void drawString(String string, double x, double y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void drawImage(GeoImage image) {
 		// TODO Auto-generated method stub
 		
 	}
