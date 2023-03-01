@@ -45,9 +45,11 @@ public interface Tools {
 	int LINE_PALETTE = 30;
 	
 	int ANGLE_POINT = 31;
+	int GEO_TRIANGLE = 32;
+	
 // NOT YET
-	int UNDO = 32;
-	int REDO = 33;
+	int UNDO = 33;
+	int REDO = 34;
 		
-	int TOOL_SIZE = 32;
+	int TOOL_SIZE = 33;
 }
