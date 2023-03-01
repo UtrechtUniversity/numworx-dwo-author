@@ -11,6 +11,7 @@ import fi.euclides.event.HitTester;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
@@ -153,6 +154,11 @@ class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 	@Override
 	public void visitBoog(Boog b) {
 		thickerStroke();
+	}
+
+	@Override
+	public void visitImage(GeoImage image) {
+		System.out.println("HighLight " + image);
 	}
 	
 }

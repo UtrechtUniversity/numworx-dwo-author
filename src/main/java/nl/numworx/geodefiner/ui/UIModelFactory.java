@@ -11,6 +11,7 @@ import fi.euclides.event.Tracker;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Groep;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
@@ -92,6 +93,11 @@ public class UIModelFactory extends nl.numworx.geodefiner.common.UIModelFactory 
 		model = models.circlemodel().init(t);
 	}
 
+	@Override
+	public void visitImage(GeoImage image) {
+		model = models.circlemodel().init(image); // FIXME image model
+	}
+	
 	public void visitKegelsnede(Kegelsnede2 k) {
 		model = models.linemodel().init(k);
 	}

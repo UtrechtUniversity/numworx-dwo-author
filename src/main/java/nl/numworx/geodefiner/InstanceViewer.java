@@ -6,11 +6,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
@@ -36,6 +38,7 @@ import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
@@ -1008,6 +1011,30 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 		else {
 			select.add(d);
 		}
+	}
+
+	@Override
+	protected void drawImage(GeoImage image) {
+		Image awtimage  = image.adapt(Image.class);
+		// affine transform
+		AffineTransform mat = new AffineTransform(); // identity
+// omgekeerde volgorde
+		
+		Punt center = image.center();
+		mat.translate(center.getXd(), center.getYd());
+
+		Numbers r = image.rotation();
+		mat.rotate(Numbers.real(r).doubleValue(), Numbers.imag(r).doubleValue());
+		r = Numbers.abs(r);
+		double s = r.doubleValue();
+		mat.scale(s,s);
+		
+		Punt imageCenter = image.imageCenter();
+		mat.translate(-imageCenter.getXd(), -imageCenter.getYd());
+		
+		
+		g.drawImage(awtimage, mat, content);
+		
 	}
     
 }

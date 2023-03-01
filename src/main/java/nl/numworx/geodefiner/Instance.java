@@ -222,7 +222,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		if (map.containsKey("toolbox")) {
 			Collection<Integer> tools = map.getIntegerList("toolbox");
 			if (tools.contains(Tools.GEO_TRIANGLE)) {
-				GeoTriangle triangle = new GeoTriangle(getViewer());
+				GeoTriangle triangle = new AWTTriangle(getViewer());
 				triangle.setVisible(false);
 				getViewer().getMapper().rename(triangle, "geo");
 				UIModel<?, ?> uimodel = uiModelFactory.build(triangle);
