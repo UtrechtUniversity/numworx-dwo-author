@@ -26,4 +26,6 @@ public abstract class GeoImage extends Destroyable {
 	public Destroyable[] getDepend() {
 		return shape().getDepend();
 	}
+
+	public abstract boolean isMove(Numbers x, Numbers y);
 }
