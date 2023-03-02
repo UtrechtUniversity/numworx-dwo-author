@@ -105,4 +105,15 @@ public abstract class GeoTriangle extends GeoImage {
 	public Destroyable shape() {
 		return t;
 	}
+
+	@Override
+	public boolean isMove(Numbers x, Numbers y) {
+		Punt c = center();
+		x = Numbers.sub(x, c.getX());
+		y = Numbers.sub(y, c.getY());
+		double u = viewer.getModel().getU().getXd() - viewer.getModel().getO().getXd(); // 1 unit
+		return Numbers.hypot(x, y).doubleValue() < u*3;
+	}
+	
+	
 }

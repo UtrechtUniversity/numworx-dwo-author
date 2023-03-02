@@ -11,6 +11,7 @@ import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Cirkel;
 import fi.euclides.model.Destroyable;
+import fi.euclides.model.GeoImage;
 import fi.euclides.model.Kegelsnede2;
 import fi.euclides.model.Label;
 import fi.euclides.model.Lijn;
@@ -77,6 +78,11 @@ public class Dragging extends LabelTester {
     public void visitBoog(Boog b) {
       set.add(b);
     }
+
+	@Override
+	public void visitImage(GeoImage image) {
+	  set.add(image);
+	}
 
   }
 
