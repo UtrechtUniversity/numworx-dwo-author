@@ -1,12 +1,14 @@
 package nl.numworx.geodefiner.module;
 
 import java.awt.Cursor;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 
 import dagger.Module;
 import dagger.Provides;
@@ -269,7 +271,13 @@ public abstract class ToolBoxModule implements Tools {
 	Action geodriehoek(Instance instance, AWTViewer viewer) {
 		return new AbstractAction() {
 			{
-				putValue(NAME, "Geo");
+				ImageIcon icon = new ImageIcon(getClass().getResource("/fi/euclides/resources/geodriehoekKnop.png"));
+				Image image = icon.getImage();
+				image = image.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+				icon.setImage(image);
+				putValue(SMALL_ICON, icon);
+				putValue(LARGE_ICON_KEY, icon);
+				putValue(SHORT_DESCRIPTION, "Geodriehoek");
 			}
 			
 			@Override
