@@ -50,6 +50,7 @@ import nl.numworx.geodefiner.common.AddCirkelHandler;
 import nl.numworx.geodefiner.common.AddPolygonHandler;
 import nl.numworx.geodefiner.common.AddSnapPuntHandler;
 import nl.numworx.geodefiner.common.FilteredDestroyHandler;
+import nl.numworx.geodefiner.common.GeoTriangleHandler;
 import nl.numworx.geodefiner.common.HoekHandler;
 import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.ResetHandler;
@@ -269,27 +270,8 @@ public abstract class ToolBoxModule implements Tools {
 */	
 	@Provides @Singleton @IntoMap @IntKey(GEO_TRIANGLE) static
 	Action geodriehoek(Instance instance, AWTViewer viewer) {
-		return new AbstractAction() {
-			{
-				ImageIcon icon = new ImageIcon(getClass().getResource("/fi/euclides/resources/geodriehoekKnop.png"));
-				Image image = icon.getImage();
-				image = image.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-				icon.setImage(image);
-				putValue(SMALL_ICON, icon);
-				putValue(LARGE_ICON_KEY, icon);
-				putValue(SHORT_DESCRIPTION, "Geodriehoek");
-			}
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Destroyable d = viewer.getMapper().fromString("geo");
-				if (d != null) 
-				{	d.setVisible(!d.isVisible());
-					// repaint??
-				}
-			}
-			
-		};
+		GeoTriangleHandler handler = new GeoTriangleHandler(Messages.getString("ToolBoxModule.75"));
+		return new XXXAction(Messages.getString("ToolBoxModule.75"), "/geodriehoekKnop.png", handler, viewer);
 	}
 	
 }
