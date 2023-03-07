@@ -158,7 +158,6 @@ class HighLighter implements MouseMotionListener, MouseListener, Visitor {
 
 	@Override
 	public void visitImage(GeoImage image) {
-		System.out.println("HighLight " + image);
 	}
 	
 }

@@ -56,6 +56,8 @@ import nl.numworx.geodefiner.common.Instance;
 import nl.numworx.geodefiner.common.ResetHandler;
 import nl.numworx.geodefiner.common.Tools;
 import nl.numworx.geodefiner.common.UIShim;
+import nl.numworx.geodefiner.common.ZoomInHandler;
+import nl.numworx.geodefiner.common.ZoomOutHandler;
 import nl.numworx.geodefiner.tools.CirkelAction;
 import nl.numworx.geodefiner.tools.PuntAction;
 import nl.numworx.geodefiner.tools.XXXXAction;
@@ -274,4 +276,17 @@ public abstract class ToolBoxModule implements Tools {
 		return new XXXAction(Messages.getString("ToolBoxModule.75"), "/geodriehoekKnop.png", handler, viewer);
 	}
 	
+	@Provides @Singleton @IntoMap @IntKey(ZOOM_IN) static
+	Action zoomin(Instance instance, AWTViewer viewer) {
+		ZoomInHandler handler = new ZoomInHandler(Messages.getString("ToolBoxModule.76")); 
+		return new XXXAction(Messages.getString("ToolBoxModule.76"), "/magnify.png", handler, viewer);
+	}
+
+	@Provides @Singleton @IntoMap @IntKey(ZOOM_OUT) static
+	Action zoomout(Instance instance, AWTViewer viewer) {
+		ZoomOutHandler handler = new ZoomOutHandler(Messages.getString("ToolBoxModule.77")); 
+		return new XXXAction(Messages.getString("ToolBoxModule.77"), "/minify.png", handler, viewer);
+	}
+
+
 }
