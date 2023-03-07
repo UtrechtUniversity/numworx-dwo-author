@@ -47,9 +47,12 @@ public interface Tools {
 	int ANGLE_POINT = 31;
 	int GEO_TRIANGLE = 32;
 	
+	int ZOOM_IN = 33;
+	int ZOOM_OUT = 34;
+	
 // NOT YET
-	int UNDO = 33;
-	int REDO = 34;
+	int UNDO = 35;
+	int REDO = 36;
 		
-	int TOOL_SIZE = 33;
+	int TOOL_SIZE = 35;
 }
