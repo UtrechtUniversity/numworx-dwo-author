@@ -236,6 +236,7 @@ public class HitTester implements Visitor, SegmentVisitor  {
 		tmp = image;
 		tmpdone = false;
 		image.shape().visit(this);
+		tmp = null;
 	}
 	
 	
