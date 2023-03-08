@@ -1,11 +1,10 @@
 package nl.numworx.geodefiner.common;
-import fi.euclides.event.EventHandler;
+import fi.euclides.model.math.Numbers;
 
-public class ZoomOutHandler extends EventHandler {
+public class ZoomOutHandler extends ZoomInHandler {
 
 	public ZoomOutHandler(String string) {
-		super(string);
-		// TODO Auto-generated constructor stub
+		super(string, Numbers.createRational(10, 11));
 	}
 
 }
