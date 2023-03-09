@@ -36,6 +36,9 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   private JPanel instellingenPanel;
   
   //Settings
+  private JRadioButton paginaScoreRB;
+  private JRadioButton activiteitScoreRB;
+  private ButtonGroup buttonGroup0;
   private JLabel titleSettingsLabel;
   private JRadioButton thisActiviteitRB;
   private JRadioButton thisModuleRB;
@@ -78,6 +81,21 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     instellingenPanel.setLayout(new BorderLayout());
     
     // Instellingen
+    paginaScoreRB = new JRadioButton(WiskOpdr.rb.getString("SWEP_paginaScoreButton"));
+    paginaScoreRB.addActionListener(this);
+    paginaScoreRB.setSelected(true);
+    
+    activiteitScoreRB = new JRadioButton(WiskOpdr.rb.getString("SWEP_activiteitScoreButton"));
+    activiteitScoreRB.addActionListener(this);
+    
+    buttonGroup0 = new ButtonGroup();
+    buttonGroup0.add(paginaScoreRB);
+    buttonGroup0.add(activiteitScoreRB);
+    
+    thisActiviteitRB = new JRadioButton(WiskOpdr.rb.getString("SWEP_thisActiviteitButton"));
+    thisActiviteitRB.addActionListener(this);
+    thisActiviteitRB.setSelected(true);
+    
     titleSettingsLabel = new JLabel(WiskOpdr.rb.getString("SWEP_titleSettingsLabel"));
     titleSettingsLabel.setForeground(WiskOpdr.colorBlue1);
     titleSettingsLabel.setFont(font.deriveFont(Font.BOLD, 16));
@@ -182,7 +200,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   }
   
   public void plaatsGUI() {
-    
+    Component[] r10a = {paginaScoreRB, hgl()};
+    Component[] r10b = {activiteitScoreRB, hgl()};
     Component[] r11 = {titleSettingsLabel, hgl()};
     Component[] r12 = {thisActiviteitRB, hgl()};
     Component[] r13 = {thisModuleRB, hgl()};
@@ -192,7 +211,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     Component[] r17 = {paginaNrLabel, ra(10,0), paginaNrTF, hgl()};
     Component[] r18 = {paginaTitelLabel, ra(10,0), paginaTitelTF, hgl()};
     
-    Component[] k1 = {hb(r11), vst(10), hb(r12), vst(5), hb(r13), vst(5), hb(r14), vst(5), hb(r15), 
+    Component[] k1 = {hb(r10a), vst(5), hb(r10b), vst(15), hb(r11), vst(10), hb(r12), vst(5), hb(r13), vst(5), hb(r14), vst(5), hb(r15), 
                       vst(10), hb(r16), vst(5), hb(r17), vst(5), hb(r18), vgl()};
     
     Component[] r21 = {titleKeuzeLabel, hgl()};
@@ -260,6 +279,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     boolean toonTitel = true;
     boolean linkActive = true;
     int cesuur = -1;
+    boolean activiteitScore = false;
     
     if(h.containsKey("choicePageMode"))
       choicePageMode = (int)h.get("choicePageMode");
@@ -285,6 +305,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       linkActive = (boolean)h.get("linkActive");
     if(h.containsKey("cesuur"))
       cesuur = (int)h.get("cesuur");
+    if(h.containsKey("activiteitScore"))
+      activiteitScore = (boolean)h.get("activiteitScore");
     
     thisActiviteitRB.setSelected(choicePageMode==0);
     thisModuleRB.setSelected(choicePageMode==1);
@@ -311,6 +333,24 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     else {
       activiteitNrLabel.setVisible(true);
       activiteitNrTF.setVisible(true);
+    }
+    
+    paginaScoreRB.setSelected(!activiteitScore);
+    activiteitScoreRB.setSelected(activiteitScore);
+    
+    if(paginaScoreRB.isSelected()) {
+      titleSettingsLabel.setText(WiskOpdr.rb.getString("SWEP_titleSettingsLabel"));
+      paginaTitelLabel.setText(WiskOpdr.rb.getString("SWEP_paginaTitelLabel"));
+      toonTitelCB.setText(WiskOpdr.rb.getString("SWEP_toonTitelCB"));
+      paginaNrLabel.setVisible(true);
+      paginaNrTF.setVisible(true);
+    }
+    else {
+      titleSettingsLabel.setText(WiskOpdr.rb.getString("SWEP_titleSettingsActiviteitLabel"));
+      paginaTitelLabel.setText(WiskOpdr.rb.getString("SWEP_activiteitTitelLabel"));
+      toonTitelCB.setText(WiskOpdr.rb.getString("SWEP_toonTitelActiviteitCB"));
+      paginaNrLabel.setVisible(false);
+      paginaNrTF.setVisible(false);
     }
     
     cesuurLabel.setVisible(goedFout);
@@ -357,6 +397,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    boolean toonTitel = true;
    boolean linkActive = true;
    int cesuur = -1;
+   boolean activiteitScore = false;
    
    choicePageMode = getChoicePageMode();
    paginaNr = intFromText(paginaNr, paginaNrTF.getText());
@@ -374,6 +415,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     linkActive = linkActiveCB.isSelected();
     bezocht = bezochtRB.isSelected();
     cesuur = intFromText(-1, cesuurTF.getText());
+    activiteitScore = activiteitScoreRB.isSelected();
     
     Hashtable h = new Hashtable();
     h.put("choicePageMode", new Integer(choicePageMode));
@@ -389,6 +431,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     h.put("linkActive", new Boolean(linkActive));
     if(cesuur>-1)
       h.put("cesuur", new Integer(cesuur));
+    h.put("activiteitScore", new Boolean(activiteitScore));
     
     return h;
     
@@ -420,6 +463,22 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    if(e.getSource()==paginaScoreRB || e.getSource()==activiteitScoreRB) {
+      if(paginaScoreRB.isSelected()) {
+        titleSettingsLabel.setText(WiskOpdr.rb.getString("SWEP_titleSettingsLabel"));
+        paginaTitelLabel.setText(WiskOpdr.rb.getString("SWEP_paginaTitelLabel"));
+        toonTitelCB.setText(WiskOpdr.rb.getString("SWEP_toonTitelCB"));
+        paginaNrLabel.setVisible(true);
+        paginaNrTF.setVisible(true);
+      }
+      else {
+        titleSettingsLabel.setText(WiskOpdr.rb.getString("SWEP_titleSettingsActiviteitLabel"));
+        paginaTitelLabel.setText(WiskOpdr.rb.getString("SWEP_activiteitTitelLabel"));
+        toonTitelCB.setText(WiskOpdr.rb.getString("SWEP_toonTitelActiviteitCB"));
+        paginaNrLabel.setVisible(false);
+        paginaNrTF.setVisible(false);
+      }
+    }
     if(thisActiviteitRB.isSelected() || activiteitIdRB.isSelected()) {
       activiteitNrLabel.setVisible(false);
       activiteitNrTF.setVisible(false);

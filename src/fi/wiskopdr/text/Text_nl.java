@@ -664,7 +664,11 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"GSEP_eenheid" , "Eenheid"},
 				
 				//ScoreWidgetEditPanel
+				{"SWEP_paginaScoreButton" , "Toon score van een pagina"},
+				{"SWEP_activiteitScoreButton" , "Toon score van een activiteit"},
+				{"SWEP_thisActiviteitButton" , "Deze activiteit"},
 				{"SWEP_titleSettingsLabel" , "Kies pagina"},
+				{"SWEP_titleSettingsActiviteitLabel" , "Kies activiteit"},
 				{"SWEP_thisActiviteitButton" , "Deze activiteit"},
 				{"SWEP_thisModuleButton" , "Deze module"},
 				{"SWEP_activiteitIdButton" , "Activiteit met ID"},
@@ -672,13 +676,15 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"SWEP_activiteitNrLabel" , "Activiteitnummer"},
 				{"SWEP_paginaNrLabel" , "Paginanummer"},
 				{"SWEP_paginaTitelLabel" , "Paginatitel"},
+				{"SWEP_activiteitTitelLabel" , "Activiteittitel"},
 				
 				{"SWEP_titleKeuzeLabel" , "Kies getoonde informatie"},
                 {"SWEP_scoreButton" , "Score"},
                 {"SWEP_goedFoutButton" , "Goed/fout"},
                 {"SWEP_cesuurLabel" , "Cesuur"},
-                {"SWEP_bezochtButton" , "Bezocht"},
+                {"SWEP_bezochtButton" , "Gedaan"},
                 {"SWEP_toonTitelCB" , "Paginatitel"},
+                {"SWEP_toonTitelActiviteitCB" , "Activiteittitel"},
                 {"SWEP_titleLinkLabel" , "Link naar pagina"},
                 {"SWEP_linkActiveCB" , "Link actief"},
                 

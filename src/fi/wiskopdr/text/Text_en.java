@@ -585,7 +585,10 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_respFactorLabel", "factor"},
                 
               //ScoreWidgetEditPanel
+                {"SWEP_paginaScoreButton" , "Show page score"},
+                {"SWEP_activiteitScoreButton" , "Show activity score"},
                 {"SWEP_titleSettingsLabel" , "Choose page"},
+                {"SWEP_titleSettingsActiviteitLabel" , "Choose activity"},
                 {"SWEP_thisActiviteitButton" , "This activity"},
                 {"SWEP_thisModuleButton" , "This module"},
                 {"SWEP_activiteitIdButton" , "Activity with ID"},
@@ -593,13 +596,15 @@ public class Text_en extends java.util.ListResourceBundle
                 {"SWEP_activiteitNrLabel" , "Activity number"},
                 {"SWEP_paginaNrLabel" , "Page number"},
                 {"SWEP_paginaTitelLabel" , "Page title"},
+                {"SWEP_activiteitTitelLabel" , "Activity title"},
                 
                 {"SWEP_titleKeuzeLabel" , "Choose information to show"},
                 {"SWEP_scoreButton" , "Score"},
                 {"SWEP_goedFoutButton" , "Correct/incorrect"},
                 {"SWEP_cesuurLabel" , " Mastery score"},
-                {"SWEP_bezochtButton" , "Visited"},
+                {"SWEP_bezochtButton" , "Done"},
                 {"SWEP_toonTitelCB" , "Page title"},
+                {"SWEP_toonTitelActiviteitCB" , "Activity title"},
                 {"SWEP_titleLinkLabel" , "Link naar page"},
                 {"SWEP_linkActiveCB" , "Link active"},
                 
