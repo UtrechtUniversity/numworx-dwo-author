@@ -272,7 +272,7 @@ public abstract class ToolBoxModule implements Tools {
 */	
 	@Provides @Singleton @IntoMap @IntKey(GEO_TRIANGLE) static
 	Action geodriehoek(Instance instance, AWTViewer viewer) {
-		GeoTriangleHandler handler = new GeoTriangleHandler(Messages.getString("ToolBoxModule.75"));
+		GeoTriangleHandler handler = new GeoTriangleHandler(Messages.getString("ToolBoxModule.75"), instance.selector);
 		return new XXXAction(Messages.getString("ToolBoxModule.75"), "/geodriehoekKnop.png", handler, viewer);
 	}
 	
