@@ -289,36 +289,6 @@
                             </dependency>
                         </dependencies>                
                     </plugin>        
-                    <!-- jar signing -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jarsigner-plugin</artifactId>
-                        <version>1.4</version>
-                        <executions>
-                            <execution>
-                                <phase>${extras.sign}</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>verify</id>
-                                <phase>${extras.verify}</phase>
-                                <goals>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <processMainArtifact>true</processMainArtifact>
-                            <keystore>${dwoKeyStore}</keystore>
-                            <alias>${dwoCertKeyAlias}</alias>
-                            <storepass>${dwoCertKeyStorePassword}</storepass>
-                            <keypass>${dwoCertKeyPassword}</keypass>
-                            <sigfile>UU</sigfile>
-                            <tsa>http://sha256timestamp.ws.symantec.com/sha256/timestamp</tsa>
-                        </configuration>            
-                    </plugin>  
 		</plugins>
 	</build>
 	<properties>
@@ -624,6 +594,42 @@
 		<properties>
 			<proguard.lib>${java.home}/jmods</proguard.lib>
 		</properties>
+	</profile>
+	<profile><id>howtosign</id>
+		<build>
+			<plugins>
+                    <!-- jar signing -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jarsigner-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <phase>${extras.sign}</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify</id>
+                                <phase>${extras.verify}</phase>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <processMainArtifact>true</processMainArtifact>
+                            <keystore>${dwoKeyStore}</keystore>
+                            <alias>${dwoCertKeyAlias}</alias>
+                            <storepass>${dwoCertKeyStorePassword}</storepass>
+                            <keypass>${dwoCertKeyPassword}</keypass>
+                            <sigfile>UU</sigfile>
+                            <tsa>http://sha256timestamp.ws.symantec.com/sha256/timestamp</tsa>
+                        </configuration>            
+                    </plugin>  
+			</plugins>
+		</build>
 	</profile>
 	</profiles>
   <distributionManagement>

@@ -2,9 +2,15 @@ package fi.beans.iconan;
 
 import java.io.InputStream;
 
+import fi.wiskopdr.WiskOpdr;
 import junit.framework.TestCase;
 
 public class SVGTest extends TestCase {
+
+  @Override
+  protected void setUp() throws Exception {
+    new WiskOpdr();
+  }
 
   public void testHeight() throws Exception {
     Iconan ic = new Iconan();
