@@ -9,16 +9,16 @@ import fi.euclides.model.Destroyable;
 import fi.euclides.model.GeoImage;
 import fi.euclides.model.Label;
 import fi.euclides.model.Punt;
-import fi.euclides.model.Segment;
 import fi.euclides.model.Triangle;
 import fi.euclides.model.Visitor;
 import fi.euclides.model.VrijPunt;
-import fi.euclides.model.math.Complex;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.DefaultAdapter;
 import fi.euclides.util.Observable;
 
 public abstract class GeoTriangle extends GeoImage {
+	
+	public static final String NAME = "geo";
 	
 	private final Tracker viewer;
 	private final Triangle t;
