@@ -219,21 +219,24 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 
 // if launchdata contains Tools.GEO_TRIANGLE: 		
 		ObjectMap map = JSONUtilities.wrapMap(launchData);
-		if (map.containsKey("toolbox")) {
-			Collection<Integer> tools = map.getIntegerList("toolbox");
+		installGeoTriangle(map);
+		
+		super.setLaunchData(launchData, random);
+        definitions.readonly = viewer.getModel().getIndex(); // readonly moet gezet na init definitions, niet idempotent, na of voor setState
+	}
+	private void installGeoTriangle(ObjectMap launchData) {
+		if (launchData.containsKey("toolbox")) {
+			Collection<Integer> tools = launchData.getIntegerList("toolbox");
 			if (tools.contains(Tools.GEO_TRIANGLE)) {
 				GeoTriangle triangle = new AWTTriangle(getViewer());
 				triangle.setVisible(false);
-				getViewer().getMapper().rename(triangle, "geo");
+				getViewer().getMapper().rename(triangle, GeoTriangle.NAME);
 				UIModel<?, ?> uimodel = uiModelFactory.build(triangle);
 				uimodel.install();
 				getViewer().getModel().add(triangle);
 				
 			}
 		}
-		
-		super.setLaunchData(launchData, random);
-        definitions.readonly = viewer.getModel().getIndex(); // readonly moet gezet na init definitions, niet idempotent, na of voor setState
 	}
 	
 	/**
@@ -271,6 +274,7 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
 		stop();
 		destroy();
 		init();
+		installGeoTriangle(launchData);
 		installLaunchData();
 		setAssessmentMode(mode); // reset checkbutton.setVisisble voor toets
 		start();
