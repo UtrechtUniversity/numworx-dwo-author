@@ -20,6 +20,53 @@ import fi.euclides.model.math.Numbers;
 
 public abstract class EventHandler {
 
+	private static class PointOnly implements Visitor {
+
+		final private Visitor delegate;
+		
+		private PointOnly(Visitor delegate) {
+			this.delegate = delegate;
+		}
+
+		@Override
+		public void visitPunt(Punt p) {
+			delegate.visitPunt(p);
+		}
+
+		@Override
+		public void visitLijn(Lijn l) {
+		}
+
+		@Override
+		public void visitCirkel(Cirkel c) {
+		}
+
+		@Override
+		public void visitSegment(Segment s) {
+		}
+
+		@Override
+		public void visitLabel(Label label) {
+		}
+
+		@Override
+		public void visitTriangle(Triangle t) {
+		}
+
+		@Override
+		public void visitKegelsnede(Kegelsnede2 k) {
+		}
+
+		@Override
+		public void visitLocus(Locus l) {
+		}
+
+		@Override
+		public void visitBoog(Boog b) {
+		}
+
+	}
+
 	Tracker tracker;
 	protected Visitor decorator = AbstractDecorator.NULL;
 	//Track track;
@@ -105,11 +152,19 @@ public abstract class EventHandler {
 	protected void testHits(double x, double y, TrackerContext context) {
 		clear(context);
 		HitTester hitTester = context.getHitTester();
-		hitTester.setVisitor(inContext(context));
+		Visitor inContext = inContext(context);
+		hitTester.setVisitor(inContext);
 		hitTester.setXY(x, y);
 		done = false;
 		if(testPunt)
+		{
 			getModel().visitPunten(hitTester);
+			if (!done) {
+				hitTester.setVisitor(new PointOnly(inContext));
+				getModel().visitLijnen(new PointOnly(hitTester));
+				hitTester.setVisitor(inContext);
+			}
+		}
 		if(!done && (testLijn||testLabel))
 			getModel().visitLijnen(hitTester);
 		hitTester.done();
