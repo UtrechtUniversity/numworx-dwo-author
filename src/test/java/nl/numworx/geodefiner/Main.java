@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.cbook.cbookif.CBookContext;
@@ -26,7 +25,6 @@ import org.json.simple.parser.ParseException;
 
 import cbookeditor.CBookEditor;
 import fi.wiskopdr.WiskOpdr;
-import fi.wiskopdr.formuleobjects.FormuleParser;
 
 public class Main {
 
