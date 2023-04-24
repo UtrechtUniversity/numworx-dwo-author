@@ -13,8 +13,8 @@
     </parent>
     <modules>
 	<module>../AlgebraPijlenOpdr</module>
-<!--
     	<module>../BalansFruitApplet</module>
+<!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
 -->
