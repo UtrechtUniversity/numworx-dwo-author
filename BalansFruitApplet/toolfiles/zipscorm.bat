@@ -1,0 +1,1 @@
+..\..\..\tools\WZZIP -rp ..\output\scorm\course\balansfruitapplet.zip ..\output\scorm\course\cp\*.*
