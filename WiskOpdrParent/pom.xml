@@ -16,6 +16,7 @@
     	<module>../BalansFruitApplet</module>
 	<module>../BinomVerdeling</module>
 	<module>../DoorzienDWO</module>
+	<module>../Draaibank</module>
 <!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
