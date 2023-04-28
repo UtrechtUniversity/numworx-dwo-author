@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2" xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" identifier="MANIFEST-9ECDE6EE-4D8C-0E0A-E9B1-A1C808BC2ECD" xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata>
+    <schema>ADL SCORM</schema>
+    <schemaversion>1.2</schemaversion>
+    <adlcp:location>metadata.xml</adlcp:location>
+  </metadata>
+  <organizations default="ORG-8EC79A51-8867-DE9B-92F2-B9F154D97691">
+    <organization identifier="ORG-8EC79A51-8867-DE9B-92F2-B9F154D97691" structure="hierarchical">
+      <title>Nabouwen</title>
+      <item identifier="ITEM-314F5FFA-5A9E-AA1C-97C3-083C202D602E" isvisible="true" identifierref="RES-F057EAAB-F695-2D8F-26F6-C95B45A4C365">
+        <title>Nabouwen met drie aanzichten</title>
+      </item>
+      <item identifier="ITEM-D753B15C-3FB7-99B4-D6B1-8286B3EEB32F" isvisible="true" identifierref="RES-3B2D8120-2CC2-07E9-4F02-C5517D9DA78F">
+        <title>Maak een hoogtekaart</title>
+      </item>
+      <item identifier="ITEM-304E0422-EDB3-AC2B-BDB5-DC0199DB7FD2" isvisible="true" identifierref="RES-8883246F-525A-0778-AD12-AD10A3C4E625">
+        <title>Silhouet wordt hoogtekaart</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="RES-F057EAAB-F695-2D8F-26F6-C95B45A4C365" type="webcontent" adlcp:scormtype="sco" href="sco/NabouwenAanzichten1.htm">
+      <file href="sco/NabouwenAanzichten1.htm" />
+      <file href="sco/script/FiScoScript.js" />
+    </resource>
+    <resource identifier="RES-3B2D8120-2CC2-07E9-4F02-C5517D9DA78F" type="webcontent" adlcp:scormtype="sco" href="sco/NabouwenAanzichten2.htm">
+      <file href="sco/NabouwenAanzichten2.htm" />
+      <file href="sco/script/FiScoScript.js" />
+    </resource>
+    <resource identifier="RES-8883246F-525A-0778-AD12-AD10A3C4E625" type="webcontent" adlcp:scormtype="sco" href="sco/NabouwenAanzichten3.htm">
+      <file href="sco/NabouwenAanzichten3.htm" />
+      <file href="sco/script/FiScoScript.js" />
+    </resource>
+  </resources>
+</manifest>
+

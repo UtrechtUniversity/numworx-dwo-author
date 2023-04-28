@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+<lom xmlns="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 
+  http://www.imsglobal.org/xsd/imsmd_rootv1p2p1.xsd">
+  --> 
+<!-- 
+Gebruik onderstaande regel -ipv die hierboven- om dit metadatabestand te valideren tegen het content-zoekprofiel PO v1.0 (zet dan tijdelijk bovenstaande regel tussen de commentaar tekens... 
+--> 
+ 
+<lom xmlns="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.kennisnet.nl/_metadata/schema/ 
+  http://www.kennisnet.nl/_metadata/schema/czp_POVOv1p0.xsd"> 
+ 
+  <general>
+    <title><langstring xml:lang="nl">Nabouwen met aanzichten</langstring></title>
+    <catalogentry>
+      <catalog>URI</catalog>
+      <entry><langstring xml:lang="x-none">http://www.wisweb.nl</langstring></entry>
+    </catalogentry>
+    <language>nl</language>
+    <description><langstring xml:lang="nl">In deze course oefen je ruimtelijk inzicht. Met behulp van aanzichten of silhoueten van blokkenbouwsels moet je dergelijke bouwsels namaken, of een hoogtekaart daarvan maken.</langstring></description>
+    <keyword><langstring xml:lang="nl">ruimtemeetkunde</langstring></keyword>
+    <keyword><langstring xml:lang="nl">ruimtelijk inzicht</langstring></keyword>
+    <keyword><langstring xml:lang="nl">wiskunde</langstring></keyword>
+    <aggregationlevel>
+      <source>
+        <langstring xml:lang="x-none">TPv1.0.2</langstring>
+      </source>
+      <value>
+        <langstring xml:lang="x-none">3</langstring>
+      </value>
+    </aggregationlevel>
+  </general>
+  <lifecycle>
+    <version>
+      <langstring xml:lang="x-none">0.0.0</langstring>
+    </version>
+    <status>
+      <source>
+        <langstring xml:lang="x-none">TPv1.0.2</langstring>
+      </source>
+      <value>
+        <langstring xml:lang="nl">Definitief</langstring>
+      </value>
+    </status>
+  </lifecycle>
+  <metametadata>
+    <metadatascheme>LOMv1.0</metadatascheme>
+    <metadatascheme>TPv1.0.2</metadatascheme>
+  </metametadata>
+  <technical>
+    <format>application/x-java-applet</format>
+    <format>text/html</format>
+  </technical>
+  <educational>
+    <learningresourcetype>
+      <source>
+        <langstring xml:lang="x-none">TPv1.0.2</langstring>
+      </source>
+      <value>
+        <langstring xml:lang="nl">oefening</langstring>
+      </value>
+    </learningresourcetype>
+    <learningresourcetype>
+      <source>
+        <langstring xml:lang="x-none">TPv1.0.2</langstring>
+      </source>
+      <value>
+        <langstring xml:lang="nl">simulatie</langstring>
+      </value>
+    </learningresourcetype>
+    <intendedenduserrole>
+      <source>
+        <langstring xml:lang="x-none">TPv1.0.2</langstring>
+      </source>
+      <value>
+        <langstring xml:lang="nl">Deelnemer</langstring>
+      </value>
+    </intendedenduserrole>
+    <context>
+      <source>
+        <langstring xml:lang="x-none">TPv1.0.2</langstring>
+      </source>
+      <value>
+        <langstring xml:lang="x-none">VO</langstring>
+      </value>
+    </context>
+    <typicalagerange>
+        <langstring xml:lang="x-none">1-149</langstring>
+    </typicalagerange>
+  </educational>
+  <rights>
+    <cost>
+      <source><langstring xml:lang="x-none">TPv1.0.2</langstring></source>
+      <value><langstring xml:lang="nl">ja</langstring></value>
+    </cost>
+    <copyrightandotherrestrictions>
+      <source><langstring xml:lang="x-none">TPv1.0.2</langstring></source>
+      <value><langstring xml:lang="nl">ja</langstring></value>
+    </copyrightandotherrestrictions>
+    <description>
+      <langstring xml:lang="nl">copyright Freudenthal Instituut</langstring>
+    </description>
+  </rights>
+  <classification>
+    <purpose>
+      <source><langstring xml:lang="x-none">TPv1.0.2_anders</langstring></source>
+      <value><langstring xml:lang="nl">Moet nog worden vastgesteld. Als de waarde van source TPV1.0.2_anders is, mag de waarde van value door de gebruiker zelf worden ingevuld.</langstring></value>
+    </purpose>
+  </classification>
+</lom>
+ 
