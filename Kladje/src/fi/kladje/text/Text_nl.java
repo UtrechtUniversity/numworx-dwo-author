@@ -1,0 +1,63 @@
+package fi.kladje.text;
+
+public class Text_nl extends java.util.ListResourceBundle
+{
+        public Object [] [] getContents() { return contents; }
+        static final Object [] [] contents =
+        {
+        	{ "terugTekst" , "terug" },
+        	{ "wisTekst" , "wis" },
+            { "kleurkeuzeTekst" , "Kleurkeuze optie" },
+            { "lijnenTekst" , "Achtergrond lijnen" },
+            { "ruitjesTekst" , "Achtergrond ruitjes 20x20" },
+            { "ruitjes40Tekst" , "Achtergrond ruitjes 40x40" },
+            { "ruitjes80Tekst" , "Achtergrond ruitjes 80x80" },
+            { "blancoTekst" , "Achtergrond blanco" },
+            { "lijnTekenenTekst" , "Lijnen tekenen" },
+            { "rechthoekTekenenTekst" , "Rechthoeken tekenen" },
+            { "cirkelTekenenTekst" , "Cirkels tekenen" },
+            { "tekstTekenenTekst" , "Tekst tekenen" },
+            { "formuleOptieTekst" , "Formule optie" },
+            { "roterenTekst" , "Objecten draaien" },
+            { "schalenTekst" , "Objecten schalen" },
+            { "ivmOptieTekst" , "IVM optie" },
+            { "checkCBLabel" , "Nakijken (door docent)" },
+            { "scoreLabel" , "Score" },
+            
+            {	"titleLoggingLabel", "Nakijken / Logging"},
+	    		{	"checkCB", "Nakijken (door docent)"},
+	    		{	"maxScoreLabel", "Maximale score"},
+	    		{	"logCB", "LogID"},
+	    		{	"titleSettingsLabel", "Instellingen"},
+	    		{	"titleLayoutLabel", "Opmaak"},
+	    		
+	    		{	"toolBarOnTopTekst", "Toolbar boven"},
+           
+            { "CBA_drawing", "tekening"},
+            { "CBA_double.translationX", "translatie x"},
+            { "CBA_double.translationY", "translatie y"},
+            { "CBA_equation", "vergelijking/expressie"},
+            { "CBA_equation.1", "vergelijking/expressie 1"},
+            { "CBA_equation.2", "vergelijking/expressie 2"},
+            { "CBA_equation.3", "vergelijking/expressie 3"},
+            { "CBA_equation.4", "vergelijking/expressie 4"},
+            { "CBA_equation.5", "vergelijking/expressie 5"},
+            { "CBA_equation.6", "vergelijking/expressie 6"},
+            { "CBA_equation.7", "vergelijking/expressie 7"},
+            { "CBA_equation.8", "vergelijking/expressie 8"},
+            { "CBA_equation.9", "vergelijking/expressie 9"},
+            { "CBA_equation.10", "vergelijking/expressie 10"},
+            { "CBA_equation.correct", "correcte vergelijking/expressie"},
+            { "CBA_action.setCorrect", "actie: zet correct"},
+            { "CBA_action.setFalse", "actie: zet fout"},
+            { "CBA_action.setHalf", "actie: zet half"},
+            { "CBA_action.check", "actie: check"},
+            { "CBA_action.check.n", "actie: check n"},
+            { "CBA_action.closePopup", "actie: sluit popup"},
+            { "CBA_action.popup", "actie: popup"},
+            { "CBA_text.strokecode", "strokecodes"},
+            
+		};
+}
+
+

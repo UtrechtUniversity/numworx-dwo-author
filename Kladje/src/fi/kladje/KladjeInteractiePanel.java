@@ -1,0 +1,1820 @@
+package fi.kladje;
+
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
+
+import javax.swing.*;
+
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventHandler;
+import org.cbook.cbookif.CBookEventListener;
+
+import fi.beans.wiskopdrbeans.WiskOpdrApplet;
+// deze moet vanwege interface WiskOpdrApplet
+import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.CBookAware;
+// deze moet vanwege interface InteractiePanel
+import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.kladje.Kladje.TekenGumAL;
+
+public class KladjeInteractiePanel extends JPanel implements InteractiePanel, InteractieEditPanel,
+							                                ActionListener,CBookAware
+									
+{
+	Image penDefault, penRollover, penSelected, gumDefault, gumRollover, gumSelected;
+	ImageIcon penDefaultIcon, penRolloverIcon, penSelectedIcon, gumDefaultIcon, gumRolloverIcon, gumSelectedIcon;
+	Image tekenCursor, gumCursor;
+	ImageIcon tekenCursorIcon, gumCursorIcon; 
+	
+	Image formuleDefault, formuleRollover, formuleSelected, lijnDefault, lijnRollover, lijnSelected, rechthoekDefault, rechthoekRollover, rechthoekSelected,
+		  cirkelDefault, cirkelRollover, cirkelSelected, tekstDefault, tekstRollover, tekstSelected,
+		  selecterenDefault, selecterenRollover, selecterenSelected, kleurKeuzeIm, binKnopIm, terugKnopIm;
+	ImageIcon lijnDefaultIcon, lijnRolloverIcon, lijnSelectedIcon, rechthoekDefaultIcon, rechthoekRolloverIcon, rechthoekSelectedIcon,
+			  cirkelDefaultIcon, cirkelRolloverIcon, cirkelSelectedIcon, tekstDefaultIcon, tekstRolloverIcon, tekstSelectedIcon,
+			  selecterenDefaultIcon, selecterenRolloverIcon, selecterenSelectedIcon, formuleDefaultIcon, formuleRolloverIcon, formuleSelectedIcon,
+			  kleurKeuzeIcon, binKnopIcon, terugKnopIcon;
+	
+	Image lijnCursor, rechthoekCursor, cirkelCursor, tekstCursor, selecterenCursor;
+	ImageIcon lijnCursorIcon, rechthoekCursorIcon, cirkelCursorIcon, tekstCursorIcon, selecterenCursorIcon; 
+	
+	Image roteerLinksom, roteerRechtsom, vergroot, verklein;
+	ImageIcon roteerLinksomIcon, roteerRechtsomIcon, vergrootIcon, verkleinIcon;
+	
+	protected static Color bgColor = new Color(231, 233, 235);
+	
+//	Color[] kleuren = {Color.black, Color.white, Color.gray, Color.lightGray, Color.red,     Color.orange,
+//			   Color.yellow,Color.green, Color.cyan, Color.blue,      Color.magenta, Color.pink};
+
+	Color[] kleuren = {Color.black, Color.lightGray, Color.red, Color.orange,
+	                   Color.green, Color.cyan, Color.blue, Color.magenta};
+	
+	KladjeVeld kladjeVeld;
+	int bottomHeight = 35;
+	int offSet = 5;
+	
+	JToggleButton tekenButton, lijnButton, rechthoekButton, cirkelButton, tekstButton, formuleButton, selecterenButton;
+	ButtonGroup tekenGumGroup;
+	JButton undoButton, wisButton;
+	JToggleButton[] kleurKeuzeButtons;
+	ButtonGroup kleurKeuzeGroup;
+	JButton kleurKeuzeButton;
+
+	JButton roteerLinksomButton, roteerRechtsomButton, vergrootButton, verkleinButton;
+	
+	// fonts
+	Font theFont;
+	FontMetrics theFM;
+	Font theBoldFont;
+	FontMetrics theBoldFM;
+	
+	int score = 0;
+	int scoreMax = 10;
+	
+	
+	boolean noSetBounds = false;
+	
+	boolean kleurkeuze = true;
+	boolean lijnen = false;
+	boolean ruitjes = false;
+	int ruitjessize = 20;
+	boolean lijnTekenen = true;
+	boolean rechthoekTekenen = true;
+	boolean cirkelTekenen = true;
+	boolean tekstTekenen = true;
+	boolean formuleOptie = false;
+	boolean ivmOptie = false;
+	boolean toolBarOnTop;
+//	boolean selecteren = true;
+	
+	boolean roteren = true;
+	boolean schalen = true;
+	
+	private Point translation = new Point(0,0);
+	private double scale = 1.0;
+	
+	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
+	
+	
+	public KladjeInteractiePanel()
+	{
+		setBorder(BorderFactory.createDashedBorder(Color.LIGHT_GRAY));
+		setLayout(null);
+		//setBackground(bgColor);
+		setOpaque(false);
+		
+System.out.println("klip " + getBackground().toString());		
+		
+		
+		// echte initiatie vind pas plaats na setBounds
+		
+		java.net.URL imageURL = Kladje.class.getResource("resources/teken_penknop_up.png");
+		if (imageURL != null) 
+		{
+			penDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_penknop_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_penknop_up.png");
+		if (imageURL != null) 
+		{
+			penRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_penknop_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_penknop_down.png");
+		if (imageURL != null) 
+		{
+			penSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_penknop_down.png");
+		}
+
+		imageURL = Kladje.class.getResource("resources/teken_gumknop_default.gif");
+		if (imageURL != null) 
+		{
+			gumDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_gumknop_default.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_gumknop_rollover.gif");
+		if (imageURL != null) 
+		{
+			gumRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_gumknop_rollover.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_gumknop_selected.gif");
+		if (imageURL != null) 
+		{
+			gumSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_gumknop_selected.gif");
+		}
+		
+		
+		imageURL = Kladje.class.getResource("resources/teken_lijn_up.png");
+		if (imageURL != null) 
+		{
+			lijnDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_lijn_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_lijn_up.png");
+		if (imageURL != null) 
+		{
+			lijnRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_lijn_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_lijn_down.png");
+		if (imageURL != null) 
+		{
+			lijnSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_lijn_down.png");
+		}
+		
+
+		imageURL = Kladje.class.getResource("resources/teken_rechthoek_up.png");
+		if (imageURL != null) 
+		{
+			rechthoekDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_rechthoek_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_rechthoek_up.png");
+		if (imageURL != null) 
+		{
+			rechthoekRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_rechthoek_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_rechthoek_down.png");
+		if (imageURL != null) 
+		{
+			rechthoekSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_rechthoek_down.pngf");
+		}
+
+		imageURL = Kladje.class.getResource("resources/teken_cirkel_up.png");
+		if (imageURL != null) 
+		{
+			cirkelDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_cirkel_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_cirkel_up.png");
+		if (imageURL != null) 
+		{
+			cirkelRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_cirkel_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_cirkel_down.png");
+		if (imageURL != null) 
+		{
+			cirkelSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_cirkel_down.png");
+		}
+
+		imageURL = Kladje.class.getResource("resources/teken_tekst_up.png");
+		if (imageURL != null) 
+		{
+			tekstDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_tekst_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_tekst_up.png");
+		if (imageURL != null) 
+		{
+			tekstRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_tekst_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_tekst_down.png");
+		if (imageURL != null) 
+		{
+			tekstSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_tekst_down.png");
+		}
+		
+		imageURL = Kladje.class.getResource("resources/teken_formule_up.png");
+		if (imageURL != null) 
+		{
+			formuleDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_formule_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_formule_up.png");
+		if (imageURL != null) 
+		{
+			formuleRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_formule_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_formule_down.png");
+		if (imageURL != null) 
+		{
+			formuleSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_formule_down.png");
+		}
+		
+		imageURL = Kladje.class.getResource("resources/teken_selecteren_up.png");
+		if (imageURL != null) 
+		{
+			selecterenDefaultIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_selecteren_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_selecteren_up.png");
+		if (imageURL != null) 
+		{
+			selecterenRolloverIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_selecteren_up.png");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_selecteren_down.png");
+		if (imageURL != null) 
+		{
+			selecterenSelectedIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_selecteren_down.png.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/regenboog3.png");
+		if (imageURL != null) 
+		{
+			kleurKeuzeIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading regenboog3.png");
+		}
+		imageURL = Kladje.class.getResource("resources/binknop.png");
+		if (imageURL != null) 
+		{
+			binKnopIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading binknop.png");
+		}
+		imageURL = Kladje.class.getResource("resources/terug.png");
+		if (imageURL != null) 
+		{
+			terugKnopIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading terug.png");
+		}
+		
+		imageURL = Kladje.class.getResource("resources/tekencursor.gif");
+		if (imageURL != null) 
+		{
+			tekenCursorIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading tekencursor.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/gumcursor.gif");
+		if (imageURL != null) 
+		{
+			gumCursorIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading gumcursor.gif");
+		}
+
+		imageURL = Kladje.class.getResource("resources/teken_lijn_cursor.gif");
+		if (imageURL != null) 
+		{
+			lijnCursorIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_lijn_lijncursor.gif");
+		}
+
+		imageURL = Kladje.class.getResource("resources/teken_rechthoek_cursor.gif");
+		if (imageURL != null) 
+		{
+			rechthoekCursorIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_rechthoek_cursor.gif");
+		}
+		
+		imageURL = Kladje.class.getResource("resources/teken_cirkel_cursor.gif");
+		if (imageURL != null) 
+		{
+			cirkelCursorIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_cirkel_cursor.gif");
+		}
+
+		imageURL = Kladje.class.getResource("resources/teken_tekst_cursor.gif");
+		if (imageURL != null) 
+		{
+			tekstCursorIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_tekst_cursor.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/teken_selecteren_cursor.gif");
+		if (imageURL != null) 
+		{
+			selecterenCursorIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading teken_selecteren_cursor.gif");
+		}
+		
+		imageURL = Kladje.class.getResource("resources/roteer-links.gif");
+		if (imageURL != null) 
+		{
+			roteerLinksomIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading roteer-links.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/roteer-rechts.gif");
+		if (imageURL != null) 
+		{
+			roteerRechtsomIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading roteer-rechts.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/zoominknop.gif");
+		if (imageURL != null) 
+		{
+			vergrootIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading zoominknop.gif");
+		}
+		imageURL = Kladje.class.getResource("resources/zoomuitknop.gif");
+		if (imageURL != null) 
+		{
+			verkleinIcon = new ImageIcon(imageURL);
+		}
+		else 
+		{
+			System.out.println("Error reading zoomuitknop.gif");
+		}
+		
+		
+		
+		penDefault = penDefaultIcon.getImage();
+		penRollover = penRolloverIcon.getImage();
+		penSelected = penSelectedIcon.getImage();
+		gumDefault = gumDefaultIcon.getImage();
+		gumRollover = gumRolloverIcon.getImage();
+		gumSelected = gumSelectedIcon.getImage();
+		if (lijnDefaultIcon != null)
+			lijnDefault = lijnDefaultIcon.getImage();
+		if (lijnRolloverIcon != null)
+			lijnRollover = lijnRolloverIcon.getImage();
+		if (lijnSelectedIcon != null)
+			lijnSelected = lijnSelectedIcon.getImage();
+		if (rechthoekDefaultIcon != null)
+			rechthoekDefault = rechthoekDefaultIcon.getImage();
+		if (rechthoekRolloverIcon != null)
+			rechthoekRollover = rechthoekRolloverIcon.getImage();
+		if (rechthoekSelectedIcon != null)
+			rechthoekSelected = rechthoekSelectedIcon.getImage();
+		if (cirkelDefaultIcon != null)
+			cirkelDefault = cirkelDefaultIcon.getImage();
+		if (cirkelRolloverIcon != null)
+			cirkelRollover = cirkelRolloverIcon.getImage();
+		if (cirkelSelectedIcon != null)
+			cirkelSelected = cirkelSelectedIcon.getImage();
+		if (tekstDefaultIcon != null)
+			tekstDefault = tekstDefaultIcon.getImage();
+		if (tekstRolloverIcon != null)
+			tekstRollover = tekstRolloverIcon.getImage();
+		if (tekstSelectedIcon != null)
+			tekstSelected = tekstSelectedIcon.getImage();
+		if (formuleDefaultIcon != null)
+			formuleDefault = formuleDefaultIcon.getImage();
+		if (formuleRolloverIcon != null)
+			formuleRollover = formuleRolloverIcon.getImage();
+		if (formuleSelectedIcon != null)
+			formuleSelected = formuleSelectedIcon.getImage();
+		if (selecterenDefaultIcon != null)
+			selecterenDefault = selecterenDefaultIcon.getImage();
+		if (selecterenRolloverIcon != null)
+			selecterenRollover = selecterenRolloverIcon.getImage();
+		if (selecterenSelectedIcon != null)
+			selecterenSelected = selecterenSelectedIcon.getImage();
+		
+		
+		tekenCursor = tekenCursorIcon.getImage();
+		gumCursor = gumCursorIcon.getImage();
+		if (lijnCursorIcon != null)
+			lijnCursor = lijnCursorIcon.getImage();
+		if (rechthoekCursorIcon != null)
+			rechthoekCursor = rechthoekCursorIcon.getImage();
+		if (cirkelCursorIcon != null)
+			cirkelCursor = cirkelCursorIcon.getImage();
+		if (tekstCursorIcon != null)
+			tekstCursor = tekstCursorIcon.getImage();
+		if (selecterenCursorIcon != null)
+			selecterenCursor = selecterenCursorIcon.getImage();
+				
+		if (roteerLinksomIcon != null)
+			roteerLinksom = roteerLinksomIcon.getImage();
+		if (roteerRechtsomIcon != null)
+			roteerRechtsom = roteerRechtsomIcon.getImage();
+		if (vergrootIcon != null)
+			vergroot = vergrootIcon.getImage();
+		if (verkleinIcon != null)
+			verklein = verkleinIcon.getImage();
+		
+		
+		// fonts	    
+		theFont = new Font("Dialog", Font.PLAIN, 12);
+		theFM = getFontMetrics(theFont);
+		theBoldFont = new Font("Dialog", Font.BOLD, 12);
+		theBoldFM = getFontMetrics(theBoldFont);
+		
+	}
+
+	public void paintComponent(Graphics g)
+	{
+		g.setColor(bgColor);
+		if(toolBarOnTop) {
+			g.fillRect(0, 0, getSize().width, bottomHeight);
+		}
+		else
+			g.fillRect(0, getSize().height - bottomHeight, getSize().width, bottomHeight);
+	}
+	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues)
+	{
+		boolean toolBarOnTop = false;
+		if (b.containsKey("toolBarOnTop"))
+			toolBarOnTop = ((Boolean) b.get("toolBarOnTop")).booleanValue();
+		zetToolBarOnTop(toolBarOnTop);
+		boolean kleurkeuze = true;
+		if (b.containsKey("kleurkeuze"))
+			kleurkeuze = ((Boolean) b.get("kleurkeuze")).booleanValue();
+		zetKleurkeuze(kleurkeuze);
+		boolean lijnen = false;
+		if (b.containsKey("lijnen"))
+			lijnen = ((Boolean) b.get("lijnen")).booleanValue();
+		zetLijnen(lijnen);
+		boolean ruitjes = false;
+		if (b.containsKey("ruitjes"))
+			ruitjes = ((Boolean) b.get("ruitjes")).booleanValue();
+		int ruitjessize = 20;
+		if (b.containsKey("ruitjessize"))
+			ruitjessize = ((Integer) b.get("ruitjessize")).intValue();
+		zetRuitjes(ruitjes,ruitjessize);
+
+		boolean lijnTekenen = true;
+		if (b.containsKey("lijnTekenen"))
+			lijnTekenen = ((Boolean) b.get("lijnTekenen")).booleanValue();
+		zetLijnTekenen(lijnTekenen);
+		boolean rechthoekTekenen = true;
+		if (b.containsKey("rechthoekTekenen"))
+			rechthoekTekenen = ((Boolean) b.get("rechthoekTekenen")).booleanValue();
+		zetRechthoekTekenen(rechthoekTekenen);
+		boolean cirkelTekenen = true;
+		if (b.containsKey("cirkelTekenen"))
+			cirkelTekenen = ((Boolean) b.get("cirkelTekenen")).booleanValue();
+		zetCirkelTekenen(cirkelTekenen);
+		boolean tekstTekenen = true;
+		if (b.containsKey("tekstTekenen"))
+			tekstTekenen = ((Boolean) b.get("tekstTekenen")).booleanValue();
+		zetTekstTekenen(tekstTekenen);
+		if (b.containsKey("formuleOptie"))
+			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue();
+		zetFormuleOptie(formuleOptie);
+		
+		boolean roteren = true;
+		if (b.containsKey("roteren"))
+			roteren = ((Boolean) b.get("roteren")).booleanValue();
+		zetRoteren(roteren);
+		boolean schalen = true;
+		if (b.containsKey("schalen"))
+			schalen = ((Boolean) b.get("schalen")).booleanValue();
+		zetSchalen(schalen);
+		
+		int translationx = 0;
+		if(b.containsKey("translationX"))
+			translationx = ((Integer) b.get("translationX")).intValue();
+		int translationy = 0;
+		if(b.containsKey("translationY"))
+			translationy = ((Integer) b.get("translationY")).intValue();
+		zetTranslation(translationx,translationy);
+		
+		double scale = 0;
+		if(b.containsKey("scale"))
+			scale = ((Double) b.get("scale")).doubleValue();
+		zetScale(scale);
+			
+		
+/*		
+		// backwards-compatibility
+		Vector stateVector = new Vector();
+		Vector gwtStateVector = new Vector();
+		if (b.containsKey("gwtpixels"))
+		{	gwtStateVector = (Vector) b.get("gwtpixels");
+			if (gwtStateVector.size() > 0)
+				kladjeVeld.setGWTState(gwtStateVector);
+		}	
+		else if (b.containsKey("pixels"))
+		{	stateVector = (Vector) b.get("pixels");
+			if (stateVector.size() > 0)
+				kladjeVeld.setState(stateVector);
+		}
+*/
+		kladjeVeld.setState(b,true);
+		
+	}
+	
+	public void setState(Hashtable b)
+	{
+/*		
+		Vector stateVector = new Vector();
+		Vector gwtStateVector = new Vector();
+		if (b.containsKey("gwtpixels"))
+		{	gwtStateVector = (Vector) b.get("gwtpixels");
+			if (gwtStateVector.size() > 0)
+				kladjeVeld.setGWTState(gwtStateVector);
+		}	
+		else if (b.containsKey("pixels"))
+		{	stateVector = (Vector) b.get("pixels");
+			if (stateVector.size() > 0)
+				kladjeVeld.setState(stateVector);
+		}	
+*/
+		kladjeVeld.setState(b,false);
+	}
+	
+	public void setEditState(Hashtable b)
+	{
+		boolean toolBarOnTop = false;
+		if (b.containsKey("toolBarOnTop"))
+			toolBarOnTop = ((Boolean) b.get("toolBarOnTop")).booleanValue();
+		zetToolBarOnTop(toolBarOnTop);
+		boolean kleurkeuze = true;
+		if (b.containsKey("kleurkeuze"))
+			kleurkeuze = ((Boolean) b.get("kleurkeuze")).booleanValue();
+		zetKleurkeuze(kleurkeuze);
+		boolean lijnen = false;
+		if (b.containsKey("lijnen"))
+			lijnen = ((Boolean) b.get("lijnen")).booleanValue();
+		zetLijnen(lijnen);
+		boolean ruitjes = false;
+		if (b.containsKey("ruitjes"))
+			ruitjes = ((Boolean) b.get("ruitjes")).booleanValue();
+		int ruitjessize = 20;
+		if (b.containsKey("ruitjessize"))
+			ruitjessize = ((Integer) b.get("ruitjessize")).intValue();
+		zetRuitjes(ruitjes,ruitjessize);
+
+		boolean lijnTekenen = true;
+		if (b.containsKey("lijnTekenen"))
+			lijnTekenen = ((Boolean) b.get("lijnTekenen")).booleanValue();
+		zetLijnTekenen(lijnTekenen);
+		boolean rechthoekTekenen = true;
+		if (b.containsKey("rechthoekTekenen"))
+			rechthoekTekenen = ((Boolean) b.get("rechthoekTekenen")).booleanValue();
+		zetRechthoekTekenen(rechthoekTekenen);
+		boolean cirkelTekenen = true;
+		if (b.containsKey("cirkelTekenen"))
+			cirkelTekenen = ((Boolean) b.get("cirkelTekenen")).booleanValue();
+		zetCirkelTekenen(cirkelTekenen);
+		boolean tekstTekenen = true;
+		if (b.containsKey("tekstTekenen"))
+			tekstTekenen = ((Boolean) b.get("tekstTekenen")).booleanValue();
+		zetTekstTekenen(tekstTekenen);
+		if (b.containsKey("formuleOptie"))
+			formuleOptie = ((Boolean) b.get("formuleOptie")).booleanValue();
+		zetFormuleOptie(formuleOptie);
+		if (b.containsKey("ivmOptie"))
+			ivmOptie = ((Boolean) b.get("ivmOptie")).booleanValue();
+		zetIvmOptie(ivmOptie);
+		
+		boolean roteren = true;
+		if (b.containsKey("roteren"))
+			roteren = ((Boolean) b.get("roteren")).booleanValue();
+		zetRoteren(roteren);
+		boolean schalen = true;
+		if (b.containsKey("schalen"))
+			schalen = ((Boolean) b.get("schalen")).booleanValue();
+		zetSchalen(schalen);
+		
+		int translationx = 0;
+		if(b.containsKey("translationX"))
+			translationx = ((Integer) b.get("translationX")).intValue();
+		int translationy = 0;
+		if(b.containsKey("translationY"))
+			translationy = ((Integer) b.get("translationY")).intValue();
+		zetTranslation(translationx,translationy);
+		
+		double scale = 1.0;
+		if(b.containsKey("scale"))
+			scale = ((Double) b.get("scale")).doubleValue();
+		zetScale(scale);
+		
+/*		
+		Vector stateVector = new Vector();
+		Vector gwtStateVector = new Vector();
+		if (b.containsKey("gwtpixels"))
+		{	gwtStateVector = (Vector) b.get("gwtpixels");
+			if (gwtStateVector.size() > 0)
+				kladjeVeld.setGWTState(gwtStateVector);
+		}	
+		else if (b.containsKey("pixels"))
+		{	stateVector = (Vector) b.get("pixels");
+			if (stateVector.size() > 0)
+				kladjeVeld.setState(stateVector);
+		}	
+*/
+		kladjeVeld.setState(b,false);
+
+	}
+	
+	public Hashtable getState()
+	{
+		Hashtable h = kladjeVeld.getState();
+
+//		Vector stateVector = kladjeVeld.getState();
+//		h.put("pixels", stateVector);
+		
+		//Vector gwtStateVector = kladjeVeld.getGWTState();
+		//h.put("gwtpixels", gwtStateVector);
+		
+		return h;
+		
+	}
+	
+	public Hashtable getEditState()
+	{
+		//Hashtable h = new Hashtable();
+		Hashtable h = kladjeVeld.getState();
+		
+		h.put("toolBarOnTop", new Boolean(toolBarOnTop));
+		h.put("kleurkeuze", new Boolean(kleurkeuze));
+		h.put("lijnen", new Boolean(lijnen));
+		h.put("ruitjes", new Boolean(ruitjes));
+		h.put("ruitjessize", new Integer(ruitjessize));
+		h.put("lijnTekenen", new Boolean(lijnTekenen));
+		h.put("rechthoekTekenen", new Boolean(rechthoekTekenen));
+		h.put("cirkelTekenen", new Boolean(cirkelTekenen));
+		h.put("tekstTekenen", new Boolean(tekstTekenen));
+		h.put("formuleOptie", new Boolean(formuleOptie));
+		h.put("ivmOptie", new Boolean(ivmOptie));
+		
+		h.put("roteren", new Boolean(roteren));
+		h.put("schalen", new Boolean(schalen));
+		
+		h.put("translationX", translation.x);
+		h.put("translationY", translation.y);
+		h.put("scale", scale);
+		
+//		Vector stateVector = kladjeVeld.getState();
+//		h.put("pixels", stateVector);
+
+		//Vector gwtStateVector = kladjeVeld.getGWTState();
+		//h.put("gwtpixels", gwtStateVector);
+		
+		return h;
+	}
+	
+	
+	
+	public InteractieEditPanel getEditPanel()
+	{
+		return new KladjeInteractieEditPanel(this);
+	}
+		
+	public void zetKleurkeuze(boolean b)
+	{
+		kleurkeuze = b;
+//		for (int i = 0; i < kleurKeuzeButtons.length; i++)
+//		{	noSetBounds = true;
+//			kleurKeuzeButtons[i].setVisible(kleurkeuze);
+//		}
+		kleurKeuzeButton.setVisible(kleurkeuze);
+		
+	}
+	
+	public void zetLijnen(boolean b)
+	{
+		lijnen = b;
+		if (lijnen)
+			ruitjes = false;
+		kladjeVeld.zetLijnen(lijnen);
+		kladjeVeld.zetRuitjes(ruitjes, 20);
+	}
+	
+	public void zetRuitjes(boolean b, int size)
+	{
+		ruitjes = b;
+		ruitjessize = size;
+		if (ruitjes)
+			lijnen = false;
+		kladjeVeld.zetLijnen(lijnen);
+		kladjeVeld.zetRuitjes(ruitjes, size);
+		
+	}
+	
+	public void zetLijnTekenen(boolean b)
+	{
+		lijnTekenen = b;
+		lijnButton.setVisible(lijnTekenen);
+		
+		layoutBottom();
+	}
+
+	public void zetRechthoekTekenen(boolean b)
+	{
+		rechthoekTekenen = b;
+		rechthoekButton.setVisible(rechthoekTekenen);
+		
+		layoutBottom();
+	}
+
+	public void zetCirkelTekenen(boolean b)
+	{
+		cirkelTekenen = b;
+		cirkelButton.setVisible(cirkelTekenen);
+		
+		layoutBottom();
+	}
+	
+	public void zetTekstTekenen(boolean b)
+	{
+		tekstTekenen = b;
+		tekstButton.setVisible(tekstTekenen);
+		
+		layoutBottom();
+	}
+	
+	public void zetToolBarOnTop(boolean b) {
+		toolBarOnTop = b;
+		
+		layoutBottom();
+	}
+	public void zetIvmOptie(boolean b)
+	{
+		ivmOptie = b;
+		//formuleButton.setVisible(formuleOptie);
+		
+		//layoutBottom();
+	}
+	
+	public void zetFormuleOptie(boolean b)
+	{
+		formuleOptie = b;
+		formuleButton.setVisible(formuleOptie);
+		
+		layoutBottom();
+	}
+	
+	public void zetRoteren(boolean b)
+	{
+		roteren = b;
+		//KladjeVeld.roteren = b;
+		kladjeVeld.zetRoteren(b);
+		
+		layoutBottom();
+		if (kladjeVeld.mouseMode == kladjeVeld.selecteren)
+		{
+			//setRotateScaleButtons(true);
+		}
+		else
+		{
+			//setRotateScaleButtons(false);
+		}
+	}
+
+	public void zetSchalen(boolean b)
+	{
+		schalen = b;
+		//KladjeVeld.schalen = b;
+		kladjeVeld.zetSchalen(b);
+		
+		layoutBottom();
+
+		if (kladjeVeld.mouseMode == kladjeVeld.selecteren)
+		{
+			//setRotateScaleButtons(true);
+		}
+		else
+		{
+			//setRotateScaleButtons(false);
+		}
+		
+	}
+	
+	public void zetTranslation(int x, int y)
+	{
+		this.translation = new Point(x,y);
+		kladjeVeld.zetTranslation(x, y);
+	}
+	
+	public void zetScale(double scale)
+	{
+		this.scale = scale;
+		kladjeVeld.zetScale(scale);
+	}
+	
+	public void layoutBottom()
+	{
+// dit kan wel iets eenvoudiger, vgl Grafiek3DTest	
+		
+		int currentX = selecterenButton.getLocation().x + selecterenButton.getSize().width + 2*offSet;
+		int currentY = getSize().height - offSet - 25; 
+		if(toolBarOnTop)
+			currentY = offSet;
+		
+		selecterenButton.setLocation(offSet, currentY);
+		
+		tekenButton.setLocation(currentX, currentY);
+		currentX += tekenButton.getSize().width + offSet;
+		
+		if (lijnTekenen)
+		{
+			lijnButton.setLocation(currentX, currentY);
+			currentX += lijnButton.getSize().width + offSet;
+			
+		}
+		
+		if (rechthoekTekenen)
+		{
+			rechthoekButton.setLocation(currentX, currentY);
+			currentX += rechthoekButton.getSize().width + offSet;
+			
+		}
+		
+		if (cirkelTekenen)
+		{
+			cirkelButton.setLocation(currentX, currentY);
+			currentX += cirkelButton.getSize().width + offSet;
+			
+		}
+		
+		if (tekstTekenen)
+		{
+			tekstButton.setLocation(currentX, currentY);
+			currentX += tekstButton.getSize().width + offSet;
+			
+		}
+		if (kleurkeuze)
+		{
+			currentX += tekstButton.getSize().width + 3*offSet;
+			kleurKeuzeButton.setLocation(currentX, currentY);
+			currentX += tekstButton.getSize().width + offSet;
+			
+		}
+		
+		if (formuleOptie)
+		{
+			formuleButton.setLocation(currentX, currentY);
+			currentX += formuleButton.getSize().width + offSet;
+			
+		}
+		
+		undoButton.setLocation(getWidth()-50-2*offSet, currentY);
+		
+		wisButton.setLocation(getWidth()-25-offSet, currentY);
+		
+		for (int i = 0; i < kleurKeuzeButtons.length; i++)
+		{	kleurKeuzeButtons[i].setLocation(currentX + 20 * i, currentY); 
+		}
+		
+		if (roteren)
+		{
+			roteerLinksomButton.setLocation(currentX, currentY);
+			currentX += roteerLinksomButton.getSize().width + offSet;
+			roteerRechtsomButton.setLocation(currentX, currentY);
+			currentX += roteerRechtsomButton.getSize().width + offSet;
+			
+		}
+		
+		if (schalen)
+		{
+			vergrootButton.setLocation(currentX, currentY);
+			currentX += vergrootButton.getSize().width + offSet;
+			verkleinButton.setLocation(currentX, currentY);
+			currentX += verkleinButton.getSize().width + offSet;
+		}
+		
+		kladjeVeld.zetToolBarOnTop(toolBarOnTop);
+		kladjeVeld.setLocation(0, toolBarOnTop ? bottomHeight : 0);
+		
+
+		
+	}
+	public void setBounds(int x, int y, int b, int h)
+	{
+		
+		if (noSetBounds)
+		{	noSetBounds = false;
+			return;
+		}
+		
+		if (h == 1)
+			return;
+		
+		if ((getLocation().x == x) && (getLocation().y == y) &&
+			(getSize().width == b) && (getSize().height == h))
+			return;
+			
+		super.setBounds(x, y, b, h);
+//System.out.println("klip set bounds " + b + " " + h);		
+		
+		
+		if (kladjeVeld == null) 
+		{	//kladjeVeld = new KladjeVeld(b - 2 * offSet, h - offSet - bottomHeight);
+			//kladjeVeld.setLocation(offSet, offSet);
+			
+			kladjeVeld = new KladjeVeld(b, h - bottomHeight);
+			kladjeVeld.setLocation(0, toolBarOnTop ? bottomHeight : 0);
+			kladjeVeld.addActionListener(this);
+			kladjeVeld.zetToolBarOnTop(toolBarOnTop);
+			add(kladjeVeld);
+//System.out.println("kladjeVeld created");
+			tekenGumGroup = new ButtonGroup();
+
+			if (selecterenDefault != null && selecterenRollover != null && selecterenSelected != null)
+			{
+				selecterenButton = new JToggleButton(new ImageIcon(selecterenDefault), false);
+				selecterenButton.setRolloverIcon(new ImageIcon(selecterenRollover));
+				selecterenButton.setSelectedIcon(new ImageIcon(selecterenSelected));
+				
+			}
+			else
+			{
+				selecterenButton = new JToggleButton("S");
+			}
+			selecterenButton.setBorder(null);
+			selecterenButton.setBounds(offSet, toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
+			add(selecterenButton);
+			selecterenButton.addActionListener(new TekenGumAL());
+			
+			tekenButton = new JToggleButton(new ImageIcon(penDefault), true);
+			tekenButton.setRolloverIcon(new ImageIcon(penRollover));
+			tekenButton.setSelectedIcon(new ImageIcon(penSelected));
+			tekenButton.setBorder(null);
+			tekenButton.setBounds(selecterenButton.getLocation().x + selecterenButton.getSize().width + 2*offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
+			add(tekenButton);
+			tekenButton.addActionListener(new TekenGumAL());
+
+/*			
+			gumButton = new JToggleButton(new ImageIcon(gumDefault), false);
+			gumButton.setRolloverIcon(new ImageIcon(gumRollover));
+			gumButton.setSelectedIcon(new ImageIcon(gumSelected));
+			gumButton.setBorder(null);
+			gumButton.setBounds(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
+					            getSize().height - offSet - 20, 20, 20);
+			add(gumButton);
+			gumButton.addActionListener(new TekenGumAL());
+*/			
+			
+			if (lijnDefault != null && lijnRollover != null && lijnSelected != null)
+			{
+				lijnButton = new JToggleButton(new ImageIcon(lijnDefault), false);
+				lijnButton.setRolloverIcon(new ImageIcon(lijnRollover));
+				lijnButton.setSelectedIcon(new ImageIcon(lijnSelected));
+				
+			}
+			else
+			{
+				lijnButton = new JToggleButton("/");
+			}
+			lijnButton.setBorder(null);
+			lijnButton.setBounds(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
+			add(lijnButton);
+			lijnButton.addActionListener(new TekenGumAL());
+			
+			
+			if (rechthoekDefault != null && rechthoekRollover != null && rechthoekSelected != null)
+			{
+				rechthoekButton = new JToggleButton(new ImageIcon(rechthoekDefault), false);
+				rechthoekButton.setRolloverIcon(new ImageIcon(rechthoekRollover));
+				rechthoekButton.setSelectedIcon(new ImageIcon(rechthoekSelected));
+				
+			}
+			else
+			{
+				rechthoekButton = new JToggleButton("#");
+			}
+			rechthoekButton.setBorder(null);
+			rechthoekButton.setBounds(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
+			add(rechthoekButton);
+			rechthoekButton.addActionListener(new TekenGumAL());
+
+			if (cirkelDefault != null && cirkelRollover != null && cirkelSelected != null)
+			{
+				cirkelButton = new JToggleButton(new ImageIcon(cirkelDefault), false);
+				cirkelButton.setRolloverIcon(new ImageIcon(cirkelRollover));
+				cirkelButton.setSelectedIcon(new ImageIcon(cirkelSelected));
+				
+			}
+			else
+			{
+				cirkelButton = new JToggleButton("o");
+			}
+			cirkelButton.setBorder(null);
+			cirkelButton.setBounds(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
+			add(cirkelButton);
+			cirkelButton.addActionListener(new TekenGumAL());
+			
+			if (tekstDefault != null && tekstRollover != null && tekstSelected != null)
+			{
+				tekstButton = new JToggleButton(new ImageIcon(tekstDefault), false);
+				tekstButton.setRolloverIcon(new ImageIcon(tekstRollover));
+				tekstButton.setSelectedIcon(new ImageIcon(tekstSelected));
+				
+			}
+			else
+			{
+				tekstButton = new JToggleButton("T");
+			}
+			tekstButton.setBorder(null);
+			tekstButton.setBounds(cirkelButton.getLocation().x + cirkelButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
+			add(tekstButton);
+			tekstButton.addActionListener(new TekenGumAL());
+			
+			if (formuleDefault != null && formuleRollover != null && formuleSelected != null)
+			{
+				formuleButton = new JToggleButton(new ImageIcon(formuleDefault), false);
+				formuleButton.setRolloverIcon(new ImageIcon(formuleRollover));
+				formuleButton.setSelectedIcon(new ImageIcon(formuleSelected));
+				formuleButton.setVisible(formuleOptie);
+				
+			}
+			else
+			{
+				formuleButton = new JToggleButton("F");
+			}
+			formuleButton.setBorder(null);
+			formuleButton.setBounds(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 20, 20);
+			//add(formuleButton);
+			formuleButton.addActionListener(new TekenGumAL());
+			
+			
+			
+			
+			tekenGumGroup.add(tekenButton);
+//			tekenGumGroup.add(gumButton);
+			tekenGumGroup.add(lijnButton);
+			tekenGumGroup.add(rechthoekButton);
+			tekenGumGroup.add(cirkelButton);
+			tekenGumGroup.add(tekstButton);
+			tekenGumGroup.add(formuleButton);
+			tekenGumGroup.add(selecterenButton);
+			
+
+			kleurKeuzeButton = new JButton(kleurKeuzeIcon);//Kladje.rb.getString("terugTekst"));
+			kleurKeuzeButton.setFont(theFont);
+			kleurKeuzeButton.setBounds(tekstButton.getLocation().x + tekstButton.getSize().width + 4*offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25, 25, 25);
+			add(kleurKeuzeButton);
+			kleurKeuzeButton.addActionListener(this);
+			kleurKeuzeButton.setVisible(kleurkeuze);
+			
+			undoButton = new JButton(terugKnopIcon);//Kladje.rb.getString("terugTekst"));
+			int width = theFM.stringWidth(Kladje.rb.getString("terugTekst")) + 35;
+			undoButton.setFont(theFont);
+			undoButton.setBounds(getSize().width - 50 - 2*offSet, toolBarOnTop ? offSet : getSize().height - 25 - offSet, 25,25);
+			add(undoButton);
+			undoButton.addActionListener(this);
+			
+			wisButton = new JButton(binKnopIcon);//Kladje.rb.getString("wisTekst"));
+			width = theFM.stringWidth(Kladje.rb.getString("wisTekst")) + 35;
+			wisButton.setFont(theFont);
+			wisButton.setBounds(getSize().width - 25 - offSet, toolBarOnTop ? offSet : getSize().height - 25 - offSet, 25,25);
+			add(wisButton);
+			wisButton.addActionListener(this);
+			
+			kleurKeuzeGroup = new ButtonGroup(); 
+			kleurKeuzeButtons = new JToggleButton[kleuren.length];
+			for (int i = 0; i < kleuren.length; i++)
+			{	final Color buttonColor = kleuren[i];
+				kleurKeuzeButtons[i] = new JToggleButton()
+				{	public void paintComponent(Graphics g)
+					{	//g.setColor(buttonColor);
+						if (isSelected())
+						{	g.setColor(buttonColor);
+							g.fillRect(0, 0, getWidth(), getHeight());
+							//g.setColor(buttonColor);
+							//g.fillRect(3, 3, getWidth() - 6, getHeight() - 6);
+							g.setColor(Color.white);
+							g.drawLine(getWidth() - 2, 0, getWidth() - 2, getHeight() - 2);
+							g.drawLine(0, getHeight() - 2, getWidth() - 2, getHeight() - 2);
+							g.drawLine(0, 1, getWidth() - 1, 1);
+							g.drawLine(1, 0, 1, getHeight() - 1);
+						
+						}
+						else
+						{	g.setColor(buttonColor);
+							g.fillRect(0, 0, getWidth(), getHeight());
+						}
+					}
+				};
+				kleurKeuzeButtons[i].setBounds(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                getSize().height - 20 - offSet, 20 , 20);
+				add(kleurKeuzeButtons[i]);
+				kleurKeuzeButtons[i].addActionListener(this);
+				//noSetBounds = true;
+				kleurKeuzeButtons[i].setVisible(false);
+				kleurKeuzeGroup.add(kleurKeuzeButtons[i]);
+			}
+			kleurKeuzeButtons[0].setSelected(true);
+			
+			
+			roteerLinksomButton = new JButton(roteerLinksomIcon);
+			roteerLinksomButton.setBounds(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet,
+					getSize().height - 20 - offSet, 20 , 20);
+			roteerLinksomButton.setVisible(false);
+			add(roteerLinksomButton);
+			roteerLinksomButton.addActionListener(this);
+			
+			roteerRechtsomButton = new JButton(roteerRechtsomIcon);
+			roteerRechtsomButton.setBounds(roteerLinksomButton.getLocation().x + roteerLinksomButton.getSize().width + offSet,
+					getSize().height - 20 - offSet, 20 , 20);
+			roteerRechtsomButton.setVisible(false);
+			add(roteerRechtsomButton);
+			roteerRechtsomButton.addActionListener(this);
+			
+			vergrootButton = new JButton(vergrootIcon);
+			vergrootButton.setBounds(roteerRechtsomButton.getLocation().x + roteerRechtsomButton.getSize().width + offSet,
+					getSize().height - 20 - offSet, 20 , 20);
+			vergrootButton.setVisible(false);
+			add(vergrootButton);
+			vergrootButton.addActionListener(this);
+			
+			verkleinButton = new JButton(verkleinIcon);
+			verkleinButton.setBounds(vergrootButton.getLocation().x + vergrootButton.getSize().width + offSet,
+					getSize().height - 20 - offSet, 20 , 20);
+			verkleinButton.setVisible(false);
+			add(verkleinButton);
+			verkleinButton.addActionListener(this);
+			
+			boolean error = false;
+			Cursor drawCursor = null;
+			try
+			{	
+				drawCursor = Toolkit.getDefaultToolkit().
+					createCustomCursor(tekenCursor,
+						new Point(10, 10), "TEKEN_CURSOR");
+			}
+			catch (IndexOutOfBoundsException ioobe)
+			//catch (HeadlessException he)
+			{	error = true;
+			}
+			if (!error)
+			{	kladjeVeld.setCursor(drawCursor);
+			}
+			
+			kladjeVeld.zetLijnen(lijnen);
+			kladjeVeld.zetRuitjes(ruitjes,ruitjessize);
+			
+			
+		}
+		else
+		{	//kladjeVeld.setSize(b - 2 * offSet, h - offSet - bottomHeight);
+			kladjeVeld.setSize(b, h - bottomHeight);
+			kladjeVeld.zetToolBarOnTop(toolBarOnTop);
+			kladjeVeld.setLocation(0, toolBarOnTop ? bottomHeight : 0);
+			
+			selecterenButton.setLocation(offSet, toolBarOnTop ? offSet : getSize().height - offSet - 25);
+			tekenButton.setLocation(selecterenButton.getLocation().x + selecterenButton.getSize().width + 2*offSet, toolBarOnTop ? offSet : getSize().height - offSet - 25);
+//			gumButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
+//		            			  getSize().height - offSet - 20);
+			lijnButton.setLocation(tekenButton.getLocation().x + tekenButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25);
+			rechthoekButton.setLocation(lijnButton.getLocation().x + lijnButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25);
+			cirkelButton.setLocation(rechthoekButton.getLocation().x + rechthoekButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25);
+			tekstButton.setLocation(cirkelButton.getLocation().x + cirkelButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 25);
+			formuleButton.setLocation(tekstButton.getLocation().x + tekstButton.getSize().width + offSet, 
+					toolBarOnTop ? offSet : getSize().height - offSet - 20);
+			
+			undoButton.setLocation(getSize().width - 50 - 2*offSet, toolBarOnTop ? offSet : getSize().height - 25 - offSet);
+			wisButton.setLocation(getSize().width - 25 - offSet, toolBarOnTop ? offSet : getSize().height - 25 - offSet);
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(wisButton.getLocation().x + wisButton.getSize().width + 3 * offSet + 20 * i, 
+						                         getSize().height - 20 - offSet);
+				kleurKeuzeButtons[i].setVisible(false);
+			}
+			kleurKeuzeButton.setVisible(kleurkeuze);
+			
+			roteerLinksomButton.setSize(roteerLinksomButton.getSize().width, getSize().height - 20 - offSet);
+			roteerRechtsomButton.setSize(roteerRechtsomButton.getSize().width, getSize().height - 20 - offSet);
+			vergrootButton.setSize(vergrootButton.getSize().width, getSize().height - 20 - offSet);
+			verkleinButton.setSize(verkleinButton.getSize().width, getSize().height - 20 - offSet);
+			
+			kladjeVeld.zetLijnen(lijnen);
+			kladjeVeld.zetRuitjes(ruitjes,ruitjessize);
+			
+			zetLijnTekenen(lijnTekenen);
+			zetRechthoekTekenen(rechthoekTekenen);
+			zetCirkelTekenen(cirkelTekenen);
+			zetTekstTekenen(tekstTekenen);
+
+System.out.println("kladjeVeld sized");		
+		}
+		
+	}
+	
+	public void setRotateScaleButtons(boolean b)
+	{
+		if (!roteren && !schalen)
+			return;
+		
+		if (b)
+		{
+			// positie wordt gezet in layoutBottom
+			if (roteren)
+			{	roteerLinksomButton.setVisible(true);
+				roteerRechtsomButton.setVisible(true);
+			}
+			else
+			{	roteerLinksomButton.setVisible(false);
+				roteerRechtsomButton.setVisible(false);
+			}
+			if (schalen)
+			{	vergrootButton.setVisible(true);
+				verkleinButton.setVisible(true);
+			}
+			else
+			{	vergrootButton.setVisible(false);
+				verkleinButton.setVisible(false);
+			}
+			
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setVisible(false);
+			}
+		}
+		else
+		{
+			roteerLinksomButton.setVisible(false);
+			roteerRechtsomButton.setVisible(false);
+			vergrootButton.setVisible(false);
+			verkleinButton.setVisible(false);
+			
+			
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setVisible(kleurkeuze);
+			}
+		}
+	}
+	
+	class TekenGumAL implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			if (tekenButton.isSelected())
+			{
+				setRotateScaleButtons(false);			
+				
+				kladjeVeld.mouseMode = kladjeVeld.tekenen;
+				kladjeVeld.hideTekstVeld(true);
+				kladjeVeld.repaint();
+				
+				boolean error = false;
+				Cursor drawCursor = null;
+				try
+				{	
+					drawCursor = Toolkit.getDefaultToolkit().
+						createCustomCursor(tekenCursor,
+							new Point(10, 10), "TEKEN_CURSOR");
+				}
+				catch (IndexOutOfBoundsException ioobe)
+				{	error = true;
+				}
+				if (!error)
+				{	kladjeVeld.setCursor(drawCursor);
+				}
+				else
+					kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+/*			
+			else if (gumButton.isSelected())
+			{
+				kladjeVeld.mouseMode = kladjeVeld.gummen;
+				kladjeVeld.hideTekstVeld(true);
+				//kladjeVeld.selecteerRechthoek = null;
+				kladjeVeld.repaint();
+				
+				boolean error = false;
+				Cursor deleteCursor = null;
+				try
+				{	
+					deleteCursor = Toolkit.getDefaultToolkit().
+						createCustomCursor(gumCursor,
+							new Point(10, 10), "GUM_CURSOR");
+				}
+				catch (IndexOutOfBoundsException ioobe)
+				//catch (HeadlessException he)
+				{	error = true;
+				}
+				if (!error)
+				{	kladjeVeld.setCursor(deleteCursor);
+				}
+				else
+					kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			}
+*/			
+			else if (lijnButton.isSelected())
+			{
+				
+				setRotateScaleButtons(false);
+				
+				kladjeVeld.mouseMode = kladjeVeld.lijnTekenen;
+				kladjeVeld.hideTekstVeld(true);
+				kladjeVeld.repaint();
+
+				if (lijnCursor == null)
+				{	kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					return;
+				}
+				
+				boolean error = false;
+				Cursor lineCursor = null;
+				try
+				{	
+					lineCursor = Toolkit.getDefaultToolkit().
+						createCustomCursor(lijnCursor,
+							new Point(10, 10), "LIJN_CURSOR");
+				}
+				catch (IndexOutOfBoundsException ioobe)
+				{	error = true;
+				}
+				if (!error)
+				{	kladjeVeld.setCursor(lineCursor);
+				}
+				else
+					kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				// cursor
+			}
+			
+			else if (rechthoekButton.isSelected())
+			{
+				
+				setRotateScaleButtons(false);
+				
+				kladjeVeld.mouseMode = kladjeVeld.rechthoekTekenen;
+				kladjeVeld.hideTekstVeld(true);
+				kladjeVeld.repaint();
+				
+				if (rechthoekCursor == null)
+				{	
+					kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					return;
+				}
+
+				boolean error = false;
+				Cursor rectangleCursor = null;
+				try
+				{	
+					rectangleCursor = Toolkit.getDefaultToolkit().
+						createCustomCursor(rechthoekCursor,
+							new Point(10, 10), "RECHTHOEK_CURSOR");
+				}
+				catch (IndexOutOfBoundsException ioobe)
+				//catch (HeadlessException he)
+				{	error = true;
+				}
+				if (!error)
+				{	kladjeVeld.setCursor(rectangleCursor);
+				}
+				else
+					kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				
+				// cursor
+			}
+			
+			else if (cirkelButton.isSelected())
+			{
+				
+				setRotateScaleButtons(false);
+				
+				kladjeVeld.mouseMode = kladjeVeld.cirkelTekenen;
+				kladjeVeld.hideTekstVeld(true);
+				kladjeVeld.repaint();
+				
+				if (cirkelCursor == null)
+				{	
+					kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					return;
+				}
+				
+				boolean error = false;
+				Cursor circleCursor = null;
+				try
+				{	
+					circleCursor = Toolkit.getDefaultToolkit().
+						createCustomCursor(cirkelCursor,
+							new Point(10, 10), "CIRKEL_CURSOR");
+				}
+				catch (IndexOutOfBoundsException ioobe)
+				{	error = true;
+				}
+				if (!error)
+				{	kladjeVeld.setCursor(circleCursor);
+				}
+				else
+					kladjeVeld.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				
+				// cursor
+			}
+			else if (tekstButton.isSelected())
+			{
+				
+				setRotateScaleButtons(false);
+				
+				kladjeVeld.mouseMode = kladjeVeld.tekstTekenen;
+				kladjeVeld.hideTekstVeld(true);
+				kladjeVeld.repaint();
+				
+				boolean error = false;
+				Cursor textCursor = null;
+				try
+				{	
+					textCursor = Toolkit.getDefaultToolkit().
+						createCustomCursor(tekstCursor,
+							new Point(10, 10), "TEKST_CURSOR");
+				}
+				catch (IndexOutOfBoundsException ioobe)
+				{	error = true;
+				}
+				if (!error)
+				{	kladjeVeld.textCursor = textCursor;
+					kladjeVeld.setCursor(textCursor);
+				}
+			}
+
+			else if (selecterenButton.isSelected())
+			{
+				
+				//setRotateScaleButtons(true);				
+
+				kladjeVeld.mouseMode = kladjeVeld.selecteren;
+				kladjeVeld.hideTekstVeld(true);
+				kladjeVeld.selecteerRechthoek = null;
+				kladjeVeld.resetSelectedObject();
+				kladjeVeld.resetSelectedObjects();
+				kladjeVeld.repaint();
+				
+				boolean error = false;
+				Cursor selectCursor = null;
+				try
+				{	
+					selectCursor = Toolkit.getDefaultToolkit().
+						createCustomCursor(selecterenCursor,
+							new Point(10, 10), "SELECTEREN_CURSOR");
+				}
+				catch (IndexOutOfBoundsException ioobe)
+				{	error = true;
+				}
+				if (!error)
+				{	kladjeVeld.selectCursor = selectCursor;
+					kladjeVeld.setCursor(selectCursor);
+				}
+			}
+
+			
+		}
+	}
+	
+	
+	public void wis()
+	{}
+	
+	public void zetMaat()
+	{}
+	
+	public int geefAsHoogte()
+	{	return 0;
+	}
+	
+	public int getIpId()
+	{	return 0;
+	}
+	
+	public String getIpExpString()
+	{	return null;
+	}
+	
+	public int getScore()
+	{	return score;
+	}
+	
+	public int getScoreMax()
+	{	return 0;
+	}
+	
+	public boolean isCorrect()
+	{	return true;
+	}
+	
+	public boolean isFout()
+	{	return false;
+	}
+	
+	public void zetMode(int mode)
+	{}
+	
+	public void zetNagekeken(boolean b)
+	{}
+	
+    public void stop()
+    {}
+    
+    public void start()
+    {}
+    
+    public void destroy()
+    {}
+    
+    public void opnieuw()
+    {}
+    
+    public void kijkNa()
+    {}
+    
+    public void kijkNa(int stapNr)
+    {}
+    
+    public void addActionListener(ActionListener al)
+    {}
+
+	public void zetBreedte(int b)
+	{}
+	
+	public void zetHoogte(int h)
+	{}
+    
+	public void actionPerformed(ActionEvent e)
+	{
+		for (int i = 0; i < kleurKeuzeButtons.length; i++)
+		{	if (e.getSource() == kleurKeuzeButtons[i])
+			{	kladjeVeld.zetDrawingColor(i);
+			}
+		}
+		
+		if (e.getSource() == kleurKeuzeButton)
+		{
+			for (int i = 0; i < kleurKeuzeButtons.length; i++)
+			{	kleurKeuzeButtons[i].setLocation(kleurKeuzeButton.getLocation().x + kleurKeuzeButton.getSize().width + offSet + 20 * i, 
+						kleurKeuzeButton.getLocation().y+3);
+				kleurKeuzeButtons[i].setVisible(!kleurKeuzeButtons[i].isVisible());
+			}
+		}
+		
+			
+		if (e.getSource() == wisButton)
+		{
+			kladjeVeld.wis(true);
+			Map map = kladjeVeld.getState();
+			cbookEventHandler.fire("drawing",map);
+		}
+		
+		if (e.getSource() == undoButton)
+		{
+			kladjeVeld.undo();
+			Map map = kladjeVeld.getState();
+			cbookEventHandler.fire("drawing",map);
+		}
+		
+		if (e.getSource() == roteerLinksomButton)
+		{
+			kladjeVeld.rotateObjectSelected(- kladjeVeld.rotateStep);
+		}
+		
+		if (e.getSource() == roteerRechtsomButton)
+		{
+			kladjeVeld.rotateObjectSelected(kladjeVeld.rotateStep);
+		}
+
+		if (e.getSource() == vergrootButton)
+		{
+			kladjeVeld.scaleObjectSelected(kladjeVeld.scaleUpStep);
+		}
+
+		if (e.getSource() == verkleinButton)
+		{
+			kladjeVeld.scaleObjectSelected(kladjeVeld.scaleDownStep);
+		}
+		
+		if(e.getSource() == kladjeVeld && e.getActionCommand().equals("changed"))
+		{
+			Map map = kladjeVeld.getState();
+			cbookEventHandler.fire("drawing",map);
+		}
+
+	}
+
+	@Override
+	public void acceptCBookEvent(CBookEvent event) {
+		String command = event.getCommand();
+		if (command.startsWith("drawing"))
+		{
+			Map map = (Map)event.getParameters();
+			if (map!=null)
+			{	kladjeVeld.setState((Hashtable)map, false);
+				kladjeVeld.repaint();
+			}
+		}
+		if (command.startsWith("double.translationX"))
+		{
+			Map map = (Map)event.getParameters();
+			if (map!=null)
+			{	int valueX = ((Integer)map.get("value")).intValue();
+				translation = new Point(-valueX, translation.y);
+				kladjeVeld.zetTranslation(translation.x, translation.y);
+				kladjeVeld.repaint();
+			}
+		}
+		if (command.startsWith("double.translationY"))
+		{
+			Map map = (Map)event.getParameters();
+			if (map!=null)
+			{	int valueY = ((Integer)map.get("value")).intValue();
+				translation = new Point(translation.x, -valueY);
+				kladjeVeld.zetTranslation(translation.x, translation.y);
+				kladjeVeld.repaint();
+			}
+		}
+	}
+
+	@Override
+	public void addCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.addCBookEventListener(listener, command);
+	}
+
+	@Override
+	public void removeCBookEventListener(CBookEventListener listener, String command) {
+		cbookEventHandler.removeCBookEventListener(listener, command);
+	}
+
+	@Override
+	public String[] getSendCmds() {
+		String[] commands = {"drawing",	
+				"equation", 
+				"equation.correct", 
+				"action.check", 
+				"action.check.n",
+				"action.closePopup", 
+				"equation.1", 
+				"equation.2", 
+				"equation.3", 
+				"equation.4", 
+				"equation.5",
+				"equation.6",
+				"equation.7",
+				"equation.8",
+				"equation.9",
+				"equation.10",
+				"text.strokecode"
+				};
+		return commands;
+	}
+
+	@Override
+	public String[] getAcceptedCmds() {
+		String[] commands = {"drawing","double.translationX", "double.translationY", "action.setCorrect", "action.setFalse", "action.setHalf"};
+		return commands;
+	}
+
+	@Override
+	public String getLocalizedCmd(String cmd) {
+		String localizedCmd = Kladje.rb.getString(CBA_PREFIX + cmd);
+		if(localizedCmd==null)
+			return cmd;
+		return localizedCmd;
+	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
