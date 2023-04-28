@@ -20,6 +20,7 @@
 	<module>../GeomAlgebra</module>
 	<module>../Kladje</module>
 	<module>../MozArch</module>
+        <module>../NabouwenAanzichten</module>
 <!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
