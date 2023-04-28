@@ -1,0 +1,32 @@
+<html>
+<head>
+	<title>Fractielen</title>
+</head>
+
+<body>
+
+<applet
+	codebase="/javaclasses/"
+	code="fi/mozarch/MozArch.class" 
+	archive="jars/mozarch.jar"
+	width="780" 
+	height="500"> 
+
+	<!-- dit is de kleur van het speelveld!! -->
+	<param name="bgcolor" value="#FFFFFF" />
+	
+	<param name="language" value="nl" />
+
+	<!-- versie van Frans met fractielen, default bij geen,
+		 lege of ongeldige parameter: no -->
+	<param name="fractielen" value="yes" />
+
+	<!-- ligt er een stukje klaar? waarde 1, 2 of 3
+		 (de drie mogelijke stukjes) default bij geen,
+		 lege of ongeldige parameter: geen startfiguur --> 	 
+	<param name="startFiguur" value="" />
+</applet>
+
+</body>
+
+</html>
