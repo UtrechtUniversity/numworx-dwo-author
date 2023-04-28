@@ -18,6 +18,7 @@
 	<module>../DoorzienDWO</module>
 	<module>../Draaibank</module>
 	<module>../GeomAlgebra</module>
+	<module>../Kladje</module>
 <!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
