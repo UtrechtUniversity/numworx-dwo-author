@@ -1,0 +1,397 @@
+package fi.statistiek.crosstabulationtable;
+
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
+
+import javax.swing.JComponent;
+
+import fi.statistiek.StatTableModel;
+import fi.statistiek.Statistiek;
+import fi.statistiek.StatistiekView;
+import fi.statistiek.types.AllowedTypes;
+
+/**
+ * MVC Controller for StatistiekView CrossTabulationTable
+ * 
+ * @author Sylvia van Borkulo
+ * 
+ */
+public class CrossTabulationTableController implements StatistiekView,
+	ActionListener, FocusListener
+{
+
+	private CrossTabulationTableModel model;
+	private CrossTabulationTableView view;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param tableModel
+	 *            the data model
+	 * @param viewName
+	 *            the initial name of the view
+	 */
+	public CrossTabulationTableController(StatTableModel tableModel, String viewName,
+		int startVarRows, int startVarColumns)
+	{
+		this.model = new CrossTabulationTableModel(tableModel, viewName);
+		this.model.setColumnIndex(startVarRows);
+		//setSplit(startVarColumns);
+		this.view = new CrossTabulationTableView(this.model, this);
+		this.view.update(null, null);
+	}
+	
+	/**
+	 * Set the split variable, i.e., the variable for the columns in the crosstab table.
+	 * @param index
+	 */
+	public void setSplit(int index)
+	{
+		this.model.setColumnSplitIndex(index);
+		this.model.setSplitOptions(this.model.getSplitOptions());
+		if (index > -1)
+		{
+			this.setSplitType(this.model
+				.getStatTableModel()
+				.getColumnTypes()
+				.get(this.model.getSplitOptions().getColumnSplitIndex())
+				.getType(), CrossTabulationTableModel.DEFAULT_NUMBER_OF_BINS);//index);
+		}
+	}
+
+	/**
+	 * 
+	 * @param type
+	 * @param noBins
+	 */
+	private void setSplitType(AllowedTypes type, int noBins)
+	{
+		if (type.isNumber())
+		{
+			ArrayList<Number> boundaries = new ArrayList<Number>();
+			boundaries = Statistiek.appropriateBoundaries(
+				this.model.getStatTableModel().getColumnMin(
+					this.model.getSplitOptions().getColumnSplitIndex()),
+				this.model.getStatTableModel().getColumnMax(
+					this.model.getSplitOptions().getColumnSplitIndex()),
+				noBins);
+			
+			// test syl: niet fraai; opnieuw boundaries berekenen met de hierboven berekende binwidth
+			// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt 
+			int bin0Decimals = Statistiek.getNumberOfDecimals(boundaries.get(0).toString());
+			int bin1Decimals = Statistiek.getNumberOfDecimals(boundaries.get(1).toString());
+			int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
+			
+			boundaries = Statistiek.appropriateBoundariesFromBinSettings(this.model.getStatTableModel().getColumnMin(
+					this.model.getSplitOptions().getColumnSplitIndex()),
+				this.model.getStatTableModel().getColumnMax(
+					this.model.getSplitOptions().getColumnSplitIndex()), 
+					// door afronding kan de aftreksom heel veel decimalen hebben
+					Statistiek.round(boundaries.get(1).doubleValue() - boundaries.get(0).doubleValue(), maxNumberOfDecimals), boundaries.get(0).doubleValue());
+
+			this.model.setSplitBoundaries(boundaries);
+			this.model.setSplitOptions(this.model.getSplitOptions());
+			this.view.setModel(this.model);
+		}
+	}
+	
+	public void actionPerformed(ActionEvent arg0)
+	{
+		String action = arg0.getActionCommand();
+		
+//		System.out.println("CrossTabulationTableController.actionPerformed(): action = "
+//			+ action);
+
+		if (action.equals("rowIndexBox"))
+		{
+			this.model.setColumnIndex(this.view.varRowsBoxSelectedIndex());
+		}
+		else if (action.equals("columnIndexBox"))
+		{
+			this.setSplit(this.view.varColumnsBoxSelectedIndex());
+		}
+		else if (action.equals("minBoundaryRows"))
+		{
+			processMinBoundaryRowsChanged();
+		}
+		else if (action.equals("binWidthRows"))
+		{
+			processBinWidthRowsChanged();
+		}
+		else if (action.equals("minBoundaryColumns"))
+		{
+			processMinBoundaryColumnsChanged();
+		}
+		else if (action.equals("binWidthColumns"))
+		{
+			processBinWidthColumnsChanged();
+		}
+	}
+
+	public void processMinBoundaryRowsChanged()
+	{
+		double minBoundaryRows = view.getUserOptionsPanel().getMinBoundaryRows(); // the user entered value
+		double minDataRows = this.model.getStatTableModel().getColumnMin(this.model.getColumnIndex());
+		
+		if (minBoundaryRows <= minDataRows)
+		{
+			// update the rows' bin settings
+			this.updateBoundariesFromRowsBinSettings();
+		}
+		else
+		{
+			// reset to latest value
+			double resetMin;
+			if (model.getBinBoundaries() != null && model.getBinBoundaries().size() > 0)
+			{
+				resetMin = model.getBinBoundaries().get(0).doubleValue();
+			}
+			else
+			{
+				resetMin = minDataRows;
+			}
+			
+			view.getUserOptionsPanel().setMinBoundaryRows(resetMin);
+		}
+	}
+
+	public void processBinWidthRowsChanged()
+	{
+		this.updateBoundariesFromRowsBinSettings();
+	}
+
+	public void processMinBoundaryColumnsChanged()
+	{
+		double minBoundaryColumns = view.getUserOptionsPanel().getMinBoundaryColumns(); // the user entered value
+		double minDataColumns = this.model.getStatTableModel().getColumnMin(this.model.getSplitOptions().getColumnSplitIndex());
+		
+		if (minBoundaryColumns <= minDataColumns)
+		{
+			// update the columns' bin settings
+			this.updateBoundariesFromColumnsBinSettings();
+		}
+		else
+		{
+			// reset to latest value
+			double resetMin;
+			if (model.getSplitOptions().getBinBoundaries() != null && model.getSplitOptions().getBinBoundaries().size() > 0)
+			{
+				resetMin = model.getSplitOptions().getBinBoundaries().get(0).doubleValue();
+			}
+			else
+			{
+				resetMin = minDataColumns;
+			}
+			
+			view.getUserOptionsPanel().setMinBoundaryColumns(resetMin);
+		}
+
+	}
+
+	public void processBinWidthColumnsChanged()
+	{
+		this.updateBoundariesFromColumnsBinSettings();
+	}
+
+	public void setUp(Frame owner)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setUp(Dialog owner)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	public JComponent getComponent()
+	{
+		return this.view;
+	}
+
+	public String getViewType()
+	{
+		return "Kruistabel";
+	}
+
+	public Object getState()
+	{
+		Hashtable h = new Hashtable();
+
+		h.put("viewName", this.getViewName());
+		h.put("columnIndex", this.model.getColumnIndex());
+		h.put("binBoundaries", this.model.getBinBoundaries());
+		h.put("columnSplitIndex", this.model.getSplitOptions()
+			.getColumnSplitIndex());
+		h.put("splitBoundaries", this.model.getSplitOptions()
+			.getBinBoundaries());
+		h.put("showPercentage", this.model.isShowPercentage());
+		h.put("showPercentage_endTotal", this.model.isShowPercentage_endTotal());
+		h.put("showPercentage_rowTotal", this.model.isShowPercentage_rowTotal());
+		h.put("showPercentage_columnTotal", this.model.isShowPercentage_columnTotal());
+
+		return h;
+	}
+
+	public void setState(Object state)
+	{
+		//Hashtable h = (Hashtable) state;
+		Map h = (Map) state;
+		
+		// deep copy waarschijnlijk niet nodig...
+		//Hashtable h = Copy.deepCopy((Hashtable) state);
+
+		if (h.containsKey("viewName"))
+		{
+			this.setViewName((String) h.get("viewName"));
+		}
+		if (h.containsKey("columnIndex"))
+		{
+			// Let op: setColumnIndex() zet ook de binBoundaries
+			// Dat wordt hieronder goed gemaakt als de binBoundaries
+			// uit de hashtable worden gezet.
+			this.model.setColumnIndex(((Number) h.get("columnIndex")).intValue());
+		}
+		if (h.containsKey("binBoundaries"))
+		{
+			this.model.setBinBoundaries((ArrayList<Number>) h.get("binBoundaries"));
+		}
+		if (h.containsKey("columnSplitIndex"))
+		{
+			this.model.setColumnSplitIndex(((Number) h.get("columnSplitIndex")).intValue());
+		}
+		if (h.containsKey("splitBoundaries"))
+		{
+			this.model.setSplitBoundaries((ArrayList<Number>) h.get("splitBoundaries"));
+		}
+		if (h.containsKey("showPercentage"))
+		{
+			this.model.setShowPercentage((Boolean) h.get("showPercentage"));
+		}
+		if (h.containsKey("showPercentage_endTotal"))
+		{
+			this.model.setShowPercentage_endTotal((Boolean) h.get("showPercentage_endTotal"));
+		}
+		if (h.containsKey("showPercentage_rowTotal"))
+		{
+			this.model.setShowPercentage_rowTotal((Boolean) h.get("showPercentage_rowTotal"));
+		}
+		if (h.containsKey("showPercentage_columnTotal"))
+		{
+			this.model.setShowPercentage_columnTotal((Boolean) h.get("showPercentage_columnTotal"));
+		}
+	}
+
+	public String getViewName()
+	{
+		return this.model.getViewName();
+	}
+
+	public void setViewName(String s)
+	{
+		this.model.setViewName(s);
+	}
+
+	public void focusGained(FocusEvent arg0)
+	{
+		// TODO Auto-generated method stub
+	}
+
+	public void focusLost(FocusEvent arg0)
+	{
+		if (arg0.getSource() == this.view.getBinWidthRowsField())
+		{
+			processBinWidthRowsChanged();
+		}
+		else if (arg0.getSource() == this.view.getMinBoundaryRowsField())
+		{
+			processMinBoundaryRowsChanged();
+		}
+		else if (arg0.getSource() == this.view.getBinWidthColumnsField())
+		{
+			processBinWidthColumnsChanged();
+		}
+		else if (arg0.getSource() == this.view.getMinBoundaryColumnsField())
+		{
+			processMinBoundaryColumnsChanged();
+		}
+	}
+
+	/**
+	 * Update the bin boundaries for the rows variable
+	 * using the settings for the minimum boundary
+	 * and the bin width,
+	 * and determine the number of bins.
+	 */
+	private void updateBoundariesFromRowsBinSettings()
+	{
+		ArrayList<Number> boundaries = new ArrayList<Number>();
+		
+		double min = this.model.getStatTableModel().getColumnMin(
+			this.model.getColumnIndex());
+		double max = this.model.getStatTableModel().getColumnMax(
+			this.model.getColumnIndex());
+		
+		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+			min,
+			max,
+			view.getBinWidthRows(),
+			view.getMinBoundaryRows());
+		
+		// if result is valid, set boundaries
+		if (boundaries != null)
+		{
+			this.model.setBinBoundaries(boundaries);
+		}
+		else
+		{
+			// reset to old values
+			ArrayList<Number> oldBoundaries = this.model.getBinBoundaries(); 
+			this.view.setBinWidthRows();
+			this.view.setMinBoundaryRows(oldBoundaries.get(0).doubleValue());
+		}
+	}
+	
+	/**
+	 * Update the bin boundaries for the columns variable
+	 * using the settings for the minimum boundary
+	 * and the bin width,
+	 * and determine the number of bins.
+	 */
+	private void updateBoundariesFromColumnsBinSettings()
+	{
+		ArrayList<Number> boundaries = new ArrayList<Number>();
+		
+		double min = this.model.getStatTableModel().getColumnMin(
+			this.model.getColumnSplitIndex());
+		double max = this.model.getStatTableModel().getColumnMax(
+			this.model.getColumnSplitIndex());
+		
+		boundaries = Statistiek.appropriateBoundariesFromBinSettings(
+			min,
+			max,
+			this.view.getBinWidthColumns(),
+			this.view.getMinBoundaryColumns());
+		
+		// if result is valid, set boundaries
+		if (boundaries != null)
+		{
+			this.model.setSplitBoundaries(boundaries);
+		}
+		else
+		{
+			// reset to old values
+			ArrayList<Number> oldBoundaries = this.model.getSplitOptions().getBinBoundaries(); 
+			this.view.setBinWidthColumns();
+			this.view.setMinBoundaryColumns(oldBoundaries.get(0).doubleValue());
+		}
+	}
+}
