@@ -21,6 +21,7 @@
 	<module>../Kladje</module>
 	<module>../MozArch</module>
         <module>../NabouwenAanzichten</module>
+        <module>../NormaleVerdeling</module>
 <!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
