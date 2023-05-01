@@ -15,6 +15,7 @@
 	<module>../AlgebraPijlenOpdr</module>
     	<module>../BalansFruitApplet</module>
 	<module>../BinomVerdeling</module>
+	<module>../CalculatorDwo</module>
 	<module>../DoorzienDWO</module>
 	<module>../Draaibank</module>
 	<module>../GeomAlgebra</module>
