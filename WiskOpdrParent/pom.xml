@@ -23,6 +23,7 @@
         <module>../NabouwenAanzichten</module>
         <module>../NormaleVerdeling</module>
 	<module>../SliderWidget</module>
+	<module>../Statistiek</module>
 <!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
