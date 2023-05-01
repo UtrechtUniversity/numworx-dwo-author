@@ -704,6 +704,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"TEEP_menuBalkOptie" , "Formule-editor"},
 				{"TEEP_rekenToolOptie" , "Rekenmachine"},
 				{"TEEP_regelnummersOptie", "Regelnummers"},
+				{"TEEP_nowrapOptie", "Zonder afbreken"},
 				{"TEEP_grafToolOptie" , "Grafiekentool"},
 				{"TEEP_titleStartLabel", "Tekstantwoordvak bij opstarten"},
 				{"TEEP_checkDocentCBLabel", "Nakijken (door docent)"},
