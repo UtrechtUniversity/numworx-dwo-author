@@ -139,14 +139,5 @@
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
-		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>
 	</properties>
-	<profiles>
-	<profile>
-		<id>running11</id>
-		<properties>
-			<proguard.lib>${java.home}/jmods</proguard.lib>
-		</properties>
-	</profile>
-	</profiles>
 </project>

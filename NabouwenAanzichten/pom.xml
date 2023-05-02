@@ -1,10 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-    <parent>
-      <groupId>nl.uu.fi.dwo</groupId>
-      <artifactId>DWO.master.pom</artifactId>
-      <version>1.1</version>
-    </parent>
+	<parent>
+	  <groupId>fi.wiskopdr</groupId>
+	  <artifactId>WiskOpdrParent</artifactId>
+	  <version>1.0.0-SNAPSHOT</version>
+	  <relativePath>../WiskOpdrParent</relativePath>
+	</parent>
   <groupId>fi.nabouwenaanzichten</groupId>
   <artifactId>nabouwenaanzichten</artifactId>
   <version>1.0.0-SNAPSHOT</version>
@@ -76,7 +77,6 @@
                     <plugin>
                         <groupId>com.github.wvengen</groupId>
                         <artifactId>proguard-maven-plugin</artifactId>
-                        <version>2.0.8</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -86,7 +86,6 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <proguardVersion>5.2</proguardVersion>
                             <options>
                                 <option>-verbose</option>
                                 <option>-dontwarn</option> 
@@ -97,19 +96,10 @@
                             <injar>${project.build.finalName}.jar</injar>
                             <proguardInclude>toolfiles/config.pro</proguardInclude>
                             <libs>
-                                <lib>${java.home}/lib/rt.jar</lib>
-                                <lib>${java.home}/lib/jsse.jar</lib>
+                                <lib>${proguard.lib}</lib>
                             </libs>
                             <addMavenDescriptor>false</addMavenDescriptor>
                         </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sf.proguard</groupId>
-                                <artifactId>proguard-base</artifactId>
-                                <version>5.2</version>
-                                <scope>runtime</scope>
-                            </dependency>
-                        </dependencies>
                     </plugin>
                     <plugin>
                         <groupId>com.github.batkinson.plugins</groupId>
@@ -149,7 +139,7 @@
   	<dependency>
 		<groupId>fi.wiskopdr</groupId>
 		<artifactId>wiskopdr</artifactId>
-		<version>0.0.1</version>
+		<version>0.3.0</version>
 		<scope>provided</scope>
   	</dependency>
   </dependencies>

@@ -5,6 +5,12 @@
 	<artifactId>calculatordwo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Calculator voor DWO</name>
+	<parent>
+	  <groupId>fi.wiskopdr</groupId>
+	  <artifactId>WiskOpdrParent</artifactId>
+	  <version>1.0.0-SNAPSHOT</version>
+	  <relativePath>../WiskOpdrParent</relativePath>
+	</parent>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<finalName>${project.artifactId}</finalName>
@@ -48,7 +54,7 @@
 					<inputDirectory>${project.build.directory}</inputDirectory>
 					<proguardInclude>toolfiles/config.pro</proguardInclude>
 					<libs>
-						<lib>${java.home}/lib/rt.jar</lib>
+						<lib>${proguard.lib}</lib>
 					</libs>
 					<addMavenDescriptor>false</addMavenDescriptor>
 				</configuration>

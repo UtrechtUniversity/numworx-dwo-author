@@ -2,11 +2,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-    <parent>
-      <groupId>nl.uu.fi.dwo</groupId>
-      <artifactId>DWO.master.pom</artifactId>
-      <version>1.1</version>
-    </parent>
+	<parent>
+	  <groupId>fi.wiskopdr</groupId>
+	  <artifactId>WiskOpdrParent</artifactId>
+	  <version>1.0.0-SNAPSHOT</version>
+	  <relativePath>../WiskOpdrParent</relativePath>
+	</parent>
 	<groupId>fi.kladje</groupId>
 	<artifactId>kladje</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
@@ -73,7 +74,6 @@
 			<plugin>
 				<groupId>com.github.wvengen</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
-				<version>2.0.8</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -83,7 +83,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<proguardVersion>5.2</proguardVersion>
 					<options>
 						<option>-verbose</option>
 						<option>-dontwarn</option>
@@ -94,35 +93,16 @@
 					<injar>${project.build.finalName}.jar</injar>
 					<proguardInclude>toolfiles/config.pro</proguardInclude>
 					<libs>
-						<lib>${java.home}/lib/rt.jar</lib>
-						<lib>${java.home}/lib/jsse.jar</lib>
+						<lib>${proguard.lib}</lib>
 					</libs>
 					<addMavenDescriptor>false</addMavenDescriptor>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>net.sf.proguard</groupId>
-						<artifactId>proguard-base</artifactId>
-						<version>5.2</version>
-						<scope>runtime</scope>
-					</dependency>
-				</dependencies>
 			</plugin>
                     <plugin>
                         <groupId>com.github.batkinson.plugins</groupId>
                         <artifactId>maven-pack200-plugin</artifactId>
                         <version>1.0.1</version>
                         <executions>
-                            <execution>
-                                <id>normalize-jars</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>pack</goal>
-                                </goals>
-                                <configuration>
-                                    <normalizeOnly>true</normalizeOnly>
-                                </configuration>
-                            </execution>
                             <execution>
                                 <id>pack-jars</id>
                                 <phase>verify</phase>
@@ -137,45 +117,8 @@
                         <configuration>
                             <processMainArtifact>true</processMainArtifact>
                         </configuration>                
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.github.batkinson.plugins</groupId>
-                                <artifactId>maven-pack200-plugin</artifactId>
-                                <version>1.0.1</version>
-                                <type>maven-plugin</type>
-                            </dependency>
-                        </dependencies>                
                     </plugin>        
-                    <!-- jar signing -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jarsigner-plugin</artifactId>
-                        <version>1.4</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>verify</id>
-                                <goals>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration> <!--  jar wordt getekend. -->
-                            <processMainArtifact>true</processMainArtifact>
-                            <keystore>${dwoKeyStore}</keystore>
-                            <alias>${dwoCertKeyAlias}</alias>
-                            <storepass>${dwoCertKeyStorePassword}</storepass>
-                            <keypass>${dwoCertKeyPassword}</keypass>
-                            <sigfile>UU</sigfile>
-                            <tsa>http://sha256timestamp.ws.symantec.com/sha256/timestamp</tsa>
-                        </configuration>            
-                    </plugin>  
-		</plugins>
+ 		</plugins>
 	</build>
 	<dependencies>
 		<dependency>
@@ -194,7 +137,7 @@
 		<dependency>
 			<groupId>fi.beans</groupId>
 			<artifactId>numworxlf</artifactId>
-			<version>2.5.2</version>
+			<version>2.5.4</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

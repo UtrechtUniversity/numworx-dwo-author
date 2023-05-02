@@ -11,6 +11,31 @@
         <artifactId>DWO</artifactId>
         <version>2.5.17</version>
     </parent>
+    <properties>
+    		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>
+    </properties>
+    <build>
+    	<pluginManagement>
+    		<plugins>
+  			<plugin>
+				<groupId>com.github.wvengen</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.14</version>
+				<configuration>
+					<proguardVersion>6.1</proguardVersion>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.sf.proguard</groupId>
+						<artifactId>proguard-base</artifactId>
+						<version>6.1.0</version>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+  			</plugin>
+    		</plugins>    	
+    	</pluginManagement>
+    </build>
     <modules>
 	<module>../AlgebraPijlenOpdr</module>
     	<module>../BalansFruitApplet</module>
@@ -33,4 +58,15 @@
     <scm>
     	<developerConnection>scm:git:git@github.com:UtrechtUniversity/numworx-dwo-author.git</developerConnection>
     </scm>
+    <profiles>
+	<profile>
+		<id>running11</id>
+		<activation>
+			<jdk>[9,)</jdk>
+		</activation>
+		<properties>
+			<proguard.lib>${java.home}/jmods</proguard.lib>
+		</properties>
+	</profile>
+    </profiles>
 </project>
