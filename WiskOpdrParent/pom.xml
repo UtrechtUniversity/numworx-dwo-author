@@ -50,6 +50,7 @@
         <module>../NormaleVerdeling</module>
 	<module>../SliderWidget</module>
 	<module>../Statistiek</module>
+	<module>../Stroomdiagrammen</module>
 <!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
