@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Main-Class: fi.tekenveelvlakopdr.TekenVeelvlakOpdr
+Trusted-Only: true
+Permissions: all-permissions
+Codebase: *.science.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org
+Application-Name: Tekenen 3D
+Caller-Allowable-Codebase: *.science.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org
