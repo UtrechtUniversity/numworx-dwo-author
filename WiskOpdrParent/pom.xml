@@ -51,6 +51,7 @@
 	<module>../SliderWidget</module>
 	<module>../Statistiek</module>
 	<module>../Stroomdiagrammen</module>
+	<module>../Tegels</module>
 <!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
