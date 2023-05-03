@@ -52,6 +52,7 @@
 	<module>../Statistiek</module>
 	<module>../Stroomdiagrammen</module>
 	<module>../Tegels</module>
+	<module>../TekenVeelvlakOpdr</module>
 <!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
