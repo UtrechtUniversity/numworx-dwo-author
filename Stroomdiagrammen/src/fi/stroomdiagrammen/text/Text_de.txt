@@ -1,0 +1,28 @@
+package fi.stroomdiagrammen.text;
+
+public class Text_de extends java.util.ListResourceBundle
+{
+        public Object [] [] getContents() { return contents; }
+        static final Object [] [] contents =
+        {
+            {	"resetTekst" , "opnieuw" },
+            {	"newGameTekst" , "nieuw spel" },
+            {	"scoreTekst" , "score : " },
+            {	"highscoreTekst" , "beste score : " },
+			{	"levelTekst" , "ronde : " },
+			{	"level2Tekst" , "RONDE" },
+			{	"lastLevelTekst" , "LAATSTE RONDE !" },
+			{	"endOfGameTekst" , "EINDE SPEL !!!" },			
+            {	"hintTekst" , "hint" },
+			{	"uitlegTekst" , "Maak 3 of meer opvolgende getallen uit het rijtje" },
+			{	"uitleg10Tekst" , "Maak 3 of meer opvolgende getallen met som 10, zoals bijvoorbeeld" },
+			{	"uitlegPlusMinTekst" , "Maak 3 of meer opvolgende getallen die steeds 1 groter of 1 kleiner zijn, zoals bijvoorbeeld" },			
+
+        //	{	"button1Label" , "text1_nl" },
+		//	{ 	"button2Label" , "text2_nl" },
+		//	....
+
+		};
+}
+
+
