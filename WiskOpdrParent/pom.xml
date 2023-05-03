@@ -53,6 +53,7 @@
 	<module>../Stroomdiagrammen</module>
 	<module>../Tegels</module>
 	<module>../TekenVeelvlakOpdr</module>
+	<module>../Verknippen</module>
 <!--
     	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
