@@ -1,0 +1,11 @@
+.root {
+/**	background-color: yellow; */ 
+}	
+
+.dock {
+/* 	background-color: lightGray;  */
+}
+
+.canvas {
+	touch-action: none; 
+}
