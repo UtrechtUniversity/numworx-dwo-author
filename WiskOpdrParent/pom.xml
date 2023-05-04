@@ -48,6 +48,7 @@
 	<module>../MozArch</module>
         <module>../NabouwenAanzichten</module>
         <module>../NormaleVerdeling</module>
+	<module>../MathScratch</module>
 	<module>../SliderWidget</module>
 	<module>../Statistiek</module>
 	<module>../Stroomdiagrammen</module>
