@@ -454,6 +454,15 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
         
         this.addWindowListener(this);
         
+        
+        if (WiskOpdr.isExperimental()) {
+          String t = getTitle();
+          String id = getCrossWidgetId0();
+          if (id != null) {
+            t = t + " (" + id + ")";
+            setTitle(t);
+          }
+        }
     }
 
 	void initSet(int setNr) {
