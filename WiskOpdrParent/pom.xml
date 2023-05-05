@@ -44,6 +44,7 @@
 	<module>../DoorzienDWO</module>
 	<module>../Draaibank</module>
 	<module>../GeomAlgebra</module>
+	<module>../GraphTool</module>
 	<module>../Kladje</module>
 	<module>../MozArch</module>
         <module>../NabouwenAanzichten</module>
