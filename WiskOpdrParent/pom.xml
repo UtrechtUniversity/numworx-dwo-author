@@ -43,6 +43,7 @@
 	<module>../CalculatorDwo</module>
 	<module>../DoorzienDWO</module>
 	<module>../Draaibank</module>
+	<module>../euclides-parent</module>
 	<module>../GeomAlgebra</module>
 	<module>../GraphTool</module>
         <module>../IVMdraw-parent</module>
