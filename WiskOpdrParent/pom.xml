@@ -48,6 +48,7 @@
 	<module>../GraphTool</module>
         <module>../IVMdraw-parent</module>
 	<module>../JavaLogoWeb</module>
+	<module>../JavaLogoWeb3d</module>
 	<module>../Kladje</module>
 	<module>../MozArch</module>
         <module>../NabouwenAanzichten</module>
