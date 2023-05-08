@@ -1,0 +1,558 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */options{  //JDK_VERSION = "1.4";
+  //UNICODE_INPUT = true;  static = false;
+  USER_CHAR_STREAM = true;
+  }PARSER_BEGIN(Popcorn)package fi.euclides.openmath;
+
+import java.io.*;
+import java.util.*;
+import nl.tue.win.riaca.openmath.lang.*;
+
+public class Popcorn{  private final static OMSymbol ARITH1_PLUS = OMConstants.ARITH1_PLUS;
+  private final static OMSymbol RELATION1_EQ = OMConstants.RELATION1_EQ;
+  private final static OMSymbol RELATION1_NEQ = OMConstants.RELATION1_NEQ;
+  private final static OMSymbol RELATION1_LT = OMConstants.RELATION1_LT;
+  private final static OMSymbol RELATION1_LEQ = OMConstants.RELATION1_LEQ;
+  private final static OMSymbol RELATION1_GT = OMConstants.RELATION1_GT;
+  private final static OMSymbol RELATION1_GEQ = OMConstants.RELATION1_GEQ;
+  private final static OMSymbol LOGIC1_OR     = OMConstants.LOGIC1_OR;
+  private final static OMSymbol LOGIC1_NOT     = OMConstants.LOGIC1_NOT;
+  private final static OMSymbol LOGIC1_AND	  = OMConstants.LOGIC1_AND;
+  public final static OMSymbol LOGIC1_IMPLIES     = new OMSymbol("logic1", "implies");
+  public final static OMSymbol LOGIC1_EQUIVALENT     = new OMSymbol("logic1", "equivalent");
+  
+  private final static OMSymbol PROG1_IF = OMConstants.PROG1_IF;
+  private final static OMSymbol ARITH1_MINUS = OMConstants.ARITH1_MINUS;
+  public final static OMSymbol ARITH1_TIMES = OMConstants.ARITH1_TIMES;
+  public final static OMSymbol ARITH1_DIVIDE = OMConstants.ARITH1_DIVIDE;
+  private final static OMSymbol ARITH1_UNARY_MINUS = OMConstants.ARITH1_UNARYMINUS;
+  private final static OMSymbol ARITH1_POWER = OMConstants.ARITH1_POWER;
+  private final static OMSymbol NUMS1_RATIONAL = OMConstants.NUMS1_RATIONAL;	
+  public final static OMSymbol COMPLEX1_COMPLEX_CARTESIAN	= new OMSymbol("complex1","complex_cartesian");
+  private final static OMSymbol LIST1_LIST = OMConstants.LIST1_LIST;
+  public final static OMSymbol SET1_SET = new OMSymbol("set1" , "set" );
+  private final static OMSymbol PROG1_ASSIGN = OMConstants.PROG1_ASSIGN;
+  public final static OMSymbol PROG1_BLOCK = new OMSymbol("prog1", "block");
+  private final static OMSymbol INTERVAL1_INTERVAL = OMConstants.INTERVAL1_INTERVAL;
+
+
+  private static String unescape(String str)
+  {	int i = 0;
+	while ( (i = str.indexOf('\\', i)) >= 0)
+	{		str = str.substring(0,i) + str.substring(i+1);
+		i++;
+	}  
+	return str;
+  }
+  
+
+  private static OMObject binop(OMObject symbol, OMObject a, OMObject b)
+  {	OMApplication result = new OMApplication();
+	result.addElement(symbol);
+    result.addElement(a);
+	if(b != null)
+    	result.addElement(b);
+    return result;
+  }
+
+  private static void addArgs(OMApplication oma, Vector v)  {    	Iterator i = v.iterator();
+    	while(i.hasNext())    	{    	  oma.addElement( (OMObject) i.next() );
+    	}
+   }
+
+    public static Symbols map = new Symbols() {
+
+	public String getString(String string) {
+		return null;
+	}
+	  
+  };
+
+  private static OMObject getSymbol(String name) throws ParseException  {	String cd = map.getString(name);
+	if(cd == null)
+		throw new ParseException("cd not found for "+ name);
+	return new OMSymbol(cd, name);
+  }
+
+  public Popcorn(String expr) {
+    this(new StringStream(expr));
+  }}PARSER_END(Popcorn)SKIP :{  " "| "\r"| "\t"| "\n"}
+SKIP :
+{
+  "/*" : WithinComment
+}
+
+<WithinComment> SKIP :
+{
+  "*/" : DEFAULT
+}
+
+<WithinComment> MORE :
+{
+  <~[]>
+}
+
+SKIP: /* Strings */
+{  "\"" : WithinString
+}
+
+<WithinString> TOKEN:
+{
+	<  STRING: "\"" > : DEFAULT 
+}
+
+<WithinString> MORE:
+{  	"\\\""
+}
+
+<WithinString> MORE :
+{	<~[]>
+}
+TOKEN : /* OPERATORS */{
+  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >
+| < POWER: "^" >
+| < RATIONAL: "//" >
+| < EQ: "=" >
+| < NEQ: ( "!="| "<>" ) >
+| < LE: "<=" >
+| < LT: "<" >
+| < GE: ">=" >
+| < GT: ">" >
+| < BAR: "|" >
+| < ARROW: "->" >
+| < DOLLAR: "$" >
+| < OR: "or" >
+| < NOT: "not" >
+| < AND: "and" >
+| < IMPLIES: "==>" >
+| < ASSIGN: ":=" >
+| < EQUIV: "<=>" >
+| < IF: "if" >
+| < THEN: "then" >
+| < ELSE: "else" >
+| < ENDIF: "endif" >
+| < WHILE: "while" >
+| < DO: "do" >
+| < ENDWHILE: "endwhile" >
+| < INTERVAL: ".." >
+}
+TOKEN : /* parentheses */
+{  	< LPAR : "(" >
+| 	< RPAR : ")" >
+| 	< LBRA : "[" >
+| 	< RBRA : "]" >
+|   < KOMMA: "," >
+|   < SEMI: ";" >
+| 	< LBC: "{" >
+| 	< RBC: "}" >
+}
+TOKEN : /* identifiers */{  < CONSTANT : (< DIGIT >)+ >
+| < DECFLOAT: (< DIGIT >)+ "." (< DIGIT >)+ ("e" ("-")? (< DIGIT >)+)? >| < #DIGIT : [ "0"-"9" ] >
+| < #LETTER : [ "a"-"z", "A"-"Z", "_" ] >
+| < #HASHHASH: "##" >
+| < #LETTERORDIGIT :  < DIGIT >| < LETTER > >
+| < ID :  < LETTER > ( < LETTERORDIGIT > )*  >
+| < QID:  "\'" (~["\'"])* "\'" >
+| < GREF:  < HASHHASH > ( ~[] ) * < HASHHASH > >}
+
+OMObject start() :{OMObject o;}{  o = expr() < EOF >  {    return o;  }}
+
+
+OMObject expr() :
+{OMObject o;}{  o = blockExpr()  {    return o;
+  }
+}
+
+OMObject blockExpr() :
+{  OMObject o, o2;
+}
+{  o = assignExpr()
+  (    < SEMI >
+    o2 = assignExpr()
+    {      o = binop(PROG1_BLOCK,o, o2);
+    }  )*
+  {        return o;
+  }
+}
+
+
+OMObject assignExpr() :
+{
+  OMObject o, o2;
+}
+{
+  o = impliesExpr()
+  (
+    < ASSIGN >
+    o2 = impliesExpr()
+    {
+       o = binop(PROG1_ASSIGN, o, o2);
+    }
+  )?
+  {
+    return o;
+  }
+}
+
+OMObject impliesExpr():
+{	OMObject o, o2;
+	OMSymbol tok;
+}
+{  	o = orExpr()
+  	(  	  (  	      	    < IMPLIES >  	    {  	      tok = LOGIC1_IMPLIES;
+  	    }
+  	  |
+  	  	< EQUIV >
+  	  	{  	  	  tok = LOGIC1_EQUIVALENT;
+  	  	}
+  	  )
+  	  o2 = orExpr()
+  	  {  	    o = binop(tok, o, o2);
+  	  }
+    )?
+    {       return o;
+    }
+}
+  
+
+
+
+OMObject orExpr() :
+{  OMObject o, o2;
+}
+{  o = andExpr()
+  (    < OR >
+    o2 = andExpr()
+    {       o = binop(LOGIC1_OR, o, o2);
+    }
+  )*
+  {    return o;
+  }
+}
+
+OMObject andExpr() :
+{
+  OMObject o, o2;
+}
+{
+  o = relExpr()
+  (
+    < AND >
+    o2 = relExpr()
+    {
+       o = binop(LOGIC1_AND, o, o2);
+    }
+  )*
+  {
+    return o;
+  }
+}
+
+
+OMObject relExpr() :
+{  OMObject a, b;
+  OMObject tok;
+}
+{
+  a = intervalExpr()
+  (        (
+      < EQ >
+      	{
+        	tok = RELATION1_EQ;
+      	}
+    | < NEQ >
+ 		{
+    		tok = RELATION1_NEQ;
+   		}
+    | < LE >
+ 		{
+    		tok = RELATION1_LEQ;
+   		}
+    | < GE >
+ 		{
+    		tok = RELATION1_GEQ;
+   		}
+    | < LT >
+ 		{
+    		tok = RELATION1_LT;
+   		}
+    | < GT >
+ 		{
+    		tok = RELATION1_GT;
+   		}
+   )
+    
+    b = intervalExpr()
+    {       a = binop(tok,a,b);
+    }    
+  )?
+  {  	return a;
+  }
+}
+
+OMObject intervalExpr() :
+{  OMObject o, o2;
+}
+{  o = addExpr()
+  (    < INTERVAL >
+    o2 = addExpr()
+    {      o = binop(INTERVAL1_INTERVAL, o, o2);
+    }
+  )?
+  {    return o;
+  }
+}
+
+OMObject addExpr() :{OMObject a, b;
+ OMObject tok;
+}{  a = multExpr()  (    (      < PLUS >      	{        	tok = ARITH1_PLUS;
+      	}    | < MINUS > 		{    		tok = ARITH1_MINUS;   		}
+   )    b = multExpr()    {       a = binop(tok, a, b);
+    }  )*
+  {    return a;
+  }}OMObject multExpr() :{OMObject o, o2; OMSymbol tok;}{  o = powerExpr()  (    (      < MULTIPLY >      {        tok = ARITH1_TIMES;
+      }    | < DIVIDE >    	{      	tok = ARITH1_DIVIDE;   		}
+    )   o2 = powerExpr()    {		o = binop(tok, o, o2);
+    }  )*
+  {	return o;
+  }
+    }
+OMObject powerExpr():
+{OMObject o,o2; OMSymbol tok;}
+{  o = complexExpr()
+  (
+    
+      < POWER >
+      {
+        tok = ARITH1_POWER;
+      }
+   o2 = complexExpr()
+    {
+		o = binop(tok, o, o2);
+    }
+  )?
+  {
+	return o;
+  }
+}
+OMObject complexExpr():
+{OMObject o,o2; OMSymbol tok;
+}
+{
+  o = rationalExpr()
+  (
+    
+      < BAR >
+      {
+        tok = COMPLEX1_COMPLEX_CARTESIAN;
+      }
+   o2 = rationalExpr()
+    {
+		o = binop(tok, o, o2);
+    }
+  )?
+  {
+	return o;
+  }
+}
+
+OMObject rationalExpr() :
+{  OMObject o, o2;
+}
+{  o = negExpr()
+  (    	< RATIONAL >
+    	o2 = negExpr()
+    	{    	  o = binop(NUMS1_RATIONAL, o, o2);
+    	}
+   )?
+   {     return o;
+ }
+}
+
+
+OMObject negExpr() :{OMObject o; OMSymbol tok;}{  (    < MINUS >  { tok = ARITH1_UNARY_MINUS;  }|
+  	<  NOT >
+  	{  	  tok = LOGIC1_NOT;
+  	}
+ )
+  o = compExpr()  {	return binop(tok, o, null);
+  }| o = compExpr()
+	{  		return o;
+	}}
+OMObject compExpr():{OMObject o, arg, binder, body;
+ OMApplication oma;
+ OMBinding omb;
+ Vector args;}
+{
+  o = anchor()
+  (    (      < LPAR >
+	{
+	    oma = new OMApplication();
+  		oma.addElement(o);
+  		o = oma;
+	}
+    (
+      arg = expr()
+  	  {
+	    oma.addElement(arg);
+	  }
+	  (
+	    < KOMMA >
+	    arg = expr()
+	    {
+	      oma.addElement(arg);
+	    }
+	  )*
+    )?
+    < RPAR >   )  
+  | 
+	(	  < LBRA >
+	{	  	binder = o;
+    }
+    args = commalist()
+    <  ARROW >
+    body = expr()
+    {		o = new OMBinding(binder, args, body);
+    }
+    < RBRA >
+  )
+  )?
+  
+  {       return o;
+  }
+}
+
+OMObject paraExpr():{OMObject o;}{
+  < LPAR >  o = expr() < RPAR >  {    return o;
+  }}
+
+OMObject listExpr():
+{
+  Vector v;  OMApplication oma = new OMApplication();
+  oma.addElement(LIST1_LIST);
+}
+{  < LBRA >
+  	v = commalist()
+  	{  	  addArgs(oma, v);
+	}
+  < RBRA >
+  {    return oma;
+  }
+}
+
+OMObject setExpr():
+{  Vector v;
+  OMApplication oma = new OMApplication();
+  oma.addElement(SET1_SET);
+}
+{  < LBC >
+  	v = commalist()
+  	{  	  addArgs(oma, v);
+  	}
+  < RBC >
+  	{
+  	  return oma;
+  	}
+ }  	  
+
+Vector commalist()  :{  Vector v = new Vector();
+  OMObject o;
+}
+{   (    	o = expr()
+    	{    	   v.add(o); 
+		}
+		( 		  < KOMMA >
+		  o = expr()
+		  {		    v.add(o);
+		  }
+		)*
+	)?
+
+	{	   return v;
+	}
+}
+
+OMObject anchor() :
+{OMObject o;}
+{  	o = atom()
+  	{
+  	  return o;
+  	}
+}
+
+
+
+String id():
+{ Token tok;
+}
+{    tok = < ID >  {     return tok.toString();
+   }
+ | tok = < QID >
+ {   String f = tok.toString();
+   return f.substring(1, f.length()-1);
+ }
+
+}  OMObject atom() :{
+  Token tok;
+  String name, cd;
+  OMObject o;
+}{
+  o = paraExpr()
+  {
+    return o;
+  }
+|
+	o = listExpr()
+	{	  return o;
+	}
+|
+	o = setExpr()
+	{	  return o;
+	}
+|
+  tok = < CONSTANT >  {	return new OMInteger(tok.toString());
+  }
+| tok = < DECFLOAT >
+	{	  return new OMFloat(tok.toString(), "dec" );
+	}
+| LOOKAHEAD( 2 ) cd = id() "." name = id()
+{	return new OMSymbol(cd, name);
+}
+ 
+| name = id()	{
+	  return getSymbol(name); 	}
+| < DOLLAR > name = id(){ 	return new OMVariable(name); }  | o = ifExpr()
+	{  		return o;
+	}
+| tok = < STRING >
+	{
+	  	String s = tok.toString();
+	  	s = s.substring(0, s.length()-1);
+	  	s = unescape(s);		return new OMString(s);
+	}
+}
+
+OMObject ifExpr() :
+{  OMApplication oma; OMObject o;
+  oma = new OMApplication();
+  oma.addElement(PROG1_IF);
+}
+{  	< IF > 
+	o = expr()
+	{	   oma.addElement(o);
+	}
+	< THEN >
+	o = expr()
+	{		oma.addElement(o);
+	}
+	(	  	  < ELSE >
+		o = expr()
+		{	  	oma.addElement(o);
+		}
+	)?
+	< ENDIF >
+	{	  return oma;
+	}
+}
+	  
