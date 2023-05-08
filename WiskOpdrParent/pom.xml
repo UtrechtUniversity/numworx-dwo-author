@@ -47,6 +47,7 @@
 	<module>../GeomAlgebra</module>
 	<module>../GraphTool</module>
         <module>../IVMdraw-parent</module>
+	<module>../JavaLogoWeb</module>
 	<module>../Kladje</module>
 	<module>../MozArch</module>
         <module>../NabouwenAanzichten</module>
