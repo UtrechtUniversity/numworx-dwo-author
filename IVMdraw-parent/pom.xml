@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>fi.ivmdraw</groupId>
+  <artifactId>IVMdraw-parent</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>IVMdraw</name>
+  <modules>
+  <module>ivmdraw-common</module>
+  <module>ivmdraw</module>
+  <module>IVMdrawGWT</module>
+  </modules>
+  <repositories>
+    <repository>    
+     <id>dwo-maven-repo</id>   
+     <name>DWO Public Maven Repository</name>    
+     <url>http://www.staff.science.uu.nl/~velth101/repository/</url>    
+   </repository>
+ </repositories>
+  <properties>
+  	<maven.compiler.source>1.8</maven.compiler.source>
+  	<maven.compiler.target>1.8</maven.compiler.target>
+  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+</project>
