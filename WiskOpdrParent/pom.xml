@@ -44,6 +44,7 @@
 	<module>../DoorzienDWO</module>
 	<module>../Draaibank</module>
 	<module>../euclides-parent</module>
+	<module>../geodefiner-common</module>
 	<module>../GeomAlgebra</module>
 	<module>../GraphTool</module>
         <module>../IVMdraw-parent</module>
