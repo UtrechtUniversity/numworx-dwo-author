@@ -68,7 +68,6 @@
  			<plugin>
 				<groupId>com.github.wvengen</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
-				<version>2.0.14</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -78,7 +77,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<proguardVersion>6.1</proguardVersion>
 					<options>
 						<option>-verbose</option>
 						<option>-dontwarn</option>
@@ -92,14 +90,6 @@
 					</libs>
 					<addMavenDescriptor>false</addMavenDescriptor>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>net.sf.proguard</groupId>
-						<artifactId>proguard-base</artifactId>
-						<version>6.1.0</version>
-						<scope>runtime</scope>
-					</dependency>
-				</dependencies>
 			</plugin>
                     <plugin>
                         <groupId>com.github.batkinson.plugins</groupId>
@@ -139,14 +129,5 @@
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
-		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>
 	</properties>
-	<profiles>
-	<profile>
-		<id>running11</id>
-		<properties>
-			<proguard.lib>${java.home}/jmods</proguard.lib>
-		</properties>
-	</profile>
-	</profiles>
 </project>

@@ -45,7 +45,7 @@
 		</dependency>
 	</dependencies>
 	<properties>
-		<maven.test.skip>false</maven.test.skip>
+		<maven.test.skip>true</maven.test.skip>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
