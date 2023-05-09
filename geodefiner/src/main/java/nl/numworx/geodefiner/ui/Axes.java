@@ -1,0 +1,82 @@
+package nl.numworx.geodefiner.ui;
+
+import java.awt.BorderLayout;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.inject.Inject;
+import javax.swing.Box;
+import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import dagger.Lazy;
+import nl.numworx.geodefiner.CellItem;
+import nl.numworx.geodefiner.common.CELL;
+import fi.euclides.model.Destroyable;
+import fi.euclides.swing.AWTViewer;
+
+@SuppressWarnings("serial")
+public class Axes extends JPanel implements ChangeListener {
+
+	CellItem o,u,x,y,g;
+	Box content;
+	AWTViewer viewer;
+	@Inject Lazy<UIModelFactory> factory;
+	@Inject public Axes(AWTViewer viewer) {
+		super(new BorderLayout());
+		Box h = Box.createVerticalBox();
+		content = h;
+		this.viewer = viewer;
+	//	init(); when?
+		
+		add(h, BorderLayout.CENTER);
+
+	}
+
+	CellItem initItem(Destroyable d, String text, String var) {
+		CELL O = d.adapt(CELL.class);
+		CELL O1 = new CELL(text, d, var);
+		if(O != null) O1.config = O.config;
+		return new CellItem(O1, viewer, factory.get(), false);
+	}
+	
+	public void init() {
+		Box h = content;
+		h.removeAll();
+		o = initItem(viewer.getModel().getO(), "$fO point(0,0)@", "O");
+		h.add(o);
+		u = initItem(viewer.getModel().getU(), "$fpoint(1,0)@", "");
+		h.add(u);
+		x = initItem(viewer.getModel().getLijnen().firstElement(), "$fxas y=0@", "x");
+		h.add(x);
+		y = initItem(viewer.getModel().getLijnen().elementAt(1), "$fyas x=0@", "y");
+		h.add(y);
+		g  = initItem(viewer.getModel().getLijnen().elementAt(2), "$fgrid@", "");
+		h.add(g);
+		
+		h.add(Box.createGlue());
+	}
+
+	public void stateChanged(ChangeEvent e) {
+		if(true) // FIXME
+			init();
+	}
+	
+	private void putMap(Map<String, Object> map, CELL cell) {
+		if(cell.config != null)
+			map.put(viewer.toString(cell.item), cell.config.toMap());
+	}
+	
+	public Map<String,Object> toMap() {
+		TreeMap<String,Object> map = new TreeMap<String, Object>();
+		if(o == null) return map;
+		putMap(map, o.getCell());
+		putMap(map, u.getCell());
+		putMap(map, x.getCell());
+		putMap(map, y.getCell());
+		putMap(map, g.getCell());
+		return map;
+	}
+	
+}
