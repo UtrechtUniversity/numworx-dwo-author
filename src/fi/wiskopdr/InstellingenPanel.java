@@ -1447,9 +1447,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 			if(WiskOpdr.isPremium())
 			{
 			  objectivesButton.setStudentModelID(studentModelId);
-			  WiskOpdr.studentModelSupplier = 
-			      studentModelId != null ?
-			      () -> objectivesButton.getStudentModel() : null;
+			  WiskOpdr.studentModelSupplier = objectivesButton.getStudentModelSupplier();
 			}
 		}
 		misconceptionsCB.setSelected(hasMisconceptions);
@@ -1569,7 +1567,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(objectivesCB.isSelected())
 		{	WiskOpdr.setObjectives(objectivesButton.getObjectives());
 			WiskOpdr.setCategories(objectivesButton.getCategories());
-			WiskOpdr.setStudentModel(objectivesButton.getStudentModel());
+			WiskOpdr.studentModelSupplier = objectivesButton.getStudentModelSupplier();
 		}
 		if(misconceptionsCB.isSelected())
 		{	WiskOpdr.setMisconceptions(misconceptionsButton.getObjectives());

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 import fi.beans.iconan.ImageCache;
 import fi.beans.iconan.SimpleCache;
@@ -43,7 +44,7 @@ public class WiskOpdrGlobalVarState {
 	private String[] categorieString = null;
 	private String[] mccCategorieString = null;
 	private String[][] misconceptions = null;
-	private StudentModel studentModel = null;
+    private Supplier<StudentModel> studentModelSupplier;
 	
 	//static vars MyOpdrEditPanel
 	private int defaultMarginX = 15;
@@ -117,7 +118,7 @@ public class WiskOpdrGlobalVarState {
 		categorieString = WiskOpdr.categorieString;
 		mccCategorieString = WiskOpdr.mccCategorieString;
 		misconceptions = WiskOpdr.misconceptions;
-		studentModel = WiskOpdr.studentModel;
+		studentModelSupplier = WiskOpdr.studentModelSupplier;
 		
 		defaultMarginX = MyOpdrEditContainer.defaultMarginX;
 		defaultMarginY = MyOpdrEditContainer.defaultMarginY;
@@ -189,8 +190,7 @@ public class WiskOpdrGlobalVarState {
 		WiskOpdr.categorieString = categorieString;
 		WiskOpdr.mccCategorieString = mccCategorieString;
 		WiskOpdr.misconceptions = misconceptions;
-		WiskOpdr.studentModel = studentModel;
-		
+		WiskOpdr.studentModelSupplier = studentModelSupplier;
 		
 		
 		TekstVakPanel.styles = styles;

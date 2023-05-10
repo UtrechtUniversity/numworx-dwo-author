@@ -236,6 +236,9 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	public ObjectiveChoiceButton(String[][] objectives, String[] categorieString, StudentModel model) {
 	  this(WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString,model);
 	}
+    public ObjectiveChoiceButton(String[][] objectives, String[] categorieString, Supplier<StudentModel> model) {
+      this(WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString,model);
+    }
  
 	/**
 	 * Voor gebruik bij misconcepties.

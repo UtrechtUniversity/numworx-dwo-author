@@ -173,8 +173,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static String[][] objectives = null;
 	public static String[] categorieString = null;
 
-	@Deprecated // use supplier
-	public static StudentModel studentModel;
+//	@Deprecated // use supplier
+//	public static StudentModel studentModel;
 	public static Supplier<StudentModel> studentModelSupplier;
 	private StudentModel studentModels[];
 	public static String[][] misconceptions = null;
@@ -901,7 +901,6 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		applet = this;
 	    { // at constructor time wipeout
 	      studentModelSupplier = null;
-	      studentModel = null;
 	    }
 
 	    URL url = super.getCodeBase();
@@ -1732,7 +1731,6 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
       doCAS  = CAS_LOCAL;
       { // at constructor time wipeout
         studentModelSupplier = null;
-        studentModel = null;
       }
       String doCASString  = getParameter("CAS");
       if(doCASString!=null && !"".equals(doCASString))
@@ -1990,8 +1988,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return NO_SUCH_PAGE;
 	}
 
+  @Deprecated
   public static void setStudentModel(StudentModel studentModel2) {
-    studentModel = studentModel2;
     if (studentModel2 != null)
       studentModelSupplier = () -> studentModel2;
     else

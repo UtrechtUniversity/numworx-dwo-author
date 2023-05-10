@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -524,4 +525,10 @@ public class ObjectiveSettingsButton extends WiskOpdrButton implements ActionLis
     requestStudentModel();
     return WiskOpdr.applet.expandStudentModel(studentModel);
   }   
+  
+  public Supplier<StudentModel> getStudentModelSupplier() {
+    if (studentModelId == null) 
+      return null;
+    return this::getStudentModel;
+  }
 }
