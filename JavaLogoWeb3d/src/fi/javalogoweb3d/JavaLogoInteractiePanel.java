@@ -626,7 +626,7 @@ System.out.println("jlip setEditState");
 		
 	}
 
-	@Override
+	//@Override
 	public int geefAsHoogte() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -915,6 +915,12 @@ System.out.println("jlip setEditState");
 	@Override
 	public String getLocalizedCmd(String cmd) {
 		return JavaLogoWeb3d.rb.getString(CBA_PREFIX + cmd);
+	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
