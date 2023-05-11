@@ -269,7 +269,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   public void setEditState(Hashtable h) {
     int choicePageMode = 0;
     int activiteitNr = 0;
-    int paginaNr = 0;
+    int paginaNr = 1;
+    String paginaNrs = "";
     String paginaTitel = "";
     int activiteitID = 0;
     int moduleID = 0;
@@ -289,6 +290,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       paginaTitel = (String)h.get("paginaTitel");
     if(h.containsKey("paginaNr"))
       paginaNr = (int)h.get("paginaNr");
+    if(h.containsKey("paginaNrs"))
+      paginaNrs = (String)h.get("paginaNrs");
     if(h.containsKey("activiteitID"))
       activiteitID = (int)h.get("activiteitID");
     if(h.containsKey("moduleID"))
@@ -320,7 +323,10 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     
     linkActiveCB.setSelected(linkActive);
     
-    paginaNrTF.setText(""+paginaNr);
+    if(!"".equals(paginaNrs))
+      paginaNrTF.setText(paginaNrs);
+    else
+      paginaNrTF.setText(""+paginaNr);
     paginaTitelTF.setText(""+paginaTitel);
     activiteitNrTF.setText(""+activiteitNr);
     activiteitIdTF.setText(""+activiteitID);
@@ -388,6 +394,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    int choicePageMode = 0;
    int activiteitNr = 1;
    int paginaNr = 1;
+   String paginaNrs = "";
    String paginaTitel = "";
    int activiteitID = 0;
    int moduleID = 0;
@@ -400,7 +407,11 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    boolean activiteitScore = false;
    
    choicePageMode = getChoicePageMode();
-   paginaNr = intFromText(paginaNr, paginaNrTF.getText());
+   boolean multipage = paginaNrTF.getText().contains((",")) || paginaNrTF.getText().contains(("-"));
+   if(multipage)
+     paginaNrs = paginaNrTF.getText();
+   else
+     paginaNr = intFromText(paginaNr, paginaNrTF.getText());
    paginaTitel = paginaTitelTF.getText();
    toonTitel = toonTitelCB.isSelected();
    if(choicePageMode!=0 && choicePageMode!=2)
@@ -421,6 +432,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     h.put("choicePageMode", new Integer(choicePageMode));
     h.put("activiteitNr", new Integer(activiteitNr));
     h.put("paginaNr", new Integer(paginaNr));
+    h.put("paginaNrs", paginaNrs);
     h.put("paginaTitel", paginaTitel);
     h.put("activiteitID", new Integer(activiteitID));
     h.put("moduleID", new Integer(moduleID));
