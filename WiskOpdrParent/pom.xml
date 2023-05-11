@@ -57,6 +57,7 @@
         <module>../NormaleVerdeling</module>
 	<module>../MathScratch</module>
 	<module>../PreviewHTML</module>
+	<module>../SamlLogin</module>
 	<module>../SliderWidget</module>
 	<module>../Statistiek</module>
 	<module>../Stroomdiagrammen</module>
@@ -64,7 +65,6 @@
 	<module>../TekenVeelvlakOpdr</module>
 	<module>../Verknippen</module>
 <!--
-    	<module>../GraphTool</module>
     	<module>../WiskOpdr</module>
 -->
     </modules>
