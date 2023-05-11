@@ -27,7 +27,6 @@
   	<dependency>
     		<groupId>fi.beans</groupId>
     		<artifactId>numworxlf</artifactId>
-    		<version>2.4.0</version>
     	</dependency>
   </dependencies>
   <packaging>bundle</packaging>

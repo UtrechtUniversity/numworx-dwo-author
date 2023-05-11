@@ -56,6 +56,7 @@
         <module>../NabouwenAanzichten</module>
         <module>../NormaleVerdeling</module>
 	<module>../MathScratch</module>
+	<module>../PreviewHTML</module>
 	<module>../SliderWidget</module>
 	<module>../Statistiek</module>
 	<module>../Stroomdiagrammen</module>
