@@ -28,6 +28,10 @@
     		<groupId>fi.beans</groupId>
     		<artifactId>numworxlf</artifactId>
     	</dependency>
+  	<dependency>
+  		<groupId>nl.uu.fi.dwo</groupId>
+  		<artifactId>DWO-commons-lib</artifactId>
+  	</dependency>
   </dependencies>
   <packaging>bundle</packaging>
   <properties>
