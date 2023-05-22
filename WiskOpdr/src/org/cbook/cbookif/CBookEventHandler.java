@@ -1,0 +1,135 @@
+package org.cbook.cbookif;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * Supporting class for the event wiring.
+ * @author Wim van Velthoven
+ *
+ */
+public class CBookEventHandler {
+	private Object source;
+	private Map<String,Set<CBookEventListener>> listeners;
+	
+
+	public CBookEventHandler(Object source) {
+		super();
+		this.source = source;
+		this.listeners = new HashMap<String, Set<CBookEventListener>>();
+	}
+	
+	/**
+	 * Add a listener. The listerer will be invoked if the <em>command</em> is sent.
+	 * <tt>null</tt> means all commands.
+	 * @param listener the listener
+	 * @param command the command listener interested in.
+	 */
+	public void addCBookEventListener(CBookEventListener listener, String command)
+	{
+		Set<CBookEventListener> list = listeners.get(command);
+		if (list == null) {
+			listeners.put(command, list = new HashSet<CBookEventListener>());
+		}
+ 		if(listener != null) list.add(listener);
+ 		//System.out.println("list: "+list.toString());
+ 		//System.out.println("listeners: "+listeners.toString());
+	}
+
+	/**
+	 * Remove a listener. Use same command.
+	 * @param listener
+	 * @param command
+	 */
+	public void removeCBookEventListener(CBookEventListener listener, String command)
+	{
+		Set<?> list = listeners.get(command);
+		if (list == null) {
+			return;
+		}
+ 		list.remove(listener);
+	}
+	
+	/**
+	 * 
+	 * @return true (most of the time)
+	 * @deprecated use {@link #hasListeners(String)}
+	 */
+	public boolean hasListeners()
+	{	return !listeners.isEmpty();
+	}
+	
+	/**
+	 * check for optimalization if a command has listeners.
+	 * @param command String
+	 * @return bollean command has listeners
+	 */
+	public boolean hasListeners(String command) {
+		return listeners.containsKey(command) || listeners.containsKey(null);
+	}
+	
+	
+	/**
+	 * Fire a CBookEvent. Invoke all interested listeners.
+	 * @param event the event
+	 * @see CBookEventListener#acceptCBookEvent(CBookEvent)
+	 */
+	public void fire(CBookEvent event) {
+		System.out.println("handlerFired");
+		HashSet<CBookEventListener> set = new HashSet<CBookEventListener>();
+		Set<CBookEventListener> list = listeners.get(event.getCommand());
+		//System.out.println("list: "+list);
+		//System.out.println("event.getCommand(): "+event.getCommand());
+		if(list != null) set.addAll(list);
+		list = listeners.get(null);
+		if(list != null) set.addAll(list);
+		//System.out.println("set: "+set.toString());
+		for (Iterator<CBookEventListener> iterator = set.iterator(); iterator.hasNext();) {
+			System.out.println("handlertoListener");
+			CBookEventListener l = iterator.next();
+			l.acceptCBookEvent(event);
+		}
+	}
+
+	/**
+	 * Fire a command without parameters
+	 * @param command
+	 */
+	public void fire (String command) {
+		fire(new CBookEvent(source, command));
+	}
+
+	/**
+	 * Fire a cbook event with command and parameters
+	 * @param command
+	 * @param parameters
+	 */
+	public void fire (String command, Map<String, ?> parameters) {
+		fire(new CBookEvent(source, command, parameters));		
+	}
+	
+	/**
+	 * Fire a command with a single parameter.
+	 * @param command
+	 * @param key
+	 * @param value
+	 */
+	public void fire (String command, String key, Object value) {
+		Map<String,?> parameters = Collections.singletonMap(key, value);
+		fire(command, parameters);
+	}
+	/**
+	 * Fire a command with a single message.
+	 * @param command
+	 * @param message
+	 */
+	public void fire (String command, String message) {
+		
+		fire(new CBookEvent(source, command, message));
+	}
+	
+}

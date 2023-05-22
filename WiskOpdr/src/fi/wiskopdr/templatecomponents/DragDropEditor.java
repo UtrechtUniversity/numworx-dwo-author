@@ -1,0 +1,840 @@
+package fi.wiskopdr.templatecomponents;
+
+import java.awt.AWTEventMulticaster;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import org.json.fimple.JSONArray;
+
+import fi.beans.iconan.Iconan;
+import fi.wiskopdr.DialogFacade;
+import fi.wiskopdr.HelpButton;
+import fi.wiskopdr.HelpButtonPanelIF;
+import fi.wiskopdr.ObjectiveChoiceButton;
+import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.WiskOpdrButton;
+import fi.wiskopdr.WiskOpdrCheckbox;
+import fi.wiskopdr.WiskOpdrTextField;
+import fi.wiskopdr.domainmodel.Constants;
+import fi.wiskopdr.formuleobjects.FormuleButton;
+import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
+import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
+import fi.wiskopdr.tekstobjects.TekstImageVak;
+import fi.wiskopdr.tekstobjects.TekstVak;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak.Connector;
+
+public class DragDropEditor implements TComponentEditor, ActionListener, FocusListener, HelpButtonPanelIF, WindowListener {
+
+	private TekstVak tekstVak;
+	private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
+	private int scoreMax;
+	private String DDwidgetID = null;
+	
+	private DialogFacade frame;
+	private JPanel preferencesPanel;
+	private JPanel topPanel, mainPanel, bottomPanel;
+	
+	//topPanel
+	private JLabel titleLabel;
+	
+	//mainPanel  // instellingen
+	private JLabel titleSettingsLabel;
+	private JLabel itemCountLabel;
+	private JTextField itemCountTF;
+	private JCheckBox snapToTargetCB;
+	private JLabel acceptedMargeLabel;
+	private JTextField acceptedMargeTF;
+	private JCheckBox randomizePositionsCB;
+	private JCheckBox relocateCB;
+	
+	private JLabel itemWidthLabel;
+	private JTextField itemWidthTF;
+	private JLabel itemHeightLabel;
+	private JTextField itemHeightTF;
+	private JLabel rowSpaceLabel;
+	private JTextField rowSpaceTF;
+	private JLabel descrWidthLabel;
+	private JTextField descrWidthTF;
+	private JLabel imageKnopLabel;
+	private FormuleButton knopImageButton;
+	private Image knopImage;
+	private Dialog imageDialog;
+	private Iconan iconman;
+	private String knopImageString = "";
+	
+	// logging /nakijken
+	private JLabel titleLoggingLabel;
+	private JLabel maxScoreLabel;
+	private JTextField maxScoreTF;
+	private JCheckBox checkCB;
+	private JCheckBox teltMeeCB;
+	private JCheckBox logCB;
+	private JTextField logIDField;
+	private JTextField logIDLabelField;
+	private JLabel logIDLabelLabel;
+	private ObjectiveChoiceButton logObjectivesButton;	
+	
+	// Hulp
+	private JLabel titleHulpLabel;
+	private JCheckBox viewCB;
+	
+	// bottomPanel
+	private JButton okButton, cancelButton;
+	private JTextField breedteTF, hoogteTF;
+    private JLabel breedteLabel, hoogteLabel;
+    private JCheckBox volledigeBreedteCB;
+    
+    private HelpButton helpButton;
+   	private JPanel helpPanel;
+    private Box helpBox;
+    private Box helpTitelBox;
+    private JButton hideHelpButton;
+     
+    // Helpbuttons
+    private static String HELP_DRAGDROP_URL = WiskOpdr.rb.getString("HELP_DRAGDROP_URL");
+    private static String HELP_DRAGDROP_URL_CHECK = WiskOpdr.rb.getString("HELP_DRAGDROP_URL_CHECK");
+    private static String HELP_DRAGDROP_URL_TELTMEE = WiskOpdr.rb.getString("HELP_DRAGDROP_URL_TELTMEE");
+    private static String HELP_DRAGDROP_URL_LOGID = WiskOpdr.rb.getString("HELP_DRAGDROP_URL_LOGID");
+    private static String HELP_DRAGDROP_URL_RANDOM = WiskOpdr.rb.getString("HELP_DRAGDROP_URL_RANDOM");
+    private static String HELP_DRAGDROP_URL_SNAP = WiskOpdr.rb.getString("HELP_DRAGDROP_URL_SNAP");
+    private static String HELP_DRAGDROP_URL_RELOCATE = WiskOpdr.rb.getString("HELP_DRAGDROP_URL_RELOCATE");
+    private static String HELP_DRAGDROP_URL_KNOPIMAGE = WiskOpdr.rb.getString("HELP_DRAGDROP_URL_KNOPIMAGE");
+    private static String HELP_DRAGDROP_URL_VIEW = WiskOpdr.rb.getString("HELP_DRAGDROP_URL_VIEW");
+    
+    private HelpButton hbCheck = makeHelpButton(HELP_DRAGDROP_URL_CHECK);
+    private HelpButton hbTeltMee = makeHelpButton(HELP_DRAGDROP_URL_TELTMEE);
+    private HelpButton hbLogID = makeHelpButton(HELP_DRAGDROP_URL_LOGID);
+    private HelpButton hbRandom = makeHelpButton(HELP_DRAGDROP_URL_RANDOM);
+    private HelpButton hbSnap = makeHelpButton(HELP_DRAGDROP_URL_SNAP);
+    private HelpButton hbRelocate = makeHelpButton(HELP_DRAGDROP_URL_RELOCATE);
+    private HelpButton hbKnopImage = makeHelpButton(HELP_DRAGDROP_URL_KNOPIMAGE);
+    private HelpButton hbView = makeHelpButton(HELP_DRAGDROP_URL_VIEW);
+	
+	
+	public DragDropEditor(TekstVak tekstVak) {
+		this.tekstVak = tekstVak;
+		makeGUI();
+		makeFrame();
+	}
+	
+	public void setTekstVak(TekstVak tekstVak) {
+		this.tekstVak = tekstVak;
+	}
+	
+	private void makeGUI() {
+		
+		preferencesPanel = new JPanel(new BorderLayout());
+		
+		topPanel = new JPanel(new BorderLayout());
+		topPanel.setBackground(WiskOpdr.colorBlue1);
+		topPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
+		
+		mainPanel = new JPanel(new BorderLayout());
+		mainPanel.setBackground(WiskOpdr.bgcolorEditor);
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 50, 30));
+		
+		bottomPanel = new JPanel(new BorderLayout());
+		bottomPanel.setBackground(WiskOpdr.colorGray2);
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+		
+		//topPanel
+		titleLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_drag_settings"), new Font("SansSerif",Font.PLAIN, 24));
+		titleLabel.setForeground(WiskOpdr.colorGray3);
+		
+		helpButton = new HelpButton(HELP_DRAGDROP_URL);
+		helpButton.setPreferredSize(new Dimension(22,22));
+		helpButton.setMinimumSize(new Dimension(22,22));
+		helpButton.setMaximumSize(new Dimension(22,22));
+		helpButton.addActionListener(this);
+		
+		helpPanel = new JPanel(new BorderLayout());
+		helpPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, WiskOpdr.colorBlue4));
+		helpPanel.setBackground(WiskOpdr.colorBlue5);
+		helpPanel.setPreferredSize(new Dimension(300,400));
+		
+		JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
+    	bp.setPreferredSize(new Dimension(300,400));
+    	helpPanel.add(bp);
+		
+		helpBox = Box.createVerticalBox();
+		helpBox.add(Box.createRigidArea(new Dimension(300,0)));
+		helpBox.add(helpPanel);
+		helpBox.setMaximumSize(new Dimension(300,800));
+		helpBox.setVisible(false);
+		
+		JLabel helpTitleLabel = new JLabel("Help");
+		helpTitleLabel.setForeground(WiskOpdr.colorBlue5);
+		helpTitleLabel.setFont(new Font("SansSerif",Font.PLAIN, 24));
+	     
+		hideHelpButton = new WiskOpdrButton("\u276e");
+        hideHelpButton.setBorder(BorderFactory.createLineBorder(WiskOpdr.colorBlue1));
+        hideHelpButton.setBackground(WiskOpdr.colorBlue1);
+        hideHelpButton.setForeground(WiskOpdr.colorBlue5);
+        hideHelpButton.setPreferredSize(new Dimension(20,20));
+        hideHelpButton.setFont(new Font("SansSerif",Font.PLAIN, 24));
+        hideHelpButton.addActionListener(this);
+        
+		helpTitelBox = Box.createVerticalBox();
+		helpTitelBox.add(Box.createRigidArea(new Dimension(300,0)));
+		Box helpheader = Box.createHorizontalBox();
+        helpheader.add(Box.createRigidArea(new Dimension(140,0)));
+        helpheader.add(helpTitleLabel);
+        helpheader.add(Box.createRigidArea(new Dimension(80,0)));
+        helpheader.add(hideHelpButton);
+		helpTitelBox.setPreferredSize(new Dimension(300,30));
+		helpTitelBox.add(helpheader);
+		helpTitelBox.setVisible(false);
+		
+		
+		Box headerbox = Box.createHorizontalBox();
+		headerbox.add(Box.createHorizontalGlue());
+		headerbox.add(titleLabel);
+		headerbox.add(Box.createHorizontalGlue());
+		
+		headerbox.add(helpButton);
+		headerbox.add(helpTitelBox);
+		
+		topPanel.add(headerbox);
+		
+		//mainPanel  //settings
+		titleSettingsLabel = makeLabel(WiskOpdr.rb.getString("settingsLabel"), font.deriveFont(Font.BOLD, 16));
+		itemCountLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_drag_rowCount"), font);
+		itemCountTF = makeTextField("", 30, 22, this);
+		randomizePositionsCB = makeCheckBox(WiskOpdr.rb.getString("randomPosLabel"),false,this);
+		snapToTargetCB = makeCheckBox(WiskOpdr.rb.getString("snapToTargetLabel"),true,this);//("Snap to target");
+		acceptedMargeLabel = makeLabel(WiskOpdr.rb.getString("snapMargeLabel"),font);
+		acceptedMargeTF = makeTextField("10",40,20,this);
+		relocateCB = makeCheckBox(WiskOpdr.rb.getString("relocateCBLabel"), false, this);//("Springt terug");
+		itemWidthLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_drag_itemWidth"),font);
+		itemWidthTF = makeTextField("",30,22,this);
+		itemHeightLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_drag_itemHeight"),font);
+		itemHeightTF = makeTextField("",30,22,this);
+		rowSpaceLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_drag_rowSpace"),font);
+		rowSpaceTF = makeTextField("",30,22,this);
+		descrWidthLabel = makeLabel(WiskOpdr.rb.getString("TCOMP_drag_descrWidth"),font);
+		descrWidthTF = makeTextField("",30,22,this);
+		imageKnopLabel = makeLabel(WiskOpdr.rb.getString("editImageKnopLabel"), font);
+		
+		knopImageButton = new FormuleButton(WiskOpdr.rb.getString("klaarKnopLabel"));
+		knopImageButton.setPreferredSize(new Dimension(80,22));
+		knopImageButton.addActionListener(this);
+		
+		//mainPanel  // logging / nakijken
+		titleLoggingLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleLoggingLabel"),font.deriveFont(Font.BOLD, 16));
+		maxScoreLabel = makeLabel(WiskOpdr.rb.getString("score"), font);
+		maxScoreTF = makeTextField("0",50,22,this);
+		checkCB = makeCheckBox(WiskOpdr.rb.getString("checkCBLabel"),true, null);
+		teltMeeCB = makeCheckBox(WiskOpdr.rb.getString("teltMeeCBLabel"), true, null);
+		logCB = makeCheckBox(WiskOpdr.rb.getString("logCBLabel"), false, this);
+		logIDField = makeTextField("",50,22,this);
+		logIDField.setVisible(false);
+		logIDLabelLabel = makeLabel(WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),font);
+		logIDLabelLabel.setVisible(false);
+		logIDLabelField = makeTextField("",50,22,this);
+		logObjectivesButton = new ObjectiveChoiceButton();
+        logObjectivesButton.setPreferredSize(new Dimension(120,22));
+        logObjectivesButton.setMaximumSize(new Dimension(120,22));
+        
+        // mainPanel    //Hulp
+        titleHulpLabel = makeLabel(WiskOpdr.rb.getString("FEV_titleHulpLabel"), font.deriveFont(Font.BOLD, 16));
+        viewCB = makeCheckBox(WiskOpdr.rb.getString("viewCBLabel"), false, this);
+		
+        //plaats componenten mainPanel
+        
+		Component[] r21 = {titleSettingsLabel, 		hgl()};
+		Component[] r22 = {itemCountLabel, 			ra(10,10), 	hgl(), itemCountTF	};
+		Component[] r23 = {randomizePositionsCB, 	ra(5,0),	hgl(),	hbRandom};
+		Component[] r24 = {snapToTargetCB, 			ra(5,0),	hgl(),	hbSnap};
+		Component[] r25 = {acceptedMargeLabel, 		ra(10,10), 	hgl(), acceptedMargeTF	};
+		Component[] r26 = {relocateCB, 				ra(5,0),	hgl(),	hbRelocate};
+		Component[] r27 = {itemWidthLabel, 			ra(10,10), 	hgl(), itemWidthTF	};
+		Component[] r28 = {itemHeightLabel, 		ra(10,10), 	hgl(), 	itemHeightTF};
+		Component[] r29 = {rowSpaceLabel, 			ra(10,10), 	hgl(), 	rowSpaceTF};
+		Component[] r210 = {descrWidthLabel, 		ra(10,10), 	hgl(), 	descrWidthTF};
+		Component[] r211 = {imageKnopLabel, 			ra(5,5),  	knopImageButton,ra(5,0),	hgl(),	hbKnopImage};
+		
+		Component[] k2 = {hb(r21), vst(15), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), 
+				hb(r25), vst(5), hb(r26), vst(15), hb(r27), vst(5), hb(r28), vst(5), hb(r29), vst(5), hb(r210), vst(5), hb(r211), vst(5), vgl()};
+		
+		Component[] r31 = {titleLoggingLabel, 	hgl()};
+		Component[] r32 = {maxScoreLabel, 		ra(5,10), maxScoreTF, hgl()};
+		Component[] r33 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
+		Component[] r34 = {teltMeeCB, 			ra(5,0),	hgl(),	hbTeltMee};
+		Component[] r35 = {logCB, 				ra(5,10), logIDField, ra(5,10), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0), hgl(),	hbLogID};
+		Component[] r36 = {ra(6,0),			logObjectivesButton, hgl()};
+		Component[] r37 = {titleHulpLabel, 		hgl()};
+		Component[] r38 = {viewCB, 				ra(5,0),	hgl(),	hbView};
+		
+		Component[] k3 = {hb(r31), vst(15), hb(r32), vst(5), hb(r33), vst(5), hb(r34), vst(5), hb(r35), vst(10), hb(r36), vst(30), hb(r37), vst(15), hb(r38),vgl()};
+		
+		Component[] main = {vb(k2), hst(50), vb(k3)};
+		mainPanel.add(hb(main));
+		
+		Box hb = Box.createHorizontalBox();
+        hb.add(mainPanel);
+        hb.add(helpBox);
+        
+		// bottomPanel
+		okButton = makeButton("Ok",this);//
+		okButton.setPreferredSize(new Dimension(70,24));
+		okButton.setBackground(WiskOpdr.colorBlue1);
+		okButton.setForeground(WiskOpdr.colorGray3);
+		
+		cancelButton = makeButton("Cancel", this);//
+		cancelButton.setPreferredSize(new Dimension(70,24));
+		cancelButton.setBackground(WiskOpdr.colorBlue1);
+		cancelButton.setForeground(WiskOpdr.colorGray3);
+		
+		breedteLabel = makeLabel(WiskOpdr.rb.getString("breedteLabel"),font);
+		breedteTF = makeTextField("300", 40, 22, this);
+        breedteTF.setEnabled(false);
+        hoogteLabel = makeLabel(WiskOpdr.rb.getString("hoogteLabel"), font);
+        hoogteTF = makeTextField("250", 40,22, this);
+        hoogteTF.setEnabled(false);
+        volledigeBreedteCB = makeCheckBox(WiskOpdr.rb.getString("volleBreedteLabel"),true,this);
+		
+        // plaats componenten bottomPanel
+        Component[] comp = {okButton, hst(20), cancelButton, hst(20), breedteLabel, hst(5), breedteTF, hst(10), hoogteLabel, hst(5), hoogteTF, hst(20), volledigeBreedteCB, hgl()};
+        bottomPanel.add(hb(comp));
+       
+        preferencesPanel.add(topPanel,BorderLayout.NORTH);
+		preferencesPanel.add(bottomPanel,BorderLayout.SOUTH);
+		preferencesPanel.add(hb,BorderLayout.CENTER);
+	}
+	
+	private JCheckBox makeCheckBox (String text, boolean selected, ActionListener al) {
+		JCheckBox cb = new WiskOpdrCheckbox(text);
+		if(al!=null) cb.addActionListener(al);
+		cb.setSelected(selected);
+		return cb;
+	}
+	
+	private JButton makeButton (String text,  ActionListener al) {
+		JButton bt = new WiskOpdrButton(text);
+		if(al!=null) bt.addActionListener(al);
+		return bt;
+	}
+	
+	private JLabel makeLabel (String text, Font f) {
+		JLabel lb = new JLabel(text);
+		lb.setFont(f);
+		lb.setForeground(WiskOpdr.colorBlue1);
+		return lb;
+	}
+	
+	private JTextField makeTextField (String text, int prefWidth, int prefHeight, ActionListener al) {
+		JTextField tf = new WiskOpdrTextField(text);
+		tf.setPreferredSize(new Dimension(prefWidth,prefHeight));
+		if(al!=null) {
+			tf.addActionListener(al);
+			tf.addFocusListener(this);
+		}
+		return tf;
+	}
+	
+	public HelpButton makeHelpButton(String url) {
+		HelpButton helpButton = new HelpButton(url);
+		helpButton.addActionListener(this);
+ 		helpButton.setFont(new Font("SansSerif",Font.BOLD,12));
+ 		helpButton.setPreferredSize(new Dimension(18,18));
+ 		helpButton.setMinimumSize(new Dimension(18,18));
+ 		helpButton.setMaximumSize(new Dimension(18,18));
+ 		helpButton.setVisible(false);
+ 		return helpButton;
+	}
+	
+	private Box hb(Component[] c) {
+		Box box = Box.createHorizontalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Box vb(Component[] c) {
+		Box box = Box.createVerticalBox();
+		for(int i=0 ; c!=null && i<c.length ; i++) 
+			box.add(c[i]);
+		return box;
+	}
+	
+	private Component hgl() {
+		return Box.createHorizontalGlue();
+	}
+	
+	private Component vgl() {
+		return Box.createVerticalGlue();
+	}
+	
+	private Component hst(int n) {
+		return Box.createHorizontalStrut(n);
+	}
+	
+	private Component vst(int n) {
+		return Box.createVerticalStrut(n);
+	}
+	
+	private Component ra(int w, int h) {
+		return Box.createRigidArea(new Dimension(w,h));
+	}
+	
+	private int intFromText(int defaultInt, String text) {
+		int i = defaultInt;
+		try {
+			i = Integer.parseInt(text);
+		}
+		catch(NumberFormatException e) {}
+		return i;
+	}
+
+	public void makeFrame(){
+	   	frame = DialogFacade.newInstance(tekstVak, WiskOpdr.rb.getString("TCOMP_drag"), true);
+	    frame.addWindowListener(this);
+	    frame.getContentPane().setLayout(new BorderLayout());
+	    frame.getContentPane().add(preferencesPanel);
+	    frame.getContentPane().add(bottomPanel,BorderLayout.SOUTH);
+	    frame.pack();
+	    Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+ 	    int xD = (screenSize.width-frame.getSize().width)/2;
+ 	    int yD = (screenSize.height-frame.getSize().height)/2;
+ 	    frame.setLocation(xD, yD);
+	}
+	
+	public void dispose( ) {
+		frame.dispose();
+		if (iconman != null) iconman.dispose();
+	}
+	
+	public void editImage() {
+		if(iconman==null)
+			iconman = new Iconan(WiskOpdr.applet, mainPanel, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
+		iconman.editImage(knopImageString, mainPanel, this);
+		
+//        if(imageDialog == null) {
+//        	Frame f = JOptionPane.getFrameForComponent(mainPanel);
+//			imageDialog = new Dialog(f,"title", true);
+//			imageDialog.setLayout(new BorderLayout());
+//			iconman = new Iconan(WiskOpdr.applet, mainPanel, (Hashtable)TekstImageVak.getImageMap());
+//            imageDialog.add(iconman);
+//            imageDialog.pack();
+//            iconman.addActionListener(this);
+//        }
+//        iconman.select(knopImageString);
+//        imageDialog.setVisible(true);
+    } 
+	
+	@Override
+	public Hashtable<String,Object> getPreferences() {
+		
+		int itemCount = DragDropGenerator.initialItemCount;
+		int itemWidth = DragDropGenerator.initialItemWidth;
+		int itemHeight = DragDropGenerator.initialItemHeight;
+		int rowSpace = DragDropGenerator.initialRowSpace;
+		int descrWidth = DragDropGenerator.initialDescrWidth;
+		
+		boolean randomizePositions = false;
+		boolean snapToTarget = true;
+		int acceptedMarge = 20;
+		boolean view = false;
+		boolean relocate = false;
+		int scoreMax = 0;
+	    boolean logOption = false;
+		String logID = "";
+		boolean check = true;
+		boolean teltMee = true;
+		//boolean checkFormule = false;
+		//String[] formuleStrings = null;
+		String knopImageString = "";
+		
+		boolean volledigeBreedte = true;
+		int breedte = 500;
+		String DDwidgetID = null;
+		
+		
+		itemCount = intFromText(itemCount,itemCountTF.getText());
+		itemWidth = intFromText(itemWidth,itemWidthTF.getText());
+		itemHeight = intFromText(itemHeight,itemHeightTF.getText());
+		rowSpace = intFromText(rowSpace,rowSpaceTF.getText());
+		descrWidth = intFromText(descrWidth,descrWidthTF.getText());
+		
+		randomizePositions = randomizePositionsCB.isSelected();
+		snapToTarget = snapToTargetCB.isSelected();
+		acceptedMarge = intFromText(acceptedMarge,acceptedMargeTF.getText());
+		view = viewCB.isSelected();
+		relocate = relocateCB.isSelected();
+		knopImageString = this.knopImageString;
+		scoreMax = intFromText(scoreMax, maxScoreTF.getText());
+		logOption = logCB.isSelected();
+		logID = logIDField.getText();
+		check = checkCB.isSelected();
+		teltMee = teltMeeCB.isSelected();
+		volledigeBreedte = volledigeBreedteCB.isSelected();
+		breedte = intFromText(breedte, breedteTF.getText());
+		
+		DDwidgetID = this.DDwidgetID;
+				
+		Hashtable<String,Object> preferences = new Hashtable<String,Object>();
+		
+		preferences.put("itemCount", new Integer(itemCount));
+		preferences.put("itemWidth", new Integer(itemWidth));
+		preferences.put("itemHeight", new Integer(itemHeight));
+		preferences.put("rowSpace", new Integer(rowSpace));
+		preferences.put("descrWidth", new Integer(descrWidth));
+		
+		preferences.put("randomizePositions",new Boolean(randomizePositions));
+		preferences.put("snapToTarget", new Boolean(snapToTarget));
+		preferences.put("acceptedMarge", new Integer(acceptedMarge));
+		preferences.put("view", new Boolean(view));
+		preferences.put("relocate", new Boolean(relocate));
+		preferences.put("check",new Boolean(check));
+		preferences.put("scoreMax", new Integer(scoreMax));
+		preferences.put("logOption",new Boolean(logOption));
+		preferences.put("logID",logID);
+		preferences.put("check",new Boolean(check));
+		preferences.put("teltMee",new Boolean(teltMee));
+        
+		preferences.putAll(logObjectivesButton.getEditState(scoreMax));
+            
+		preferences.put("knopImageString", knopImageString);
+		
+		preferences.put("volledigeBreedte", new Boolean(volledigeBreedte));
+		preferences.put("breedte", new Integer(breedte));
+		if(DDwidgetID != null)
+			preferences.put("DDwidgetID", DDwidgetID);
+		
+		return preferences;
+	}
+
+	@Override
+	public void setPreferences(Hashtable<String,Object> preferences) {
+		
+		int itemCount = DragDropGenerator.initialItemCount;
+		int itemWidth = DragDropGenerator.initialItemWidth;
+		int itemHeight = DragDropGenerator.initialItemHeight;
+		int rowSpace = DragDropGenerator.initialRowSpace;
+		int descrWidth = DragDropGenerator.initialDescrWidth;
+		
+		boolean randomizePositions = false;
+		boolean snapToTarget = true;
+		int acceptedMarge = 20;
+		boolean view = false;
+		boolean relocate = false;
+		int scoreMax = 0;
+	    boolean logOption = false;
+		String logID = "";
+		boolean check = true;
+		boolean teltMee = true;
+		//boolean checkFormule = false;
+		//String[] formuleStrings = null;
+		String knopImageString = "";
+		
+		boolean volledigeBreedte = true;
+		int breedte = 500;
+		String DDwidgetID = null;
+		
+		if(preferences.containsKey("itemCount")) itemCount = ((Integer)preferences.get("itemCount")).intValue();
+		if(preferences.containsKey("itemWidth")) itemWidth = ((Integer)preferences.get("itemWidth")).intValue();
+		if(preferences.containsKey("itemHeight")) itemHeight = ((Integer)preferences.get("itemHeight")).intValue();
+		if(preferences.containsKey("rowSpace")) rowSpace = ((Integer)preferences.get("rowSpace")).intValue();
+		if(preferences.containsKey("descrWidth")) descrWidth = ((Integer)preferences.get("descrWidth")).intValue();
+		
+		if(preferences.containsKey("randomizePositions")) randomizePositions = ((Boolean)preferences.get("randomizePositions")).booleanValue();
+		if(preferences.containsKey("snapToTarget")) snapToTarget = ((Boolean)preferences.get("snapToTarget")).booleanValue();
+		if(preferences.containsKey("acceptedMarge")) acceptedMarge = ((Integer)preferences.get("acceptedMarge")).intValue();
+		if(preferences.containsKey("view")) view = ((Boolean)preferences.get("view")).booleanValue();
+		if(preferences.containsKey("relocate")) relocate = ((Boolean)preferences.get("relocate")).booleanValue();
+		if(preferences.containsKey("scoreMax")) scoreMax = ((Integer)preferences.get("scoreMax")).intValue();
+	    if(preferences.containsKey("logOption")) logOption = ((Boolean)preferences.get("logOption")).booleanValue();
+		if(preferences.containsKey("logID")) logID = (String)preferences.get("logID");
+		if(preferences.containsKey("check")) check = ((Boolean)preferences.get("check")).booleanValue();
+		if(preferences.containsKey("teltMee")) teltMee = ((Boolean)preferences.get("teltMee")).booleanValue();
+		//if(preferences.containsKey("checkFormule")) checkFormule = ((Boolean)preferences.get("checkFormule")).booleanValue();
+		//if(preferences.containsKey("formuleStrings")) formuleStrings = (String[])preferences.get("formuleStrings");
+		if(preferences.containsKey("knopImageString")) knopImageString = (String)preferences.get("knopImageString");
+		
+		if(preferences.containsKey("volledigeBreedte")) volledigeBreedte = ((Boolean)preferences.get("volledigeBreedte")).booleanValue();
+		if(preferences.containsKey("breedte")) breedte = ((Integer)preferences.get("breedte")).intValue();
+		if(preferences.containsKey("DDwidgetID")) DDwidgetID = (String)preferences.get("DDwidgetID");
+		
+		
+		itemCountTF.setText(""+itemCount);
+		itemWidthTF.setText(""+itemWidth);
+		itemHeightTF.setText(""+itemHeight);
+		rowSpaceTF.setText(""+rowSpace);
+		descrWidthTF.setText(""+descrWidth);
+		
+		randomizePositionsCB.setSelected(randomizePositions);
+		snapToTargetCB.setSelected(snapToTarget);
+	    acceptedMargeTF.setText(""+acceptedMarge);
+	    viewCB.setSelected(view);
+	    relocateCB.setSelected(relocate);
+		maxScoreTF.setText(""+scoreMax);
+	    logCB.setSelected(logOption);
+        logIDField.setVisible(logOption);
+        logIDLabelLabel.setVisible(logOption);
+        logIDLabelField.setVisible(logOption);
+        logIDField.setText(logID);
+        logObjectivesButton.setEditState(preferences);
+        checkCB.setSelected(check);
+        teltMeeCB.setSelected(teltMee);
+        logObjectivesButton.setVisible(ObjectiveChoiceButton.hasObjectiveChoices());
+        knopImageButton.setPopupButtonImage(knopImage);
+    	iconman = new Iconan(WiskOpdr.applet, mainPanel, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
+    	if(knopImageString!=null && !"".equals(knopImageString)) {
+    		knopImage = iconman.getImage(knopImageString);
+    		knopImageButton.setPopupButtonImage(knopImage);
+    	}
+    	else {
+    		knopImageButton.setPopupButtonImage(null);
+    		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
+    		knopImageButton.setPreferredSize(new Dimension(80,22));
+    	}
+    	this.knopImageString = knopImageString;
+    	
+    	volledigeBreedteCB.setSelected(volledigeBreedte);
+	    breedteTF.setText(""+breedte);
+	    
+	    this.DDwidgetID = DDwidgetID;
+	    
+	   
+	    frame.setVisible(true);
+		frame.pack();
+		//frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
+		Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+ 	    int xD = (screenSize.width-frame.getSize().width)/2;
+ 	    int yD = (screenSize.height-frame.getSize().height)/2;
+ 	    frame.setLocation(xD, yD);
+	}
+	
+	public void show(){
+		frame.setVisible(true);
+		frame.setLocation(tekstVak.getLocationOnScreen().x, tekstVak.getLocationOnScreen().y);
+		Dimension screenSize = WiskOpdr.applet.getToolkit().getScreenSize();
+ 	    int xD = (screenSize.width-frame.getSize().width)/2;
+ 	    int yD = (screenSize.height-frame.getSize().height)/2;
+ 	    frame.setLocation(xD, yD);
+	}
+	
+	//ActionProducer
+	private ActionListener actionListener = null;
+	
+	public void addActionListener(ActionListener l) 
+	{	actionListener = AWTEventMulticaster.add(actionListener,l);
+	}
+	 	
+	public void removeActionListener(ActionListener l)
+	{	actionListener = AWTEventMulticaster.remove(actionListener, l);
+	}	
+	
+	public void produceAction(String command)
+	{	if (actionListener != null)
+		{	actionListener.actionPerformed( new ActionEvent(this, 0, command) );
+		}
+	}
+	
+	public void produceThisAction(ActionEvent e)
+	{	if (actionListener != null)
+		{	actionListener.actionPerformed(e);
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		if(e.getSource().equals(okButton)) {
+			produceAction("ok");
+			helpBox.setVisible(false);
+    		helpTitelBox.setVisible(false);
+    		helpBox.validate(); 
+			OpdrNavStructEdit.helpBrowser.loadURL(null);
+			showHelpButtons(false);
+			frame.setVisible(false);
+		}
+		else if(e.getSource().equals(cancelButton)) {
+			helpBox.setVisible(false);
+    		helpTitelBox.setVisible(false);
+    		helpBox.validate(); 
+			OpdrNavStructEdit.helpBrowser.loadURL(null);
+			showHelpButtons(false);
+			frame.setVisible(false);
+		}
+		else if(e.getSource()==knopImageButton) {   
+			editImage();
+	    }
+	    else if(e.getSource()==iconman) {
+	    	String name = e.getActionCommand();
+	        if(!"".equals(name)) {
+	        	knopImageString = name;
+	            this.knopImage = iconman.getImage(name);
+	            knopImageButton.setPopupButtonImage(knopImage);
+	            int imWidth = iconman.getWidth(knopImageString);
+				int imHeight = iconman.getHeight(knopImageString);
+				if(imWidth == -1) imWidth = 20;
+				if(imHeight == -1) imHeight = 20;
+				knopImageButton.setPreferredSize(new Dimension(Math.max(imWidth,80),Math.max(imHeight,22)));
+	         }
+	        else {
+	    		knopImageButton.setPopupButtonImage(null);
+	    		knopImageButton.setCode(WiskOpdr.rb.getString("klaarKnopLabel"));
+	    		knopImageButton.setPreferredSize(new Dimension(80,22));
+	    	}
+	    }
+	    else if(e.getSource()==logCB) {   
+	    	logIDField.setVisible(logCB.isSelected());
+	    	logIDLabelField.setVisible(logCB.isSelected());
+	    	logIDLabelLabel.setVisible(logCB.isSelected());
+	    	frame.pack();
+	    }
+	    else if(e.getSource()==volledigeBreedteCB) {   
+	    	breedteTF.setEnabled(!volledigeBreedteCB.isSelected());
+	    }
+	    else if (e.getSource() == helpButton) {
+        	//if(interactieEditPanel!=null && interactieEditPanel instanceof AntwoordVergelijkingVakEditPanel) 
+			//{
+        		//((AntwoordVergelijkingVakEditPanel)interactieEditPanel).showHelp(true);
+        		
+    		helpBox.setVisible(!helpBox.isVisible());
+    		helpTitelBox.setVisible(helpBox.isVisible());
+    		if(helpBox.isVisible()) {
+    			showHelpButtons(true) ;
+    			helpBox.validate();
+    			OpdrNavStructEdit.helpBrowser.loadURL(geefHelpURL());
+            	
+            	//packWidth(1100);
+    			frame.pack();
+    		}
+    		else {
+    			helpBox.validate(); 
+    			OpdrNavStructEdit.helpBrowser.loadURL(null);
+    			showHelpButtons(false);
+    			//pack();
+    			frame.pack();
+    		}	
+			//}
+            
+        }
+	    else if(e.getSource() instanceof HelpButton)
+		{
+			OpdrNavStructEdit.helpBrowser.loadURL(((HelpButton)e.getSource()).getURL());
+		}
+		
+		if(e.getSource() == hideHelpButton) {
+          helpBox.setVisible(false);
+          helpTitelBox.setVisible(false);
+          OpdrNavStructEdit.helpBrowser.loadURL(null);
+          showHelpButtons(false);
+          frame.pack();
+        }
+		
+		
+//		if(imageDialog!=null)
+//	        imageDialog.setVisible(false);
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void showHelpButtons(boolean b) {
+		hbCheck.setVisible(b);
+    	hbTeltMee.setVisible(b);
+    	hbLogID.setVisible(b);
+    	hbRandom.setVisible(b);
+    	hbSnap.setVisible(b);
+    	hbRelocate.setVisible(b);
+    	hbKnopImage.setVisible(b);
+    	hbView.setVisible(b);
+    	frame.pack();
+
+   }
+
+	@Override
+	public String geefHelpURL() {
+		return HELP_DRAGDROP_URL;
+	}
+	
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		helpBox.setVisible(false);
+		helpTitelBox.setVisible(false);
+		helpBox.validate(); 
+		OpdrNavStructEdit.helpBrowser.loadURL(null);
+		showHelpButtons(false);
+		frame.setVisible(false);
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+}

@@ -1,0 +1,10 @@
+copy ..\target\wiskopdr.jar N:\www-dev\dwo\jars\wiskopdr.jar
+copy ..\target\wiskopdr.jar.pack.gz N:\www-dev\dwo\jars\wiskopdr.jar.pack.gz
+copy ..\target\graphtool.jar N:\www-dev\dwo\jars\graphtool.jar
+copy ..\target\graphtool.jar.pack.gz N:\www-dev\dwo\jars\graphtool.jar.pack.gz
+copy ..\target\balansfruitapplet.jar N:\www-dev\dwo\jars\balansfruitapplet.jar
+copy ..\target\balansfruitapplet.jar.pack.gz N:\www-dev\dwo\jars\balansfruitapplet.jar.pack.gz
+copy ..\target\geodefiner.jar N:\www-dev\dwo\jars\geodefiner.jar
+copy ..\target\geodefiner.jar.pack.gz N:\www-dev\dwo\jars\geodefiner.jar.pack.gz
+copy ..\target\statistiek.jar N:\www-dev\dwo\jars\statistiek.jar
+copy ..\target\statistiek.jar.pack.gz N:\www-dev\dwo\jars\statistiek.jar.pack.gz

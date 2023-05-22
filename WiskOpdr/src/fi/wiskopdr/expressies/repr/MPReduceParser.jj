@@ -1,0 +1,399 @@
+/**
+ * JavaCC template file for MPReduce.
+ */options{  JDK_VERSION = "1.4";
+  UNICODE_INPUT = true;  static = false;}PARSER_BEGIN(MPReduceParser)package fi.wiskopdr.expressies.repr;
+
+import java.io.*;
+import java.util.*;
+import fi.wiskopdr.expressies.*;
+
+public class MPReduceParser{
+  static class Interval  {     Expressie a,b;
+     Interval(Object a, Object b)     {       this.a = (Expressie) a;
+       this.b = (Expressie) b;
+     }
+  }  private static final String INF = "\u221e";
+  private static final String LEQ = "\u2264";
+  private static final String GEQ = "\u2265";
+  private static final String APPROX = "\u2248";
+/* move to junit test
+  public static void main(String args []) throws Exception  {
+
+	String input = "{y = ( - (sqrt(x) + acos(1) ))/log(x**4), y<infinity}$";
+	//input = "-x/4 + 1 * pi$";
+	input = "{x=(6 .. 7),x >=3,x<=6, x = 123}$";
+	input = "limit(a,b,c)$";
+	Reader in = new StringReader(input);    MPReduceParser parser = new MPReduceParser(in);    Object result = (parser.start());	System.out.println(result);
+  }
+*/
+  public Interval interval(Object a, Object b)  {		return new Interval(a, b);
+		 
+  }
+}PARSER_END(MPReduceParser)SKIP :{  " "| "\r"| "\t"| "\n"
+| "! "}
+SKIP :
+{
+  "/*" : WithinComment
+}
+
+<WithinComment> SKIP :
+{
+  "*/" : DEFAULT
+}
+
+<WithinComment> MORE :
+{
+  <~[]>
+}
+
+SKIP: /* Strings */
+{  "\"" : WithinString
+}
+
+<WithinString> TOKEN:
+{
+	<  STRING: "\"" > : DEFAULT 
+}
+
+<WithinString> MORE:
+{  	"\\\""
+}
+
+<WithinString> MORE :
+{	<~[]>
+}
+TOKEN : /* OPERATORS */{
+  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >
+| < POWER: ( "^" | "**" ) >
+| < EQ: ( "=" | "equal" ) >
+| < NEQ:  "neq" >
+| < LE: "<=" >
+| < LT: "<" >
+| < GE: ">=" >
+| < GT: ">" >
+| < DOLLAR: "$" >
+| < INTERVAL: ( ".." | "!.!." ) >
+}
+TOKEN : /* parentheses */
+{  	< LPAR : "(" >
+| 	< RPAR : ")" >
+|   < KOMMA: "," >
+| 	< LBC: "{" >
+| 	< RBC: "}" >
+}
+TOKEN : /* identifiers */{  < CONSTANT : ("-")? (< DIGIT >)+ > /* absorb - in number */
+| < DECFLOAT: (< DIGIT >)+ "." (< DIGIT >)+ ("e" ("-")? (< DIGIT >)+)? >| < #DIGIT : [ "0"-"9" ] >
+| < #LETTER : [ "a"-"z", "A"-"Z", "_" ] >
+| < #LETTERORDIGIT :  < DIGIT >| < LETTER > >
+| < ABS :"abs" >
+| < ACOS : "acos" >
+| < ASIN : "asin" >
+| < ATAN : "atan" >
+| < BIN : "binomial" >
+| < CSC : "csc" >
+| < COS : "cos" >
+| < COT : "cot" >
+| < DIFF : "df" >
+| < E : "e" >
+| < FAC : "factorial" >
+| < INFINITY : "infinity" >
+| < INT : "int" >
+| < LOG : "log" >
+| < NDELOG : "logd" >
+| < PI : "pi" >
+| < SQRT : "sqrt" >
+| < SIN : "sin" >
+| < SEC : "sec" >
+| < SUM : "sum" >
+| < TAN : "tan" >
+| < ARBINT : "arbint" >
+| < ARBCOMPLEX : "arbcomplex" >
+| < LIMIT: "limit" >
+| < UP   : "!-" >
+| < DOWN : "!+" >
+| < ID :  < LETTER > ( < LETTERORDIGIT > )*  >
+
+
+}
+
+Object start() :{Object o;}{  o = expr() < DOLLAR > < EOF >  {    return o;  }}
+
+
+Object expr() :
+{Object o;}{  o = relExpr()  {    return o;
+  }
+}
+
+
+
+
+Object relExpr() :
+{  Object a, b;
+  Token tok;
+  String teken = null;
+}
+{
+  a = intervalExpr()
+  (        (
+      tok = < EQ >      {        teken = "=";
+      }
+    | tok = < NEQ > // ???? bestaat niet in WiskOpdr
+    | tok = < LE >      {       teken = LEQ;
+      }
+    | tok = < GE >
+      {        teken = GEQ;
+      }
+    | tok = < LT >
+    | tok = < GT >
+   )
+    
+    b = intervalExpr()
+    { if(teken == null) teken = tok.image;
+      if(b instanceof Interval )
+      {  Interval bb = (Interval)b;         b = new Vermenigvuldiging(new BasisExpressie(0),new Optelling(bb.a,bb.b));
+         teken = "~";      }
+      a = new Vergelijking( (Expressie) a, (Expressie) b, teken);
+    }    
+  )?
+  {  	return a;
+  }
+}
+
+Object intervalExpr() :
+{  Object o, o2;
+}
+{  o = addExpr()
+  (    < INTERVAL >
+    o2 = addExpr()
+    {      o = interval(o, o2);
+    }
+  )?
+  {    return o;
+  }
+}
+
+Object addExpr() :{
+	Object a, b;
+	Token tok;
+}{  a = multExpr()  (    (      tok = < PLUS >    | tok = < MINUS >   )    b = multExpr()    {		switch(tok.kind)		{			case PLUS : a = new Optelling( (Expressie) a, (Expressie) b); break;
+			case MINUS: a = new Aftrekking( (Expressie) a, (Expressie) b); break;
+		}
+       
+    }  )*
+  {    return a;
+  }}Object multExpr() :{Object o, o2; Token tok;}{  o = negExpr()  (    ( tok = < MULTIPLY >    | tok = < DIVIDE >    )    o2 = negExpr()    {		switch(tok.kind)		{		  case MULTIPLY: o = new Vermenigvuldiging( (Expressie) o, (Expressie) o2); break;
+		  case DIVIDE  : o = new Deling( (Expressie) o, (Expressie) o2); break;
+		}
+    }  )*
+  {	return o;
+  }
+    }
+Object powerExpr():
+{Object o,o2; String tok;}
+{  o = compExpr()
+  (
+    
+      < POWER >
+      {
+        tok = "^";
+      }
+   o2 = negExpr()
+    {
+		o = new Macht( (Expressie) o, (Expressie) o2);
+    }
+  )?
+  {
+	return o;
+  }
+}
+
+Object negExpr() :{Object o; String tok;}{  (    < MINUS >  { tok = "-";  }
+ )
+  o = powerExpr()  {	return new Aftrekking(new BasisExpressie(0), (Expressie) o);
+  }| o = powerExpr()
+	{  		return o;
+	}}
+Object compExpr():{Object o, arg;
+ Vector args;}
+{
+  o = anchor()  {    return o;
+  }
+}
+
+Object paraExpr():{Object o;}{
+  < LPAR >  o = expr() < RPAR >  {    return o;
+  }}
+
+Object listExpr():
+{
+  Vector v;}
+{  < LBC >
+  	v = commalist()
+  	
+  < RBC >
+  {    return v;
+  }
+}
+
+Vector commalist()  :{  Vector v = new Vector();
+  Object o;
+}
+{   (    	o = expr()
+    	{    	   v.add(o); 
+		}
+		( 		  < KOMMA >
+		  o = expr()
+		  {		    v.add(o);
+		  }
+		)*
+	)?
+
+	{	   return v;
+	}
+}
+
+Object anchor() :
+{Object o;}
+{  	o = atom()
+  	{
+  	  return o;
+  	}
+}
+
+
+
+String id():
+{ Token tok;
+}
+{  tok = < ID >  {     return tok.toString();
+   }
+}  Object atom() :{
+  Token tok;
+  String name;
+  Object o, o2, o3=null, o4=null;
+  Vector args;
+}{
+  o = paraExpr()
+  {
+    return o;
+  }
+|
+	o = listExpr()
+	{	  return o;
+	}
+|
+  tok = < CONSTANT >  {	return new BasisExpressie(tok.toString());
+  }
+| tok = < DECFLOAT >
+	{	  return new BasisExpressie(tok.toString());
+	}
+// functions expanded.
+|  < ABS > <LPAR > o = expr() < RPAR >{   return new Abs( (Expressie) o);
+}
+|  < ACOS > <LPAR > o = expr() < RPAR >
+{
+   return new ArcCosinus( (Expressie) o);
+}
+|  < ASIN > <LPAR > o = expr() < RPAR >
+{
+   return new ArcSinus( (Expressie) o);
+}
+|  < ATAN > <LPAR > o = expr() < RPAR >
+{
+   return new ArcTangens( (Expressie) o);
+}
+|  < BIN > <LPAR > o = expr() < KOMMA > o2 = expr() < RPAR >{
+  return new Bin( (Expressie) o, (Expressie)o2);
+}
+|  < CSC > <LPAR > o = expr() < RPAR >{  return new Cosecans( (Expressie) o );
+}
+|  < COS > <LPAR > o = expr() < RPAR >{  return new Cosinus( (Expressie)o );
+}
+|  < COT > <LPAR > o = expr() < RPAR >
+{
+  return new Cotangens( (Expressie)o );
+}
+|  < DIFF > <LPAR > o = expr() < KOMMA > o2 = expr() < RPAR >{  return new Diff( (Expressie) o, (Expressie) o2);}
+|  <E>{  return new E();
+}
+|  <  FAC > <LPAR > o = expr() < RPAR >{  return new Faculteit( (Expressie) o);
+}
+|  < INFINITY >{
+  	return new BasisExpressie(INF); 
+}
+|  < INT > <LPAR > o = expr() < KOMMA > o2 = expr() (< KOMMA > o3 = expr() < KOMMA > o4 = expr() )?< LPAR >
+{	if(o3 == null) return new Primitieve((Expressie)o,(Expressie)o2);
+	return new Integraal((Expressie) o,(Expressie)o2,(Expressie)o3,(Expressie)o4);
+}
+|  <LOG> <LPAR> o = expr() < RPAR >
+{
+  return new Ln( (Expressie) o);
+}  
+|  <  PI >
+	{		return new PI();
+	}
+|  < SEC > <LPAR > o = expr() < RPAR >{  return new Secans( (Expressie) o);
+}
+|  < SIN > <LPAR > o = expr() < RPAR >
+{
+  return new Sinus( (Expressie) o);
+}
+|  < SQRT > <LPAR > o = expr() <RPAR >{	return new Wortel( (Expressie) o );
+}
+|  < SUM > <LPAR > o = expr() < KOMMA > o2 = expr() < KOMMA > o3 = expr() < KOMMA > o4 = expr() < LPAR >
+{
+	return new Sigma((Expressie) o,(Expressie)o2,(Expressie)o3,(Expressie)o4);
+}
+
+|  < TAN > <LPAR > o = expr() < RPAR >
+{
+  return new Tangens( (Expressie) o);
+}
+|  < ARBINT > <LPAR > tok = < CONSTANT > < RPAR >
+{	return new BasisExpressie("N$s" + tok.image + "@");
+}
+|  < ARBCOMPLEX > <LPAR > tok = < CONSTANT > < RPAR >
+{
+	return new BasisExpressie("0.7654321");
+}
+
+|  tok = < LIMIT >  ( tok = < UP > | tok = < DOWN > )? < LPAR > o = expr() < KOMMA >
+	o2 = expr() < KOMMA >
+	o3 = expr() < RPAR >
+	{	int dir = 0;
+		if(tok.kind== UP) dir = 2;
+		if(tok.kind == DOWN) dir = 1;
+		return new Limiet( (Expressie) o, (Expressie) o2, (Expressie)o3, new BasisExpressie(dir));   	}
+
+| name = id()
+  (
+    < LPAR >
+	{
+	    args = new Vector();
+	}
+    (
+      o = expr()
+  	  {
+	    args.addElement(o);
+	  }
+	  (
+	    < KOMMA >
+	    o = expr()
+	    {
+	      args.addElement(o);
+	    }
+	  )*
+    )?
+    < RPAR >
+    {
+		// Wat hier te doen....
+   	}   
+  )?
+
+
+	{
+	  return new BasisExpressie(name); 	}
+}
+
+
+	  
