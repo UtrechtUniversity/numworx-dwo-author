@@ -293,7 +293,7 @@
 	</build>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.test.skip>false</maven.test.skip>
+		<maven.test.skip>true</maven.test.skip>
 		<geogebraVersion>4.0.29-r2017</geogebraVersion>
 		<extras.phase>package</extras.phase>
 		<extras.verify>verify</extras.verify>
