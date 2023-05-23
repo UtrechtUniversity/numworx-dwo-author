@@ -23,7 +23,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/uploadwidget"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/uploadwidget-common"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
