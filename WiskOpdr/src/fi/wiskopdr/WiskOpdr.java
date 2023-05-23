@@ -176,7 +176,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 //	@Deprecated // use supplier
 //	public static StudentModel studentModel;
 	public static Supplier<StudentModel> studentModelSupplier;
-	private StudentModel studentModels[];
+	private static StudentModel studentModels[];
 	public static String[][] misconceptions = null;
 	public static String[] mccCategorieString = null;
 	public static boolean ho;
@@ -188,7 +188,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	private static String templateName = templateBasisName;
 
 	
-	private JSONArray studentModelsJSON;
+	private static JSONArray studentModelsJSON;
 	
 	private void readStudentModelsJSON()
 	{
@@ -899,9 +899,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	 */
 	public void init() {
 		applet = this;
-	    { // at constructor time wipeout
-	      studentModelSupplier = null;
-	    }
+	    disposeStudentModels();
 
 	    URL url = super.getCodeBase();
 		if (url != null && url.getHost().equals("ws.fisme.science.uu.nl")) {
@@ -1041,6 +1039,16 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 		addComponentListener(this);
 	}
+
+
+
+
+
+  private static void disposeStudentModels() {
+    studentModelSupplier = null;
+    studentModels = null;
+    studentModelsJSON = null;
+  }
 
 	/**
 	 * Vraag of het applet in de nakijkmodus wordt gebruikt.
@@ -1729,9 +1737,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
       dwo_env = getParameter("dwo_env"); // Zie Wiskopdr.isExperimental();
       applet = this;
       doCAS  = CAS_LOCAL;
-      { // at constructor time wipeout
-        studentModelSupplier = null;
-      }
+      disposeStudentModels();
       String doCASString  = getParameter("CAS");
       if(doCASString!=null && !"".equals(doCASString))
         doCAS = doCASString;
@@ -1988,17 +1994,13 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return NO_SUCH_PAGE;
 	}
 
-  @Deprecated
-  public static void setStudentModel(StudentModel studentModel2) {
-    if (studentModel2 != null)
-      studentModelSupplier = () -> studentModel2;
-    else
-      studentModelSupplier = null;   
-  }
-
-
-
-
+//  @Deprecated
+//  public static void setStudentModel(StudentModel studentModel2) {
+//    if (studentModel2 != null)
+//      studentModelSupplier = () -> studentModel2;
+//    else
+//      studentModelSupplier = null;   
+//  }
 
   @Override
   public void firePropertyChange(String propertyName, long oldValue, long newValue) {
