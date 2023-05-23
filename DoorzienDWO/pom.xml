@@ -125,4 +125,23 @@
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
+			<version>0.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.uu.fi.dwo</groupId>
+			<artifactId>DWO-commons-lib</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>fi.beans</groupId>
+			<artifactId>numworxlf</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 </project>

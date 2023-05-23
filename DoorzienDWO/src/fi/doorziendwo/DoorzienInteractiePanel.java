@@ -655,6 +655,12 @@ System.out.println("dip setState contains sfs");
 	{
 		
 	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
     
