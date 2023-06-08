@@ -22,12 +22,10 @@
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-core</artifactId>
-			<version>${euclidesVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-core</artifactId>
-			<version>${euclidesVersion}</version>
 			<classifier>sources</classifier>
 		</dependency>
 		<dependency>

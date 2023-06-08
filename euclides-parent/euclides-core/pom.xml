@@ -6,7 +6,6 @@
   	<dependency>
   		<groupId>fi.euclides</groupId>
   		<artifactId>euclides-util</artifactId>
-  		<version>0.0.5-SNAPSHOT</version>
   		<optional>true</optional>
   	</dependency>
   	<dependency>

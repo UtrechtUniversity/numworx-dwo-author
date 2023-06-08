@@ -12,6 +12,27 @@
 		<module>euclides-gwt</module>
 		<module>euclides-resources</module>
 	</modules>
+	  <dependencyManagement>
+	  	<dependencies>
+	  			<dependency>
+				<groupId>fi.euclides</groupId>
+				<artifactId>euclides-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+	  		<dependency>
+				<groupId>fi.euclides</groupId>
+				<artifactId>euclides-core</artifactId>
+				<version>${project.version}</version>
+				<classifier>sources</classifier>
+			</dependency>
+		  	<dependency>
+		  		<groupId>fi.euclides</groupId>
+		  		<artifactId>euclides-util</artifactId>
+		  		<version>${project.version}</version>
+		  		<optional>true</optional>
+		  	</dependency>
+	  	</dependencies>
+	  </dependencyManagement>
 	<properties>
 		<euclidesVersion>${project.version}</euclidesVersion>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -45,7 +66,4 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<scm>
-		<developerConnection>scm:svn:https://svn.science.uu.nl/repos/project.fisme.java/Euclides/euclides-parent/trunk</developerConnection>
-	</scm>
 </project>
