@@ -13,18 +13,18 @@
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-core</artifactId>
-			<version>${euclidesVersion}</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-util</artifactId>
-			<version>${euclidesVersion}</version>
+			<version>0.0.5-SNAPSHOT</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-expr</artifactId>
-			<version>${euclidesVersion}</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.uu.fi.dwo.mobile</groupId>
@@ -82,7 +82,4 @@
 			<url>https://repos.dwo.nl/artifactory/libs-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
-	<scm>
-		<developerConnection>scm:svn:https://svn.science.uu.nl/repos/sci.velth101.numworx/geodefiner-common/trunk</developerConnection>
-	</scm>
 </project>
