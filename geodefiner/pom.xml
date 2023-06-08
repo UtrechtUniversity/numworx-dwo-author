@@ -20,17 +20,17 @@
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-util</artifactId>
-			<version>${euclidesVersion}</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-core</artifactId>
-			<version>${euclidesVersion}</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-expr</artifactId>
-			<version>${euclidesVersion}</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.numworx.geodefiner</groupId>
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-resources</artifactId>
-			<version>${euclidesVersion}</version>
+			<version>0.0.5-SNAPSHOT</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -167,7 +167,6 @@
 		<jarsigner.skip>true</jarsigner.skip>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<euclidesVersion>0.0.5-SNAPSHOT</euclidesVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<daggerVersion>2.42</daggerVersion>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
