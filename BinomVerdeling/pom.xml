@@ -51,7 +51,7 @@
           		<Bundle-SymbolicName>fi.binomverdeling.BinomVerdeling</Bundle-SymbolicName>
  				<Main-Class>fi.binomverdeling.BinomVerdeling</Main-Class>
 				<Bundle-Name>BinomVerdeling</Bundle-Name>
-				<Bundle-Description></Bundle-Description>
+				<Bundle-Description />
  				<Export-Package>fi.binomverdeling</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
           	</instructions>

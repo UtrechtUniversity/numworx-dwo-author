@@ -50,7 +50,7 @@
           		<Bundle-SymbolicName>fi.algebrapijlenopdr.AlgebraPijlenOpdr</Bundle-SymbolicName>
  				<Main-Class>fi.algebrapijlenopdr.AlgebraPijlenOpdr</Main-Class>
 				<Bundle-Name>AlgebraPijlen</Bundle-Name>
-				<Bundle-Description></Bundle-Description>
+				<Bundle-Description />
  				<Export-Package>fi.algebrapijlenopdr</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
           	</instructions>
