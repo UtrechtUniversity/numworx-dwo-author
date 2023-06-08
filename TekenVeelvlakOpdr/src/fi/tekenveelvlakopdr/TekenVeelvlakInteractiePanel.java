@@ -1085,6 +1085,12 @@ public class TekenVeelvlakInteractiePanel extends JPanel implements InteractiePa
     	
     	ingevuld = false;
     }
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
     
 }
