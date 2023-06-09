@@ -116,13 +116,6 @@
   	</profile>
   </profiles>
   <packaging>bundle</packaging>
-      <distributionManagement>
-        <repository>
-            <id>snapshots</id>
-            <!--<name>libs-snapshot</name>-->
-            <url>https://repos.dwo.nl/artifactory/libs-snapshot-local</url>    
-        </repository>
-    </distributionManagement>    
   <repositories>	
 	<repository>
 	  <id>com.teamdev</id>

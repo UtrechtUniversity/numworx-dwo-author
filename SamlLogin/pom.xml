@@ -97,12 +97,6 @@
   	</dependency>
   </dependencies>
   <packaging>bundle</packaging>
-      <distributionManagement>
-        <repository>
-            <id>snapshots</id>
-            <url>https://repos.dwo.nl/artifactory/libs-snapshot-local</url>    
-        </repository>
-    </distributionManagement>    
   <profiles>
     <profile>
     	<id>jfx</id>
