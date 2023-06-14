@@ -24,7 +24,7 @@ public class Parser2Test extends TestCase {
 		OMObject o = p.expr();
 		Expressie e = fi.wiskopdr.formuleobjects.FormuleParser.parse("x/y*x");
 		// compare e met o
-		System.out.println(e.toStringCAS());
+		System.out.println(e);
 		System.out.println(o);	
 	}
 	
