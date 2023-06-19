@@ -37,6 +37,7 @@ import java.lang.reflect.Constructor;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -2512,8 +2513,8 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		}
 	}
 	
-	public Vector geefInteractiePanels()
-	{	Vector v = null;
+	public Vector<InteractiePanelContainerIF> geefInteractiePanels()
+	{	Vector<InteractiePanelContainerIF> v = null;
 		if(interactiePanel instanceof TekstVakPanel)
 		{
 			v = ((TekstVakPanel)interactiePanel).geefInteractiePanels();
@@ -3793,6 +3794,30 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
       } catch(Throwable t) {
       }
     }
+  }
+
+  @Override
+  public void getOngezien(Collection<String> result) {
+    Vector<InteractiePanelContainerIF> v = geefInteractiePanels();
+    if (v != null) {
+      v.forEach(item -> item.getOngezien(result));
+    } else if (criterium()) {
+      result.add(getCrossWidgetId());
+    }
+  }
+  /**
+   * Bepaal criterium voor opname in ongezien
+   * @return boolean
+   */
+  private boolean criterium() {
+  
+    switch (soortInteractiePanel) {
+      case 0: case 1: case 2: case 3: // formule/vergelijking vak
+      case 12: case 13: case 14: case 16:    // 
+        
+        return true;
+    }
+    return false;
   }
   
   

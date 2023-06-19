@@ -269,8 +269,8 @@ public class TekstBuffer
 	{	return (TekstFormuleVak)formules.elementAt(nr);
 	}*/
 	
-	public Vector geefInteractiePanels()
-	{	return geefInteractiePanels(new Vector());
+	public Vector<InteractiePanelContainerIF> geefInteractiePanels()
+	{	return geefInteractiePanels(new Vector<>());
 	}
 	
 	public boolean hasOneDeelVak()
@@ -289,7 +289,7 @@ public class TekstBuffer
 		return tipv;
 	}
 	
-	public Vector geefInteractiePanels(Vector v)
+	public Vector<InteractiePanelContainerIF> geefInteractiePanels(Vector<InteractiePanelContainerIF> v)
 	{	for( int i=0 ; i< tekstDeelVakken.size() ; i++)
 		{	if(tekstDeelVakken.elementAt(i) instanceof InteractiePanelContainerIF)
 			{	InteractiePanelContainerIF ipc = (InteractiePanelContainerIF)tekstDeelVakken.elementAt(i);

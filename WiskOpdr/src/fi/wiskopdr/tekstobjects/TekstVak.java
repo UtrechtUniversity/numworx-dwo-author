@@ -1146,11 +1146,11 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	{	return tekst.getWidgetContainer(crossWidgetId);
 	}
 	
-	public Vector geefInteractiePanels()
+	public Vector<InteractiePanelContainerIF> geefInteractiePanels()
 	{	return tekst.geefInteractiePanels();
 	}
 	
-	public Vector geefInteractiePanels(Vector v)
+	public Vector<InteractiePanelContainerIF> geefInteractiePanels(Vector<InteractiePanelContainerIF> v)
 	{	return tekst.geefInteractiePanels(v);
 	}
 	

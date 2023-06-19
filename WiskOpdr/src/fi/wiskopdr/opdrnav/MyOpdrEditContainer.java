@@ -397,16 +397,14 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		});
 	}
 	
-	private Vector geefInteractiePanels() {
-		Vector v = tekstEditor.geefInteractiePanels();
-		Vector v2 = tekstEditor2.geefInteractiePanels();
-		for (int i = 0; i < v2.size(); i++) {
-			v.addElement(v2.elementAt(i));
-		}
+	private Vector<InteractiePanelContainerIF> geefInteractiePanels() {
+		Vector<InteractiePanelContainerIF> v = tekstEditor.geefInteractiePanels();
+		Vector<InteractiePanelContainerIF> v2 = tekstEditor2.geefInteractiePanels();
+		v.addAll(v2);
 		return v;
 	}
 
-	public void setEditState(String s) {
+  public void setEditState(String s) {
 		if (s == null || s.equals(""))
 			return;
 		Object o = StringCodeObject.decodeStringToObject(s);
@@ -563,17 +561,17 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 			if(tekstEditor.geefTekstVak().crossWidgetViewActief())
 				tekstEditor.geefTekstVak().newCrossWidgetView();
 			
-			Vector v = geefInteractiePanels();
+			Vector<InteractiePanelContainerIF> v = geefInteractiePanels();
 			int aantalInteractiePanels = 5 + v.size();
 			for (int i = 5; i < aantalInteractiePanels; i++) {
-				InteractiePanelContainerIF ip = (InteractiePanelContainerIF) v.elementAt(i - 5);
+				InteractiePanelContainerIF ip = v.elementAt(i - 5);
 				if (interactiePanelLaunchData != null && interactiePanelLaunchData[i] != null) {
 					ip.setEditState(interactiePanelLaunchData[i]);
 				}
 			}
 			if(tekstEditor.geefTekstVak().crossWidgetViewActief())
 			{	for (int i = 5; i < aantalInteractiePanels; i++) {
-					InteractiePanelContainerIF ip = (InteractiePanelContainerIF) v.elementAt(i - 5);
+					InteractiePanelContainerIF ip = v.elementAt(i - 5);
 					if (interactiePanelLaunchData != null && interactiePanelLaunchData[i] != null) {
 						ip.initConnections(tekstEditor.geefTekstVak().getXWidgetManager());
 					}
@@ -684,7 +682,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-  public String getEditState() {
+    public String getEditState() {
 		String titel = null;
 		String tekst = null;
 		String tekst2 = null;
@@ -697,6 +695,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		scoreMax = 0;
 		boolean checkDocent = false;
 		int[][] scoreMaxObjectives = null;
+		Set<String> ongezien = new HashSet<>();
 
 		// Voor de oude editorversie:
 		Hashtable interactiePanelLaunchDataOudeVersie = null;
@@ -811,7 +810,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		if(!hasAntwoordVak)
 			scoreMax = 0;
 		
-		Vector v = geefInteractiePanels();
+		Vector<InteractiePanelContainerIF> v = geefInteractiePanels();
 		//System.out.println("Vectir met ip Panels: "+v.toString());
 		int aantalInteractiePanel = 5 + v.size();
 		interactiePanelLaunchData = new Hashtable[aantalInteractiePanel];
@@ -824,7 +823,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 				scoreMaxObjectives[i] = new int[WiskOpdr.objectives[i].length];
 		}
         for (int i = 0; i < v.size(); i++) {
-            InteractiePanelContainerIF ip = (InteractiePanelContainerIF) v.elementAt(i);
+            InteractiePanelContainerIF ip = v.elementAt(i);
+            ip.getOngezien(ongezien);
             interactiePanelLaunchData[i + 5] = ip.getEditState();
             Hashtable editState = interactiePanelLaunchData[i + 5];
             scoreMax += ip.getScoreMax();
@@ -862,7 +862,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
             	}
             }
             
-            int[][] ob = ((InteractiePanelContainerIF) v.elementAt(i)).getScoreMaxObjectives();
+            int[][] ob = v.elementAt(i).getScoreMaxObjectives();
             for (int j = 0; scoreMaxObjectives != null && ob != null && j < scoreMaxObjectives.length; j++) 
                 for(int k = 0; scoreMaxObjectives[j] != null && k < scoreMaxObjectives[j].length; k++){
                 try{
@@ -889,6 +889,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 			h.put("scoreMaxObjectives", scoreMaxObjectives);
 		if (premium)
 		    h.put("premium", Boolean.TRUE);
+		h.put("ongezien", ongezien.toArray());
 		//System.out.println("tekst: "+tekst);
 		//System.out.println("interactiePanelLaunchData: "+interactiePanelLaunchData[5].toString());
 

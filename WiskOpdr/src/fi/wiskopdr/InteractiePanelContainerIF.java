@@ -1,8 +1,9 @@
 package fi.wiskopdr;
 
-import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -70,5 +71,8 @@ public interface InteractiePanelContainerIF
 	public void actionPerformed(ActionEvent e);
 	
 	public void initConnections(XWidgetManager instance);
+
+    default public void  getOngezien(Collection<String> result) {
+    }
 	
 }

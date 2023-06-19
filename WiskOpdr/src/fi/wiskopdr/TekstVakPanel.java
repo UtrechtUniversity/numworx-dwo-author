@@ -576,9 +576,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	}
 	
 	
-	public Vector geefInteractiePanels()
+	public Vector<InteractiePanelContainerIF> geefInteractiePanels()
 	{
-		Vector v = new Vector();
+		Vector<InteractiePanelContainerIF> v = new Vector<>();
 		for (int i = 0; i < aantalRijen; i++)
 		{
 			for (int j = 0; j < aantalKolommen; j++)

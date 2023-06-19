@@ -887,7 +887,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	{	return tekstVak.toCompleteString();
 	}
 	
-	public Vector geefInteractiePanels()
+	public Vector<InteractiePanelContainerIF> geefInteractiePanels()
 	{	return tekstVak.geefInteractiePanels();
 	}
 	
