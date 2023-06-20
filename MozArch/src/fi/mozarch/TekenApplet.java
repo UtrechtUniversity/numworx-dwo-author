@@ -4,7 +4,10 @@ package fi.mozarch;
 import java.awt.*;
 import java.awt.event.*;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+
+import fi.beans.mainframe.JApplet;
+
 
 public class TekenApplet extends JApplet 
 {

@@ -1,7 +1,6 @@
 package fi.mozarch;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.Vector;
 import javax.swing.*;
 
 import fi.beans.base64code.StringCodeObject;
-import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 // deze moet vanwege interface WiskOpdrApplet
 import fi.beans.wiskopdrbeans.InteractiePanel;
 // deze moet vanwege interface InteractiePanel
@@ -1439,4 +1437,11 @@ System.out.println("set: h contains vv");
     
 	public void actionPerformed(ActionEvent e)
 	{}
+
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

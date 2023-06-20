@@ -8,8 +8,27 @@
 	</parent>
   <groupId>fi.mozarch</groupId>
   <artifactId>mozarch</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <build>
+  <version>0.0.2-SNAPSHOT</version>
+ 	<dependencies>
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<version>0.3.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>nl.uu.fi.dwo</groupId>
+			<artifactId>DWO-commons-lib</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>fi.beans</groupId>
+			<artifactId>numworxlf</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+ <build>
    <finalName>${project.artifactId}</finalName>
     <sourceDirectory>src</sourceDirectory>
     <resources>
