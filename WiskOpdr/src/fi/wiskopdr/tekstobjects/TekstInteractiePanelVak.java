@@ -3800,13 +3800,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
   public void getOngezien(Collection<String> result) {
     Vector<InteractiePanelContainerIF> v = geefInteractiePanels();
     if (v != null) {
-      v.forEach(item -> item.getOngezien(result));
+      if (! ((TekstVakPanel)interactiePanel).zichtbaarNaNakijken) // geen rubrics!
+        v.forEach(item -> item.getOngezien(result));
     } else if (criterium()) {
       result.add(getCrossWidgetId());
     }
   }
   /**
-   * Bepaal criterium voor opname in ongezien
+   * Bepaal criterium voor opname in ongezien.
+   * FIXME wat zijn de juiste criteria?
    * @return boolean
    */
   private boolean criterium() {

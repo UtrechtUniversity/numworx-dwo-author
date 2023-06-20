@@ -196,7 +196,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private int startSleepX;
 	private int startSleepY;
 
-	private boolean zichtbaarNaNakijken;
+	public boolean zichtbaarNaNakijken;
 	private boolean nagekeken;
 
 	private boolean balansVergCom = false;
