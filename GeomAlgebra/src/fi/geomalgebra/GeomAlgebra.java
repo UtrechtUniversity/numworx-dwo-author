@@ -3,13 +3,8 @@ package fi.geomalgebra;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
-import fi.geomalgebra.text.*;
-
-
-import java.applet.Applet;
-import javax.swing.*;
-
 import fi.beans.mainframe.*;
+import fi.beans.mainframe.JApplet;
 import fi.beans.copyright.*;
 import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;

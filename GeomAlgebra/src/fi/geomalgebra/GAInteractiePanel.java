@@ -953,4 +953,11 @@ public class GAInteractiePanel extends JPanel implements InteractiePanel, Intera
 		}
 		
 	}
+
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
