@@ -2,13 +2,14 @@ package fi.verknippen;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.applet.*;
 import java.util.*;
 
-import javax.swing.*;
+import javax.swing.SwingConstants;
 
 import fi.beans.appletutil.AppletUtil;
 import fi.beans.copyright.*;
+import fi.beans.mainframe.JApplet;
+import fi.beans.numworxlf.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 

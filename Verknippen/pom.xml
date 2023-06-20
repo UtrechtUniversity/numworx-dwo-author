@@ -8,8 +8,27 @@
     </parent>
   <groupId>fi.verknippen</groupId>
   <artifactId>verknippen</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <build>
+  <version>0.0.2-SNAPSHOT</version>
+ 	<dependencies>
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<version>0.3.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>nl.uu.fi.dwo</groupId>
+			<artifactId>DWO-commons-lib</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>fi.beans</groupId>
+			<artifactId>numworxlf</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+ <build>
    <finalName>${project.artifactId}</finalName>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -48,13 +67,8 @@
    				<_snapshot>${osgi.qualifier}</_snapshot>
           		<Bundle-SymbolicName>fi.verknippen.Verknippen</Bundle-SymbolicName>
  				<Main-Class>fi.verknippen.Verknippen</Main-Class>
-				<Trusted-Only>true</Trusted-Only>
-				<Permissions>all-permissions</Permissions>
-				<Codebase>*.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org</Codebase>
 				<Application-Name>Verknippen</Application-Name>
 				<Bundle-Name>Verknippen</Bundle-Name>
-				<Caller-Allowable-Codebase>*.science.uu.nl *.fi.uu.nl dme.colorado.edu *.appspot.com *.dwo.nl *.noordhoff.nl *.schoolwise.nl *.epn.nl localhost dme.mathhouse.org</Caller-Allowable-Codebase>
-				<Application-Library-Allowable-Codebase>*</Application-Library-Allowable-Codebase>
  				<Private-Package>*</Private-Package>
  				<Export-Package>fi.verknippen</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
