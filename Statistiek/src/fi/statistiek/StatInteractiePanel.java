@@ -764,4 +764,10 @@ public class StatInteractiePanel extends JPanel implements InteractiePanel,	Acti
 	public void fire(String command, String key, Object value) {
 		cbookEventHandler.fire(command, key, value);
 	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
