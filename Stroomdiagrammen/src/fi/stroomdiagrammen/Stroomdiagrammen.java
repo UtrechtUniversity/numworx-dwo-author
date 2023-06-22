@@ -12,9 +12,15 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 
 import fi.beans.base64code.*;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.*;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
