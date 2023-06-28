@@ -631,6 +631,16 @@
 			</plugins>
 		</build>
 	</profile>
+	<profile>
+		<id>repl</id>
+		<dependencies>
+			<dependency>
+			  	<groupId>nl.numworx.repl</groupId>
+		  		<artifactId>repl</artifactId>
+		  		<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</profile>
 	</profiles>
    <repositories>	
 	<repository>
