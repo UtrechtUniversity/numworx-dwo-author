@@ -1,5 +1,6 @@
 package fi.statistiek;
 
+import java.applet.AppletStub;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -1022,5 +1023,11 @@ public class Statistiek implements WiskOpdrApplet
 		}
 		
 		return separator;
+	}
+
+	@Override
+	public void setStub(AppletStub arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

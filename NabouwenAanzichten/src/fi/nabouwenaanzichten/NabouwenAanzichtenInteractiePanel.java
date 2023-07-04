@@ -2985,4 +2985,10 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 			return cmd;
 		return localizedCmd;
 	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

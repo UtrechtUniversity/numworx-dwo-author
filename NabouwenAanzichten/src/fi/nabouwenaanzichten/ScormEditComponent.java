@@ -626,4 +626,11 @@ public class ScormEditComponent extends Panel implements ActionListener, ScormEd
 	public boolean isBouwen()
 	{	return ip.isBouwen();
 	}
+
+
+	@Override
+	public void setState(Hashtable arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

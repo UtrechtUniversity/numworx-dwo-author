@@ -2333,6 +2333,12 @@ public class CalculatorDwoInteractiePanel  extends JPanel implements ActionListe
 			
 		
 	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 

@@ -10,7 +10,6 @@ import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.base64code.*;
-import fi.nabouwenaanzichten.NabouwenAanzichtenInteractiePanel;
 
 /**
  * @author Peter Boon
