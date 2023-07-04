@@ -326,22 +326,22 @@
 		<dependency>
 			<groupId>fi.mozarch</groupId>
 			<artifactId>mozarch</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.tegels</groupId>
 			<artifactId>tegels</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.geomalgebra</groupId>
 			<artifactId>geomalgebra</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.stroomdiagrammen</groupId>
 			<artifactId>stroomdiagrammen</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.statistiek</groupId>
@@ -485,7 +485,7 @@
 		<dependency>
 			<groupId>fi.verknippen</groupId>
 			<artifactId>verknippen</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.mathscratch</groupId>
@@ -630,6 +630,16 @@
                     </plugin>  
 			</plugins>
 		</build>
+	</profile>
+	<profile>
+		<id>repl</id>
+		<dependencies>
+			<dependency>
+			  	<groupId>nl.numworx.repl</groupId>
+		  		<artifactId>repl</artifactId>
+		  		<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
 	</profile>
 	</profiles>
    <repositories>	

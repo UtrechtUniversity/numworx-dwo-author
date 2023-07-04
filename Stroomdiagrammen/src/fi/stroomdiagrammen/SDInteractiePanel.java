@@ -1055,5 +1055,13 @@ System.out.println("diagramcopy encoded");
 			}
 		}
 	}
+
+
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
