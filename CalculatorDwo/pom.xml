@@ -43,7 +43,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<proguardVersion>6.0</proguardVersion>
+					<proguardVersion>6.1</proguardVersion>
 					<options>
 						<option>-verbose</option>
 						<option>-dontwarn</option>
@@ -61,7 +61,7 @@
 					<dependency>
 						<groupId>net.sf.proguard</groupId>
 						<artifactId>proguard-base</artifactId>
-						<version>5.2</version>
+						<version>6.1.0</version>
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>
