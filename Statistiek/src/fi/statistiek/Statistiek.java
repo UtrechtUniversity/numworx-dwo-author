@@ -1027,7 +1027,5 @@ public class Statistiek implements WiskOpdrApplet
 
 	@Override
 	public void setStub(AppletStub arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 }
