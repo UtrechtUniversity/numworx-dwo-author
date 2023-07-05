@@ -1,11 +1,8 @@
 package fi.nabouwenaanzichten;
 
-import java.applet.Applet;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
-import java.io.*;
-import fi.nabouwenaanzichten.text.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 

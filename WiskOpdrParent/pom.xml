@@ -86,6 +86,7 @@
         <module>../NormaleVerdeling</module>
 	<module>../MathScratch</module>
 	<module>../PreviewHTML</module>
+	<module>../Repl</module>
 	<module>../SamlLogin</module>
 	<module>../SliderWidget</module>
 	<module>../Statistiek</module>
