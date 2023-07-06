@@ -3,12 +3,12 @@
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.0</version>
+	  <version>1.0.1-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
   <groupId>fi.mozarch</groupId>
   <artifactId>mozarch</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3-SNAPSHOT</version>
  	<dependencies>
 		<dependency>
 			<groupId>fi.wiskopdr</groupId>
