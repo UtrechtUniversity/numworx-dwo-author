@@ -2,12 +2,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.javalogoweb3d</groupId>
 	<artifactId>javalogoweb3d</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>JavaLogoWeb3d</name>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.0-SNAPSHOT</version>
+	  <version>1.0.0</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
 	<build>

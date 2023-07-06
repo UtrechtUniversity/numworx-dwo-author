@@ -3,12 +3,12 @@
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.0-SNAPSHOT</version>
+	  <version>1.0.0</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
   <groupId>fi.doorziendwo</groupId>
   <artifactId>doorziendwo</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <build>
    <finalName>${project.artifactId}</finalName>
     <sourceDirectory>src</sourceDirectory>

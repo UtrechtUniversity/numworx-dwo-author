@@ -3,12 +3,12 @@
     <parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.0-SNAPSHOT</version>
+	  <version>1.0.0</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
     </parent>
   <groupId>fi.mathscratch</groupId>
   <artifactId>MathScratch-parent</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <packaging>pom</packaging>
   <name>MathScratch parent</name>
   <modules>
