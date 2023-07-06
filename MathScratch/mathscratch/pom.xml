@@ -3,7 +3,7 @@
   <parent>
     <groupId>fi.mathscratch</groupId>
     <artifactId>MathScratch-parent</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.1</version>
     <relativePath>../</relativePath>
   </parent>
   <artifactId>mathscratch</artifactId>
@@ -12,7 +12,7 @@
   	<dependency>
   		<groupId>fi.mathscratch</groupId>
   		<artifactId>mathscratch-common</artifactId>
-  		<version>0.0.2-SNAPSHOT</version>
+  		<version>0.0.1</version>
   	</dependency>
   	<dependency>
   		<groupId>fi.wiskopdr</groupId>
