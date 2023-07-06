@@ -2,13 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.sliderwidget</groupId>
   <artifactId>sliderwidget</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>SliderWidget</name>
   <description>SliderWidget</description>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.0-SNAPSHOT</version>
+	  <version>1.0.1-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
   <build>
@@ -51,7 +51,7 @@
           		<Bundle-SymbolicName>fi.sliderwidget.SliderWidget</Bundle-SymbolicName>
  				<Main-Class>fi.sliderwidget.SliderWidget</Main-Class>
 				<Bundle-Name>SliderWidget</Bundle-Name>
-				<Bundle-Description></Bundle-Description>
+				<Bundle-Description />
  				<Export-Package>fi.sliderwidget</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
           	</instructions>
