@@ -1,0 +1,1038 @@
+package fi.statistiek.histogram;
+
+import java.util.ArrayList;
+import java.util.Observable;
+
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+
+import fi.statistiek.SelectionListener;
+import fi.statistiek.SplitOptions;
+import fi.statistiek.StatTableModel;
+import fi.statistiek.Statistiek;
+import fi.statistiek.types.AllowedTypes;
+import fi.statistiek.types.ColumnType;
+
+/**
+ * MVC model for StatistiekView Histogram
+ * 
+ * @author Manu Drijvers, Sylvia van Borkulo
+ * 
+ */
+public class HistogramModel extends Observable implements TableModelListener,
+	SelectionListener, StatBinsModel
+{
+	private StatTableModel statTableModel;
+	private String viewName;
+	private int columnIndex;
+
+	private int noBins;
+	/**
+	 * Field bin width represents the distance between the
+	 * bin values in binBoundaries. However, for a
+	 * column without valid data rows, binBoundaries is [0.0, 0.0]
+	 * and binWidth can be set to show the histogram view
+	 * with a scale but without data (yet). For example,
+	 * to be used with cross-widget communication.
+	 */
+	private Double binWidth;
+	private ArrayList<Number> binBoundaries;
+
+	private SplitOptions splitOptions;
+
+	private boolean percentage; // true = show percentage, false = show
+								// frequency
+	/**
+	 * Indicates whether the percentage shown in the split category is relative
+	 * to the split total (true) or relative to the end total (false).
+	 */
+	private boolean percentage_splitTotal;
+	
+	private boolean hasVerticalBars; // true = vertical bars, false = horizontal
+								  // bars
+	private boolean labelUnderBin; 	// true = show labels under bin, false = 
+									// show labels between bins
+	private boolean showUserOptions;
+	private final boolean frequencyPolygonMode;
+	private boolean frequencyPolygonCumulativeMode;
+
+	private boolean splitInSingleView;
+	private boolean nextToEachOther;
+	// true for displaying multiple splitgroups in a single view,
+	// false to display multiple splitgroups in multiple views in a scrollpane
+
+	private boolean frequencyPolygonStackMode;
+
+	// true: display multiple cumulative frequencyPolygons stacked on top of
+	// each other
+	// false: display mutiple cumulative frequencyPolygons using mixing of
+	// colors
+	
+	private boolean optimizeScale;
+	/**
+	 * The minimum value the is used on the scale of the histogram.
+	 */
+	private double minOnScale;
+	/**
+	 * The maximum value the is used on the scale of the histogram.
+	 */
+	private double maxOnScale;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param tableModel
+	 *            data table
+	 * @param viewName
+	 *            The initial name of this view
+	 */
+	public HistogramModel(StatTableModel tableModel, String viewName,
+		boolean frequencyPolygonMode)
+	{
+		this.statTableModel = tableModel;
+		this.statTableModel.addTableModelListener(this);
+		this.statTableModel.addSelectionListener(this);
+
+		this.splitOptions = new SplitOptions();
+
+		this.viewName = viewName;
+
+		// set initial values
+		this.noBins = 10;
+		this.columnIndex = -1;
+		this.binBoundaries = new ArrayList<Number>();
+		this.binBoundaries.add(new Double(0));
+		this.binBoundaries.add(new Double(0));
+		this.percentage = false;
+		this.percentage_splitTotal = true;
+		this.hasVerticalBars = true;
+		this.showUserOptions = false;
+
+		this.frequencyPolygonMode = frequencyPolygonMode;
+		this.frequencyPolygonCumulativeMode = false;
+		this.splitInSingleView = true;
+		this.frequencyPolygonStackMode = false;
+		this.optimizeScale = true;
+	}
+
+	/**
+	 * Abbreviation of setChanged and notifyObservers
+	 */
+	private void changed()
+	{
+		// System.out.println("HistogramModel.changed()");
+		this.setChanged();
+		this.notifyObservers();
+	}
+
+	public SplitOptions getSplitOptions()
+	{
+		return this.splitOptions;
+	}
+
+	/**
+	 * Set the split options without.
+	 * 
+	 * @param splitOptions
+	 */
+	public void setSplitOptions(SplitOptions splitOptions)
+	{
+		this.splitOptions = splitOptions;
+		this.changed();
+	}
+
+	/**
+	 * Set the split options without triggering an event.
+	 * 
+	 * @param splitOptions
+	 */
+	public void setSplitOptionsWithoutEvent(SplitOptions splitOptions)
+	{
+		this.splitOptions = splitOptions;
+	}
+
+	/**
+	 * Set the bin boundaries
+	 * 
+	 * @param boundaries
+	 *            The new bin boundaries
+	 */
+	public void setBinBoundaries(ArrayList<Number> boundaries)
+	{
+		// Make a deep copy, not only copy the reference, since this will cause strange behavior
+		ArrayList<Number> copy = new ArrayList<Number>(boundaries.size());
+		for (Number d: boundaries)
+		{
+			copy.add(new Double(d.doubleValue()));
+		}
+		
+		this.binBoundaries = copy; 
+			
+		this.noBins = this.binBoundaries.size() - 1;
+//		System.out.println("HistogramModel.setBinBoundaries(): this.getBinBoundaries=" + this.getBinBoundaries());
+		this.changed();
+	}
+
+	/**
+	 * Set the bin boundaries without triggering an event.
+	 * 
+	 * @param binBoundaries
+	 *            The new bin boundaries
+	 */
+	public void setBinBoundariesWithoutEvent(ArrayList<Number> binBoundaries)
+	{
+		// Make a deep copy, not only copy the reference, since this will cause strange behavior
+		ArrayList<Number> copy = new ArrayList<Number>(binBoundaries.size());
+		for (Number d: binBoundaries)
+		{
+			copy.add(new Double(d.doubleValue()));
+		}
+		
+		this.binBoundaries = copy; 
+			
+		this.noBins = this.binBoundaries.size() - 1;
+	}
+
+	/**
+	 * Get the bin boundaries
+	 * 
+	 * @return The bin boundaries
+	 */
+	public ArrayList<Number> getBinBoundaries()
+	{
+		return this.binBoundaries;
+	}
+
+	/**
+	 * Get the maximum bin boundary.
+	 * 
+	 * @return max
+	 */
+	public double getMaxBinBoundaryValue()
+	{
+		Double max = null;
+		
+		int lastBinNumber = this.getNoBins();
+
+		if (this.getBinBoundaries() != null)
+		{
+			max = this.getBinBoundaries().get(lastBinNumber).doubleValue(); 
+		}
+		
+		return max;
+	}
+
+	public boolean isFrequencyPolygonMode()
+	{
+		return this.frequencyPolygonMode;
+	}
+
+	public boolean isFrequencyPolygonCumulativeMode()
+	{
+		return this.frequencyPolygonCumulativeMode;
+	}
+
+	public void setFrequencyPolygonCumulativeMode(boolean b)
+	{
+		if (b != this.frequencyPolygonCumulativeMode)
+		{
+			this.frequencyPolygonCumulativeMode = b;
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set the number of bins
+	 * 
+	 * @param noBins
+	 *            the new number of bins
+	 */
+	public void setNoBins(int noBins)
+	{
+		this.noBins = noBins;
+
+		// set appropriate boundaries
+		if (this.statTableModel.getRowCount() > 0 && this.columnIndexValid())
+		{
+			double min = this.statTableModel.getColumnMin(this.columnIndex);
+			double max = this.statTableModel.getColumnMax(this.columnIndex);
+			this.binBoundaries = Statistiek.appropriateBoundaries(min, max,
+				this.noBins);
+			//System.out.println("... setNoBins(): boundaries=" + this.binBoundaries);
+		}
+
+		this.changed();
+	}
+
+	/**
+	 * Set the minimum value of the scale.
+	 * 
+	 * @param min
+	 *            the new minimum value
+	 */
+	public void setMinOnScale(double min)
+	{
+		if (min != this.minOnScale)
+		{
+			this.minOnScale = min;
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set the minimum value of the scale without triggering events.
+	 * 
+	 * @param min
+	 *            the new minimum value
+	 */
+	public void setMinOnScaleWithoutEvent(double min)
+	{
+		if (min != this.minOnScale)
+		{
+			this.minOnScale = min;
+		}
+	}
+
+	/**
+	 * Set the maximum value of the scale. The maximum value is set to max or the number
+	 * that is a bin boundary upper to max.
+	 * 
+	 * @param max
+	 *            the new maximum value
+	 */
+	public void setMaxOnScale(double max)
+	{
+		if (max != this.maxOnScale)
+		{
+			if (getBinWidth() == 0)
+			{
+				this.maxOnScale = max;
+			}
+			else
+			{
+				double newMax = this.minOnScale;
+				for (int i = 1; max > newMax; i++)
+				{
+					newMax = Statistiek.round(newMax + getBinWidth(), 8);
+				}
+				
+				this.maxOnScale = newMax;
+			}
+			
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set the maximum value of the scale without triggering events.
+	 * The maximum value is set to max or the number
+	 * that is a bin boundary upper to max.
+	 * 
+	 * @param max
+	 *            the new maximum value
+	 */
+	public void setMaxOnScaleWithoutEvent(double max)
+	{
+		if (max != this.maxOnScale)
+		{
+			double newMax = this.minOnScale;
+			
+			for (int i = 1; max > newMax; i++)
+			{
+				newMax = Statistiek.round(newMax + getBinWidth(), 8);
+			}
+			
+			this.maxOnScale = newMax;
+		}
+	}
+
+	/**
+	 * Set the number of bins without triggering an event.
+	 * 
+	 * @param noBins
+	 *            the new number of bins
+	 */
+	public void setNoBinsWithoutEvent(int noBins)
+	{
+		this.noBins = noBins;
+	}
+
+	/**
+	 * @return number of bins
+	 */
+	public int getNoBins()
+	{
+		return this.noBins;
+	}
+	
+	/**
+	 * Get the minimum value on the scale.
+	 * 
+	 * @return
+	 */
+	public double getMinOnScale()
+	{
+		return this.minOnScale;
+	}
+	
+	/**
+	 * Get the maximum value on the scale.
+	 * 
+	 * @return
+	 */
+	public double getMaxOnScale()
+	{
+		return this.maxOnScale;
+	}
+	
+	/**
+	 * Get the width of the bins in bin boundaries. If there is no valid data in the
+	 * histogram's column or if the scale is not optimized, this.binWidth is returned.  
+	 * 
+	 * @return
+	 */
+	public double getBinWidth()
+	{
+		double width = 0;
+		
+		if (this.getStatTableModel().isEmptyColumn(this.getColumnIndex()) || !this.isOptimizeScale())
+		{
+			if (this.binWidth == null)
+			{
+				this.setBinWidthWithoutEvent(Statistiek.BIN_WIDTH_DEFAULT);
+			}
+			return this.binWidth;
+		}
+		else if ((this.binBoundaries != null)
+			&& this.getNoBins() > 0)
+		{
+			width = Statistiek.round(this.binBoundaries.get(1).doubleValue() - this.binBoundaries.get(0).doubleValue(), 8);
+		}
+		
+		return width;
+	}
+	
+	/**
+	 * Set the bin width. Bin width can be different from
+	 * the width defined in binBoundaries, for example when the table is empty
+	 * and therefore binBoundaries = [0.0, 0.0].
+	 * 
+	 * @param w
+	 */
+	public void setBinWidth(double w)
+	{
+//		System.out.println("HistogramModel.setBinWidth(" + w + ")");
+		this.binWidth = w;
+		this.changed();
+	}
+
+	/**
+	 * Set the bin width without triggering event. Bin width can be different from
+	 * the width defined in binBoundaries, for example when the table is empty
+	 * and therefore binBoundaries = [0.0, 0.0].
+	 * 
+	 * @param w
+	 */
+	public void setBinWidthWithoutEvent(double w)
+	{
+//		System.out.println("HistogramModel.setBinWidthWithoutEvent(" + w + ")");
+		this.binWidth = w;
+	}
+
+	/**
+	 * Set the name of this StatistiekView
+	 * 
+	 * @param viewName
+	 *            the new name of this view
+	 */
+	public void setViewName(String viewName)
+	{
+		if (!this.viewName.equals(viewName))
+		{
+			this.viewName = viewName;
+			this.changed();
+		}
+
+	}
+
+	/**
+	 * @return this StatistiekView's name
+	 */
+	public String getViewName()
+	{
+		return this.viewName;
+	}
+
+	/**
+	 * Set the data table
+	 * 
+	 * @param tableModel
+	 *            the new data table
+	 */
+	public void setTableModel(StatTableModel tableModel)
+	{
+		if (!(this.statTableModel == tableModel))
+		{
+			this.statTableModel.removeTableModelListener(this);
+			this.statTableModel = tableModel;
+			this.statTableModel.addTableModelListener(this);
+			this.statTableModel.addSelectionListener(this);
+			this.changed();
+		}
+
+	}
+
+	/**
+	 * @return the data table
+	 */
+	public StatTableModel getStatTableModel()
+	{
+		return this.statTableModel;
+	}
+
+	/**
+	 * Set the column of the datatable that this StatistiekView will show
+	 * 
+	 * @param columnIndex
+	 *            The index of the column that will be shown
+	 */
+	public void setColumnIndex(int columnIndex)
+	{
+		if (!(this.columnIndex == columnIndex))
+		{
+			this.columnIndex = columnIndex;
+			
+			if (this.columnIndexValid())
+			{
+				if (this.statTableModel.getColumnTypes().get(this.columnIndex)
+					.getType().isNumber())
+				{
+    				// binBoundaries worden hier standaard gezet
+    				this.binBoundaries = Statistiek
+    					.appropriateBoundaries(
+    						this.statTableModel.getColumnMin(this.columnIndex),
+    						this.statTableModel.getColumnMax(this.columnIndex),
+    						this.noBins);
+    				
+    				// test syl: kan mooier, maar het werkt wel: opnieuw berekenen 
+    				// met de berekende binboundaries, omdat er mogelijk minder bins nodig zijn
+    				// TODO appropriateBoundaries(min, max) implementeren die binwidth en het aantal klassen bepaalt
+    				int bin0Decimals = Statistiek.getNumberOfDecimals(this.binBoundaries.get(0).toString());
+    				int bin1Decimals = Statistiek.getNumberOfDecimals(this.binBoundaries.get(1).toString());
+    				int maxNumberOfDecimals = Math.max(bin0Decimals, bin1Decimals);
+    				
+    				this.binBoundaries = Statistiek.appropriateBoundariesFromBinSettings(this.statTableModel.getColumnMin(this.columnIndex),
+    					this.statTableModel.getColumnMax(this.columnIndex), 
+    					// door afronding kan de aftreksom heel veel decimalen hebben
+    					Statistiek.round(this.binBoundaries.get(1).doubleValue() - this.binBoundaries.get(0).doubleValue(), maxNumberOfDecimals), this.binBoundaries.get(0).doubleValue());
+    				
+    				this.noBins = this.binBoundaries.size() - 1;
+				}
+
+				// set bin label positioning
+				AllowedTypes type = this.statTableModel.getColumnTypes().get(this.columnIndex)
+					.getType(); 
+				if (type.equals(AllowedTypes.INTEGER))
+				{
+					setLabelUnderBin(true);
+				}
+				else if (type.equals(AllowedTypes.DOUBLE))
+				{
+					setLabelUnderBin(false);
+				}
+			}
+			
+			this.changed();
+		}
+	}
+
+	/**
+	 * @return The index of the column that is represented by this
+	 *         StatistiekView
+	 */
+	public int getColumnIndex()
+	{
+		return this.columnIndex;
+	}
+
+	public boolean isOptimizeScale()
+	{
+		return optimizeScale;
+	}
+
+	public boolean isNextToEachOther()
+	{
+		return nextToEachOther;
+	}
+
+	public void setColumnSplitIndex(int columnSplitIndex)
+	{
+		if (this.splitOptions.getColumnSplitIndex() != columnSplitIndex)
+		{
+			this.splitOptions.setColumnSplitIndex(columnSplitIndex);
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set the column split index without triggering an event.
+	 * Used in initial HistogramController.setState().
+	 * Event in setState() is triggered after the related HistogramController.setSplitBoundaries().
+	 * 
+	 * @param columnSplitIndex
+	 */
+	public void setColumnSplitIndexWithoutEvent(int columnSplitIndex)
+	{
+		if (this.splitOptions.getColumnSplitIndex() != columnSplitIndex)
+		{
+			this.splitOptions.setColumnSplitIndex(columnSplitIndex);
+		}
+	}
+
+	/**
+	 * Set the split bin boundaries.
+	 * 
+	 * @param boundaries
+	 */
+	public void setSplitBoundaries(ArrayList<Number> boundaries)
+	{
+		this.splitOptions.setBinBoundaries(boundaries);
+		this.changed();
+	}
+
+	/**
+	 * Set the split bin boundaries without triggering an event.
+	 * 
+	 * @param boundaries
+	 */
+	public void setSplitBoundariesWithoutEvent(ArrayList<Number> boundaries)
+	{
+		this.splitOptions.setBinBoundaries(boundaries);
+	}
+
+	/**
+	 * Set if the user options will be visible or not
+	 * 
+	 * @param b
+	 *            true is visible, false is not visible
+	 */
+	public void setShowUserOptions(boolean b)
+	{
+		if (!(this.showUserOptions == b))
+		{
+			this.showUserOptions = b;
+			this.changed();
+		}
+	}
+
+	/**
+	 * Check if the user options are visible
+	 * 
+	 * @return true iff visible
+	 */
+	public boolean getShowUserOptions()
+	{
+		return this.showUserOptions;
+	}
+
+	/**
+	 * Check if the current column index is a valid column index
+	 * 
+	 * @return true iff valid
+	 */
+	public boolean columnIndexValid()
+	{
+		return this.columnIndex >= 0
+			&& this.columnIndex < this.statTableModel.getColumnCount();
+	}
+	
+	/**
+	 * Check if the current split column index is a valid column index
+	 * 
+	 * @return true iff valid
+	 */
+	public boolean columnSplitIndexValid()
+	{
+		return this.splitOptions.getColumnSplitIndex() >= 0
+			&& this.splitOptions.getColumnSplitIndex() < this.statTableModel
+				.getColumnCount();
+	}
+
+	public int binOfNumber(double d)
+	{
+		int bin = -1;
+		while (bin < this.binBoundaries.size() - 1
+			&& d >= this.binBoundaries.get(bin + 1).doubleValue()) // syl: >=, want de grens hoort bij de volgende klasse
+		{
+			bin++;
+		}
+
+		return bin;
+	}
+
+	/**
+	 * Find the frequency of every bin, and the amount of selected objects in
+	 * this bin Only use for columns of type integer or double
+	 * 
+	 * @return array of frequencies, with index 2*i the frequency of bin i, and
+	 *         2*i + 1 the amount of selected items in this bin.
+	 */
+	public int[][] numberClassFrequency()
+	{
+		return this.statTableModel.numberClassFrequency(this.binBoundaries,
+			this.columnIndex, this.splitOptions);
+	}
+
+	/**
+	 * Find the frequency of every class Only use for columns of type enum of
+	 * string
+	 * 
+	 * @return array of FrequencyTuples (which contains class label and
+	 *         frequency)
+	 */
+	public FrequencyTuple[][] enumClassFrequency()
+	{
+		return this.statTableModel.enumClassFrequency(this.columnIndex, 
+			this.splitOptions);
+
+	}
+
+	/**
+	 * Set whether the Histogram will display frequency or relative frequency
+	 * 
+	 * @param b
+	 *            true for relative frequency, false for frequency
+	 */
+	public void setPercentage(boolean b)
+	{
+		if (!(this.percentage == b))
+		{
+			this.percentage = b;
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set whether the Histogram will display percentage in the split category
+	 * relative to the split total (true) or relative to the end total (false).
+	 * 
+	 * @param b
+	 *            true for percentage relative to split total, 
+	 *            false for percentage relative to end total
+	 */
+	public void setPercentageSplitTotal(boolean b)
+	{
+		if (!(this.percentage_splitTotal == b))
+		{
+			this.percentage_splitTotal = b;
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set whether the Histogram will display labels under the bins
+	 * or between the bins.
+	 * 
+	 * @param b
+	 *            true for label under bin, false for label between bins
+	 */
+	public void setLabelUnderBin(boolean b)
+	{
+		if (!(this.labelUnderBin == b))
+		{
+			this.labelUnderBin = b;
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set whether the Histogram will display labels under the bins
+	 * or between the bins, without triggering an event.
+	 * 
+	 * @param b
+	 *            true for label under bin, false for label between bins
+	 */
+	public void setLabelUnderBinWithoutEvent(boolean b)
+	{
+		if (!(this.labelUnderBin == b))
+		{
+			this.labelUnderBin = b;
+		}
+	}
+
+	/**
+	 * @return true if showing relative frequency
+	 */
+	public boolean getPercentage()
+	{
+		return this.percentage;
+	}
+
+	/**
+	 * @return true if percentage in split category is relative to split total
+	 * 			false if percentage in split category is relative to end total
+	 */
+	public boolean getPercentageSplitTotal()
+	{
+		return this.percentage_splitTotal;
+	}
+
+	/**
+	 * @return true if showing labels under bin, false is showing labels
+	 * between bins
+	 */
+	public boolean getLabelUnderBin()
+	{
+		return this.labelUnderBin;
+	}
+
+	/**
+	 * Set whether the Histogram will use horizontal or vertical bars
+	 * 
+	 * @param b
+	 *            true for vertical, false for horizontal
+	 */
+	public void setVerticalBars(boolean b)
+	{
+		if (!(this.hasVerticalBars == b))
+		{
+			this.hasVerticalBars = b;
+			this.changed();
+		}
+	}
+
+	/**
+	 * @return true iff using vertical bars
+	 */
+	public boolean hasVerticalBars()
+	{
+		return this.hasVerticalBars;
+	}
+
+	public void tableChanged(TableModelEvent arg0)
+	{
+		this.changed();
+	}
+
+	public void selectionChanged()
+	{
+		this.changed();
+	}
+
+	public void outliersChanged()
+	{
+		this.changed();
+	}
+
+	/**
+	 * @param splitInSingleView
+	 *            the splitInSingleView to set
+	 */
+	public void setSplitInSingleView(boolean splitInSingleView)
+	{
+		// System.out.println("HistogramModel.setSplitInSingleView(" +
+		// splitInSingleView + ")");
+
+		if (this.splitInSingleView != splitInSingleView)
+		{
+			// de waarde is gewijzigd
+			this.splitInSingleView = splitInSingleView;
+		}
+
+		// Als je split doet en splitInSingleView blijft false,
+		// dan moeten onderstaande acties ook uitgevoerd worden.
+		if (!splitInSingleView)
+			nextToEachOther = false;
+		this.changed();
+	}
+
+	public void setNextToEachOther(boolean nextToEachOther)
+	{
+		if (this.nextToEachOther != nextToEachOther)
+		{
+			this.nextToEachOther = nextToEachOther;
+			if (nextToEachOther)
+				splitInSingleView = true;
+			this.changed();
+		}
+	}
+	
+	public void setOptimizeScale(boolean optimizeScale)
+	{
+		if (this.optimizeScale != optimizeScale)
+		{
+			this.optimizeScale = optimizeScale;
+			this.maxOnScale = this.getMaxBinBoundaryValue();
+			this.minOnScale = this.getMinBinBoundaryValue();
+			this.changed();
+		}
+	}
+
+	/**
+	 * Set optimize scale without triggering events. Used in setState().
+	 * 
+	 * @param optimizeScale
+	 */
+	public void setOptimizeScaleWithoutEvent(boolean optimizeScale)
+	{
+		if (this.optimizeScale != optimizeScale)
+		{
+			this.optimizeScale = optimizeScale;
+//			this.maxOnScale = this.getMaxBinBoundaryValue();
+//			this.minOnScale = this.getMinBinBoundaryValue();
+//			this.changed();
+		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	double getMinBinBoundaryValue()
+	{
+		double value = 0;
+		
+		if (this.getBinBoundaries() != null)
+		{
+			value = this.getBinBoundaries().get(0).doubleValue();
+		}
+		
+		return value;
+	}
+
+	/**
+	 * @return the splitInSingleView
+	 */
+	public boolean isSplitInSingleView()
+	{
+		return splitInSingleView;
+	}
+
+	/**
+	 * @param frequencyPolygonStackMode
+	 *            the frequencyPolygonStackMode to set
+	 */
+	public void setFrequencyPolygonStackMode(boolean frequencyPolygonStackMode)
+	{
+		if (this.frequencyPolygonStackMode != frequencyPolygonStackMode)
+		{
+			this.frequencyPolygonStackMode = frequencyPolygonStackMode;
+			this.changed();
+		}
+	}
+
+	/**
+	 * @return the frequencyPolygonStackMode
+	 */
+	public boolean isFrequencyPolygonStackMode()
+	{
+		return frequencyPolygonStackMode;
+	}
+	
+	/**
+	 * Update the column index and the split column index
+	 * given that removedColumn has been removed.
+	 * @param removedColumn
+	 */
+	public void updateColumnIndex(int removedColumn)
+	{
+		// index van de geselecteerde variabele bijwerken
+		if (removedColumn < this.columnIndex)
+		{
+			this.columnIndex = this.columnIndex - 1;
+		}
+		else if (removedColumn == this.columnIndex)
+		{
+			this.columnIndex = -1;
+		}
+		
+		// index van de split variabele bijwerken
+		if (removedColumn < this.splitOptions.getColumnSplitIndex())
+		{
+			setColumnSplitIndex(this.splitOptions.getColumnSplitIndex() - 1);
+		}
+		else if (removedColumn == this.splitOptions.getColumnSplitIndex())
+		{
+			setColumnSplitIndex(- 1);
+		}
+	}
+
+
+	/**
+	 * Class used to represent label and frequency tuple
+	 * 
+	 * @author ManuDrijvers
+	 * 
+	 */
+	public static class FrequencyTuple
+	{
+		public final String label;
+		public final int frequency;
+		public final int selectionFrequency;
+
+		public FrequencyTuple(String label, int frequency,
+			int selectionFrequency)
+		{
+			this.label = label;
+			this.frequency = frequency;
+			this.selectionFrequency = selectionFrequency;
+		}
+	}
+
+	/*
+	 * Set the default label positioning depending on column type.
+	 * Default for integer variables is under the bin,
+	 * default for double variable is between the bins.
+	 */
+	public void setDefaultLabelPositioning()
+	{
+//		System.out.println("HistogramModel.setDefaultLabelPositioning(): this.getColumnIndex() = " 
+//			+ this.getColumnIndex());
+		if (this.getColumnIndex() > -1)
+		{
+    		ColumnType cType = this.getStatTableModel().getColumnTypes()
+    			.get(this.getColumnIndex());
+    		AllowedTypes type = cType.getType();
+//			System.out.println("HistogramModel.setDefaultLabelPositioning(): type = " 
+//				+ type);
+    		if (type.equals(AllowedTypes.INTEGER))
+    		{
+    			this.labelUnderBin = true;
+    		}
+    		else if (type.equals(AllowedTypes.DOUBLE))
+    		{
+    			this.labelUnderBin = false;
+    		}
+		}
+		else
+		{
+			this.labelUnderBin = false;
+		}
+	}
+	
+	/**
+	 * Find the frequency of every bin based on min and max on scale, and the amount of selected objects in
+	 * this bin. Only use for columns of type integer or double. This method is used
+	 * when the scale is not optimized and the bins may not include all data.
+	 * 
+	 * @return array of frequencies, with index 2*i the frequency of bin i, and
+	 *         2*i + 1 the amount of selected items in this bin.
+	 */
+	public int[][] numberClassFrequencyFromScaleSettings()
+	{
+		ArrayList<Number> bins;
+		
+		if (this.statTableModel.isEmptyColumn(columnIndex))
+		{
+			bins = Statistiek.getBinBoundariesFromScaleSettings(this.getMinOnScale(), this.getMaxOnScale(), getBinWidth());
+		}
+		else
+		{
+			bins = Statistiek.getBinBoundariesFromScaleSettings(this.binBoundaries, this.getMinOnScale(), this.getMaxOnScale());
+		}
+		
+		// gaat dit goed?
+		return this.statTableModel.numberClassFrequency(bins, this.columnIndex, this.splitOptions);
+	}
+
+}

@@ -1,0 +1,85 @@
+package fi.algebraexpressies.expressies;
+
+import java.awt.*;
+
+public class Macht extends Expressie  
+{		
+	public Macht(Expressie e1, Expressie e2 )
+	{	kind1 = e1;
+		kind2 = e2;
+		isVeelterm = false;
+		isProdukt = true;
+		isBasis = false;
+		isAsym = false;
+	}
+	
+	public void teken(Graphics g, int x, int y)
+  	{ 	HaakjeLinks hl= new HaakjeLinks(kind1.hoogte+2);
+		HaakjeRechts hr= new HaakjeRechts(kind1.hoogte+2);
+		int g1;
+		if(!(kind1.isBasis && (kind1.geefWaarde()==null || (kind1.geefWaarde()!=null && kind1.geefWaarde().doubleValue()>0))))
+		{	hl.teken(g, x, y+ashoogte-kind1.ashoogte-1);
+			g1 = HaakjeLinks.geefHBreedte(fm);
+		}
+		else g1 = 0;	
+		kind1.teken(g, x+g1, y + ashoogte-kind1.ashoogte);
+		int g2 = g1 + kind1.breedte;
+		int g3;
+		if(!(kind1.isBasis && (kind1.geefWaarde()==null || (kind1.geefWaarde()!=null && kind1.geefWaarde().doubleValue()>0))))
+		{	hr.teken(g, x+g2, y+ashoogte-kind1.ashoogte-1);
+			g3 = g2 + HaakjeLinks.geefHBreedte(fm);
+		}
+		else g3 = g2;
+		kind2.teken(g, x+g3, y);
+	}
+	
+	public void zetMaat(FontMetrics fm)
+  	{	this.fm = fm;
+		kind1.zetMaat(fm);
+		kind2.zetMaat(fm);
+		if(!(kind1.isBasis && (kind1.geefWaarde()==null || (kind1.geefWaarde()!=null && kind1.geefWaarde().doubleValue()>0))))
+		{	int hb = HaakjeLinks.geefHBreedte(fm);
+			breedte = kind1.breedte + kind2.breedte + 2*hb;
+			hoogte = kind1.hoogte + 4 + kind2.hoogte-10;
+		}
+		
+		else
+		{	breedte = kind1.breedte + kind2.breedte;
+			hoogte =  kind1.hoogte + 2 + kind2.hoogte-10;
+		}
+		
+		{	ashoogte =  kind1.ashoogte + 2 + kind2.hoogte-10;
+			isAsym = true;
+		}
+		//g.setFont(new Font("SansSerrif",Font.PLAIN,12));
+
+	}
+	
+	public Double geefWaarde()
+	{	if(kind1.geefWaarde()!=null && kind2.geefWaarde()!=null)
+		{	double d1 = kind1.geefWaarde().doubleValue();
+			double d2 = kind2.geefWaarde().doubleValue();
+			return new Double(Math.pow(d1,d2));
+		}
+		else return null;
+	}
+	
+	public double geefW(double subst)
+	{	return Math.pow(kind1.geefW(subst),kind2.geefW(subst));
+	}
+	
+	public boolean isWaarde(double subst)
+	{	return kind1.isWaarde(subst) && kind2.isWaarde(subst);
+	}
+	
+	public String geefVarNaam()
+	{	String s1 = kind1.geefVarNaam();
+		String s2 = kind2.geefVarNaam();
+		if(s1!=null && s2!=null && (s1.equals("") || s2.equals("")))return "";
+		else if(s1!=null && s2!=null && !s1.equals(s2))return "";
+		else if(s1!=null && s2!=null && s1.equals(s2))return s1;
+		else if(s1!=null && s2==null)return s1;
+		else if(s1==null && s2!=null)return s2;
+		else return null;
+	}
+}

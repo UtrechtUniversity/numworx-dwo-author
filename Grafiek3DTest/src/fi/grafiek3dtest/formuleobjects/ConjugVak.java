@@ -1,0 +1,67 @@
+package fi.grafiek3dtest.formuleobjects;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.Vector;
+
+
+public class ConjugVak extends RegelVak
+{	
+	public ConjugVak(FormuleVak  fv)
+	{	formuleVak = fv;
+		
+		setLayout(null);
+		
+		super.setFont(fv.getFont());
+		fm = getFontMetrics(getFont());
+			
+		setSize(5*fm.getAscent()/5,4*fm.getAscent()/3 + fm.getDescent());
+		ashoogte = fm.getAscent()/2;
+		
+		kind1 = new FormuleRegel(formuleVak);
+		kind1.setLocation(0,2);
+		add(kind1);
+		setOpaque(false);
+	}
+	
+	public void setFont(Font f)
+	{	super.setFont(f);
+		fm = getFontMetrics(getFont());
+		if(kind1==null)return;
+		setSize(kind1.getSize().width,kind1.getSize().height+2);
+		ashoogte = kind1.ashoogte+2;
+		kind1.setLocation(0,2);
+		kind1.setFont(f);
+	}
+	
+	public void paint(Graphics g)
+	{	//zetMaat();
+		if(selected)
+		{	g.setColor(Color.black);
+			g.fillRect(0,0,getSize().width,getSize().height);
+		}
+		if(selected)g.setColor(Color.white);
+		else g.setColor(fgColor);
+		
+		int hoogte = getSize().height;
+		int breedte = getSize().width;
+		
+		
+				
+				
+		super.paint(g);
+		g.drawLine(2, 0, breedte-2, 0);
+	}
+	
+	public void zetMaat()
+	{	setSize(kind1.getSize().width,  kind1.getSize().height+2);
+		ashoogte = kind1.ashoogte+2;
+		if(getParent()instanceof FormuleElement)((FormuleElement)getParent()).zetMaat();
+	}
+	
+	
+	public String toString()
+	{	return "$c" + kind1.toString() + "@";
+	}
+}
+

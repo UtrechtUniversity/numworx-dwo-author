@@ -1,0 +1,95 @@
+package fi.spot_problems_dwo.wiskopdr;
+
+import java.util.*;
+
+public class VariableCollection
+{
+	Vector variables;
+	
+	public VariableCollection()
+	{	variables = new Vector();
+	}
+	
+	public void setVariables(String s)
+	{	StringTokenizer tokenizer = new StringTokenizer(s,";\n");
+		while(tokenizer.hasMoreTokens())
+	    {	String tok = tokenizer.nextToken();
+			try
+			{	int index = s.indexOf("=");
+				if(index>0)
+				{	String name = s.substring(0,index);
+					if(Character.isLetter(name.charAt(0)))
+					{	setVariable(tok);
+					}
+					else return;
+				}
+			}
+			catch(Exception e)
+			{	
+			}
+		}
+	}	
+	
+	public void setVariable(String s)
+	{	s = s.trim();
+		int index = s.indexOf("=");
+		String name = s.substring(0,index);
+		name = name.trim();
+		for(int i=0 ; i<variables.size(); i++)
+	    {	Variable v = (Variable)variables.elementAt(i);
+	    	if(v.getName().equals(name))
+	    	{	variables.removeElementAt(i);
+	    		break;
+	    	}
+	    }
+		String valueString = s.substring(index+1);
+		valueString = valueString.trim();
+		Variable var = new Variable(name);
+		var.setValues(valueString);
+		variables.addElement(var);
+	}
+		
+	public Variable[] getVariables()
+	{	Variable[] vars = new Variable[variables.size()];
+		for(int i=0 ; i<variables.size(); i++)
+	    {	vars[i] = (Variable)variables.elementAt(i);
+	    }
+	    return vars;
+	}
+	
+	public Variable getVariable(String name)
+	{	Variable[] vars = getVariables();
+		for(int i=0 ; i<vars.length; i++)
+		{	if(vars[i].getName().equals(name))
+			{	return vars[i];
+			}
+		}
+		return null;
+	}
+	
+	public String[] getVariableNames()
+	{	String[] names = new String[variables.size()];
+		for (int i = 0; i<variables.size(); i++) 
+		{	names[i] = ((Variable)variables.elementAt(i)).getName();
+		}
+		return names;
+	}
+	
+	
+	
+	public Hashtable getRandomValues()
+	{	Hashtable h = new Hashtable();
+		for (int i = 0; i<variables.size(); i++) 
+		{	Variable var = (Variable)variables.elementAt(i);
+			String varName = var.getName();
+			int[] values = var.getValues();
+			int randNr = (int)(Math.random()* values.length);
+			int value = values[randNr];
+			for (int j = i+1; j<variables.size(); j++) 
+			{	((Variable)variables.elementAt(j)).substitueer(value,varName);
+		    }
+			h.put(varName,new Integer(value));
+		}
+		return h;
+	}
+}

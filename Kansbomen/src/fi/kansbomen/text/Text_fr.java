@@ -1,0 +1,55 @@
+package fi.kansbomen.text;
+
+public class Text_fr extends java.util.ListResourceBundle
+{
+        public Object [] [] getContents() { return contents; }
+        static final Object [] [] contents =
+        {
+            //{	"welkomTekst" , "Welcome to Java" },
+            	 	
+        	{	"trekkingBalkTekst", "Draw" },
+        	{	"metTerugleggenTekst" , "With replacement" },
+            {	"zonderTerugleggenTekst" , "Without replacement"},
+            {	"geenLabelTekst", "Label: none"},
+            {	"letterLabelTekst", "Label: character"},
+            {	"kansNaastLabelTekst", "Label: probability (in line)"},
+	        {	"kansOnderLabelTekst", "Label: probability"},
+			{ 	"kleurTekst" , "Different colours" },
+			{	"geenKansVolgordeTekst", "No probability or order"},
+		    {	"kansNaastTekst", "Probability visible (in line)"},
+		    {	"kansOnderTekst", "Probability visible"},
+			{	"volgordeTekst", "Order visible"},
+			{	"letterTekst", "Characters visible"},
+			{ 	"aantalTrekkingenTekst" , "Number of draws" },
+			{ 	"aantalOptiesTekst" , "Number of options" },
+			{	"naamLetterTekst", "Names and characters"},
+			//{ 	"naamOptieTekst" , "Name option " },
+			//{	"letterOptieTekst", "Character option " },
+			{ 	"optieTekst" , "Option " },
+			{ 	"aantalTekst" , "Number of " },
+			{	"naam1StringTekst" , "Blue" },
+	        {	"naam2StringTekst" , "Green" },
+	        {	"naam3StringTekst" , "Red" },
+	        {	"naam4StringTekst" , "Cyan" },
+	        {	"naam5StringTekst" , "Orange" },
+	        {	"naam6StringTekst" , "Magenta" },
+	        {	"legendaTekst", "Symbols" },
+	        {	"zichtbaarTekst", "Adjustable by student"},
+	        {	"teruglegZichtbaarTekst", "With/without replacement"},
+	        {	"trekkingZichtbaarTekst", "Number of draws"},
+	        {	"optiesZichtbaarTekst", "Number of options"},
+	        {	"ballenZichtbaarTekst", "Number of balls per option"},
+	        {	"legendaZichtbaarTekst", "Symbol description visible"},
+	        {	"bovenbalkZichtbaarTekst", "Upper beam visible"},
+	        {	"kijkNaTekst", "Check"},
+	        {	"nakijkModelTekst", "Answer model"},
+	        {	"maxScoreTekst", "Maximal score"},
+	        {	"bovenbalkTekst", "Upper beam"}
+		//	....
+		
+		};
+}
+
+
+
+

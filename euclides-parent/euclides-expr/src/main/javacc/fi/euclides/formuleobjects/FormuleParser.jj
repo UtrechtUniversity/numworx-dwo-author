@@ -1,0 +1,709 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */options{  static = false;
+  //UNICODE_INPUT = true;
+  //LOOKAHEAD = 1;
+  //FORCE_LA_CHECK = true;
+  USER_CHAR_STREAM = true;}PARSER_BEGIN(FormuleParser)package fi.euclides.formuleobjects;
+
+import nl.tue.win.riaca.openmath.lang.*;
+import fi.euclides.openmath.*;
+import java.util.*;
+
+public class FormuleParser implements OMConstants{
+	private static OMSymbol COMPLEX_CONJUGATE = new OMSymbol("complex1","conjugate" );
+	private static OMSymbol COMBINAT1_BINOMIAL = new OMSymbol("combinat1", "binomial" );
+	private static OMSymbol TRANSC1_LOG = new OMSymbol("transc1", "log" ); // base, arg
+	//private static OMSymbol INVISIBLE_TIMES = new OMSymbol("invisible", "times" );
+	private static OMSymbol INTEGER1_FACTORIAL = new OMSymbol("integer1", "factorial");
+	//private static OMSymbol LIST2_LIST_SELECTOR = new OMSymbol("list2", "list_selector" );
+	//private static OMSymbol LIST1_LIST = new OMSymbol("list1", "list");
+	private static OMSymbol CALCULUS1_INT = new OMSymbol("calculus1", "int");
+	private static OMSymbol CALCULUS1_DEFINT = new OMSymbol("calculus1", "defint");
+	private static OMSymbol ARITH1_SUM = new OMSymbol("arith1", "sum");
+    private static OMSymbol WISKOPDR_PRV = new OMSymbol("wiskopdr", "prv");
+    private static OMSymbol LINALG3_VECTOR = new OMSymbol("linalg3", "vector");
+    private static OMSymbol LINALG2_MATRIX = new OMSymbol("linalg2", "matrix");
+    private static OMSymbol LINALG2_MATRIXROW = new OMSymbol("linalg2", "matrixrow");
+    private static OMSymbol ERROR_RANDOM = new OMSymbol("error", "unhandled_symbol");
+    private static OMApplication MINUS_ONE = binop(ARITH1_UNARYMINUS, new OMInteger(1), null);
+    
+  private static OMApplication binop(OMObject symbol, OMObject a, OMObject b)
+  {
+	OMApplication result = new OMApplication();
+	result.addElement(symbol);
+    result.addElement(a);
+	if(b != null)
+    	result.addElement(b);
+    return result;
+  }
+  private static OMApplication assign(Token var, OMObject expr)
+  {
+    OMVariable v = new OMVariable(var.toString());
+    return binop(PROG1_ASSIGN, v, expr);
+  }
+
+  private static OMBinding lambda(Token var, OMObject body )
+  {
+    OMVariable v = new OMVariable(var.toString());
+    Vector args = new Vector(); args.add(v);
+    return new OMBinding(FNS1_LAMBDA, args, body);
+  }
+
+  private static OMApplication rational(Token r) {
+	  OMApplication rat = new OMApplication();
+	  String string = r.toString();
+	  int t = string.indexOf("$b")+2;
+	  int n = r.toString().indexOf("$n", t);
+	  int l = r.toString().length()-2;
+	  OMInteger tel = new OMInteger(string.substring(t, n));
+	  OMInteger noem = new OMInteger(string.substring(n+2, l));
+	  rat.addElement(NUMS1_RATIONAL);
+	  rat.addElement(tel);
+	  rat.addElement(noem);
+	  if(t > 2) {
+		OMInteger base = new OMInteger(string.substring(0,t-2));
+		return binop(ARITH1_PLUS, base, rat);
+  	  }
+	  return rat;
+   }
+
+   private static OMFloat floating(Token token) {
+	  String image = token.toString().replace(",", ".");
+	  return new OMFloat(image, "dec");
+  }
+  private static OMSymbol bool(Token token) {
+    return new OMSymbol("logic1", token.toString() );
+  }
+  private static OMSymbol transc(Token token) {
+    return new OMSymbol("transc1", token.toString() );
+  }
+  static String unescape(String str)
+  {
+	str = str.substring(0, str.length()-1);
+	int i = 0;
+	while ( (i = str.indexOf('\\', i)) >= 0)
+	{
+		str = str.substring(0,i) + str.substring(i+1);
+		i++;
+	}  
+	return str;
+  }
+
+  private static OMApplication geodefiner(Token f, OMApplication arglist) {
+	OMSymbol s = new OMSymbol("geodefiner", f.toString());
+	arglist.setElementAt(s, 0);
+    return arglist;
+  }
+
+  private static OMApplication complex(Token f, OMObject expr) {
+    OMSymbol s = new OMSymbol("complex1", f.toString());
+    return binop(s, expr, null);
+  }
+
+  private static OMApplication minmax(Token f, OMApplication arglist) {
+	OMSymbol s = new OMSymbol("minmax1", f.toString());
+	arglist.setElementAt(s, 0);
+    return arglist;
+  }
+  private static OMApplication arith(Token f, OMApplication arglist) {
+	OMSymbol s = new OMSymbol("arith1", f.toString());
+	arglist.setElementAt(s, 0);
+    return arglist;
+  }
+
+  public List<Token> insertSpecials(List<Token> tokens) {
+		List<Token> result = new LinkedList<Token>();
+		//tokens.forEach(t -> collect(result,t));
+		for(Token t:tokens) collect(result,t);
+// spaces at end.
+		Token last = result.listIterator(result.size()).previous();
+		collect(result,last.next.specialToken);
+		return result;
+	}
+
+	private void collect(List<Token> result, Token t) {
+		if(t == null) return;
+		collect(result, t.specialToken);
+		result.add(t);
+		return;
+	}
+
+  public OMSymbol relation(Token tok) {
+    char ch = tok.toString().charAt(0);
+    switch(ch) {
+      case '<' : return RELATION1_LT;
+      case '>' : return RELATION1_GT;
+      case '\u2248': return RELATION1_APPROX;
+      case '\u2264': return RELATION1_LEQ;
+      case '\u2265': return RELATION1_GEQ;
+      case '\u2260': return RELATION1_NEQ;
+      case '\u22A5': return PERPENDICULAR;
+      case '\u2225': return PARALLEL;
+    }      
+    return RELATION1_EQ;
+}
+
+
+	public FormuleParser(String in) {
+	  this(new StringStream(in));
+    }
+
+/*
+	String toDirection(String n) {
+		if("<OMI>0</OMI>".equals(n))
+			return "<OMS cd='limit1' name='both_sides' />";
+		if("<OMI>1</OMI>".equals(n))
+			return "<OMS cd='limit1' name='above'/>";
+		if("<OMI>2</OMI>".equals(n))
+			return "<OMS cd='limit1' name='below'/>";
+		return "<OMS cd='limit1' name='null' />";
+	}
+
+*/
+	OMSymbol toDirection(Token t) {
+	  String n = t.toString();
+	  if("0".equals(n)) return new OMSymbol("limit1", "both_sides");
+	  if("1".equals(n)) return new OMSymbol("limit1", "above");
+	  if("2".equals(n)) return new OMSymbol("limit1", "below");
+	  return new OMSymbol("limit1", "null");
+    }
+
+    OMApplication limit(OMObject expr, Token x, OMObject limit, Token t) {
+		OMApplication oma = new OMApplication();
+		oma.addElement(new OMSymbol("limit1", "limit"));
+		oma.addElement(limit);
+		oma.addElement(toDirection(t));
+		oma.addElement(lambda(x, expr));
+		return oma;
+	}
+
+  
+}  
+PARSER_END(FormuleParser)SPECIAL_TOKEN :{ < SPACE : (  " "| "\r"| "\t"| "\n" ) >}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : ("*"|"\u00B7"|"\u00D7"|"\u2062") >| < DIVIDE : ("/"|":"|"\u00F7") >
+| < KOMMA :  "," >
+}
+
+TOKEN : /* VAKKEN */
+{
+  < AT : "@" >
+| < ABS : "$r" >
+| < WORTEL : "$w" >
+| < CONJUG : "$c" >
+| < HAAKJES: "$h" >
+| < HAAKJE: "(" >
+| < N : "$n" >
+| < L : "$l" >
+| < K : "$k" >
+| < OPTEL : "$o" >
+| < AFTREK : "$a" >
+| < BREUK : "$b" >
+| < VERMENIGVULDIGING : "$v" >
+| < NDEWORTEL : "$W" >
+| < NDELOG : "$L" >
+| < POWER : "$p" >
+| < MACHT : "$m" >
+| < BIN : "$y" >
+| < SIGMA : "$S" >
+| < SUBX : ("$sx@"|"_x") >
+| < SUBY : ("$sy@"|"_y") >
+| < FAC  : "!" >
+| < SUB : "$s" >
+| < APPLY: "\u2061" >
+| < BRA : "[" >
+| < KET : "]" >
+| < ARROW : ( "->" | "→" ) >
+| < INT : "$P" >
+| < DEFINT: "$i" >
+| < PRV : "$q" >
+| < LIM : "$T" >
+| < VECTORNOTATIE : "$z" >
+| < VECTOR: "$Y" >
+| < MATRIX: "$M" >
+}
+TOKEN:
+{
+  < GEODEFINER : ( "point" | "line" | "segment" | "text" | "circle" | "equals" | "halfline"
+                 | "arc" | "curve" | "polygon" |"angle" | "vector"| "phi"| "rnd"|"rnq"
+                 | "sgf" | "binomcdf" | "binompdf" | "invNorm"| "normalcdf" | "poissoncdf" | "poissonpdf"
+                 | "exists" | "dragging" | "conic"
+                 | "color" | "linetype"
+                 ) >
+| < TRANSC : ("sin"|"cos"|"tan"|"arcsin"|"arccos"|"arctan"|"ln"|"log"|"sec"|"csc"|"cot") >
+| < SUCHTHAT : "suchthat" >
+| < MAP : "map" >
+| < COMPLEX : ("argument"|"real"|"imaginary") >
+| < MINMAX: ( "max" | "min" ) >
+| < ARITH: ("gcd"|"abs") >
+| < IDENTITY: "identity" >
+}
+
+TOKEN :{
+  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >
+| < RATIONAL : (< CONSTANT >)? < BREUK > <CONSTANT > < N > < CONSTANT > < AT > < AT >>
+| < FLOAT : < CONSTANT > (".") < CONSTANT > >
+| < BOOL : ("true" | "false" ) >
+| < OR : ( "or" | "\u2228" | "|"  ) >
+| < AND : ( "and" | "\u2227"| "&" ) >
+| < NOT : ( "not" | "\u00AC" ) >
+| <  X : "x" >
+| <  E : "e" >
+| <  Y : "y" >
+| < CHECKED : "checked" >
+| < OBJECT : ("Object"| "object" ) >
+| < PI : ( "\u03C0"| "pi" ) >
+| < IF : "if" >
+| < INFINITY : "\u221e" >
+| < #LETTER : ( [ "a" - "w" ] | "z"|"x"|"y"| [ "A" - "Z" ] | [ "α" -"ω" ] ) >
+
+| < VARIABLE : < LETTER > (< DIGIT >|< LETTER >| "'" )* >
+| < EQ : "=" >
+| < RELATION : ("\u2248"|">"|"<"|"\u2264"|"\u2265"|"\u2260"|"\u22A5"|"\u2225") >	}
+SKIP: /* Strings */
+{
+  "\"" : WithinString
+}
+
+<WithinString> TOKEN:
+{
+	<  STRING: "\"" > : DEFAULT 
+}
+
+<WithinString> MORE:
+{
+  	"\\\""
+}
+
+<WithinString> MORE :
+{
+	<~[]>
+}
+
+
+SKIP: /* #random# */
+{
+    "#" : StartRandom
+  | "\u00A9"  : StartRandom
+}
+< StartRandom > TOKEN:
+{
+  < RANDOM: ("#"|"\u00A9") > : DEFAULT
+}
+< StartRandom > MORE:
+{
+  < ~[] >
+}
+
+List<Token> tokens() :
+{
+	Token head,tail;
+}
+{
+	{ head = getToken(1); }
+	parse()
+	{ 
+		tail = getToken(0);
+		List<Token> result = new ArrayList<Token>();
+		do { 
+			result.add(head);
+			head = head.next;
+		} while( head != tail );
+		return result; 
+	}
+}
+
+List<Token> tokens_expr() :
+{
+	Token head,tail;
+}
+{
+	{ head = getToken(1); }
+	exprAt()
+	{ 
+		tail = getToken(0);
+		List<Token> result = new ArrayList<Token>();
+		do { 
+			result.add(head);
+			head = head.next;
+		} while( head != tail );
+		return result; 
+	}
+}
+
+Token variableAt() :
+{ Token t; }
+{
+  t = < VARIABLE > < EOF >
+  {
+    return t;
+  }
+}
+	
+OMObject exprAt() :
+{ OMObject o; }
+{
+  o = expr() ( "@" | < EOF >)
+  { return o; }
+}
+  
+OMObject parse() :{OMObject o;}{  o = assign() ( "@" | < EOF >)  {    return o;  }| "@" { return null; }
+| < EOF > { return null; }}
+
+OMObject assign() :
+{ Token var, x; OMObject expr; }
+{
+  var = < VARIABLE >
+  ( < HAAKJE > (x=< X >|x=<Y>|x=<VARIABLE>) ")" <  EQ > expr = expr() { return assign(var, lambda(x, expr)); }
+  | < EQ > expr = expr() { return assign(var, expr); }
+  | "_" x = < VARIABLE > < EQ > expr = expr() { return assign(var, lambda(x, expr)); }
+  | < SUB > x = < VARIABLE > < AT >< EQ > expr = expr() { return assign(var, lambda(x, expr)); }
+  )
+|  LOOKAHEAD ( (<X>|<Y>) < RELATION >)
+   expr = halflogic() {  return expr; }
+| < Y > < EQ > expr = sum() { return binop(RELATION1_EQ, new OMVariable("y"), expr); } 
+| < X > < EQ > expr = sum() { return binop(RELATION1_EQ, new OMVariable("x"), expr); }
+| < VECTORNOTATIE> var = <VARIABLE> <AT> <EQ> expr = expr() { return assign(var, expr); }
+}
+ 
+OMObject expr() :
+{ Token x; OMObject e; }
+{
+ LOOKAHEAD( (<X>|<Y>|<VARIABLE>) < ARROW > )
+ (x=<X>|x=<Y>|x=<VARIABLE>) < ARROW > e = or() { return lambda(x, e); }
+| e = logic() {  return e; }
+}
+
+OMObject logic() :
+{ OMObject e; }
+{ e = or() {  return e; }
+}
+
+OMObject halflogic() :
+{
+  OMObject expr, a,b;
+  Token x,rel;
+}
+{
+  (x=< X >|x=< Y >) rel = < RELATION > expr = sum() {
+		a=  binop(relation(rel), new OMVariable(x.toString()), expr);
+    }
+    ( < AND > b=not() { a = binop(LOGIC1_AND, a, b); })*    ( < OR >  b=and() { a = binop(LOGIC1_OR, a, b); })*
+    { return a; }   
+}
+  
+
+  
+OMObject or() :
+{ OMObject a,b; }
+{
+	a = and() (
+	< OR > b = and()
+		{ a = binop(LOGIC1_OR, a, b); }
+	)*
+	{ return a; } 
+}
+
+OMObject and() :
+{ OMObject a,b; }
+{
+  a = not() (
+    < AND > b = not()
+    	{ a = binop(LOGIC1_AND, a, b); }
+  )*
+  { return a; }
+}
+
+OMObject not() :
+{ OMObject a; }
+{
+  ( < NOT > a = not() { a = binop(LOGIC1_NOT, a, null); }  | a = relation()
+  )
+  {
+    return a;
+  }
+}
+
+OMObject relation() :
+{ OMObject a, b, s; Token tok; }
+{
+  a = interval()
+  (    ( < EQ > {  s = RELATION1_EQ; }
+    | tok = < RELATION > {  s = relation(tok); }    )    
+    b = interval() {
+      a = binop(s, a, b); }
+  )*
+  {
+     return a;
+  }
+}
+
+OMObject interval() :
+{
+  OMObject a,b;
+} {
+  a = sum()
+  (    ".."
+    b = sum() { a = binop(INTERVAL1_INTERVAL, a,b); }
+  )?
+  {    return a;
+  }
+}
+
+OMObject sum() :{OMObject a,b,s;}{  a = term()  (    (      < PLUS >  { s = ARITH1_PLUS; }    | < MINUS > { s = ARITH1_MINUS; }    )   b = term() {
+     a = binop(s,a,b); }  )*
+  {	return a;
+  }}OMObject term() :{OMObject a,b,s;}{  a = unary()  (    (      (        < MULTIPLY > { s = ARITH1_TIMES; }      | < DIVIDE > { s = ARITH1_DIVIDE; }
+      )
+     	b = unary() {
+         a = binop(s,a,b);
+      }
+    )*
+  )
+  {     return a;
+  }}
+OMObject power() :
+{OMObject a,b,s;}
+{
+  a = element()
+  (
+   (       < MACHT > 
+       b = sum()
+	   < AT >
+       {  a = binop(ARITH1_POWER,a,b); }
+ |  < SUBX > { a = binop(EUCLIDES_X, a, null); }
+ |  < SUBY > { a = binop(EUCLIDES_Y, a, null); }
+ |  < SUB > b = sum() < AT > {  a = binop(LIST2_LIST_SELECTOR, a, b); }
+ |  < "_" > b = element() {  a = binop(LIST2_LIST_SELECTOR, a, b); }
+ |  < FAC > {  a = binop(INTEGER1_FACTORIAL, a, null); }
+   
+       
+/*
+    |  "^"
+	   b = unary()
+	   { a = binop(ARITH1_POWER,a,b); }
+ */
+    )
+  )*
+  {
+     return a;
+  }
+}
+
+
+void invisible() :
+{}
+{  < X > | < Y > | < HAAKJE > | < VARIABLE > | < PI > | < E > | < HAAKJES >
+}
+
+void noterm() :
+{ }
+{
+  < AT > | < KOMMA > | ")" | < KET >
+}
+
+
+OMObject invisible_times() :
+{OMObject a,b; }
+{
+  a = power()
+  (    LOOKAHEAD( invisible() )
+	b = power() { a = binop(ARITH1_TIMES, a,b); }
+  )*    
+  {    return a;
+  }
+}
+OMObject unary() :{OMObject a;}{  < MINUS > a = invisible_times() {  return binop(ARITH1_UNARYMINUS, a, null); }| a = invisible_times() {  return a; }}
+OMApplication arglist() :
+{ OMApplication list = new OMApplication(); list.addElement(null);
+  OMObject expr;
+}
+{  < HAAKJE > 
+  	 (
+  	  ( expr = expr() { list.addElement(expr); })
+	  ( < KOMMA > expr = expr() { list.addElement(expr); })*
+	 )?
+  ")"  {
+    return list;
+  }
+| 
+  < HAAKJES > ( expr = expr() { list.addElement(expr); })
+	  ( < KOMMA > expr = expr() { list.addElement(expr); })*
+  < AT >
+  {
+    return list;
+  }
+|
+  < APPLY > ( expr = element() { list.addElement(expr); return list; })
+
+
+}
+
+OMApplication vectorlist() :
+{
+	OMApplication vectorlist = new OMApplication(); vectorlist.addElement(LINALG3_VECTOR);
+	OMObject expr;
+}
+{
+	( <N> expr = expr() <AT> { vectorlist.addElement(expr); } )* { return vectorlist; }
+} 
+
+OMApplication matrixrow() :
+{
+	OMApplication matrixrow = new OMApplication(); matrixrow.addElement(LINALG2_MATRIXROW);
+	OMObject expr;
+}
+{
+	( <K> expr = expr() <AT> { matrixrow.addElement(expr); } )* { return matrixrow; }
+} 
+
+OMApplication matrix() :
+{
+	OMApplication matrix = new OMApplication(); matrix.addElement(LINALG2_MATRIX);
+	OMObject expr;
+}
+{
+	( <N> expr = matrixrow() <AT> { matrix.addElement(expr); } )* { return matrix; }
+} 
+
+
+
+void lookforhaakjes() :
+{ }
+{ < HAAKJE >
+| < HAAKJES >
+}  
+  
+OMApplication transarglist() :
+{
+  OMApplication list = new OMApplication(); list.addElement(null);
+  OMObject expr;
+}
+{
+  LOOKAHEAD( lookforhaakjes() )
+  expr = element() {  list.addElement(expr); return list; }
+|
+  expr = term() {  list.addElement(expr); return list;}
+}
+
+OMApplication bracket() :
+{ OMObject expr; OMApplication list = new OMApplication(); list.addElement(LIST1_LIST); }
+{
+  < BRA >
+  (     < KET > 
+  |  expr = sum() { list.addElement(expr); } 
+     (       < KOMMA > expr = sum() {  list.addElement(expr); }
+     )*
+     < KET >
+ )
+ {
+    return list;
+ }
+}
+
+
+Token variable() :
+{ Token tok; }
+{ 
+	tok = < VARIABLE > { return tok; }
+|   < VECTORNOTATIE> tok = <VARIABLE> <AT> { return tok; }
+}
+
+OMObject numbers() :
+{
+   OMObject n;
+   Token tok;
+}
+{ ( tok = < CONSTANT > { n = new OMInteger(tok.toString()); }
+  | tok = < RATIONAL > { n = rational(tok); }
+  | tok = < FLOAT > {  n = floating(tok); }
+  | tok = < RANDOM > {  n = new OMError(ERROR_RANDOM); }
+  )+
+{
+  return n;
+}
+} 
+  
+OMObject element() :{ OMObject expr, expr2 = null, expr3; OMApplication oma; Token tok, breuk; }{
+  expr = numbers() {  return expr; }
+| tok = variable() {  expr =  new OMVariable(tok.toString()); }
+  (     oma = arglist() { oma.setElementAt(expr,0); expr = oma; }
+  )? { return expr; }
+| tok = < X > {  return new OMVariable(tok.toString()); }
+| tok = < Y > {  return new OMVariable(tok.toString()); }
+| < E > {  return OMConstants.NUMS1_E; }
+| < PI > {  return OMConstants.NUMS1_PI; }
+| < INFINITY > {  return OMConstants.NUMS1_INFINITY; }
+| tok = < BOOL > { return bool(tok); }| < HAAKJE > expr = expr() ")" { return expr; }
+| expr = bracket() {  return expr; }
+| < HAAKJES > expr = expr() < AT > { return expr; }
+| < ABS > expr = sum() < AT > {  return binop(ARITH1_ABS, expr, null); }
+| < WORTEL > expr = sum() < AT > { return binop(EUCLIDES_SQRT, expr, null); }
+| < CONJUG > expr = sum() < AT > { return binop(COMPLEX_CONJUGATE, expr, null); }
+
+| < AFTREK > expr = sum() < N > expr2 = sum() < AT > < AT > { return binop(ARITH1_MINUS, expr, expr2); }| < OPTEL > expr = sum() < N > expr2 = sum() < AT > < AT > { return binop(ARITH1_PLUS, expr, expr2); }
+| < VERMENIGVULDIGING > expr = sum() < N > expr2 = sum() < AT > < AT > { return binop(ARITH1_TIMES, expr, expr2); }
+| < BREUK > expr = sum() < N > expr2 = sum() < AT > < AT > { return binop(ARITH1_DIVIDE, expr, expr2); }
+| < BIN > expr = sum() < N > expr2 = sum() < AT > < AT > { return binop(COMBINAT1_BINOMIAL, expr, expr2); }
+| < POWER > expr = sum() < N > expr2 = sum() < AT > < AT > { return binop(ARITH1_POWER, expr, expr2); }
+| < NDEWORTEL > expr = sum() < N > expr2 = sum() < AT > < AT > { return binop(ARITH1_ROOT, expr, expr2); }
+| < NDELOG > expr = sum() < N > expr2 = sum() < AT > < AT > { return binop(TRANSC1_LOG, expr2, expr); }
+| < INT > expr = sum() < N > tok = < X > < AT > < AT > { return binop(CALCULUS1_INT, lambda(tok, expr), null); }| < DEFINT > expr = sum() < N > expr2 = sum() < K > expr3 = sum() < L > tok = < X > < AT > < AT > < AT > < AT >{  return binop(CALCULUS1_DEFINT, binop(INTERVAL1_INTERVAL, expr2, expr3), lambda(tok, expr)); // ORDERED_INTERVAL!}| < SIGMA > expr3 = sum() < N > tok = < VARIABLE > < K > expr = sum() < L > expr2 = sum() < AT ><AT ><AT ><AT >
+{
+  return binop(ARITH1_SUM, binop(INTERVAL1_INTERVAL, expr, expr2), lambda(tok, expr3));
+}
+| < PRV > expr3 = sum() < N > expr = sum() < K > expr2 = sum() < L >  (tok=< VARIABLE >|tok=< X >|tok=< Y >) <AT ><AT ><AT ><AT >
+{
+  return binop(WISKOPDR_PRV, binop(INTERVAL1_INTERVAL, expr, expr2), lambda(tok, expr3));
+}
+
+| tok = < GEODEFINER > oma = arglist() {  return geodefiner(tok, oma); }
+| tok = < MINMAX > oma = arglist() {  return minmax(tok, oma); }
+| tok = < ARITH > oma = arglist() {  return arith(tok, oma); }
+| tok = < COMPLEX > expr = element() {  return complex(tok, expr); }
+| <IDENTITY> { return FNS1_IDENTITY; }
+| tok = < STRING >
+	{
+	  	String s = tok.toString();
+	  	s = unescape(s);
+		return new OMString(s);
+	}
+	
+| < CHECKED > { return GEODEFINER_CHECKED; } 
+| < OBJECT > { return GEODEFINER_OBJECT; }
+| < IF > < HAAKJE > expr = relation() < KOMMA > expr2 = sum() < KOMMA > expr3 = sum() ")" {
+  oma = binop(PROG1_IF, expr, expr2); oma.addElement(expr3); return oma; }
+| LOOKAHEAD( < TRANSC > noterm() )
+	tok = < TRANSC > { return transc(tok); }
+| tok = < TRANSC >
+	(   < MACHT > expr2 = sum() < AT > )?
+	oma = transarglist() {  oma.setElementAt(transc(tok),0); expr = oma;
+		if(expr2 != null)
+		{
+			if ( 
+			//MINUS_ONE.isSame(expr2) // FIXME 1.3.18a not implemented
+			MINUS_ONE.toString().equals(expr2.toString())
+			&& Arrays.asList("sin", "cos", "tan").contains(tok.toString())) {
+				oma.setElementAt(new OMSymbol("transc1", "arc"+tok),0);
+			} else {
+				expr = binop(ARITH1_POWER, expr, expr2);
+			}
+	    }
+	    return expr;
+
+	}
+| < MAP > ( < HAAKJE > expr = expr() < KOMMA > expr2 = interval() ")" |
+			< HAAKJES > expr = expr() < KOMMA > expr2=interval() < AT > )
+{
+       return binop(LIST1_MAP, expr, expr2);
+    }
+| < SUCHTHAT > ( < HAAKJE > expr = interval() < KOMMA > expr2 = expr() ")" |
+			< HAAKJES > expr = expr() < KOMMA > expr2=interval() < AT > )
+{
+       return binop(LIST1_SUCHTHAT, expr, expr2);
+    }
+| < LIM > expr = sum() < N > (tok=< X >) < K > expr2=sum() < L > breuk = < CONSTANT > <AT><AT><AT><AT> {
+	return limit(expr, tok, expr2, breuk);
+	}
+| < VECTOR > oma = vectorlist() < AT > { return oma; }
+| < MATRIX > oma = matrix() < AT > { return oma; }
+}
