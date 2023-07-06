@@ -601,7 +601,10 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	  i = interactiePanelSets[setNr][i];
 	  // 62: upload widget is een premium experimental feature
 	  // 65: notebook alleen op dev-omgeving
-      return WiskOpdr.isExperimental() && WiskOpdr.isPremium() || (i != 62 && i != 63 && i != 64 && i != 65) ;
+	  // 68: repl interpreter
+	  // 69: AI component
+      return WiskOpdr.isExperimental() && WiskOpdr.isPremium() || 
+          (i != 62 && i != 63 && i != 64 && i != 65 && i != 68 && i != 69) ;
   }
 
   public static int AntwoordvakkenSetNr = 0;
