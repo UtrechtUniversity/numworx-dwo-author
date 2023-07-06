@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.wiskopdr</groupId>
 	<artifactId>wiskopdr</artifactId>
@@ -189,11 +188,9 @@
 						<phase>${extras.phase}</phase>
 						<configuration>
 							<target>
-								<jar destfile="${project.build.directory}/${project.build.finalName}.jar"
-									update="true" index="true">
+								<jar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true" index="true">
 									<indexjars>
-										<fileset dir="${project.build.directory}" includes="*.jar"
-											excludes="*proguard*" />
+										<fileset dir="${project.build.directory}" includes="*.jar" excludes="*proguard*" />
 									</indexjars>
 								</jar>
 							</target>

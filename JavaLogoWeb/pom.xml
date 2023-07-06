@@ -50,7 +50,7 @@
    				<_snapshot>${osgi.qualifier}</_snapshot>
           		<Bundle-SymbolicName>fi.javalogoweb.JavaLogoWeb</Bundle-SymbolicName>
  				<Main-Class>fi.javalogoweb.JavaLogoWeb</Main-Class>
-				<Bundle-Description></Bundle-Description>
+				<Bundle-Description />
  				<Export-Package>fi.javalogoweb</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
           	</instructions>

@@ -51,7 +51,7 @@
           		<Bundle-SymbolicName>fi.sliderwidget.SliderWidget</Bundle-SymbolicName>
  				<Main-Class>fi.sliderwidget.SliderWidget</Main-Class>
 				<Bundle-Name>SliderWidget</Bundle-Name>
-				<Bundle-Description></Bundle-Description>
+				<Bundle-Description />
  				<Export-Package>fi.sliderwidget</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
           	</instructions>
