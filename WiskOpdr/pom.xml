@@ -638,6 +638,17 @@
 			</dependency>
 		</dependencies>
 	</profile>
+	<profile>
+		<id>aimodel</id>
+		<dependencies>
+			<dependency>
+			  	<groupId>nl.numworx.aimodel</groupId>
+		  		<artifactId>aimodel</artifactId>
+		  		<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</profile>
+	
 	</profiles>
    <repositories>	
 	<repository>

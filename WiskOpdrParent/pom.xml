@@ -66,6 +66,7 @@
         </plugins>
    </build>
     <modules>
+    <module>../aimodel</module>
 	<module>../AlgebraPijlenOpdr</module>
     	<module>../BalansFruitApplet</module>
 	<module>../BinomVerdeling</module>
