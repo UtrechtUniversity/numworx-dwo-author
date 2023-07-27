@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.previewhtml</groupId>
   <artifactId>PreviewHTML</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.3</version>
   <name>HTML Previewer with Scorm support</name>
   <parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.1-SNAPSHOT</version>
+	  <version>1.0.1</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
   </parent>
   <properties>

@@ -6,12 +6,12 @@
   <parent>
     <artifactId>IVMdraw-parent</artifactId>
     <groupId>fi.ivmdraw</groupId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
   </parent>
   <groupId>fi.ivmdraw</groupId>
   <artifactId>IVMdrawGWT</artifactId>
   <packaging>war</packaging>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.2</version>
   <name>IVM draw GWT</name>
 
   <properties>
