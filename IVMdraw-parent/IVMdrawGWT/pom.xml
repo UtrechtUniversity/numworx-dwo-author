@@ -6,12 +6,12 @@
   <parent>
     <artifactId>IVMdraw-parent</artifactId>
     <groupId>fi.ivmdraw</groupId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
   </parent>
   <groupId>fi.ivmdraw</groupId>
   <artifactId>IVMdrawGWT</artifactId>
   <packaging>war</packaging>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <name>IVM draw GWT</name>
 
   <properties>
@@ -53,7 +53,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>

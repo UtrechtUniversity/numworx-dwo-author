@@ -2,11 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.numworx</groupId>
   <artifactId>SAMLlogin</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
   <parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.0</version>
+	  <version>1.0.1</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
   </parent>
   <properties>
@@ -46,7 +46,7 @@
   	<dependency>
   		<groupId>fi.previewhtml</groupId>
   		<artifactId>PreviewHTML</artifactId>
-  		<version>0.0.2</version>
+  		<version>0.0.3</version>
   	</dependency>
   	<dependency>
   		<groupId>nl.uu.fi.dwo</groupId>

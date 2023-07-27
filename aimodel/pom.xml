@@ -6,9 +6,9 @@
     <version>1.0.1</version>
     <relativePath>../WiskOpdrParent</relativePath>
   </parent>
-  <groupId>nl.numworx.repl</groupId>
-  <artifactId>repl</artifactId>
-  <version>0.0.2</version>
+  <groupId>nl.numworx.aimodel</groupId>
+  <artifactId>aimodel</artifactId>
+  <version>0.0.1</version>
  	<dependencies>
 		<dependency>
 			<groupId>fi.wiskopdr</groupId>

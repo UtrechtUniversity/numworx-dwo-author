@@ -351,6 +351,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{ "nl.numworx.uploadwidget.UploadWidget", "62" },
 		{ "nl.numworx.notebook.Notebook", "65" },
 		{ "nl.numworx.repl.Repl", "68" },
+		{ "nl.numworx.aimodel.AIModel", "69" },
 	};
 	
 	
