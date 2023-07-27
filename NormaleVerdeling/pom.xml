@@ -2,13 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.normaleverdeling</groupId>
   <artifactId>normaleverdeling</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3-SNAPSHOT</version>
   <name>NormaleVerdeling</name>
   <description>Normale Verdeling</description>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.1</version>
+	  <version>1.0.2-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
   <build>
