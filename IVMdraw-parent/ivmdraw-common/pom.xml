@@ -3,7 +3,7 @@
   <parent>
     <groupId>fi.ivmdraw</groupId>
     <artifactId>IVMdraw-parent</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>ivmdraw-common</artifactId>
 </project>
