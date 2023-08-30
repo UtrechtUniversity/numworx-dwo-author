@@ -16,6 +16,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventListener;
+
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.wiskopdr.TekstVakPanel;
@@ -24,7 +28,7 @@ import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import fi.wiskopdr.tekstobjects.TekstRegel;
 import fi.wiskopdr.tekstobjects.TekstVak;
 
-public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel, ActionListener{
+public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel, ActionListener, CBookAware {
 
     int ashoogte = 15;
     StappenKeuzeVak keuzeVak;
@@ -435,6 +439,34 @@ public class SamengesteldeStappenPanel extends JPanel implements InteractiePanel
       kijkNa();
     }
     produceAction(e.getActionCommand());
+  }
+
+  @Override
+  public void acceptCBookEvent(CBookEvent event) {
+  }
+
+  @Override
+  public void addCBookEventListener(CBookEventListener listener, String command) {
+  }
+
+  @Override
+  public void removeCBookEventListener(CBookEventListener listener, String command) {
+  }
+
+  @Override
+  public String[] getSendCmds() {
+    return new String[0];
+  }
+
+  @Override
+  public String[] getAcceptedCmds() {
+    String[] cmds = { "tupels.statistics" };
+    return cmds;
+  }
+
+  @Override
+  public String getLocalizedCmd(String cmd) {
+    return WiskOpdr.rb.getString("Steps_statistics");
   }
 	
 }

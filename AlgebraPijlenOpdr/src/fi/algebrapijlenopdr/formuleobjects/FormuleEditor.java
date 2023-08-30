@@ -1,9 +1,7 @@
 package fi.algebrapijlenopdr.formuleobjects;
 					   
-import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
-import fi.algebrapijlenopdr.expressies.*;
 
 public class FormuleEditor extends Panel implements ActionListener, MouseListener, AdjustmentListener
 {	

@@ -2,12 +2,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.calculatordwo</groupId>
 	<artifactId>calculatordwo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>Calculator voor DWO</name>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.0-SNAPSHOT</version>
+	  <version>1.0.2-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
 	<build>
@@ -43,7 +43,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<proguardVersion>6.0</proguardVersion>
+					<proguardVersion>6.1</proguardVersion>
 					<options>
 						<option>-verbose</option>
 						<option>-dontwarn</option>
@@ -61,7 +61,7 @@
 					<dependency>
 						<groupId>net.sf.proguard</groupId>
 						<artifactId>proguard-base</artifactId>
-						<version>5.2</version>
+						<version>6.1.0</version>
 						<scope>runtime</scope>
 					</dependency>
 				</dependencies>
@@ -137,6 +137,20 @@
                     </plugin>        
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>nl.uu.fi.dwo</groupId>
+			<artifactId>DWO-commons-lib</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<version>0.3.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
 	<properties>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>

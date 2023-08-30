@@ -1,12 +1,7 @@
 package fi.draaibank;
 
-import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
-
-import fi.draaibank.text.*;
-
-import javax.swing.*;
 
 //import fi.beans.scorm.ScormAppletIF;
 import fi.beans.wiskopdrbeans.InteractiePanel;

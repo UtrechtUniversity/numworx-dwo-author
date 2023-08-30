@@ -1,6 +1,5 @@
 package fi.algebrapijlenopdr.tekstobjects;
 
-import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import fi.algebrapijlenopdr.formuleobjects.*;

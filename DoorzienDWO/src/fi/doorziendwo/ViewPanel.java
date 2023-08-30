@@ -1,6 +1,5 @@
 package fi.doorziendwo;
 
-import java.awt.Button;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Color;
@@ -20,8 +19,6 @@ import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
 
 import fi.beans.base64code.StringCodeObject;
-import fi.beans.wiskopdrbeans.InteractieEditPanel;
-import fi.beans.wiskopdrbeans.InteractiePanel;
 
 public class ViewPanel extends JLayeredPane implements ViewerIF, ActionListener
 {	

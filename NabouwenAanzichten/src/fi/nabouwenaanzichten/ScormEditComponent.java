@@ -1,11 +1,8 @@
 package fi.nabouwenaanzichten;
 
-import java.applet.Applet;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
-import java.io.*;
-import fi.nabouwenaanzichten.text.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 
@@ -625,5 +622,12 @@ public class ScormEditComponent extends Panel implements ActionListener, ScormEd
 	
 	public boolean isBouwen()
 	{	return ip.isBouwen();
+	}
+
+
+	@Override
+	public void setState(Hashtable arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,8 +1,6 @@
 package fi.doorziendwo;
 
-import java.awt.Button;
 import java.awt.Font;
-import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

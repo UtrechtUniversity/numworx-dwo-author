@@ -2,13 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.normaleverdeling</groupId>
   <artifactId>normaleverdeling</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <name>NormaleVerdeling</name>
   <description>Normale Verdeling</description>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.0-SNAPSHOT</version>
+	  <version>1.0.2-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
   <build>
@@ -50,7 +50,7 @@
    				<_snapshot>${osgi.qualifier}</_snapshot>
           		<Bundle-SymbolicName>fi.normaleverdeling.NormaleVerdeling</Bundle-SymbolicName>
  				<Main-Class>fi.normaleverdeling.NormaleVerdeling</Main-Class>
-				<Bundle-Description></Bundle-Description>
+				<Bundle-Description />
  				<Export-Package>fi.normaleverdeling</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
           	</instructions>

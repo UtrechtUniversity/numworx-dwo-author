@@ -1,6 +1,5 @@
 package fi.nabouwenaanzichten;
 
-import java.applet.Applet;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
@@ -14,9 +13,7 @@ import org.cbook.cbookif.CBookEventHandler;
 import org.cbook.cbookif.CBookEventListener;
 
 import fi.beans.scorm.*;
-import fi.beans.copyright.*;
 import fi.beans.base64code.*;
-import fi.beans.appletutil.*;
 // restore (1)
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -2984,5 +2981,11 @@ public class NabouwenAanzichtenInteractiePanel extends JPanel
 		if (localizedCmd == null)
 			return cmd;
 		return localizedCmd;
+	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
