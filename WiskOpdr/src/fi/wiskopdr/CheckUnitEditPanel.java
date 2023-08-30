@@ -599,6 +599,7 @@ public class CheckUnitEditPanel extends JPanel implements InteractieEditPanel, A
 	    scoreMax = intFromText(scoreMax, maxScoreTF.getText());
 	    if(hasFeedback)
 	        scoreMax = intFromText(scoreMax, feedbackPV.getText());
+	    if(!teltMee)scoreMax = 0;
 	    randomizePositions = randomizePositionsCB.isSelected();
 	    multiSelections = multiSelectionsCB.isSelected();
 	    logOption = logCB.isSelected();
