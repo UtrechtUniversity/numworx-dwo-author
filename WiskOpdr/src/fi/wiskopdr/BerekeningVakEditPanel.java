@@ -351,6 +351,7 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
         
         vergelijkingAntwoordTabblad = vergelijkingAntwoordManager.getPanel();
         vergelijkingAntwoordTabblad.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        tabbedPane.add("Vergelijking-antwoordmodel", vergelijkingAntwoordTabblad);
        
 	    	// HelpKnoppen
 	    	hbCheck = makeHelpButton(HELP_0_URL_CHECK);
@@ -656,6 +657,9 @@ public class BerekeningVakEditPanel extends JLayeredPane implements InteractieEd
             if(!checkCB.isSelected())
                 scoreTF.setText("0");
         antwoordBox.setVisible(check && !checkDocent);
+        
+        tabbedPane.remove(formuleAntwoordTabblad);
+        tabbedPane.remove(formuleAntwoordTabblad);
         
         if(formuleAntwoordModelCB.isSelected()) 
              tabbedPane.add("Formule-antwoordmodel", formuleAntwoordTabblad);
