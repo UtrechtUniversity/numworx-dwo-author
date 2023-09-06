@@ -860,8 +860,12 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 
 	public static String getLearner_id() {
 		if( applet != null && applet.api != null) {
-			return applet.api.LMSGetValue("cmi.core.student_id");
+			return applet.api.LMSGetValue("cmi.learner_id");
 		} 
+		if (applet != null) {
+		  String learner_id = applet.getParameter(WidgetBridge.LEARNER_ID);
+		  if (learner_id != null) return learner_id;
+		}
 		return "learner_id";
 	}
 

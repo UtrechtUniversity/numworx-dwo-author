@@ -1,6 +1,8 @@
 package fi.wiskopdr.cbook;
 
 import java.applet.AppletContext;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
@@ -9,6 +11,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JComponent;
 
+import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.rm.ResourceManager;
@@ -66,7 +69,7 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 	private static WeakHashMap<String, ResourceManager> rmmap = new WeakHashMap<String, ResourceManager>();
 	
 	static ResourceManager getResourceManager(String widget, int page, String instance) {
-		return getResourceManager(widget, page + "/" + instance);
+		return getResourceManager(widget, page + "-" + instance);
 	}
 		
 	static ResourceManager getResourceManager(ResourceManagerClient panel) {
@@ -74,17 +77,43 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 	}
 	
 	static ResourceManager getResourceManager(String widget, String instance) {
-		String key = widget + "/" + instance;
+        String unit    = WiskOpdr.getUnit_id();
+		String key = widget + "/" + unit + "-" + instance;
 		ResourceManager rm = rmmap.get(key);
 		if(rm != null) return rm;
 		
 		String student = WiskOpdr.getLearner_id();
-		String unit    = WiskOpdr.getUnit_id();
 		String user    = student;
 		String passwd  = WiskOpdr.getOAuthToken();
 		URL root = getResourceRoot();		
 
 		rm = null;//new fi.wiskopdr.cbook.rm.WebManager(root, widget, unit, instance, student, user, passwd);
+
+		try {
+	      ResourceManagerFactory factory = (ResourceManagerFactory) Class.forName("nl.numworx.uploadwidget.rm.Factory").newInstance();
+	      Method m = factory.getClass().getMethod("setContext", CBookContext.class);		
+	      m.invoke(factory,new CBookContext() {
+            
+            @Override
+            public Object getProperty(String key) {
+              if(LEARNER_ID.equals(key))
+                return WiskOpdr.getLearner_id();
+              if("serverUrlPath".equals(key))
+                return root;
+              if("oauth_token".equals(key))
+                return passwd;
+              if (UUID.equals(key))
+                  return unit + "-" + instance;
+              
+              return null;
+            }
+          });
+          rm = factory.getResourceManager();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
 		rmmap.put(key, rm);
 		return rm;
 
@@ -92,9 +121,10 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 
 	private static URL getResourceRoot() {
 		try {
-			return new URL("https://mc2-resource.appspot.com/dav/");
-			//return new URL("http://localhost:8888/dav/"); // LOCAL
-		} catch (MalformedURLException oops) {
+		    String serverUrlPath = WiskOpdr.applet.getParameter("serverUrlPath");
+		    return new URL(serverUrlPath);
+			//return new URL("http://localhost:8888/dwo/"); // LOCAL
+		} catch (Exception oops) {
 			return null;
 		}
 	}
