@@ -490,7 +490,7 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 			}
 			Color c = a.adapt(Color.class);
 			CheckObject co = a.adapt(CheckObject.class);
-			if (c != null && co == null) {
+			if (c != null && (co == null||!isFeedback())) {
 				if (getModel().getSelect().contains(object))
 				{	g.setColor(c.brighter());	// grijs wordt wit...		
 					setColor(RED);				// is te verwarrend, altijd SELECTCOLOR
@@ -502,7 +502,7 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 				return;
 			}
 // feedback color.
-			if(co != null)
+			if(co != null && isFeedback())
 			{   // extra verificatie?
 				g.setColor(Color.green);
 			} else
@@ -512,7 +512,14 @@ final public class InstanceViewer extends AWTViewer implements Observer, TrailBu
 		
 		
 		
-		
+		private boolean feedback = true;
+		public boolean isFeedback() {
+			return feedback;
+		}
+		public void setFeedback(boolean f) {
+			feedback = f;
+		}
+
 		@Override
 		public void visitSegment(Segment s) {
 			s = drawTips(s,s);

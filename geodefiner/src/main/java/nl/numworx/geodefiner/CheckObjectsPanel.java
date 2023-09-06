@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.AbstractCellEditor;
 import fi.beans.numworxlf.JButton;
+import fi.beans.numworxlf.JCheckBox;
+
 import javax.swing.JPanel;
 import fi.beans.numworxlf.JScrollPane;
 import javax.swing.JTable;
@@ -42,6 +44,7 @@ import nl.uu.fi.dwo.interaction.client.json.ObjectList;
 public class CheckObjectsPanel extends JPanel implements ActionListener {
 
 	JButton plus, min;
+	JCheckBox greenCB;
 	JTable  table;
 	CheckObjectList checkObjects;
 	private CheckObjectsModel model;
@@ -289,6 +292,8 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 		min.addActionListener(this);
 		flow.add(plus);
 		flow.add(min);
+		greenCB = new JCheckBox("feedback", true);
+		flow.add(greenCB);
 		add(flow, BorderLayout.SOUTH);
 		add(new JScrollPane(table), BorderLayout.CENTER);		
 	}
@@ -326,5 +331,13 @@ public class CheckObjectsPanel extends JPanel implements ActionListener {
 
 	public int getMaxScore() {
 		return checkObjects.getMaxScore();
+	}
+	
+	public boolean isGreen() {
+		return greenCB.isSelected();
+	}
+	
+	public void setGreen(boolean green) {
+		greenCB.setSelected(green);
 	}
 }
