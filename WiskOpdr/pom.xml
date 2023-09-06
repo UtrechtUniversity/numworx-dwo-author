@@ -648,6 +648,21 @@
 			</dependency>
 		</dependencies>
 	</profile>
+	<profile>
+		<id>upload</id>
+		<dependencies>
+			<dependency>
+			  	<groupId>nl.numworx.uploadwidget</groupId>
+		  		<artifactId>uploadwidget</artifactId>
+		  		<version>2.5.23-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+			  	<groupId>nl.numworx.uploadwidget</groupId>
+		  		<artifactId>UploadWidgetRM</artifactId>
+		  		<version>2.5.23-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</profile>
 	
 	</profiles>
    <repositories>	

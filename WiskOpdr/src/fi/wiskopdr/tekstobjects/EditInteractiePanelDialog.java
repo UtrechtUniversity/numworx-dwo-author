@@ -38,13 +38,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.Constants;
 
 //import fi.algebrapijlenopdr.AlgebraPijlenOpdr;
 import fi.beans.iconan.Iconan;
 import fi.beans.loader.Loader;
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 //import fi.nabouwenaanzichten.NabouwenAanzichten;
 import fi.wiskopdr.AntwoordFormuleVak;
@@ -79,6 +83,7 @@ import fi.wiskopdr.WiskOpdrTextField;
 import fi.wiskopdr.cbook.CBookInteractieEditPanel;
 import fi.wiskopdr.cbook.CBookWrap;
 import fi.wiskopdr.cbook.Service;
+import fi.wiskopdr.cbook.WidgetBridge;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 //import fi.tekenveelvlakopdr.TekenVeelvlakOpdr;
@@ -978,7 +983,32 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 			Constructor<WiskOpdrApplet> cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
 		    WiskOpdrApplet o = cc.newInstance(new Object[] { language } );
 		    Stub.setStub(o);
-			return o.getInteractiePanel().getEditPanel();
+			InteractiePanel interactiePanel = o.getInteractiePanel();
+			//setContext(interactiePanel);
+		    if (interactiePanel instanceof CBookAware) {
+		      CBookAware a = (CBookAware) interactiePanel;
+		      try {
+		        a.setCBookContext(new CBookContext() {
+                  
+		          public Object getProperty(String key) {
+		            if(WidgetBridge.LESSON_MODE.equals(key))
+		              return WiskOpdr.getLessonMode();
+		            if(WidgetBridge.LEARNER_ID.equals(key))
+		              return WiskOpdr.getLearner_id();
+		            if(WidgetBridge.LEARNER_NAME.equals(key))
+		              return WiskOpdr.getLearnerName();
+		            return null;
+		          }
+                }); // can generate "No such method"
+		      } catch(Throwable t) {
+		      }
+		    }
+		    if (interactiePanel instanceof ResourceManagerClient) {
+		      ResourceManagerClient rmc = (ResourceManagerClient) interactiePanel;
+		      rmc.setInstanceId(getCrossWidgetId());
+		      rmc.setFactory(WidgetBridge.getFactory(rmc));
+		    }
+      return interactiePanel.getEditPanel();
 		}
 		catch(Exception e)
 		{	e.printStackTrace(System.out);

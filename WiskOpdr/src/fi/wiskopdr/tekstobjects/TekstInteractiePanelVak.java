@@ -86,6 +86,7 @@ import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.HasObjectives;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.wiskopdr.AntwoordFormuleVak;
@@ -3800,6 +3801,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         a.setCBookContext(this); // can generate "No such method"
       } catch(Throwable t) {
       }
+    }
+    if (o instanceof ResourceManagerClient) {
+      ResourceManagerClient rmc = (ResourceManagerClient) o;
+      rmc.setInstanceId(getCrossWidgetId());
+      rmc.setFactory(WidgetBridge.getFactory(rmc));
     }
   }
 

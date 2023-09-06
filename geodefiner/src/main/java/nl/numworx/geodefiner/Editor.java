@@ -261,6 +261,9 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 			launchdata.put("toolboxConfig", toolConfig);
 		}
 		launchdata.put("checkObjects", checkObjects.toList());
+		if (!checkObjects.isGreen()) {
+			launchdata.put("checkObjects.feedback", Boolean.FALSE); // default TRUE
+		}
 		int div = split.getDividerLocation();
 		if(div>0)launchdata.put("split", div);
 		launchdata.put("command", command.toString());
@@ -347,7 +350,7 @@ public class Editor extends TabletOwningLayeredPane implements CBookWidgetEditIF
 		  checkDWO.setLogID(map.getString("logID"));
 		if (map.containsKey("toolboxConfig"))
 			toolbox.fromConfig(map.getObjectList("toolboxConfig"));
-		
+		checkObjects.setGreen(map.getBoolean("checkObjects.feedback", true));
 	}
 
 	public void start() {
