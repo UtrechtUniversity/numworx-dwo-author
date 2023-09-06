@@ -22,6 +22,7 @@ public class AIModelInteractieEditPanel extends JPanel implements InteractieEdit
 		logid = new JTextField();
 		logid.setColumns(10);
 		objectives = new ObjectiveChoiceButton();
+		objectives.setEnabled(ObjectiveChoiceButton.hasObjectiveChoices());
 // FIXME fatsoeneren, nu even niet		
 		add(logOption);
 		add(logid);
