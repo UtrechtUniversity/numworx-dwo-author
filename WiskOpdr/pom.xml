@@ -6,8 +6,7 @@
 	<parent>
         <groupId>nl.uu.fi.dwo</groupId>
         <artifactId>DWO</artifactId>
-        <version>2.5.18</version>
-        <relativePath>../DWO/pom.xml</relativePath>
+        <version>2.5.23-SNAPSHOT</version>
 	</parent>
 
 	<build>
@@ -97,10 +96,11 @@
 							fi.doorziendwo,
 							fi.stroomdiagrammen,
 							!fi.beans.dwomaccess,
+							nl.numworx.uploadwidget.rm;resolutioni:="optional",
 							*,
 						</Import-Package>
 						<Export-Package>org.cbook.cbookif;version="1.0.2",*</Export-Package>
-						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar</Class-Path>
+						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar uploadwidgetrm.jar</Class-Path>
 						<Main-Class>fi.wiskopdr.WiskOpdr</Main-Class>
 						<Bundle-SymbolicName>fi.wiskopdr.WiskOpdr</Bundle-SymbolicName>
 					</instructions>
@@ -329,6 +329,11 @@
 			<groupId>fi.tegels</groupId>
 			<artifactId>tegels</artifactId>
 			<version>0.0.2</version>
+		</dependency>
+		<dependency>
+		  	<groupId>nl.numworx.uploadwidget</groupId>
+	  		<artifactId>uploadwidgetrm</artifactId>
+	  		<version>2.5.23-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.geomalgebra</groupId>
@@ -654,11 +659,6 @@
 			<dependency>
 			  	<groupId>nl.numworx.uploadwidget</groupId>
 		  		<artifactId>uploadwidget</artifactId>
-		  		<version>2.5.23-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-			  	<groupId>nl.numworx.uploadwidget</groupId>
-		  		<artifactId>UploadWidgetRM</artifactId>
 		  		<version>2.5.23-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
