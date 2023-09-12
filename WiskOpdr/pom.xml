@@ -448,7 +448,7 @@
 		<dependency>
 			<groupId>nl.numworx.geodefiner</groupId>
 			<artifactId>geodefiner</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.5-SNAPSHOT</version>
 		</dependency>
   	<dependency>
   		<groupId>com.teamdev.jxbrowser</groupId>
