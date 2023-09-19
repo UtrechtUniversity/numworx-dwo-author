@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
+import fi.wiskopdr.ObjectiveChoiceButton;
 import fi.wiskopdr.TekstVakPanel;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.opdrnav.OpdrachtNrRij;
@@ -48,6 +50,7 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
     
 	JComboBox symboolKeuzeBox;
 	JCheckBox statistiekCB;
+	ObjectiveChoiceButton objectives;
 	private TekstEditor[] keuzeVelden;
 	private JLabel[] nrLabels;
 	private JCheckBox[] vereistCB;
@@ -82,6 +85,16 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
         statistiekCB.setOpaque(false);
         statistiekCB.setFont(theFont);
         add(statistiekCB);
+        if (ObjectiveChoiceButton.hasObjectiveChoices()) {
+          objectives = new ObjectiveChoiceButton();
+          add(objectives);
+          ItemListener listener = ev -> { 
+            objectives.setVisible(statistiekCB.isSelected()); 
+            };
+          statistiekCB.addItemListener(listener);
+          //listener.itemStateChanged(null);
+          objectives.setBounds(currentX + cbWidth + offset, currentY, objectives.getPreferredSize().width, cbHeight);
+        }
         
         currentY += cbHeight + offset;
         makeLabel(currentX, currentY, 180, cbHeight, WiskOpdr.rb.getString("Steps_nrOfSteps"), true); 
@@ -194,7 +207,8 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
 	{
 		if(symboolKeuzeBox == null)
 			return;
-		statistiekCB.setLocation(2 * offset, statistiekCB.getLocation().y);
+		statistiekCB.setLocation(2 * offset, statistiekCB.getY());
+		if (objectives != null) objectives.setLocation(statistiekCB.getX() + statistiekCB.getWidth() + offset, objectives.getY());
 	}
 	
 	public JLabel makeLabel(int x, int y, int b, int h, String text, boolean visible)
@@ -458,6 +472,10 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
 			statistiek = ((Boolean) h.get("ideasStatistiek")).booleanValue();
 		
 		statistiekCB.setSelected(statistiek);
+		if (objectives != null) {
+		  objectives.setVisible(statistiek);
+		  objectives.setEditState(h);
+		}
 		if(h.containsKey("scoreMax"))
 		  scoreMax = ((Integer) h.get("scoreMax")).intValue();
 		this.scoreMax = scoreMax;
@@ -570,6 +588,9 @@ public class SamengesteldeStappenEditPanel extends JPanel implements InteractieE
         Hashtable h = new Hashtable();
         h.put("steps", steps);
         h.put("ideasStatistiek", new Boolean(ideasStatistiek));
+        if (objectives != null) {
+          h.putAll(objectives.getEditState(scoreMax));
+        }
         h.put("scoreMax", new Integer(scoreMax));
         h.put("stepRequired", stepRequired);
         
