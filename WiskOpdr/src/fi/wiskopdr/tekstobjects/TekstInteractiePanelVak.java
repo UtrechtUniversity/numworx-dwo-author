@@ -3827,9 +3827,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
   private boolean criterium() {
   
     switch (soortInteractiePanel) {
+      case 66: // scorewidget
+          return false;
       case 0: case 1: case 2: case 3: // formule/vergelijking vak
       case 12: case 13: case 14: case 16:    // 
-        
+      case 4: // teksteditor 
         return true;
     }
     return false;
