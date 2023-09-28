@@ -3,12 +3,12 @@
   <parent>
     <groupId>fi.wiskopdr</groupId>
     <artifactId>WiskOpdrParent</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <relativePath>../WiskOpdrParent</relativePath>
   </parent>
   <groupId>nl.numworx.aimodel</groupId>
   <artifactId>aimodel</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.2</version>
  	<dependencies>
 		<dependency>
 			<groupId>fi.wiskopdr</groupId>
