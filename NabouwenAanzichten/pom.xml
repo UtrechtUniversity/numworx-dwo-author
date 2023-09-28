@@ -3,12 +3,12 @@
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.2-SNAPSHOT</version>
+	  <version>1.0.3-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
   <groupId>fi.nabouwenaanzichten</groupId>
   <artifactId>nabouwenaanzichten</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.3-SNAPSHOT</version>
   <properties>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<maven.compiler.source>1.8</maven.compiler.source>
