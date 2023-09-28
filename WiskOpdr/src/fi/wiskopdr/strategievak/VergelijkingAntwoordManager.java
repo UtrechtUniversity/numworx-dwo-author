@@ -483,6 +483,7 @@ public class VergelijkingAntwoordManager implements ActionListener {
      interactiePanelLaunchState.put("puntenSignificant",new Integer(puntenSignificant));
      interactiePanelLaunchState.put("eindOplossingNodig",new Boolean(eindOplossingNodig));
      interactiePanelLaunchState.put("puntenEindOplossing",new Integer(puntenEindOplossing));
+     interactiePanelLaunchState.put("hasFeedback",new Boolean(hasFeedback));
      interactiePanelLaunchState.put("eqTestValueMin",new Double(eqTestValueMin));
      interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
      interactiePanelLaunchState.put("answerModels",answerModels);

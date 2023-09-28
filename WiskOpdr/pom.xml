@@ -2,12 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.wiskopdr</groupId>
 	<artifactId>wiskopdr</artifactId>
-	<version>2.0.1</version>
+	<version>2.0.2</version>
 	<parent>
         <groupId>nl.uu.fi.dwo</groupId>
         <artifactId>DWO</artifactId>
-        <version>2.5.18</version>
-        <relativePath>../DWO/pom.xml</relativePath>
+        <version>2.5.23</version>
 	</parent>
 
 	<build>
@@ -97,10 +96,11 @@
 							fi.doorziendwo,
 							fi.stroomdiagrammen,
 							!fi.beans.dwomaccess,
+							nl.numworx.uploadwidget.rm;resolutioni:="optional",
 							*,
 						</Import-Package>
 						<Export-Package>org.cbook.cbookif;version="1.0.2",*</Export-Package>
-						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar</Class-Path>
+						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar uploadwidgetrm.jar</Class-Path>
 						<Main-Class>fi.wiskopdr.WiskOpdr</Main-Class>
 						<Bundle-SymbolicName>fi.wiskopdr.WiskOpdr</Bundle-SymbolicName>
 					</instructions>
@@ -331,6 +331,11 @@
 			<version>0.0.2</version>
 		</dependency>
 		<dependency>
+		  	<groupId>nl.numworx.uploadwidget</groupId>
+	  		<artifactId>uploadwidgetrm</artifactId>
+	  		<version>2.5.23</version>
+		</dependency>
+		<dependency>
 			<groupId>fi.geomalgebra</groupId>
 			<artifactId>geomalgebra</artifactId>
 			<version>0.0.2</version>
@@ -443,7 +448,7 @@
 		<dependency>
 			<groupId>nl.numworx.geodefiner</groupId>
 			<artifactId>geodefiner</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.5</version>
 		</dependency>
   	<dependency>
   		<groupId>com.teamdev.jxbrowser</groupId>
@@ -512,7 +517,7 @@
 			<dependencies>
 				<dependency>
 					<groupId>nl.numworx.notebook</groupId>
-					<version>0.0.1-SNAPSHOT</version>
+					<version>0.0.1</version>
 					<artifactId>notebook</artifactId>
 				</dependency>
 			</dependencies>
@@ -634,7 +639,7 @@
 			<dependency>
 			  	<groupId>nl.numworx.repl</groupId>
 		  		<artifactId>repl</artifactId>
-		  		<version>0.0.2</version>
+		  		<version>0.0.3</version>
 			</dependency>
 		</dependencies>
 	</profile>
@@ -644,7 +649,17 @@
 			<dependency>
 			  	<groupId>nl.numworx.aimodel</groupId>
 		  		<artifactId>aimodel</artifactId>
-		  		<version>0.0.1</version>
+		  		<version>0.0.2</version>
+			</dependency>
+		</dependencies>
+	</profile>
+	<profile>
+		<id>upload</id>
+		<dependencies>
+			<dependency>
+			  	<groupId>nl.numworx.uploadwidget</groupId>
+		  		<artifactId>uploadwidget</artifactId>
+		  		<version>2.5.23</version>
 			</dependency>
 		</dependencies>
 	</profile>

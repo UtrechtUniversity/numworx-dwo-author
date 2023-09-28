@@ -103,6 +103,7 @@ public class CheckObjectList extends Groep implements Observer {
 	final private Tracker tracker;
 	private Expression expression;
 	private Instance instance;
+	private boolean feedback = true;
 	
 	public CheckObjectList(Tracker tracker) {
 		this.tracker = tracker;
@@ -144,6 +145,7 @@ public class CheckObjectList extends Groep implements Observer {
 			co.destroy();
 		}
 		list.clear();
+		feedback = true;
 	}
 
 	@Override
@@ -407,6 +409,13 @@ public class CheckObjectList extends Groep implements Observer {
 		notifyObservers(DESTROY);
 		clear();
 		
+	}
+
+	public void setFeedback(boolean feedback) {
+		this.feedback = feedback;
+	}
+	public boolean isFeedback() {
+		return feedback;
 	}
 	
 }

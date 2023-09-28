@@ -86,6 +86,7 @@ import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.HasObjectives;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
+import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.wiskopdr.AntwoordFormuleVak;
@@ -3801,6 +3802,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
       } catch(Throwable t) {
       }
     }
+    if (o instanceof ResourceManagerClient) {
+      ResourceManagerClient rmc = (ResourceManagerClient) o;
+      rmc.setInstanceId(getCrossWidgetId());
+      rmc.setFactory(WidgetBridge.getFactory(rmc));
+    }
   }
 
   @Override
@@ -3821,9 +3827,11 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
   private boolean criterium() {
   
     switch (soortInteractiePanel) {
+      case 66: // scorewidget
+          return false;
       case 0: case 1: case 2: case 3: // formule/vergelijking vak
       case 12: case 13: case 14: case 16:    // 
-        
+      case 4: // teksteditor 
         return true;
     }
     return false;

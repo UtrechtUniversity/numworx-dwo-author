@@ -2,12 +2,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.balansfruitapplet</groupId>
 	<artifactId>balansfruitapplet</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 	<name>BalansFruitApplet</name>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.1</version>
+	  <version>1.0.2</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
 	<build>

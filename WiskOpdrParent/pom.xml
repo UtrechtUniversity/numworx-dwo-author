@@ -2,14 +2,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.wiskopdr</groupId>
   <artifactId>WiskOpdrParent</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <packaging>pom</packaging>
   <name>WiskopdrParent</name>
   <description>parent van WiskOpdr en java widgets</description>
     <parent>
         <groupId>nl.uu.fi.dwo</groupId>
         <artifactId>DWO</artifactId>
-        <version>2.5.17</version>
+        <version>2.5.23</version>
     </parent>
     <properties>
     		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>

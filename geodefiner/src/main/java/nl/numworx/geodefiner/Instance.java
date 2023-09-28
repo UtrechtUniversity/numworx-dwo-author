@@ -461,5 +461,11 @@ public class Instance extends nl.numworx.geodefiner.common.Instance implements C
       afterInject();
   }
 
+  @Override
+	protected void installCheckObjects() {
+		super.installCheckObjects();
+		getViewer().setFeedback(checkObjects.isFeedback());
+	}
+
 	
 }

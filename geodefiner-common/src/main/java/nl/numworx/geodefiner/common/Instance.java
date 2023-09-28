@@ -285,8 +285,10 @@ public abstract class Instance /*implements Observer*/ {
 
 	protected void installCheckObjects() {
 		ObjectList list = launchData.getObjectList("checkObjects");
+		boolean feedback = launchData.getBoolean("checkObjects.feedback", true);
 		if(list != null && list.size() > 0) {
 			checkObjects.fromList(list);
+			checkObjects.setFeedback(feedback);
 			if(checkObjects.getMaxScore() == 0) 
 				checkObjects .clear();
 		} else {
