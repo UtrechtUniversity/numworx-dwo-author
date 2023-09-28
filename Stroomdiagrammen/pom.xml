@@ -3,12 +3,12 @@
     <parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.2</version>
+	  <version>1.0.3-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
     </parent>
   <groupId>fi.stroomdiagrammen</groupId>
   <artifactId>stroomdiagrammen</artifactId>
-  <version>0.0.4</version>
+  <version>0.0.5-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
