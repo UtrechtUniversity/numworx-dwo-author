@@ -2,11 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.ivmdraw</groupId>
   <artifactId>IVMdraw-parent</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.0.3</version>
         <parent>
           <groupId>fi.wiskopdr</groupId>
           <artifactId>WiskOpdrParent</artifactId>
-          <version>1.0.3-SNAPSHOT</version>
+          <version>1.0.2</version>
           <relativePath>../WiskOpdrParent</relativePath>
         </parent>
   <packaging>pom</packaging>

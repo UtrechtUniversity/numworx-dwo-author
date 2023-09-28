@@ -34,7 +34,7 @@
   </build>
   <parent>
   	<groupId>fi.euclides</groupId>
-  	<version>0.0.8-SNAPSHOT</version>
+  	<version>0.0.7</version>
   	<artifactId>euclides-parent</artifactId>
   	<relativePath>..</relativePath>
   </parent>
