@@ -6,7 +6,7 @@
 	<parent>
         <groupId>nl.uu.fi.dwo</groupId>
         <artifactId>DWO</artifactId>
-        <version>2.5.23-SNAPSHOT</version>
+        <version>2.5.23</version>
 	</parent>
 
 	<build>
@@ -333,7 +333,7 @@
 		<dependency>
 		  	<groupId>nl.numworx.uploadwidget</groupId>
 	  		<artifactId>uploadwidgetrm</artifactId>
-	  		<version>2.5.23-SNAPSHOT</version>
+	  		<version>2.5.23</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.geomalgebra</groupId>
@@ -517,7 +517,7 @@
 			<dependencies>
 				<dependency>
 					<groupId>nl.numworx.notebook</groupId>
-					<version>0.0.1-SNAPSHOT</version>
+					<version>0.0.1</version>
 					<artifactId>notebook</artifactId>
 				</dependency>
 			</dependencies>
@@ -659,7 +659,7 @@
 			<dependency>
 			  	<groupId>nl.numworx.uploadwidget</groupId>
 		  		<artifactId>uploadwidget</artifactId>
-		  		<version>2.5.23-SNAPSHOT</version>
+		  		<version>2.5.23</version>
 			</dependency>
 		</dependencies>
 	</profile>
