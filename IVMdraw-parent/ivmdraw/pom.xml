@@ -3,14 +3,14 @@
   <parent>
     <groupId>fi.ivmdraw</groupId>
     <artifactId>IVMdraw-parent</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
   </parent>
   <artifactId>ivmdraw</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>fi.ivmdraw</groupId>
   		<artifactId>ivmdraw-common</artifactId>
-  		<version>0.0.3-SNAPSHOT</version>
+  		<version>0.0.4-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>fi.wiskopdr</groupId>
