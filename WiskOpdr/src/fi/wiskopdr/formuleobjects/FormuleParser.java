@@ -2216,10 +2216,12 @@ public class FormuleParser
 				int indexV = tekst.substring(0,i).lastIndexOf("$V");
 				int indexH = tekst.substring(0,i).lastIndexOf("$H");
 				int indexI = tekst.lastIndexOf("$I", i);
+				int indexZ = tekst.lastIndexOf("$Z", i);
 				index = Math.max(indexF, indexA);
 				index = Math.max(index, indexV);
 				index = Math.max(index, indexH);
 				index = Math.max(index, indexI);
+				index = Math.max(index, indexZ);
 				
 				String formString = tekst.substring(index,i+1);
 				for(int j=formString.length()-1 ; j>-1; j--)

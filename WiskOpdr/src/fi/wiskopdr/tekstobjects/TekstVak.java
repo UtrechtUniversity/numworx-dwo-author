@@ -661,6 +661,16 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		produceAction("resize");
 	}
 
+	public void insertCodePoint(int cp) {
+	    tekst.insert(caretPos, '@');
+	    CodePointVak cpv = new CodePointVak(this, cp);
+	    tekst.insertCodePoint(caretPos, cpv);
+        vulVak(tekst.toString());
+        setCaret(caretPos+1);
+        repaint();
+
+	}
+	
 	
 	public void insertLinkVak()
 	{	tekst.insert(caretPos,'@');
@@ -1541,14 +1551,15 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
     		
 			else if ((kt != KeyEvent.VK_ESCAPE) &&
 					(kt != KeyEvent.VK_DELETE) &&
-					(kt != KeyEvent.VK_END) &&
-					(kt != KeyEvent.VK_HOME) &&
+					(kc != KeyEvent.VK_END) &&
+					(kc != KeyEvent.VK_HOME) &&
 	                (kt != KeyEvent.VK_BACK_SPACE) &&
                		(kc != KeyEvent.VK_ENTER) && 
                		(kc != KeyEvent.VK_SHIFT) && 
                		(kc != KeyEvent.VK_LEFT) &&
                		(kc != KeyEvent.VK_RIGHT) &&
-               		(kt != '@')
+               		(kt != '@') && (kt != '$') && (kt != '#')
+               		
                     && !isControlDown(e)
                     && !(e.isAltDown() && kc == KeyEvent.VK_F)
                    )
@@ -1594,6 +1605,10 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 				e.consume();
 				
             } 
+			else if (kt == '@' || kt == '$' || kt == '#') {
+			    insertCodePoint(kt);
+			}
+ 		
 			if(!keyStrokeUpdated)
 			{
 				if(actieveRegel.getWidth() > breedte-2*marge)
