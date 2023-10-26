@@ -1894,4 +1894,18 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
           tekstVakActief.insertTekstInteractiePanelVak((Integer)getValue("setNr"),(Integer)getValue("soort"));
       }
     }
+
+
+
+
+
+  @Override
+  public void setFocusTraversalKeysEnabled(boolean focusTraversalKeysEnabled) {
+    // TODO Auto-generated method stub
+    super.setFocusTraversalKeysEnabled(focusTraversalKeysEnabled);
+    tekstVak.setFocusTraversalKeysEnabled(focusTraversalKeysEnabled);
+    
+  }
+	
+	
 }

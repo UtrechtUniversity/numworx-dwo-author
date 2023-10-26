@@ -1506,8 +1506,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	    //}
 	    
     }
-    public void keyTyped(KeyEvent e)
-    {	int kt = e.getKeyChar();
+    public void keyTyped(KeyEvent e)    {	int kt = e.getKeyChar();
     		boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
     		if (editable && templateEditable)
 		{   if (kt == KeyEvent.VK_ENTER)

@@ -103,6 +103,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		titleStartLabel.setFont(font.deriveFont(Font.BOLD, 16));
 		
 		startEditor = new TekstEditor();
+		startEditor.setFocusTraversalKeysEnabled(false);
 		startEditor.setBounds(0,0,300,250);
 		startEditor.setFont(font);
 		startEditor.addActionListener(this);
