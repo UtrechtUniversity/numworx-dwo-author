@@ -102,6 +102,13 @@
 	<methods>;
 }
 
+# no allow shrinking
+-keep class org.cbook.cbookif.rm.* {
+	<methods>;
+	<fields>;
+}
+
+
 -keep,allowshrinking class org.** {
     <fields>;
     <methods>;
