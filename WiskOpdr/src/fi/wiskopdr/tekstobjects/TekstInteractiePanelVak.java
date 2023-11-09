@@ -1976,7 +1976,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			Hashtable interactiePanelLaunchState = interactiePanel.getEditState();
 			if(studentEditor && interactiePanelLaunchState!=null)launchData.put("interactiePanelLaunchState", interactiePanelLaunchState);
 		}
-		if(crossWidgetId != null)
+		if(crossWidgetId != null && launchData != null)
 			launchData.put("crossWidgetId", crossWidgetId);
 		if(!connections.isEmpty())
 			launchData.put("connections", connections);
