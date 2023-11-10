@@ -158,13 +158,14 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
       return p;
     }
     String extra = "";
+    private String endpoint = "/dwo/saml/login";
 
 	private String last;    
 
     @Override
 	public void loadURL(String url) {
     	URI u = URI.create(url);
-    	String login = u.resolve("/dwo/saml/login").toString();
+    	String login = u.resolve(endpoint).toString();
     	api.LMSSetValue("dme.oauth.endpoint", login);
         api.LMSSetValue("dme.oauth.redirect_uri", url);
 		super.loadURL(last = url + extra);
@@ -211,6 +212,14 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
   public JComponent asComponent() {
     return this;
   }
+
+	public String getEndpoint() {
+		return endpoint;
+	}
+	
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}
 }
 
 
