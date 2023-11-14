@@ -16,6 +16,7 @@ import java.util.Set;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -48,6 +49,9 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
   private JPanel filterPanelContainer;
   private FilterPanel filterPanel;
   
+  // type
+  private JLabel typeLabel;
+  
   //settings
   private JLabel settingsLabel;
   private JCheckBox leerdoelPopupCB;
@@ -55,6 +59,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
   private JCheckBox voorkennisMenuCB;
   private JCheckBox zoomKnoppenCB;
   private JCheckBox filterHeaderCB;
+  private JComboBox<String> typeCB;
   
   private JLabel scoreLabel;
   private JCheckBox leerdoelScoreCB;
@@ -129,6 +134,17 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     leerdoelScoreCB = new JCheckBox(WiskOpdr.rb.getString("LWEP_leerdoelScoreCB"));
     leerdoelScoreCB.setSelected(false);
     
+    typeLabel = new JLabel("Type");
+    typeLabel.setForeground(WiskOpdr.colorBlue1);
+    typeLabel.setFont(font.deriveFont(Font.BOLD, 16));
+    String[] items = new String[] { "Graph", "Lijst" }; // FIXME i18n
+    typeCB = new JComboBox<String>(items);
+    //typeCB.setMaximumSize(typeCB.getPreferredSize());
+    typeCB.setForeground(WiskOpdr.colorBlue1);
+    typeCB.setPreferredSize(new Dimension(150,22));
+    typeCB.setMaximumSize(new Dimension(450,22));
+    typeCB.setMinimumSize(new Dimension(150,22));
+  
     plaatsGUI();
   }
   
@@ -140,8 +156,8 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
    
     
     Component[] k1 = {hb(r11), vst(10), hb(r12), vst(20), hb(r13), vgl()};
-    
-    
+    Component[] r31 = { typeLabel, hgl() };
+    Component[] r32 = { typeCB };
     Component[] r21 = {settingsLabel, hgl()};
     Component[] r22 = {leerdoelPopupCB, hgl()};
     Component[] r23 = {voorkennisKnopCB, hgl()};
@@ -152,7 +168,8 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     Component[] r27 = {scoreLabel, hgl()};
     Component[] r28 = {leerdoelScoreCB, hgl()};
  
-    Component[] k2 = {hb(r21), vst(10), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), hb(r25), vst(5), hb(r26), vst(20), hb(r27), vst(10), hb(r28), vgl()};
+    Component[] k2 = {hb(r31), vst(10), hb(r32), vst(20),
+                      hb(r21), vst(10), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), hb(r25), vst(5), hb(r26), vst(20), hb(r27), vst(10), hb(r28), vgl()};
     
     Component[] rr = {vb(k1), hgl(), ra(50,0), vb(k2), hgl()};
     
@@ -205,6 +222,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     boolean zoomKnoppen = false;
     boolean filterHeader = false;
     boolean leerdoelScore = false;
+    int type = 0;
     
     if(h.containsKey("activeMethod"))
       activeMethod = (String)h.get("activeMethod");
@@ -224,7 +242,8 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
       filterHeader = ((Boolean)h.get("filterHeader")).booleanValue(); // header met de filterselectie
     if(h.containsKey("leerdoelScore"))
       leerdoelScore = ((Boolean)h.get("leerdoelScore")).booleanValue();
-    
+    if (h.containsKey("type"))
+      type = ((Number)h.get("type")).intValue();
     for(StudentModel s: studentModels) {
       if (s != null && s.id .equals(studentModelID)) { studentModel = s; break; }
     }
@@ -246,6 +265,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     zoomKnoppenCB.setSelected(zoomKnoppen);
     filterHeaderCB.setSelected(filterHeader);
     leerdoelScoreCB.setSelected(leerdoelScore);
+    typeCB.setSelectedIndex(type);
    
     ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
   }
@@ -271,6 +291,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     boolean zoomKnoppen = false;
     boolean filterHeader = false;
     boolean leerdoelScore = false;
+    int type = 0;
    
     if(studentModel!=null) {
       activeMethod = studentModel.activeMethod;
@@ -285,21 +306,22 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     zoomKnoppen = zoomKnoppenCB.isSelected();
     filterHeader = filterHeaderCB.isSelected();
     leerdoelScore = leerdoelScoreCB.isSelected();
+    type = typeCB.getSelectedIndex();
         
-    Hashtable h = new Hashtable();
+    Hashtable<String,Object> h = new Hashtable<>();
     if(studentModelID!=null)
       h.put("studentModelID", studentModelID);
     if(filter!=null)
       h.put("filter", filter);
     if(activeMethod!=null)
       h.put("activeMethod", activeMethod);
-    h.put("leerdoelPopup", new Boolean(leerdoelPopup));
-    h.put("voorkennisKnop", new Boolean(voorkennisKnop));
-    h.put("voorkennisMenu", new Boolean(voorkennisMenu));
-    h.put("zoomKnoppen", new Boolean(zoomKnoppen));
-    h.put("filterHeader", new Boolean(filterHeader));
-    h.put("leerdoelScore", new Boolean(leerdoelScore));
-    
+    h.put("leerdoelPopup", leerdoelPopup);
+    h.put("voorkennisKnop", voorkennisKnop);
+    h.put("voorkennisMenu", voorkennisMenu);
+    h.put("zoomKnoppen", zoomKnoppen);
+    h.put("filterHeader", filterHeader);
+    h.put("leerdoelScore", leerdoelScore);
+    h.put("type", type);
 // extra
     JSONObject p = WiskOpdr.applet.getDwoProfile();
     p = (JSONObject) p.get("id");
