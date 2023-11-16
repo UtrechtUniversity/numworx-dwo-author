@@ -128,7 +128,7 @@ public class ReplInteractiePanel extends JPanel implements InteractiePanel, CBoo
 
 	@Override
 	public String[] getAcceptedCmds() {
-		String[] cmds = new String[] { "text.program" };
+		String[] cmds = new String[] { "text.program", "action.reset" };
 		return cmds;
 	}
 
