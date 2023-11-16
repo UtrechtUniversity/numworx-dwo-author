@@ -971,6 +971,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_action.unzoom", "Actie: normaal scherm [Test]"},
 				{"CBA_action.setActive", "Actie: zet actief"},
 				{"CBA_action.setInactive", "Actie: zet inactief"},
+				{"CBA_action.reset", "Actie: herstel"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},

@@ -911,7 +911,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_action.popup", "Action: popup"},
 				{"CBA_action.setActive", "Action: set active"},
                 {"CBA_action.setInactive", "Action: set inactive"},
-				
+                {"CBA_action.reset", "Action: reset"},
+
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},
 				

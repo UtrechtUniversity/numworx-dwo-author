@@ -1411,6 +1411,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         catch(Exception e)
         {   tekst = "???";
         }
+		original = tekst;
 		zetTekst(tekst);
 		layoutTekst();
 		zetBalkZichtbaar(balkZichtbaar);
@@ -1801,6 +1802,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
  	}
  	//
  	
+ 	private String original = "";
+ 
  	@Override
 	public void acceptCBookEvent(CBookEvent event) {
 		String command = event.getCommand();
@@ -1821,6 +1824,14 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 				tekstVak.setForeground(Color.black);
 			else
 				tekstVak.setForeground(Color.gray);
+		} else if (command.startsWith("action.reset"))
+		{
+			if (editable) 
+			{
+				zetTekst(original);
+				layoutTekst();
+			}
+			    
 		}
 		
 	}
@@ -1861,7 +1872,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	public String[] getAcceptedCmds() {
 		String[] commands = {
 				"text",
-				"action.setNotEditable"};
+				"action.setNotEditable",
+				"action.reset"};
 		return commands;
 	}
 	
