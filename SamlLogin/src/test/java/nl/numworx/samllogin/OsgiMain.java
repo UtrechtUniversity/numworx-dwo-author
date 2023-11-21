@@ -37,9 +37,10 @@ public class OsgiMain {
 	    new Activator().start(context);
 	    
 	    SamlLoginPanel panel = new SamlLoginPanel();
+	    panel.setEndpoint("/dwo/oauth2/entree");
 	    panel.getPromise().then(OsgiMain::succes, OsgiMain::failed);//.onResolve(() -> System.exit(0));
 	    frame.setContentPane(panel);
-	    panel.loadURL("https://entree-s.dwo.nl/dwo/oauth2/login3.jsp");
+	    panel.loadURL("https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=conext");
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.pack();
 	    frame.show();

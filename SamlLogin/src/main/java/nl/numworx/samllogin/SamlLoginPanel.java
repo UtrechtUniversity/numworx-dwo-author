@@ -167,9 +167,19 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
     	URI u = URI.create(url);
     	String login = u.resolve(endpoint).toString();
     	api.LMSSetValue("dme.oauth.endpoint", login);
-        api.LMSSetValue("dme.oauth.redirect_uri", url);
-		super.loadURL(last = url + extra);
+        api.LMSSetValue("dme.oauth.redirect_uri", strip(url));
+		super.loadURL(last = add(url, extra));
 	    getJfxPanel().setName("Aanmelden");
+	}
+
+	private String strip(String url) {
+		return url.split("\\?")[0];
+	}
+
+	private String add(String url, String extra) { // extra is ?r=... of ""
+		if (extra.isEmpty()) return url;
+		if (! url.contains("?")) return url + extra;
+		return url + "&" + extra.substring(1);
 	}
 
 	public SamlLoginPanel(String url) {

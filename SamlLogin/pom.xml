@@ -68,7 +68,7 @@
 	<dependency>
 		<groupId>nl.numworx.swingbrowser</groupId>
 		<artifactId>swingbrowser-ext</artifactId>
-		<version>0.0.14</version>
+		<version>0.0.15-SNAPSHOT</version>
 		<scope>test</scope>
 	</dependency>
 	<dependency>
@@ -110,11 +110,23 @@
     </profile>
   	<profile>
   		<id>jxb</id>
-  		<dependencies>
+ 		<dependencies>
+	 		<dependency>
+		    	<groupId>com.teamdev.jxbrowser</groupId>
+		    	<artifactId>jxbrowser-cross-platform</artifactId>
+		    	<type>pom</type>
+		    	<version>7.28.1</version>
+		    	<scope>provided</scope>
+			</dependency>
+		  	<dependency>
+		  		<groupId>com.teamdev.jxbrowser</groupId>
+		  		<artifactId>jxbrowser-swing</artifactId>
+		  		<version>7.28.1</version>
+		    	<scope>runtime</scope>
+		  	</dependency>
 			<dependency>
 				<groupId>nl.numworx.swingbrowser</groupId>
 				<artifactId>swingbrowser-jxb</artifactId>
-				<version>0.0.9</version>
 				<scope>test</scope>
 			</dependency>
   		</dependencies>
