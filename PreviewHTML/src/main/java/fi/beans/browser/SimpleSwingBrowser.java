@@ -25,7 +25,7 @@ public class SimpleSwingBrowser extends JPanel implements Status, ConsoleListene
     
     static final SwingBrowserProvider PROVIDER = new SwingBrowserProvider();
     private final SwingBrowserFactory FACTORY;    
-    private final SwingBrowser browser;
+    protected final SwingBrowser browser;
     /**
 	 * 
 	 */

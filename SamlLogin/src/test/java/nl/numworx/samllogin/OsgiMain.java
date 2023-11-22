@@ -13,7 +13,9 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.launch.Framework;
@@ -35,7 +37,7 @@ public class OsgiMain {
 	    BundleContext context = framework.getBundleContext();
 	    JFrame frame = new JFrame("preview extern");
 	    new Activator().start(context);
-	    
+if (false) {	    
 	    SamlLoginPanel panel = new SamlLoginPanel();
 	    panel.setEndpoint("/dwo/oauth2/entree");
 	    panel.getPromise().then(OsgiMain::succes, OsgiMain::failed);//.onResolve(() -> System.exit(0));
@@ -44,6 +46,32 @@ public class OsgiMain {
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.pack();
 	    frame.show();
+} else {
+    final JFrame f = new JFrame("Login conext");
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    SamlLoginPanel.debug = true;
+    SamlLoginPanel browser = new SamlLoginPanel();
+    JButton btn = new JButton("GO");
+    f.getContentPane().add(btn);
+    browser.setEndpoint("/dwo/oauth2/entree");
+    btn.addActionListener(ev -> {
+    browser.popup(btn, "https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=conext")
+
+      .then( p -> {
+        p.getValue().store(System.out, "Login succeeded");
+        SwingUtilities.invokeLater(f::dispose);
+        
+        if(args != null)
+          SwingUtilities.invokeLater( () -> MainPopup.main(null) );
+        else 
+          System.exit(1);
+        return null;
+    });
+      });
+    f.pack();
+    f.show();
+
+}
 	}
 
 	static Promise<Properties> succes(Promise<Properties> p) throws InvocationTargetException, InterruptedException, IOException { 

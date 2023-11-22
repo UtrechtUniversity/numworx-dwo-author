@@ -1,6 +1,7 @@
 package nl.numworx.samllogin;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
@@ -13,6 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
@@ -230,6 +232,19 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
 	public void setEndpoint(String endpoint) {
 		this.endpoint = endpoint;
 	}
+
+	@Override
+	public Promise<Properties> popup(JComponent parent, String url) {
+		if (browser instanceof Action ) {
+			Action action = (Action) browser;
+			loadURL(url);
+			ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, last);
+			action.actionPerformed(event);
+			return getPromise();
+		}
+		return SAMLLoginIF.super.popup(parent, url);
+	}
+	
 }
 
 
