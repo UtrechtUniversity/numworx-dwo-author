@@ -34,9 +34,9 @@ public class VariableCollection
 		while(tokenizer.hasMoreTokens())
 	    {	String tok = tokenizer.nextToken();
 			try
-			{	int index = s.indexOf("=");
+			{	int index = tok.indexOf("=");
 				if(index>0)
-				{	String name = s.substring(0,index);
+				{	String name = tok.substring(0,index);
 					if(Character.isLetter(name.charAt(0)))
 					{	setVariable(tok);
 					}
