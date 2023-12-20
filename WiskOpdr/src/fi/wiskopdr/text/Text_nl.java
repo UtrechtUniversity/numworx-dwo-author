@@ -377,6 +377,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"CB_bewaarOptieLabel", "Bewaar" },
                 {"CB_rondAfOptieLabel", "Rond af" },
                 {"CB_nextPageOptieLabel", "Naar volgende pagina" },
+                {"CB_itemOpnieuwOptieLabel", "Item opnieuw"},
                 {"CB_eigenVakOptieLabel","Alles in eigen vak"},
                 {"CB_opPaginaOptieLabel","Alles op pagina"},
                 {"CB_viaXWidgetOptieLabel","Alles verbonden via x-widget"},

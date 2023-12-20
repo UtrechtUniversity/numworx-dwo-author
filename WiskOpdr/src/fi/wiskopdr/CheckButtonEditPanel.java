@@ -34,6 +34,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 	private JCheckBox bewaarCB;
 	private JCheckBox rondAfCB;
 	private JCheckBox volgendeCB;
+	private JCheckBox itemOpnieuwCB;
 	
 	private JRadioButton kijkNaEigenVakRB;
 	private JRadioButton kijkNaAllesRB;
@@ -80,6 +81,13 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		volgendeCB.setFont(ifFont);
 		volgendeCB.addActionListener(this);
 		add(volgendeCB);
+ 
+		itemOpnieuwCB = new JCheckBox(WiskOpdr.rb.getString("CB_itemOpnieuwOptieLabel"));
+        itemOpnieuwCB.setBounds(20,200,200,20);
+        itemOpnieuwCB.setOpaque(false);
+        itemOpnieuwCB.setFont(ifFont);
+        itemOpnieuwCB.addActionListener(this);
+        add(itemOpnieuwCB);
 		
 		kijkNaEigenVakRB = new JRadioButton(WiskOpdr.rb.getString("CB_eigenVakOptieLabel"));
 		kijkNaEigenVakRB.setBounds(130,50,200,20);
@@ -107,8 +115,6 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		buttonGroup.add(kijkNaEigenVakRB);
 		buttonGroup.add(kijkNaAllesRB);
 		buttonGroup.add(kijkNaXWidgetRB);
-		
-		
 	}
 	
 	@Override
@@ -122,6 +128,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		boolean actieBewaren=false;
 		boolean actieAfronden=false;
 		boolean actionNextPage=false;
+		boolean actieItemOpnieuw = false;
 		
 		if(h.containsKey("knopImageString")) knopImageString = (String)h.get("knopImageString");
 		if(h.containsKey("nakijkenPagina")) nakijkenPagina = ((Boolean)h.get("nakijkenPagina")).booleanValue();
@@ -130,7 +137,8 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		if(h.containsKey("nakijkenXWidget")) nakijkenXWidget = ((Boolean)h.get("nakijkenXWidget")).booleanValue();
 		if(h.containsKey("actieBewaren")) actieBewaren = ((Boolean)h.get("actieBewaren")).booleanValue();
 		if(h.containsKey("actieAfronden")) actieAfronden = ((Boolean)h.get("actieAfronden")).booleanValue();
-		if(h.containsKey("actionNextPage")) actionNextPage = ((Boolean)h.get("actionNextPage")).booleanValue();
+        if(h.containsKey("actionNextPage")) actionNextPage = ((Boolean)h.get("actionNextPage")).booleanValue();
+        if(h.containsKey("actieItemOpnieuw")) actieItemOpnieuw = ((Boolean)h.get("actieItemOpnieuw")).booleanValue();
 		
 		this.knopImageString = knopImageString;
 		kijkNaCB.setSelected(nakijken);
@@ -140,6 +148,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		bewaarCB.setSelected(actieBewaren);
 		rondAfCB.setSelected(actieAfronden);
 		volgendeCB.setSelected(actionNextPage);
+        itemOpnieuwCB.setSelected(actieItemOpnieuw);
 		
 		knopImageButton.setPopupButtonIcon(knopImage);
 	    iconman = new Iconan(WiskOpdr.applet, (Component)this, TekstImageVak.getImageMap(), TekstImageVak.getImageCache());
@@ -153,7 +162,8 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 
 	}
 
-	@Override
+	@SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
 	public Hashtable getEditState() {
 
 		String knopImageString = "";
@@ -164,6 +174,7 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		boolean actieAfronden=false;
 		boolean nakijken = true;
 		boolean actionNextPage = false;
+		boolean actieItemOpnieuw = false;
 		
 		knopImageString = this.knopImageString;
 		nakijken = kijkNaCB.isSelected();
@@ -173,16 +184,18 @@ public class CheckButtonEditPanel extends JPanel implements InteractieEditPanel,
 		actieBewaren = bewaarCB.isSelected();
 		actieAfronden = rondAfCB.isSelected();
 		actionNextPage = volgendeCB.isSelected();
+		actieItemOpnieuw = itemOpnieuwCB.isSelected();
 		
 		Hashtable h = new Hashtable();
 		h.put("knopImageString", knopImageString);
-		h.put("nakijken", new Boolean(nakijken));
-		h.put("nakijkenPagina", new Boolean(nakijkenPagina));
-		h.put("nakijkenVak", new Boolean(nakijkenVak));
-		h.put("nakijkenXWidget", new Boolean(nakijkenXWidget));
-		h.put("actieBewaren", new Boolean(actieBewaren));
-		h.put("actieAfronden", new Boolean(actieAfronden));
-		h.put("actionNextPage", new Boolean(actionNextPage));
+		h.put("nakijken", (nakijken));
+		h.put("nakijkenPagina", (nakijkenPagina));
+		h.put("nakijkenVak", (nakijkenVak));
+		h.put("nakijkenXWidget", (nakijkenXWidget));
+		h.put("actieBewaren", (actieBewaren));
+		h.put("actieAfronden", (actieAfronden));
+		h.put("actionNextPage", (actionNextPage));
+        h.put("actieItemOpnieuw", (actieItemOpnieuw));
 		
 		return h;
 	}
