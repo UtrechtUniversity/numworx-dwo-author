@@ -16,7 +16,7 @@ public class LinkRegel extends JPanel implements TekstElement, MouseListener, Mo
 	private TekstVak tekstVak;
 	private int ashoogte;
 	
-	private static LinkIF wiskOpdr;
+	//private static LinkIF wiskOpdr;
 	private FontMetrics fm;
 	private boolean caretVisible = false;
 	private KnipperDraad kd;
@@ -42,8 +42,9 @@ public class LinkRegel extends JPanel implements TekstElement, MouseListener, Mo
 	
 	private Link link = new Link("link", httpString, 400, 400, false, null);
 	
+	@Deprecated
 	public static void setJSObjectOwner(LinkIF linkIF)
-	{	LinkRegel.wiskOpdr = linkIF;
+	{	//LinkRegel.wiskOpdr = linkIF;
 	}
 	
 	public LinkRegel(TekstLinkVak tv)
@@ -63,7 +64,7 @@ public class LinkRegel extends JPanel implements TekstElement, MouseListener, Mo
 		
 		setOpaque(false);
 				
-	    findJSObject(wiskOpdr);
+	    //findJSObject(wiskOpdr);
 
 	}
 
@@ -71,35 +72,35 @@ public class LinkRegel extends JPanel implements TekstElement, MouseListener, Mo
 	 * Initialize linkif with a JSObject. 
 	 * Code shared with WidgetBridge.
 	 * @param linkif may be null
-	 * 
+	 * @deprecated
 	 */
 
 	public static void findJSObject(LinkIF linkif) {
-		if(linkif == null || linkif.getJSObject() != null) return;
-		AppletContext ac = null;
-		ac = linkif.getAppletContext();
-		Applet ap = null;
-		if(ac!=null) 
-		{
-//				ap = ac.getApplet("wiskopdr");
-//				if(ap==null)ap = ac.getApplet("DWO");
-// Wim: Vraagje: Maakt het eigenlijk uit welk Window de applets teruggeven? Is het altijd dezelfde?
-// zoiets van één Window per AppletContext?
-			Enumeration em = ac.getApplets();
-			if(em != null) while(em.hasMoreElements())
-			{
-				Applet candidate = (Applet) em.nextElement();
-				if(ap == null /*|| betterCandidate(ap, object) */ )
-					ap = candidate; break;
-			}
-		}
-
-		try
-		{	if(ap!=null) linkif.setJSObject(null);
-		} 
-		catch( Exception e )
-		{	e.printStackTrace(); 
-		}
+//		if(linkif == null || linkif.getJSObject() != null) return;
+//		AppletContext ac = null;
+//		ac = linkif.getAppletContext();
+//		Applet ap = null;
+//		if(ac!=null) 
+//		{
+////				ap = ac.getApplet("wiskopdr");
+////				if(ap==null)ap = ac.getApplet("DWO");
+//// Wim: Vraagje: Maakt het eigenlijk uit welk Window de applets teruggeven? Is het altijd dezelfde?
+//// zoiets van één Window per AppletContext?
+//			Enumeration em = ac.getApplets();
+//			if(em != null) while(em.hasMoreElements())
+//			{
+//				Applet candidate = (Applet) em.nextElement();
+//				if(ap == null /*|| betterCandidate(ap, object) */ )
+//					ap = candidate; break;
+//			}
+//		}
+//
+//		try
+//		{	if(ap!=null) linkif.setJSObject(null);
+//		} 
+//		catch( Exception e )
+//		{	e.printStackTrace(); 
+//		}
 	}
 	
 	public void setBackground(Color c)

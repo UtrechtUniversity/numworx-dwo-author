@@ -58,10 +58,8 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		return null;
 	}
 	
+	@Deprecated
 	static Object getJSObject() {
-		LinkRegel.findJSObject(linkif);
-		if(linkif != null)
-			return linkif.getJSObject();
 		return null;
 		
 	}
@@ -84,7 +82,6 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		
 		String student = WiskOpdr.getLearner_id();
 		String user    = student;
-		String passwd  = WiskOpdr.getOAuthToken();
 		URL root = getResourceRoot();		
 
 		rm = null;//new fi.wiskopdr.cbook.rm.WebManager(root, widget, unit, instance, student, user, passwd);
@@ -101,7 +98,13 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
               if("serverUrlPath".equals(key))
                 return root;
               if("oauth_token".equals(key))
+              {
+                String passwd  = WiskOpdr.getOAuthToken();
                 return passwd;
+              }
+              if ("oauth_refresh".equals(key)) {
+                return WiskOpdr.getOAuthRefresh();
+              }
               if (UUID.equals(key))
                   return unit + "-" + instance;
               

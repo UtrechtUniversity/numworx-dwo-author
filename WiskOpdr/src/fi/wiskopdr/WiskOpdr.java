@@ -286,7 +286,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static String defaultEditModeState = null;
 			
 	SCORM12APIInterface api;
-	private Object window; // No reference to JSObject (ClassNotFoundException)
+	//private Object window; // No reference to JSObject (ClassNotFoundException)
 	private long sessionStartTime;
 	private ScormEditComponentIF scormEditComponent;
 
@@ -1170,17 +1170,18 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	/**
 	 * Vraag het JSobject op dat gebruikt wordt in de JavaScript communicatie (bv voor html popups)
 	 * implementeert interface LinkIF 
+	 * @deprecated always null
 	 */
 	public Object getJSObject() {
-		return window;
+		return null;
 	}
 
 	/**
 	 * Zet het JSobject op dat gebruikt wordt in de JavaScript communicatie (bv voor html popups)
-	 * implementeert interface LinkIF 
+	 * implementeert interface LinkIF
+	 * @deprecated always null
 	 */
 	public void setJSObject(Object window) {
-		this.window = window;
 	}
 
 	/**
@@ -1893,8 +1894,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 
 	public void setJSObjectOwner(LinkIF applet) {
-		setJSObject(applet.getJSObject());
-		LinkRegel.setJSObjectOwner(applet);
+		//setJSObject(applet.getJSObject());
+		//LinkRegel.setJSObjectOwner(applet);
 		Link.setJSObjectOwner(applet);
 		WidgetBridge.setJSObjectOwner(applet);
 	}
@@ -2013,5 +2014,13 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
       OpdrNavStructEdit.getInstance().setSavedLabel(newValue > 0L);
     }
     super.firePropertyChange(propertyName, oldValue, newValue);
+  }
+
+  public static Boolean getOAuthRefresh() {
+    if (applet != null) {
+      String token =  applet.getParameter("oauth_refresh");
+      return "true".equals(token);
+    }
+    return null;
   }
 }
