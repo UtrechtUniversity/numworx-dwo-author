@@ -219,6 +219,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 		boolean isConst = true;
 		List<String> cmds = getCmds(isConst);
 		cmds.add(Constants.CHECK);
+		cmds.add("action.reset");
 		return cmds.toArray(new String[cmds.size()]);
 	}
 
