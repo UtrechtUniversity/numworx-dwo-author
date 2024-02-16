@@ -6,7 +6,7 @@
 	<parent>
         <groupId>nl.uu.fi.dwo</groupId>
         <artifactId>DWO</artifactId>
-        <version>2.5.25</version>
+        <version>2.5.28</version>
 	</parent>
 
 	<build>
@@ -455,7 +455,6 @@
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
 			<artifactId>swingbrowser-jxb</artifactId>
-			<version>0.0.13</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -467,7 +466,6 @@
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
 			<artifactId>swingbrowser-api</artifactId>
-			<version>0.0.11</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.beans</groupId>
