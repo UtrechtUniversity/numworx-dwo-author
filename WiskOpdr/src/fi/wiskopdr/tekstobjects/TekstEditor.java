@@ -68,6 +68,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private boolean formMode = false;
 	private boolean rekenTool;
 	private boolean grafTool;
+	private boolean teltMee = true;
 	
 	private int balkH = 23;
 	private int rand = 10;
@@ -1564,6 +1565,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		boolean grafTool = true;
 		boolean formuleKnop = true;
 		boolean formuleToolPopup = true;
+		boolean teltMee = true;
+		
 		Hashtable[] interactiePanelLaunchData = null;
 				
 		if(h.containsKey("tekst")) tekst = (String)h.get("tekst");
@@ -1572,6 +1575,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(h.containsKey("grafTool")) grafTool = ((Boolean)h.get("grafTool")).booleanValue();
 		if(h.containsKey("formuleKnop")) formuleKnop = ((Boolean)h.get("formuleKnop")).booleanValue();
 		if(h.containsKey("formuleToolPopup")) formuleToolPopup = ((Boolean)h.get("formuleToolPopup")).booleanValue();
+		if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
 		if(h.containsKey("interactiePanelLaunchData")) interactiePanelLaunchData = (Hashtable[])h.get("interactiePanelLaunchData");
 		
 		this.rekenTool = rekenTool;
@@ -1583,6 +1587,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		zetGrafTool(grafTool);
 		zetFormuleKnop(formuleKnop);
 		zetFormuleToolPopup(formuleToolPopup);
+		setTeltMee(teltMee);
 		
 		if(interactiePanelLaunchData!=null)
 		{	Vector v = geefInteractiePanels();
@@ -1918,6 +1923,13 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
     tekstVak.setFocusTraversalKeysEnabled(focusTraversalKeysEnabled);
     
   }
-	
+
+  public boolean isTeltMee() {
+    return teltMee;
+  }
+  
+  public void setTeltMee(boolean t) {
+    teltMee = t;
+  }
 	
 }
