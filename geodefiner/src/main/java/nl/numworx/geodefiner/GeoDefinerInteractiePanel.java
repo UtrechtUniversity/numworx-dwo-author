@@ -42,6 +42,8 @@ import nl.tue.win.riaca.openmath.lang.OMObject;
 public class GeoDefinerInteractiePanel extends JPanel implements
 		InteractiePanel, CBookContext, CBookAware {
 
+	private static final String ACTION_RESET = "action.reset";
+
 	private static final long serialVersionUID = -4868744357817393056L;
 
 	private  final CBookEvent CHECK = new CBookEvent(this, Constants.CHECK);
@@ -219,7 +221,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 		boolean isConst = true;
 		List<String> cmds = getCmds(isConst);
 		cmds.add(Constants.CHECK);
-		cmds.add("action.reset");
+		cmds.add(ACTION_RESET);
 		return cmds.toArray(new String[cmds.size()]);
 	}
 
@@ -270,7 +272,7 @@ public class GeoDefinerInteractiePanel extends JPanel implements
 
 	public String[] getSendCmds() {
 		List<String> cmds = getCmds(false);
-		cmds.addAll(Arrays.asList("action.correct","action.false","action.false_2"));
+		cmds.addAll(Arrays.asList("action.correct","action.false","action.false_2",ACTION_RESET));
 		return cmds.toArray(new String[cmds.size()]);
 	}
 
