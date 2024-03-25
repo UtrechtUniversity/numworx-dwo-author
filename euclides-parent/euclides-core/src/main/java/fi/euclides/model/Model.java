@@ -303,27 +303,29 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 			{
 				Segment s = (Segment)o;
 				p = s.getP2();
-				if(Numbers.hypot(Numbers.sub(x, p.getX()), Numbers.sub(y, p.getY())).doubleValue()<4)
+				if(Numbers.hypot(Numbers.sub(x, p.getX()), Numbers.sub(y, p.getY())).doubleValue()<4 && p.isVisible())
 				{
-					p.setVisible(true);						
+					/*p.setVisible(true);*/	
+					if(p.getIndex() > 0) return p;
 				} else 								
 				{	p = s.getP1();
-					if(Numbers.hypot(Numbers.sub(x, p.getX()), Numbers.sub(y, p.getY())).doubleValue()<4)
+					if(Numbers.hypot(Numbers.sub(x, p.getX()), Numbers.sub(y, p.getY())).doubleValue()<4 && p.isVisible())
 					{
-						p.setVisible(true);
+						/*p.setVisible(true);*/
+						if (p.getIndex() > 0) return p;
 					} else
-						p = new PuntOp<Lijn>(x, y, s, s.getAlgo());
+						p = s.pointOn(x, y);
 				}
 			} else
 			if(o instanceof Ray)
 			{
 				Ray s = (Ray)o;
 				p = s.getP1();
-				if(Numbers.hypot(Numbers.sub(x, p.getX()), Numbers.sub(y, p.getY())).doubleValue()<4)
+				if(Numbers.hypot(Numbers.sub(x, p.getX()), Numbers.sub(y, p.getY())).doubleValue()<4 && p.isVisible())
 				{
-						p.setVisible(true);
+						/*p.setVisible(true);*/
 				} else
-					p = new PuntOp<Lijn>(x, y, s, s.getAlgo());
+					p = s.pointOn(x, y);
 			} else
 			
 			if(o instanceof OpObject)
@@ -481,9 +483,12 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 		clearSelection();
 		if(contains(d, vector))
 		{
-			tester.getD().setVisible(true); // niet als label?
-			d.destroy();
-			return tester.getD(); // drop on the floor...
+			Destroyable d2 = tester.getD();
+			if (d2 != null) { 
+				d2.setVisible(true); // niet als label?
+				if (d2 != d) d.destroy();
+				return d2; // drop on the floor...
+			}
 		}
 		return addAlways(d, vector);
 	}
@@ -656,7 +661,10 @@ public class Model extends Observable implements Observer, NameMapper, TrailBuil
 	private boolean contains(Destroyable d, Vector vector) {
 		if(addAlways) {
 			boolean contains = vector.contains(d); // no add under equals, destroyall breaks!
-			if(contains) System.err.println("problem with " + d);
+			if(contains) {
+				tester.d = d;
+				System.err.println("problem with " + d);
+			}
 			return contains;
 		} 
 		Enumeration e = vector.elements();
