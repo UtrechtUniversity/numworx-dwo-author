@@ -1,6 +1,5 @@
 package fi.wiskopdr.opdrnav;
 
-import java.applet.Applet;
 import java.awt.AWTEventMulticaster;
 import java.awt.Color;
 import java.awt.Component;
@@ -137,7 +136,7 @@ public class OpdrNavStruct extends JLayeredPane implements MouseListener, Action
 	private boolean checkPerOpdracht;
 
 	private Hashtable launchData;
-	private Applet applet;
+	private WiskOpdr applet;
 	private SCORM12APIInterface api;
 	private String lessonMode = "";
 

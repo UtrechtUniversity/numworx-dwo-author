@@ -905,8 +905,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	 * @param namemap
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Iconan(JApplet Applet, Component component, Hashtable namemap, ImageCache cache, boolean chooseImage) {	
-		this.applet = Applet;
+	public Iconan(JApplet applet, Component component, Hashtable namemap, ImageCache cache, boolean chooseImage) {	
+		this.applet = applet;
 		this.component = component;
 		this.namemap = namemap;
 		this.xnamemap = new Hashtable<String, Object>();
