@@ -1046,6 +1046,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "LinkType_PLAYER", "eigen window"},
 				{ "LinkType_CLIENT", "applicatie window"},
 				{ "LinkType_TOP", "top window"},
+				{ "LinkType_RESPONSIVE", "embedded (volledige breedte)"},
 				
 				{ "TCOMP_list" , "Opsomming"},
 				{ "TCOMP_list_settings" , "Instellingen opsomming"},

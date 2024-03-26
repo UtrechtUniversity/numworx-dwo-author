@@ -7,7 +7,8 @@ public enum LinkType {
   TRUE("true"),
   PLAYER("_self"),
   CLIENT("_parent"),
-  TOP("_top");
+  TOP("_top"),
+  RESPONSIVE("resp");
   
   private final String display;
 
