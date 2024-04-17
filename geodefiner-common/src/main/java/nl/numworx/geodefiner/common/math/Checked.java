@@ -47,6 +47,7 @@ public class Checked extends LabelTester {
 	public boolean define(Label l) {
 		l.setValue(value);
 		l.register(this);
+		l.setString(string);
 		checks.add(l);
 		return setState(l, l.value, 0.0);
 	}
