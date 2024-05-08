@@ -4,7 +4,6 @@ import java.awt.AWTEventMulticaster;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -19,8 +18,6 @@ import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.*;
-
-import org.json.fimple.JSONValue;
 
 import fi.beans.iconan.Iconan;
 import fi.beans.wiskopdrbeans.*;
@@ -58,7 +55,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JLabel interlinieLabel;
 	private JLabel cellSpaceColumnLabel;
 	private JLabel cellSpaceRowLabel;
-	private JLabel zwevendLocationLabel;
+	//private JLabel zwevendLocationLabel;
 	
 	private JTextField aantalRijenTF;
 	private JTextField aantalKolommenTF;
@@ -82,7 +79,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	
 	private Tablet tablet;
 	private boolean tabletAdded;
-	private FormuleVakHouder tabletUser;
+	//private FormuleVakHouder tabletUser;
 	
 	private Font ifFont = new Font("SansSerif",Font.PLAIN,12);
 	private Font titelFont = new Font("SansSerif", Font.BOLD, 14);
@@ -118,7 +115,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private JCheckBox sleepHandleCB;
 	private FormuleVak checkExpressieFormuleVak;
 	private JLabel selectieWaardeLabel;
-	private JTextField scoreMaxTF;
+	//private JTextField scoreMaxTF;
 	private boolean selectable;
 	private boolean selected;
 	private boolean colorSelection;
@@ -126,9 +123,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	private boolean draaibaar;
 	private boolean sleepdoel;
 	private boolean sleepHandle;
-	private String checkExpressieString;
-	private JCheckBox linkCB;
-	private boolean isLink;
+	//private String checkExpressieString;
+	private JCheckBox linkCB, anchorCB;
+	private boolean isLink, isAnchor;
+	private JTextField anchorTF;
 	
 	private JLabel interactiePanelIdLabel;
 	private JTextField interactiePanelIdTF;
@@ -473,6 +471,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		
 		sleepdoelCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepDoel"), 10,120,160,20, sleepdoel, interactionOptionsPanel);
 		linkCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_linkObject"), 10,170,140,20, isLink, interactionOptionsPanel);
+        anchorCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_anchorObject"), 10,170,140,20, isAnchor, interactionOptionsPanel);
 		sleepHandleCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_sleepHandle"), 150,95,160,20, sleepHandle, interactionOptionsPanel);
 		zichtbaarNaNakijkenCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_zichtbaarNaNakijken"), 10,195,240,20, zichtbaarNaNakijken, interactionOptionsPanel);
 		balansVergComCB = maakCheckBox(WiskOpdr.rb.getString("TVEP_balansVergCom"), 10,673,240,20, balansVergCom, interactionOptionsPanel);
@@ -759,6 +758,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		linkButton.setBounds(150,170,120,20);
 		linkButton.setVisible(false);
 		interactionOptionsPanel.add(linkButton);
+		anchorTF = new WiskOpdrTextField("");
+		anchorTF.setVisible(false);
+		anchorTF.setColumns(6);
 
 		
 		interactiePanelIdLabel = new JLabel("ID = ");
@@ -1149,6 +1151,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		Component[] r25 = {sleepdoelCB, 	ra(10,0),	hgl(),  hbSleepdoel};
 		Component[] r26 = {draaibaarCB, 		ra(10,0),	hgl(),   hbDraaibaar};
 		Component[] r27 = {linkCB, 		ra(10,0),	linkButton, ra(10,0), hgl(),   hbLink};
+		Component[] r271 = { anchorCB, ra(10,0), anchorTF, ra(10,0), hgl() };
 		Component[] r118 = {inklapbaarCB,     ra(10,0),   knopImageButton1, ra(10,0), knopImageButton2, hgl(), checkUitklapVakCB,ra(5,0), hbUitklap}; 
         Component[] r119 = {ra(20,0),     posBeginRB, ra(10,0),   knopIsRegel1RB,hgl()};
         Component[] r120 = {ra(20,0),     posEindRB,  ra(10,0),   hgl()};
@@ -1168,7 +1171,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		selectionObjectBoxIP = hb(r23);	
 		vd = 3;
 		Component[] k2 = {hb(kenmerkenLine), ra(0,vd),hb(r21), ra(0,vd), hb(r22), ra(0,15), hb(soortenLine),ra(0,vd), selectionObjectBoxIP, ra(0,vd), hb(r24), ra(0,vd), hb(r25), 
-				ra(0,vd), hb(r26), ra(0,vd), hb(r27),  ra(0,vd), hb(r118),hb(r119),hb(r120),hb(r121),ra(0,15), hb(verwerkingLine), ra(0,vd),hb(r28), ra(0,vd), hb(r29), ra(0,vd), hb(r210), 
+				ra(0,vd), hb(r26), ra(0,vd), hb(r27),  ra(0,vd), hb(r271), ra(0,vd), hb(r118),hb(r119),hb(r120),hb(r121),ra(0,15), hb(verwerkingLine), ra(0,vd),hb(r28), ra(0,vd), hb(r29), ra(0,vd), hb(r210), 
 				ra(0,vd), hb(r211), ra(0,vd), hb(r212), spaceTest1, hb(testLine), hb(r123),spaceTest2, hb(r124),spaceTest3, hb(r125),ra(0,vd), hb(r126a),ra(0,vd), hb(r126),ra(0,vd), hb(r127),vgl()};
 		
 		Box interactionOptionsBox = vb(k2);
@@ -1394,7 +1397,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		String knopImageString1 = "";
 		String knopImageString2 = "";
 		boolean isLink = false;
+		boolean isAnchor = false;
 		boolean defaultBijNull = false;
+		String anchor = anchorTF.getText();
 		//String linkUrl = "";
 		String[] linkUrls = null;
 		int[] grensScores = null;
@@ -1486,6 +1491,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		random = this.random;
 		randomVar = this.randomVar;
 		isLink = this.isLink;
+		isAnchor = this.isAnchor;
 		defaultBijNull = this.defaultBijNull;
 		linkUrls = link.getUrlString();
 		grensScores = link.getGrensScores();
@@ -1511,7 +1517,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		responsiveMaxWidth = this.responsiveMaxWidth;
 		fullScreenOption = this.fullScreenOption;
 			
-		Hashtable h = null;
+		Hashtable<String,Object> h = null;
 		 
 		if(tableMode) h = tekstVakPanel.getEditState();
 		else h = tekstEditor.getEditState();
@@ -1583,6 +1589,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		}
 		h.put("random", new Boolean(random));
 		h.put("isLink", new Boolean(isLink));
+		h.put("isAnchor", Boolean.valueOf(isAnchor));
 		h.put("defaultBijNull", new Boolean(defaultBijNull));
 		
 		if(random) 
@@ -1596,6 +1603,10 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			h.put("linkWidth", new Integer(linkWidth));
 			h.put("linkHeight", new Integer(linkHeight));
 		}
+		if (isAnchor) {
+		    h.put("anchor", anchor);
+		}
+		
 		h.put("logOption",new Boolean(logOption));
 		h.put("logID",logID);
 		h.put("logIDLabel",logIDLabel);
@@ -1748,7 +1759,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		int inklapKnopPos = 1;
 		String knopImageString1 = "";
 		String knopImageString2 = "";
-		boolean isLink = false;
+		boolean isLink = false, isAnchor = false;
+		String anchor = "";
 		boolean defaultBijNull = false;
 		//String linkUrl = "";
 		String[] linkUrls = null;
@@ -1883,12 +1895,14 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(h.containsKey("randomIpLaunchdata")) randomIpLaunchdata = (Hashtable[][]) h.get("randomIpLaunchdata");
 		if(h.containsKey("randomVar")) randomVar = (String) h.get("randomVar");
 		if(h.containsKey("isLink")) isLink = ((Boolean) h.get("isLink")).booleanValue();
+		isAnchor = Boolean.TRUE.equals(h.get("isAnchor"));
 		if(h.containsKey("defaultBijNull")) defaultBijNull = ((Boolean) h.get("defaultBijNull")).booleanValue();
 		//if(h.containsKey("linkUrl")) linkUrl = (String) h.get("linkUrl");
 		if(h.containsKey("linkUrls")) linkUrls = (String[]) h.get("linkUrls");
 		if(h.containsKey("grensScores")) grensScores = (int[]) h.get("grensScores");
 		if(h.containsKey("linkWidth")) linkWidth = ((Integer)h.get("linkWidth")).intValue();
 		if(h.containsKey("linkHeight")) linkHeight = ((Integer)h.get("linkHeight")).intValue();
+		if(h.containsKey("anchor")) anchor = (String) h.get("anchor");
 		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
         if(h.containsKey("logID")) logID = (String)h.get("logID");
         if(h.containsKey("logIDLabel")) logIDLabel = (String)h.get("logIDLabel");
@@ -1965,6 +1979,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		this.randomIpLaunchdata = randomIpLaunchdata;
 		this.randomVar = randomVar;
 		this.isLink = isLink;
+		this.isAnchor = isAnchor;
 		this.defaultBijNull = defaultBijNull;
 		this.visible = visible;
 		this.ideasStatistiek = ideasStatistiek;
@@ -1985,6 +2000,9 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		if(isLink)
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
 			link = new Link("", linkUrls, linkWidth, linkHeight, false, grensScores);
+		if (isAnchor) {
+		  anchorTF.setText(anchor);
+		}
 		if(styleString!=null && TekstVakPanel.styles !=null && TekstVakPanel.styles.containsKey(styleString))
 			kiesStyleChoice.setSelectedItem(styleString);
 		
@@ -2039,7 +2057,8 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		linkCB.setSelected(isLink);
 		defaultBijNullCB.setSelected(defaultBijNull);
 		linkButton.setVisible(isLink);
-		
+		anchorCB.setSelected(isAnchor);
+		anchorTF.setVisible(isAnchor);		
 		logCB.setSelected(logOption);
         logIDField.setVisible(logOption);
         logIDLabelField.setVisible(logOption); 
@@ -2625,6 +2644,13 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			updateTekstVakPanel();
 			repaint();
 		}
+		if (e.getSource().equals(anchorCB)) {
+		  isAnchor = anchorCB.isSelected();
+		  anchorTF.setVisible(isAnchor);
+          updateTekstVakPanel();
+          repaint();		  
+		}
+		
 		if(e.getSource().equals(zichtbaarNaNakijkenCB))
 		{	zichtbaarNaNakijken = zichtbaarNaNakijkenCB.isSelected();
 			updateTekstVakPanel();
@@ -3370,7 +3396,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 	public void zetTabletUser(FormuleVakHouder formuleVakHouder)
 	{	if(tablet==null) return;
 		tablet.zetFormuleVakHouder(formuleVakHouder);
-		tabletUser = formuleVakHouder;
+		//tabletUser = formuleVakHouder;
 		
 	}
 	
@@ -3381,7 +3407,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 			
 		}
 		tablet.zetFormuleVakHouder(formuleVakHouder);
-		tabletUser = formuleVakHouder;
+		//tabletUser = formuleVakHouder;
 		
 		
 	}

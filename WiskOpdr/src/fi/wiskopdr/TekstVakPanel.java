@@ -227,13 +227,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	private boolean random = false;
 	private int aantalRandom = 1;
 	private String randomVar = "a";
-	private boolean isLink;
+	private boolean isLink, isAnchor;
 	private boolean defaultBijNull;
 	//private Link link = new Link("link", "http://", 400, 400);
 	String[] httpString = new String[] {"http://", "http://", "http://", "http://",
 			"http://", "http://", "http://", "http://", "http://", "http://"};
 	
 	private Link link = new Link("link", httpString, 400, 400, false, null);
+	private String anchor = "";
 	//private Link link = new Link("link", null, 400, 400, null);
 	
 	private boolean vulHoogte = false;
@@ -778,6 +779,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean isLink = false;
 		boolean defaultBijNull = false;
 		String linkUrl = "";
+		String anchor = "";
 		String[] linkUrls = null;
 		int[] grensScores = null;
 		int linkWidth = 400;
@@ -969,9 +971,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			randomVar = (String) h.get("randomVar");
 		if (h.containsKey("isLink"))
 			isLink = ((Boolean) h.get("isLink")).booleanValue();
+		isAnchor = Boolean.TRUE.equals(h.get("isAnchor"));
 		if (h.containsKey("defaultBijNull"))
 			defaultBijNull = ((Boolean) h.get("defaultBijNull")).booleanValue();
-				
+		if (h.containsKey("anchor")) anchor = (String) h.get("anchor");
 		if (h.containsKey("linkUrl"))
 			linkUrl = (String) h.get("linkUrl");
 		if (h.containsKey("linkUrls"))
@@ -1086,6 +1089,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.callOutPointX = callOutPointX;
 		this.callOutPointY = callOutPointY;
 		this.isLink = isLink;
+		this.isAnchor = isAnchor;
 		this.defaultBijNull = defaultBijNull;
 		
 		this.logOption = logOption;
@@ -1113,6 +1117,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
 			link = new Link("", linkUrls, linkWidth, linkHeight, false, grensScores);
+		}
+		if (isAnchor) {
+		  this.anchor = anchor;
 		}
 		setCallOut(callOut);
 
@@ -1881,9 +1888,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		boolean random = false;
 		String randomVar = "a";
 		boolean isLink = false;
+		boolean isAnchor = false;
 		boolean defaultBijNull = false;
 		//String linkUrl = "";
 		String[] linkUrls = null;
+		String anchor = "";
 		int[] grensScores = null;
 		int linkWidth = 400;
 		int linkHeight = 400;
@@ -1965,9 +1974,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		random = this.random;
 		randomVar = this.randomVar;
 		isLink = this.isLink;
+		isAnchor = this.isAnchor;
 		defaultBijNull = this.defaultBijNull;
 		//linkUrl = link.getUrl();
 		linkUrls = link.getUrlString();
+		anchor = this.anchor;
 		grensScores = link.getGrensScores();
 		linkWidth = link.getWidth();
 		linkHeight = link.getHeight();
@@ -2112,6 +2123,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		h.put("callOutPointX", new Integer(callOutPointX));
 		h.put("callOutPointY", new Integer(callOutPointY));
 		h.put("isLink", new Boolean(isLink));
+		h.put("isAnchor", Boolean.valueOf(isAnchor));
 		h.put("defaultBijNull", new Boolean(defaultBijNull));
 		h.put("random", new Boolean(random));
 		if (random)
@@ -2128,6 +2140,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			//h.put("grensScores", grensScores);
 			h.put("linkWidth", new Integer(linkWidth));
 			h.put("linkHeight", new Integer(linkHeight));
+		}
+		if (isAnchor) {
+		  h.put("anchor", anchor);
 		}
 		h.put("logOption",new Boolean(logOption));
 		h.put("logID",logID);
@@ -2750,9 +2765,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		String randomVar = "a";
 		String[][][] randomteksten = new String[1][][];
 		Hashtable[][] randomIpLaunchdata = new Hashtable[1][];
-		boolean isLink = false;
+		boolean isLink = false, isAnchor = false;
 		boolean defaultBijNull = false;
 		String linkUrl = "";
+		String anchor = "";
 		String[] linkUrls = null;
 		int[] grensScores = null;
 		int linkWidth = 400;
@@ -2933,12 +2949,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			randomVar = (String) h.get("randomVar");
 		if (h.containsKey("isLink"))
 			isLink = ((Boolean) h.get("isLink")).booleanValue();
+		isAnchor = Boolean.TRUE.equals(h.get("isAnchor"));
 		if (h.containsKey("defaultBijNull"))
 			defaultBijNull = ((Boolean) h.get("defaultBijNull")).booleanValue();
 		if (h.containsKey("linkUrl"))
 			linkUrl = (String) h.get("linkUrl");
 		if (h.containsKey("linkUrls"))
 			linkUrls = (String[]) h.get("linkUrls");
+		if (h.containsKey("anchor")) anchor = (String) h.get("anchor");
 		if (h.containsKey("grensScores"))
 			grensScores = (int[]) h.get("grensScores");
 		if (h.containsKey("linkWidth"))
@@ -3050,6 +3068,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		this.randomIpLaunchdata = randomIpLaunchdata;
 		this.randomVar = randomVar;
 		this.isLink = isLink;
+		this.isAnchor = isAnchor;
 		this.defaultBijNull = defaultBijNull;
 		if (isLink) {
 			if(!linkUrl.equals("")) {
@@ -3060,7 +3079,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			//link = new Link("", linkUrl, linkWidth, linkHeight);
 			link = new Link("", linkUrls, linkWidth, linkHeight, false, grensScores);
 		}
-		
+		if (isAnchor) {
+		  this.anchor = anchor;
+		}
 
 		/**/if (teksten == null)
 		{

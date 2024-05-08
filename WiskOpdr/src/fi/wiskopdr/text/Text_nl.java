@@ -577,6 +577,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_uitwerkingenPopup" , "Uitwerking"},
                 {"TVEP_random" , "random"},
                 {"TVEP_linkObject" , "Linkobject"},
+                {"TVEP_anchorObject" , "Anker"},
                 {"TVEP_editLink" , "Edit link"},
                 {"TVEP_defaultBijNull" , "default )"},
                 {"TVEP_checkUitklapVak" , "check"},
