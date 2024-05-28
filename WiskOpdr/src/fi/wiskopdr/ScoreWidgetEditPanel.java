@@ -53,6 +53,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
   private JTextField paginaTitelTF;
   private JTextField activiteitIdTF;
   private JTextField moduleIdTF;
+  private JTextField anchorTF;
   
   private JLabel titleKeuzeLabel;
   private JCheckBox scoreRB;
@@ -156,6 +157,12 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     paginaNrTF.setPreferredSize(new Dimension(50,22));
     paginaNrTF.setMaximumSize(new Dimension(50,22));
     
+    anchorTF = new JTextField();
+    anchorTF.setFont(font);
+    anchorTF.setPreferredSize(new Dimension(50,22));
+    anchorTF.setMaximumSize(anchorTF.getPreferredSize());
+    anchorTF.setToolTipText("anchor");
+    
     paginaTitelTF = new JTextField("");
     paginaTitelTF.setFont(font);
     paginaTitelTF.setPreferredSize(new Dimension(150,22));
@@ -193,6 +200,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     
     linkActiveCB = new JCheckBox(WiskOpdr.rb.getString("SWEP_linkActiveCB"));
     linkActiveCB.setSelected(true);
+    linkActiveCB.addActionListener(this);
     
     scoreRB.setSelected(false);
     
@@ -208,7 +216,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     Component[] r14 = {activiteitIdRB, ra(10,0), activiteitIdTF, hgl()};
     Component[] r15 = {moduleIdRB, ra(10,0), moduleIdTF, hgl()};
     Component[] r16 = {activiteitNrLabel, ra(10,0), activiteitNrTF, hgl()};
-    Component[] r17 = {paginaNrLabel, ra(10,0), paginaNrTF, hgl()};
+    Component[] r17 = {paginaNrLabel, ra(10,0), paginaNrTF, ra(10,0), anchorTF, hgl()};
     Component[] r18 = {paginaTitelLabel, ra(10,0), paginaTitelTF, hgl()};
     
     Component[] k1 = {hb(r10a), vst(5), hb(r10b), vst(15), hb(r11), vst(10), hb(r12), vst(5), hb(r13), vst(5), hb(r14), vst(5), hb(r15), 
@@ -281,6 +289,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     boolean linkActive = true;
     int cesuur = -1;
     boolean activiteitScore = false;
+    String anchor = "";
     
     if(h.containsKey("choicePageMode"))
       choicePageMode = (int)h.get("choicePageMode");
@@ -310,6 +319,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       cesuur = (int)h.get("cesuur");
     if(h.containsKey("activiteitScore"))
       activiteitScore = (boolean)h.get("activiteitScore");
+    anchor = (String) h.getOrDefault("anchor", anchor);
     
     thisActiviteitRB.setSelected(choicePageMode==0);
     thisModuleRB.setSelected(choicePageMode==1);
@@ -327,7 +337,8 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       paginaNrTF.setText(paginaNrs);
     else
       paginaNrTF.setText(""+paginaNr);
-    paginaTitelTF.setText(""+paginaTitel);
+    anchorTF.setText(anchor);
+    paginaTitelTF.setText(paginaTitel);
     activiteitNrTF.setText(""+activiteitNr);
     activiteitIdTF.setText(""+activiteitID);
     moduleIdTF.setText(""+moduleID);
@@ -358,7 +369,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       paginaNrLabel.setVisible(false);
       paginaNrTF.setVisible(false);
     }
-    
+    anchorTF.setVisible(paginaNrTF.isVisible() && linkActiveCB.isSelected());
     cesuurLabel.setVisible(goedFout);
     if(cesuur > -1)
       cesuurTF.setText("" + cesuur);
@@ -405,13 +416,15 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    boolean linkActive = true;
    int cesuur = -1;
    boolean activiteitScore = false;
+   String anchor = "";
    
    choicePageMode = getChoicePageMode();
-   boolean multipage = paginaNrTF.getText().contains((",")) || paginaNrTF.getText().contains(("-"));
+   String paginaNrText = paginaNrTF.getText();
+   boolean multipage = paginaNrText.contains((",")) || paginaNrText.contains(("-"));
    if(multipage)
-     paginaNrs = paginaNrTF.getText();
+     paginaNrs = paginaNrText;
    else
-     paginaNr = intFromText(paginaNr, paginaNrTF.getText());
+     paginaNr = intFromText(paginaNr, paginaNrText);
    paginaTitel = paginaTitelTF.getText();
    toonTitel = toonTitelCB.isSelected();
    if(choicePageMode!=0 && choicePageMode!=2)
@@ -427,23 +440,26 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     bezocht = bezochtRB.isSelected();
     cesuur = intFromText(-1, cesuurTF.getText());
     activiteitScore = activiteitScoreRB.isSelected();
+    anchor = anchorTF.getText();
     
-    Hashtable h = new Hashtable();
-    h.put("choicePageMode", new Integer(choicePageMode));
-    h.put("activiteitNr", new Integer(activiteitNr));
-    h.put("paginaNr", new Integer(paginaNr));
+    Hashtable<String,Object> h = new Hashtable<>();
+    h.put("choicePageMode", Integer.valueOf(choicePageMode));
+    h.put("activiteitNr", Integer.valueOf(activiteitNr));
+    h.put("paginaNr", Integer.valueOf(paginaNr));
     h.put("paginaNrs", paginaNrs);
     h.put("paginaTitel", paginaTitel);
-    h.put("activiteitID", new Integer(activiteitID));
-    h.put("moduleID", new Integer(moduleID));
-    h.put("score", new Boolean(score));
+    h.put("activiteitID", Integer.valueOf(activiteitID));
+    h.put("moduleID", Integer.valueOf(moduleID));
+    h.put("score", Boolean.valueOf(score));
     h.put("goedFout", new Boolean(goedFout));
     h.put("bezocht", Boolean.valueOf(bezocht));
-    h.put("toonTitel", new Boolean(toonTitel));
-    h.put("linkActive", new Boolean(linkActive));
+    h.put("toonTitel", Boolean.valueOf(toonTitel));
+    h.put("linkActive", Boolean.valueOf(linkActive));
     if(cesuur>-1)
-      h.put("cesuur", new Integer(cesuur));
-    h.put("activiteitScore", new Boolean(activiteitScore));
+      h.put("cesuur", Integer.valueOf(cesuur));
+    h.put("activiteitScore", Boolean.valueOf(activiteitScore));
+    if (!anchor.isEmpty() && !multipage)
+      h.put("anchor", anchor);
     
     return h;
     
@@ -451,26 +467,18 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
 
   @Override
   public void zetBreedte(int b) {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
   public void zetHoogte(int h) {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
   public void stop() {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
   public void start() {
-    // TODO Auto-generated method stub
-    
   }
 
   @Override
@@ -503,6 +511,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
       cesuurLabel.setVisible(goedFoutRB.isSelected());
       cesuurTF.setVisible(goedFoutRB.isSelected());
     }
+    anchorTF.setVisible(paginaNrTF.isVisible() && linkActiveCB.isSelected());
     ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
     
   }
