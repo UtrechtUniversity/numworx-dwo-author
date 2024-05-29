@@ -649,6 +649,18 @@
 			</dependency>
 		</dependencies>
 	</profile>
+		<profile>
+		<id>sqlite</id>
+		<dependencies>
+			<dependency>
+			  	<groupId>nl.numworx.sqlite</groupId>
+		  		<artifactId>sqlite</artifactId>
+		  		<version>0.0.4-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</profile>
+
+	
 	<profile>
 		<id>upload</id>
 		<dependencies>

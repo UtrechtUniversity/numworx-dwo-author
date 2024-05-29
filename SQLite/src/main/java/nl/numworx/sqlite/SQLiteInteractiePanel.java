@@ -1,15 +1,26 @@
 package nl.numworx.sqlite;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Hashtable;
+import java.util.Objects;
 
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import org.cbook.cbookif.CBookEvent;
 import org.cbook.cbookif.CBookEventListener;
 
+import fi.beans.numworxlf.JScrollPane;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -17,23 +28,22 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 @SuppressWarnings("serial")
 public class SQLiteInteractiePanel extends JPanel implements InteractiePanel, CBookAware {
 
+	JTextArea output = new JTextArea();
+	Connection c;
+	Hashtable launch = new Hashtable();
+  
 	public SQLiteInteractiePanel() {
-		setOpaque(true);
-		setBackground(Color.GRAY);
+	    super(new BorderLayout());
+	    add(new JScrollPane(output));
+        try {
+			c = DriverManager.getConnection("jdbc:sqlite:");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public void addActionListener(ActionListener arg0) {
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-		g.setColor(Color.LIGHT_GRAY);
-		int w = getWidth();
-		int h = getHeight();
-		g.fillRect(0, 0, w, h);
-		g.setColor(Color.BLACK);
-		g.drawString("SQLite Interpreter", w/10, h/2);
 	}
 
 	public void destroy() {
@@ -45,8 +55,7 @@ public class SQLiteInteractiePanel extends JPanel implements InteractiePanel, CB
 
 	@SuppressWarnings("rawtypes")
 	public Hashtable getEditState() {
-		Hashtable launchData = new Hashtable();
-		return launchData;
+		return launch;
 	}
 
 	public int getIpId() {
@@ -68,6 +77,7 @@ public class SQLiteInteractiePanel extends JPanel implements InteractiePanel, CB
 	@SuppressWarnings("rawtypes")
 	public Hashtable getState() {
 		Hashtable state = new Hashtable();
+		state.put("output", output.getText());
 		return state;
 	}
 
@@ -90,16 +100,26 @@ public class SQLiteInteractiePanel extends JPanel implements InteractiePanel, CB
 
 	@SuppressWarnings("rawtypes")
 	public void setEditState(Hashtable arg0) {
+	  launch = arg0;
+	  String create = arg0.getOrDefault("create", "").toString();
+	  execute(c, create);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void setState(Hashtable arg0) {
+	  String o = arg0.getOrDefault("output", "").toString();
+	  output.setText(o);
 	}
 
 	public void start() {
 	}
 
 	public void stop() {
+	  try {
+		c.close();
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
 	}
 
 	public void wis() {
@@ -115,15 +135,41 @@ public class SQLiteInteractiePanel extends JPanel implements InteractiePanel, CB
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void zetOpdracht(Hashtable arg0, String[] arg1, Hashtable arg2) {
+	public void zetOpdracht(Hashtable h, String[] arg1, Hashtable arg2) {
+	  setEditState(h);
 	}
 
 	@Override
-	public void acceptCBookEvent(CBookEvent arg0) {
+	public void acceptCBookEvent(CBookEvent e) {
+	  if ("text.program".equals(e.getCommand())) {
+	    String content = Objects.toString(e.getParameter("content"), "");
+	    StringWriter w = execute(c, content);
+	    output.setText(w.toString());
+	  }
 	}
 
+	static StringWriter execute(Connection c, String tekst) {
+	     ScriptRunner runner = new ScriptRunner(c, false, true);
+	        StringWriter w = new StringWriter();
+	        PrintWriter pw = new PrintWriter(w);
+	        runner.setLogWriter(pw);
+	        runner.setErrorLogWriter(pw);
+	        try {
+	            runner.runScript(new StringReader(tekst));
+	        } catch (IOException e1) {
+	            // TODO Auto-generated catch block
+	            e1.printStackTrace(pw);
+	        } catch (SQLException e1) {
+	            // TODO Auto-generated catch block
+	            e1.printStackTrace(pw);
+	        }
+	        return w;
+	}
+	
+	
 	@Override
 	public void addCBookEventListener(CBookEventListener arg0, String arg1) {
+	  
 	}
 
 	@Override
