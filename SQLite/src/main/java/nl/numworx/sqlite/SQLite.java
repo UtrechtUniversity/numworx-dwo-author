@@ -5,6 +5,8 @@ import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.sqlite.JDBC;
+
 import fi.beans.mainframe.JApplet;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
@@ -30,5 +32,8 @@ public class SQLite extends JApplet implements WiskOpdrApplet {
 		this.locale = locale;
 	}
 	
+	static {
+		new JDBC();
+	}
 	
 }

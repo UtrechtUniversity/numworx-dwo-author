@@ -101,6 +101,13 @@ public class SQLiteInteractiePanel extends JPanel implements InteractiePanel, CB
 	@SuppressWarnings("rawtypes")
 	public void setEditState(Hashtable arg0) {
 	  launch = arg0;
+	  if (arg0.containsKey("url")) {
+		  try {
+			c.close();
+			c = DriverManager.getConnection("jdbc:sqlite::resource:" + arg0.get("url"));
+		} catch (SQLException e) {
+		}		  
+	  }	  
 	  String create = arg0.getOrDefault("create", "").toString();
 	  execute(c, create);
 	}

@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -53,6 +55,7 @@ public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditP
 		saveBtn = new JButton("save DB");
 		saveBtn.addActionListener(this);
 		urlField = new JTextField(db.toURI().toString());
+		urlField.addActionListener(this);
 		JScrollPane top = new JScrollPane(creator);
 		JScrollPane bot = new JScrollPane(output);
 		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bot);
@@ -161,7 +164,28 @@ public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditP
 			JFileChooser jf = new JFileChooser();
 			int ok = jf.showSaveDialog(this);
 			if (ok == JFileChooser.APPROVE_OPTION) {
-				output.setText(jf.getSelectedFile() + " saved");
+				output.setText(jf.getSelectedFile() + " saving\n");
+				try {
+					java.sql.Statement s = c.createStatement();
+					s.executeUpdate("backup to " + jf.getSelectedFile());
+					s.close();
+					output.setText(jf.getSelectedFile() + " saved");
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					output.setText(e1 + "\n" + jf.getSelectedFile() + " not saved");
+				}
+			}
+		} else if (urlField == e.getSource()) {
+			try {
+				c.close();
+				c = DriverManager.getConnection("jdbc:sqlite::resource:" + urlField.getText() );
+				java.sql.Statement s = c.createStatement();
+				s.executeUpdate("backup to " + db);
+				s.close();
+				output.setText("switch to resource:" + urlField.getText());
+			} catch (SQLException e1) {
+				output.setText(e1.toString());
+				e1.printStackTrace();
 			}
 		}
 	}

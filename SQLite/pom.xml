@@ -35,9 +35,71 @@
 	</dependencies>
 	<build>
    		<finalName>${project.artifactId}</finalName>
+   		<plugins>
+   			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>stap1</id>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<phase>process-classes</phase>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<includeScope>compile</includeScope>
+							<includeArtifactIds>sqlite-jdbc,slf4j-api</includeArtifactIds>
+							<stripClassifier>true</stripClassifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>5.1.9</version>
+    		  <executions>
+		    <execution>
+		      <id>bundle-manifest</id>
+		      <phase>process-classes</phase>
+		      <goals>    
+		        <goal>manifest</goal>
+		      </goals>   
+		    </execution>
+		  </executions>
+				<configuration>
+       	    		<niceManifest>true</niceManifest>
+					<instructions>
+						<_snapshot>${osgi.qualifier}</_snapshot>
+<!-- uitzoeken welke optioneel zijn -->
+						<Import-Package>
+							*;resolution:=optional
+						</Import-Package>
+						<Class-Path>sqlite-jdbc.jar slf4j-api.jar</Class-Path>
+						<Main-Class>nl.numworx.sqlite.SQLite</Main-Class>
+						<Bundle-SymbolicName>nl.numworx.sqlite.SQLite</Bundle-SymbolicName>
+					</instructions>
+				</configuration>
+			</plugin>		
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+      					<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+      					<index>true</index>
+      					<manifest>
+          					<addClasspath>true</addClasspath>
+        				</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>	
 	</build>
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 	</properties>
 </project>

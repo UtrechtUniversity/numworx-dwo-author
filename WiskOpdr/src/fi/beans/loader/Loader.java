@@ -21,7 +21,8 @@ public class Loader {
 	static URL urlPrefix;
 
 	static {
-		setPrefix("https://cdn.dwo.nl/jars/");
+        String cdn = System.getProperty("CDNURL", "http://cdn.dwo.nl");
+		setPrefix(cdn+"/jars/");
 	}
 
 	/**
