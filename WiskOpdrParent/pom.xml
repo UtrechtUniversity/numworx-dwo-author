@@ -96,6 +96,7 @@
 	<module>../TekenVeelvlakOpdr</module>
 	<module>../Verknippen</module>
     	<module>../WiskOpdr</module>
+    	<module>../SQLite</module>
     </modules>
     <scm>
     	<developerConnection>scm:git:git@github.com:UtrechtUniversity/numworx-dwo-author.git</developerConnection>
