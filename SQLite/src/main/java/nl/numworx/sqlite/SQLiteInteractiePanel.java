@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Objects;
@@ -36,7 +35,7 @@ public class SQLiteInteractiePanel extends JPanel implements InteractiePanel, CB
 	    super(new BorderLayout());
 	    add(new JScrollPane(output));
         try {
-			c = DriverManager.getConnection("jdbc:sqlite:");
+			c = SQLite.getDataSource("jdbc:sqlite:").getConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -104,7 +103,7 @@ public class SQLiteInteractiePanel extends JPanel implements InteractiePanel, CB
 	  if (arg0.containsKey("url")) {
 		  try {
 			c.close();
-			c = DriverManager.getConnection("jdbc:sqlite::resource:" + arg0.get("url"));
+			c = SQLite.getDataSource("jdbc:sqlite::resource:" + arg0.get("url")).getConnection();
 		} catch (SQLException e) {
 		}		  
 	  }	  

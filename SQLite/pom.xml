@@ -75,7 +75,6 @@
 						<Import-Package>
 							*;resolution:=optional
 						</Import-Package>
-						<Class-Path>sqlite-jdbc.jar slf4j-api.jar</Class-Path>
 						<Main-Class>nl.numworx.sqlite.SQLite</Main-Class>
 						<Bundle-SymbolicName>nl.numworx.sqlite.SQLite</Bundle-SymbolicName>
 					</instructions>
@@ -102,4 +101,5 @@
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 	</properties>
+	<description>SQLite interpreter als java widget voor de auteurs omgeving</description>
 </project>

@@ -13,10 +13,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Hashtable;
 
+import javax.sql.DataSource;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -32,7 +32,8 @@ import fi.beans.wiskopdrbeans.InteractieEditPanel;
 public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditPanel, ActionListener {
 
 	File db;
-	Connection c; 
+	Connection c;
+	DataSource ds;
 	JTextArea creator, output;
 	JButton execBtn, importBtn, saveBtn;
 	JTextField urlField;
@@ -41,7 +42,9 @@ public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditP
 		super(new BorderLayout(5,5));
 		try {
 			db = File.createTempFile("sqlite-", ".db");
-			c = DriverManager.getConnection("jdbc:sqlite:" + db.getAbsolutePath());
+			String url = "jdbc:sqlite:" + db.getAbsolutePath();
+			ds = SQLite.getDataSource(url);
+			c = ds.getConnection();
 			db.deleteOnExit();
 		} catch (IOException | SQLException e) {
 			e.printStackTrace();
@@ -71,7 +74,7 @@ public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditP
 		vb.add(saveBtn);
 		add(vb, BorderLayout.EAST);		
 	}
-	
+
 
 	public Hashtable getEditState() {
 		Hashtable<String,String> launchData = new Hashtable<>();
@@ -97,7 +100,8 @@ public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditP
 				c.close();
 				db.delete();
 				db = f;
-				c = DriverManager.getConnection("jdbc:sqlite:" + db.getAbsolutePath());
+				ds = SQLite.getDataSource("jdbc:sqlite:" + db.getAbsolutePath());
+				c = ds.getConnection();
 				urlField.setText(db.toURI().toString());
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -153,7 +157,8 @@ public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditP
 				try {
 					c.close();
 					db.delete();
-					c = DriverManager.getConnection("jdbc:sqlite:" + db.getAbsolutePath());
+					ds = SQLite.getDataSource("jdbc:sqlite:" + db.getAbsolutePath());
+					c = ds.getConnection();
 					output.append(executeCreator().toString());
 				} catch (SQLException e1) {
 					e1.printStackTrace();
@@ -178,7 +183,8 @@ public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditP
 		} else if (urlField == e.getSource()) {
 			try {
 				c.close();
-				c = DriverManager.getConnection("jdbc:sqlite::resource:" + urlField.getText() );
+				ds = SQLite.getDataSource("jdbc:sqlite::resource:" + urlField.getText() );
+				c = ds.getConnection();
 				java.sql.Statement s = c.createStatement();
 				s.executeUpdate("backup to " + db);
 				s.close();

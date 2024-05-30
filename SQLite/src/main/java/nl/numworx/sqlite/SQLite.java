@@ -2,10 +2,12 @@ package nl.numworx.sqlite;
 
 import java.util.Locale;
 
+import javax.sql.DataSource;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
-import org.sqlite.JDBC;
+import org.sqlite.SQLiteDataSource;
 
 import fi.beans.mainframe.JApplet;
 import fi.beans.wiskopdrbeans.InteractiePanel;
@@ -17,9 +19,15 @@ public class SQLite extends JApplet implements WiskOpdrApplet {
 		return new SQLiteInteractiePanel();
 	}
 
+	static public DataSource getDataSource(String url) {
+		SQLiteDataSource ds = new SQLiteDataSource();
+		ds.setUrl(url);
+		return ds;
+	}
+
 	public static void main(String[] args) {
 		JFrame f = new JFrame("SQLite editor");
-		f.setDefaultCloseOperation(f.EXIT_ON_CLOSE);
+		f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		JPanel content = new SQLiteInteractieEditPanel();
 		f.setContentPane(content);
 		f.pack();
@@ -31,9 +39,5 @@ public class SQLite extends JApplet implements WiskOpdrApplet {
 	public SQLite(Locale locale) {
 		this.locale = locale;
 	}
-	
-	static {
-		new JDBC();
-	}
-	
+		
 }
