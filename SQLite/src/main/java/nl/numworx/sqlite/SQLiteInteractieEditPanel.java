@@ -4,14 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Hashtable;
@@ -29,6 +24,7 @@ import fi.beans.numworxlf.JLabel;
 import fi.beans.numworxlf.JTextField;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
+@SuppressWarnings("serial")
 public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditPanel, ActionListener {
 
 	File db;
@@ -90,10 +86,10 @@ public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditP
 		return launchData;
 	}
 
-	public void setEditState(Hashtable arg0) {
-		String text = arg0.getOrDefault("create", "").toString();
+	public void setEditState(Hashtable h) {
+		String text = h.getOrDefault("create", "").toString();
 		creator.setText(text);
-		String path = (String) arg0.get("file");
+		String path = (String) h.get("file");
 		File f = new File(path);
 		if (f.exists()) {
 			try {
@@ -108,8 +104,8 @@ public class SQLiteInteractieEditPanel extends JPanel implements InteractieEditP
 			}
 		}
 		
-		if (arg0.containsKey("url")) {
-			urlField.setText(arg0.get("url").toString());
+		if (h.containsKey("url")) {
+			urlField.setText(h.get("url").toString());
 		}
 		
 	}
