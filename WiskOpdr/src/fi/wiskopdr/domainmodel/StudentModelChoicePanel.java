@@ -497,7 +497,7 @@ public class StudentModelChoicePanel extends JPanel
     north.add(graphButton);
     add(north, BorderLayout.NORTH);
 
-    JSplitPane split = new JSplitPane();
+    split = new JSplitPane();
     BasicSplitPaneUI sui = (BasicSplitPaneUI) BasicSplitPaneUI.createUI(split);
     split.setUI(sui);
     BasicSplitPaneDivider divider = sui.getDivider();
@@ -523,7 +523,7 @@ public class StudentModelChoicePanel extends JPanel
     graph.addActionListener(new GraphTreeAction(tree));
     graph.addActionListener(this::updateGraph);
 
-    JSplitPane leftBox = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    leftBox = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     leftBox.setBorder(BorderFactory.createEmptyBorder());
     leftBox.setResizeWeight(0.9);
     BasicSplitPaneUI suiLeft = (BasicSplitPaneUI) BasicSplitPaneUI.createUI(leftBox);
@@ -543,12 +543,12 @@ public class StudentModelChoicePanel extends JPanel
     hbox.add(Box.createGlue());
     vbox.add(hbox);
     leftBox.setTopComponent(vbox);
-    sp.setMinimumSize(new Dimension(400, 300));
-    sp.setPreferredSize(sp.getMinimumSize());
+    sp.setMinimumSize(new Dimension(400, 200));
+    sp.setPreferredSize(new Dimension(400,300));
 
     split.setLeftComponent(leftBox);
 
-    Box rightBox = Box.createVerticalBox();
+    rightBox = Box.createVerticalBox();
     split.setRightComponent(rightBox);
 
     String descr = "";
@@ -597,7 +597,7 @@ public class StudentModelChoicePanel extends JPanel
 
     rightBox.add(hb);
     rightBox.add(scroll);
-    rightBox.add(slider);
+    //rightBox.add(slider);
 
     tree.addTreeSelectionListener(this);
 
@@ -627,6 +627,12 @@ public class StudentModelChoicePanel extends JPanel
 
       }
     });
+  }
+
+
+  public StudentModelChoicePanel(Supplier<StudentModel> supplier, boolean b) {
+    this(supplier);
+    showDescription(b);
   }
 
 
@@ -666,6 +672,9 @@ public class StudentModelChoicePanel extends JPanel
   private List<String> objectives;
   private List<String> deselections = Collections.emptyList(), deselections0 = deselections;
   private Collection<String> foreknowledge;
+  private JSplitPane split;
+  private JSplitPane leftBox;
+  private Box rightBox;
 
   public List<String> getObjectives() {
     return objectives;
@@ -980,5 +989,12 @@ public class StudentModelChoicePanel extends JPanel
     this.foreknowledge = foreknowledge;
   }
 
-
+  public void showDescription(boolean show) {
+    if (!show) {
+        remove(split);
+        add(leftBox.getTopComponent(), BorderLayout.CENTER);
+        title.getParent().setVisible(show);
+    }
+  }
+  
 }

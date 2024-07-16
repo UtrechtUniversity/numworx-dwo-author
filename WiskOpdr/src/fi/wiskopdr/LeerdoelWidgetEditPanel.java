@@ -9,7 +9,9 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -27,16 +29,18 @@ import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JComboBox;
 import fi.beans.numworxlf.JLabel;
 import fi.beans.numworxlf.JRadioButton;
+import fi.beans.numworxlf.JTabbedPane;
 import fi.beans.numworxlf.JTextField;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.wiskopdr.domainmodel.StudentModel;
+import fi.wiskopdr.domainmodel.StudentModelChoicePanel;
 import fi.wiskopdr.domainmodel.filter.FilterPanel;
 import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 
 public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPanel, ActionListener {
 
   //Algemene attributen 
-  private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
+  private Font font = WiskOpdr.tekstFont;
 
   //Basis GUI
   private JPanel mainPanel;
@@ -46,8 +50,9 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
   private JLabel titleSettingsLabel;
   private JComboBox<StudentModel> leerdomeinCombobox;
   private JLabel filterSettingsLabel;
-  private JPanel filterPanelContainer;
+  private JTabbedPane filterPanelContainer;
   private FilterPanel filterPanel;
+  private StudentModelChoicePanel modelPanel;
   
   // type
   private JLabel typeLabel;
@@ -97,15 +102,15 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     leerdomeinCombobox.setMinimumSize(new Dimension(450,22));
     leerdomeinCombobox.addActionListener(this);
     
-    filterSettingsLabel = new JLabel(WiskOpdr.rb.getString("LWEP_filterSettingsLabel"));
-    filterSettingsLabel.setForeground(WiskOpdr.colorBlue1);
-    filterSettingsLabel.setFont(font.deriveFont(Font.BOLD, 16));
-    filterSettingsLabel.setVisible(false);
+//    filterSettingsLabel = new JLabel(WiskOpdr.rb.getString("LWEP_filterSettingsLabel"));
+//    filterSettingsLabel.setForeground(WiskOpdr.colorBlue1);
+//    filterSettingsLabel.setFont(font.deriveFont(Font.BOLD, 16));
+//    filterSettingsLabel.setVisible(false);
     
-    filterPanelContainer = new JPanel();
-    filterPanelContainer.setLayout(new BorderLayout());
-    filterPanelContainer.setPreferredSize(new Dimension(450,300));
-    filterPanelContainer.add(filterSettingsLabel, BorderLayout.NORTH);
+    filterPanelContainer = new JTabbedPane();
+    filterPanelContainer.setPreferredSize(new Dimension(450,400));
+//    filterPanelContainer.add(filterSettingsLabel, BorderLayout.NORTH);
+//    filterPanelContainer.addTab(WiskOpdr.rb.getString("LWEP_filterSettingsLabel"), filterHeaderCB);
     
     // Instellingen
     settingsLabel = new JLabel(WiskOpdr.rb.getString("LWEP_settingsLabel"));
@@ -137,7 +142,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     typeLabel = new JLabel("Type");
     typeLabel.setForeground(WiskOpdr.colorBlue1);
     typeLabel.setFont(font.deriveFont(Font.BOLD, 16));
-    String[] items = new String[] { "Graph", "Lijst" }; // FIXME i18n
+    String[] items = new String[] { "Graph", "Lijst", "Recommender" }; // FIXME i18n
     typeCB = new JComboBox<String>(items);
     //typeCB.setMaximumSize(typeCB.getPreferredSize());
     typeCB.setForeground(WiskOpdr.colorBlue1);
@@ -222,6 +227,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     boolean zoomKnoppen = false;
     boolean filterHeader = false;
     boolean leerdoelScore = false;
+    List<String> objectives = Collections.emptyList();
     int type = 0;
     
     if(h.containsKey("activeMethod"))
@@ -244,6 +250,8 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
       leerdoelScore = ((Boolean)h.get("leerdoelScore")).booleanValue();
     if (h.containsKey("type"))
       type = ((Number)h.get("type")).intValue();
+    if (h.containsKey("objectives")) 
+      objectives = (List<String>) h.get("objectives");
     for(StudentModel s: studentModels) {
       if (s != null && s.id .equals(studentModelID)) { studentModel = s; break; }
     }
@@ -251,14 +259,24 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     if(filter!=null)
       if(studentModel!=null && Objects.equals(studentModel.activeMethod, activeMethod)) {
         if (filterPanel != null) {
-          filterPanelContainer.remove(filterPanel);
+          int index = filterPanelContainer.indexOfComponent(filterPanel);
+          filterPanelContainer.remove(index);
         }
+        
         filterPanel = new FilterPanel(studentModel.activeMethod);
         filterPanel.setFilter(filter); // werkt niet. Even aan Wim vragen 
-        filterPanelContainer.add(filterPanel);
-        filterSettingsLabel.setVisible(true);
+        filterPanelContainer.addTab(WiskOpdr.rb.getString("LWEP_filterSettingsLabel"), filterPanel);
       }
-    
+    if (studentModel != null) {
+      if (modelPanel != null) {
+        int index = filterPanelContainer.indexOfComponent(modelPanel);
+        filterPanelContainer.remove(index);
+      }
+      modelPanel = new StudentModelChoicePanel(this::supplyModel, false);
+      modelPanel.setObjectives(objectives);
+      modelPanel.makeGUI();
+      filterPanelContainer.addTab("Kies leerdoel", modelPanel);
+    }
     leerdoelPopupCB.setSelected(leerdoelPopup);
     voorkennisKnopCB.setSelected(voorkennisKnop);
     voorkennisMenuCB.setSelected(voorkennisMenu);
@@ -291,6 +309,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     boolean zoomKnoppen = false;
     boolean filterHeader = false;
     boolean leerdoelScore = false;
+    List<String> objectives = null;
     int type = 0;
    
     if(studentModel!=null) {
@@ -299,6 +318,10 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     }
     if(filterPanel!=null)
       filter = filterPanel.getFilter();
+    if (modelPanel != null) {
+      modelPanel.makeChoices();
+      objectives = modelPanel.getObjectives();
+    }
     
     leerdoelPopup = leerdoelPopupCB.isSelected();
     voorkennisKnop = voorkennisKnopCB.isSelected();
@@ -322,6 +345,9 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     h.put("filterHeader", filterHeader);
     h.put("leerdoelScore", leerdoelScore);
     h.put("type", type);
+    if (objectives != null) {
+      h.put("objectives", objectives);
+    }
 // extra
     JSONObject p = WiskOpdr.applet.getDwoProfile();
     p = (JSONObject) p.get("id");
@@ -354,16 +380,33 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     
   }
 
+  private StudentModel supplyModel() {
+    return WiskOpdr.applet.expandStudentModel(studentModel);
+  }
+  
   @Override
   public void actionPerformed(ActionEvent e) {
     if(e.getSource().equals(leerdomeinCombobox)) {
       studentModel = (StudentModel) leerdomeinCombobox.getSelectedItem();
       if(studentModel!=null) {
         if(filterPanel!=null) 
-          filterPanelContainer.remove(filterPanel);
+        {
+          int index = filterPanelContainer.indexOfComponent(filterPanel);
+          filterPanelContainer.remove(index);
+        }
         filterPanel = new FilterPanel(studentModel.activeMethod);
-        filterPanelContainer.add(filterPanel);
-        filterSettingsLabel.setVisible(true);
+//        filterPanelContainer.add(filterPanel);
+//        filterSettingsLabel.setVisible(true);
+        filterPanelContainer.addTab(WiskOpdr.rb.getString("LWEP_filterSettingsLabel"), filterPanel);
+        if (modelPanel != null) {
+          int index = filterPanelContainer.indexOfComponent(modelPanel);
+          filterPanelContainer.remove(index);
+        }
+        modelPanel = new StudentModelChoicePanel(this::supplyModel, false);
+        modelPanel.makeGUI();
+        filterPanelContainer.addTab("Kies leerdoel", modelPanel);   
+        filterPanelContainer.invalidate();
+        filterPanelContainer.validate();
       }
     }
     
