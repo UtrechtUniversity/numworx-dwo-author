@@ -569,6 +569,12 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
       return getWiskOpdrPanel(launchDataString, locale, appletStub);
 	   }
 	
+	   
+	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale, fi.beans.mainframe.AppletStub stub) {
+	  final AppletStub appletstub = stub;
+	  return getWiskOpdrPanel(launchDataString, locale, appletstub);
+	}
+	   
 	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale, AppletStub stub) {
 		language = locale;
 		WiskOpdr wiskOpdr = new WiskOpdr();
@@ -597,6 +603,12 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		WiskOpdrEditPanel wop = new WiskOpdrEditPanel(launchDataString, wiskOpdr);
 		return wop;
 	}
+
+	public static WiskOpdrEditPanel getWiskOpdrEditPanel(String launchDataString, Locale locale, fi.beans.mainframe.AppletStub stub, int ew, int eh, int dw, int dh) {
+	  AppletStub appletstub = stub;
+	  return getWiskOpdrEditPanel(launchDataString, locale, appletstub, ew,eh, dw, dh);
+	}
+	
 	public static WiskOpdrEditPanel getWiskOpdrEditPanel(String launchDataString, Locale locale, AppletStub stub, int ew, int eh, int dw, int dh) {
 	  language = locale;
 	  WiskOpdr wiskOpdr = new WiskOpdr();
@@ -1910,7 +1922,10 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		if( applet != null) {
 			String parameter = applet.getParameter("scoViewNr");
 			if(parameter != null)
-				return parameter; 
+				return parameter;
+			parameter = applet.getParameter("courseViewNr");
+			if (parameter != null) 
+			  return "course-" + parameter;
 		}
 		return "scoViewNr";
 	}
