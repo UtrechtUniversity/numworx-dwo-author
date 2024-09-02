@@ -422,6 +422,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"OPT_docHeightLabel" , "Height (min)"},
                 {"OPT_combCompNav" , "Combined components"},
                 {"OPT_stylesWarnDialog" , "All styles will be lost. Ok?"},
+                {"OPT_browserHistory", "Browser history"},
                 
                 {"OPT_styleInteractionsLabel" , "Style answerboxes"},
                 {"OPT_TemplateGeenLabel" , "No template"},

@@ -443,6 +443,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_docHeightLabel" , "Hoogte (min)"},
 				{"OPT_combCompNav" , "Gedeelde componenten"},
 				{"OPT_stylesWarnDialog" , "Alle ingestelde styles gaan verloren. Akkoord?"},
+				{"OPT_browserHistory",  "Browser geschiedenis"},
 				
 				{"OPT_styleInteractionsLabel" , "Stijl antwoordvakken"},
 				{"OPT_TemplateGeenLabel" , "Geen template"},

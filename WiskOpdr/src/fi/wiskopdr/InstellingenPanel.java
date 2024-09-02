@@ -51,6 +51,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox zelftoetsGeschiedenisCB;
 	private JCheckBox zelftoetsHighScoreCB;
 	private JCheckBox eerderGeenCorrCB;
+	private JCheckBox browserHistoryCB;
 	private JCheckBox significantieCB;
 	private JCheckBox objectivesCB;
 	//private JCheckBox pilotObjectivesCB;
@@ -535,6 +536,19 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		combinedComponentsCB = maakCheckBoxHelp(hbCombinedComponents,WiskOpdr.rb.getString("OPT_combCompNav"), boxv2, false);
 	    
+        boxh = Box.createHorizontalBox();
+        //boxh.add(Box.createRigidArea(new Dimension(20,0)));
+		browserHistoryCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_browserHistory"));
+		browserHistoryCB.setOpaque(false);
+		browserHistoryCB.setFont(font);
+		browserHistoryCB.setForeground(WiskOpdr.fgcolorEditor);
+		browserHistoryCB.setSelected(true);
+		browserHistoryCB.setVisible(true);
+        boxh.add(browserHistoryCB);
+        boxh.add(Box.createHorizontalGlue());
+        boxv2.add(boxh);
+		
+		
 	    //boxv2.add(Box.createVerticalStrut(130));
 	    
 		
@@ -1154,9 +1168,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		combinedComponents = combinedComponentsCB.isSelected();
 		styleInteractionsNr = styleInteractionsComboBox.getSelectedIndex();
+		boolean browserHistory = browserHistoryCB.isSelected();
 		 
 		
-		Hashtable h = new Hashtable();
+		Hashtable<String,Object> h = new Hashtable<>();
 		
 		h.put("fontSize", new Integer(fontSize));
 		h.put("maalTeken", new Boolean(maalTeken));
@@ -1231,6 +1246,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("aftrekCorrectieZelftoets", new Integer(aftrekCorrectieZelftoets));
 		h.put("combinedComponents", new Boolean(combinedComponents));
 		h.put("styleInteractionsNr", new Integer(styleInteractionsNr));
+		h.put("browserHistory", Boolean.valueOf(browserHistory));
 		
 		return h;
 	}
@@ -1299,6 +1315,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean[] layerVisible = null;
 		boolean combinedComponents = false;
 		int styleInteractionsNr = 0;
+		boolean browserHistory = true;
 		
 		if(h.containsKey("fontSize")) fontSize = ((Integer)h.get("fontSize")).intValue();
 		if(h.containsKey("maalTeken")) maalTeken = ((Boolean)h.get("maalTeken")).booleanValue();
@@ -1370,6 +1387,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("layerVisible")) layerVisible = (boolean[])h.get("layerVisible");
 		if(h.containsKey("combinedComponents")) combinedComponents = ((Boolean)h.get("combinedComponents")).booleanValue();
 		if(h.containsKey("styleInteractionsNr")) styleInteractionsNr = ((Integer)h.get("styleInteractionsNr")).intValue();
+		if (h.containsKey("browserHistory")) browserHistory = !Boolean.FALSE.equals(h.get("browserHistory"));
 		
 		fontSizeTF.setText(""+fontSize);
 		//navigatieSizeTF.setText(""+navigatieSize);
@@ -1463,6 +1481,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		layersButton.zetLayerInfo(layerNames, layerVisible);
 		combinedComponentsCB.setSelected(combinedComponents || ShareAction.getSharingIsUsed());
 		styleInteractionsComboBox.setSelectedIndex(styleInteractionsNr);
+		browserHistoryCB.setSelected(browserHistory);
 	}
 	
 	public void cancel()
