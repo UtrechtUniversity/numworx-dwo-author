@@ -4743,14 +4743,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	@Override
 	public void addCBookEventListener(CBookEventListener listener, String command) {
-		cbookEventHandler.addCBookEventListener(listener, command);
-		
+		cbookEventHandler.addCBookEventListener(listener, command);		
 	}
 
 	@Override
 	public void removeCBookEventListener(CBookEventListener listener,String command) {
-		cbookEventHandler.removeCBookEventListener(listener, command);
-		
+		cbookEventHandler.removeCBookEventListener(listener, command);		
 	}
 
 	@Override
@@ -4763,7 +4761,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				"action.popup",
 				"action.select",
 				"action.deselect",
-				"action.click"};
+				"action.click", 
+				"action.widelayout", // layout events
+				"action.smalllayout"
+				};
 		return sendCommands;
 	}
 
