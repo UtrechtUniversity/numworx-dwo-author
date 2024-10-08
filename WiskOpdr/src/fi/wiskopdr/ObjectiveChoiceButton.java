@@ -172,6 +172,14 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
       else
         return null;
     }
+    
+    public Number getGuess() {
+      return strategy.getGuess();
+    }
+    
+    public void setGuess(Number guess) {
+      strategy.setGuess(guess);
+    }
 
     public void setChoices (boolean[][] choices)
     {
@@ -403,12 +411,14 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
     String[] smObjectives = NULSTRINGS;
     String[] smForeknowledge = null;
     String[] smDeselections = NULSTRINGS;
+    Number guess = null;
     
     if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
     if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
     if(interactiePanelLaunchState.containsKey(Constants.FOREKNOWLEDGE)) smForeknowledge = (String[]) interactiePanelLaunchState.get(Constants.FOREKNOWLEDGE);
     if(interactiePanelLaunchState.containsKey(Constants.DESELECTIONS)) smDeselections = (String[]) interactiePanelLaunchState.get(Constants.DESELECTIONS);
     if(interactiePanelLaunchState.containsKey("scoreMaxObjectives")) scoreMaxObjectives = (int[][]) interactiePanelLaunchState.get("scoreMaxObjectives");
+    if(interactiePanelLaunchState.containsKey(Constants.GUESS)) guess = (Number) interactiePanelLaunchState.get(Constants.GUESS);
     interactiePanelLaunchState = new Hashtable<String,Object>();
 
     if (scoreMaxObjectives != null) 
@@ -422,6 +432,8 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
           interactiePanelLaunchState.put(Constants.DESELECTIONS, smDeselections);
           if (smForeknowledge != null)
             interactiePanelLaunchState.put(Constants.FOREKNOWLEDGE, smForeknowledge);
+          if (guess != null)
+            interactiePanelLaunchState.put(Constants.GUESS, guess);
         } catch(Exception e) {}
     }
     return interactiePanelLaunchState;
@@ -438,15 +450,18 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
     String[] smObjectives = null;
     String[] smForeknowledge = null;
     String[] smDeselections = null;
+    Number guess = null;
     
     if(interactiePanelLaunchState.containsKey("logObjectives")) logObjectives = (boolean[][])interactiePanelLaunchState.get("logObjectives");
     if(interactiePanelLaunchState.containsKey(Constants.OBJECTIVES)) smObjectives = (String[]) interactiePanelLaunchState.get(Constants.OBJECTIVES);
     if(interactiePanelLaunchState.containsKey(Constants.FOREKNOWLEDGE)) smForeknowledge = (String[]) interactiePanelLaunchState.get(Constants.FOREKNOWLEDGE);
     if(interactiePanelLaunchState.containsKey(Constants.DESELECTIONS)) smDeselections = (String[]) interactiePanelLaunchState.get(Constants.DESELECTIONS);
+    if(interactiePanelLaunchState.containsKey(Constants.GUESS)) guess = (Number) interactiePanelLaunchState.get(Constants.GUESS);
     this.setChoices(logObjectives);
     this.setObjectives(smObjectives);
     this.setDeselections(smDeselections);
     this.setForeknowledge(smForeknowledge);
+    this.setGuess(guess);
   }
   
   public Map getEditState(int scoreMax) {
@@ -454,6 +469,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
     int[][] scoreMaxObjectives = null;
     boolean[][] logObjectives = null;
     String[] smObjectives = null;
+    Number guess = this.getGuess();
     logObjectives = this.getChoices();
     smObjectives = this.getObjectives();
     String[] smDeselections = this.getDeselections();
@@ -476,6 +492,8 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
           interactiePanelLaunchState.put(Constants.DESELECTIONS, smDeselections);
           if (smForeknowledge != null)
             interactiePanelLaunchState.put(Constants.FOREKNOWLEDGE, smForeknowledge);
+          if (guess != null)
+            interactiePanelLaunchState.put(Constants.GUESS, guess);
         } catch(Exception e) {}
     }
     return interactiePanelLaunchState; 

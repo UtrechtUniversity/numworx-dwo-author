@@ -25,4 +25,6 @@ public interface ObjectiveChoices {
   default void setDeselections(List<String> deselections) { }
   default Collection<String> getForeknowledge() { return null; }
   default void setForeknowledge(Collection<String> foreknowledge) { }
+  default Number getGuess() { return null; } // no guess 
+  default void setGuess(Number guess) { }
 }

@@ -570,12 +570,17 @@ public class StudentModelChoicePanel extends JPanel
       scroll.setViewportView(b.getBrowserPanel());
       b.setDescription(descr);
     }
-    slider = new JSlider(1, 10, 10);
-    slider.setToolTipText("factor");
-    slider.setMajorTickSpacing(3);
+    slider = new JSlider();
+    slider.setToolTipText("Guess");
+    slider.setMajorTickSpacing(25);
+    slider.setMinorTickSpacing(5);
     Hashtable<Number, JLabel> dict = new Hashtable<>();
-    dict.put(slider.getMinimum(), new JLabel("min"));
-    dict.put(slider.getMaximum(), new JLabel("max"));
+    dict.put(slider.getMinimum(), new JLabel("0%"));
+    dict.put(slider.getMaximum(), new JLabel("100%"));
+    dict.put(50, new JLabel("50%"));
+    dict.put(10, new JLabel("10%"));
+    dict.put(75, new JLabel("75%"));
+    dict.put(25, new JLabel("25%"));
     slider.setLabelTable(dict);
     slider.setPaintLabels(true);
     slider.setPaintTicks(true);
@@ -597,7 +602,7 @@ public class StudentModelChoicePanel extends JPanel
 
     rightBox.add(hb);
     rightBox.add(scroll);
-    //rightBox.add(slider);
+    rightBox.add(slider);
 
     tree.addTreeSelectionListener(this);
 
@@ -905,7 +910,7 @@ public class StudentModelChoicePanel extends JPanel
         Double factor = null;
         if (u instanceof NodeLeaf) factor = ids.get(((NodeLeaf) u).getId());
         if (factor == null) factor = 1.0;
-        slider.setValue(Math.round(slider.getMaximum() * factor.floatValue()));
+        //slider.setValue(Math.round(slider.getMaximum() * factor.floatValue()));
 
         String descr = ((Node) u).getDescription();
         if (descr == null) descr = "";
@@ -935,7 +940,7 @@ public class StudentModelChoicePanel extends JPanel
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
     Object u = node.getUserObject();
     if (u instanceof NodeLeaf) {
-      ids.put(((NodeLeaf) u).getId(), (double) slider.getValue() / slider.getMaximum());
+      ids.put(((NodeLeaf) u).getId(), 1.0); // ALTIJD 1.0
       model.nodeChanged(node);
     }
   }
@@ -995,6 +1000,23 @@ public class StudentModelChoicePanel extends JPanel
         add(leftBox.getTopComponent(), BorderLayout.CENTER);
         title.getParent().setVisible(show);
     }
+  }
+
+
+  @Override
+  public Number getGuess() {
+    float slider = this.slider.getValue();
+    if (slider == 10.0f) return null; // default value....
+    slider /= this.slider.getMaximum();
+    return slider;
+  }
+
+
+  @Override
+  public void setGuess(Number guess) {
+    if (guess == null) guess = 0.1f; // default guess;
+    this.slider.setValue(Math.round(guess.floatValue()*this.slider.getMaximum()));
+    
   }
   
 }
