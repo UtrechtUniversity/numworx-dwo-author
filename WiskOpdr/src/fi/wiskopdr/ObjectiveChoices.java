@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.swing.tree.TreeModel;
 
@@ -27,4 +28,5 @@ public interface ObjectiveChoices {
   default void setForeknowledge(Collection<String> foreknowledge) { }
   default Number getGuess() { return null; } // no guess 
   default void setGuess(Number guess) { }
+  default void setDefaultGuess(Supplier<Number> supplier) { }
 }

@@ -3,6 +3,7 @@ package fi.wiskopdr;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.function.Supplier;
 
 import javax.swing.*;
 
@@ -18,7 +19,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.numworxlf.JScrollPane;
 
 
-public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements InteractieEditPanel, FocusListener, ActionListener,  MouseListener, MouseMotionListener, TabletOwner, HelpButtonPanelIF
+public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements InteractieEditPanel, FocusListener, ActionListener,  MouseListener, MouseMotionListener, TabletOwner, HelpButtonPanelIF, Supplier<Number>
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
@@ -254,6 +255,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
         logObjectivesButton.setBounds(600,5,120,20);
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
+        logObjectivesButton.setDefaultGuess(this);
 		        
         // Settings
         titleSettingsLabel = new JLabel(WiskOpdr.rb.getString("settingsLabel"));
@@ -431,6 +433,8 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 //                add(keuzeVelden[i],0);
 //            }
 //        }   
+	    if (logObjectivesButton!=null)
+			logObjectivesButton.setDefaultGuess(this);
         repaint();
     }
 	
@@ -1054,5 +1058,10 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	public String geefHelpURL() {
 		return HELP_14_URL;
 	}
+
+  @Override
+  public Number get() {
+    return Float.valueOf(1.0f / aantalKeuzes);
+  }
 }
 

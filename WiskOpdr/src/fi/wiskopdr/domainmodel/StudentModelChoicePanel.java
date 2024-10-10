@@ -574,14 +574,7 @@ public class StudentModelChoicePanel extends JPanel
     slider.setToolTipText("Guess");
     slider.setMajorTickSpacing(25);
     slider.setMinorTickSpacing(5);
-    Hashtable<Number, JLabel> dict = new Hashtable<>();
-    dict.put(slider.getMinimum(), new JLabel("0%"));
-    dict.put(slider.getMaximum(), new JLabel("100%"));
-    dict.put(50, new JLabel("50%"));
-    dict.put(10, new JLabel("10%"));
-    dict.put(75, new JLabel("75%"));
-    dict.put(25, new JLabel("25%"));
-    slider.setLabelTable(dict);
+    createLabels();
     slider.setPaintLabels(true);
     slider.setPaintTicks(true);
 
@@ -635,6 +628,19 @@ public class StudentModelChoicePanel extends JPanel
   }
 
 
+  public void createLabels() {
+    Hashtable<Number, JLabel> dict = new Hashtable<>();
+    dict.put(slider.getMinimum(), new JLabel("0%"));
+    dict.put(slider.getMaximum(), new JLabel("100%"));
+    dict.put(50, new JLabel("50%"));
+    dict.put(75, new JLabel("75%"));
+    dict.put(25, new JLabel("25%"));
+    dict.put(defaultGuess(), new JLabel(defaultGuess() + "%"));
+    slider.setLabelTable(dict);
+    setGuess(null);
+  }
+
+
   public StudentModelChoicePanel(Supplier<StudentModel> supplier, boolean b) {
     this(supplier);
     showDescription(b);
@@ -673,7 +679,7 @@ public class StudentModelChoicePanel extends JPanel
   private boolean[][] choices;
   private Map<String, Double> ids;
   private JScrollPane scroll;
-  private JSlider slider;
+  private final JSlider slider;
   private List<String> objectives;
   private List<String> deselections = Collections.emptyList(), deselections0 = deselections;
   private Collection<String> foreknowledge;
@@ -1005,18 +1011,34 @@ public class StudentModelChoicePanel extends JPanel
 
   @Override
   public Number getGuess() {
-    float slider = this.slider.getValue();
-    if (slider == 10.0f) return null; // default value....
-    slider /= this.slider.getMaximum();
-    return slider;
+    int slider = this.slider.getValue();
+    if (slider == defaultGuess()) return null; // default value....
+    return Float.valueOf( slider / (float) this.slider.getMaximum());
+  }
+
+  private Supplier<Number> defaultGuess;
+  private int defaultGuess() {
+    if (defaultGuess != null) {
+      Number guess = defaultGuess.get();
+      if (guess != null) return Math.round(guess.floatValue() * slider.getMaximum());
+    }
+    return Math.round(0.1f * slider.getMaximum());
   }
 
 
   @Override
   public void setGuess(Number guess) {
-    if (guess == null) guess = 0.1f; // default guess;
-    this.slider.setValue(Math.round(guess.floatValue()*this.slider.getMaximum()));
+    if (guess == null)
+      slider.setValue(defaultGuess());
+    else
+      slider.setValue(Math.round(guess.floatValue()*this.slider.getMaximum()));
     
+  }
+
+  @Override
+  public void setDefaultGuess(Supplier<Number> supplier) {
+    defaultGuess = supplier;
+    createLabels();
   }
   
 }

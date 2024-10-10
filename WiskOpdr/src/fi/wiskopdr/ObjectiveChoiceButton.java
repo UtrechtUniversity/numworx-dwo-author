@@ -181,6 +181,11 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
       strategy.setGuess(guess);
     }
 
+    public void setDefaultGuess(Supplier<Number> supplier) {
+      strategy.setDefaultGuess(supplier);
+    }
+    
+    
     public void setChoices (boolean[][] choices)
     {
       strategy.setChoices(choices);
