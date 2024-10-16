@@ -496,6 +496,12 @@
     		<version>1.1.1</version>
     		<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>fi.dwo</groupId>
+			<artifactId>fi.dwo.eawt</artifactId>
+			<version>0.0.2</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
 	<profiles>
