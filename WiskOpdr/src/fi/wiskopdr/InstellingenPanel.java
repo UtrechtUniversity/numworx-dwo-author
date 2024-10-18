@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import javax.swing.*;
@@ -19,6 +21,7 @@ import fi.wiskopdr.opdrnav.*;
 import fi.wiskopdr.tekstobjects.ShareAction;
 //import fi.wiskopdr.tekstobjects.VoorwaardelijkeLinkButton;
 import fi.wiskopdr.expressies.*;
+import fi.beans.base64code.StringCodeObject;
 import fi.beans.numworxlf.JScrollPane;
 
 
@@ -1521,51 +1524,52 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		
 		
-		// onderstaande bestemd om oude activiteiten naar het Numworx template te brengen. strings nu hard in de code. Liever inladen uit database
-//		if(WiskOpdr.isExperimental()) {
+// onderstaande bestemd om oude activiteiten naar het Numworx template te brengen. strings nu hard in de code. Liever inladen uit database
+final boolean activateInteractionsComboBox = false;
+		if(WiskOpdr.isExperimental() && activateInteractionsComboBox) {
 		
-//			int index = styleInteractionsComboBox.getSelectedIndex();
-//       	WiskOpdr.setTemplateConstants(templateNames[index]);
-//			TekstVakPanel.setTemplateName(templateNames[index]);
+			int index = styleInteractionsComboBox.getSelectedIndex();
+       	    WiskOpdr.setTemplateConstants(templateNames[index]);
+			TekstVakPanel.setTemplateName(templateNames[index]);
 		
-//			String[] launchDataStringTemplates = new String[index+1];
-//			Properties templates = new Properties();
-//			try {
-//    			InputStream in = getClass().getResourceAsStream("resources/template.properties");
-//    			templates.load(in);
-//    			in.close();
-//			} catch(IOException oops) {}
-//			launchDataStringTemplates[index] = templates.getProperty(String.valueOf(index));
-//			Object ob1 = StringCodeObject.decodeStringToObject(launchDataStringTemplates[index]);
-//			Hashtable launchData = (Hashtable) ob1;
-//			
-//			String instellingenString = (String) launchData.get("instellingen");
-//			Object ob = StringCodeObject.decodeStringToObject(instellingenString);
-//			Hashtable instellingen = (Hashtable) ob;
-//			
-//			Hashtable styles = null;
-//			Hashtable templatePages = null;
-//			Hashtable templateComponents = null;
-//			ArrayList<String> templatePagesKeys = null;
-//			ArrayList<String> templateComponentsKeys = null;
-//			
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelStyles"))
-//				styles = (Hashtable) instellingen.get("TekstVakPanelStyles");
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePages"))
-//				templatePages = (Hashtable) instellingen.get("TekstVakPanelTemplatePages");
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponents"))
-//				templateComponents = (Hashtable) instellingen.get("TekstVakPanelTemplateComponents");
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePagesKeys"))
-//				templatePagesKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplatePagesKeys");
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponentsKeys"))
-//				templateComponentsKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplateComponentsKeys");
-//			
-//			TekstVakPanel.styles = styles;
-//			TekstVakPanel.templatePages = templatePages;
-//			TekstVakPanel.templateComponents = templateComponents;
-//			TekstVakPanel.templatePagesKeys = templatePagesKeys;
-//			TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
-//		}
+			String[] launchDataStringTemplates = new String[index+1];
+			Properties templates = new Properties();
+			try {
+   			InputStream in = getClass().getResourceAsStream("resources/template.properties");
+    			templates.load(in);
+    			in.close();
+			} catch(IOException oops) {}
+			launchDataStringTemplates[index] = templates.getProperty(String.valueOf(index));
+			Object ob1 = StringCodeObject.decodeStringToObject(launchDataStringTemplates[index]);
+			Hashtable launchData = (Hashtable) ob1;
+			
+			String instellingenString = (String) launchData.get("instellingen");
+			Object ob = StringCodeObject.decodeStringToObject(instellingenString);
+			Hashtable instellingen = (Hashtable) ob;
+			
+			Hashtable styles = null;
+			Hashtable templatePages = null;
+			Hashtable templateComponents = null;
+			ArrayList<String> templatePagesKeys = null;
+			ArrayList<String> templateComponentsKeys = null;
+			
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelStyles"))
+				styles = (Hashtable) instellingen.get("TekstVakPanelStyles");
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePages"))
+				templatePages = (Hashtable) instellingen.get("TekstVakPanelTemplatePages");
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponents"))
+				templateComponents = (Hashtable) instellingen.get("TekstVakPanelTemplateComponents");
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePagesKeys"))
+				templatePagesKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplatePagesKeys");
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponentsKeys"))
+				templateComponentsKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplateComponentsKeys");
+			
+			TekstVakPanel.styles = styles;
+			TekstVakPanel.templatePages = templatePages;
+			TekstVakPanel.templateComponents = templateComponents;
+			TekstVakPanel.templatePagesKeys = templatePagesKeys;
+			TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
+		}
 		
 		//opdrNavStruct.setTimer(timerCB.isSelected(), timeLimit);
 		//opdrNavStruct.zetOpnieuwMogelijk(opnieuwCB.isSelected());

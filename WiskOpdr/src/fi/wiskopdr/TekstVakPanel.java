@@ -2031,7 +2031,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 					scoreMaxObjectives[j][k] += ob[j][k];
 				}
 		}
-
+		if (!checkDocent && zichtbaarNaNakijken && scoreMax > 0) 
+		  checkDocent = true;
+		
+		
 		Hashtable h = new Hashtable();
 
 		//tekst = tekstVak.toString();
