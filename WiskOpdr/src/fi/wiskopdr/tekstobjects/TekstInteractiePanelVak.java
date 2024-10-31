@@ -3833,7 +3833,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
       case 66: // scorewidget
           return false;
       case 0: case 1: case 2: case 3: // formule/vergelijking vak
-      case 12: case 13: case 14: case 16: //
+      case 12: case 13: case 14: case 16: //12: checkselectunit, 13 antwoordtekstvak, 14 antwoordkeuzevak 16:checksleepunit
           return true;
       case 4: // teksteditor 
         TekstEditor editor = (TekstEditor) interactiePanel;        
