@@ -3196,7 +3196,7 @@ public class TekstVakEditPanel extends JPanel implements InteractieEditPanel , A
 		visibleCB.setVisible(!b);
 		templateModeEditCB.setVisible(!b && WiskOpdr.isExperimental());
 		templateModeFillCB.setVisible(!b && WiskOpdr.isExperimental());
-		responsiveCB.setVisible(!b && WiskOpdr.isExperimental());
+		responsiveCB.setVisible(!b );
 		//stylesCB.setVisible(!b);
 		
 		hbStyles.setVisible(!b && helpActief);
