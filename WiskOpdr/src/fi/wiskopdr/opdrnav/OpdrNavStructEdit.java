@@ -1443,7 +1443,7 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
     boolean[] layerVisible = instellingenPanel.layersButton.getLayerVisible();
     for(int i = 0; i < layerNames.length; i++) {
       String n = layerNames[i];
-      Boolean b = layerinfo.getOrDefault(n, false);
+      Boolean b = n != null && layerinfo.getOrDefault(n, false);
       if (b != null) layerVisible[i] = b;
     }
     instellingenPanel.layersButton.zetLayerInfo(layerNames, layerVisible);
