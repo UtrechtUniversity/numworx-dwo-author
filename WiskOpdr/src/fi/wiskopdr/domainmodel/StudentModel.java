@@ -3,6 +3,7 @@ package fi.wiskopdr.domainmodel;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -136,8 +137,8 @@ static StudentObjective readObjective(Object object) {
     obj.x = getX(info);
     obj.y = getY(info);
     obj.methode = (Map<String, Map<String, Collection<Number>>>) info.get("methods");
-    obj.methodInfo = getMethodInfo(info);
     obj.variants = getVariants(info);
+    obj.methodInfo = getMethodInfo(info, obj.variants);
     return obj;
 }
 
@@ -160,7 +161,7 @@ private static Variant[] getVariants(JSONObject info) {
   return null;
 }
 
-private static List<DomStudentModelMethodInfo> getMethodInfo(JSONObject map) {
+private static List<DomStudentModelMethodInfo> getMethodInfo(JSONObject map, Variant[] variants) {
   Object info = map.get("methodInfo");
   if (info instanceof List) {
     return ((List<Map>)info).stream().map(item -> {
@@ -168,6 +169,11 @@ private static List<DomStudentModelMethodInfo> getMethodInfo(JSONObject map) {
       result.setX((Number) item.get("x"));
       result.setY((Number) item.get("y"));
       result.setVariant(item.get("variant"));
+      if (variants != null)
+      for(int i = 0; i < variants.length; i++) {
+        if (Objects.equals(variants[i].name, result.getVariant()))
+            result.setVariantDeselections((Collection<String>) variants[i].deselections);
+      }
       return result;
     }).collect(Collectors.toList());
   }

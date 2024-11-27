@@ -149,6 +149,10 @@ public class GraphNode {
 	  updateDeselections(copy);
 	}
 	
+	public Collection<String> getVariantDeselections(String code) {
+	  DomStudentModelMethodInfo info = methodeInfos.get(code);
+	  return info.getVariantDeselections();
+	}
 	
 	@Deprecated
 	public Point getLocation() {

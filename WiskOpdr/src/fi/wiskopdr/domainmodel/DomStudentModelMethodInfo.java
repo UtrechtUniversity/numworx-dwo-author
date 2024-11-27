@@ -1,5 +1,7 @@
 package fi.wiskopdr.domainmodel;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 public class DomStudentModelMethodInfo {
@@ -125,5 +127,16 @@ public class DomStudentModelMethodInfo {
   public String getVariant() {
     return variant;
   }
+
+  Collection<String> variantDeselections = Collections.emptySet();
+  public Collection<String> getVariantDeselections() {
+    return variantDeselections;
+  }
+
+  public void setVariantDeselections(Collection<String> variantDeselections) {
+    this.variantDeselections = variantDeselections;
+  }
+  
+  
 	
 }
