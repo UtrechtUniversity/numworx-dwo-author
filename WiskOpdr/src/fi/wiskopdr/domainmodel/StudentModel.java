@@ -137,7 +137,27 @@ static StudentObjective readObjective(Object object) {
     obj.y = getY(info);
     obj.methode = (Map<String, Map<String, Collection<Number>>>) info.get("methods");
     obj.methodInfo = getMethodInfo(info);
+    obj.variants = getVariants(info);
     return obj;
+}
+
+@SuppressWarnings("rawtypes")
+private static Variant[] getVariants(JSONObject info) {
+  Object variants = info.get("variants");
+  if (variants instanceof List) {
+    List l = (List) variants;
+    Variant[] result = new Variant[l.size()];
+    for (int i = 0; i < result.length; i++) {
+      Map v = (Map) l.get(i);
+      Variant resulti = new Variant();
+      resulti.name = (String) v.get("name");
+      resulti.layers = v.get("layers");
+      resulti.deselections = v.get("deselections");
+      result[i] = resulti;
+    }
+    return result;
+  }
+  return null;
 }
 
 private static List<DomStudentModelMethodInfo> getMethodInfo(JSONObject map) {
@@ -147,6 +167,7 @@ private static List<DomStudentModelMethodInfo> getMethodInfo(JSONObject map) {
       DomStudentModelMethodInfo result = new DomStudentModelMethodInfo((String)item.get("method"), (String)item.get("book"), (Number) item.get("chapter"));
       result.setX((Number) item.get("x"));
       result.setY((Number) item.get("y"));
+      result.setVariant(item.get("variant"));
       return result;
     }).collect(Collectors.toList());
   }

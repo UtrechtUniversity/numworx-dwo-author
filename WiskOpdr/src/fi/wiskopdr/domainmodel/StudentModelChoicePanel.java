@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -349,13 +350,16 @@ public class StudentModelChoicePanel extends JPanel
               NodeLeaf nl = (NodeLeaf) o;
               List<DomStudentModelMethodInfo> methodeInfos = nl.getMethodeInfos();
               if (methodeInfos == null) continue;
-              Set<String> infos = methodeInfos.stream().map(DomStudentModelMethodInfo::key)
-                  .collect(Collectors.toSet());
+              Map<String, DomStudentModelMethodInfo> mmap = methodeInfos.stream().collect(Collectors.toMap(DomStudentModelMethodInfo::key, Function.identity()));
+              Set<String> infos = mmap.keySet();
               String title = nl.toString();
               for (String mi : infos) {
                 if (title.startsWith("W:")) mi += "-W:";
                 nodes.computeIfPresent(mi, (k, n) -> {
-                  InvisibleNode node = new InvisibleNode(o, false, true);
+                  NodeLeaf oo = nl;
+                  DomStudentModelMethodInfo smmi = mmap.get(k);
+                  if (smmi.getVariant() != null) oo = new NodeLeaf(nl, smmi.getVariant());
+                  InvisibleNode node = new InvisibleNode(oo, false, true);
                   insertMethod(n, node);
                   return n;
                 });
@@ -464,7 +468,7 @@ public class StudentModelChoicePanel extends JPanel
   JTree tree;
   InvisibleTreeModel model;
   InvisibleNode root;
-  JLabel leerdoelTitelLabel, title;
+  JLabel leerdoelTitelLabel, title, variantLabel;
   JTextArea description;
   JButton graphButton;
   JCheckBox methods;
@@ -583,6 +587,11 @@ public class StudentModelChoicePanel extends JPanel
     leerdoelTitelLabel.setBorder(BorderFactory.createEmptyBorder(4, 20, 4, 20));
     leerdoelTitelLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
     leerdoelTitelLabel.setMaximumSize(new Dimension(450, 30));
+    variantLabel = new JLabel();
+    variantLabel.setForeground(Color.WHITE);
+    variantLabel.setBorder(BorderFactory.createEmptyBorder(4, 20, 4, 20));
+    variantLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+    
 
     Box hb = Box.createHorizontalBox();
     hb.setOpaque(true);
@@ -592,6 +601,7 @@ public class StudentModelChoicePanel extends JPanel
 
     hb.add(leerdoelTitelLabel);
     hb.add(Box.createHorizontalGlue());
+    hb.add(variantLabel);
 
     rightBox.add(hb);
     rightBox.add(scroll);
@@ -905,6 +915,7 @@ public class StudentModelChoicePanel extends JPanel
       TreePath path = tree.getSelectionPath();
       if (path == null) {
         leerdoelTitelLabel.setText("");
+        variantLabel.setText("");
         description.setText("");
         scroll.setViewportView(description);
         return;
@@ -914,7 +925,12 @@ public class StudentModelChoicePanel extends JPanel
       leerdoelTitelLabel.setText(u.toString());
       if (u instanceof Node) {
         Double factor = null;
-        if (u instanceof NodeLeaf) factor = ids.get(((NodeLeaf) u).getId());
+        if (u instanceof NodeLeaf) {
+          factor = ids.get(((NodeLeaf) u).getId());
+          variantLabel.setText(((NodeLeaf) u).getVariant());
+        } else {
+          variantLabel.setText("");
+        }
         if (factor == null) factor = 1.0;
         //slider.setValue(Math.round(slider.getMaximum() * factor.floatValue()));
 

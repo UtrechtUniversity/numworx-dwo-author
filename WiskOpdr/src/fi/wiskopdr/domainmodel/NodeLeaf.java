@@ -5,32 +5,46 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class NodeLeaf implements Node {
 
   private boolean value;
+  private String variant;
   private StudentObjective obj; 
+  private NodeLeaf delegate = this;
   
   public NodeLeaf(StudentObjective obj) {
     this.obj = obj;
+  }  
+
+  public NodeLeaf(StudentObjective obj, String variant) {
+    this.obj = obj;
+    this.variant = variant;
   }  
   
   public String toString() {
     return obj.objective;
   }
-
+  
+  public NodeLeaf(NodeLeaf org, String variant) {
+    this.obj = org.obj;
+    this.variant = variant;
+    this.value = org.value;
+    delegate = org;
+  }
+  
+  
   @Override
   public String getDescription() {
     return obj.description;
   }
 
   public boolean isValue() {
-    return value;
+    return delegate.value;
   }
 
   public void setValue(boolean value) {
-    this.value = value;
+    delegate.value = value;
   }
 
   public String getId() {
@@ -73,4 +87,10 @@ public class NodeLeaf implements Node {
   public void setMethodeInfos(Collection<DomStudentModelMethodInfo> methodeInfos) {
   }
 
+  public String getVariant() {
+    return variant;
+  }
+
+  
+  
 }
