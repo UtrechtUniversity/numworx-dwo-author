@@ -97,6 +97,9 @@
 	<module>../Verknippen</module>
     	<module>../WiskOpdr</module>
     	<module>../SQLite</module>
+    	
+    	<module>../Geogebra4Widget</module>
+    	<module>../Geogebra3Widget</module>
     </modules>
     <scm>
     	<developerConnection>scm:git:git@github.com:UtrechtUniversity/numworx-dwo-author.git</developerConnection>
