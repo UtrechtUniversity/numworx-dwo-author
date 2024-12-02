@@ -1,6 +1,7 @@
 .DS_Store
 cmi.*
 .settings/
+.project
 target/
 .classpath
 # Compiled class file
