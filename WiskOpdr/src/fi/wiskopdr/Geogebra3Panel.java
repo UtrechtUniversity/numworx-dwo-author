@@ -39,7 +39,6 @@ import org.cbook.cbookif.rm.ResourceContainer;
 import org.cbook.cbookif.rm.ResourceManager;
 
 import fi.wiskopdr.formuleobjects.FormuleButton;
-import fi.wiskopdr.opdrnav.MyOpdrEditContainer;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 import nl.uu.fi.dwo.interaction.client.OpdrNavIF;
@@ -864,22 +863,6 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 			produceAction("changed");
 	}   
 	    
-	
-	public MyOpdrEditContainer getMyOpdrEditContainer(){	
-		Component parent = this;
-		for(int i=0 ; parent!=null && i<50 ; i++){	
-			if(parent instanceof MyOpdrEditContainer) {	
-				break;
-			}
-			else if(parent instanceof Frame) parent = ((Frame)parent).getOwner();
-			else if(parent instanceof Dialog) parent = ((Dialog)parent).getOwner();
-			else if(parent!=null){	
-				parent = parent.getParent();
-			}
-		}
-		if(parent instanceof MyOpdrEditContainer) return (MyOpdrEditContainer)parent;
-		else return null;
-	}
 	
 	public Hashtable getEditState() {		
 		Hashtable h = new Hashtable();
