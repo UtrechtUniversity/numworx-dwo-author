@@ -110,7 +110,7 @@
 						</Private-Package>
 						<DynamicImport-Package>geogebra,geogebra.cas.mpreduce,geogebra.plugin,org.mathpiper.mpreduce</DynamicImport-Package>
 						<Export-Package>!uk.*,!org.json.*,org.cbook.cbookif;version="1.0.2",*</Export-Package>
-						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3widget.jar geogebra4widget.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar uploadwidgetrm.jar</Class-Path>
+						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar uploadwidgetrm.jar</Class-Path>
 						<Main-Class>fi.wiskopdr.WiskOpdr</Main-Class>
 						<Bundle-SymbolicName>fi.wiskopdr.WiskOpdr</Bundle-SymbolicName>
 					</instructions>
@@ -383,14 +383,49 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		  <groupId>nl.numworx.geogebra</groupId>
-		  <artifactId>geogebra3widget</artifactId>
-		  <version>1.0.3-SNAPSHOT</version>			
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-		  <groupId>nl.numworx.geogebra</groupId>
-		  <artifactId>geogebra4widget</artifactId>
-		  <version>1.0.3-SNAPSHOT</version>			
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_main</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_gui</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_cas</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_properties</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_export</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geogebra</groupId>
+			<artifactId>geogebra</artifactId>
+			<version>${geogebraVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geogebra</groupId>
+			<artifactId>geogebra_cas</artifactId>
+			<version>${geogebraVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geogebra</groupId>
+			<artifactId>geogebra_main</artifactId>
+			<version>${geogebraVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.balansfruitapplet</groupId>
