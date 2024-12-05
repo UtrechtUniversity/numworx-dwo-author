@@ -24,9 +24,11 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -252,6 +254,8 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 			g.drawRect(1, 1, getWidth()-2, getHeight()-2);
 			g.fillRect(1, 1, getWidth()-2, 26);
 			String label = "Voorkennis: "+voorkennisPopupNode.getDescription();
+			String variant = voorkennisPopupNode.getVariant(voorkennisPopupNode.lastCode);
+			if (variant != null) label += " " + variant;
 			int textLength = fm.stringWidth(label);
 			int textHeight = fm.getAscent();
 			g.setColor(Color.white);
@@ -504,7 +508,22 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 		startList.add(graphNode);
 		ArrayList<ArrayList<GraphNode>> resultList = new ArrayList<ArrayList<GraphNode>>();
 		resultList.add(startList);
-		return(getVoorkennisNodes(startList, resultList));
+		ArrayList<ArrayList<GraphNode>> toomuch = getVoorkennisNodes(startList, resultList);
+		if (graphNode.lastCode != null ) {
+    		Optional<DomStudentModelMethodInfo> info = graphNode.getMethodeInfo(graphNode.lastCode);
+    		info.ifPresent(i -> {
+    		  Collection<String> ids = i.getVariantDeselections();
+    		  toomuch.forEach( j -> { 
+    		    Iterator<GraphNode> m = j.iterator();
+    		    while (m.hasNext()) {
+                  GraphNode gn = m.next();
+                  if (ids.contains(gn.getID())) m.remove();
+                }
+    		  } );
+    		  
+    		});
+		}
+		return toomuch;
 	}
 	
 	private ArrayList<ArrayList<GraphNode>> getVoorkennisNodes(ArrayList<GraphNode> graphNodes, ArrayList<ArrayList<GraphNode>> voorkennisNodes) {
@@ -966,8 +985,9 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 		int ex = (int) ((x-origin.x)/factor);
 		int ey = (int) ((y-origin.y)/factor);
 		for (int i = 0; i < graphNodes.size(); i++) {
-			if (graphNodes.get(i).contains(ex, ey) || graphNodes.get(i).getTempLocation()!=null && graphNodes.get(i).contains(x, y)) {
-				node = graphNodes.get(i);
+			GraphNode proef = graphNodes.get(i);
+            if (proef.contains(ex, ey) || proef.getTempLocation()!=null && proef.contains(x, y)) {
+				node = proef;
 				break;
 			}
 		}

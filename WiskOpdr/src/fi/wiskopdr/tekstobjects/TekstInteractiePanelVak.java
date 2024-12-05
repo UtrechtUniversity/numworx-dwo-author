@@ -2560,9 +2560,6 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	public static Properties jarOfMap = new Properties();
 // Dit moet uit een resource komen
 	static {
-//		jarOfMap.setProperty("nl.numworx.geodefiner.GeoDefiner", "geodefiner.jar");
-//		jarOfMap.setProperty("fi.algebrapijlenopdr.AlgebraPijlenOpdr", "algebrapijlenopdr.jar");
-//		jarOfMap.setProperty("fi.javalogoweb3d.JavaLogoWeb3d", "javalogoweb3d.jar");
 		try {
 			InputStream in = WiskOpdr.class.getResourceAsStream("resources/jarof.properties");
 			jarOfMap.load(in);

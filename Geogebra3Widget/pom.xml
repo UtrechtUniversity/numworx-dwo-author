@@ -6,9 +6,8 @@
     <version>1.0.3-SNAPSHOT</version>
     <relativePath>../WiskOpdrParent</relativePath>
   </parent>
-  <groupId>nl.numworx.geogebra3</groupId>
+  <groupId>nl.numworx.geogebra</groupId>
   <artifactId>geogebra3widget</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
  	<dependencies>
 		<dependency>
 			<groupId>fi.wiskopdr</groupId>
@@ -26,6 +25,36 @@
 			<groupId>fi.beans</groupId>
 			<artifactId>numworxlf</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_main</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_gui</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_cas</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_properties</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3_export</artifactId>
+			<version>3.2.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -59,7 +88,9 @@
  				<Private-Package>*</Private-Package>
  				<Export-Package>nl.numworx.geogebra3</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
-          	</instructions>
+ 				<Class-Path>geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar</Class-Path>
+ 				<Fragment-Host>fi.wiskopdr.WiskOpdr</Fragment-Host>
+         	</instructions>
           </configuration>
          </plugin>
 			<plugin>
