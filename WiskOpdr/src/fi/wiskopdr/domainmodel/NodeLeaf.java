@@ -5,11 +5,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 public class NodeLeaf implements Node {
 
   private boolean value;
   private String variant;
+  void setVariant(String variant) {
+    this.variant = variant;
+  }
+
   private StudentObjective obj; 
   private NodeLeaf delegate = this;
   
@@ -31,6 +37,7 @@ public class NodeLeaf implements Node {
     this.variant = variant;
     this.value = org.value;
     delegate = org;
+    value = delegate.value && Objects.equals( delegate.variant, this.variant);
   }
   
   
@@ -40,19 +47,28 @@ public class NodeLeaf implements Node {
   }
 
   public boolean isValue() {
-    return delegate.value;
+    return value;
   }
 
   public void setValue(boolean value) {
-    delegate.value = value;
+    this.value = value;
+    if (value) delegate.variant = variant;
+    else if (Objects.equals(delegate.variant, this.variant))
+      delegate.value = false;
   }
 
   public String getId() {
     return obj.id;
   }
 
-  public List<String> getVoorkennis() {
-    return Arrays.asList(obj.voorkennis);
+  public List<String> getVoorkennis() { // FIXME houd rekening met variant!
+    List<String> result = Arrays.asList(obj.voorkennis);
+    if (variant != null) {
+      Optional<Variant> v = Arrays.stream(obj.variants).filter(t -> variant.equals(t.name)).findAny();
+      v=v.filter (x -> x.deselections != null);
+      v.ifPresent(x-> result.removeAll((Collection<?>) x.deselections));
+    }
+    return result;
   }
 
   public void setX(Integer x) {

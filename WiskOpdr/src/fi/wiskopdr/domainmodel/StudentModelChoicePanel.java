@@ -289,11 +289,10 @@ public class StudentModelChoicePanel extends JPanel
         if (userObject instanceof Node) {
           Node node = (Node) userObject;
           String text = node.toString();
-          Double factor = null;
-          if (node instanceof NodeLeaf) factor = ids.get(((NodeLeaf) node).getId());
-          if (factor == null) factor = 1.0;
-          if (node.isValue() && node instanceof NodeLeaf && factor.doubleValue() <= 0.999)
-            text += " " + factor;
+          String variant = null;
+          if (node instanceof NodeLeaf) variant = ids.get(((NodeLeaf) node).getId());
+          if (node.isValue() && node instanceof NodeLeaf && variant != null)
+            text += " " + variant;
           returnValue.setText(text);
           returnValue.setSelected(node.isValue());
         }
@@ -687,7 +686,7 @@ public class StudentModelChoicePanel extends JPanel
   }
 
   private boolean[][] choices;
-  private Map<String, Double> ids;
+  private Map<String, String> ids;
   private JScrollPane scroll;
   private final JSlider slider;
   private List<String> objectives;
@@ -708,7 +707,7 @@ public class StudentModelChoicePanel extends JPanel
         .collect(Collectors.toList());
   }
 
-  private void getObjectives(Object v, Map<String, Double> ids) {
+  private void getObjectives(Object v, Map<String, String> ids) {
     if (v instanceof NodeLeaf) {
       NodeLeaf leaf = (NodeLeaf) v;
       if (!leaf.isValue()) ids.remove(leaf.getId());
@@ -749,7 +748,7 @@ public class StudentModelChoicePanel extends JPanel
       ids = new HashMap<>();
       objectives.forEach(s -> {
         String[] split = s.split("/");
-        ids.put(split[0], split.length > 1 ? Double.valueOf(split[1]) : null);
+        ids.put(split[0], split.length > 1 ? split[1] : null);
       });
     }
   }
@@ -838,6 +837,7 @@ public class StudentModelChoicePanel extends JPanel
         if (u instanceof NodeLeaf) {
           NodeLeaf leaf = (NodeLeaf) u;
           leaf.setValue(ids.containsKey(leaf.getId()));
+          leaf.setVariant(ids.get(leaf.getId()));
         }
       }
     } else
@@ -924,15 +924,13 @@ public class StudentModelChoicePanel extends JPanel
       Object u = node.getUserObject();
       leerdoelTitelLabel.setText(u.toString());
       if (u instanceof Node) {
-        Double factor = null;
+        String factor = null;
         if (u instanceof NodeLeaf) {
           factor = ids.get(((NodeLeaf) u).getId());
           variantLabel.setText(((NodeLeaf) u).getVariant());
         } else {
           variantLabel.setText("");
         }
-        if (factor == null) factor = 1.0;
-        //slider.setValue(Math.round(slider.getMaximum() * factor.floatValue()));
 
         String descr = ((Node) u).getDescription();
         if (descr == null) descr = "";
@@ -962,7 +960,8 @@ public class StudentModelChoicePanel extends JPanel
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
     Object u = node.getUserObject();
     if (u instanceof NodeLeaf) {
-      ids.put(((NodeLeaf) u).getId(), 1.0); // ALTIJD 1.0
+      String variant = ((NodeLeaf)u).getVariant();
+      ids.put(((NodeLeaf) u).getId(), variant); 
       model.nodeChanged(node);
     }
   }
