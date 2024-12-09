@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -31,6 +33,7 @@ import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.domainmodel.StudentCategory;
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.domainmodel.StudentObjective;
+import fi.wiskopdr.domainmodel.Variant;
 import fi.wiskopdr.domainmodel.graph.Graph;
 import fi.wiskopdr.domainmodel.graph.GraphNode;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
@@ -151,18 +154,23 @@ public class ObjectivesViewAction extends AbstractAction {
       this.voorkennis = metVoorkennis(this.objectives, objectivesButton.getStudentModel());
   }
 
-  static Set<String> strip(Collection<String> ids) {
+  public static Set<String> strip(Collection<String> ids) {
     return ids.stream().map(s -> s.split("/")[0]).collect(Collectors.toSet());
+  }
+  
+  static Map<String,String> stripMap(Collection<String> ids) {
+    return ids.stream().map(s -> s.split("/")).collect(Collectors.toMap(a -> a[0], a-> a.length > 1? a[1]: null));
   }
 
   public static Set<String> metVoorkennis(Set<String> ids, StudentModel model) {
       if(model == null) return ids;
-      ids = strip(ids);
+      Map<String,String> ids2 = stripMap(ids);
       Map<String,StudentObjective> infos = new TreeMap<>();
       for(StudentCategory item: model.categories) {
         add(item.objectives, infos);
       }
-      Set<String> all = new TreeSet<String>(ids);
+      Set<String> all = new TreeSet<String>(ids2.keySet());
+      Set<String> toRemove = new TreeSet<String>();
       Set<String> extra = new TreeSet<>();
       Set<String> work = new TreeSet<>(all);
       while( ! work.isEmpty()) {
@@ -171,6 +179,13 @@ public class ObjectivesViewAction extends AbstractAction {
           StudentObjective info = infos.get(id);
           if (info == null) continue;
           String[] voorkennis = info.voorkennis;
+          String variant = ids2.get(id);
+          if (variant != null) {
+            Optional<Variant> opt = Arrays.stream(info.variants)
+                .filter(v -> Objects.equals(v.name,variant))
+                .findAny();
+            opt.ifPresent(v -> toRemove.addAll((Collection<String>) v.deselections));
+          }
           if (voorkennis == null) continue;
           extra.addAll(strip(Arrays.asList(voorkennis)));
         }
@@ -180,6 +195,7 @@ public class ObjectivesViewAction extends AbstractAction {
         all.addAll(extra);
         extra.clear();
     }
+    all.removeAll(toRemove);
     return all;
   }
 

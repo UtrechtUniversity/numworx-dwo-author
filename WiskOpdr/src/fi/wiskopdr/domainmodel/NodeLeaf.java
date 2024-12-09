@@ -52,9 +52,14 @@ public class NodeLeaf implements Node {
 
   public void setValue(boolean value) {
     this.value = value;
-    if (value) delegate.variant = variant;
+    if (value) {
+      delegate.value = true;
+      delegate.variant = variant;
+    }
     else if (Objects.equals(delegate.variant, this.variant))
+    {
       delegate.value = false;
+    }
   }
 
   public String getId() {

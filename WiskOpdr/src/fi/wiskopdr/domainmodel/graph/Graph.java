@@ -43,6 +43,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import fi.beans.numworxlf.JButton;
+import fi.wiskopdr.ObjectivesViewAction;
 import fi.wiskopdr.domainmodel.DomStudentModelMethodInfo;
 import fi.wiskopdr.domainmodel.InvisibleNode;
 import fi.wiskopdr.domainmodel.InvisibleTreeModel;
@@ -1285,10 +1286,6 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
 				    source = sourceStrings[0];
 				   
 				    double vkfactor = 1;
-				    if(sourceStrings.length>1) {
-				   		vkfactor = Double.parseDouble(sourceStrings[1]);
-                        System.out.println("vkFactor = "+ vkfactor);
-				    }
 				    GraphNode gns = graphMap.get(source);
 					if (gns != null) {
 						GraphEdge edge = new GraphEdge(gns, gnd, vkfactor);
@@ -1584,7 +1581,7 @@ public class Graph extends JPanel implements MouseListener, MouseMotionListener,
     }
         
     return graphNodes.stream()
-        .filter(node -> kennis.contains(node.getID()))
+        .filter(node -> ObjectivesViewAction.strip(kennis).contains(node.getID()))
         .map(GraphNode::getDeselections)
         .flatMap(ArrayList::stream)
         .distinct()

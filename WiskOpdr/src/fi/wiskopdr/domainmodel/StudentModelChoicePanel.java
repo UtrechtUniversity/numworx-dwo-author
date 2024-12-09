@@ -290,8 +290,8 @@ public class StudentModelChoicePanel extends JPanel
           Node node = (Node) userObject;
           String text = node.toString();
           String variant = null;
-          if (node instanceof NodeLeaf) variant = ids.get(((NodeLeaf) node).getId());
-          if (node.isValue() && node instanceof NodeLeaf && variant != null)
+          if (node instanceof NodeLeaf) variant = ((NodeLeaf) node).getVariant();
+          if (node instanceof NodeLeaf && variant != null)
             text += " " + variant;
           returnValue.setText(text);
           returnValue.setSelected(node.isValue());
@@ -357,7 +357,7 @@ public class StudentModelChoicePanel extends JPanel
                 nodes.computeIfPresent(mi, (k, n) -> {
                   NodeLeaf oo = nl;
                   DomStudentModelMethodInfo smmi = mmap.get(k);
-                  if (smmi.getVariant() != null) oo = new NodeLeaf(nl, smmi.getVariant());
+                  oo = new NodeLeaf(nl, smmi.getVariant());
                   InvisibleNode node = new InvisibleNode(oo, false, true);
                   insertMethod(n, node);
                   return n;
@@ -820,9 +820,10 @@ public class StudentModelChoicePanel extends JPanel
         for (int y = 0; y < maxy; y++) {
           Object e = w.get(y);
           if (e instanceof NodeLeaf) {
-            ((NodeLeaf) e).setValue(choices[x][y]);
-            String id = ((NodeLeaf) e).getId();
-            if (choices[x][y] && !ids.containsKey(id)) ids.put(id, null);
+            NodeLeaf ne = (NodeLeaf) e;
+            ne.setValue(choices[x][y]);
+            String id = ne.getId();
+            if (choices[x][y] && !ids.containsKey(id)) ids.put(id, ne.getVariant());
           }
         }
       }
@@ -880,7 +881,7 @@ public class StudentModelChoicePanel extends JPanel
       boolean on = voorkennis.contains(n.getID());
       n.setSuccesFailScore(on ? 100.0 : null);
       if (on)
-        n.setPartOfSelection(Boolean.valueOf(kennis.contains(n.getID())));
+        n.setPartOfSelection(Boolean.valueOf(ObjectivesViewAction.strip(kennis).contains(n.getID())));
       else
         n.setPartOfSelection(null);
     });
@@ -897,7 +898,14 @@ public class StudentModelChoicePanel extends JPanel
       if (!node.isLeaf()) continue;
       Object object = node.getUserObject();
       if (object instanceof NodeLeaf) {
-        if (((NodeLeaf) object).isValue()) kennis.add(((NodeLeaf) object).getId());
+        NodeLeaf leaf = (NodeLeaf) object;
+        if (leaf.isValue()) {
+          String id = leaf.getId();
+          if (leaf.getVariant() != null) {
+            id += "/" + leaf.getVariant();
+          }
+          kennis.add(id);
+        }
       }
     }
     return kennis;
@@ -959,7 +967,7 @@ public class StudentModelChoicePanel extends JPanel
   private void savePath(TreePath p) {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
     Object u = node.getUserObject();
-    if (u instanceof NodeLeaf) {
+    if (u instanceof NodeLeaf && ((NodeLeaf) u).isValue()) {
       String variant = ((NodeLeaf)u).getVariant();
       ids.put(((NodeLeaf) u).getId(), variant); 
       model.nodeChanged(node);
