@@ -10,3 +10,5 @@ cp ../target/geodefiner.jar $R/geodefiner.jar
 cp ../target/geodefiner.jar.pack.gz $R/geodefiner.jar.pack.gz
 cp ../target/statistiek.jar $R/statistiek.jar
 cp ../target/statistiek.jar.pack.gz $R/statistiek.jar.pack.gz
+cp ../target/geogebra3widget.jar $R/geogebra3widget.jar
+cp ../target/geogebra3widget.jar.pack.gz $R/geogebra3widget.jar.pack.gz
