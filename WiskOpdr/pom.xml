@@ -50,7 +50,7 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<includeScope>compile</includeScope>
-							<excludeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek,mathscratch</excludeArtifactIds>
+							<excludeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek,mathscratch,geogebra3widget</excludeArtifactIds>
 							<stripVersion>true</stripVersion>
 							<stripClassifier>true</stripClassifier>
 						</configuration>
@@ -63,7 +63,7 @@
 						<phase>process-classes</phase>
 						<configuration>
 							<includeScope>compile</includeScope>
-							<includeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek,mathscratch</includeArtifactIds>
+							<includeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek,mathscratch,geogebra3widget</includeArtifactIds>
 							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
@@ -110,7 +110,7 @@
 						</Private-Package>
 						<DynamicImport-Package>geogebra,geogebra.cas.mpreduce,geogebra.plugin,org.mathpiper.mpreduce</DynamicImport-Package>
 						<Export-Package>!uk.*,!org.json.*,org.cbook.cbookif;version="1.0.2",*</Export-Package>
-						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra3.jar geogebra3_cas.jar geogebra3_export.jar geogebra3_gui.jar geogebra3_main.jar geogebra3_properties.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar uploadwidgetrm.jar</Class-Path>
+						<Class-Path>balansfruitapplet.jar doorziendwo.jar geogebra.jar geogebra_cas.jar geogebra_main.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar uploadwidgetrm.jar</Class-Path>
 						<Main-Class>fi.wiskopdr.WiskOpdr</Main-Class>
 						<Bundle-SymbolicName>fi.wiskopdr.WiskOpdr</Bundle-SymbolicName>
 					</instructions>
@@ -170,6 +170,10 @@
 						<exclusion>
 							<groupId>fi.mathscrath</groupId>
 							<artifactId>mathscratch</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>nl.numworx.geogebra</groupId>
+							<artifactId>geogebra3widget</artifactId>
 						</exclusion>
 					</exclusions>
 					<proguardInclude>toolfiles/config.pro</proguardInclude>
@@ -246,7 +250,12 @@
                   <type>jar</type>
                   <classifier>mathscratch</classifier>
                 </artifact>
-              </artifacts>
+                <artifact>
+                  <file>${project.build.directory}/geogebra3widget.jar</file>
+                  <type>jar</type>
+                  <classifier>geogebra3widget</classifier>
+                </artifact>
+               </artifacts>
             </configuration>
           </execution>
         </executions>
@@ -285,6 +294,7 @@
                                 <includeClassifier>balansfruitapplet</includeClassifier>
                                 <includeClassifier>statistiek</includeClassifier>
                                 <includeClassifier>mathscratch</includeClassifier>
+                                <includeClassifier>geogebra3widget </includeClassifier>
                             </includeClassifiers>
                         </configuration>                
                         <dependencies>
@@ -383,36 +393,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>nl.numworx.geogebra</groupId>
-			<artifactId>geogebra3</artifactId>
-			<version>3.2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>nl.numworx.geogebra</groupId>
-			<artifactId>geogebra3_main</artifactId>
-			<version>3.2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>nl.numworx.geogebra</groupId>
-			<artifactId>geogebra3_gui</artifactId>
-			<version>3.2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>nl.numworx.geogebra</groupId>
-			<artifactId>geogebra3_cas</artifactId>
-			<version>3.2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>nl.numworx.geogebra</groupId>
-			<artifactId>geogebra3_properties</artifactId>
-			<version>3.2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>nl.numworx.geogebra</groupId>
-			<artifactId>geogebra3_export</artifactId>
-			<version>3.2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.geogebra</groupId>
 			<artifactId>geogebra</artifactId>
 			<version>${geogebraVersion}</version>
@@ -501,6 +481,11 @@
 			<artifactId>fi.dwo.eawt</artifactId>
 			<version>0.0.2</version>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>nl.numworx.geogebra</groupId>
+			<artifactId>geogebra3widget</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>

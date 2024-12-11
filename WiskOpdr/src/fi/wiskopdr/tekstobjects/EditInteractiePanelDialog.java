@@ -62,7 +62,6 @@ import fi.wiskopdr.CheckButtonPanel;
 import fi.wiskopdr.CheckSleepUnitPanel;
 import fi.wiskopdr.CheckUnitPanel;
 import fi.wiskopdr.CheckValueUnitPanel;
-import fi.wiskopdr.Geogebra3Panel;
 import fi.wiskopdr.GeogebraPanel;
 import fi.wiskopdr.GetallenlijnSprongPanel;
 import fi.wiskopdr.GrafiekPanel;
@@ -802,7 +801,10 @@ public class EditInteractiePanelDialog extends JDialog implements ActionListener
 	    	mainPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 20, 20));
 		}
 		else if(soortInteractiePanel == 10)
-		{	interactieEditPanel = Geogebra3Panel.newEditPanel(getCrossWidgetId());
+		{
+		  
+		    interactieEditPanel = maakInteractieEditPanel("nl.numworx.geogebra3.Geogebra3Widget", WiskOpdr.language);
+		    //interactieEditPanel = Geogebra3Panel.newEditPanel(getCrossWidgetId());
 			breedteTF.setText("800");
 			hoogteTF.setText("500");
 			if(interactieEditPanel!=null)interactieEditPanel.zetBreedte(800);

@@ -1,4 +1,4 @@
-package fi.wiskopdr;
+package nl.numworx.geogebra3;
 
 
 import java.applet.Applet;
@@ -38,10 +38,11 @@ import org.cbook.cbookif.CBookEventListener;
 import org.cbook.cbookif.rm.ResourceContainer;
 import org.cbook.cbookif.rm.ResourceManager;
 
+import fi.wiskopdr.ImageComponent;
+import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
-import nl.uu.fi.dwo.interaction.client.OpdrNavIF;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -955,7 +956,7 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 	
 	public int getScore()
 	{
-		if (mode == OpdrNavIF.OEFENEN_STRAFPUNTEN)
+		if (mode == OEFENEN_STRAFPUNTEN)
 			return Math.max(0, score - errorCount * foutStraf);
 
 		return score;

@@ -5,7 +5,6 @@ import java.util.Locale;
 import fi.beans.mainframe.JApplet;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
-import fi.wiskopdr.Geogebra3Panel;
 
 public class Geogebra3Widget extends JApplet implements WiskOpdrApplet {
 	
