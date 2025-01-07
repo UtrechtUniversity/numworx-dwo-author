@@ -4431,6 +4431,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 			return;
 		}
+// FIXME dit is nog niet helemaal goed als de kinderen van tekstvakpanel dit mouseevent consumeren.
+        if(e.getButton()==MouseEvent.BUTTON1 && cbookEventHandler.hasListeners("action.click"))
+          cbookEventHandler.fire("action.click");
+		
 		if (!editable)
 		{
 			if(cbookEventHandler.hasListeners("action.select"))
