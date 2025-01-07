@@ -8,6 +8,8 @@
 -outjars ../target/statistiek.jar
 -injars ../target/dependency/mathscratch.jar
 -outjars ../target/mathscratch.jar
+-injars ../target/dependency/geogebra3widget.jar
+-outjars ../target/geogebra3widget.jar
 
 
 -target 1.8

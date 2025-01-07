@@ -12,3 +12,5 @@ scp ../target/statistiek.jar $R/www-dev/dwo/jars/statistiek.jar
 scp ../target/statistiek.jar.pack.gz $R/www-dev/dwo/jars/statistiek.jar.pack.gz
 scp ../target/mathscratch.jar $R/www-dev/dwo/jars/mathscratch.jar
 scp ../target/mathscratch.jar.pack.gz $R/www-dev/dwo/jars/mathscratch.jar.pack.gz
+scp ../target/geogebra3widget.jar $R/www-dev/dwo/jars/geogebra3widget.jar
+scp ../target/geogebra3widget.jar.pack.gz $R/www-dev/dwo/jars/geogebra3widget.jar.pack.gz

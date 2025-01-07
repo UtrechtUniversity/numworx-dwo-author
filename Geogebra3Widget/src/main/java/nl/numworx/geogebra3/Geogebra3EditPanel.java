@@ -1,4 +1,4 @@
-package fi.wiskopdr;
+package nl.numworx.geogebra3;
 
 import java.awt.*;
 import java.awt.event.*;

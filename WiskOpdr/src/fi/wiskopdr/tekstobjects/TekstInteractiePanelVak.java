@@ -99,7 +99,6 @@ import fi.wiskopdr.CheckSleepUnitPanel;
 import fi.wiskopdr.CheckUnitPanel;
 import fi.wiskopdr.CheckValueUnitPanel;
 import fi.wiskopdr.DialogFacade;
-import fi.wiskopdr.Geogebra3Panel;
 import fi.wiskopdr.GeogebraPanel;
 import fi.wiskopdr.GetallenlijnSprongPanel;
 import fi.wiskopdr.GrafiekPanel;
@@ -1303,15 +1302,18 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			//interactiePanel.setEditState(interactiePanelLaunchState);
 		}
 		else if(soortInteractiePanel == 10)
-		{	if(interactiePanel==null || !(interactiePanel instanceof Geogebra3Panel))
-			{	Geogebra3Panel geogebra3Panel = new Geogebra3Panel();
-				interactiePanel = geogebra3Panel;
-				geogebra3Panel.setInstanceId(getCrossWidgetId());
-				geogebra3Panel.setFactory(WidgetBridge.getFactory(geogebra3Panel));
-				geogebra3Panel.setBackground(getBackground());
-				interactiePanel.addActionListener(this);
-			}
-		}
+        {   if(interactiePanel==null || !(interactiePanel.getClass().getName().startsWith("nl.numworx.geogebra3.")))
+        {
+//          Geogebra3Panel geogebra3Panel = new Geogebra3Panel();
+//          interactiePanel = geogebra3Panel;
+            interactiePanel = maakInteractiePanel("nl.numworx.geogebra3.Geogebra3Widget", WiskOpdr.language);
+            ((Component) interactiePanel).setBackground(getBackground());
+            ResourceManagerClient rmc = (ResourceManagerClient) interactiePanel;
+            rmc.setInstanceId(getCrossWidgetId());
+            rmc.setFactory(WidgetBridge.getFactory(rmc));
+            interactiePanel.addActionListener(this);
+        }
+    }
 		else if(soortInteractiePanel == 39)
 		{	if(interactiePanel==null || !(interactiePanel instanceof GeogebraPanel))
 			{
@@ -2166,12 +2168,15 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			
 		}
 		else if(soortInteractiePanel == 10)
-		{	if(interactiePanel==null || !(interactiePanel instanceof Geogebra3Panel))
-			{	Geogebra3Panel geogebra3Panel = new Geogebra3Panel();
-				interactiePanel = geogebra3Panel;
-				geogebra3Panel.setBackground(getBackground());
-				geogebra3Panel.setInstanceId(getCrossWidgetId());
-				geogebra3Panel.setFactory(WidgetBridge.getFactory(geogebra3Panel));
+		{	if(interactiePanel==null || !(interactiePanel.getClass().getName().startsWith("nl.numworx.geogebra3.")))
+			{
+//		        Geogebra3Panel geogebra3Panel = new Geogebra3Panel();
+//				interactiePanel = geogebra3Panel;
+		        interactiePanel = maakInteractiePanel("nl.numworx.geogebra3.Geogebra3Widget", WiskOpdr.language);
+		        ((Component) interactiePanel).setBackground(getBackground());
+		        ResourceManagerClient rmc = (ResourceManagerClient) interactiePanel;
+                rmc.setInstanceId(getCrossWidgetId());
+		        rmc.setFactory(WidgetBridge.getFactory(rmc));
 				interactiePanel.addActionListener(this);
 			}
 		}
