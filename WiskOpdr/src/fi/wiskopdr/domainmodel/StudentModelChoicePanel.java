@@ -357,7 +357,8 @@ public class StudentModelChoicePanel extends JPanel
                 nodes.computeIfPresent(mi, (k, n) -> {
                   NodeLeaf oo = nl;
                   DomStudentModelMethodInfo smmi = mmap.get(k);
-                  oo = new NodeLeaf(nl, smmi.getVariant());
+                  String variant = smmi == null ? null : smmi.getVariant();
+                  oo = new NodeLeaf(nl, variant);
                   InvisibleNode node = new InvisibleNode(oo, false, true);
                   insertMethod(n, node);
                   return n;

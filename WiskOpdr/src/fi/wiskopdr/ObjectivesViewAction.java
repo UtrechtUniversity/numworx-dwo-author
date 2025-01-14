@@ -157,9 +157,18 @@ public class ObjectivesViewAction extends AbstractAction {
   public static Set<String> strip(Collection<String> ids) {
     return ids.stream().map(s -> s.split("/")[0]).collect(Collectors.toSet());
   }
-  
+
+  /**
+  * zie https://stackoverflow.com/questions/24630963/nullpointerexception-in-collectors-tomap-with-null-entry-values
+  * @param ids set of string/variant
+  * @return map of (string, variant) 
+  */
   static Map<String,String> stripMap(Collection<String> ids) {
-    return ids.stream().map(s -> s.split("/")).collect(Collectors.toMap(a -> a[0], a-> a.length > 1? a[1]: null));
+    return ids.stream().map(s -> s.split("/"))
+        //.collect(Collectors.toMap(a -> a[0], a-> a.length > 1? a[1]: null));
+        .collect(HashMap::new, 
+          (m,a)->m.put(a[0], a.length > 1? a[1]: null), 
+          HashMap::putAll);
   }
 
   public static Set<String> metVoorkennis(Set<String> ids, StudentModel model) {
