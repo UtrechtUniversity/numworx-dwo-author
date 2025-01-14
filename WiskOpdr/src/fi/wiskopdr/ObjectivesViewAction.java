@@ -180,11 +180,13 @@ public class ObjectivesViewAction extends AbstractAction {
           if (info == null) continue;
           String[] voorkennis = info.voorkennis;
           String variant = ids2.get(id);
-          if (variant != null) {
+          if (variant != null && info.variants != null) { // komt voor bij variant = "1.0"
             Optional<Variant> opt = Arrays.stream(info.variants)
                 .filter(v -> Objects.equals(v.name,variant))
                 .findAny();
             opt.ifPresent(v -> toRemove.addAll((Collection<String>) v.deselections));
+          } else if (variant != null) {
+            ids2.put(id, null);
           }
           if (voorkennis == null) continue;
           extra.addAll(strip(Arrays.asList(voorkennis)));
