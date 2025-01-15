@@ -84,6 +84,11 @@
     <methods>;
 }
 
+-keep class nl.numworx.geogebra3.** {
+	<fields>;
+	<methods>;
+}
+
 -keep class nl.numworx.geodefiner.** {
     <fields>;
     <methods>;
