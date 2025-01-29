@@ -1,5 +1,6 @@
 package nl.numworx.geodefiner.common;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import fi.euclides.event.Tracker;
@@ -80,9 +81,19 @@ public class  UIShim<D extends Destroyable, T> implements UIModel<D, T>, Visitor
 		{
 			delegate.install(buildPunt);
 			String name = tracker.getMapper().toString(buildPunt);
-			state.put(name, delegate.toMap());
+			state.put(name, copyMap2Map(delegate.toMap())); // must be a private copy
 		}
 	}
+
+	// veilig met keyset, entryset zou wel eens niet kunnen werken
+	private Map<String, Object> copyMap2Map(Map<String, Object> map) {
+		HashMap<String,Object> result = new HashMap<>();
+		for( String key: map.keySet()) {
+			result.put(key, map.get(key));
+		}
+		return result;
+	}
+
 
 	@Override
 	public void visitPunt(Punt p) {
