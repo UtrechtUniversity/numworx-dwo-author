@@ -10,6 +10,8 @@
 -outjars ../target/mathscratch.jar
 -injars ../target/dependency/geogebra3widget.jar
 -outjars ../target/geogebra3widget.jar
+-injars ../target/dependency/geogebra4widget.jar
+-outjars ../target/geogebra4widget.jar
 
 
 -target 1.8
@@ -85,6 +87,10 @@
 }
 
 -keep class nl.numworx.geogebra3.** {
+	<fields>;
+	<methods>;
+}
+-keep class nl.numworx.geogebra4.** {
 	<fields>;
 	<methods>;
 }

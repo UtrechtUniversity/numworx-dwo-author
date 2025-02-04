@@ -12,3 +12,5 @@ cp ../target/statistiek.jar $R/statistiek.jar
 cp ../target/statistiek.jar.pack.gz $R/statistiek.jar.pack.gz
 cp ../target/geogebra3widget.jar $R/geogebra3widget.jar
 cp ../target/geogebra3widget.jar.pack.gz $R/geogebra3widget.jar.pack.gz
+cp ../target/geogebra4widget.jar $R/geogebra4widget.jar
+cp ../target/geogebra4widget.jar.pack.gz $R/geogebra4widget.jar.pack.gz

@@ -1,8 +1,11 @@
-package fi.wiskopdr;
+package nl.numworx.geogebra4;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
+
+import fi.wiskopdr.DialogFacade;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.*;

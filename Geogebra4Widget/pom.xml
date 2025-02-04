@@ -73,7 +73,6 @@
  				<Export-Package>nl.numworx.geogebra4</Export-Package>
  				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
 				<Class-Path>geogebra.jar</Class-Path>
-  				<Fragment-Host>fi.wiskopdr.WiskOpdr</Fragment-Host>
          	</instructions>
           </configuration>
          </plugin>
@@ -86,61 +85,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>com.github.wvengen</groupId>
-				<artifactId>proguard-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>proguard</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<skip>true</skip>
-					<options>
-						<option>-verbose</option>
-						<option>-dontwarn</option>
-						<option>-printconfiguration ${project.build.directory}/mapping.txt</option>
-					</options>
-					<obfuscate>true</obfuscate>
-					<injar>${project.build.finalName}.jar</injar>
-					<proguardInclude>toolfiles/config.pro</proguardInclude>
-					<libs>
-						<lib>${proguard.lib}</lib>
-					</libs>
-					<addMavenDescriptor>false</addMavenDescriptor>
-				</configuration>
-			</plugin>
-                   <plugin>
-                        <groupId>com.github.batkinson.plugins</groupId>
-                        <artifactId>maven-pack200-plugin</artifactId>
-                        <version>1.0.1</version>
-                        <executions>
-                            <execution>
-                                <id>pack-jars</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>pack</goal>
-                                </goals>
-                                <configuration>
-                                    <normalizeOnly>false</normalizeOnly>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <processMainArtifact>true</processMainArtifact>
-                        </configuration>                
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.github.batkinson.plugins</groupId>
-                                <artifactId>maven-pack200-plugin</artifactId>
-                                <version>1.0.1</version>
-                                <type>maven-plugin</type>
-                            </dependency>
-                        </dependencies>                
-                    </plugin>        
     </plugins>
 	</build>
 	<properties>

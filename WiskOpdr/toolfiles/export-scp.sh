@@ -14,3 +14,5 @@ scp ../target/mathscratch.jar $R/www-dev/dwo/jars/mathscratch.jar
 scp ../target/mathscratch.jar.pack.gz $R/www-dev/dwo/jars/mathscratch.jar.pack.gz
 scp ../target/geogebra3widget.jar $R/www-dev/dwo/jars/geogebra3widget.jar
 scp ../target/geogebra3widget.jar.pack.gz $R/www-dev/dwo/jars/geogebra3widget.jar.pack.gz
+scp ../target/geogebra4widget.jar $R/www-dev/dwo/jars/geogebra4widget.jar
+scp ../target/geogebra4widget.jar.pack.gz $R/www-dev/dwo/jars/geogebra4widget.jar.pack.gz

@@ -99,7 +99,6 @@ import fi.wiskopdr.CheckSleepUnitPanel;
 import fi.wiskopdr.CheckUnitPanel;
 import fi.wiskopdr.CheckValueUnitPanel;
 import fi.wiskopdr.DialogFacade;
-import fi.wiskopdr.GeogebraPanel;
 import fi.wiskopdr.GetallenlijnSprongPanel;
 import fi.wiskopdr.GrafiekPanel;
 import fi.wiskopdr.ImageComponent;
@@ -1315,14 +1314,17 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
         }
     }
 		else if(soortInteractiePanel == 39)
-		{	if(interactiePanel==null || !(interactiePanel instanceof GeogebraPanel))
+		{	if(interactiePanel==null || !(interactiePanel.getClass().getName().startsWith("nl.numworx.geogebra4.")))
 			{
 		        try {
-                  GeogebraPanel geogebraPanel = new GeogebraPanel();
-                  interactiePanel = geogebraPanel;
-                  geogebraPanel.setInstanceId(getCrossWidgetId());
-                  geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
-                  geogebraPanel.setBackground(getBackground());
+//                  GeogebraPanel geogebraPanel = new GeogebraPanel();
+//                  interactiePanel = geogebraPanel;
+                  interactiePanel = maakInteractiePanel("nl.numworx.geogebra4.Geogebra4Widget", WiskOpdr.language);
+                  ResourceManagerClient rmc = (ResourceManagerClient) interactiePanel;
+
+                  rmc.setInstanceId(getCrossWidgetId());
+                  rmc.setFactory(WidgetBridge.getFactory(rmc));
+                  ((Component) interactiePanel).setBackground(getBackground());
                   interactiePanel.addActionListener(this);
                 } catch (Exception e) {
                   LOG.log(Level.SEVERE, "Geogebra error", e);
@@ -2181,13 +2183,16 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 			}
 		}
 		else if(soortInteractiePanel == 39)
-		{	if(interactiePanel==null || !(interactiePanel instanceof GeogebraPanel))
-			{	GeogebraPanel geogebraPanel = new GeogebraPanel();
-				interactiePanel = geogebraPanel;
-				geogebraPanel.setBackground(getBackground());
-				geogebraPanel.setInstanceId(getCrossWidgetId());
-				geogebraPanel.setFactory(WidgetBridge.getFactory(geogebraPanel));
-				interactiePanel.addActionListener(this);
+		{	if(interactiePanel==null || !(interactiePanel.getClass().getName().startsWith("nl.numworx.geogebra4.")))
+			{
+//		  GeogebraPanel geogebraPanel = new GeogebraPanel();
+//				interactiePanel = geogebraPanel;
+                interactiePanel = maakInteractiePanel("nl.numworx.geogebra4.Geogebra4Widget", WiskOpdr.language);
+                ((Component) interactiePanel).setBackground(getBackground());
+                ResourceManagerClient rmc = (ResourceManagerClient) interactiePanel;
+                rmc.setInstanceId(getCrossWidgetId());
+                rmc.setFactory(WidgetBridge.getFactory(rmc));
+                interactiePanel.addActionListener(this);
 			}
 		}
 		else if(soortInteractiePanel == 12)
@@ -2547,18 +2552,25 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 	// Synchronized map, maybe WeakHashMap?
 	public final static Map<String, Class<WiskOpdrApplet>> classMap = new Hashtable<String,Class<WiskOpdrApplet>>();
 
+	public static WiskOpdrApplet newWiskOpdrApplet(String name, Locale locale) throws Exception {
+	  Class<WiskOpdrApplet> c = classMap.get(name);
+      if( c == null)
+      {   
+          Class<WiskOpdrApplet> cls = WiskOpdrApplet.class;
+          c = (Class<WiskOpdrApplet>) Loader.create(jarOf(name), cls.getClassLoader()).loadClass(name);
+          classMap.put(name, c);
+      }
+      Constructor<WiskOpdrApplet> cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
+      WiskOpdrApplet o = cc.newInstance(new Object[] { locale } );
+      return o;
+	}
+	
 	@SuppressWarnings("unchecked")
 	private InteractiePanel maakInteractiePanel(String name, Locale language)
 	{
 		try
-		{	Class<WiskOpdrApplet> c = classMap.get(name);
-			if( c == null)
-			{	
-				c = (Class<WiskOpdrApplet>) Loader.create(jarOf(name), getClass().getClassLoader()).loadClass(name);
-				classMap.put(name, c);
-			}
-			Constructor<WiskOpdrApplet> cc = c.getDeclaredConstructor(new Class[] { Locale.class } );
-	    	WiskOpdrApplet o = cc.newInstance(new Object[] { language } );
+		{	
+	    	WiskOpdrApplet o = newWiskOpdrApplet(name, language);
 	    	Stub.setStub(o);
 	    	return o.getInteractiePanel();
 		}
@@ -2909,7 +2921,7 @@ public class TekstInteractiePanelVak extends TekstDeelVak implements ActionListe
 		{	if(!popup)
 				setSize(((Component)interactiePanel).getSize().width, ((Component)interactiePanel).getSize().height);
 			else if("MW".equals(WiskOpdr.deployVariant) 
-					&& (interactiePanel instanceof GrafiekPanel || interactiePanel instanceof GeogebraPanel))setSize(50,50);
+					&& (interactiePanel instanceof GrafiekPanel /*|| interactiePanel instanceof GeogebraPanel*/))setSize(50,50);
 			else setSize(popupJButton.getSize());
 			((Component)interactiePanel).setLocation(0,0);
 			if(interactiePanel instanceof SimpelAntwoordFormuleVak)ashoogte = ((SimpelAntwoordFormuleVak)interactiePanel).geefAsHoogte()+2;
