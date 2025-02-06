@@ -133,7 +133,7 @@
 }
 
 # extra's voor statistiek
--keeppackagenames fi.statistiek.**,org.knowm.**,de.**,org.apache.**
+-keeppackagenames fi.statistiek.**,org.knowm.**,de.**,org.apache.**,fi.wiskopdr.cbook,fi.wiskopdr.tekstobjects
 
 -keep class fi.statistiek.text.* {
     <fields>;
