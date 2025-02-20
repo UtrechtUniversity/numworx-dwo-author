@@ -1,6 +1,7 @@
 package fi.wiskopdr.expressies.repr;
 
 import java.io.StringReader;
+import java.util.function.Function;
 
 import org.mathpiper.mpreduce.Interpreter2;
 
@@ -17,10 +18,8 @@ import junit.framework.TestCase;
 
 public class ReduceTest extends TestCase {
 
-	private Interpreter2 interpreter;
 
 	protected void setUp() throws Exception {
-		interpreter = MPReduce.getInstance();
 	}
 
 	public void testEvaluate() throws Throwable {
@@ -30,7 +29,7 @@ public class ReduceTest extends TestCase {
 		Expressie een = FormuleParser.parse("1");
 		e = new Integraal(e, nul, een,x);
 		String command = e.visit(MPReduceConverter.getInstance()).toString();
-		String result = interpreter.evaluate(command);
+		String result = MPReduce.evaluate(command);
 		e = (Expressie) new MPReduceParser(new StringReader(result)).start();
 		assertEquals(-0.5, e.geefWaarde(), 0.0001);
 	}
@@ -42,7 +41,7 @@ public class ReduceTest extends TestCase {
 		Expressie een = FormuleParser.parse("5*\u03c0/6");
 		e = new Integraal(e, nul, een,x);
 		String command = e.visit(MPReduceConverter.getInstance()).toString();
-		String result = interpreter.evaluate(command);
+		String result = MPReduce.evaluate(command);
 		e = (Expressie) new MPReduceParser(new StringReader(result)).start();
 		assertEquals(-0.1911857, e.geefWaarde(), 0.0001);
 	}
@@ -53,7 +52,7 @@ public class ReduceTest extends TestCase {
 		Expressie inf = new BasisExpressie("\u221e");
 		e = new Limiet(e, x, inf, new BasisExpressie(0)); // Ordening
 		String command = e.visit(MPReduceConverter.getInstance()).toString();
-		String result = interpreter.evaluate(command);
+		String result = MPReduce.evaluate(command);
 		Object r =  new MPReduceParser(new StringReader(result)).start();
 		assertEquals(e.toString(), r.toString());
 	}
@@ -63,7 +62,7 @@ public class ReduceTest extends TestCase {
 		Expressie inf = new BasisExpressie("\u221e");
 		e = new Limiet(e, x, inf, new BasisExpressie(2)); // Ordening
 		String command = e.visit(MPReduceConverter.getInstance()).toString();
-		String result = interpreter.evaluate(command);
+		String result = MPReduce.evaluate(command);
 		Object r =  new MPReduceParser(new StringReader(result)).start();
 		assertEquals(e.toString(), r.toString());
 	}
@@ -75,7 +74,7 @@ public class ReduceTest extends TestCase {
 		e = new Limiet(e, x, nul, new BasisExpressie(1)); // Ordening (naar beneden)
 		String cas = e.toStringStrikt(); System.out.println(cas);
 		String command = e.visit(MPReduceConverter.getInstance()).toString();
-		String result = interpreter.evaluate(command);
+		String result = MPReduce.evaluate(command);
 		Object r =  new MPReduceParser(new StringReader(result)).start();
 		assertEquals("1", r.toString());
 	}
@@ -87,7 +86,7 @@ public class ReduceTest extends TestCase {
 		Expressie f   = FormuleParser.parse("x^2");
 		Expressie e = new Prv(f, bot, top, x);
 		String command = e.visit(MPReduceConverter.getInstance()).toString();
-		String result = interpreter.evaluate(command);
+		String result = MPReduce.evaluate(command);
 		Object r =  new MPReduceParser(new StringReader(result)).start();
 		assertEquals("3", r.toString());
 	}
