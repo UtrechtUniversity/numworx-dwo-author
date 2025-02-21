@@ -49,6 +49,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
  	private JTextField logIDLabelField;
  	private JLabel logIDLabelLabel;
  	private ObjectiveChoiceButton logObjectivesButton;
+ 	private JCheckBox logExecuteCB;
   	
  	// Hulp setting
  	private JLabel titleHulpLabel;
@@ -132,6 +133,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
         logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
         logObjectivesButton = new ObjectiveChoiceButton();
         logObjectivesButton.setVisible(false);
+        logExecuteCB = makeCheckBox(490,25,60, 20, WiskOpdr.rb.getString("logExecuteCBLabel"), false, false);
         
         teltMeeCB = makeCheckBox(205,5,200,20,WiskOpdr.rb.getString("teltMeeCBLabel"), true, true);
  		
@@ -175,7 +177,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		Component[] r41 = {titleLoggingLabel, 	ra(5,0), teltMeeCB, hgl()};
 		Component[] r42 = {checkCB, 			ra(5,0),	hgl(),	hbCheck};
 		Component[] r43 = {ra(25,0), 			maxScoreLabel, 		ra(5,0),	maxScoreField,	ra(10, 0), logObjectivesButton, hgl()};
-		Component[] r44 = {logCB, 				ra(5,0), logIDField, ra(5,0), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	hgl(),	hbLogID};
+		Component[] r44 = {logCB, 				ra(5,0), logIDField, ra(5,0), logIDLabelLabel, ra(5,10), logIDLabelField, ra(5,0),	logExecuteCB, hgl(), hbLogID};
 		Component[] r45 = {titleHulpLabel, 		hgl()};
 		Component[] r46 = {formuleEditorCB, 	ra(5,0),	hgl(),	hbFormInvoer};
 		Component[] r47 = {rekenToolCB, 		ra(5,0),	hgl(),	hbRekenmachine};
@@ -300,7 +302,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		boolean nowrap = false;
 		boolean boxMetRand = true;
 		boolean pastHoogteAan = false;
-		boolean logOption;
+		boolean logOption, logExecute;
 		String  logID;
 		boolean checkDocent = false;
 		boolean teltMee;
@@ -314,6 +316,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		boxMetRand = boxMetRandCB.isSelected();
 		pastHoogteAan = pastHoogteAanCB.isSelected();
 		logOption = logCB.isSelected();
+		logExecute = logExecuteCB.isSelected() && logOption;
 		logID = logIDField.getText();
 		checkDocent = checkCB.isSelected();
 		scoreMax = Integer.parseInt(maxScoreField.getText());
@@ -334,6 +337,12 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		} else {
 			h.remove("logOption");
 		}
+		if (logExecute) {
+		  h.put("logExecute", Boolean.TRUE);
+		} else {
+		  h.remove("logExecute");
+		}
+		
 		h.put("logID", logID);
 		h.put("checkDocent", new Boolean(checkDocent));
 		h.put("scoreMax", new Integer(scoreMax));
@@ -355,6 +364,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		boolean boxMetRand = true;
 		boolean pastHoogteAan = false;
 		boolean logOption = false;
+		boolean logExecute = false;
 		boolean regelNummers = false;
 		boolean nowrap = false;
 		int scoreMax = 0;
@@ -370,6 +380,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		
 		if(h.containsKey("logOption")) logOption = ((Boolean)h.get("logOption")).booleanValue();
 		if(h.containsKey("logID")) logID = (String)h.get("logID");
+		logExecute = Boolean.TRUE.equals(h.get("logExecute"));
 		if(h.containsKey("checkDocent")) checkDocent = ((Boolean)h.get("checkDocent")).booleanValue();
 		if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
 		if(h.containsKey("scoreMax")) scoreMax = ((Integer)h.get("scoreMax")).intValue();
@@ -396,7 +407,9 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		pastHoogteAanCB.setSelected(pastHoogteAan);
 		
         logCB.setSelected(logOption);
+        logExecuteCB.setSelected(logExecute);
         logIDField.setVisible(logOption);
+        logExecuteCB.setVisible(logOption);
         //logObjectivesButton.setVisible(logOption);
         logIDField.setText(logID);
         
@@ -489,6 +502,7 @@ public class TekstEditorEditPanel extends JPanel implements InteractieEditPanel 
 		}
 		else if(e.getSource()==logCB)
 	    {   logIDField.setVisible(logCB.isSelected());
+	        logExecuteCB.setVisible(logCB.isSelected());
 	    	validate();
 	    	//logObjectivesButton.setVisible(logCB.isSelected());
 	    }

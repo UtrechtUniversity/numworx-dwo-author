@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -412,13 +413,13 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		if (klikPanel == null)
 		{
 			klikPanel = new JPanel();
-			klikPanel.setBounds(0, 0, getSize().width, getSize().height);
+			klikPanel.setBounds(0, 0, getWidth(), getHeight());
 			klikPanel.setOpaque(false);
 			klikPanel.addMouseListener(this);
 			add(klikPanel, 0);
 		}
 
-		klikPanel.setBounds(0, 0, getSize().width, getSize().height);
+		klikPanel.setBounds(0, 0, getWidth(), getHeight());
 	}
 
 	public void setIpSelectable(boolean b)
@@ -1163,7 +1164,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				hoogtes = new double[aantalRijen];
 			this.breedtes = breedtes;
 			this.hoogtes = hoogtes;
-			initializeTableBounds(getSize().width, getSize().height);
+			initializeTableBounds(getWidth(), getHeight());
 		}
 		else
 		{
@@ -1408,7 +1409,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	{
 		removeAll();
 		aantalKolommen = aantal;
-		initializeTableBounds(getSize().width, getSize().height);
+		initializeTableBounds(getWidth(), getHeight());
 		setTableBounds();
 		repaint();
 	}
@@ -1417,7 +1418,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	{
 		removeAll();
 		aantalRijen = aantal;
-		initializeTableBounds(getSize().width, getSize().height);
+		initializeTableBounds(getWidth(), getHeight());
 		setTableBounds();
 		repaint();
 
@@ -1425,9 +1426,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void zetBreedte(int b)
 	{
-		int bOud = getSize().width;
-		setSize(b, getSize().height);
-		//setTableBounds(b,getSize().height,bOud,getSize().height);
+		int bOud = getWidth();
+		setSize(b, getHeight());
+		//setTableBounds(b,getHeight(),bOud,getHeight());
 		layoutTekst();
 		zetMaat();
 		repaint();
@@ -1435,9 +1436,9 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void zetHoogte(int h)
 	{
-		int hOud = getSize().height;
-		setSize(getSize().width, h);
-		//setTableBounds(getSize().width,h,getSize().width,hOud);
+		int hOud = getHeight();
+		setSize(getWidth(), h);
+		//setTableBounds(getWidth(),h,getWidth(),hOud);
 		layoutTekst();
 		zetMaat();
 		repaint();
@@ -1445,8 +1446,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void setBounds(int x, int y, int b, int h)
 	{ //tekstVak.setBounds(0,0,b,h);
-		//int dBreedte = b - getSize().width;
-		//int dHoogte = h - getSize().height;
+		//int dBreedte = b - getWidth();
+		//int dHoogte = h - getHeight();
 		super.setBounds(x, y, b, h);
 		if (breedtes == null)
 			initializeTableBounds(b, h);
@@ -1459,10 +1460,31 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			setCallOutBox(callOutMargeX0, callOutMargeY0, callOutMargeX1, callOutMargeY1);
 	}
 
-	public void setSize(int b, int h)
+	
+  static private final Dimension INVISIBLE = new Dimension();	
+	
+  @Override
+  public int getWidth() {
+    // TODO Auto-generated method stub
+    return super.getWidth();
+  }
+  @Override
+  public int getHeight() {
+    // TODO Auto-generated method stub
+    return super.getHeight();
+  }
+ 
+  @Override
+  public Dimension getSize() {
+    if (isVisible())
+      return super.getSize();
+    return INVISIBLE;
+  }
+
+  public void setSize(int b, int h)
 	{ //tekstVak.setBounds(0,0,b,h);
-		//int bOud = getSize().width;
-		//int hOud = getSize().height;
+		//int bOud = getWidth();
+		//int hOud = getHeight();
 		//int dBreedte = b - bOud;
 		//int dHoogte = h - hOud;
 		super.setSize(b, h);
@@ -1520,8 +1542,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public void setTableBounds()
 	{
-		int b = getSize().width;
-		int h = getSize().height;
+		int b = getWidth();
+		int h = getHeight();
 		//initializeTableBounds(300,300);
 		dragColomsRects = new Rectangle[aantalKolommen];
 		dragRowsRects = new Rectangle[aantalRijen];
@@ -1538,11 +1560,11 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				tekstVakken[i][j].setBounds((int) Math.round(breedteCum), (int) Math.round(hoogteCum), (int) Math.round(breedtes[j]), (int) Math.round(hoogtes[i]));
 				breedteCum = breedteCum + breedtes[j] + cellSpaceColumn;
 				if (i == 0)
-					dragColomsRects[j] = new Rectangle((int) Math.round(breedteCum) - cellSpaceColumn, 0, cellSpaceColumn, getSize().height);
+					dragColomsRects[j] = new Rectangle((int) Math.round(breedteCum) - cellSpaceColumn, 0, cellSpaceColumn, getHeight());
 
 			}
 			hoogteCum = hoogteCum + hoogtes[i] + cellSpaceRow;
-			dragRowsRects[i] = new Rectangle(0, (int) Math.round(hoogteCum) - cellSpaceRow, getSize().width, cellSpaceRow);
+			dragRowsRects[i] = new Rectangle(0, (int) Math.round(hoogteCum) - cellSpaceRow, getWidth(), cellSpaceRow);
 		}
 		if(inklapbaar && inklapKnopPos==0)
 		{	int xt = klapUitButton!=null ? klapUitButton.getWidth() : 0;
@@ -1566,7 +1588,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			if (i == aantalRijen - 1)
 				hoogtes[i] = h - hoogteCum;
 			hoogteCum = hoogteCum + hoogtes[i] + cellSpaceRow;
-			dragRowsRects[i] = new Rectangle(0, (int) Math.round(hoogteCum) - cellSpaceRow, getSize().width, cellSpaceRow);
+			dragRowsRects[i] = new Rectangle(0, (int) Math.round(hoogteCum) - cellSpaceRow, getWidth(), cellSpaceRow);
 
 			for (int j = 0; j < aantalKolommen; j++)
 			{
@@ -1578,7 +1600,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				tekstVakken[i][j].setBounds((int) Math.round(breedteCum), (int) Math.round(hoogteCum), (int) Math.round(breedtes[j]), (int) Math.round(hoogtes[i]));
 				breedteCum = breedteCum + breedtes[j] + cellSpaceColumn;
 				if (i == 0)
-					dragColomsRects[j] = new Rectangle((int) Math.round(breedteCum) - cellSpaceColumn, 0, cellSpaceColumn, getSize().height);
+					dragColomsRects[j] = new Rectangle((int) Math.round(breedteCum) - cellSpaceColumn, 0, cellSpaceColumn, getHeight());
 
 			}
 		}
@@ -1614,7 +1636,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				cum += breedtes[i];
 			}
 			breedtes[dragNumber] += d;
-			double factor = ((double) getSize().width - cum - d) / ((double) getSize().width - cum);
+			double factor = ((double) getWidth() - cum - d) / ((double) getWidth() - cum);
 			for (int i = dragNumber + 1; i < aantalKolommen; i++)
 			{
 				breedtes[i] *= factor;
@@ -1628,7 +1650,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				cum += hoogtes[i];
 			}
 			hoogtes[dragNumber] += d;
-			double factor = ((double) getSize().height - cum - d) / ((double) getSize().height - cum);
+			double factor = ((double) getHeight() - cum - d) / ((double) getHeight() - cum);
 			for (int i = dragNumber + 1; i < aantalRijen; i++)
 			{
 				hoogtes[i] *= factor;
@@ -1640,7 +1662,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		for (int i = 0; i < aantalRijen; i++)
 		{
 			hoogteCum = hoogteCum + hoogtes[i] + cellSpaceRow;
-			dragRowsRects[i] = new Rectangle(0, (int) Math.round(hoogteCum) - cellSpaceRow, getSize().width, cellSpaceRow);
+			dragRowsRects[i] = new Rectangle(0, (int) Math.round(hoogteCum) - cellSpaceRow, getWidth(), cellSpaceRow);
 			double breedteCum = 0;
 			for (int j = 0; j < aantalKolommen; j++)
 			{
@@ -1648,7 +1670,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				if (i == 0)
 					breedteCum = breedteCum + breedtes[j] + cellSpaceColumn;
 				if (i == 0)
-					dragColomsRects[j] = new Rectangle((int) Math.round(breedteCum) - cellSpaceColumn, 0, cellSpaceColumn, getSize().height);
+					dragColomsRects[j] = new Rectangle((int) Math.round(breedteCum) - cellSpaceColumn, 0, cellSpaceColumn, getHeight());
 
 			}
 		}
@@ -1658,13 +1680,13 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	{
 		if (dragModeColoms)
 		{
-			super.setSize(getSize().width + d, getSize().height);
+			super.setSize(getWidth() + d, getHeight());
 			breedtes[dragNumber] += d;
 
 		}
 		if (dragModeRows)
 		{
-			super.setSize(getSize().width, getSize().height + d);
+			super.setSize(getWidth(), getHeight() + d);
 			hoogtes[dragNumber] += d;
 		}
 		dragColomsRects = new Rectangle[aantalKolommen];
@@ -1673,7 +1695,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		for (int i = 0; i < aantalRijen; i++)
 		{
 			hoogteCum = hoogteCum + hoogtes[i] + cellSpaceRow;
-			dragRowsRects[i] = new Rectangle(0, (int) Math.round(hoogteCum) - cellSpaceRow, getSize().width, cellSpaceRow);
+			dragRowsRects[i] = new Rectangle(0, (int) Math.round(hoogteCum) - cellSpaceRow, getWidth(), cellSpaceRow);
 			double breedteCum = 0;
 			for (int j = 0; j < aantalKolommen; j++)
 			{
@@ -1681,7 +1703,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				if (i == 0)
 					breedteCum = breedteCum + breedtes[j] + cellSpaceColumn;
 				if (i == 0)
-					dragColomsRects[j] = new Rectangle((int) Math.round(breedteCum) - cellSpaceColumn, 0, cellSpaceColumn, getSize().height);
+					dragColomsRects[j] = new Rectangle((int) Math.round(breedteCum) - cellSpaceColumn, 0, cellSpaceColumn, getHeight());
 
 			}
 		}
@@ -1801,7 +1823,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 
 	public int geefAsHoogte()
 	{
-		if (tekstVakken[0][0] != null)
+		if (tekstVakken[0][0] != null && isVisible())
 			return tekstVakken[0][0].getAsHoogte();
 		return 0;
 	}
@@ -3145,7 +3167,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				hoogtes = new double[aantalRijen];
 			this.breedtes = breedtes;
 			this.hoogtes = hoogtes;
-			initializeTableBounds(getSize().width, getSize().height);
+			initializeTableBounds(getWidth(), getHeight());
 		}
 		else
 		{
@@ -3675,7 +3697,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		//if(hoek!=0)
 		{
 			((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			AffineTransform rotation = AffineTransform.getRotateInstance(hoek * Math.PI / 180, getSize().width / 2, getSize().height / 2);
+			AffineTransform rotation = AffineTransform.getRotateInstance(hoek * Math.PI / 180, getWidth() / 2, getHeight() / 2);
 			g.transform(rotation);
 		}
 
@@ -3780,12 +3802,12 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		for (int i = 0; i < aantalRijen - 1; i++)
 		{
 			hoogteCum += hoogtes[i] + cellSpaceRow;
-			g.drawLine(0, (int) Math.round(hoogteCum), getSize().width, (int) Math.round(hoogteCum));
+			g.drawLine(0, (int) Math.round(hoogteCum), getWidth(), (int) Math.round(hoogteCum));
 		}
 		for (int i = 0; i < aantalKolommen - 1; i++)
 		{
 			breedteCum += breedtes[i] + cellSpaceColumn;
-			g.drawLine((int) Math.round(breedteCum), 0, (int) Math.round(breedteCum), getSize().height);
+			g.drawLine((int) Math.round(breedteCum), 0, (int) Math.round(breedteCum), getHeight());
 		}
 	}
 
@@ -3806,10 +3828,10 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 			for (int i = 0; i < aantalRijen; i++)
 			{	tekstVakken[i][0].resize();
 
-				int hoogte = Math.max(0, tekstVakken[i][0].getSize().height - tekstVakken[i][0].geefOpgevuldeHoogte());
+				int hoogte = Math.max(0, tekstVakken[i][0].getHeight() - tekstVakken[i][0].geefOpgevuldeHoogte());
 				for (int j = 0; j < aantalKolommen; j++)
 				{	tekstVakken[i][j].resize();
-					breedte[j] = Math.max(breedte[j], tekstVakken[i][j].getSize().width);
+					breedte[j] = Math.max(breedte[j], tekstVakken[i][j].getWidth());
 					if(!tekstVakken[i][j].bevatVulHoogteSymbool())
 						ashoogte[i] = Math.max(tekstVakken[i][j].getAsHoogte(), ashoogte[i]);
 				}
@@ -3819,7 +3841,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 						breedtes[j] = Math.max(10, breedte[j]);
 					if (pasAanH)
 					{	if(!tekstVakken[i][j].bevatVulHoogteSymbool())
-							hoogte = Math.max(hoogte, tekstVakken[i][j].getSize().height - tekstVakken[i][j].geefOpgevuldeHoogte() - tekstVakken[i][j].getAsHoogte() + ashoogte[i]);// - tekstVakken[i][j].geefOpgevuldeHoogte()
+							hoogte = Math.max(hoogte, tekstVakken[i][j].getHeight() - tekstVakken[i][j].geefOpgevuldeHoogte() - tekstVakken[i][j].getAsHoogte() + ashoogte[i]);// - tekstVakken[i][j].geefOpgevuldeHoogte()
 					}
 				}
 				if (pasAanH)
@@ -3864,14 +3886,14 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				if(callOut)
 					resizeCallOutB((int) Math.round(breedteCum) - 1);
 				else
-					setSize((int) Math.round(breedteCum) - 1, getSize().height);
+					setSize((int) Math.round(breedteCum) - 1, getHeight());
 			}
 			else if (pasAanH)
 			{	
 				if(callOut)
 					resizeCallOutH((int) Math.round(hoogteCum));
 				else
-					setSize(getSize().width, (int) Math.round(hoogteCum));
+					setSize(getWidth(), (int) Math.round(hoogteCum));
 				
 			}
 			
@@ -3895,8 +3917,8 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 				}
 			}
 		}
-		//if(widthResizable && heightResizable)setSize(targetWidth, tekstVakken[0][0].getSize().height);
-		//else if(heightResizable)setSize(getSize().width,tekstVakken[0][0].getSize().height);
+		//if(widthResizable && heightResizable)setSize(targetWidth, tekstVakken[0][0].getHeight());
+		//else if(heightResizable)setSize(getWidth(),tekstVakken[0][0].getHeight());
 
 		//if(!ingeklapt)
 		updateUitklapHoogtes();
@@ -3906,7 +3928,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		{	((TekstDeelVak) getParent()).zetMaat();
 		}
 		else
-			setSize(getSize().width, getSize().height);
+			setSize(getWidth(), getHeight());
 
 		
 	}
@@ -3930,7 +3952,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 	{	if(vulHoogte && getParent() instanceof TekstDeelVak)
 		{	//int restHoogte =((TekstDeelVak) getParent()).getTekstVak().geefRestHoogte() - ((TekstDeelVak) getParent()).getTekstVak().geefOpgevuldeHoogte();// Math.max(((TekstDeelVak) getParent()).getTekstVak().geefRestHoogte(), -geefRestHoogte());
 			int restHoogte =((TekstDeelVak) getParent()).getTekstVak().geefRestHoogte();
-			setSize(getSize().width, Math.max(0, getSize().height + restHoogte));
+			setSize(getWidth(), Math.max(0, getHeight() + restHoogte));
 			((TekstInteractiePanelVak) getParent()).setSize(getSize().width, getSize().height);
 			tekstVakken[0][0].centerContent();
 		}
@@ -4008,7 +4030,7 @@ public class TekstVakPanel extends RoundedPanel implements TabletOwner, Interact
 		Container parent = getParent();
 		int x = xx + parent.getLocation().x;
 		int y = yy + parent.getLocation().y;
-		int h = parent.getSize().height;
+		int h = parent.getHeight();
 		for (int i = 0; parent != null && i < 40; i++)
 		{
 			if (parent instanceof TabletOwner)

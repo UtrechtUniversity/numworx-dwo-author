@@ -115,6 +115,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "checkCBLabel" , "Nakijken actief" },
 				{ "teltMeeCBLabel" , "Telt mee in score" },
 				{ "logCBLabel" , "LogID" },
+				{ "logExecuteCBLabel", "Log execute" },
 				{ "rmCBLabel" , "Rekenmachine" },
 				{ "pijlCBLabel" , "Pijl" },
 				{ "substitutiesButtonLabel" , "Substituties" },
