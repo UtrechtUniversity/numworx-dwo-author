@@ -26,9 +26,12 @@ public class FormuleTeken extends FormuleElement
 		if(tk=='+' || tk=='=' || tk=='<' || tk=='>' || tk=='\u2264' || tk=='\u2265' || tk=='\u2248')
 		{	teken = " "+tk+" ";
 		}
-		else if(tk=='*')
-		{	teken = null;
-		}
+        else if(tk=='*')
+        {   teken = null;
+        }
+        else if(tk=='\'')
+        {   teken = "\u2032";
+        }
 		else if(tk=='\u00d7')
 		{	teken = null;
 		}
