@@ -350,9 +350,10 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     }
 // extra
     JSONObject p = WiskOpdr.applet.getDwoProfile();
-    p = (JSONObject) p.get("id");
-    h.put("dwoProfileID", p.get("idString"));
-   
+    if (p != null) {
+      p = (JSONObject) p.get("id");
+      h.put("dwoProfileID", p.get("idString"));
+    }
     return h;
   }
 
