@@ -976,6 +976,8 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_action.setActive", "Actie: zet actief"},
 				{"CBA_action.setInactive", "Actie: zet inactief"},
 				{"CBA_action.reset", "Actie: herstel"},
+                {"CBA_action.passed", "Actie: mastery behaald"},
+                {"CBA_action.failed", "Actie: mastery niet behaald"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},
