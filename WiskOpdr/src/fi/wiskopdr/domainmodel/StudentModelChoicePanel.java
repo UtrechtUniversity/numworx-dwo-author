@@ -268,6 +268,10 @@ public class StudentModelChoicePanel extends JPanel
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected,
         boolean expanded, boolean leaf, int row, boolean hasFocus) {
       JToggleButton returnValue;
+      if (value instanceof InvisibleNode) {
+        InvisibleNode in = (InvisibleNode) value;
+        leaf = !in.getAllowsChildren();
+      }
       if (leaf) {
         returnValue = leafRenderer;
       } else
@@ -350,6 +354,20 @@ public class StudentModelChoicePanel extends JPanel
               List<DomStudentModelMethodInfo> methodeInfos = nl.getMethodeInfos();
               if (methodeInfos == null) continue;
               Map<String, DomStudentModelMethodInfo> mmap = methodeInfos.stream().collect(Collectors.toMap(DomStudentModelMethodInfo::key, Function.identity()));
+// add keys from "methode"
+              Map<String, Map<String, Collection<Number>>> methode = nl.getMethode();
+              for(String key: methode.keySet()) {
+                Map<String, Collection<Number>> boeken = methode.getOrDefault(key, Collections.emptyMap());
+                for (String book: boeken.keySet()) {
+                  Collection<Number> hoofdstukken = boeken.getOrDefault(book, Collections.emptySet());
+                  for(Number chapter: hoofdstukken) {
+                    String sleutel = key + "-" + book + "-" + chapter;
+                    mmap.putIfAbsent(sleutel, null);
+                  }                 
+                }
+              }
+              
+              
               Set<String> infos = mmap.keySet();
               String title = nl.toString();
               for (String mi : infos) {
