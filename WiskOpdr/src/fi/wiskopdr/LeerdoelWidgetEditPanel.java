@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -37,7 +39,7 @@ import fi.wiskopdr.domainmodel.StudentModelChoicePanel;
 import fi.wiskopdr.domainmodel.filter.FilterPanel;
 import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 
-public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPanel, ActionListener {
+public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPanel, ActionListener, ItemListener {
 
   //Algemene attributen 
   private Font font = WiskOpdr.tekstFont;
@@ -64,6 +66,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
   private JCheckBox voorkennisMenuCB;
   private JCheckBox zoomKnoppenCB;
   private JCheckBox filterHeaderCB;
+  private JCheckBox visibleCB;
   private JComboBox<String> typeCB;
   
   private JLabel scoreLabel;
@@ -72,10 +75,33 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
   private StudentModel[] studentModels;
   private StudentModel studentModel;
   
+  private class Enabler implements Runnable {
+    private JCheckBox[] enabled, disabled;
+    private void setEnabled(JCheckBox... enabled) { this.enabled = enabled; }
+    private void setDisabled(JCheckBox... disabled) { this.disabled = disabled; }
+    
+    public void run() {
+      for(JCheckBox i: disabled) i.setEnabled(false);
+      for(JCheckBox i: enabled)  i.setEnabled(true);
+    }
+  }
+  Enabler enableGraph = new Enabler(), enableList = new Enabler(), enableRecommender = new Enabler();
+  Runnable[] enablers = { enableGraph, enableList, enableRecommender };
+  
   
   public LeerdoelWidgetEditPanel() {
     studentModels = WiskOpdr.applet.getStudentModels();
     makeGUI();
+// enablers
+    enableGraph.setEnabled();
+    enableGraph.setDisabled(visibleCB);
+    enableList.setEnabled();
+    enableList.setDisabled(visibleCB);
+    enableRecommender.setEnabled(visibleCB);
+    enableRecommender.setDisabled();
+ 
+    typeCB.addItemListener(this); 
+    itemStateChanged(null);
   }
   
   private void makeGUI() {
@@ -138,6 +164,9 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     
     leerdoelScoreCB = new JCheckBox(WiskOpdr.rb.getString("LWEP_leerdoelScoreCB"));
     leerdoelScoreCB.setSelected(false);
+ 
+    visibleCB = new JCheckBox(WiskOpdr.rb.getString("TVEP_visible"));
+    visibleCB.setSelected(false);
     
     typeLabel = new JLabel("Type");
     typeLabel.setForeground(WiskOpdr.colorBlue1);
@@ -172,9 +201,10 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     
     Component[] r27 = {scoreLabel, hgl()};
     Component[] r28 = {leerdoelScoreCB, hgl()};
+    Component[] r29 = {visibleCB, hgl()};
  
     Component[] k2 = {hb(r31), vst(10), hb(r32), vst(20),
-                      hb(r21), vst(10), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), hb(r25), vst(5), hb(r26), vst(20), hb(r27), vst(10), hb(r28), vgl()};
+                      hb(r21), vst(10), hb(r22), vst(5), hb(r23), vst(5), hb(r24), vst(5), hb(r25), vst(5), hb(r26), hb(r29), vst(20), hb(r27), vst(10), hb(r28), vgl()};
     
     Component[] rr = {vb(k1), hgl(), ra(50,0), vb(k2), hgl()};
     
@@ -227,6 +257,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     boolean zoomKnoppen = false;
     boolean filterHeader = false;
     boolean leerdoelScore = false;
+    boolean visible = false;
     List<String> objectives = Collections.emptyList();
     int type = 0;
     
@@ -248,6 +279,9 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
       filterHeader = ((Boolean)h.get("filterHeader")).booleanValue(); // header met de filterselectie
     if(h.containsKey("leerdoelScore"))
       leerdoelScore = ((Boolean)h.get("leerdoelScore")).booleanValue();
+    if(h.containsKey("visible"))
+      visible = ((Boolean)h.get("visible")).booleanValue();
+
     if (h.containsKey("type"))
       type = ((Number)h.get("type")).intValue();
     if (h.containsKey("objectives")) 
@@ -284,6 +318,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     filterHeaderCB.setSelected(filterHeader);
     leerdoelScoreCB.setSelected(leerdoelScore);
     typeCB.setSelectedIndex(type);
+    visibleCB.setSelected(visible);
    
     ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
   }
@@ -309,6 +344,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     boolean zoomKnoppen = false;
     boolean filterHeader = false;
     boolean leerdoelScore = false;
+    boolean visible = false;
     List<String> objectives = null;
     int type = 0;
    
@@ -330,6 +366,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     filterHeader = filterHeaderCB.isSelected();
     leerdoelScore = leerdoelScoreCB.isSelected();
     type = typeCB.getSelectedIndex();
+    visible = visibleCB.isSelected();
         
     Hashtable<String,Object> h = new Hashtable<>();
     if(studentModelID!=null)
@@ -345,6 +382,7 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     h.put("filterHeader", filterHeader);
     h.put("leerdoelScore", leerdoelScore);
     h.put("type", type);
+    h.put("visible", visible);
     if (objectives != null) {
       h.put("objectives", objectives);
     }
@@ -411,8 +449,13 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
       }
     }
     
-    ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
+    ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class, mainPanel)).packWidth();
     
+  }
+
+  @Override
+  public void itemStateChanged(ItemEvent notused) {
+    enablers[typeCB.getSelectedIndex()].run();
   }
 
 }
