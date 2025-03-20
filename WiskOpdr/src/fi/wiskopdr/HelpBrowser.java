@@ -78,7 +78,6 @@ public class HelpBrowser extends JPanel
 
       ssb.loadURL(url);
       ssb.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, url));
-    }
 //    frame.pack();
 //    frame.setVisible(true);
   }
