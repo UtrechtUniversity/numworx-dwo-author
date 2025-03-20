@@ -2,12 +2,15 @@ package fi.wiskopdr;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
@@ -119,4 +122,13 @@ public class SimpleSwingBrowser implements WindowListener {
   public void windowOpened(WindowEvent arg0) {
   }
 
+  public void actionPerformed(ActionEvent actionEvent) {
+    if(browser instanceof ActionListener) {
+      ((ActionListener) browser).actionPerformed(actionEvent);
+    }
+    
+  }
+
+  
+  
 }

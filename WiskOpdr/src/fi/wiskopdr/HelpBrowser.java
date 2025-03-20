@@ -63,7 +63,7 @@ public class HelpBrowser extends JPanel
     if (!hasPanel()) {
       try {
         if (url == null) return;
-        java.awt.Desktop.getDesktop().browse(new URI(url));
+        java.awt.Desktop.getDesktop().browse(URI.create(url));
       } catch (Exception e) {
       }
       return;
@@ -76,7 +76,9 @@ public class HelpBrowser extends JPanel
 //    frame.setLocation(x,y);  
 
 
-    ssb.loadURL(url);
+      ssb.loadURL(url);
+      ssb.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, url));
+    }
 //    frame.pack();
 //    frame.setVisible(true);
   }
