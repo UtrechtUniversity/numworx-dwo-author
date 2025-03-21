@@ -35,7 +35,7 @@ public class FilterPanel extends JPanel {
     super(null);
     BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
     setLayout(layout);
-    Border margin = BorderFactory.createEmptyBorder(20, 20, 0, 0);
+    Border margin = BorderFactory.createEmptyBorder(20, 20, 5, 0);
     JLabel l;
     if (activeMethod != null) {
       m = new AnyMethodAction();
@@ -45,7 +45,7 @@ public class FilterPanel extends JPanel {
       l.setFont(new Font("SansSerif", Font.PLAIN, 14));
       l.setBorder(margin);
       add(l);
-      add(mtab = m.getTab());
+      add((mtab = m.getTab()).getMainPanel());
     } else {
 //      l = new JLabel(genr.getName());
 //      l.setBorder(margin);

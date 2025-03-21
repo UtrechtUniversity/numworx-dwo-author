@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import fi.beans.numworxlf.Constants;
 import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JOptionPane;
+import fi.beans.numworxlf.JScrollPane;
 
 public class FilterAction extends AbstractAction {
 
@@ -44,7 +45,7 @@ public class FilterAction extends AbstractAction {
       p = new FilterPanel(activeMethod);
       dialog.getContentPane().setLayout(new BorderLayout());
       
-      dialog.getContentPane().add(p, BorderLayout.CENTER);
+      dialog.getContentPane().add(new JScrollPane(p), BorderLayout.CENTER);
       
       JButton ok = new JButton("OK");
       ok.addActionListener(dialog::ok);
