@@ -1,12 +1,9 @@
 package fi.wiskopdr;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,19 +20,13 @@ import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.JPanel;
 
 import fi.beans.base64code.StringCodeObject;
-import fi.beans.numworxlf.JButton;
-import fi.beans.numworxlf.JOptionPane;
 import fi.wiskopdr.domainmodel.Constants;
 import fi.wiskopdr.domainmodel.StudentCategory;
 import fi.wiskopdr.domainmodel.StudentModel;
 import fi.wiskopdr.domainmodel.StudentObjective;
 import fi.wiskopdr.domainmodel.Variant;
-import fi.wiskopdr.domainmodel.graph.Graph;
-import fi.wiskopdr.domainmodel.graph.GraphNode;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 
 @SuppressWarnings("serial")
@@ -67,7 +58,7 @@ public class ObjectivesViewAction extends AbstractAction {
       ObjectiveChoiceButton btn = new ObjectiveChoiceButton(objectivesButton.getObjectives(), objectivesButton.getCategories(), objectivesButton.getStudentModelSupplier());
       buildChoices();
       btn.strategy.setChoices(choices);
-      btn.strategy.setObjectives(toList(objectives)); // show exclusief voorkennis, maximum factor
+      btn.strategy.setObjectives(toList(objectivesCount)); // show exclusief voorkennis, maximum factor
       Set<String> all = metVoorkennis(objectives, objectivesButton.getStudentModel());
       all.removeAll(voorkennis);
       List<String> deselections = new ArrayList<>(all);
@@ -99,8 +90,8 @@ public class ObjectivesViewAction extends AbstractAction {
 //        p.add(vb, BorderLayout.NORTH);
 //      }
       Map<String, Double> scoreMap = new HashMap<>();
-      voorkennis.forEach(s -> scoreMap.put(s, 100.0));
-      strip(objectives).forEach(s -> scoreMap.put(s, 100.0));
+      voorkennis.forEach(s -> scoreMap.put(s, 71.0)); // half //
+      strip(objectives).forEach(s -> scoreMap.put(s, 100.0)); // success
       btn.strategy.setScore(scoreMap);
       
       Map<String, Boolean> selectionMap = new HashMap<>();
@@ -123,10 +114,11 @@ public class ObjectivesViewAction extends AbstractAction {
 
   }
 
-  private List<String> toList(Set<String> set) {
-    return set.stream().map(o -> o.contains("/")? o: (o+"/1.0")).sorted().distinct().collect(Collectors.toList());
+  private List<String> toList(Map<String, Integer> set) {
+    return set.entrySet().stream().map(e -> e.getKey() + "/" + e.getValue()).collect(Collectors.toList());
   }
 
+  Map<String, Integer> objectivesCount;
 
   void buildChoices() {
     String[][] objectives = objectivesButton.getObjectives();
@@ -138,7 +130,8 @@ public class ObjectivesViewAction extends AbstractAction {
     } else {
       choices = new boolean[0][0];
     }
-    this.objectives = new TreeSet<>();
+    this.objectivesCount = new TreeMap<>();
+    this.objectives = objectivesCount.keySet();
     this.voorkennis = new TreeSet<>();
     Map state = editor.getEditState();
     int aantal = editor.geefAantalOpdrachten(0);
@@ -238,7 +231,7 @@ public class ObjectivesViewAction extends AbstractAction {
     if (list != null) {
       for (int i = 0; i < list.length; i++) {
         String string = list[i];
-        objectives.add(string);
+        objectives_add(string);
         local.add(string);
       }
     }
@@ -250,6 +243,12 @@ public class ObjectivesViewAction extends AbstractAction {
         voorkennis.addAll(metVoorkennis(local, objectivesButton.getStudentModel()));
     }
   }
+
+  private void objectives_add(String string) {
+    string = string.split("/")[0];
+    objectivesCount.compute(string, (k, v) -> v == null ? 1 : v + 1);   
+  }
+
 
   private void updatechoices(boolean[][] max) {
     for(int i = 0; i < Math.min(choices.length, max.length); i++) {
