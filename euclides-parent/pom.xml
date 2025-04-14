@@ -17,20 +17,30 @@
 	  			<dependency>
 				<groupId>fi.euclides</groupId>
 				<artifactId>euclides-core</artifactId>
-				<version>${project.version}</version>
+				<version>0.0.8-SNAPSHOT</version>
+			</dependency>
+	  			<dependency>
+				<groupId>fi.euclides</groupId>
+				<artifactId>euclides-expr</artifactId>
+				<version>0.0.8-SNAPSHOT</version>
 			</dependency>
 	  		<dependency>
 				<groupId>fi.euclides</groupId>
 				<artifactId>euclides-core</artifactId>
-				<version>${project.version}</version>
+				<version>0.0.8-SNAPSHOT</version>
 				<classifier>sources</classifier>
 			</dependency>
 		  	<dependency>
 		  		<groupId>fi.euclides</groupId>
 		  		<artifactId>euclides-util</artifactId>
-		  		<version>${project.version}</version>
+		  		<version>0.0.8-SNAPSHOT</version>
 		  		<optional>true</optional>
 		  	</dependency>
+			<dependency>
+				<groupId>nl.uu.fi.dwo.mobile</groupId>
+				<artifactId>interaction</artifactId>
+				<version>2.5.24</version>
+			</dependency>
 	  	</dependencies>
 	  </dependencyManagement>
 	<properties>
@@ -40,19 +50,6 @@
 		<autoVersionSubmodules>true</autoVersionSubmodules>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
-				<configuration>
-					<tagNameFormat>@{project.version}</tagNameFormat>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<distributionManagement>
 		<repository>
 			<id>release</id>
