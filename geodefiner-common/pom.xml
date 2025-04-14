@@ -82,5 +82,6 @@
 		<groupId>fi.euclides</groupId>
 		<version>0.0.8-SNAPSHOT</version>
 		<artifactId>euclides-parent</artifactId>
+		<relativePath>../euclides-parent/</relativePath>
 	</parent>
 </project>
