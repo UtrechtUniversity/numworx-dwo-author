@@ -310,6 +310,17 @@ public class StudentModelChoicePanel extends JPanel
 
   private class MethodListener implements ItemListener {
 
+    final boolean keep;
+
+    public MethodListener(boolean keep) {
+      this.keep = keep;
+    }
+    public MethodListener() {
+      this(false);
+    }
+    
+    
+
     InvisibleTreeModel methodModel;
     StudentMethod active = new StudentMethod();
 
@@ -376,7 +387,7 @@ public class StudentModelChoicePanel extends JPanel
                   NodeLeaf oo = nl;
                   DomStudentModelMethodInfo smmi = mmap.get(k);
                   String variant = smmi == null ? null : smmi.getVariant();
-                  oo = new NodeLeaf(nl, variant);
+                  oo = keep ? new NodeLeaf(nl) : new NodeLeaf(nl, variant);
                   InvisibleNode node = new InvisibleNode(oo, false, true);
                   insertMethod(n, node);
                   return n;
@@ -490,7 +501,7 @@ public class StudentModelChoicePanel extends JPanel
   JTextArea description;
   JButton graphButton;
   JCheckBox methods;
-  MethodListener methodListener = new MethodListener();
+  final MethodListener methodListener;
   Graph graph;
   String activeMethod;
 
@@ -501,8 +512,11 @@ public class StudentModelChoicePanel extends JPanel
   static final String JSON_SIG = "{";
   private static final Font font = new Font("SansSerif", Font.PLAIN, 12);
 
-  public StudentModelChoicePanel(Supplier<StudentModel> studentModel2) {
+  
+  
+  public StudentModelChoicePanel(boolean keep, Supplier<StudentModel> studentModel2) {
     super(new BorderLayout());
+    methodListener = new MethodListener(keep);
     this.studentModel = studentModel2;
     // North
     Box north = Box.createHorizontalBox();
@@ -670,7 +684,7 @@ public class StudentModelChoicePanel extends JPanel
 
 
   public StudentModelChoicePanel(Supplier<StudentModel> supplier, boolean b) {
-    this(supplier);
+    this(false, supplier);
     showDescription(b);
   }
 

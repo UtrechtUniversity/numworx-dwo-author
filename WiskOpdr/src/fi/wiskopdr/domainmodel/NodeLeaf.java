@@ -40,6 +40,15 @@ public class NodeLeaf implements Node {
     value = delegate.value && Objects.equals( delegate.variant, this.variant);
   }
   
+  public NodeLeaf(NodeLeaf org) {
+    this.obj = org.obj;
+    this.variant = org.variant;
+    this.value = org.value;
+    this.delegate = org;
+  }
+  
+  
+  
   
   @Override
   public String getDescription() {

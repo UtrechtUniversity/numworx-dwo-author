@@ -55,7 +55,7 @@ public class ObjectivesViewAction extends AbstractAction {
   public void actionPerformed(ActionEvent e) {
     if (hasObjectiveChoices()) {
       @SuppressWarnings("deprecation")
-      ObjectiveChoiceButton btn = new ObjectiveChoiceButton(objectivesButton.getObjectives(), objectivesButton.getCategories(), objectivesButton.getStudentModelSupplier());
+      ObjectiveChoiceButton btn = new ObjectiveChoiceButton(true, objectivesButton.getObjectives(), objectivesButton.getCategories(), objectivesButton.getStudentModelSupplier());
       buildChoices();
       btn.strategy.setChoices(choices);
       btn.strategy.setObjectives(toList(objectivesCount)); // show exclusief voorkennis, maximum factor

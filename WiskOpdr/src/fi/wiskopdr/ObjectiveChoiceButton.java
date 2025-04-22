@@ -235,7 +235,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	 * </pre>
 	 */
 	public ObjectiveChoiceButton() {
-	  this(WiskOpdr.rb.getString("OPT_objectives"), WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModelSupplier);
+	  this(false, WiskOpdr.rb.getString("OPT_objectives"), WiskOpdr.objectives, WiskOpdr.categorieString, WiskOpdr.studentModelSupplier);
 	}
 	
 	
@@ -249,8 +249,11 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	public ObjectiveChoiceButton(String[][] objectives, String[] categorieString, StudentModel model) {
 	  this(WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString,model);
 	}
+    public ObjectiveChoiceButton(boolean keep, String[][] objectives, String[] categorieString, Supplier<StudentModel> model) {
+      this(keep, WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString,model);
+    }
     public ObjectiveChoiceButton(String[][] objectives, String[] categorieString, Supplier<StudentModel> model) {
-      this(WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString,model);
+      this(false, WiskOpdr.rb.getString("OPT_objectives"), objectives, categorieString,model);
     }
  
 	/**
@@ -260,10 +263,10 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 	 * @param categorieString
 	 */
 	public ObjectiveChoiceButton(String labelString, String[][] objectives, String[] categorieString) {
-      this(labelString, objectives, categorieString, (Supplier<StudentModel>)null);
+      this(false, labelString, objectives, categorieString, (Supplier<StudentModel>)null);
     }
 	
-	public ObjectiveChoiceButton(String labelString, String[][] objectives, String[] categorieString, Supplier<StudentModel> studentModelGetter) {
+	public ObjectiveChoiceButton(boolean keep, String labelString, String[][] objectives, String[] categorieString, Supplier<StudentModel> studentModelGetter) {
 	  super(labelString);
       this.labelString = labelString;
       this.objectives = objectives;
@@ -274,7 +277,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 //        System.out.println("storeCurrentGlobalVars");
 //        globalVarState = new WiskOpdrGlobalVarState();
 //        globalVarState.storeCurrentGlobalVars();
-          strategy = new StudentModelChoicePanel(studentModel);
+          strategy = new StudentModelChoicePanel(keep, studentModel);
       }
 	}
 	
@@ -289,7 +292,7 @@ public class ObjectiveChoiceButton extends WiskOpdrButton implements ActionListe
 //			System.out.println("storeCurrentGlobalVars");
 //			globalVarState = new WiskOpdrGlobalVarState();
 //			globalVarState.storeCurrentGlobalVars();
-			strategy = new StudentModelChoicePanel(this.studentModel);
+			strategy = new StudentModelChoicePanel(false, this.studentModel);
 		}
 	}
 	
