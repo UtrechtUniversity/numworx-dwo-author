@@ -56,7 +56,10 @@ public class NodeLeaf implements Node {
   }
 
   public boolean isValue() {
-    return value;
+    if (Objects.equals(delegate.variant, this.variant)) {
+      return delegate.value;
+    }
+    return false;
   }
 
   public void setValue(boolean value) {

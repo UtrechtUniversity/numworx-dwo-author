@@ -381,11 +381,11 @@ public class StudentModelChoicePanel extends JPanel
               
               Set<String> infos = mmap.keySet();
               String title = nl.toString();
-              for (String mi : infos) {
+              for (String mi : infos) { String k0 = mi;
                 if (title.startsWith("W:")) mi += "-W:";
                 nodes.computeIfPresent(mi, (k, n) -> {
                   NodeLeaf oo = nl;
-                  DomStudentModelMethodInfo smmi = mmap.get(k);
+                  DomStudentModelMethodInfo smmi = mmap.get(k0); // zonder -W:
                   String variant = smmi == null ? null : smmi.getVariant();
                   oo = keep ? new NodeLeaf(nl) : new NodeLeaf(nl, variant);
                   InvisibleNode node = new InvisibleNode(oo, false, true);
@@ -460,6 +460,7 @@ public class StudentModelChoicePanel extends JPanel
         }
       }
       parent.add(node);
+      insertUO(parent, node);
     }
 
     private void insertUO(InvisibleNode parent, InvisibleNode node) {
