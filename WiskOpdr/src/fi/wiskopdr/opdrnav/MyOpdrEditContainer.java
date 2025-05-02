@@ -23,6 +23,8 @@ import java.awt.event.WindowEvent;
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import fi.beans.base64code.*;
 import fi.wiskopdr.AntwoordEditPanel;
@@ -58,7 +60,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private DialogFacade randVarPopupFrame;
 
 	private JCheckBox titelCB;
-	private TekstEditor titelEditor;
+	private JTextField titelEditor;
 	private boolean hasTitle = true;
 	
 	private int scheidingX = 380;
@@ -100,6 +102,26 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private AntwoordEditPanel antwoordEditPanel; // bij oude editorversie: meer ruimte voor antwoordmodel (fullscreen).
 	//Einde Voor oude editorversie
 
+	static final DocumentListener TITEL_CHANGED = new DocumentListener() {
+      
+      @Override
+      public void removeUpdate(DocumentEvent e) {
+        changedUpdate(e);       
+      }
+      
+      @Override
+      public void insertUpdate(DocumentEvent e) {
+        changedUpdate(e);
+      }
+      
+      @Override
+      public void changedUpdate(DocumentEvent e) {
+        WiskOpdr.setLaunchDataChanged();
+      }
+    };
+	
+	
+	
 	public static void setDefaultDocSizes(int marginX, int marginY, int docWidth, int docHeight) {
 	  defaultMarginX = marginX;
 	  defaultMarginY = marginY;
@@ -124,11 +146,18 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		makeGui();
 	}
 	
+	private void setTitleChanged(boolean on) {
+	  if (on)
+	       titelEditor.getDocument().addDocumentListener(TITEL_CHANGED);
+	  else 
+	       titelEditor.getDocument().removeDocumentListener(TITEL_CHANGED);
+	}
+	
+	
 	private void makeGui() {
-		titelEditor = new TekstEditor(false, false);
-		titelEditor.setHeader(false);
+		titelEditor = new JTextField();
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
-		titelEditor.setFont(new Font(WiskOpdr.tekstFont.getName(), Font.BOLD, 16));
+		setTitleChanged(true);
 		add(titelEditor);
 
 		tekstLabel = makeLabel(10, 95, scheidingX - 15, 20, WiskOpdr.rb.getString("opdrachtTekstLabel"), false);
@@ -298,7 +327,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelCB.setBounds(hasTitle ? 10 : 65, 8, 80, 15);
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
-		//tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
+		tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
 		int corrMenu = OpdrNavStructEdit.hasMenuBar ? 5 : 0;
 		tekstEditor.setBounds(10, hasTitle ? 75 : 5-corrMenu, w - 20, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465-corrMenu : 0));
 		tekstEditor.setMainEditor(defaultMarginX, defaultMarginY, defaultDocWidth, defaultDocHeight);
@@ -447,8 +476,9 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		this.eindX = eindX;
 		this.hasTitle = hasTitle;
 		this.hasAntwoordVak = hasAntwoordVak;
-
-		titelEditor.zetTekst(titel);
+		setTitleChanged(false);
+		titelEditor.setText(titel);
+		setTitleChanged(true);
 		tekstEditor.zetTekst(tekst);
 		tekstEditor2.zetTekst(tekst2);
 		if(tekst2==null || "".equals(tekst2.trim()))
@@ -457,7 +487,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		randomVarEditor.layoutTekst();
 
 		titelCB.setSelected(hasTitle);
-		if(!hasTitle)
+		if(!WiskOpdr.isExperimental())
 		  titelCB.setVisible(false);
 
 		tekstEditor.setBounds(10, hasTitle ? 75 : 25, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? 35 : 0));
@@ -665,7 +695,6 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 			hideAntwoordVak();
 			
 		}
-		titelEditor.deleteStates();
 		tekstEditor.deleteStates();
 		tekstEditor2.deleteStates();
 		randomVarEditor.deleteStates();
