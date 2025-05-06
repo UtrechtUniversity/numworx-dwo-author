@@ -193,6 +193,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		randVarLabel.setForeground(new Color(51,74,112));
 
 		titelCB = makeCheckBox(10, 8, 80, 15, WiskOpdr.rb.getString("opdrachtTitelLabel"), true, true);
+		titelCB.setToolTipText(titelCB.getText());
 		nieuweVersieCB = makeCheckBox(600, 5, 175, 20, WiskOpdr.rb.getString("editorVersieKnopLabel1"), false, true);
 
 		// Voor oude Editorversie
@@ -324,8 +325,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private void setSizesGui() {
 		int w = getSize().width;
 		int h = getSize().height;
-		titelCB.setBounds(hasTitle ? 10 : 10, 8, 23, 15);
-		titelEditor.setBounds(33, 5, titelEditor.getWidth(), 25);
+		titelCB.setBounds(hasTitle ? 10 : 10, 8, 33, 15);
+		titelEditor.setBounds(43, 5, titelEditor.getWidth(), 25);
 		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
 		tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
 		int corrMenu = OpdrNavStructEdit.hasMenuBar ? 5 : 0;
@@ -365,7 +366,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	public void setTitle(boolean b) {
 		hasTitle = b;
 		titelEditor.setVisible(b);
-		tekstEditor.setTitleRoom(hasTitle? 0:25);
+		tekstEditor.setTitleRoom(hasTitle||!titelCB.isVisible()? 0:25);
 		setSizesGui();
 	}
 	
@@ -488,9 +489,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		randomVarEditor.layoutTekst();
 
 		titelCB.setSelected(hasTitle);
-		if(!WiskOpdr.isExperimental())
-		  titelCB.setVisible(false);
-
+		titelCB.setVisible(WiskOpdr.isExperimental()||hasTitle);
+		
 		tekstEditor.setBounds(10, hasTitle ? 75 : 25, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? 35 : 0));
 		tekstEditor2.setBounds(scheidingX + 5, 25, eindX - 5 - scheidingX, 260 + (hasAntwoordVak ? 0 : 130));
 
