@@ -155,7 +155,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	
 	
 	private void makeGui() {
-		titelEditor = new JTextField();
+		titelEditor = new JTextField(40);
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		setTitleChanged(true);
 		add(titelEditor);
@@ -324,12 +324,12 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private void setSizesGui() {
 		int w = getSize().width;
 		int h = getSize().height;
-		titelCB.setBounds(hasTitle ? 10 : 65, 8, 80, 15);
-		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
+		titelCB.setBounds(hasTitle ? 10 : 10, 8, 23, 15);
+		titelEditor.setBounds(33, 5, titelEditor.getWidth(), 25);
 		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
 		tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
 		int corrMenu = OpdrNavStructEdit.hasMenuBar ? 5 : 0;
-		tekstEditor.setBounds(10, hasTitle ? 75 : 5-corrMenu, w - 20, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465-corrMenu : 0));
+		tekstEditor.setBounds(10, hasTitle ? 30 : 5-corrMenu, w - 20, (hasTitle ? 330 : 355) + (hasTekstVakLayout ? h - 465-corrMenu : 0));
 		tekstEditor.setMainEditor(defaultMarginX, defaultMarginY, defaultDocWidth, defaultDocHeight);
         
         
@@ -365,6 +365,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	public void setTitle(boolean b) {
 		hasTitle = b;
 		titelEditor.setVisible(b);
+		tekstEditor.setTitleRoom(hasTitle? 0:25);
 		setSizesGui();
 	}
 	

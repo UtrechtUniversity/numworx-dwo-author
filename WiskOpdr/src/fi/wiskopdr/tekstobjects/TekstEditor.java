@@ -804,14 +804,30 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 	}
     
+  private int titleRoom = 25;
+	
+  /**
+   * @return the titleRoom
+   */
+  public int getTitleRoom() {
+    return titleRoom;
+  }
+
+  /**
+   * @param titleRoom the titleRoom to set
+   */
+  public void setTitleRoom(int titleRoom) {
+    this.titleRoom = titleRoom;
+  }
+
     public void setBounds(int x, int y, int b, int h)
     {   if(headerAan)
         {   
             if(toolbarLeft)
             {   basisPanel.setBounds(balkH+sparing,0,b-balkH-sparing,h);
-                headerPanel.setBounds(0,0,balkH,h);
-                crosswidgetKnop.setLocation(6,h-30);
-                templateChoiceKnop.setLocation(6,h-56);
+                headerPanel.setBounds(0,titleRoom,balkH,h-titleRoom);
+                crosswidgetKnop.setLocation(6,h-30-titleRoom);
+                templateChoiceKnop.setLocation(6,h-56-titleRoom);
             }
             else
             {   basisPanel.setBounds(0,balkH+sparing,b,h-balkH-sparing);
