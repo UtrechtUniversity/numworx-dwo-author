@@ -2,7 +2,11 @@ package fi.wiskopdr.tekstobjects;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.TextHitInfo;
 import java.awt.geom.AffineTransform;
+import java.awt.im.InputMethodRequests;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedCharacterIterator.Attribute;
 import java.util.*;
 import java.awt.datatransfer.*;
 
@@ -84,6 +88,13 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		addMouseMotionListener(this);
 		addKeyListener(this);
 		addFocusListener(this);
+		
+		if (WiskOpdr.isExperimental() && false) 
+		{
+		  TVIR = new TekstVakInputRequests();
+		  addInputMethodListener(new TekstVakInputListener());
+		}
+				
 		try
 		{	systemClipboard = getToolkit().getSystemClipboard ();
 		}
@@ -1918,4 +1929,77 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	  this.minimumHoogte = minimumHoogte;
 	}
 	
+// input methods voor tekstvak
+	
+	class TekstVakInputListener implements InputMethodListener {
+
+      @Override
+      public void inputMethodTextChanged(InputMethodEvent event) {
+        // TODO Auto-generated method stub
+        
+      }
+    
+      @Override
+      public void caretPositionChanged(InputMethodEvent event) {
+        // TODO Auto-generated method stub
+        
+      }
+	  
+	}
+	
+	class TekstVakInputRequests implements InputMethodRequests {
+
+    @Override
+    public Rectangle getTextLocation(TextHitInfo offset) {
+      Rectangle r = new Rectangle(); // absolute position of caret?
+      // TODO r invullen met iets zinnigs.
+      return r; // @NonNull
+    }
+
+    @Override
+    public TextHitInfo getLocationOffset(int x, int y) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public int getInsertPositionOffset() {
+      // TODO Auto-generated method stub
+      return 0;
+    }
+
+    @Override
+    public AttributedCharacterIterator getCommittedText(int beginIndex, int endIndex,
+        Attribute[] attributes) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public int getCommittedTextLength() {
+      // TODO Auto-generated method stub
+      return 0;
+    }
+
+    @Override
+    public AttributedCharacterIterator cancelLatestCommittedText(Attribute[] attributes) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public AttributedCharacterIterator getSelectedText(Attribute[] attributes) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+	  
+	}
+	
+	private TekstVakInputRequests TVIR = null;
+
+    @Override
+    public InputMethodRequests getInputMethodRequests() {
+      return TVIR;
+    }
+		
 }
