@@ -284,7 +284,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		}
 		Hashtable h = new Hashtable();
 		h.put("tekstBuffer", toCompleteString());
-		h.put("caretPos", new Integer(caretPos));
+		h.put("caretPos", (caretPos));
 		if(stateNr>maxStateNr)
 		{	states.removeElementAt(0);
 			stateNr--;
@@ -314,7 +314,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	public void undo()
 	{	Hashtable h = new Hashtable();
 		h.put("tekstBuffer", toCompleteString());
-		h.put("caretPos", new Integer(caretPos));
+		h.put("caretPos", (caretPos));
 		if(stateNr>-1 && stateNr==states.size()){
 			states.addElement(h);
 			stateNr++;
@@ -1952,7 +1952,13 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
     @Override
     public Rectangle getTextLocation(TextHitInfo offset) {
       Rectangle r = new Rectangle(); // absolute position of caret?
-      // TODO r invullen met iets zinnigs.
+      if (actieveRegel != null) {
+        r.x = actieveRegel.getX() + actieveRegel.caretX;
+        r.y = actieveRegel.getY();
+        r.height = actieveRegel.getHeight();
+      }
+      Point p = getLocationOnScreen();
+      r.translate(p.x, p.y);
       return r; // @NonNull
     }
 
@@ -1964,8 +1970,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 
     @Override
     public int getInsertPositionOffset() {
-      // TODO Auto-generated method stub
-      return 0;
+      return caretPos;
     }
 
     @Override

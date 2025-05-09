@@ -27,7 +27,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	private boolean hasFocus = false;
 	private boolean selected = false;
 	private boolean aan = false;
-	private int caretX = 0;
+	int caretX = 0;
 	private int caretPos = 0;
 	private int kc;
 	
