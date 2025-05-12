@@ -7,13 +7,15 @@ import java.awt.geom.AffineTransform;
 import java.awt.im.InputMethodRequests;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
+import java.text.AttributedString;
+import java.text.CharacterIterator;
 import java.util.*;
+import java.util.logging.Logger;
 import java.awt.datatransfer.*;
 
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.symbolen.SymboolPanel;
-import fi.wiskopdr.tekstobjects.TekstRegel.KnipperDraad;
 import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.wiskopdr.*;
 import fi.beans.wiskopdrbeans.*;
@@ -22,7 +24,9 @@ import javax.swing.*;
 
 public class TekstVak extends JLayeredPane  implements TekstElement, ActionListener, MouseListener, MouseMotionListener,KeyListener, FocusListener, ClipboardOwner
 {
-	private TekstVak tekstVak;
+    private final static Logger LOG = Logger.getLogger("fi.wiskopdr.tekstobjects.TekstVak");
+  
+    private TekstVak tekstVak;
 	private int ashoogte;
 	
 	protected static String clipboard;
@@ -89,7 +93,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		addKeyListener(this);
 		addFocusListener(this);
 		
-		if (WiskOpdr.isExperimental() && false) 
+		if (WiskOpdr.isExperimental() && true) 
 		{
 		  TVIR = new TekstVakInputRequests();
 		  addInputMethodListener(new TekstVakInputListener());
@@ -1935,14 +1939,27 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 
       @Override
       public void inputMethodTextChanged(InputMethodEvent event) {
-        // TODO Auto-generated method stub
+        LOG.info("InputMethod text changed " + event);
+        StringBuffer sb = new StringBuffer();
+        CharacterIterator iter = event.getText();
+        for (char ch = iter.first(); ch != CharacterIterator.DONE; ch = iter.next()) {
+          sb.append(ch);
+        }
+        // backspace 
+        tekst.deleteCharAt(--caretPos);
         
+        tekst.insert(caretPos, sb.toString());
+        vulVak(tekst.toString());
+        setCaret(caretPos + sb.length());
       }
     
       @Override
       public void caretPositionChanged(InputMethodEvent event) {
-        // TODO Auto-generated method stub
-        
+        LOG.info("InputMethod caret position " + event);
+        TextHitInfo caret = event.getCaret();
+        if (caret == null) return;
+        int pos = caret.getCharIndex();
+        setCaret(pos);
       }
 	  
 	}
@@ -1976,14 +1993,14 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
     @Override
     public AttributedCharacterIterator getCommittedText(int beginIndex, int endIndex,
         Attribute[] attributes) {
-      // TODO Auto-generated method stub
-      return null;
+      String tekst = TekstVak.this.tekst.toString();
+      return new java.text.AttributedString(tekst).getIterator(attributes, beginIndex, endIndex);
     }
 
     @Override
     public int getCommittedTextLength() {
-      // TODO Auto-generated method stub
-      return 0;
+      int uncommitted = 1;
+      return TekstVak.this.tekst.length()-uncommitted;
     }
 
     @Override
@@ -1994,7 +2011,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 
     @Override
     public AttributedCharacterIterator getSelectedText(Attribute[] attributes) {
-      // TODO Auto-generated method stub
+      
       return null;
     }
 	  
