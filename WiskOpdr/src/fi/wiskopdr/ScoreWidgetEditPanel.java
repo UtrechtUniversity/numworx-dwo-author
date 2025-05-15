@@ -288,6 +288,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     boolean toonTitel = true;
     boolean linkActive = true;
     int cesuur = -1;
+    boolean cesuurPerc = false;
     boolean activiteitScore = false;
     String anchor = "";
     
@@ -316,7 +317,10 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     if(h.containsKey("linkActive"))
       linkActive = (boolean)h.get("linkActive");
     if(h.containsKey("cesuur"))
+    {
       cesuur = (int)h.get("cesuur");
+      cesuurPerc = Boolean.TRUE.equals(h.get("cesuur%"));
+    }
     if(h.containsKey("activiteitScore"))
       activiteitScore = (boolean)h.get("activiteitScore");
     anchor = (String) h.getOrDefault("anchor", anchor);
@@ -372,7 +376,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     anchorTF.setVisible(paginaNrTF.isVisible() && linkActiveCB.isSelected());
     cesuurLabel.setVisible(goedFout);
     if(cesuur > -1)
-      cesuurTF.setText("" + cesuur);
+      cesuurTF.setText(cesuur + (cesuurPerc?"%":""));
     cesuurTF.setVisible(goedFout);
     
     ((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
@@ -415,6 +419,7 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
    boolean toonTitel = true;
    boolean linkActive = true;
    int cesuur = -1;
+   boolean cesuurPerc = false;
    boolean activiteitScore = false;
    String anchor = "";
    
@@ -438,7 +443,10 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     goedFout = goedFoutRB.isSelected();
     linkActive = linkActiveCB.isSelected();
     bezocht = bezochtRB.isSelected();
-    cesuur = intFromText(-1, cesuurTF.getText());
+    String text = cesuurTF.getText().trim();
+    cesuurPerc = text.endsWith("%");
+    if (cesuurPerc) text = text.substring(0, text.length()-1); // haal % er af
+    cesuur = intFromText(-1, text);
     activiteitScore = activiteitScoreRB.isSelected();
     anchor = anchorTF.getText();
     
@@ -456,7 +464,10 @@ public class ScoreWidgetEditPanel extends JPanel implements InteractieEditPanel,
     h.put("toonTitel", Boolean.valueOf(toonTitel));
     h.put("linkActive", Boolean.valueOf(linkActive));
     if(cesuur>-1)
+    {
       h.put("cesuur", Integer.valueOf(cesuur));
+      h.put("cesuur%", Boolean.valueOf(cesuurPerc));
+    }
     h.put("activiteitScore", Boolean.valueOf(activiteitScore));
     if (!anchor.isEmpty() && !multipage)
       h.put("anchor", anchor);
