@@ -8,6 +8,12 @@
         <artifactId>DWO</artifactId>
         <version>2.5.40</version>
 	</parent>
+ 	<repositories>	<!-- als de mirror uit staat -->
+		<repository>
+		  <id>repos</id>
+		  <url>https://repos.dwo.nl/artifactory/repos</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
