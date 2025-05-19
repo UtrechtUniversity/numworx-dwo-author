@@ -14,6 +14,12 @@
     <properties>
     		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>
     </properties>
+ 	<repositories>	<!-- als de mirror uit staat -->
+		<repository>
+		  <id>repos</id>
+		  <url>https://repos.dwo.nl/artifactory/repos</url>
+		</repository>
+	</repositories>
     <build>
     	<pluginManagement>
     		<plugins>
