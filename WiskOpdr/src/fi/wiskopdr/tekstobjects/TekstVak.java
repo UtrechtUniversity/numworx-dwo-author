@@ -1522,6 +1522,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	    
     }
     public void keyTyped(KeyEvent e)    {	int kt = e.getKeyChar();
+      uncommitted = committed = 0;
     		boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
     		if (editable && templateEditable)
 		{   if (kt == KeyEvent.VK_ENTER)
@@ -1534,7 +1535,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             		vulVak(tekst.toString());
 	            	produceAction("resize");
 	            	setCaret(caretPos);
-				keyStrokeUpdated = true;
+	            	keyStrokeUpdated = true;
 	            	e.consume();
 	            	return;
 			}
@@ -1610,6 +1611,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 			    deleteSelection();
       			tekst.insert(caretPos,(char)kt);
 				caretPos++;
+				committed = 1;uncommitted = 0;
 				
 				TekstTeken tt = new TekstTeken((char)kt);
 				tt.setForeground(getForeground());
@@ -1939,18 +1941,33 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 
       @Override
       public void inputMethodTextChanged(InputMethodEvent event) {
-        LOG.info("InputMethod text changed " + event);
-        StringBuffer sb = new StringBuffer();
-        CharacterIterator iter = event.getText();
-        for (char ch = iter.first(); ch != CharacterIterator.DONE; ch = iter.next()) {
-          sb.append(ch);
-        }
-        // backspace 
+      { int cnt = uncommitted;
+        while (cnt-- >0)
         tekst.deleteCharAt(--caretPos);
-        
-        tekst.insert(caretPos, sb.toString());
-        vulVak(tekst.toString());
-        setCaret(caretPos + sb.length());
+        committed -= uncommitted;
+        uncommitted = 0;
+      }
+        LOG.info("InputMethod text changed " + event.getCommittedCharacterCount());
+        StringBuffer sb = new StringBuffer();
+        // backspace compositionText
+        if (event.getText() != null)
+        {
+          CharacterIterator iter = event.getText();
+          for (char ch = iter.first(); ch != CharacterIterator.DONE; ch = iter.next()) {
+            sb.append(ch);
+          }
+          if (event.getCommittedCharacterCount() >0)
+          { int cnt = committed;
+            while (cnt-- >0)
+            tekst.deleteCharAt(--caretPos);
+          }
+          tekst.insert(caretPos, sb.toString());
+          vulVak(tekst.toString());
+        }
+        LOG.info("input changed " + committed + ", " + event.getCommittedCharacterCount() + " , " + sb.length());
+        committed = sb.length();
+        uncommitted = committed - event.getCommittedCharacterCount();
+        setCaret(caretPos + committed);
       }
     
       @Override
@@ -2018,6 +2035,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	}
 	
 	private TekstVakInputRequests TVIR = null;
+	private int committed, uncommitted;
 
     @Override
     public InputMethodRequests getInputMethodRequests() {
