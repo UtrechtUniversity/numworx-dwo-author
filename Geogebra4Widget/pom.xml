@@ -8,6 +8,12 @@
   </parent>
   <groupId>nl.numworx.geogebra</groupId>
   <artifactId>geogebra4widget</artifactId>
+ 	<repositories>	<!-- als de mirror uit staat -->
+		<repository>
+		  <id>repos</id>
+		  <url>https://repos.dwo.nl/artifactory/repos</url>
+		</repository>
+	</repositories>
  	<dependencies>
 		<dependency>
 			<groupId>fi.wiskopdr</groupId>
