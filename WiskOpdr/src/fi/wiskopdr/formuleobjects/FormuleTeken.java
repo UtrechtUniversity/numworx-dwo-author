@@ -30,7 +30,7 @@ public class FormuleTeken extends FormuleElement
         {   teken = null;
         }
         else if(tk=='\'')
-        {   teken = "\u2032";
+        {   teken = "\u2005\u2032";
         }
 		else if(tk=='\u00d7')
 		{	teken = null;
