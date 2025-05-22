@@ -106,6 +106,8 @@
     	
     	<module>../Geogebra4Widget</module>
     	<module>../Geogebra3Widget</module>
+    	<module>../StatSim</module>
+    	<module>../Kansbomen</module>
     </modules>
     <scm>
     	<developerConnection>scm:git:git@github.com:UtrechtUniversity/numworx-dwo-author.git</developerConnection>
