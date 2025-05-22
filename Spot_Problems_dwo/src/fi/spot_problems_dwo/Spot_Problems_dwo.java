@@ -5,7 +5,6 @@ package fi.spot_problems_dwo;
 */
 
 import java.awt.*;
-import java.applet.*;
 import java.awt.event.*;
 import java.util.*;
 
@@ -16,7 +15,6 @@ import fi.beans.base64code.*;
 import fi.beans.scorm.*;
 import fi.beans.copyright.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
-import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
 // main applet class
