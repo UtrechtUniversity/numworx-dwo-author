@@ -96,7 +96,7 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 	private CommandComponent vulbladCC;
 	private CommandComponent printCC;
 	private CommandComponent printlCC;
-	private CommandComponent varCC;
+	private CommandComponent varCC, varInputC;
 	private CommandComponent herhaalCC;
 	private CommandComponent whileCC;
 	private CommandComponent keuzeCC;
@@ -195,21 +195,24 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		
 		varCC = new VarCComponent(ccx,ccy+190+30,cclw,ccsh, this);
 		add(varCC,0);
+
+		varInputC = new VarInputComponent(ccx,ccy+190+30+30,cclw,ccsh, this);
+		add(varInputC,0);
 		
-		herhaalCC = new ForLoopCommandComponent(ccx,ccy+230+30,cclw,ccsh, this);
+		herhaalCC = new ForLoopCommandComponent(ccx,ccy+230+30+30,cclw,ccsh, this);
 		add(herhaalCC,0);
 		
-		whileCC = new WhileLoopCommandComponent(ccx,ccy+260+30,cclw,ccsh, this);
+		whileCC = new WhileLoopCommandComponent(ccx,ccy+260+30+30,cclw,ccsh, this);
 		add(whileCC,0);
 		
-		keuzeCC = new KeuzeCommandComponent(ccx,ccy+290+30,cclw,ccsh, this);
+		keuzeCC = new KeuzeCommandComponent(ccx,ccy+290+30+30,cclw,ccsh, this);
 		add(keuzeCC,0);
         
 		deeltaakComponenten = new DeeltaakBodyComponent[aantalDeeltaken];
 		deeltaakCC = new DeeltaakCallCComponent[aantalDeeltaken];
 		for(int i=0; i<aantalDeeltaken; i++)
 		{
-			deeltaakCC[i] = new DeeltaakCallCComponent(ccx,ccy+330+30*i+30,cclw,ccsh, i+1, this);
+			deeltaakCC[i] = new DeeltaakCallCComponent(ccx,ccy+330+30*i+30+30,cclw,ccsh, i+1, this);
 			add(deeltaakCC[i],0);
 
 			// create with dummy location and height
@@ -312,6 +315,10 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		{ 	varCC = new VarCComponent(x,y,b,h, this);
 			add(varCC,0);
 		}
+		if(cc == varInputC)
+		{ 	varInputC = new VarInputComponent(x,y,b,h, this);
+			add(varInputC,0);
+		}
 		for(int i=0; i<aantalDeeltaken; i++)
 		{	if(cc == deeltaakCC[i])
 			{ 	deeltaakCC[i] = new DeeltaakCallCComponent( (DeeltaakCallCComponent)cc, this);
@@ -334,6 +341,8 @@ public class JavaLogoSchuifVeld extends JPanel implements  MouseListener, MouseM
 		else
 			yLocation += 10;
 		varCC.setLocation(varCC.getX(), yLocation);
+		yLocation += 30;
+		varInputC.setLocation(varInputC.getX(), yLocation);
 		
 		yLocation += 40;
 		herhaalCC.setLocation(herhaalCC.getX(), yLocation);

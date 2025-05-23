@@ -398,11 +398,17 @@ public class ProgrammaImporter
 		//System.out.println("     +++  was var-expressie");
 		String[] params = StringUtils.split(codeline,"=");
 		if ( params.length > 1)
-		{
+		{	if (params[1].contains("input")) {
+				VarInputComponent ccc;
+				cc = ccc = new VarInputComponent(-100,-100,25,25,veld);
+				cc.clearStapel();
+				ccc.setVariable(params[0], params[1].substring(params[1].indexOf('(')+1, params[1].lastIndexOf(')')).trim());
+			
+		} else {
 			cc = new VarCComponent(-100,-100,25,25, veld);
 			cc.clearStapel();
 			((VarCComponent)cc).setVariable(params[0], params[1]);
-		}		
+		}}		
 		return cc;
 	}
 	
