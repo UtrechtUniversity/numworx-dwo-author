@@ -1251,5 +1251,11 @@ private int mode;
 		
 	}
 
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }
