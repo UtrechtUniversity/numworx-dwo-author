@@ -327,8 +327,15 @@ public class ProgrammaImporter
 		if ( codeline.equals("")) return null;
 		//System.out.println("simpel: >"+codeline+"<");
 		CommandComponent cc = null;
+		if ( codeline.startsWith("#"))
+		{	CommentCComponent ccc;
+			cc =  ccc = new CommentCComponent(-100,-100, 25, 25, veld);
+			String parameter = codeline.substring(1).trim();
+			ccc.setParameter(parameter);
+			return cc;
+		} 
 		// 1: commandComponents for simple commands
-		if ( codeline.startsWith("vooruit"))
+		else if ( codeline.startsWith("vooruit"))
 		{	cc = new VooruitCComponent(-100,-100,25,25, veld);
 		}
 		else if ( codeline.startsWith("rechts"))

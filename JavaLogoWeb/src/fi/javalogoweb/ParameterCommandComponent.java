@@ -4,10 +4,6 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
-import fi.javalogoweb.expressies.*;
-import fi.javalogoweb.formuleobjects.*;
-import logotekenap.Uitvoerblad;
-
 public abstract class ParameterCommandComponent extends SimpleCommandComponent implements ParameterEditorListener
 {
 	protected TAParameter parameter1;
