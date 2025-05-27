@@ -3,17 +3,13 @@ package fi.heks;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
-import java.applet.*;
 import fi.heks.scobjects.*;
 import fi.beans.scorm.*;
 import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.*;
 import fi.beans.copyright.*;
-
-import javax.swing.*;
-
+import fi.beans.mainframe.JApplet;
 import fi.beans.wiskopdrbeans.InteractiePanel;
-import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
 public class Heks extends JApplet implements WiskOpdrApplet, ScormAppletIF, ComponentListener 
