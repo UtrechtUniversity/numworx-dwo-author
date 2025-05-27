@@ -455,8 +455,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 			regels[i].setVisible(false);
 	    	regels[i].removeAll();
 	    	for(int j=0 ; regelInhouden[i]!=null && j<regelInhouden[i].length(); j++)
-			{	char c = regelInhouden[i].charAt(j);
-				if(c=='@')
+			{	char ch = regelInhouden[i].charAt(j);
+                if(ch=='@')
 				{	
 					TekstDeelVak tdv =  tekst.geefDeelVak(formNr);
 					if(tdv instanceof TekstInteractiePanelVak  
@@ -475,7 +475,17 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 					formNr++;
 				}
 				else 
-				{	TekstTeken tt = new TekstTeken(regelInhouden[i].charAt(j));
+				{   TekstTeken tt = new TekstTeken(ch);
+				    if (Character.isHighSurrogate(ch)) {
+				      char ch2 = regelInhouden[i].charAt(j+1);
+				      if (Character.isLowSurrogate(ch2)) {
+				        tt = new TekstTeken(ch, ch2);
+				      }
+				    } else if (Character.isLowSurrogate(ch)) {
+				      tt = new TekstTeken(ch); // 0 breed.
+				    }
+				  
+				  
 					tt.setForeground(getForeground());
 					if(textRtoL)regels[i].insertZZ(tt);
 					else regels[i].insert(tt);
@@ -1384,6 +1394,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             else if (kc == KeyEvent.VK_LEFT)
             {   if (caretPos > 0 && tekst.charAt(caretPos-1)!='@')
                 {   caretPos--;
+                    if (Character.isLowSurrogate(tekst.charAt(caretPos))) caretPos--;
                 }	
 	            else if (caretPos > 0)
 	            {	TekstFormuleVak tfv = tekst.geefTekstFormuleVak(caretPos-1);
@@ -1405,6 +1416,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             {  
             	if (caretPos < tekst.length()-1 && tekst.charAt(caretPos)!='@')
                 {   caretPos++;
+                    if (Character.isHighSurrogate(tekst.charAt(caretPos-1))) caretPos++;
 				}
 	            else if (caretPos < tekst.length()-1)
 	            {	TekstFormuleVak tfv = tekst.geefTekstFormuleVak(caretPos);
@@ -1438,6 +1450,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             {	boolean b = deleteSelection();
 	            	if(!b){
 	            		addState();
+	            		if (Character.isHighSurrogate(tekst.charAt(caretPos))) tekst.deleteCharAt(caretPos);
 	            		tekst.deleteCharAt(caretPos);
 	            		if(WiskOpdr.mac)
 		        	    	{	keyStrokeUpdated = true;
@@ -1456,6 +1469,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
                 {   if(!b)
 	            		{	addState();
 	            			tekst.deleteCharAt(caretPos-1);
+	                        if (Character.isLowSurrogate(tekst.charAt(caretPos-1))) tekst.deleteCharAt(--caretPos);
 	                		caretPos--;
 	                		if(WiskOpdr.mac)
 		            	    	{	keyStrokeUpdated = true;
