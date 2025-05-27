@@ -108,6 +108,8 @@
     	<module>../Geogebra3Widget</module>
     	<module>../StatSim</module>
     	<module>../Kansbomen</module>
+    	<module>../Heks</module>
+    	<module>../Spot_Problems_dwo</module>
     </modules>
     <scm>
     	<developerConnection>scm:git:git@github.com:UtrechtUniversity/numworx-dwo-author.git</developerConnection>
