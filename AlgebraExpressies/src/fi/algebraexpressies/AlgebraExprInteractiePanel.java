@@ -552,4 +552,10 @@ public class AlgebraExprInteractiePanel extends JPanel implements InteractiePane
 		}		
 		
 	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

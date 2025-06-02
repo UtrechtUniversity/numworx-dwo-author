@@ -110,6 +110,7 @@
     	<module>../Kansbomen</module>
     	<module>../Heks</module>
     	<module>../Spot_Problems_dwo</module>
+    	<module>../AlgebraExpressies</module>
     </modules>
     <scm>
     	<developerConnection>scm:git:git@github.com:UtrechtUniversity/numworx-dwo-author.git</developerConnection>

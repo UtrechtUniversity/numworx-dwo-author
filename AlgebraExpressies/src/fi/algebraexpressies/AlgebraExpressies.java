@@ -2,16 +2,11 @@ package fi.algebraexpressies;
 
 import java.awt.*;
 import java.util.*;
-import java.awt.event.*;
-import fi.algebraexpressies.text.*;
 
-import java.applet.Applet;
 import fi.beans.mainframe.*;
 import fi.beans.scorm.*;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.copyright.*;
-
-import javax.swing.*;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
