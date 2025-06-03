@@ -52,6 +52,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "printCommandsCBLabel" , "Printopdrachten" },
 				{ "tekenCommandsCBLabel" , "Tekenopdrachten" },
 				{ "traceCBLabel" , "Trace optie" },
+				{ "runCBLabel" , "Run optie" },
 				{ "codeIOCBLabel" , "Code import/export" },
 				
 				{ "CBA_text.program", "programma"},

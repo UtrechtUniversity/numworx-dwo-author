@@ -34,7 +34,7 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 		private JCheckBox tekenCommandsCB;
 		private JCheckBox traceCB;
 		private JCheckBox codeIOCB;
-		
+		private JCheckBox runCB;
 		
 		
 		//// Einde voorbeeldcode
@@ -99,7 +99,11 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			codeIOCB.setSelected(true);
 			optionsPanel.add(codeIOCB);
 			
-			
+			runCB = new JCheckBox(JavaLogoWeb.rb.getString("runCBLabel"));
+			runCB.setBounds(20,320, 200, 20);
+			runCB.addActionListener(this);
+			runCB.setSelected(true);
+			optionsPanel.add(runCB);
 			
 		}
 		
@@ -109,15 +113,15 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			Hashtable state = interactiePanel.getState();
 			
 			h.put("state", state);
-			h.put("uitvoerVeldZichtbaar",  new Boolean(uitvoerVeldCB.isSelected()));
-			h.put("programmaVeldZichtbaar",  new Boolean(programmaVeldCB.isSelected()));
-			h.put("deeltakenZichtbaar",  new Boolean(deeltakenCB.isSelected()));
-			h.put("whileLoopZichtbaar",  new Boolean(whileLoopCB.isSelected()));
-			h.put("printCommandsZichtbaar",  new Boolean(printCommandsCB.isSelected()));
-			h.put("tekenCommandsZichtbaar",  new Boolean(tekenCommandsCB.isSelected()));
-			h.put("traceZichtbaar",  new Boolean(traceCB.isSelected()));
-			h.put("codeIOZichtbaar",  new Boolean(codeIOCB.isSelected()));
-			
+			h.put("uitvoerVeldZichtbaar",  (uitvoerVeldCB.isSelected()));
+			h.put("programmaVeldZichtbaar",  (programmaVeldCB.isSelected()));
+			h.put("deeltakenZichtbaar",  (deeltakenCB.isSelected()));
+			h.put("whileLoopZichtbaar",  (whileLoopCB.isSelected()));
+			h.put("printCommandsZichtbaar",  (printCommandsCB.isSelected()));
+			h.put("tekenCommandsZichtbaar",  (tekenCommandsCB.isSelected()));
+			h.put("traceZichtbaar",  (traceCB.isSelected()));
+			h.put("codeIOZichtbaar",  (codeIOCB.isSelected()));
+			h.put("runZichtbaar", runCB.isSelected());
 			return h;
 		}
 		
@@ -133,6 +137,7 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			if(h.containsKey("printCommandsZichtbaar")) printCommandsCB.setSelected((Boolean)h.get("printCommandsZichtbaar"));
 			if(h.containsKey("tekenCommandsZichtbaar")) tekenCommandsCB.setSelected((Boolean)h.get("tekenCommandsZichtbaar"));
 			if(h.containsKey("traceZichtbaar")) traceCB.setSelected((Boolean)h.get("traceZichtbaar"));
+			if(h.containsKey("runZichtbaar")) runCB.setSelected((Boolean)h.get("runZichtbaar"));
 			if(h.containsKey("codeIOZichtbaar")) codeIOCB.setSelected((Boolean)h.get("codeIOZichtbaar"));
 			
 			
@@ -208,6 +213,9 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			}
 			if(e.getSource()==traceCB) {
 				interactiePanel.zetTraceZichtbaar(traceCB.isSelected());
+			} else
+			if (e.getSource() == runCB) {
+				interactiePanel.zetRunZichtbaar(runCB.isSelected());
 			}
 			if(e.getSource()==codeIOCB) {
 				interactiePanel.zetCodeIOZichtbaar(codeIOCB.isSelected());

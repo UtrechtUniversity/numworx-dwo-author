@@ -6,13 +6,13 @@ import java.awt.event.ComponentListener;
 import java.net.URL;
 import java.util.*;
 
-import javax.swing.JApplet;
 
 import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.*;
+import fi.beans.mainframe.JApplet;
 import logotekenap.*;
 
 public class JavaLogoWeb extends JApplet implements WiskOpdrApplet,  ComponentListener
