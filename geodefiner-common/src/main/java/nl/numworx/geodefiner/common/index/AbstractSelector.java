@@ -19,6 +19,7 @@ import nl.numworx.geodefiner.common.math.IsLineType;
 
 abstract class AbstractSelector<T extends Destroyable> implements Visitor, Selector {
 	
+	@SuppressWarnings("rawtypes")
 	Indexed indexed;
 	Label index;
 	T grp;
