@@ -200,6 +200,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		boolean tekenCommandsZichtbaar = true;
 		boolean traceZichtbaar = true;
 		boolean codeIOZichtbaar = true;
+		boolean runZichtbaar = true;
 		
 		if(h.containsKey("state")) state = (Hashtable) h.get("state");
 		if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldZichtbaar = ((Boolean)h.get("uitvoerVeldZichtbaar"));
@@ -210,6 +211,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		if(h.containsKey("tekenCommandsZichtbaar")) tekenCommandsZichtbaar = ((Boolean)h.get("tekenCommandsZichtbaar"));
 		if(h.containsKey("traceZichtbaar")) traceZichtbaar = ((Boolean)h.get("traceZichtbaar"));
 		if(h.containsKey("codeIOZichtbaar")) codeIOZichtbaar = ((Boolean)h.get("codeIOZichtbaar"));
+		if(h.containsKey("runZichtbaar")) runZichtbaar = ((Boolean)h.get("runZichtbaar"));
 				
 		zetUitvoerVeldZichtbaar(uitvoerVeldZichtbaar);
 		zetProgrammaVeldZichtbaar(programmaVeldZichtbaar);
@@ -219,6 +221,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		zetTekenCommandsZichtbaar(tekenCommandsZichtbaar);
 		zetTraceZichtbaar(traceZichtbaar);
 		zetCodeIOZichtbaar(codeIOZichtbaar);
+		zetRunZichtbaar(runZichtbaar);
 		setState(state);
 	}
 
