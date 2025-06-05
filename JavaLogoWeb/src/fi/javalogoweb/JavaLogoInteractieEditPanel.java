@@ -149,6 +149,7 @@ public class JavaLogoInteractieEditPanel extends JPanel implements InteractieEdi
 			interactiePanel.zetTekenCommandsZichtbaar(tekenCommandsCB.isSelected());
 			interactiePanel.zetTraceZichtbaar(traceCB.isSelected());
 			interactiePanel.zetCodeIOZichtbaar(codeIOCB.isSelected());
+			interactiePanel.zetRunZichtbaar(runCB.isSelected());
 			interactiePanel.setState(state);
 			
 			interactiePanel.setBounds(interactiePanel.getBounds());
