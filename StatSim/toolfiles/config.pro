@@ -13,6 +13,9 @@
     <fields>;
     <methods>;
 }
+-keep class fi.statsim.StatSim {
+    <methods>;
+}
 
 
 # Keep - Applications. Keep all application classes, along with their 'main'
