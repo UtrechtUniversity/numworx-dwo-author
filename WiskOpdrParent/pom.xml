@@ -112,10 +112,8 @@
     	<module>../Spot_Problems_dwo</module>
     	<module>../AlgebraExpressies</module>
     	<module>../Grafiek3DTest</module>
+        <module>../GeodeFull</module>
     </modules>
-    <scm>
-    	<developerConnection>scm:git:git@github.com:UtrechtUniversity/numworx-dwo-author.git</developerConnection>
-    </scm>
     <profiles>
 	<profile>
 		<id>running11</id>

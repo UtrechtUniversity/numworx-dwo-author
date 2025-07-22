@@ -1,0 +1,103 @@
+package fi.geodefull;
+
+import java.awt.*;
+import java.awt.event.*;
+
+
+public class ViervlakProg extends TekenApplet3D
+{	
+	Matrix3D matrot;
+	double k, xhoek,yhoek;
+	Veelvlak v, tv;
+	Polygon[] p;
+	boolean begin, raak;
+	String veelvlakNaam;
+	
+	
+	public void initialiseer()
+	{	maakMuisActieMogelijk();
+		veelvlakNaam = getParameter("veelvlak");
+		matrot = new Matrix3D();
+		k=245;
+		begin=true;
+		raak = false;
+		
+		v = new Tetraeder(1);
+			
+		
+		
+	}
+	public void tekenprogramma()
+	{	begindraai(-110,42);
+		tekenVeelvlak(1,v);
+	}
+	void begindraai(double xdr,double ydr)
+	{	if(begin)
+		{	matrot.initialiseer();
+			matrot.ydraaiAbs(ydr);
+			matrot.xdraaiAbs(xdr);
+			tb.mat.mult(matrot);
+			begin=false;
+		}
+	}
+	void tekenVeelvlak(int n,Veelvlak vv)
+	{	for(int i=0 ; i<vv.aantalVlakken ; i++)
+		{	tekenVlak(n,vv.vlakken[i]);
+			//p[i] = geefVlak();
+		}
+	}
+	void tekenVlak(int n,Vlak v)
+	{	penUit();
+		stap(k*v.punten[0].x, k*v.punten[0].y, k*v.punten[0].z);
+		if(!(v.lijnkleur=="transparant"))penAan("lichtgrijs");
+		if(v.vulkleur=="transparant")vulAan(v.vulkleur);
+		else vulAan("grijs");
+		for(int i=v.aantalHoekpunten-1 ; i>-1 ; i--)
+		{	int a=i ; int b=(i+1)%v.aantalHoekpunten;
+			stap(k*(v.punten[a].x-v.punten[b].x), k*(v.punten[a].y-v.punten[b].y), k*(v.punten[a].z-v.punten[b].z));
+		}
+		vulUit();
+		if(!(v.lijnkleur=="transparant"))penAan(v.lijnkleur);
+		vulAan(n,v.vulkleur);
+		for(int i=0 ; i<v.aantalHoekpunten ; i++)
+		{	int a=i ; int b=(i+1)%v.aantalHoekpunten;
+			stap(-k*(v.punten[a].x-v.punten[b].x), -k*(v.punten[a].y-v.punten[b].y), -k*(v.punten[a].z-v.punten[b].z));
+		}
+		vulUit(n);
+		penUit();
+		stap(-k*v.punten[0].x, -k*v.punten[0].y, -k*v.punten[0].z);
+		
+	}
+	void kleurVeelvlak(Veelvlak v, String kl)
+	{	for(int i=0 ; i<v.aantalVlakken ; i++)
+		{	v.vlakken[i].vulkleur = kl;
+		}
+	}
+	void geefBasiskleur(Veelvlak v, String kl)
+	{	for(int i=0 ; i<v.aantalVlakken ; i++)
+		{	v.vlakken[i].vulkleur = kl;
+			v.vlakken[i].vorigeKleur = kl;
+		}
+	}	
+	
+	/*public void muisDrukActie()
+	{	for(int i=0 ; i<v.aantalVlakken ; i++)
+		{	if(p[i].contains(geefDrukx(),geefDruky()))
+			{	raak=true;
+				return;
+			}
+		}
+		raak = false;
+	}*/
+	public void muisSleepActie()
+	{	//if(raak)
+		{	xhoek=-0.5*geefSleepdy();
+			yhoek=0.5*geefSleepdx();
+			matrot.initialiseer();
+			matrot.ydraaiAbs(yhoek);
+			matrot.xdraaiAbs(xhoek);
+			tb.mat.mult(matrot);
+			tekenOpnieuw();
+		}
+	}
+}
