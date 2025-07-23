@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>nl.numworx</groupId>
-  <artifactId>SAMLlogin</artifactId>
-  <version>0.0.5-SNAPSHOT</version>
+  <groupId>nl.numworx.samllogin</groupId>
+  <artifactId>samllogin</artifactId>
+  <version>0.0.6-SNAPSHOT</version>
   <parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>WiskOpdrParent</artifactId>
@@ -45,8 +45,8 @@
   <dependencies>
   	<dependency>
   		<groupId>fi.previewhtml</groupId>
-  		<artifactId>PreviewHTML</artifactId>
-  		<version>0.0.5-SNAPSHOT</version>
+  		<artifactId>previewhtml</artifactId>
+  		<version>0.0.6-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>nl.uu.fi.dwo</groupId>
