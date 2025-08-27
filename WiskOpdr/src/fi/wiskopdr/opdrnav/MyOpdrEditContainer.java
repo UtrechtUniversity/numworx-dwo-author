@@ -19,19 +19,26 @@ import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.NumberFormat;
+import java.text.ParseException;
 //import java.awt.event.*;
 import java.util.*;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.NumberFormatter;
 
 import fi.beans.base64code.*;
+import fi.beans.numworxlf.JCheckBox;
+import fi.beans.numworxlf.JComboBox;
+import fi.beans.numworxlf.JFormattedTextField;
+import fi.beans.numworxlf.JLabel;
+import fi.beans.numworxlf.JTextField;
 import fi.wiskopdr.AntwoordEditPanel;
 import fi.wiskopdr.DialogFacade;
 import fi.wiskopdr.InteractiePanelContainerIF;
 import fi.wiskopdr.TekstVakPanel;
-import fi.wiskopdr.VariableCollection;
 import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.WiskOpdrEditPanel;
 import fi.wiskopdr.tekstobjects.*;
@@ -61,6 +68,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 
 	private JCheckBox titelCB;
 	private JTextField titelEditor;
+	private JFormattedTextField factorEditor;
 	private boolean hasTitle = true;
 	
 	private int scheidingX = 380;
@@ -100,6 +108,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private String[] herleidingItems;
 	private JLabel ScoringLabel, puntenLabel, checkTotaalLabel;
 	private AntwoordEditPanel antwoordEditPanel; // bij oude editorversie: meer ruimte voor antwoordmodel (fullscreen).
+  private JLabel factorLabel;
 	//Einde Voor oude editorversie
 
 	static final DocumentListener TITEL_CHANGED = new DocumentListener() {
@@ -148,18 +157,35 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	
 	private void setTitleChanged(boolean on) {
 	  if (on)
-	       titelEditor.getDocument().addDocumentListener(TITEL_CHANGED);
+	  {
+	    titelEditor.getDocument().addDocumentListener(TITEL_CHANGED);
+	    factorEditor.getDocument().addDocumentListener(TITEL_CHANGED);
+	  }
 	  else 
-	       titelEditor.getDocument().removeDocumentListener(TITEL_CHANGED);
+	  {
+	    titelEditor.getDocument().removeDocumentListener(TITEL_CHANGED);
+	    factorEditor.getDocument().removeDocumentListener(TITEL_CHANGED);
+	  }
 	}
 	
 	
 	private void makeGui() {
 		titelEditor = new JTextField(40);
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
-		setTitleChanged(true);
 		add(titelEditor);
-
+		NumberFormat format = NumberFormat.getNumberInstance();
+		NumberFormatter formatter = new NumberFormatter(format);
+		formatter.setValueClass(Float.class);
+		formatter.setMinimum(0.0f);
+		formatter.setMaximum(999.999f);
+		factorEditor = new JFormattedTextField(formatter);
+		factorEditor.setValue(1.0f);
+		factorLabel = makeLabel(10 + scheidingX, 25, 80, 25, " Weging ", false);
+		factorLabel.setSize(factorLabel.getPreferredSize());
+		factorEditor.setBounds(10 + scheidingX + factorLabel.getWidth(), 25, 80, 25);
+		add(factorLabel);
+		add(factorEditor);
+        setTitleChanged(true);
 		tekstLabel = makeLabel(10, 95, scheidingX - 15, 20, WiskOpdr.rb.getString("opdrachtTekstLabel"), false);
 
 		BasisTekstVak basisVak = new BasisTekstVak();
@@ -192,7 +218,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		randVarLabel = makeLabel(scheidingX + 15, 5, 765 - scheidingX, 20, WiskOpdr.rb.getString("randVarLabel"), true);
 		randVarLabel.setForeground(new Color(51,74,112));
 
-		titelCB = makeCheckBox(10, 8, 80, 15, WiskOpdr.rb.getString("opdrachtTitelLabel"), true, true);
+		titelCB = makeCheckBox(10, 8, 80, 17, WiskOpdr.rb.getString("opdrachtTitelLabel"), true, true);
 		titelCB.setToolTipText(titelCB.getText());
 		nieuweVersieCB = makeCheckBox(600, 5, 175, 20, WiskOpdr.rb.getString("editorVersieKnopLabel1"), false, true);
 
@@ -325,9 +351,12 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private void setSizesGui() {
 		int w = getSize().width;
 		int h = getSize().height;
-		titelCB.setBounds(hasTitle ? 10 : 10, 8, 33, 15);
-		titelEditor.setBounds(43, 5, titelEditor.getWidth(), 25);
-		tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
+		titelCB.setBounds( 10, 8, 33, 17);
+		titelEditor .setBounds(43, 5, titelEditor.getWidth(), 25);
+		factorLabel.setBounds(43 + titelEditor.getWidth(), 5, factorLabel.getWidth() , 25);
+        factorEditor.setBounds(43 + titelEditor.getWidth() + factorLabel.getWidth(), 5, factorEditor.getWidth() , 25);
+ 	
+        tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
 		tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
 		int corrMenu = OpdrNavStructEdit.hasMenuBar ? 5 : 0;
 		tekstEditor.setBounds(10, hasTitle ? 30 : 5-corrMenu, w - 20, (hasTitle ? 330 : 355) + (hasTekstVakLayout ? h - 465-corrMenu : 0));
@@ -366,6 +395,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	public void setTitle(boolean b) {
 		hasTitle = b;
 		titelEditor.setVisible(b);
+		factorEditor.setVisible(b);
+		factorLabel.setVisible(b);
 		tekstEditor.setTitleRoom(hasTitle||!titelCB.isVisible()? 0:25);
 		setSizesGui();
 	}
@@ -444,6 +475,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 			return;
 		tekstEditor.geefTekstVak().getXWidgetManager().clear();
 		String titel = "titel";
+		Float  maxFactor = 1.0f;
 		String tekst = "tekst";
 		String tekst2 = "";
 		String randVarString = "";
@@ -472,6 +504,8 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 			hasAntwoordVak = ((Boolean) h.get("hasAntwoordVak")).booleanValue();
 		if (h.containsKey("interactiePanelLaunchData"))
 			interactiePanelLaunchData = (Hashtable[]) h.get("interactiePanelLaunchData");
+		if (h.containsKey("maxFactor"))
+		    maxFactor = (Float) h.get("maxFactor");
 
 		this.scheidingX = defaultDocWidth;
 		this.scheidingXOud = scheidingX;
@@ -480,6 +514,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		this.hasAntwoordVak = hasAntwoordVak;
 		setTitleChanged(false);
 		titelEditor.setText(titel);
+		factorEditor.setValue(maxFactor);
 		setTitleChanged(true);
 		tekstEditor.zetTekst(tekst);
 		tekstEditor2.zetTekst(tekst2);
@@ -717,6 +752,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		String tekst = null;
 		String tekst2 = null;
 		String randVarString = null;
+		Object  maxFactor = null;
 		int scheidingX = 365;
 		int eindX = 770;
 		boolean hasTitle = true;
@@ -822,6 +858,12 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titel = titelEditor.getText();
 		tekst = tekstEditor.getText();
 		tekst2 = tekstEditor2.getText();
+		try {
+		  factorEditor.commitEdit();
+		  maxFactor = factorEditor.getValue();
+        } catch (ParseException e) {
+        }
+		
 		premium = FormuleVak.detectPremium(tekst)||FormuleVak.detectPremium(titel)||FormuleVak.detectPremium(tekst2);
 		
 		randVarString = randomVarEditor.getText();
@@ -904,13 +946,14 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 
 		Hashtable h = new Hashtable();
 		h.put("titel", titel);
+		if (maxFactor != null) h.put("maxFactor", Float.valueOf(maxFactor.toString()));
 		h.put("tekst", tekst);
 		h.put("tekst2", tekst2);
 		h.put("randVarString", randVarString);
 		h.put("scheidingX", new Integer(scheidingX));
-		h.put("eindX", new Integer(eindX));
-		h.put("hasTitle", new Boolean(hasTitle));
-		h.put("hasAntwoordVak", new Boolean(hasAntwoordVak));
+		h.put("eindX", Integer.valueOf(eindX));
+		h.put("hasTitle", Boolean.valueOf(hasTitle));
+		h.put("hasAntwoordVak", Boolean.valueOf(hasAntwoordVak));
 		h.put("interactiePanelLaunchData", interactiePanelLaunchData);
 		h.put("scoreMax", new Integer(scoreMax));
 		if (checkDocent)
