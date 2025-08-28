@@ -88,6 +88,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "opdrachtTitelLabel" , "Titel:" },
 				{ "opdrachtTekstLabel" , "Tekst:" },
+				{ "opdrachtFactorLabel", " Weging: "},
 				{ "randVarLabel" , "Random parameters:" },
 				{ "startExpLabel" , "Startexpressie:" },
 				{ "startVergLabel" , "Startvergelijking:" },

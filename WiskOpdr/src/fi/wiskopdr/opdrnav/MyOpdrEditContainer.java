@@ -109,6 +109,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private JLabel ScoringLabel, puntenLabel, checkTotaalLabel;
 	private AntwoordEditPanel antwoordEditPanel; // bij oude editorversie: meer ruimte voor antwoordmodel (fullscreen).
   private JLabel factorLabel;
+  private JLabel titelLabel;
 	//Einde Voor oude editorversie
 
 	static final DocumentListener TITEL_CHANGED = new DocumentListener() {
@@ -170,7 +171,9 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	
 	
 	private void makeGui() {
-		titelEditor = new JTextField(40);
+	    titelLabel = makeLabel(10, 8, 80, 17, WiskOpdr.rb.getString("opdrachtTitelLabel"), false);
+	    titelLabel.setSize(titelLabel.getPreferredSize());
+	    titelEditor = new JTextField(40);
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		add(titelEditor);
 		NumberFormat format = NumberFormat.getNumberInstance();
@@ -180,7 +183,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		formatter.setMaximum(999.999f);
 		factorEditor = new JFormattedTextField(formatter);
 		factorEditor.setValue(1.0f);
-		factorLabel = makeLabel(10 + scheidingX, 25, 80, 25, " Weging ", false);
+		factorLabel = makeLabel(10 + scheidingX, 25, 80, 25, WiskOpdr.rb.getString("opdrachtFactorLabel"), false);
 		factorLabel.setSize(factorLabel.getPreferredSize());
 		factorEditor.setBounds(10 + scheidingX + factorLabel.getWidth(), 25, 80, 25);
 		add(factorLabel);
@@ -220,6 +223,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 
 		titelCB = makeCheckBox(10, 8, 80, 17, WiskOpdr.rb.getString("opdrachtTitelLabel"), true, true);
 		titelCB.setToolTipText(titelCB.getText());
+		titelCB.setText("");
 		nieuweVersieCB = makeCheckBox(600, 5, 175, 20, WiskOpdr.rb.getString("editorVersieKnopLabel1"), false, true);
 
 		// Voor oude Editorversie
@@ -351,10 +355,11 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 	private void setSizesGui() {
 		int w = getSize().width;
 		int h = getSize().height;
-		titelCB.setBounds( 10, 8, 33, 17);
-		titelEditor .setBounds(43, 5, titelEditor.getWidth(), 25);
-		factorLabel.setBounds(43 + titelEditor.getWidth(), 5, factorLabel.getWidth() , 25);
-        factorEditor.setBounds(43 + titelEditor.getWidth() + factorLabel.getWidth(), 5, factorEditor.getWidth() , 25);
+		titelCB.setBounds( 10, 8, 33, 19);
+		titelLabel  .setBounds(43, 5, titelLabel.getWidth(), 25);
+		titelEditor .setBounds(titelLabel.getX() + titelLabel.getWidth(), 5, titelEditor.getWidth(), 25);
+		factorLabel.setBounds(titelEditor.getX() + titelEditor.getWidth(), 5, factorLabel.getWidth() , 25);
+        factorEditor.setBounds(titelEditor.getX() + titelEditor.getWidth() + factorLabel.getWidth(), 5, factorEditor.getWidth() , 25);
  	
         tekstLabel.setBounds(10, hasTitle ? 55 : 5, scheidingX - 15, 20);
 		tekstEditor.setBounds(10, hasTitle ? 75 : 15, scheidingX - 15 + corrToolbar, (hasTitle ? 305 : 355) + (hasTekstVakLayout ? h - 465 : 0));
@@ -394,6 +399,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 
 	public void setTitle(boolean b) {
 		hasTitle = b;
+		titelLabel.setVisible(b);
 		titelEditor.setVisible(b);
 		factorEditor.setVisible(b);
 		factorLabel.setVisible(b);

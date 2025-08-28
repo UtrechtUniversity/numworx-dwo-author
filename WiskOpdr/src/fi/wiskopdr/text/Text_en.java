@@ -83,6 +83,7 @@ public class Text_en extends java.util.ListResourceBundle
 				
 				{ "opdrachtTitelLabel" , "Title:" },
 				{ "opdrachtTekstLabel" , "Text:" },
+                { "opdrachtFactorLabel", " Weighting: "},
 				{ "randVarLabel" , "Variables for random parameters:" },
 				{ "startExpLabel" , "Start expression:" },
 				{ "startVergLabel" , "Start equation:" },
