@@ -25,6 +25,11 @@ public class AppletUtil
     private String packageName, language;
     private Locale locale;
     private Hashtable images = new Hashtable();
+    
+    
+    public AppletUtil(fi.beans.mainframe.JApplet applet) {
+      this( (Applet)applet);
+    }
 /**
 * Geef een Applet een standaard gelocaliseerde omgeving
 */     
