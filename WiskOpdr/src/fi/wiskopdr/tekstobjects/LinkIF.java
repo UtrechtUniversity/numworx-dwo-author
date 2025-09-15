@@ -1,7 +1,5 @@
 package fi.wiskopdr.tekstobjects;
 
-import java.applet.AppletContext;
-
 public interface LinkIF {
 
 	boolean gotoScoNr(String rest);
@@ -13,7 +11,7 @@ public interface LinkIF {
 	 */
 	Object getJSObject();
 
-	AppletContext getAppletContext();
+	fi.beans.mainframe.AppletContext getAppletContext();
 
 	@Deprecated
 	void setJSObject(Object window);

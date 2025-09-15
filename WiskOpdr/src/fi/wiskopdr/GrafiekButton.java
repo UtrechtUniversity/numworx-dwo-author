@@ -1,12 +1,12 @@
 package fi.wiskopdr;
 
-import java.applet.AppletStub;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 import fi.wiskopdr.formuleobjects.*;
+import fi.beans.mainframe.AppletStub;
 import fi.beans.wiskopdrbeans.*;
 
 public class GrafiekButton extends JButton implements ActionListener, InteractiePanel, InteractieEditPanel, WiskOpdrApplet

@@ -1,7 +1,5 @@
 package fi.wiskopdr;
 
-import java.applet.AppletContext;
-import java.applet.AppletStub;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
@@ -55,6 +53,8 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.ideas.IdeasClient;
 import fi.beans.ideas.IdeasIF;
+import fi.beans.mainframe.AppletContext;
+import fi.beans.mainframe.AppletStub;
 import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.Parameter;
 import fi.beans.scorm.PartialScoreIF;
@@ -73,7 +73,6 @@ import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.wiskopdr.tekstobjects.Link;
 import fi.wiskopdr.tekstobjects.LinkIF;
-import fi.wiskopdr.tekstobjects.LinkRegel;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.templateconstants.TemplateBasicConstants;
 import fi.wiskopdr.templateconstants.TemplateConstants;
@@ -82,6 +81,7 @@ import fi.wiskopdr.templateconstants.TemplateUUTestConstants;
 
 
 
+@SuppressWarnings("serial")
 public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, ComponentListener, PartialScoreIF, LinkIF, Printable {
 	
 	private static final Logger LOG = Logger.getLogger(WiskOpdr.class.getName());
@@ -570,8 +570,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	   }
 	
 	   
-	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale, fi.beans.mainframe.AppletStub stub) {
-	  final AppletStub appletstub = stub;
+	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale, java.applet.AppletStub stub) {
+	  final AppletStub appletstub = (AppletStub) stub;
 	  return getWiskOpdrPanel(launchDataString, locale, appletstub);
 	}
 	   
@@ -604,8 +604,9 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		return wop;
 	}
 
-	public static WiskOpdrEditPanel getWiskOpdrEditPanel(String launchDataString, Locale locale, fi.beans.mainframe.AppletStub stub, int ew, int eh, int dw, int dh) {
-	  AppletStub appletstub = stub;
+	@Deprecated
+	public static WiskOpdrEditPanel getWiskOpdrEditPanel(String launchDataString, Locale locale, java.applet.AppletStub stub, int ew, int eh, int dw, int dh) {
+	  AppletStub appletstub = (AppletStub) stub;
 	  return getWiskOpdrEditPanel(launchDataString, locale, appletstub, ew,eh, dw, dh);
 	}
 	

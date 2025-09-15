@@ -1,6 +1,5 @@
 package fi.wiskopdr;
 
-import java.applet.AppletStub;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -29,7 +28,7 @@ import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleVakHouder;
 import fi.wiskopdr.formuleobjects.Tablet;
 import fi.wiskopdr.formuleobjects.TabletOwner;
-
+import fi.beans.mainframe.AppletStub;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;

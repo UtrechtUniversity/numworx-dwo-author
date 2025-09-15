@@ -1,6 +1,5 @@
 package fi.wiskopdr.formuleobjects;
 					   
-import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 

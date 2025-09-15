@@ -7,11 +7,13 @@
 package fi.beans.appletutil;
 import java.net.*;
 import java.util.*;
-import java.applet.*;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.io.*;
 
 import javax.swing.JComponent;
+
+import fi.beans.mainframe.JApplet;
 
 /**
 * Standaard Fi Utilities voor applets.
@@ -21,19 +23,20 @@ import javax.swing.JComponent;
 
 public class AppletUtil
 {
-    private Applet applet;
+    private JApplet applet;
     private String packageName, language;
     private Locale locale;
     private Hashtable images = new Hashtable();
     
     
-    public AppletUtil(fi.beans.mainframe.JApplet applet) {
-      this( (Applet)applet);
+    @Deprecated
+    public AppletUtil(java.applet.Applet applet) {
+      this( (fi.beans.mainframe.JApplet)applet);
     }
 /**
 * Geef een Applet een standaard gelocaliseerde omgeving
 */     
-    public AppletUtil(Applet applet)
+    public AppletUtil(fi.beans.mainframe.JApplet applet)
     {
 	this.applet = applet;
 	language = applet.getParameter("language");

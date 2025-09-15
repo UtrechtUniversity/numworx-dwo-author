@@ -1,6 +1,5 @@
 package fi.wiskopdr.cbook;
 
-import java.applet.AppletContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -16,6 +15,7 @@ import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.rm.ResourceManager;
 
+import fi.beans.mainframe.AppletContext;
 import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import fi.wiskopdr.WiskOpdr;

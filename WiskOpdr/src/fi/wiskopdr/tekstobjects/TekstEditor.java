@@ -1,6 +1,5 @@
 package fi.wiskopdr.tekstobjects;
 
-import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
