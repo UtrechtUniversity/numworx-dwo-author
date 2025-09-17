@@ -2,17 +2,17 @@ package fi.geodefull;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.applet.*;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
 import javax.swing.JComboBox;
 import fi.beans.copyright.*;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
 import fi.beans.wiskopdrbeans.*;
 
-public class GeodeFull extends Applet implements ScormAppletIF , ActionListener, WiskOpdrApplet
+public class GeodeFull extends JApplet implements ScormAppletIF , ActionListener, WiskOpdrApplet
 {
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;

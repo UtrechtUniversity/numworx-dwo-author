@@ -1,14 +1,14 @@
 package fi.sliderwidget;
 
 import java.awt.*;
-import java.applet.*;
 import java.util.*;
 import fi.beans.copyright.*;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.*;
 import fi.beans.base64code.*;
 
-public class SliderWidget extends Applet implements ScormAppletIF, WiskOpdrApplet { 
+public class SliderWidget extends JApplet implements ScormAppletIF, WiskOpdrApplet { 
 
 	protected static ResourceBundle rb;
 	protected SCORM12APIInterface api;

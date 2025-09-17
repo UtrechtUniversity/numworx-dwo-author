@@ -1,12 +1,11 @@
 package fi.tekenveelvlakopdr;
 
 import java.awt.event.*;
-import java.applet.*;
 import java.awt.*;
-import java.io.*;
 import java.util.*;
 
 import fi.beans.copyright.*;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.*;
 import fi.beans.appletutil.*;
 import fi.beans.base64code.*;
@@ -17,7 +16,7 @@ import fi.tekenveelvlakopdr.opdrnav.*;
 //import grnuminput.*;
 
 
-public class TekenVeelvlakOpdr extends Applet implements WiskOpdrApplet, ScormAppletIF, ActionListener
+public class TekenVeelvlakOpdr extends JApplet implements WiskOpdrApplet, ScormAppletIF, ActionListener
 {	
 	protected SCORM12APIInterface api;
 	private long sessionStartTime;

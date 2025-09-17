@@ -75,13 +75,6 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>fi.wiskopdr</groupId>
-			<artifactId>wiskopdr</artifactId>
-			<version>0.3.0</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
 			<artifactId>DWO-commons-lib</artifactId>
 			<scope>provided</scope>
@@ -101,6 +94,13 @@
 			<groupId>fi.beans</groupId>
 			<artifactId>lineairealgebra</artifactId>
 			<version>0.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<version>0.3.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<properties>
