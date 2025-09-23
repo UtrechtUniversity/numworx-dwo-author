@@ -1,7 +1,6 @@
 
 package fi.algebrapijlenopdr;
 
-import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.image.*;
 import java.net.*;
@@ -51,7 +50,6 @@ public class MainFrame extends Frame   implements WindowListener, AppletStub, Ap
     public AppletContext getAppletContext(){return this;}
     	
     // AppletContext methodes
-    public AudioClip getAudioClip( URL url ){return null;}
     public Image getImage( URL url )
     {	Toolkit tk = Toolkit.getDefaultToolkit();
 		try
@@ -63,8 +61,6 @@ public class MainFrame extends Frame   implements WindowListener, AppletStub, Ap
 			return null;
 		}
 	}
-	public JApplet getApplet( String name ){return null;}
-    public Enumeration getApplets(){return null;}
     public void setStream(String s, InputStream is){}
     public InputStream getStream(String s){return null;}
     public Iterator getStreamKeys(){return null;}

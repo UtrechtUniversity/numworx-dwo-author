@@ -1,9 +1,6 @@
 package nl.numworx.geogebra3;
 
 
-import java.applet.Applet;
-import java.applet.AppletContext;
-import java.applet.AppletStub;
 import java.applet.AudioClip;
 import java.awt.AWTEventMulticaster;
 import java.awt.Color;
@@ -43,6 +40,8 @@ import fi.wiskopdr.WiskOpdr;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
+import fi.beans.mainframe.AppletContext;
+import fi.beans.mainframe.AppletStub;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -1079,7 +1078,7 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
     public AppletContext getAppletContext(){return this;}
     	
     // AppletContext methodes
-    public AudioClip getAudioClip( URL url ){return null;}
+ //   public AudioClip getAudioClip( URL url ){return null;}
     public Image getImage( URL url )
     {	Toolkit tk = Toolkit.getDefaultToolkit();
 		try

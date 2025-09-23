@@ -1,6 +1,5 @@
 package fi.mozarch;
 
-import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
@@ -122,7 +121,6 @@ public class InzendPanel extends Panel implements ActionListener, AppletStub, Ap
 	public String getParameter(String name){return null;}
 	public void appletResize( int width, int height ){}
     public AppletContext getAppletContext(){return this;}
-    public AudioClip getAudioClip( URL url ){return null;}
 	public Image getImage( URL url ){return null;}    public void setStream(String s, InputStream is){}
     public InputStream getStream(String s){return null;}
     public Iterator getStreamKeys(){return null;}

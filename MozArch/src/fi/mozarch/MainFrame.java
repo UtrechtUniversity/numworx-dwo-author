@@ -1,7 +1,6 @@
 
 package fi.mozarch;
 
-import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.image.*;
 import java.net.*;
@@ -62,8 +61,7 @@ import java.awt.event.*;
 	public String getParameter(String name){return null;}
     public void appletResize( int width, int height ){}
     public AppletContext getAppletContext(){return this;}
-    	public AudioClip getAudioClip( URL url ){return null;}
-    public Image getImage( URL url )	{	Toolkit tk = Toolkit.getDefaultToolkit();
+        public Image getImage( URL url )	{	Toolkit tk = Toolkit.getDefaultToolkit();
 		try
 		{	ImageProducer prod = (ImageProducer) url.getContent();
 		    return tk.createImage( prod );
