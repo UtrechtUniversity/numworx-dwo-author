@@ -1091,7 +1091,7 @@ public class Geogebra3Panel extends JLayeredPane implements  ActionListener, Int
 			return null;
 		}
 	}
-	public Applet getApplet( String name ){return null;}
+	public JApplet getApplet( String name ){return null;}
     public Enumeration getApplets(){return null;}
     public void setStream(String s, InputStream is){}
     public InputStream getStream(String s){return null;}

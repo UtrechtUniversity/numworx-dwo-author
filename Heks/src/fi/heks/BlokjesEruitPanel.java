@@ -5,10 +5,11 @@ import java.applet.*;
 import java.awt.event.*;
 import fi.heks.scobjects.*;
 import fi.beans.appletutil.*;
+import fi.beans.mainframe.JApplet;
 import fi.heks.vectortek.*;
 
 public class BlokjesEruitPanel extends BlokjesErbijPanel {
-	public BlokjesEruitPanel(int x, int y, int b, int h, Applet applet) {
+	public BlokjesEruitPanel(int x, int y, int b, int h, JApplet applet) {
 		super(x, y, b, h, applet);
 
 		titelLabel.setLabel("Blokjes er uit");

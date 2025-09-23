@@ -1,14 +1,16 @@
 package fi.algebrapijlenopdr.tekstobjects;
 
 import java.awt.*;
-import java.applet.*;
 import java.awt.event.*;
 import java.util.Vector;
+
+import fi.beans.mainframe.AppletContext;
+import fi.beans.mainframe.JApplet;
 
 
 public class LinkRegel extends TekstElement implements MouseListener, MouseMotionListener,KeyListener, FocusListener
 {	
-	private static Applet applet;
+	private static JApplet applet;
 	private Object window;
 	private FontMetrics fm;
 	private boolean caretVisible = false;
@@ -31,7 +33,7 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 	Color bgColor = new Color(255,255,255);
 	private Link link = new Link("link","",0,0);
 	
-	public static void setApplet(Applet applet)
+	public static void setApplet(JApplet applet)
 	{	LinkRegel.applet = applet;
 	}
 	
@@ -52,8 +54,8 @@ public class LinkRegel extends TekstElement implements MouseListener, MouseMotio
 		
         AppletContext ac = null;
 		if(applet!=null) ac = applet.getAppletContext();
-		Applet ap = null;
-		if(ac!=null) ap = ac.getApplet("API");
+		JApplet ap = null;
+		if(ac!=null) ap = (JApplet) ac.getApplet("API");
 
 //		try
 //	    {	if(ap!=null) window = JSObject.getWindow(ap);

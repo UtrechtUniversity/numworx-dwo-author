@@ -1,21 +1,25 @@
 
 package fi.algebrapijlenopdr;
 
-import java.applet.*;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.image.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.awt.event.*;
+
+import fi.beans.mainframe.AppletContext;
+import fi.beans.mainframe.AppletStub;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.*;
 
 
 public class MainFrame extends Frame   implements WindowListener, AppletStub, AppletContext
 {
-    private Applet applet;
+    private JApplet applet;
 
-    public MainFrame( Applet applet, int width, int height )
+    public MainFrame( JApplet applet, int width, int height )
 	{	this.applet = applet;
 		addWindowListener(this);
 		applet.setStub( this );
@@ -59,7 +63,7 @@ public class MainFrame extends Frame   implements WindowListener, AppletStub, Ap
 			return null;
 		}
 	}
-	public Applet getApplet( String name ){return null;}
+	public JApplet getApplet( String name ){return null;}
     public Enumeration getApplets(){return null;}
     public void setStream(String s, InputStream is){}
     public InputStream getStream(String s){return null;}

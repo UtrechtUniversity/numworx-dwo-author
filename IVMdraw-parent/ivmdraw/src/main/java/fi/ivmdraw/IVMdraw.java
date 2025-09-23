@@ -3,8 +3,7 @@ package fi.ivmdraw;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.swing.JApplet;
-
+import fi.beans.mainframe.JApplet;
 import fi.beans.mainframe.MainFrame;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.ivmdraw.common.Model;

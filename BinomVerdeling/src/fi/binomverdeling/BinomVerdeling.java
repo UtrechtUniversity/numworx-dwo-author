@@ -1,6 +1,5 @@
 package fi.binomverdeling;
 
-import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.TextField;
@@ -13,6 +12,7 @@ import javax.swing.JTabbedPane;
 
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.copyright.FIButton;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.Parameter;
 import fi.beans.scorm.SCORM12APIInterface;
 import fi.beans.scorm.Scorm;
@@ -21,7 +21,7 @@ import fi.beans.scorm.ScormEditComponentIF;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 
-public class BinomVerdeling extends Applet implements ScormAppletIF, WiskOpdrApplet 
+public class BinomVerdeling extends JApplet implements ScormAppletIF, WiskOpdrApplet 
 {
 	protected static ResourceBundle rb;
 	private String langArg;
