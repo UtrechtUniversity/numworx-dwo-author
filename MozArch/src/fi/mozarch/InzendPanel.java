@@ -1,9 +1,13 @@
 package fi.mozarch;
 
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.*;
-import java.applet.*;import java.net.*;
+import java.net.*;
 import java.io.*;import java.util.*;
+
+import fi.beans.mainframe.AppletContext;
+import fi.beans.mainframe.AppletStub;
 
 
 public class InzendPanel extends Panel implements ActionListener, AppletStub, AppletContext
@@ -119,9 +123,7 @@ public class InzendPanel extends Panel implements ActionListener, AppletStub, Ap
 	public void appletResize( int width, int height ){}
     public AppletContext getAppletContext(){return this;}
     public AudioClip getAudioClip( URL url ){return null;}
-	public Image getImage( URL url ){return null;}	public Applet getApplet( String name ){return null;}
-    public Enumeration getApplets(){return null;}
-    public void setStream(String s, InputStream is){}
+	public Image getImage( URL url ){return null;}    public void setStream(String s, InputStream is){}
     public InputStream getStream(String s){return null;}
     public Iterator getStreamKeys(){return null;}
     public void showDocument( URL url ){}

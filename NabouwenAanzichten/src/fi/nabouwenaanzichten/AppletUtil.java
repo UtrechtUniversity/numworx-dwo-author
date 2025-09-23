@@ -8,7 +8,10 @@ package fi.nabouwenaanzichten;
 
 import java.net.*;
 import java.util.*;
-import java.applet.*;
+
+import fi.beans.mainframe.JApplet;
+
+import java.applet.AudioClip;
 import java.awt.*;
 import java.io.*;
 
@@ -20,14 +23,14 @@ import java.io.*;
 
 public class AppletUtil
 {
-    private Applet applet;
+    private JApplet applet;
     private String packageName, language;
     private Locale locale;
     private Hashtable images = new Hashtable();
 /**
 * Geef een Applet een standaard gelocaliseerde omgeving
 */     
-    public AppletUtil(Applet applet)
+    public AppletUtil(JApplet applet)
     {
 	this.applet = applet;
 	language = applet.getParameter("language");

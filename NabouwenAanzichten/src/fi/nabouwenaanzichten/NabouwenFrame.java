@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
 import java.awt.event.*;
+
+import fi.beans.mainframe.JApplet;
 import fi.beans.mainframe.MainFrame;
 
 public class NabouwenFrame extends MainFrame implements ActionListener
@@ -12,7 +14,7 @@ public class NabouwenFrame extends MainFrame implements ActionListener
 	NabouwenAanzichten nabouwenAanzichten;
 	FileDialog openDial, saveDial;
 	
-	public NabouwenFrame(Applet applet,int width, int height )
+	public NabouwenFrame(JApplet applet,int width, int height )
 	{	super( applet, width, height );
 		this.setBackground(Color.white);
 				

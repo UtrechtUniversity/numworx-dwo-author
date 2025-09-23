@@ -1,9 +1,11 @@
 package fi.mozarch;
 
-import java.applet.*;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
+
+import fi.beans.mainframe.JApplet;
+
 import java.awt.event.*;
 
 public class MozArchFrame extends MainFrame implements ActionListener
@@ -12,7 +14,7 @@ public class MozArchFrame extends MainFrame implements ActionListener
 	FileDialog openDial, saveDial;
 	Dialog dialog;
 	
-	public MozArchFrame(Applet applet, int width, int height )
+	public MozArchFrame(JApplet applet, int width, int height )
 	{	super( applet, width, height );
 		this.setBackground(Color.white);		
 		mozarch = (MozArch)applet;		setTitle("Mozaik");
