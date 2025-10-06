@@ -129,7 +129,7 @@ public class CheckButtonPanel extends JPanel implements InteractiePanel, ActionL
 	@Override
 	public Hashtable getState() {
 		// TODO Auto-generated method stub
-		return null;
+		return new Hashtable(); // NEVER NULL
 	}
 
 	@Override
