@@ -934,7 +934,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			doCAS = doCASString;
 		
 		try {
-			ideas = new IdeasClient(this, IdeasClient.IDEAS);
+			ideas = new IdeasClient(getCodeBase(), IdeasClient.IDEAS);
 		} catch (Exception e) {
 			LOG.log(Level.WARNING, "ideas", e);
 		}
