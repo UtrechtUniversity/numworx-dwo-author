@@ -7,17 +7,17 @@
 package fi.beans.appletutil;
 import java.net.*;
 import java.util.*;
-import java.applet.AudioClip;
 import java.awt.*;
 import java.io.*;
 
 import javax.swing.JComponent;
 
+import fi.beans.mainframe.AudioClip;
 import fi.beans.mainframe.JApplet;
 
 /**
 * Standaard Fi Utilities voor applets.
-* Gebruik voor resourceBundles, Images en AudioClips
+* Gebruik voor resourceBundles, Images
 * @author Wim van Velthoven
 */
 
@@ -31,7 +31,7 @@ public class AppletUtil
     
     @Deprecated
     public AppletUtil(java.applet.Applet applet) {
-      this( (fi.beans.mainframe.JApplet)applet);
+      throw new ClassCastException("Applet not part of mainframe.JApplet");
     }
 /**
 * Geef een Applet een standaard gelocaliseerde omgeving
@@ -142,11 +142,9 @@ public class AppletUtil
     {
 	AudioClip audio = null;
 	URL u = applet.getClass().getResource(resourceName);
-//System.out.println(u);
 	if(u!=null) audio = applet.getAudioClip(u);
 	if(audio != null) return audio;
 
-//	return applet.getAudioClip(applet.getCodeBase(),getPackage() + resourceName);
 	return applet.getAudioClip(getCodeBaseResource(resourceName));
     }
 /**
