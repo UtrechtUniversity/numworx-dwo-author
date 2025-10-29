@@ -16,7 +16,7 @@ import java.io.*;
 
 /**
 * Standaard Fi Utilities voor applets.
-* Gebruik voor resourceBundles, Images en AudioClips
+* Gebruik voor resourceBundles, Images
 * @author Wim van Velthoven
 */
 
@@ -126,21 +126,6 @@ public class AppletUtil
 	}
    }
     
-//    /** Haal een AudioClip-Resource op. Via getResource 
-//    * of via getCodeBase (audiofile is dan NIET in JAR file)
-//    */
-//    public AudioClip getAudioClip(String resourceName)
-//    {
-//	AudioClip audio = null;
-//	URL u = applet.getClass().getResource(resourceName);
-////System.out.println(u);
-//	if(u!=null) audio = applet.getAudioClip(u);
-//	if(audio != null) return audio;
-//
-//	return applet.getAudioClip(applet.getCodeBase(),
-//			    getPackage() + resourceName);
-//	
-//    }
 /**
 * geef mij de Locale
 * @returns locale via applet parameter "language"
