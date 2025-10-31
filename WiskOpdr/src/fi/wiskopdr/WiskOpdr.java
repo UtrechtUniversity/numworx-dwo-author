@@ -1948,13 +1948,13 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		String[] score = ons.getScores();
 		int opgave = pageIndex;						// FIXME 1-to-1 pageindex en opgave
 		String naam;
-		String id = getLearner_id();
+		//String id = getLearner_id();
 		String name = getLearnerName();
 		String klas = "";
 		if(api != null) {
 			klas = api.LMSGetValue("dme.team");
 		}
-		naam = id + " - " + name + "; " + klas;
+		naam = name + "; " + klas;
 		if(opgave < ons.geefAantalOpdrachten(0)) {
 			if(opgave != ons.geefOpdrachtNr()) ons.kiesOpdracht(0, opgave);
 			// put 0, 0 at start of printable image

@@ -101,6 +101,7 @@
 	<module>../Tegels</module>
 	<module>../TekenVeelvlakOpdr</module>
 	<module>../Verknippen</module>
+	<module>../wiskopdrbeans</module>
     	<module>../WiskOpdr</module>
     	<module>../SQLite</module>
     	
