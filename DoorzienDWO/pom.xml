@@ -137,11 +137,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>fi.wiskopdr</groupId>
-			<artifactId>wiskopdr</artifactId>
 			<scope>provided</scope>
 			<optional>true</optional>
-			<version>0.3.0</version>
+			<groupId>fi.wiskopdr.beans</groupId>
+			<artifactId>wiskopdrbeans</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -110,7 +110,7 @@
 						</Private-Package>
 						<DynamicImport-Package>geogebra,geogebra.cas.mpreduce,geogebra.plugin,org.mathpiper.mpreduce</DynamicImport-Package>
 						<Export-Package>!uk.*,!org.json.*,org.cbook.cbookif;version="1.0.2",*</Export-Package>
-						<Class-Path>balansfruitapplet.jar doorziendwo.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar uploadwidgetrm.jar</Class-Path>
+						<Class-Path>balansfruitapplet.jar doorziendwo.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar uploadwidgetrm.jar wiskopdrbeans.jar</Class-Path>
 						<Main-Class>fi.wiskopdr.WiskOpdr</Main-Class>
 						<Bundle-SymbolicName>fi.wiskopdr.WiskOpdr</Bundle-SymbolicName>
 					</instructions>
@@ -487,6 +487,11 @@
 		  		<artifactId>geogebra4widget</artifactId>
 		  		<version>1.0.3-SNAPSHOT</version>
 			</dependency>
+			<dependency>
+				<groupId>fi.wiskopdr.beans</groupId>
+				<artifactId>wiskopdrbeans</artifactId>
+				<version>1.0.3-SNAPSHOT</version>
+			</dependency>
 	</dependencies>
 	<name>WiskOpdr</name>
 	<profiles>
@@ -583,42 +588,6 @@
 		<properties>
 			<proguard.lib>${java.home}/jmods</proguard.lib>
 		</properties>
-	</profile>
-	<profile><id>howtosign</id>
-		<build>
-			<plugins>
-                    <!-- jar signing -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jarsigner-plugin</artifactId>
-                        <version>1.4</version>
-                        <executions>
-                            <execution>
-                                <phase>${extras.sign}</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>verify</id>
-                                <phase>${extras.verify}</phase>
-                                <goals>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <processMainArtifact>true</processMainArtifact>
-                            <keystore>${dwoKeyStore}</keystore>
-                            <alias>${dwoCertKeyAlias}</alias>
-                            <storepass>${dwoCertKeyStorePassword}</storepass>
-                            <keypass>${dwoCertKeyPassword}</keypass>
-                            <sigfile>UU</sigfile>
-                            <tsa>http://sha256timestamp.ws.symantec.com/sha256/timestamp</tsa>
-                        </configuration>            
-                    </plugin>  
-			</plugins>
-		</build>
 	</profile>
 	<profile>
 		<id>repl</id>

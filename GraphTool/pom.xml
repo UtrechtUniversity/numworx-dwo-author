@@ -96,9 +96,9 @@
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>fi.wiskopdr</groupId>
-			<artifactId>wiskopdr</artifactId>
-			<version>0.3.0</version>
+			<groupId>fi.wiskopdr.beans</groupId>
+			<artifactId>wiskopdrbeans</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>

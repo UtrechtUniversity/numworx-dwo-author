@@ -1,15 +1,11 @@
 package nl.numworx.geodefiner.applet;
 
 import java.applet.AppletStub;
-import java.net.URL;
 import java.util.Locale;
 
-import javax.swing.JApplet;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
-import nl.numworx.geodefiner.GeoDefiner;
 
 import org.cbook.cbookif.CBookContext;
 import org.cbook.cbookif.CBookEvent;
@@ -19,8 +15,7 @@ import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.ServiceImpl;
 
 import cbookeditor.CBookEditor;
-import fi.wiskopdr.WiskOpdr;
-import fi.wiskopdr.formuleobjects.FormuleButton;
+import fi.beans.mainframe.JApplet;
 
 public class Main extends JApplet implements CBookContext, Constants, CBookEventListener, AppletStub {
 	private JTextArea area;
@@ -31,12 +26,7 @@ public class Main extends JApplet implements CBookContext, Constants, CBookEvent
 	@Override
 	public void init() {
 		JComponent.setDefaultLocale(new Locale("en"));
-		
-		WiskOpdr wiskopdr = new WiskOpdr();
-		WiskOpdr.applet = wiskopdr;
-		WiskOpdr.dwo_env = "test";
-		wiskopdr.setStub(this);
-		
+				
 // request some sort of identifier.
 		learner_id = getParameter("cmi.learner_id");
 		if(learner_id == null) learner_id = "";

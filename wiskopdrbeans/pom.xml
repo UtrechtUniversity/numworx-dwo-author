@@ -8,6 +8,7 @@
   </parent>
   <groupId>fi.wiskopdr.beans</groupId>
   <artifactId>wiskopdrbeans</artifactId>
+  <packaging>bundle</packaging>
   <dependencies>
     <dependency>
      <artifactId>cbookif</artifactId>
@@ -18,7 +19,30 @@
        <groupId>nl.uu.fi.dwo</groupId>
        <artifactId>DWO-commons-lib</artifactId>
        <scope>provided</scope>
-       <version>2.5.47-SNAPSHOT</version>
     </dependency>
   </dependencies>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
+	</properties>
+  <build>
+	  <finalName>wiskopdrbeans</finalName>
+	  <plugins>
+		  <plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>5.1.9</version>
+				<extensions>true</extensions>
+				<configuration>
+       	    		<niceManifest>true</niceManifest>
+					<instructions>
+						<_snapshot>${osgi.qualifier}</_snapshot>
+					</instructions>
+				</configuration>
+		  </plugin>
+	  </plugins>
+  </build>
+  <description>WiskOpdrApplet interface to implement by Widgets to connect to WiskOpdr</description>
+  <name>WiskOpdr Beans</name>
 </project>
