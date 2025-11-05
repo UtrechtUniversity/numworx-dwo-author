@@ -48,7 +48,7 @@ public class AppletUtil
     */
     public ResourceBundle getBundle(String prefix)
     {	// DIT IS 1.2
-	r	eturn ResourceBundle.getBundle(prefix, locale, applet.getClass().getClassLoader());
+    	return ResourceBundle.getBundle(prefix, locale, applet.getClass().getClassLoader());
     }
     
     /**

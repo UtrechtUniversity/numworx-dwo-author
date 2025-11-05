@@ -102,6 +102,14 @@
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
+<!-- FIXME, make a dependency to the real uncompressed thing -->
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<version>0.3.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
 	</dependencies>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

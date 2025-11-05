@@ -50,6 +50,12 @@
     <fields>;
     <methods>;
 }
+
+-keep class fi.wiskopdr.tekstobjects.EditInteractiePanelDialog{
+    <fields>;
+    <methods>;
+}
+
 -keep class fi.wiskopdr.WiskOpdrEditPanel {
     <methods>;
 }

@@ -126,6 +126,14 @@
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
+<!-- FIXME, make a dependency to the real uncompressed thing -->
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<version>2.0.3-SNAPSHOT</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
 			<artifactId>DWO-commons-lib</artifactId>

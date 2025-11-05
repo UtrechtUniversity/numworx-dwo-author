@@ -20,6 +20,14 @@
 		<version>1.0.3-SNAPSHOT</version>
   		<scope>provided</scope>
   	</dependency>
+<!-- FIXME, make a dependency to the real uncompressed thing -->
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<version>0.3.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
   	<dependency>
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
