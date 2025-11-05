@@ -21,6 +21,8 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -871,6 +873,23 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 	}
 
+	public static String getCompletionTimestamp() {
+      if( applet != null && applet.api != null) {
+        String stamp = applet.api.LMSGetValue("cmi.comments_from_lms.0.timestamp");
+        if (!stamp.isEmpty()) {
+          try {
+            Date now = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(stamp);
+            return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, JComponent.getDefaultLocale()).format(now);
+          } catch (java.text.ParseException e) {
+            return stamp;
+          }
+        }
+    } 
+    return new Date().toLocaleString();
+	  
+	}
+	
+	
 	public static String getLearner_id() {
 		if( applet != null && applet.api != null) {
 			return applet.api.LMSGetValue("cmi.learner_id");
@@ -1966,7 +1985,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 // TODO I18N
 		    header.add( line = new JLabel(ons.getOpdrachtText() +
 		    		" "+ (1+opgave) + ". " + rb.getString("score") + score[opgave]));
-		    header.add( line = new JLabel(new Date().toLocaleString()));
+		    header.add( line = new JLabel(getCompletionTimestamp()));
 		    header.setSize(header.getPreferredSize());
 		    header.doLayout();
 		    header.print(g2d);
