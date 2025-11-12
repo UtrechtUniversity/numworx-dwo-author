@@ -39,37 +39,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>stap1</id>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<phase>${extras.process}</phase>
-						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<includeScope>compile</includeScope>
-							<excludeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek,mathscratch,geogebra3widget,geogebra4widget</excludeArtifactIds>
-							<stripVersion>true</stripVersion>
-							<stripClassifier>true</stripClassifier>
-						</configuration>
-					</execution>
-					<execution>
-						<id>stap2</id>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<phase>process-classes</phase>
-						<configuration>
-							<includeScope>compile</includeScope>
-							<includeArtifactIds>balansfruitapplet,graphtool,geodefiner,statistiek,mathscratch,geogebra3widget,geogebra4widget</includeArtifactIds>
-							<stripVersion>true</stripVersion>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>5.1.9</version>
@@ -126,196 +95,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>com.github.wvengen</groupId>
-				<artifactId>proguard-maven-plugin</artifactId>
-				<version>2.0.14</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>proguard</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<proguardVersion>6.1</proguardVersion>
-					<options>
-						<option>-verbose</option>
-						<option>-dontwarn</option>
-						<option>-printconfiguration target/mapping.txt</option>
-					</options>
-					<obfuscate>true</obfuscate>
-<!--					<inputDirectory>${project.build.directory}</inputDirectory>-->
-					<!-- <injar>${project.build.finalName}.jar</injar> -->
-					<!-- uncomment to change the output file <outputDirectory>${project.build.directory}</outputDirectory> 
-						<outjar>${project.build.finalName}.jar</outjar> -->
-					<exclusions>
-						<exclusion>
-							<groupId>fi.graphtool</groupId>
-							<artifactId>graphtool</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>fi.balansfruitapplet</groupId>
-							<artifactId>balansfruitapplet</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>nl.numworx.geodefiner</groupId>
-							<artifactId>geodefiner</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>fi.statistiek</groupId>
-							<artifactId>statistiek</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>fi.mathscrath</groupId>
-							<artifactId>mathscratch</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>nl.numworx.geogebra</groupId>
-							<artifactId>geogebra3widget</artifactId>
-						</exclusion>
-						<exclusion>
-							<groupId>nl.numworx.geogebra</groupId>
-							<artifactId>geogebra4widget</artifactId>
-						</exclusion>
-					</exclusions>
-					<proguardInclude>toolfiles/config.pro</proguardInclude>
-					<libs>
-						<lib>${proguard.lib}</lib>
-					</libs>
-					<addMavenDescriptor>false</addMavenDescriptor>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>net.sf.proguard</groupId>
-						<artifactId>proguard-base</artifactId>
-						<version>6.1.0</version>
-						<scope>runtime</scope>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<phase>${extras.phase}</phase>
-						<configuration>
-							<target>
-								<jar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true" index="true">
-									<indexjars>
-										<fileset dir="${project.build.directory}" includes="*.jar" excludes="*proguard*" />
-									</indexjars>
-								</jar>
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		<plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>attach-artifacts</id>
-            <phase>${extras.phase}</phase>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
-            <configuration>
-              <artifacts>
-                <artifact>
-                  <file>${project.build.directory}/graphtool.jar</file>
-                  <type>jar</type>
-                  <classifier>graphtool</classifier>
-                </artifact>
-               <artifact>
-                  <file>${project.build.directory}/balansfruitapplet.jar</file>
-                  <type>jar</type>
-                  <classifier>balansfruitapplet</classifier>
-                </artifact>
-                <artifact>
-                  <file>${project.build.directory}/geodefiner.jar</file>
-                  <type>jar</type>
-                  <classifier>geodefiner</classifier>
-                </artifact>
-                <artifact>
-                  <file>${project.build.directory}/statistiek.jar</file>
-                  <type>jar</type>
-                  <classifier>statistiek</classifier>
-                </artifact>
-                <artifact>
-                  <file>${project.build.directory}/mathscratch.jar</file>
-                  <type>jar</type>
-                  <classifier>mathscratch</classifier>
-                </artifact>
-                <artifact>
-                  <file>${project.build.directory}/geogebra3widget.jar</file>
-                  <type>jar</type>
-                  <classifier>geogebra3widget</classifier>
-                </artifact>
-                <artifact>
-                  <file>${project.build.directory}/geogebra4widget.jar</file>
-                  <type>jar</type>
-                  <classifier>geogebra4widget</classifier>
-                </artifact>
-               </artifacts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-                    <plugin>
-                        <groupId>com.github.batkinson.plugins</groupId>
-                        <artifactId>maven-pack200-plugin</artifactId>
-                        <version>1.0.1</version>
-                        <executions>
-                            <execution>
-                                <id>normalize-jars</id>
-                                <phase>${extras.sign}</phase>
-                                <goals>
-                                    <goal>pack</goal>
-                                </goals>
-                                <configuration>
-                                    <normalizeOnly>true</normalizeOnly>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>pack-jars</id>
-                                <phase>${extras.verify}</phase>
-                                <goals>
-                                    <goal>pack</goal>
-                                </goals>
-                                <configuration>
-                                    <normalizeOnly>false</normalizeOnly>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <processMainArtifact>true</processMainArtifact>
-                            <includeClassifiers>
-                                <includeClassifier>graphtool</includeClassifier>
-                                <includeClassifier>geodefiner</includeClassifier>
-                                <includeClassifier>balansfruitapplet</includeClassifier>
-                                <includeClassifier>statistiek</includeClassifier>
-                                <includeClassifier>mathscratch</includeClassifier>
-                                <includeClassifier>geogebra3widget </includeClassifier>
-                                <includeClassifier>geogebra4widget </includeClassifier>
-                            </includeClassifiers>
-                        </configuration>                
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.github.batkinson.plugins</groupId>
-                                <artifactId>maven-pack200-plugin</artifactId>
-                                <version>1.0.1</version>
-                                <type>maven-plugin</type>
-                            </dependency>
-                        </dependencies>                
-                    </plugin>        
 		</plugins>
 	</build>
 	<properties>
@@ -351,50 +130,9 @@
 		<!-- #fi.verknippen #fi.mozarch #fi.tegels #fi.geomalgebra #fi.stroomdiagrammen 
 			#fi.statistiek #fi.doorziendwo.DoorzienDWO: doorziendwo.jar #fi.dataplot.DataPlot: -->
 		<dependency>
-			<groupId>fi.mozarch</groupId>
-			<artifactId>mozarch</artifactId>
-			<version>0.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>fi.tegels</groupId>
-			<artifactId>tegels</artifactId>
-			<version>0.0.2</version>
-		</dependency>
-		<dependency>
 		  	<groupId>nl.numworx.uploadwidget</groupId>
 	  		<artifactId>uploadwidgetrm</artifactId>
 	  		<version>2.5.34</version>
-		</dependency>
-		<dependency>
-			<groupId>fi.geomalgebra</groupId>
-			<artifactId>geomalgebra</artifactId>
-			<version>0.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>fi.stroomdiagrammen</groupId>
-			<artifactId>stroomdiagrammen</artifactId>
-			<version>0.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>fi.statistiek</groupId>
-			<artifactId>statistiek</artifactId>
-			<version>1.0.0</version>
-			<classifier>jar-with-dependencies</classifier>
-			<exclusions>
-				<exclusion>
-					<groupId>org.knowm.xchart</groupId>
-					<artifactId>xchart</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.knowm.xchart</groupId>
-					<artifactId>xchart-demo</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>fi.doorziendwo</groupId>
-			<artifactId>doorziendwo</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -405,23 +143,7 @@
 		<dependency>
 			<groupId>fi.balansfruitapplet</groupId>
 			<artifactId>balansfruitapplet</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>fi.graphtool</groupId>
-			<artifactId>graphtool</artifactId>
-			<version>0.0.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>fi.beans</groupId>
-					<artifactId>lineairealgebra</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>nl.numworx.geodefiner</groupId>
-			<artifactId>geodefiner</artifactId>
-			<version>0.0.6-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
   	<dependency>
   		<groupId>com.teamdev.jxbrowser</groupId>
@@ -456,16 +178,6 @@
 			<artifactId>numworxlf</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>fi.verknippen</groupId>
-			<artifactId>verknippen</artifactId>
-			<version>0.0.5-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>fi.mathscratch</groupId>
-			<artifactId>mathscratch</artifactId>
-			<version>0.0.1</version>
-		</dependency>
-		<dependency>
     		<groupId>javax.activation</groupId>
     		<artifactId>activation</artifactId>
     		<version>1.1.1</version>
@@ -477,16 +189,6 @@
 			<version>0.0.2</version>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>nl.numworx.geogebra</groupId>
-			<artifactId>geogebra3widget</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
-		</dependency>
-			<dependency>
-			  	<groupId>nl.numworx.geogebra</groupId>
-		  		<artifactId>geogebra4widget</artifactId>
-		  		<version>1.0.3-SNAPSHOT</version>
-			</dependency>
 			<dependency>
 				<groupId>fi.wiskopdr.beans</groupId>
 				<artifactId>wiskopdrbeans</artifactId>

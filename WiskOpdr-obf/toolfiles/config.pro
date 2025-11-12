@@ -1,3 +1,5 @@
+-injars ../target/dependency/wiskopdr.jar
+-outjars ../target/wiskopdr.jar
 -injars ../target/dependency/graphtool.jar
 -outjars ../target/graphtool.jar
 -injars ../target/dependency/balansfruitapplet.jar
