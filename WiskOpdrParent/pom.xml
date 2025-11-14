@@ -36,6 +36,13 @@
                      </snapshots>
                      <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-vendor-cbook</url>
 				</repository>
+				<repository>
+					<id>numworx-vendor-jxbrowser</id>
+                    <snapshots>
+                        <enabled>true</enabled>
+                     </snapshots>
+                     <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-vendor-jxbrowser</url>
+				</repository>
 	</repositories>
     <build>
     	<pluginManagement>
