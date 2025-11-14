@@ -20,7 +20,7 @@
   <dependencies>
   	<dependency>
   		<groupId>nl.uu.fi.dwo</groupId>
-  		<artifactId>DWO-commons-lib</artifactId>
+  		<artifactId>dwo-commons-lib</artifactId>
   	</dependency>
 	<dependency>
 		<groupId>nl.numworx.swingbrowser</groupId>
@@ -30,7 +30,7 @@
 	</dependency>
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
-			<artifactId>DWOJClient</artifactId>
+			<artifactId>dwojclient</artifactId>
 			<scope>test</scope>
 		</dependency>
   </dependencies>
@@ -78,41 +78,6 @@
 				<scope>test</scope>
 			</dependency>
   		</dependencies>
-  	</profile>
-  	<profile>
-  		<id>signing</id>
-  		<build>
-  			<plugins>
-  	<plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-jarsigner-plugin</artifactId>
-		<version>1.4</version>
-		<executions>
-			<execution>
-				<phase>package</phase>
-				<goals>
-					<goal>sign</goal>
-				</goals>
-			</execution>
-			<execution>
-				<id>verify</id>
-				<goals>
-					<goal>verify</goal>
-				</goals>
-			</execution>
-		</executions>
-		<configuration>
-			<keystore>${dwoKeyStore}</keystore>
-			<alias>${dwoCertKeyAlias}</alias>
-			<storepass>${dwoCertKeyStorePassword}</storepass>
-			<keypass>${dwoCertKeyPassword}</keypass>
-			<sigfile>UU</sigfile>
-			<tsa>http://sha256timestamp.ws.symantec.com/sha256/timestamp</tsa>
-		</configuration>
-	</plugin>  
-  			</plugins>
-  		</build>
-  	
   	</profile>
   </profiles>
   <packaging>bundle</packaging>

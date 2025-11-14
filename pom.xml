@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>fi.wiskopdr</groupId>
+  <artifactId>author-parent</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+	<module>WiskOpdrParent</module>
+	<module>notebook/notebook</module>
+	<module>UploadWidget/UploadWidgetRM</module>
+	<module>UploadWidget/uploadwidget</module>
+  </modules>
+  <profiles>
+	<profile>
+		<id>github</id>
+    <distributionManagement>
+	    <repository>
+	      <id>github</id>
+	      <name>GitHub Packages</name>
+	      <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-dwo-author</url>
+	    </repository>
+        <snapshotRepository>
+          <id>github</id>
+          <name>GitHub Packages</name>
+          <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-dwo-author</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+   </profile>
+   </profiles>
+</project>

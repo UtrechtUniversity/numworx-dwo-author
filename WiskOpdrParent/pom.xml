@@ -113,6 +113,7 @@
 	<module>../Verknippen</module>
 	<module>../wiskopdrbeans</module>
     	<module>../WiskOpdr</module>
+    	<module>../WiskOpdr-obf</module>
     	<module>../SQLite</module>
     	
     	<module>../Geogebra4Widget</module>

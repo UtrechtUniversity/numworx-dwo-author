@@ -241,7 +241,7 @@
 			#fi.statistiek #fi.doorziendwo.DoorzienDWO: doorziendwo.jar #fi.dataplot.DataPlot: -->
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
-			<artifactId>DWO-commons-lib</artifactId>
+			<artifactId>dwo-commons-lib</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
