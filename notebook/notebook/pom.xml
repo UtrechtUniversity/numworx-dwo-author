@@ -28,26 +28,23 @@
 		<dependency>
 			<groupId>org.c-book</groupId>
 			<artifactId>cbookeditor</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
 			<artifactId>swingbrowser-api</artifactId>
-			<version>0.0.10</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>nl.numworx.swingbrowser</groupId>
 			<artifactId>swingbrowser-jxb</artifactId>
-			<version>0.0.10</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>fi.beans</groupId>
 			<artifactId>numworxlf</artifactId>
-			<version>2.5.4</version>
 		</dependency>
   </dependencies>
   <build>
@@ -98,5 +95,21 @@
 	  <id>com.teamdev</id>
 	  <url>https://europe-maven.pkg.dev/jxbrowser/releases</url>
 	</repository>
+    <repository>
+        <id>numworx-dwo-project</id>
+        <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-dwo-project</url>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+    <repository>
+        <id>numworx-vendor-jxbrowser</id>
+        <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-vendor-jxbrowser</url>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+    <repository>
+        <id>numworx-vendor-cbook</id>
+        <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-vendor-cbook</url>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+
 	</repositories>
 </project>
