@@ -26,6 +26,11 @@ jobs:
                 "username": "${{ secrets.USER_PACKAGE_READ }}",
                 "password": "${{ secrets.TOKEN_PACKAGE_READ }}"
             },
+            {
+                "id": "numworx-vendor-cbook",
+                "username": "${{ secrets.USER_PACKAGE_READ }}",
+                "password": "${{ secrets.TOKEN_PACKAGE_READ }}"
+            },
             {   
                 "id": "numworx-vendor-jxbrowser",
                 "username": "${{ secrets.USER_PACKAGE_READ }}",

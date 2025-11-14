@@ -351,14 +351,10 @@
 	</profile>
 	
 	</profiles>
-   <repositories>	
+  <repositories>	
 	<repository>
 	  <id>com.teamdev</id>
 	  <url>https://europe-maven.pkg.dev/jxbrowser/releases</url>
 	</repository>
- 		<repository>
-		  <id>repos</id>
-		  <url>https://repos.dwo.nl/artifactory/repos</url>
-		</repository>
   </repositories>
 </project>
