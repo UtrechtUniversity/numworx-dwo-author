@@ -25,7 +25,6 @@
 	<dependency>
 		<groupId>nl.numworx.swingbrowser</groupId>
 		<artifactId>swingbrowser-api</artifactId>
-		<version>0.0.8</version>
 		<scope>provided</scope>
 	</dependency>
 		<dependency>
@@ -74,7 +73,6 @@
 			<dependency>
 				<groupId>nl.numworx.swingbrowser</groupId>
 				<artifactId>swingbrowser-jxb</artifactId>
-				<version>0.0.10</version>
 				<scope>test</scope>
 			</dependency>
   		</dependencies>

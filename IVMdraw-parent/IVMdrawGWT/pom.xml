@@ -8,10 +8,8 @@
     <groupId>fi.ivmdraw</groupId>
     <version>0.0.4-SNAPSHOT</version>
   </parent>
-  <groupId>fi.ivmdraw</groupId>
   <artifactId>IVMdrawGWT</artifactId>
   <packaging>war</packaging>
-  <version>0.0.4-SNAPSHOT</version>
   <name>IVM draw GWT</name>
 
   <properties>
@@ -59,7 +57,6 @@
     <dependency>
     	<groupId>nl.uu.fi.dwo.mobile</groupId>
     	<artifactId>interaction</artifactId>
-    	<version>0.1.1</version>
     </dependency>
     <dependency>
 	    <groupId>com.vaadin.addon</groupId>
