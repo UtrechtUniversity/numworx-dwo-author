@@ -16,13 +16,6 @@
   <module>ivmdraw</module>
   <module>IVMdrawGWT</module>
   </modules>
-  <repositories>
-    <repository>    
-     <id>dwo-maven-repo</id>   
-     <name>DWO Public Maven Repository</name>    
-     <url>http://www.staff.science.uu.nl/~velth101/repository/</url>    
-   </repository>
- </repositories>
   <properties>
   	<maven.compiler.source>1.8</maven.compiler.source>
   	<maven.compiler.target>1.8</maven.compiler.target>

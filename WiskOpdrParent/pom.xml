@@ -29,6 +29,13 @@
                      </snapshots>
                      <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-dwo-project</url>
                   </repository>
+				<repository>
+					<id>numworx-vendor-cbook</id>
+                    <snapshots>
+                        <enabled>true</enabled>
+                     </snapshots>
+                     <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-vendor-cbook</url>
+				</repository>
 	</repositories>
     <build>
     	<pluginManagement>
