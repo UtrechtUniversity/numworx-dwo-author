@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>fi.wiskopdr</groupId>
 			<artifactId>wiskopdr</artifactId>
-			<version>0.3.0</version>
+			<version>2.0.3-SNAPSHOT</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -35,17 +35,17 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.geogebra</groupId>
+			<groupId>nl.numworx.geogebra</groupId>
 			<artifactId>geogebra</artifactId>
 			<version>${geogebraVersion}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.geogebra</groupId>
+			<groupId>nl.numworx.geogebra</groupId>
 			<artifactId>geogebra_cas</artifactId>
 			<version>${geogebraVersion}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.geogebra</groupId>
+			<groupId>nl.numworx.geogebra</groupId>
 			<artifactId>geogebra_main</artifactId>
 			<version>${geogebraVersion}</version>
 		</dependency>
@@ -98,7 +98,7 @@
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
-		<geogebraVersion>4.0.29-r2017</geogebraVersion>
+		<geogebraVersion>4.0.29-SNAPSHOT</geogebraVersion>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 
