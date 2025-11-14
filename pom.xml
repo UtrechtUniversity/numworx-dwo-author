@@ -15,6 +15,13 @@
 	<module>UploadWidget/UploadWidgetRM</module>
 	<module>UploadWidget/uploadwidget</module>
   </modules>
+  <repositories>
+    <repository>
+	<id>numworx-dwo-project</id>
+	<url>https://maven.pkg.github.com/UtrechtUniversity/numworx-dwo-project</url>
+	<snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
   <profiles>
 	<profile>
 		<id>github</id>
