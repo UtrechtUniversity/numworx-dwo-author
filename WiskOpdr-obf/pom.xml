@@ -304,12 +304,12 @@
 		<dependency>
 			<groupId>fi.balansfruitapplet</groupId>
 			<artifactId>balansfruitapplet</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.graphtool</groupId>
 			<artifactId>graphtool</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>fi.beans</groupId>
@@ -330,7 +330,7 @@
 		<dependency>
 			<groupId>fi.mathscratch</groupId>
 			<artifactId>mathscratch</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.numworx.geogebra</groupId>
