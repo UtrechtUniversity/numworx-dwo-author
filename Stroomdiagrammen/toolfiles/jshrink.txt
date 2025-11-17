@@ -1,6 +1,0 @@
--classpath %JAVA_HOME%\jre\lib\rt.jar
-..\output\classes\fi
-..\output\classes\META-INF
--keepInterface fi.?
--o ..\output\jar\stroomdiagrammen.jar
-
