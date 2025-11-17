@@ -59,6 +59,11 @@
     	<artifactId>interaction</artifactId>
     </dependency>
     <dependency>
+    	<groupId>nl.uu.fi.dwo.mobile</groupId>
+    	<artifactId>interaction</artifactId>
+    	<classifier>sources</classifier>
+    </dependency>
+    <dependency>
 	    <groupId>com.vaadin.addon</groupId>
 	    <artifactId>pointer-events</artifactId>
 	    <version>1.0</version>
