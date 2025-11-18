@@ -98,7 +98,7 @@
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
-		<geogebraVersion>4.0.29-SNAPSHOT</geogebraVersion>
+		<geogebraVersion>2.5.46</geogebraVersion>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 
