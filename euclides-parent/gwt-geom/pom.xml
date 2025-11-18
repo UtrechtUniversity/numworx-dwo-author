@@ -5,6 +5,8 @@
   <artifactId>gwt-geom</artifactId>
   <properties>
 	<maven.test.skip>true</maven.test.skip>
+	<maven.compiler.source>1.8</maven.compiler.source>
+	<maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <build>
   	<finalName>geom</finalName>
