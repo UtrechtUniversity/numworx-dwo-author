@@ -135,6 +135,11 @@
 			  <id>com.teamdev</id>
 			  <url>https://europe-maven.pkg.dev/jxbrowser/releases</url>
 			</repository>
+		    <repository>        
+		        <id>numworx-vendor-jxbrowser</id>
+		        <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-vendor-jxbrowser</url>
+		        <snapshots><enabled>true</enabled></snapshots>
+		    </repository>       
 	  	</repositories>
   	</profile>
   </profiles>
