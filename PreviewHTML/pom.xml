@@ -62,7 +62,7 @@
     		<dependency>
 				<groupId>nl.numworx.swingbrowser</groupId>
 				<artifactId>swingbrowser-jfx</artifactId>
-				<version>0.0.10</version>
+				<version>0.0.19</version>
 				<scope>test</scope>
 			</dependency>
   		</dependencies>  	
@@ -84,6 +84,11 @@
 	  <id>com.teamdev</id>
 	  <url>https://europe-maven.pkg.dev/jxbrowser/releases</url>
 	</repository>
+    <repository>        
+        <id>numworx-vendor-jxbrowser</id>
+        <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-vendor-jxbrowser</url>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>       
   </repositories>
   
 </project>
