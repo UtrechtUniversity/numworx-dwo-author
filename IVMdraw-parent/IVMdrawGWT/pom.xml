@@ -4,9 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>IVMdraw-parent</artifactId>
+    <artifactId>ivmdraw-parent</artifactId>
     <groupId>fi.ivmdraw</groupId>
     <version>0.0.4-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
   <artifactId>ivmdrawgwt</artifactId>
   <packaging>war</packaging>
