@@ -6,7 +6,7 @@
 	<name>JavaLogoWeb3d</name>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
-	  <artifactId>WiskOpdrParent</artifactId>
+	  <artifactId>wiskopdr-parent</artifactId>
 	  <version>1.0.3-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>

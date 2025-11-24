@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>fi.ivmdraw</groupId>
-    <artifactId>IVMdraw-parent</artifactId>
+    <artifactId>ivmdraw-parent</artifactId>
     <version>0.0.4-SNAPSHOT</version>
   </parent>
   <artifactId>ivmdraw-common</artifactId>

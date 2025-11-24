@@ -8,9 +8,9 @@
     <groupId>fi.ivmdraw</groupId>
     <version>0.0.4-SNAPSHOT</version>
   </parent>
-  <artifactId>IVMdrawGWT</artifactId>
+  <artifactId>ivmdrawgwt</artifactId>
   <packaging>war</packaging>
-  <name>IVM draw GWT</name>
+  <name>IVMdrawGWT</name>
 
   <properties>
     <!-- Convenience property to set the GWT version -->

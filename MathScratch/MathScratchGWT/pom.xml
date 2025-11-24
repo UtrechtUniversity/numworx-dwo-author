@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>fi.mathscratch</groupId>
-    <artifactId>MathScratch-parent</artifactId>
+    <artifactId>mathscratch-parent</artifactId>
     <version>0.0.4-SNAPSHOT</version>
   </parent>
-  <artifactId>MathScratchGWT</artifactId>
+  <artifactId>mathscratchgwt</artifactId>
   <packaging>war</packaging>
-  <name>MathScratch GWT</name>
+  <name>MathScratchGWT</name>
   <description>GWT project</description>
   <properties>
     <!-- Convenience property to set the GWT version -->
@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>nl.uu.fi.dwo.ideas</groupId>
 			<artifactId>ideasgwt</artifactId>
-			<version>0.1.9-SNAPSHOT</version>
+			<version>0.1.9</version>
 		</dependency>
   </dependencies>
 

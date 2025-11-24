@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
     <parent>
 	  <groupId>fi.wiskopdr</groupId>
-	  <artifactId>WiskOpdrParent</artifactId>
+	  <artifactId>wiskopdr-parent</artifactId>
 	  <version>1.0.3-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
     </parent>
   <groupId>fi.mathscratch</groupId>
-  <artifactId>MathScratch-parent</artifactId>
+  <artifactId>mathscratch-parent</artifactId>
   <version>0.0.4-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>MathScratch parent</name>
