@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>fi.wiskopdrgwt</groupId>
 			<artifactId>WiskOpdrGWT</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>${dwo.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

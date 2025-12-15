@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>org.c-book</groupId>
 			<artifactId>cbookeditor</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 			<scope>test</scope>
 		</dependency>
 

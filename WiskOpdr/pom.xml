@@ -186,7 +186,7 @@
 		<dependency>
 			<groupId>fi.dwo</groupId>
 			<artifactId>fi.dwo.eawt</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>${dwo.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 			<dependency>

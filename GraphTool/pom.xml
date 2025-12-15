@@ -93,7 +93,7 @@
 		<dependency>
 			<groupId>fi.beans</groupId>
 			<artifactId>lineairealgebra</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${dwo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.wiskopdr.beans</groupId>
