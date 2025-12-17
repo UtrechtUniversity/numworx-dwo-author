@@ -180,12 +180,12 @@
                 <artifact>
                   <file>${project.build.directory}/geogebra3widget.jar</file>
                   <type>jar</type>
-                  <classifier>geogebra3widget</classifier>
+                  <classifier>geogebraold</classifier>
                 </artifact>
                 <artifact>
                   <file>${project.build.directory}/geogebra4widget.jar</file>
                   <type>jar</type>
-                  <classifier>geogebra4widget</classifier>
+                  <classifier>geogebranew</classifier>
                 </artifact>
                </artifacts>
             </configuration>
