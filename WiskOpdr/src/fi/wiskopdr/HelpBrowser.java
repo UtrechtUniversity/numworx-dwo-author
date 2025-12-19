@@ -92,4 +92,19 @@ public class HelpBrowser extends JPanel
     super.setBounds(x, y, width, height);
     if(ssb != null) panel.setSize(Math.max(10,width), Math.max(10, height));
   }
+  
+  public static void main(String[] args) {
+	  JFrame f = new JFrame();
+	  f.setDefaultCloseOperation(f.EXIT_ON_CLOSE);
+	  HelpBrowser hb = new HelpBrowser(f);
+	  hb.ssb.frame = f;
+	  f.setContentPane(hb);
+	  f.setSize(500,400);
+	  f.setVisible(true);
+	  hb.loadURL("https://app.dwo.nl/dwo/apps/player.html?t=1&profile=106&locale=nl#671367");
+	 // hb.loadURL("https://app.dwo.nl");
+	  
+  }
+  
+  
 }

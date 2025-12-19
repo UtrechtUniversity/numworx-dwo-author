@@ -217,8 +217,8 @@
                                 <includeClassifier>balansfruitapplet</includeClassifier>
                                 <includeClassifier>statistiek</includeClassifier>
                                 <includeClassifier>mathscratch</includeClassifier>
-                                <includeClassifier>geogebra3widget </includeClassifier>
-                                <includeClassifier>geogebra4widget </includeClassifier>
+                                <includeClassifier>geogebraold </includeClassifier>
+                                <includeClassifier>geogebranew </includeClassifier>
                             </includeClassifiers>
                         </configuration>                
                     </plugin>        
