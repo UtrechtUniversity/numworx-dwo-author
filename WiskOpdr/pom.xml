@@ -78,7 +78,7 @@
 							uk.*
 						</Private-Package>
 						<DynamicImport-Package>geogebra,geogebra.cas.mpreduce,geogebra.plugin,org.mathpiper.mpreduce</DynamicImport-Package>
-						<Export-Package>!uk.*,!org.json.*,org.cbook.cbookif;version="1.0.2",*</Export-Package>
+						<Export-Package>!uk.*,!org.json.*,org.cbook.cbookif;version="1.0.2",org.cbook.cbookif.rm;version="1.0.2",*</Export-Package>
 						<Class-Path>balansfruitapplet.jar doorziendwo.jar geomalgebra.jar graphtool.jar mozarch.jar statistiek.jar stroomdiagrammen.jar tegels.jar verknippen.jar uploadwidgetrm.jar wiskopdrbeans.jar</Class-Path>
 						<Main-Class>fi.wiskopdr.WiskOpdr</Main-Class>
 						<Bundle-SymbolicName>fi.wiskopdr.WiskOpdr</Bundle-SymbolicName>
