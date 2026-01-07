@@ -177,6 +177,7 @@ public class MyOpdrEditContainer extends JPanel implements ActionListener, ItemL
 		titelEditor.setBounds(10, 25, scheidingX - 15, 25);
 		add(titelEditor);
 		NumberFormat format = NumberFormat.getNumberInstance();
+		format = new NumberDecorator(format);
 		NumberFormatter formatter = new NumberFormatter(format);
 		formatter.setValueClass(Float.class);
 		formatter.setMinimum(0.0f);
