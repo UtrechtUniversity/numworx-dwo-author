@@ -111,6 +111,10 @@
     <fields>;
     <methods>;
 }
+-keep class com.google.gwt.** {
+    <fields>;
+    <methods>;
+}
 
 -keep class fi.balansfruit.BalansFruitApplet{
     <fields>;
