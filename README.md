@@ -1,7 +1,6 @@
 # numworx-dwo-author
 
-Provide a concise and informative title for your code or analysis that
-accurately reflects its content.
+This repository contains the authoring components of the numworx project.
 
 ## Introduction
 
@@ -13,11 +12,7 @@ context.
 
 ## Prerequisites
 
-Include any necessary prerequisites for using your code, such as
-required datasets, specific software, dependencies or hardware
-requirements. For example: This project requires Python 3.8 or later
-and install the dependencies with `pip install -r
-requirements.txt`. 
+This project depends on the artifacts build by numworx-dwo-project project
 
 ## Contents 
 
@@ -41,6 +36,9 @@ Include examples of how to execute the code and describe the expected
 output. If your work consists of multiple execution steps, provide
 detailed step-by-step instructions. 
 
+All artifacts go to a static website. De numworx-dwo-resources project builds such an website as a docker container.
+Configure the numworx author application with the location of that static website. The default is https://cdn.dwo.nl/jars/ using cloudfront for caching.
+
 ## License
 
 With an open-source license, you grant permission to use your work.
@@ -51,14 +49,6 @@ For example:
 
 > This work is licensed under the MIT License.
 
-## Citation (optional)
-
-Provide clear instructions on how to cite your code or related
-publications in a research paper or publication. You can include the
-citation in the README file or create a separate CITATION.cff file. 
-
 ## Contact 
 
-Include contact information for questions or comments about your code.
-You can also provide clear instructions for how users can provide
-feedback, contribute, or suggest improvements to your work. 
+[Wim van Velthoven](mailto:w.p.g.vanvelthoven@uu.nl)
