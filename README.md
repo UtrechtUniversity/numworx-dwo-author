@@ -36,7 +36,7 @@ Include examples of how to execute the code and describe the expected
 output. If your work consists of multiple execution steps, provide
 detailed step-by-step instructions. 
 
-All artifacts go to a static website. De numworx-dwo-resources project builds such an website as a docker container.
+All artifacts go to a static website. The numworx-dwo-resources project builds such an website as a docker container.
 Configure the numworx author application with the location of that static website. The default is https://cdn.dwo.nl/jars/ using cloudfront for caching.
 
 ## License
