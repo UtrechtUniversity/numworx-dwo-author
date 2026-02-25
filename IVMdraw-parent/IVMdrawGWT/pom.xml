@@ -6,7 +6,7 @@
   <parent>
     <artifactId>ivmdraw-parent</artifactId>
     <groupId>fi.ivmdraw</groupId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>2.5.48-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>ivmdrawgwt</artifactId>

@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>fi.euclides</groupId>
 		<artifactId>euclides-parent</artifactId>
-		<version>0.0.8-SNAPSHOT</version>
+		<version>2.5.48-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>euclides-expr</artifactId>
@@ -26,7 +26,6 @@
 		<dependency>
 			<groupId>fi.wiskopdr.beans</groupId>
 			<artifactId>wiskopdrbeans</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -2,12 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.balansfruitapplet</groupId>
 	<artifactId>balansfruitapplet</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
 	<name>BalansFruitApplet</name>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>wiskopdr-parent</artifactId>
-	  <version>1.0.3-SNAPSHOT</version>
+	  <version>2.5.48-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
 	<build>
@@ -89,7 +88,6 @@
 		<dependency>
 			<groupId>fi.wiskopdr.beans</groupId>
 			<artifactId>wiskopdrbeans</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>

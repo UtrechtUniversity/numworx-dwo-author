@@ -3,12 +3,11 @@
   <parent>
     <groupId>fi.wiskopdr</groupId>
     <artifactId>wiskopdr-parent</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>2.5.48-SNAPSHOT</version>
     <relativePath>../WiskOpdrParent</relativePath>
   </parent>
 	<groupId>nl.numworx.geodefiner</groupId>
 	<artifactId>geodefiner</artifactId>
-	<version>0.0.6-SNAPSHOT</version>
 	<name>GeoDefiner</name>
 	<dependencies>
 		<dependency>
@@ -26,27 +25,26 @@
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-util</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-core</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-expr</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.numworx.geodefiner</groupId>
 			<artifactId>geodefiner-common</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 			<dependency>
 				<groupId>fi.wiskopdr.beans</groupId>
 				<artifactId>wiskopdrbeans</artifactId>
-				<version>1.0.3-SNAPSHOT</version>
 				<scope>provided</scope>
 				<optional>true</optional>
 			</dependency>
@@ -54,7 +52,6 @@
 		<dependency>
 			<groupId>fi.wiskopdr</groupId>
 			<artifactId>wiskopdr</artifactId>
-			<version>2.0.3-SNAPSHOT</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -66,7 +63,7 @@
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-resources</artifactId>
-			<version>0.0.8-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>

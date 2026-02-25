@@ -2,14 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.wiskopdr</groupId>
   <artifactId>wiskopdr-parent</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>WiskopdrParent</name>
   <description>parent van WiskOpdr en java widgets</description>
     <parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>author-parent</artifactId>
-	  <version>1.0.0-SNAPSHOT</version>
+	  <version>2.5.48-SNAPSHOT</version>
     </parent>
     <properties>
     		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>
@@ -151,6 +150,20 @@
     	<module>../Grafiek3DTest</module>
         <module>../GeodeFull</module>
     </modules>
+    <dependencyManagement>
+       <dependencies>
+                <dependency>
+                        <groupId>fi.wiskopdr</groupId>
+                        <artifactId>wiskopdr</artifactId>
+                        <version>2.5.48-SNAPSHOT</version>
+                </dependency>
+               <dependency>
+                        <groupId>fi.wiskopdr.beans</groupId>
+                        <artifactId>wiskopdrbeans</artifactId>
+                        <version>2.5.48-SNAPSHOT</version>
+                </dependency>
+      </dependencies>
+    </dependencyManagement>
     <profiles>
 	<profile>
 		<id>running11</id>

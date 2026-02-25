@@ -6,7 +6,7 @@
 		<artifactId>euclides-parent</artifactId>
 		<relativePath>..</relativePath>
 		<groupId>fi.euclides</groupId>
-		<version>0.0.8-SNAPSHOT</version>
+		<version>2.5.48-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>gwt.geom</groupId>
 			<artifactId>gwt-geom</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.uu.fi.dwo.mobile</groupId>
