@@ -41,7 +41,7 @@
 		</dependency>
 		<dependency>
 			<groupId>fi.wiskopdrgwt</groupId>
-			<artifactId>WiskOpdrGWT</artifactId>
+			<artifactId>wiskopdrgwt</artifactId>
 			<version>${dwo.version}</version>
 			<scope>provided</scope>
 		</dependency>
