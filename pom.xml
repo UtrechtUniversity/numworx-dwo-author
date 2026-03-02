@@ -17,6 +17,7 @@
 	<module>notebook/notebook</module>
 	<module>UploadWidget/UploadWidgetRM</module>
 	<module>UploadWidget/uploadwidget</module>
+	<module>dwojprint</module>
   </modules>
   <repositories>
     <repository>

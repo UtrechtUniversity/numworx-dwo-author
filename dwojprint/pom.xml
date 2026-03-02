@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>fi.wiskopdr</groupId>
+    <artifactId>author-parent</artifactId>
+    <version>2.5.48-SNAPSHOT</version>
+  </parent>
+  <artifactId>dwojprint</artifactId>
+  <version>2.5.49-SNAPSHOT</version>
+  <groupId>nl.uu.fi.dwo</groupId>
+  <name>DWO Printer</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.lowagie</groupId>
+  		<artifactId>itext</artifactId>
+  		<version>2.1.7</version>
+  	</dependency>
+    <dependency>
+    	<groupId>fi.beans</groupId>
+    	<artifactId>numworxlf</artifactId>
+    </dependency>
+
+  </dependencies>
+  <build>
+	  <finalName>${project.artifactId}</finalName>	  
+  </build>
+</project>
