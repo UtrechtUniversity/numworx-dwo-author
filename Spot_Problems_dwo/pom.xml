@@ -3,7 +3,7 @@
   <groupId>fi.spot_problems_dwo</groupId>
   <artifactId>spot_problems_dwo</artifactId>
   <name>Spot-problems</name>
-  <description></description>
+  <description />
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>wiskopdr-parent</artifactId>
