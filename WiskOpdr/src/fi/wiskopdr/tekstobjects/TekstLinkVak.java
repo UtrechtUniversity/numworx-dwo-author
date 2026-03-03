@@ -70,7 +70,7 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		
 		if("GR".equals(WiskOpdr.deployVariant))linkRegel.setFont(new Font("Arial",Font.PLAIN,13));
 		else linkRegel.setFont(f);
-		if(linkRegel.getLink()!=null && linkRegel.getLink().getEmbedded() == LinkType.TRUE)
+		if(linkRegel.getLink()!=null && (linkRegel.getLink().getEmbedded() == LinkType.TRUE||linkRegel.getLink().getEmbedded() == LinkType.RESPONSIVE))
 			setSize(linkRegel.getLink().getWidth(), linkRegel.getLink().getHeight());
 		else
 			setSize(linkRegel.getSize().width, linkRegel.getSize().height);
@@ -159,7 +159,7 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 		linkRegel.setLink(new Link(linkTekst, urls, width, height, embedded, grensScores));
 		linkRegel.setUnderlined(true);
 		
-		if(embedded == LinkType.TRUE && !tekstVak.editable) 
+		if((embedded == LinkType.TRUE || embedded == LinkType.RESPONSIVE) && !tekstVak.editable) 
 		{	setSize(width, height);
 			super.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 			super.setOpaque(true);
@@ -226,7 +226,7 @@ public class TekstLinkVak extends TekstDeelVak implements ActionListener
 	
 	public void zetMaat()
 	{	
-		if(linkRegel.getLink()!=null && linkRegel.getLink().getEmbedded()==LinkType.TRUE)
+		if(linkRegel.getLink()!=null && (linkRegel.getLink().getEmbedded()==LinkType.TRUE||linkRegel.getLink().getEmbedded() == LinkType.RESPONSIVE))
 		{	setSize(linkRegel.getLink().getWidth(), linkRegel.getLink().getHeight());
 			super.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 			super.setOpaque(true);

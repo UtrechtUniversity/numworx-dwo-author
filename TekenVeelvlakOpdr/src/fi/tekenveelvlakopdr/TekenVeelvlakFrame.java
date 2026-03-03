@@ -1,6 +1,5 @@
 package fi.tekenveelvlakopdr;
 
-import java.applet.*;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
@@ -12,7 +11,7 @@ public class TekenVeelvlakFrame extends MainFrame implements ActionListener
 	TekenVeelvlakOpdr tekenveelvlakopdr;
 	FileDialog openDial, saveDial;
 	
-	public TekenVeelvlakFrame(Applet applet, int width, int height )	{	super( applet, width, height );
+	public TekenVeelvlakFrame(JApplet applet, int width, int height )	{	super( applet, width, height );
 		this.setBackground(Color.white);		tekenveelvlakopdr = (TekenVeelvlakOpdr)applet;
 		setTitle("TekenVeelvlak");
 		

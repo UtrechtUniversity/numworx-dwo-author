@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.ScrollPane;
-import java.applet.AppletStub;
 import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +31,7 @@ import fi.wiskopdr.formuleobjects.Tablet;
 import fi.wiskopdr.formuleobjects.TabletOwner;
 import fi.wiskopdr.formuleobjects.FormuleButton;
 import fi.wiskopdr.formuleobjects.FormuleParser;
-
+import fi.beans.mainframe.AppletStub;
 import fi.beans.stringutils.StringUtils;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;

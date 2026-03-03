@@ -232,4 +232,11 @@ public class Grafiek3DInteractiePanel extends JPanel
     
 	public void actionPerformed(ActionEvent e)
 	{}
+
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

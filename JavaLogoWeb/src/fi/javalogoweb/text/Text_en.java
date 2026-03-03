@@ -51,6 +51,7 @@ public class Text_en extends java.util.ListResourceBundle
 				{ "printCommandsCBLabel" , "Print commands" },
 				{ "tekenCommandsCBLabel" , "Draw commands" },
 				{ "traceCBLabel" , "Trace option" },
+				{ "runCBLabel" , "Run option" },
 				{ "codeIOCBLabel" , "Code import/export" },
 				
 				{ "CBA_text.program", "program"},

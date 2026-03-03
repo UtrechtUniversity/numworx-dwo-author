@@ -582,4 +582,11 @@ public class SPInteractiePanel extends JPanel implements InteractiePanel, Intera
 			locString = cmd;
 		return locString;
 	}
+
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -83,6 +83,7 @@ public class Text_en extends java.util.ListResourceBundle
 				
 				{ "opdrachtTitelLabel" , "Title:" },
 				{ "opdrachtTekstLabel" , "Text:" },
+                { "opdrachtFactorLabel", " Weighting: "},
 				{ "randVarLabel" , "Variables for random parameters:" },
 				{ "startExpLabel" , "Start expression:" },
 				{ "startVergLabel" , "Start equation:" },
@@ -422,6 +423,7 @@ public class Text_en extends java.util.ListResourceBundle
                 {"OPT_docHeightLabel" , "Height (min)"},
                 {"OPT_combCompNav" , "Combined components"},
                 {"OPT_stylesWarnDialog" , "All styles will be lost. Ok?"},
+                {"OPT_browserHistory", "Browser history"},
                 
                 {"OPT_styleInteractionsLabel" , "Style answerboxes"},
                 {"OPT_TemplateGeenLabel" , "No template"},
@@ -556,7 +558,8 @@ public class Text_en extends java.util.ListResourceBundle
                 {"TVEP_uitwerkingenPopup" , "Steps"},
                 {"TVEP_random" , "random"},
                 {"TVEP_linkObject" , "Link object"},
-                {"TVEP_editLink" , "Edit link"},
+                {"TVEP_anchorObject" , "Anchor"},
+               {"TVEP_editLink" , "Edit link"},
                 {"TVEP_defaultBijNull" , "default  )"},
                 {"TVEP_checkUitklapVak" , "check"},
                 {"TVEP_logIDLabelLabel" , "label"},
@@ -911,7 +914,8 @@ public class Text_en extends java.util.ListResourceBundle
 				{"CBA_action.popup", "Action: popup"},
 				{"CBA_action.setActive", "Action: set active"},
                 {"CBA_action.setInactive", "Action: set inactive"},
-				
+                {"CBA_action.reset", "Action: reset"},
+
 				{"oplossingenLabel", "Solutions"},
 				{"executeLabel", "Execute"},
 				

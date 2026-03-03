@@ -2,13 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
-	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.2</version>
+	  <artifactId>wiskopdr-parent</artifactId>
+	  <version>2.5.48</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
   <groupId>fi.tekenveelvlakopdr</groupId>
   <artifactId>tekenveelvlakopdr</artifactId>
-  <version>1.0.2</version>
   <build>
   	<finalName>${project.artifactId}</finalName>
     <sourceDirectory>src</sourceDirectory>
@@ -97,21 +96,20 @@
   </properties>
 	<dependencies>
 		<dependency>
-			<groupId>fi.wiskopdr</groupId>
-			<artifactId>wiskopdr</artifactId>
-			<version>0.3.0</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
-			<artifactId>DWO-commons-lib</artifactId>
+			<artifactId>dwo-commons-lib</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>fi.beans</groupId>
 			<artifactId>numworxlf</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>

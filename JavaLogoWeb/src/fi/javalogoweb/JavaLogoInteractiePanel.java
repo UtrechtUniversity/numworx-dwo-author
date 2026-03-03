@@ -54,6 +54,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	private boolean printCommandsZichtbaar = true;
 	private boolean tekenCommandsZichtbaar = true;
 	private boolean traceZichtbaar = true;
+	private boolean runZichtbaar = true;
 	private boolean codeIOZichtbaar = true;
 	
 	private CBookEventHandler cbookEventHandler = new CBookEventHandler(this);	
@@ -199,6 +200,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		boolean tekenCommandsZichtbaar = true;
 		boolean traceZichtbaar = true;
 		boolean codeIOZichtbaar = true;
+		boolean runZichtbaar = true;
 		
 		if(h.containsKey("state")) state = (Hashtable) h.get("state");
 		if(h.containsKey("uitvoerVeldZichtbaar")) uitvoerVeldZichtbaar = ((Boolean)h.get("uitvoerVeldZichtbaar"));
@@ -209,6 +211,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		if(h.containsKey("tekenCommandsZichtbaar")) tekenCommandsZichtbaar = ((Boolean)h.get("tekenCommandsZichtbaar"));
 		if(h.containsKey("traceZichtbaar")) traceZichtbaar = ((Boolean)h.get("traceZichtbaar"));
 		if(h.containsKey("codeIOZichtbaar")) codeIOZichtbaar = ((Boolean)h.get("codeIOZichtbaar"));
+		if(h.containsKey("runZichtbaar")) runZichtbaar = ((Boolean)h.get("runZichtbaar"));
 				
 		zetUitvoerVeldZichtbaar(uitvoerVeldZichtbaar);
 		zetProgrammaVeldZichtbaar(programmaVeldZichtbaar);
@@ -218,6 +221,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		zetTekenCommandsZichtbaar(tekenCommandsZichtbaar);
 		zetTraceZichtbaar(traceZichtbaar);
 		zetCodeIOZichtbaar(codeIOZichtbaar);
+		zetRunZichtbaar(runZichtbaar);
 		setState(state);
 	}
 
@@ -251,6 +255,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		if(h.containsKey("printCommandsZichtbaar")) printCommandsZichtbaar = ((Boolean)h.get("printCommandsZichtbaar"));
 		if(h.containsKey("tekenCommandsZichtbaar")) tekenCommandsZichtbaar = ((Boolean)h.get("tekenCommandsZichtbaar"));
 		if(h.containsKey("traceZichtbaar")) traceZichtbaar = ((Boolean)h.get("traceZichtbaar"));
+		if(h.containsKey("runZichtbaar")) runZichtbaar = ((Boolean)h.get("runZichtbaar"));
 		if(h.containsKey("codeIOZichtbaar")) codeIOZichtbaar = ((Boolean)h.get("codeIOZichtbaar"));
 				
 		zetUitvoerVeldZichtbaar(uitvoerVeldZichtbaar);
@@ -261,6 +266,7 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 		zetTekenCommandsZichtbaar(tekenCommandsZichtbaar);
 		zetTraceZichtbaar(traceZichtbaar);
 		zetCodeIOZichtbaar(codeIOZichtbaar);
+		zetRunZichtbaar(runZichtbaar);
 		setState(state);
 		
 	}
@@ -590,6 +596,11 @@ public class JavaLogoInteractiePanel extends JPanel implements InteractiePanel, 
 	public int[][] getScoreObjectives() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void zetRunZichtbaar(boolean selected) {
+		runZichtbaar = selected;
+		runButton.setVisible(selected);
 	}
 	
 }

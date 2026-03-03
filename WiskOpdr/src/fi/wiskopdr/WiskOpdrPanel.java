@@ -3,6 +3,7 @@ package fi.wiskopdr;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -81,6 +82,5 @@ public class WiskOpdrPanel extends JPanel
     {   if(ons!=null)ons.stop();
 	}	
     
-   
 	
 }

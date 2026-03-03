@@ -1,8 +1,6 @@
 package fi.normaleverdeling;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.applet.*;
 import java.util.*;
 
 
@@ -11,8 +9,6 @@ import fi.beans.mainframe.JApplet;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 // deze moet vanwege WiskOpdrApplet
 import fi.beans.wiskopdrbeans.InteractiePanel;
-// deze moet vanwege InteractiePanel
-import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
 public class NormaleVerdeling extends JApplet implements WiskOpdrApplet
 {

@@ -90,8 +90,15 @@ public class GraphEdge {
 		for (String scode: source.getVisibleSet()) {
 			for (String tcode: target.getVisibleSet()) {
 				if(Objects.equals(scode, tcode) || source.getVisibleSet().size()==1 && target.getVisibleSet().size()==1 || source.getTempLocation()!=null) { //&& scode.equals(tcode)
-					boolean sameChapters = Objects.equals(scode, tcode);
-					
+
+				    if (target.getVariantDeselections(tcode).contains(source.getID())) {
+				      //System.out.println( "geen " + source.getID() + " voor " + tcode);
+				      continue;
+				    }
+				  
+				  
+				  
+				    boolean sameChapters = Objects.equals(scode, tcode);					
 					Point sourceLocation = source.getLocation(scode);
                     Point targetLocation = target.getLocation(tcode);
                     float x0, x1, y0, y1;

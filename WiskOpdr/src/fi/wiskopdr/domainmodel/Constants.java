@@ -4,4 +4,5 @@ public interface Constants {
   String OBJECTIVES = "smObjectives";
   String DESELECTIONS = "smDeselections";
   String FOREKNOWLEDGE = "smForeknowledge";
+  String GUESS = "smGuess";
 }

@@ -221,4 +221,10 @@ public class WiskOpdrEditPanel extends JPanel implements TabletOwner
 	public Tablet getTablet() {
 		return tablet;
 	}
+
+	public void setLayersVisible(Map<String,Boolean> layerinfo) {
+      System.out.println("LAYER INFO " + layerinfo);
+      onsEdit.setLayersVisible(layerinfo);
+    }
+
 }

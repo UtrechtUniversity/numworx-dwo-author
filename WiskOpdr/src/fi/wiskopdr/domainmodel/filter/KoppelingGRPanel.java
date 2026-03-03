@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import fi.beans.numworxlf.Constants;
 import fi.beans.numworxlf.JButton;
 import fi.beans.numworxlf.JCheckBox;
+import fi.beans.numworxlf.JScrollPane;
 
 public class KoppelingGRPanel extends JPanel implements Constants {
 
@@ -180,7 +181,7 @@ public class KoppelingGRPanel extends JPanel implements Constants {
 		
 		add(topPanel, BorderLayout.NORTH);
 		add(bottomPanel, BorderLayout.SOUTH);
-		add(mainPanel, BorderLayout.CENTER);
+		add(new JScrollPane(mainPanel), BorderLayout.CENTER);
 	}
 	
 	private static Box hb(Component... c) {

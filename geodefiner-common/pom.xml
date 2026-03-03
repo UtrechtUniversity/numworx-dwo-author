@@ -2,34 +2,29 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.numworx.geodefiner</groupId>
 	<artifactId>geodefiner-common</artifactId>
-	<version>0.0.6</version>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<euclidesVersion>0.0.5-SNAPSHOT</euclidesVersion>
+		<euclidesVersion>2.5.48-SNAPSHOT</euclidesVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-core</artifactId>
-			<version>0.0.7</version>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-util</artifactId>
-			<version>0.0.7</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>fi.euclides</groupId>
 			<artifactId>euclides-expr</artifactId>
-			<version>0.0.7</version>
 		</dependency>
 		<dependency>
 			<groupId>nl.uu.fi.dwo.mobile</groupId>
 			<artifactId>interaction</artifactId>
-			<version>0.1.13</version>
 		</dependency>
 
 		<dependency>
@@ -46,8 +41,8 @@
 		</dependency>
 		<dependency>
 			<groupId>fi.wiskopdrgwt</groupId>
-			<artifactId>WiskOpdrGWT</artifactId>
-			<version>0.0.5</version>
+			<artifactId>wiskopdrgwt</artifactId>
+			<version>${dwo.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -71,15 +66,10 @@
             </plugin>         
 		</plugins>
 	</build>
-	<distributionManagement>
-		<repository>
-			<id>release</id>
-			<url>https://repos.dwo.nl/artifactory/libs-release-local</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>libs-snapshot</name>
-			<url>https://repos.dwo.nl/artifactory/libs-snapshot-local</url>
-		</snapshotRepository>
-	</distributionManagement>
+	<parent>
+		<groupId>fi.euclides</groupId>
+		<version>2.5.48</version>
+		<artifactId>euclides-parent</artifactId>
+		<relativePath>../euclides-parent/</relativePath>
+	</parent>
 </project>

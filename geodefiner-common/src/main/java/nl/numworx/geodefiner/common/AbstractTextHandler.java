@@ -37,7 +37,7 @@ public abstract class AbstractTextHandler extends EventHandler {
 	}
 	
 	@Override
-	public boolean allowSelection(Vector selection) {
+	public boolean allowSelection(@SuppressWarnings("rawtypes") Vector selection) {
 		return selection.isEmpty() || (selection.size() == 1 && selection.firstElement() instanceof Punt);
 	}
 

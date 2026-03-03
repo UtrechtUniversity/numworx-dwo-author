@@ -2,24 +2,22 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>fi.wiskopdr</groupId>
-    <artifactId>WiskOpdrParent</artifactId>
-    <version>1.0.2</version>
+    <artifactId>wiskopdr-parent</artifactId>
+    <version>2.5.48</version>
     <relativePath>../WiskOpdrParent</relativePath>
   </parent>
   <groupId>nl.numworx.repl</groupId>
   <artifactId>repl</artifactId>
-  <version>0.0.3</version>
  	<dependencies>
 		<dependency>
-			<groupId>fi.wiskopdr</groupId>
-			<artifactId>wiskopdr</artifactId>
-			<version>0.3.0</version>
+			<groupId>fi.wiskopdr.beans</groupId>
+			<artifactId>wiskopdrbeans</artifactId>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
-			<artifactId>DWO-commons-lib</artifactId>
+			<artifactId>dwo-commons-lib</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -30,9 +28,65 @@
 	</dependencies>
 	<build>
    		<finalName>${project.artifactId}</finalName>
+		<plugins>
+       <plugin>   
+		  <groupId>org.apache.felix</groupId>
+		  <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.5.3</version>
+		  <executions>
+		    <execution>
+		      <id>bundle-manifest</id>
+		      <phase>process-classes</phase>
+		      <goals>    
+		        <goal>manifest</goal>
+		      </goals>   
+		    </execution>
+		  </executions>
+       	  <configuration>
+       	    <niceManifest>true</niceManifest>
+          	<instructions>
+   				<_snapshot>${osgi.qualifier}</_snapshot>
+          		<Bundle-SymbolicName>nl.numworx.repl.Repl</Bundle-SymbolicName>
+ 				<Main-Class>nl.numworx.repl.Repl</Main-Class>
+				<Bundle-Description />
+ 				<Export-Package>fi.javalogoweb</Export-Package>
+ 				<Import-Package>fi.beans.mainframe,fi.beans.scorm,fi.beans.wiskopdrbeans,*</Import-Package>
+          	</instructions>
+          </configuration>
+         </plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+                    <plugin>
+                        <groupId>com.github.batkinson.plugins</groupId>
+                        <artifactId>maven-pack200-plugin</artifactId>
+                        <version>1.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>pack-jars</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>pack</goal>
+                                </goals>
+                                <configuration>
+                                    <normalizeOnly>false</normalizeOnly>
+                            		<processMainArtifact>true</processMainArtifact>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>        
+		</plugins>
 	</build>
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
 	</properties>
 </project>

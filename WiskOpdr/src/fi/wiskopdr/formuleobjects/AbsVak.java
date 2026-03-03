@@ -3,6 +3,7 @@ package fi.wiskopdr.formuleobjects;
 import java.awt.*;
 
 
+@SuppressWarnings("serial")
 public class AbsVak extends RegelVak
 {	
 	public AbsVak(FormuleVak  fv)

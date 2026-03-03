@@ -88,6 +88,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				
 				{ "opdrachtTitelLabel" , "Titel:" },
 				{ "opdrachtTekstLabel" , "Tekst:" },
+				{ "opdrachtFactorLabel", " Weging: "},
 				{ "randVarLabel" , "Random parameters:" },
 				{ "startExpLabel" , "Startexpressie:" },
 				{ "startVergLabel" , "Startvergelijking:" },
@@ -115,6 +116,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "checkCBLabel" , "Nakijken actief" },
 				{ "teltMeeCBLabel" , "Telt mee in score" },
 				{ "logCBLabel" , "LogID" },
+				{ "logExecuteCBLabel", "Log execute" },
 				{ "rmCBLabel" , "Rekenmachine" },
 				{ "pijlCBLabel" , "Pijl" },
 				{ "substitutiesButtonLabel" , "Substituties" },
@@ -377,6 +379,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"CB_bewaarOptieLabel", "Bewaar" },
                 {"CB_rondAfOptieLabel", "Rond af" },
                 {"CB_nextPageOptieLabel", "Naar volgende pagina" },
+                {"CB_itemOpnieuwOptieLabel", "Item opnieuw"},
                 {"CB_eigenVakOptieLabel","Alles in eigen vak"},
                 {"CB_opPaginaOptieLabel","Alles op pagina"},
                 {"CB_viaXWidgetOptieLabel","Alles verbonden via x-widget"},
@@ -442,6 +445,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"OPT_docHeightLabel" , "Hoogte (min)"},
 				{"OPT_combCompNav" , "Gedeelde componenten"},
 				{"OPT_stylesWarnDialog" , "Alle ingestelde styles gaan verloren. Akkoord?"},
+				{"OPT_browserHistory",  "Browser geschiedenis"},
 				
 				{"OPT_styleInteractionsLabel" , "Stijl antwoordvakken"},
 				{"OPT_TemplateGeenLabel" , "Geen template"},
@@ -576,6 +580,7 @@ public class Text_nl extends java.util.ListResourceBundle
                 {"TVEP_uitwerkingenPopup" , "Uitwerking"},
                 {"TVEP_random" , "random"},
                 {"TVEP_linkObject" , "Linkobject"},
+                {"TVEP_anchorObject" , "Anker"},
                 {"TVEP_editLink" , "Edit link"},
                 {"TVEP_defaultBijNull" , "default )"},
                 {"TVEP_checkUitklapVak" , "check"},
@@ -971,6 +976,9 @@ public class Text_nl extends java.util.ListResourceBundle
 				{"CBA_action.unzoom", "Actie: normaal scherm [Test]"},
 				{"CBA_action.setActive", "Actie: zet actief"},
 				{"CBA_action.setInactive", "Actie: zet inactief"},
+				{"CBA_action.reset", "Actie: herstel"},
+                {"CBA_action.passed", "Actie: mastery behaald"},
+                {"CBA_action.failed", "Actie: mastery niet behaald"},
 				
 				{"oplossingenLabel", "Oplossingen"},
 				{"executeLabel", "Uitvoeren"},
@@ -1044,6 +1052,7 @@ public class Text_nl extends java.util.ListResourceBundle
 				{ "LinkType_PLAYER", "eigen window"},
 				{ "LinkType_CLIENT", "applicatie window"},
 				{ "LinkType_TOP", "top window"},
+				{ "LinkType_RESPONSIVE", "embedded (volledige breedte)"},
 				
 				{ "TCOMP_list" , "Opsomming"},
 				{ "TCOMP_list_settings" , "Instellingen opsomming"},

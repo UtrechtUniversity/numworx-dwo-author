@@ -6,6 +6,7 @@ import java.applet.*;
 import java.awt.event.*;
 import fi.heks.scobjects.*;
 import fi.beans.appletutil.*;
+import fi.beans.mainframe.JApplet;
 import fi.heks.vectortek.*;
 
 public class BlokjesErbijPanel extends ScPanel implements ActionListener {
@@ -26,7 +27,7 @@ public class BlokjesErbijPanel extends ScPanel implements ActionListener {
 	int score;
 	int aantalPunten;
 
-	public BlokjesErbijPanel(int x, int y, int b, int h, Applet applet) {
+	public BlokjesErbijPanel(int x, int y, int b, int h, JApplet applet) {
 		super(x, y, b, h);
 		// setBackground(new Color(255,255,220));
 		setBackground(getBackground());

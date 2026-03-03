@@ -1,6 +1,5 @@
 package fi.wiskopdr.cbook;
 
-import java.applet.AppletContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -16,6 +15,7 @@ import org.cbook.cbookif.CBookWidgetIF;
 import org.cbook.cbookif.Constants;
 import org.cbook.cbookif.rm.ResourceManager;
 
+import fi.beans.mainframe.AppletContext;
 import fi.beans.wiskopdrbeans.ResourceManagerClient;
 import fi.beans.wiskopdrbeans.ResourceManagerClient.ResourceManagerFactory;
 import fi.wiskopdr.WiskOpdr;
@@ -58,10 +58,8 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		return null;
 	}
 	
+	@Deprecated
 	static Object getJSObject() {
-		LinkRegel.findJSObject(linkif);
-		if(linkif != null)
-			return linkif.getJSObject();
 		return null;
 		
 	}
@@ -69,7 +67,9 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 	private static WeakHashMap<String, ResourceManager> rmmap = new WeakHashMap<String, ResourceManager>();
 	
 	static ResourceManager getResourceManager(String widget, int page, String instance) {
-		return getResourceManager(widget, page + "-" + instance);
+	  String prefix = page + "-";
+	  if (WiskOpdr.getUnit_id().startsWith("course-")) prefix = "";
+      return getResourceManager(widget, prefix + instance);
 	}
 		
 	static ResourceManager getResourceManager(ResourceManagerClient panel) {
@@ -84,7 +84,6 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
 		
 		String student = WiskOpdr.getLearner_id();
 		String user    = student;
-		String passwd  = WiskOpdr.getOAuthToken();
 		URL root = getResourceRoot();		
 
 		rm = null;//new fi.wiskopdr.cbook.rm.WebManager(root, widget, unit, instance, student, user, passwd);
@@ -101,7 +100,13 @@ public abstract class WidgetBridge implements /*WiskOpdrApplet,*/ Constants {
               if("serverUrlPath".equals(key))
                 return root;
               if("oauth_token".equals(key))
+              {
+                String passwd  = WiskOpdr.getOAuthToken();
                 return passwd;
+              }
+              if ("oauth_refresh".equals(key)) {
+                return WiskOpdr.getOAuthRefresh();
+              }
               if (UUID.equals(key))
                   return unit + "-" + instance;
               

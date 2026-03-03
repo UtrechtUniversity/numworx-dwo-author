@@ -1,7 +1,5 @@
 package fi.wiskopdr;
 
-import java.applet.AppletContext;
-import java.applet.AppletStub;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
@@ -23,6 +21,8 @@ import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -55,6 +55,8 @@ import fi.beans.appletutil.AppletUtil;
 import fi.beans.base64code.StringCodeObject;
 import fi.beans.ideas.IdeasClient;
 import fi.beans.ideas.IdeasIF;
+import fi.beans.mainframe.AppletContext;
+import fi.beans.mainframe.AppletStub;
 import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.Parameter;
 import fi.beans.scorm.PartialScoreIF;
@@ -73,7 +75,6 @@ import fi.wiskopdr.opdrnav.OpdrNavStruct;
 import fi.wiskopdr.opdrnav.OpdrNavStructEdit;
 import fi.wiskopdr.tekstobjects.Link;
 import fi.wiskopdr.tekstobjects.LinkIF;
-import fi.wiskopdr.tekstobjects.LinkRegel;
 import fi.wiskopdr.tekstobjects.TekstImageVak;
 import fi.wiskopdr.templateconstants.TemplateBasicConstants;
 import fi.wiskopdr.templateconstants.TemplateConstants;
@@ -82,6 +83,7 @@ import fi.wiskopdr.templateconstants.TemplateUUTestConstants;
 
 
 
+@SuppressWarnings("serial")
 public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, ComponentListener, PartialScoreIF, LinkIF, Printable {
 	
 	private static final Logger LOG = Logger.getLogger(WiskOpdr.class.getName());
@@ -286,7 +288,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	public static String defaultEditModeState = null;
 			
 	SCORM12APIInterface api;
-	private Object window; // No reference to JSObject (ClassNotFoundException)
+	//private Object window; // No reference to JSObject (ClassNotFoundException)
 	private long sessionStartTime;
 	private ScormEditComponentIF scormEditComponent;
 
@@ -569,6 +571,12 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
       return getWiskOpdrPanel(launchDataString, locale, appletStub);
 	   }
 	
+	   
+	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale, java.applet.AppletStub stub) {
+	  final AppletStub appletstub = (AppletStub) stub;
+	  return getWiskOpdrPanel(launchDataString, locale, appletstub);
+	}
+	   
 	public static WiskOpdrPanel getWiskOpdrPanel(String launchDataString, Locale locale, AppletStub stub) {
 		language = locale;
 		WiskOpdr wiskOpdr = new WiskOpdr();
@@ -597,6 +605,13 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		WiskOpdrEditPanel wop = new WiskOpdrEditPanel(launchDataString, wiskOpdr);
 		return wop;
 	}
+
+	@Deprecated
+	public static WiskOpdrEditPanel getWiskOpdrEditPanel(String launchDataString, Locale locale, java.applet.AppletStub stub, int ew, int eh, int dw, int dh) {
+	  AppletStub appletstub = (AppletStub) stub;
+	  return getWiskOpdrEditPanel(launchDataString, locale, appletstub, ew,eh, dw, dh);
+	}
+	
 	public static WiskOpdrEditPanel getWiskOpdrEditPanel(String launchDataString, Locale locale, AppletStub stub, int ew, int eh, int dw, int dh) {
 	  language = locale;
 	  WiskOpdr wiskOpdr = new WiskOpdr();
@@ -858,6 +873,23 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		}
 	}
 
+	public static String getCompletionTimestamp() {
+      if( applet != null && applet.api != null) {
+        String stamp = applet.api.LMSGetValue("cmi.comments_from_lms.0.timestamp");
+        if (!stamp.isEmpty()) {
+          try {
+            Date now = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(stamp);
+            return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, JComponent.getDefaultLocale()).format(now);
+          } catch (java.text.ParseException e) {
+            return stamp;
+          }
+        }
+    } 
+    return new Date().toLocaleString();
+	  
+	}
+	
+	
 	public static String getLearner_id() {
 		if( applet != null && applet.api != null) {
 			return applet.api.LMSGetValue("cmi.learner_id");
@@ -921,7 +953,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 			doCAS = doCASString;
 		
 		try {
-			ideas = new IdeasClient(this, IdeasClient.IDEAS);
+			ideas = new IdeasClient(getCodeBase(), IdeasClient.IDEAS);
 		} catch (Exception e) {
 			LOG.log(Level.WARNING, "ideas", e);
 		}
@@ -1134,7 +1166,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		h.put("bgcolor", "#FFFFFF");
 
 		Hashtable defaultEditModeLaunchData = new Hashtable();
-		defaultEditModeLaunchData.put("titel", "Titel");
+		defaultEditModeLaunchData.put("titel", "");
 		defaultEditModeLaunchData.put("tekst", "");
 		defaultEditModeLaunchData.put("randVarString", "");
 		defaultEditModeLaunchData.put("antwoordString", "$f@");
@@ -1170,17 +1202,18 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	/**
 	 * Vraag het JSobject op dat gebruikt wordt in de JavaScript communicatie (bv voor html popups)
 	 * implementeert interface LinkIF 
+	 * @deprecated always null
 	 */
 	public Object getJSObject() {
-		return window;
+		return null;
 	}
 
 	/**
 	 * Zet het JSobject op dat gebruikt wordt in de JavaScript communicatie (bv voor html popups)
-	 * implementeert interface LinkIF 
+	 * implementeert interface LinkIF
+	 * @deprecated always null
 	 */
 	public void setJSObject(Object window) {
-		this.window = window;
 	}
 
 	/**
@@ -1893,8 +1926,8 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 	}
 
 	public void setJSObjectOwner(LinkIF applet) {
-		setJSObject(applet.getJSObject());
-		LinkRegel.setJSObjectOwner(applet);
+		//setJSObject(applet.getJSObject());
+		//LinkRegel.setJSObjectOwner(applet);
 		Link.setJSObjectOwner(applet);
 		WidgetBridge.setJSObjectOwner(applet);
 	}
@@ -1909,7 +1942,10 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		if( applet != null) {
 			String parameter = applet.getParameter("scoViewNr");
 			if(parameter != null)
-				return parameter; 
+				return parameter;
+			parameter = applet.getParameter("courseViewNr");
+			if (parameter != null) 
+			  return "course-" + parameter;
 		}
 		return "scoViewNr";
 	}
@@ -1931,13 +1967,13 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 		String[] score = ons.getScores();
 		int opgave = pageIndex;						// FIXME 1-to-1 pageindex en opgave
 		String naam;
-		String id = getLearner_id();
+		//String id = getLearner_id();
 		String name = getLearnerName();
 		String klas = "";
 		if(api != null) {
 			klas = api.LMSGetValue("dme.team");
 		}
-		naam = id + " - " + name + "; " + klas;
+		naam = name + "; " + klas;
 		if(opgave < ons.geefAantalOpdrachten(0)) {
 			if(opgave != ons.geefOpdrachtNr()) ons.kiesOpdracht(0, opgave);
 			// put 0, 0 at start of printable image
@@ -1949,7 +1985,7 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
 // TODO I18N
 		    header.add( line = new JLabel(ons.getOpdrachtText() +
 		    		" "+ (1+opgave) + ". " + rb.getString("score") + score[opgave]));
-		    header.add( line = new JLabel(new Date().toLocaleString()));
+		    header.add( line = new JLabel(getCompletionTimestamp()));
 		    header.setSize(header.getPreferredSize());
 		    header.doLayout();
 		    header.print(g2d);
@@ -2013,5 +2049,13 @@ public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener, 
       OpdrNavStructEdit.getInstance().setSavedLabel(newValue > 0L);
     }
     super.firePropertyChange(propertyName, oldValue, newValue);
+  }
+
+  public static Boolean getOAuthRefresh() {
+    if (applet != null) {
+      String token =  applet.getParameter("oauth_refresh");
+      return "true".equals(token);
+    }
+    return null;
   }
 }

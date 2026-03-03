@@ -1,10 +1,4 @@
--injars ..\output\classes
--outjars ..\output\jar\statsim.jar
-
--libraryjars C:\Program Files\Java\jre7\lib\rt.jar
--libraryjars ..\lib\mayscript.jar
-
--target 1.6
+-target 1.8
 
 -keeppackagenames
 
@@ -17,6 +11,9 @@
 
 -keep class fi.beans.*.* {
     <fields>;
+    <methods>;
+}
+-keep class fi.statsim.StatSim {
     <methods>;
 }
 

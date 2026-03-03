@@ -29,7 +29,7 @@ public class LayersButton extends WiskOpdrButton implements ActionListener, Focu
 	private String[] layerNames;
 	private boolean[] layerVisible;
 	
-	private int maxLayers = 10; 
+	private final static int maxLayers = 20; 
 	
 	private JTextField[] layerNameTextFields;
 	private JCheckBox[] layerVisibleCB;

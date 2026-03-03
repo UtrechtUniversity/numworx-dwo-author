@@ -1,6 +1,5 @@
 package fi.wiskopdr.tekstobjects;
 
-import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -68,6 +67,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	private boolean formMode = false;
 	private boolean rekenTool;
 	private boolean grafTool;
+	private boolean teltMee = true;
 	
 	private int balkH = 23;
 	private int rand = 10;
@@ -803,14 +803,30 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		
 	}
     
+  private int titleRoom = 25;
+	
+  /**
+   * @return the titleRoom
+   */
+  public int getTitleRoom() {
+    return titleRoom;
+  }
+
+  /**
+   * @param titleRoom the titleRoom to set
+   */
+  public void setTitleRoom(int titleRoom) {
+    this.titleRoom = titleRoom;
+  }
+
     public void setBounds(int x, int y, int b, int h)
     {   if(headerAan)
         {   
             if(toolbarLeft)
             {   basisPanel.setBounds(balkH+sparing,0,b-balkH-sparing,h);
-                headerPanel.setBounds(0,0,balkH,h);
-                crosswidgetKnop.setLocation(6,h-30);
-                templateChoiceKnop.setLocation(6,h-56);
+                headerPanel.setBounds(0,titleRoom,balkH,h-titleRoom);
+                crosswidgetKnop.setLocation(6,h-30-titleRoom);
+                templateChoiceKnop.setLocation(6,h-56-titleRoom);
             }
             else
             {   basisPanel.setBounds(0,balkH+sparing,b,h-balkH-sparing);
@@ -1411,6 +1427,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
         catch(Exception e)
         {   tekst = "???";
         }
+		original = tekst;
 		zetTekst(tekst);
 		layoutTekst();
 		zetBalkZichtbaar(balkZichtbaar);
@@ -1563,6 +1580,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		boolean grafTool = true;
 		boolean formuleKnop = true;
 		boolean formuleToolPopup = true;
+		boolean teltMee = true;
+		
 		Hashtable[] interactiePanelLaunchData = null;
 				
 		if(h.containsKey("tekst")) tekst = (String)h.get("tekst");
@@ -1571,6 +1590,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		if(h.containsKey("grafTool")) grafTool = ((Boolean)h.get("grafTool")).booleanValue();
 		if(h.containsKey("formuleKnop")) formuleKnop = ((Boolean)h.get("formuleKnop")).booleanValue();
 		if(h.containsKey("formuleToolPopup")) formuleToolPopup = ((Boolean)h.get("formuleToolPopup")).booleanValue();
+		if(h.containsKey("teltMee")) teltMee = ((Boolean)h.get("teltMee")).booleanValue();
 		if(h.containsKey("interactiePanelLaunchData")) interactiePanelLaunchData = (Hashtable[])h.get("interactiePanelLaunchData");
 		
 		this.rekenTool = rekenTool;
@@ -1582,6 +1602,7 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 		zetGrafTool(grafTool);
 		zetFormuleKnop(formuleKnop);
 		zetFormuleToolPopup(formuleToolPopup);
+		setTeltMee(teltMee);
 		
 		if(interactiePanelLaunchData!=null)
 		{	Vector v = geefInteractiePanels();
@@ -1801,6 +1822,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
  	}
  	//
  	
+ 	private String original = "";
+ 
  	@Override
 	public void acceptCBookEvent(CBookEvent event) {
 		String command = event.getCommand();
@@ -1821,6 +1844,14 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 				tekstVak.setForeground(Color.black);
 			else
 				tekstVak.setForeground(Color.gray);
+		} else if (command.startsWith("action.reset"))
+		{
+			if (editable) 
+			{
+				zetTekst(original);
+				layoutTekst();
+			}
+			    
 		}
 		
 	}
@@ -1861,7 +1892,8 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
 	public String[] getAcceptedCmds() {
 		String[] commands = {
 				"text",
-				"action.setNotEditable"};
+				"action.setNotEditable",
+				"action.reset"};
 		return commands;
 	}
 	
@@ -1894,4 +1926,25 @@ public class TekstEditor extends JLayeredPane implements TabletOwner, Interactie
           tekstVakActief.insertTekstInteractiePanelVak((Integer)getValue("setNr"),(Integer)getValue("soort"));
       }
     }
+
+
+
+
+
+  @Override
+  public void setFocusTraversalKeysEnabled(boolean focusTraversalKeysEnabled) {
+    // TODO Auto-generated method stub
+    super.setFocusTraversalKeysEnabled(focusTraversalKeysEnabled);
+    tekstVak.setFocusTraversalKeysEnabled(focusTraversalKeysEnabled);
+    
+  }
+
+  public boolean isTeltMee() {
+    return teltMee;
+  }
+  
+  public void setTeltMee(boolean t) {
+    teltMee = t;
+  }
+	
 }

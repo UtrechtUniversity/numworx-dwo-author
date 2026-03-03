@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JApplet;
 import javax.swing.JComponent;
 
 import org.cbook.cbookif.CBookContext;
@@ -20,11 +19,10 @@ import fi.euclides.model.math.Numbers;
 //import fi.euclides.openmath.Popcorn;
 import fi.euclides.swing.DoubleFormat;
 //import fi.euclides.swing.SwingSymbols;
-import fi.wiskopdr.WiskOpdr;
 import nl.numworx.geodefiner.common.math.CommonFactory;
 import nl.numworx.geodefiner.module.DaggerEditComponents;
 
-public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet {
+public class GeoDefiner extends fi.beans.mainframe.JApplet implements CBookWidgetIF, WiskOpdrApplet {
 
 	private static final long serialVersionUID = -8167425499542355350L;
 
@@ -37,7 +35,7 @@ public class GeoDefiner extends JApplet implements CBookWidgetIF, WiskOpdrApplet
 	}
 	
 	static {
-		isExperimental = WiskOpdr.isExperimental();
+		isExperimental = false;
 		isPremium = true;
 		Numbers.setFactory(new CommonFactory());
 	}

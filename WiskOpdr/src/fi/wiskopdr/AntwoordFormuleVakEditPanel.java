@@ -1431,12 +1431,12 @@ public class AntwoordFormuleVakEditPanel extends JLayeredPane implements Interac
 			interactiePanelLaunchState.put("eqTestValueMin",new Double(eqTestValueMin));
 			interactiePanelLaunchState.put("eqTestValueMax",new Double(eqTestValueMax));
 			interactiePanelLaunchState.put("aantalDecRm",new Integer(aantalDecRm));
-			interactiePanelLaunchState.put("uitw",new Boolean(uitw));
-			interactiePanelLaunchState.put("eigenOpdr",new Boolean(eigenOpdr));
-			interactiePanelLaunchState.put("boxMetRand",new Boolean(boxMetRand));
-			interactiePanelLaunchState.put("pasAanH",new Boolean(pastHoogteAan));
-			interactiePanelLaunchState.put("scoreCumulatief",new Boolean(scoreCumulatief));
-			interactiePanelLaunchState.put("tips",new Boolean(tips));
+			interactiePanelLaunchState.put("uitw",Boolean.valueOf(uitw));
+			interactiePanelLaunchState.put("eigenOpdr",Boolean.valueOf(eigenOpdr));
+			interactiePanelLaunchState.put("boxMetRand",Boolean.valueOf(boxMetRand));
+			interactiePanelLaunchState.put("pasAanH",Boolean.valueOf(pastHoogteAan));
+			interactiePanelLaunchState.put("scoreCumulatief",Boolean.valueOf(scoreCumulatief));
+			interactiePanelLaunchState.put("tips",Boolean.valueOf(tips));
 			if(tips){
 				interactiePanelLaunchState.put("ideasInstellingen",ideasInstellingen);
 	        }

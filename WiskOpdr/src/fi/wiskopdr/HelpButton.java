@@ -123,22 +123,24 @@ public class HelpButton extends JButton implements MouseListener, ActionListener
 		  if(frame==null || helpPanel==null)
 			  makeFrame();
 		  
-		  JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
-		  bp.setPreferredSize(new Dimension(400,400));
-		  helpPanel.add(bp);
-	    		
-		  Component src = WiskOpdr.getWindowForComponent(this);
-		  Dimension preferredSize = new Dimension(400,src.getHeight());
-		  frame.setPreferredSize(preferredSize);
-		  frame.getContentPane().setLayout(new BorderLayout());
-		  frame.getContentPane().add(helpPanel);
-		  
-		  int x = src.getLocationOnScreen().x + src.getWidth() - 400;
-		  int y = src.getLocationOnScreen().y;
-		  frame.setLocation(x,y); 
-		  
-		  frame.pack();
-		  frame.setVisible(true);
+		  if (OpdrNavStructEdit.helpBrowser.hasPanel()) {
+	          JComponent bp = OpdrNavStructEdit.helpBrowser.getBrowserPanel();
+    		  bp.setPreferredSize(new Dimension(400,400));
+    		  helpPanel.add(bp);
+    	    		
+    		  Component src = WiskOpdr.getWindowForComponent(this);
+    		  Dimension preferredSize = new Dimension(400,src.getHeight());
+    		  frame.setPreferredSize(preferredSize);
+    		  frame.getContentPane().setLayout(new BorderLayout());
+    		  frame.getContentPane().add(helpPanel);
+    		  
+    		  int x = src.getLocationOnScreen().x + src.getWidth() - 400;
+    		  int y = src.getLocationOnScreen().y;
+    		  frame.setLocation(x,y); 
+    		  
+    		  frame.pack();
+    		  frame.setVisible(true);
+		  }
 		  OpdrNavStructEdit.helpBrowser.loadURL(url);
 	  }
 		

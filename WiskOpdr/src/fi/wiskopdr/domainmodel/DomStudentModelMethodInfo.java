@@ -1,11 +1,14 @@
 package fi.wiskopdr.domainmodel;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 public class DomStudentModelMethodInfo {
 
 	private String method, book;
 	private Number chapter;
+	private String variant;
 	
 	
 	private Number x, y;
@@ -116,5 +119,24 @@ public class DomStudentModelMethodInfo {
 	public String key() {
 		return method + "-" + book + "-" + chapter;
 	}
+
+  public void setVariant(Object object) {
+    this.variant = Objects.toString(object, null);
+  }
+
+  public String getVariant() {
+    return variant;
+  }
+
+  Collection<String> variantDeselections = Collections.emptySet();
+  public Collection<String> getVariantDeselections() {
+    return variantDeselections;
+  }
+
+  public void setVariantDeselections(Collection<String> variantDeselections) {
+    this.variantDeselections = variantDeselections;
+  }
+  
+  
 	
 }

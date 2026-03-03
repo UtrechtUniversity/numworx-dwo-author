@@ -9,6 +9,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import javax.swing.*;
@@ -19,6 +21,7 @@ import fi.wiskopdr.opdrnav.*;
 import fi.wiskopdr.tekstobjects.ShareAction;
 //import fi.wiskopdr.tekstobjects.VoorwaardelijkeLinkButton;
 import fi.wiskopdr.expressies.*;
+import fi.beans.base64code.StringCodeObject;
 import fi.beans.numworxlf.JScrollPane;
 
 
@@ -51,6 +54,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 	private JCheckBox zelftoetsGeschiedenisCB;
 	private JCheckBox zelftoetsHighScoreCB;
 	private JCheckBox eerderGeenCorrCB;
+	private JCheckBox browserHistoryCB;
 	private JCheckBox significantieCB;
 	private JCheckBox objectivesCB;
 	//private JCheckBox pilotObjectivesCB;
@@ -535,6 +539,19 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		combinedComponentsCB = maakCheckBoxHelp(hbCombinedComponents,WiskOpdr.rb.getString("OPT_combCompNav"), boxv2, false);
 	    
+        boxh = Box.createHorizontalBox();
+        //boxh.add(Box.createRigidArea(new Dimension(20,0)));
+		browserHistoryCB = new WiskOpdrCheckbox(WiskOpdr.rb.getString("OPT_browserHistory"));
+		browserHistoryCB.setOpaque(false);
+		browserHistoryCB.setFont(font);
+		browserHistoryCB.setForeground(WiskOpdr.fgcolorEditor);
+		browserHistoryCB.setSelected(true);
+		browserHistoryCB.setVisible(true);
+        boxh.add(browserHistoryCB);
+        boxh.add(Box.createHorizontalGlue());
+        boxv2.add(boxh);
+		
+		
 	    //boxv2.add(Box.createVerticalStrut(130));
 	    
 		
@@ -1154,9 +1171,10 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		combinedComponents = combinedComponentsCB.isSelected();
 		styleInteractionsNr = styleInteractionsComboBox.getSelectedIndex();
+		boolean browserHistory = browserHistoryCB.isSelected();
 		 
 		
-		Hashtable h = new Hashtable();
+		Hashtable<String,Object> h = new Hashtable<>();
 		
 		h.put("fontSize", new Integer(fontSize));
 		h.put("maalTeken", new Boolean(maalTeken));
@@ -1231,6 +1249,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		h.put("aftrekCorrectieZelftoets", new Integer(aftrekCorrectieZelftoets));
 		h.put("combinedComponents", new Boolean(combinedComponents));
 		h.put("styleInteractionsNr", new Integer(styleInteractionsNr));
+		h.put("browserHistory", Boolean.valueOf(browserHistory));
 		
 		return h;
 	}
@@ -1299,6 +1318,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		boolean[] layerVisible = null;
 		boolean combinedComponents = false;
 		int styleInteractionsNr = 0;
+		boolean browserHistory = true;
 		
 		if(h.containsKey("fontSize")) fontSize = ((Integer)h.get("fontSize")).intValue();
 		if(h.containsKey("maalTeken")) maalTeken = ((Boolean)h.get("maalTeken")).booleanValue();
@@ -1370,6 +1390,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		if(h.containsKey("layerVisible")) layerVisible = (boolean[])h.get("layerVisible");
 		if(h.containsKey("combinedComponents")) combinedComponents = ((Boolean)h.get("combinedComponents")).booleanValue();
 		if(h.containsKey("styleInteractionsNr")) styleInteractionsNr = ((Integer)h.get("styleInteractionsNr")).intValue();
+		if (h.containsKey("browserHistory")) browserHistory = !Boolean.FALSE.equals(h.get("browserHistory"));
 		
 		fontSizeTF.setText(""+fontSize);
 		//navigatieSizeTF.setText(""+navigatieSize);
@@ -1463,6 +1484,7 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		layersButton.zetLayerInfo(layerNames, layerVisible);
 		combinedComponentsCB.setSelected(combinedComponents || ShareAction.getSharingIsUsed());
 		styleInteractionsComboBox.setSelectedIndex(styleInteractionsNr);
+		browserHistoryCB.setSelected(browserHistory);
 	}
 	
 	public void cancel()
@@ -1502,51 +1524,52 @@ public class InstellingenPanel extends JPanel implements ActionListener
 		
 		
 		
-		// onderstaande bestemd om oude activiteiten naar het Numworx template te brengen. strings nu hard in de code. Liever inladen uit database
-//		if(WiskOpdr.isExperimental()) {
+// onderstaande bestemd om oude activiteiten naar het Numworx template te brengen. strings nu hard in de code. Liever inladen uit database
+final boolean activateInteractionsComboBox = false;
+		if(WiskOpdr.isExperimental() && activateInteractionsComboBox) {
 		
-//			int index = styleInteractionsComboBox.getSelectedIndex();
-//       	WiskOpdr.setTemplateConstants(templateNames[index]);
-//			TekstVakPanel.setTemplateName(templateNames[index]);
+			int index = styleInteractionsComboBox.getSelectedIndex();
+       	    WiskOpdr.setTemplateConstants(templateNames[index]);
+			TekstVakPanel.setTemplateName(templateNames[index]);
 		
-//			String[] launchDataStringTemplates = new String[index+1];
-//			Properties templates = new Properties();
-//			try {
-//    			InputStream in = getClass().getResourceAsStream("resources/template.properties");
-//    			templates.load(in);
-//    			in.close();
-//			} catch(IOException oops) {}
-//			launchDataStringTemplates[index] = templates.getProperty(String.valueOf(index));
-//			Object ob1 = StringCodeObject.decodeStringToObject(launchDataStringTemplates[index]);
-//			Hashtable launchData = (Hashtable) ob1;
-//			
-//			String instellingenString = (String) launchData.get("instellingen");
-//			Object ob = StringCodeObject.decodeStringToObject(instellingenString);
-//			Hashtable instellingen = (Hashtable) ob;
-//			
-//			Hashtable styles = null;
-//			Hashtable templatePages = null;
-//			Hashtable templateComponents = null;
-//			ArrayList<String> templatePagesKeys = null;
-//			ArrayList<String> templateComponentsKeys = null;
-//			
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelStyles"))
-//				styles = (Hashtable) instellingen.get("TekstVakPanelStyles");
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePages"))
-//				templatePages = (Hashtable) instellingen.get("TekstVakPanelTemplatePages");
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponents"))
-//				templateComponents = (Hashtable) instellingen.get("TekstVakPanelTemplateComponents");
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePagesKeys"))
-//				templatePagesKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplatePagesKeys");
-//			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponentsKeys"))
-//				templateComponentsKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplateComponentsKeys");
-//			
-//			TekstVakPanel.styles = styles;
-//			TekstVakPanel.templatePages = templatePages;
-//			TekstVakPanel.templateComponents = templateComponents;
-//			TekstVakPanel.templatePagesKeys = templatePagesKeys;
-//			TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
-//		}
+			String[] launchDataStringTemplates = new String[index+1];
+			Properties templates = new Properties();
+			try {
+   			InputStream in = getClass().getResourceAsStream("resources/template.properties");
+    			templates.load(in);
+    			in.close();
+			} catch(IOException oops) {}
+			launchDataStringTemplates[index] = templates.getProperty(String.valueOf(index));
+			Object ob1 = StringCodeObject.decodeStringToObject(launchDataStringTemplates[index]);
+			Hashtable launchData = (Hashtable) ob1;
+			
+			String instellingenString = (String) launchData.get("instellingen");
+			Object ob = StringCodeObject.decodeStringToObject(instellingenString);
+			Hashtable instellingen = (Hashtable) ob;
+			
+			Hashtable styles = null;
+			Hashtable templatePages = null;
+			Hashtable templateComponents = null;
+			ArrayList<String> templatePagesKeys = null;
+			ArrayList<String> templateComponentsKeys = null;
+			
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelStyles"))
+				styles = (Hashtable) instellingen.get("TekstVakPanelStyles");
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePages"))
+				templatePages = (Hashtable) instellingen.get("TekstVakPanelTemplatePages");
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponents"))
+				templateComponents = (Hashtable) instellingen.get("TekstVakPanelTemplateComponents");
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplatePagesKeys"))
+				templatePagesKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplatePagesKeys");
+			if (instellingen != null && instellingen.containsKey("TekstVakPanelTemplateComponentsKeys"))
+				templateComponentsKeys = (ArrayList<String>) instellingen.get("TekstVakPanelTemplateComponentsKeys");
+			
+			TekstVakPanel.styles = styles;
+			TekstVakPanel.templatePages = templatePages;
+			TekstVakPanel.templateComponents = templateComponents;
+			TekstVakPanel.templatePagesKeys = templatePagesKeys;
+			TekstVakPanel.templateComponentsKeys = templateComponentsKeys;
+		}
 		
 		//opdrNavStruct.setTimer(timerCB.isSelected(), timeLimit);
 		//opdrNavStruct.zetOpnieuwMogelijk(opnieuwCB.isSelected());

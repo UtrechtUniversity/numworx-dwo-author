@@ -22,6 +22,7 @@ public class StudentObjective {
   public String description;
   public StudentObjective[] objectives; // and so on....
   public String[] voorkennis;
+  public Variant[] variants;
 
   public Integer x,y;
 

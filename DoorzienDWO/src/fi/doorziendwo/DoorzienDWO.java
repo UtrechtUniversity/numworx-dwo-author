@@ -6,14 +6,11 @@ package fi.doorziendwo;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.applet.*;
 import java.util.*;
 import java.net.URL;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
-
-import javax.swing.*;
 
 // plaatjes, i.h.b. in de scormtest
 import fi.beans.appletutil.AppletUtil;
@@ -21,6 +18,8 @@ import fi.beans.appletutil.AppletUtil;
 // scorm
 import fi.beans.scorm.*;
 import fi.beans.base64code.*;
+import fi.beans.mainframe.JApplet;
+import fi.beans.numworxlf.JButton;
 import fi.beans.tekstobjects.*;	
 import fi.beans.wiskopdrbeans.*;
 
@@ -45,7 +44,7 @@ public class DoorzienDWO extends JApplet implements ScormAppletIF, WiskOpdrApple
 
     AppletUtil au;
     
-    public static Applet applet;
+    public static JApplet applet;
     
     // the langage lookup table
     // NOTE: static so it can be accessed from other compilation units

@@ -362,7 +362,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 					xnamemap.put(suffix(selected) + "/w", Integer.parseInt(widthField.getText()));
 					xnamemap.put(suffix(selected) + "/h", Integer.parseInt(heightField.getText()));
 					xnamemap.put(suffix(selected) + "/v", volBreedteCB.isSelected());
-				} else {
+			        WiskOpdr.setLaunchDataChanged();
+			} else {
 					selected = "";
 					al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "cancel"));
 					return;
@@ -408,6 +409,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 				namemap.remove(selected + "/t");
 				namemap.remove(selected);
 			}
+			WiskOpdr.setLaunchDataChanged();
 		} else if (e.getSource() == downBtn) {
             String selected = (String) list.getSelectedValue();
             if (selected == null) return;
@@ -480,6 +482,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 				strategies.remove(selected);
 				imagemap.remove(selected);
 				selectPreview(selected);
+                WiskOpdr.setLaunchDataChanged();
+
 			}
 			return;
 		}
@@ -901,8 +905,8 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 	 * @param namemap
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Iconan(JApplet Applet, Component component, Hashtable namemap, ImageCache cache, boolean chooseImage) {	
-		this.applet = Applet;
+	public Iconan(JApplet applet, Component component, Hashtable namemap, ImageCache cache, boolean chooseImage) {	
+		this.applet = applet;
 		this.component = component;
 		this.namemap = namemap;
 		this.xnamemap = new Hashtable<String, Object>();
@@ -1260,6 +1264,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		namemap.remove(filename + "/h");
 		namemap.remove(filename + "/u");
 		namemap.put(filename + "/f", file.toURI());
+        WiskOpdr.setLaunchDataChanged();
 		return filename;
 	}
   private String retype(String filename, String type) {
@@ -1309,6 +1314,7 @@ public class Iconan extends JPanel implements ActionListener, FocusListener, Lis
 		namemap.remove(filename + "/f");
 // als 'u' niet begint met codebase, bewaar volledige naam
 		namemap.put(filename + "/u", getURI(u));
+        WiskOpdr.setLaunchDataChanged();
 		return filename;
 	}
 

@@ -1,1 +1,0 @@
-..\..\..\tools\WZZIP -rp ..\output\scorm\course\verknippen.zip ..\output\scorm\course\cp\*.*

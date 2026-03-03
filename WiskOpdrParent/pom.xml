@@ -1,19 +1,59 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.wiskopdr</groupId>
-  <artifactId>WiskOpdrParent</artifactId>
-  <version>1.0.2</version>
+  <artifactId>wiskopdr-parent</artifactId>
   <packaging>pom</packaging>
   <name>WiskopdrParent</name>
   <description>parent van WiskOpdr en java widgets</description>
     <parent>
-        <groupId>nl.uu.fi.dwo</groupId>
-        <artifactId>DWO</artifactId>
-        <version>2.5.23</version>
+	  <groupId>fi.wiskopdr</groupId>
+	  <artifactId>author-parent</artifactId>
+	  <version>2.5.48</version>
     </parent>
     <properties>
     		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>
     </properties>
+ 	<repositories>	<!-- als de mirror uit staat -->
+                    <repository>
+                     <id>numworx-dwo-openmath</id>
+                     <snapshots>
+                        <enabled>true</enabled>
+                     </snapshots>
+                     <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-dwo-openmath</url>
+                  </repository>
+                    <repository>
+                     <id>numworx-dwo-project</id>
+                     <snapshots>
+                        <enabled>true</enabled>
+                     </snapshots>
+                     <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-dwo-project</url>
+                  </repository>
+				<repository>
+					<id>numworx-vendor-cbook</id>
+                    <snapshots>
+                        <enabled>true</enabled>
+                     </snapshots>
+                     <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-vendor-cbook</url>
+				</repository>
+				<repository>
+					<id>numworx-vendor-jxbrowser</id>
+                    <snapshots>
+                        <enabled>true</enabled>
+                     </snapshots>
+                     <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-vendor-jxbrowser</url>
+				</repository>
+                    <repository>
+                     <id>numworx-dwo-author</id>
+                     <snapshots>
+                        <enabled>true</enabled>
+                     </snapshots>
+                     <url>https://maven.pkg.github.com/UtrechtUniversity/numworx-dwo-author</url>
+                  </repository>
+           <repository>
+             <id>vaadin-addons</id>
+             <url>https://maven.vaadin.com/vaadin-addons/</url>
+           </repository>
+   	</repositories>
     <build>
     	<pluginManagement>
     		<plugins>
@@ -95,11 +135,35 @@
 	<module>../Tegels</module>
 	<module>../TekenVeelvlakOpdr</module>
 	<module>../Verknippen</module>
+	<module>../wiskopdrbeans</module>
     	<module>../WiskOpdr</module>
+    	<module>../WiskOpdr-obf</module>
+    	<module>../SQLite</module>
+    	
+    	<module>../Geogebra4Widget</module>
+    	<module>../Geogebra3Widget</module>
+    	<module>../StatSim</module>
+    	<module>../Kansbomen</module>
+    	<module>../Heks</module>
+    	<module>../Spot_Problems_dwo</module>
+    	<module>../AlgebraExpressies</module>
+    	<module>../Grafiek3DTest</module>
+        <module>../GeodeFull</module>
     </modules>
-    <scm>
-    	<developerConnection>scm:git:git@github.com:UtrechtUniversity/numworx-dwo-author.git</developerConnection>
-    </scm>
+    <dependencyManagement>
+       <dependencies>
+                <dependency>
+                        <groupId>fi.wiskopdr</groupId>
+                        <artifactId>wiskopdr</artifactId>
+                        <version>2.5.48</version>
+                </dependency>
+               <dependency>
+                        <groupId>fi.wiskopdr.beans</groupId>
+                        <artifactId>wiskopdrbeans</artifactId>
+                        <version>2.5.48</version>
+                </dependency>
+      </dependencies>
+    </dependencyManagement>
     <profiles>
 	<profile>
 		<id>running11</id>

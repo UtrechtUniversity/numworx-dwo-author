@@ -1,16 +1,15 @@
 package fi.kansbomen;
 
 import java.awt.*;
-import java.applet.*;
 import java.util.*;
 
 import fi.beans.copyright.*;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.base64code.*;
 
-import javax.swing.*;
 
 // Huub: maak van het applet maar meteen een JApplet
 public class Kansbomen extends JApplet implements ScormAppletIF, WiskOpdrApplet

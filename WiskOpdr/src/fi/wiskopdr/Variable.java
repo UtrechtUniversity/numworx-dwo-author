@@ -11,13 +11,22 @@ public class Variable
 	String name;
 	Vector borders;
 	Hashtable borderValues;
-	Vector values;
+	Vector<Integer> values;
+	boolean draw;
 	
 	public Variable(String name)
 	{	this.name = name;
 		borders = new Vector();
 		borderValues = new Hashtable();
 	}	
+	
+	public void setDraw(boolean d) {
+	  this.draw = d;
+	}
+	
+	public boolean isDraw() {
+	  return draw;
+	}
 	
 	public void setValues(String s)
 	{	s = s.trim();
@@ -101,7 +110,7 @@ public class Variable
 	}
 	
 	public void makeValues()
-	{	values = new Vector();
+	{	values = new Vector<>();
 		Vector expSub = substitueerBorders();
 		for(int i=0 ; i<expSub.size(); i+=2)
 		{	int leftBorder = (int)((Expressie)expSub.elementAt(i)).geefWaarde();
@@ -135,11 +144,27 @@ public class Variable
 		return bordersOK;
 	}
 	
+	private Set<Integer> drawSet = new TreeSet<>();
+	
+    public void draw (int n) {
+      if (isDraw())
+        drawSet.add(n);
+    }
+	
 	public int[] getValues()
 	{	makeValues();
-		int[] intValues = new int[values.size()];
-		for(int i=0 ; i<values.size(); i++)
-	    {	intValues[i] = ((Integer)values.elementAt(i)).intValue();
+		List<Integer> all = new ArrayList<>(values);
+		if (isDraw()) { 
+		    all.removeAll(drawSet);
+    		if (all.isEmpty()) {
+    		  drawSet.clear();
+    		  all.addAll(values);
+    		}
+		}
+		int[] intValues = new int[all.size()];
+		for(int i=0 ; i<intValues.length; i++)
+	    {	Integer item = all.get(i);
+            intValues[i] = item.intValue();
 	    	//System.out.println("values: "+intValues[i]);
 	    }
 	    return intValues;

@@ -2,21 +2,27 @@ package fi.wiskopdr;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+import nl.numworx.swingbrowser.api.ConsoleEvent;
 import nl.numworx.swingbrowser.api.RefreshEvent;
+import nl.numworx.swingbrowser.api.StatusEvent;
 import nl.numworx.swingbrowser.api.SwingBrowser;
 import nl.numworx.swingbrowser.api.SwingBrowserProvider;
+import nl.numworx.swingbrowser.scorm.SCORM2004APIInterface;
 
 //@SuppressWarnings("restriction")
-public class SimpleSwingBrowser implements WindowListener {
+public class SimpleSwingBrowser implements WindowListener, SCORM2004APIInterface {
   
     public static final SwingBrowserProvider BROWSER_PROVIDER = new SwingBrowserProvider();
     final protected SwingBrowser browser;
@@ -41,6 +47,9 @@ public class SimpleSwingBrowser implements WindowListener {
 		browser = BROWSER_PROVIDER.getFactory().newBrowser();
 		browser.addTitleListener(ev -> setTitle(ev.getTitle()));
 		browser.addRefreshListener(this::repaint);
+		browser.addConsoleListener(this::console);
+		browser.addStatusListener(this::status);
+		browser.setAPI(this);
 	}
 
 	public JComponent getBrowserPanel() {
@@ -73,7 +82,7 @@ public class SimpleSwingBrowser implements WindowListener {
 		}
 	}
 
-	private JFrame frame;
+	JFrame frame;
 
 	private JFrame getFrame() {
 		if (frame == null) {
@@ -119,4 +128,53 @@ public class SimpleSwingBrowser implements WindowListener {
   public void windowOpened(WindowEvent arg0) {
   }
 
+  public void actionPerformed(ActionEvent actionEvent) {
+    if(browser instanceof ActionListener) {
+      ((ActionListener) browser).actionPerformed(actionEvent);
+    }
+    
+  }
+private void console(ConsoleEvent e) {
+	System.err.println(e.getMessage());
+}
+private void status(StatusEvent statusevent1) {
+	System.err.println("STATUS: " + statusevent1.getStatus());
+}
+@Override
+public String Initialize(String dummy) {
+	return "true";
+}
+@Override
+public String Commit(String dummy) {
+	return "true";
+}
+@Override
+public String Terminate(String dummy) {
+	return "true";
+}
+@Override
+public String GetValue(String key) {
+	System.out.println("GetValue "+ key);
+	return "";
+}
+@Override
+public String SetValue(String key, String value) {
+	System.out.println("SetValue "+ key + "=" + value);
+	return "true";
+}
+@Override
+public String GetLastError() {
+	return "0";
+}
+@Override
+public String GetDiagnostic(String iErrorCode) {
+	return "";
+}
+@Override
+public String GetErrorString(String iErrorCode) {
+	return "";
+}
+
+  
+  
 }

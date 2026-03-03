@@ -8,10 +8,14 @@ import java.util.Hashtable;
 
 import javax.swing.JPanel;
 
+import org.cbook.cbookif.CBookEvent;
+import org.cbook.cbookif.CBookEventListener;
+
+import fi.beans.wiskopdrbeans.CBookAware;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-public class ScoreWidget extends JPanel implements InteractiePanel {
+public class ScoreWidget extends JPanel implements InteractiePanel, CBookAware {
 
   private String paginaTitel = "";
   
@@ -34,7 +38,6 @@ public class ScoreWidget extends JPanel implements InteractiePanel {
 
   @Override
   public void setState(Hashtable b) {
-    // TODO Auto-generated method stub
     
   }
 
@@ -59,7 +62,6 @@ public class ScoreWidget extends JPanel implements InteractiePanel {
 
   @Override
   public InteractieEditPanel getEditPanel() {
-    // TODO Auto-generated method stub
     return new ScoreWidgetEditPanel();
   }
 
@@ -71,104 +73,115 @@ public class ScoreWidget extends JPanel implements InteractiePanel {
 
   @Override
   public void wis() {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void zetMaat() {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public int getIpId() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
   @Override
   public int getScore() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
   @Override
   public int[][] getScoreObjectives() {
-    // TODO Auto-generated method stub
     return null;
   }
 
   @Override
   public int getScoreMax() {
-    // TODO Auto-generated method stub
     return 0;
   }
 
   @Override
   public boolean isCorrect() {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public boolean isFout() {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public void zetMode(int mode) {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void zetNagekeken(boolean b) {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void stop() {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void start() {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void destroy() {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void opnieuw() {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void kijkNa() {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void kijkNa(int stapNr) {
-    // TODO Auto-generated method stub
     
   }
 
   @Override
   public void addActionListener(ActionListener al) {
-    // TODO Auto-generated method stub
     
+  }
+
+  @Override
+  public void acceptCBookEvent(CBookEvent event) {
+  }
+
+  @Override
+  public void addCBookEventListener(CBookEventListener listener, String command) {
+  }
+
+  @Override
+  public void removeCBookEventListener(CBookEventListener listener, String command) {
+  }
+
+  static final private String[] ACCEPTED = { }, SEND = { "action.passed", "action.failed" };
+  @Override
+  public String[] getSendCmds() {
+    return SEND;
+  }
+
+  @Override
+  public String[] getAcceptedCmds() {
+    return ACCEPTED;
+  }
+
+  @Override
+  public String getLocalizedCmd(String cmd) {
+    return WiskOpdr.rb.getString(CBA_PREFIX + cmd);
   }
 
 }

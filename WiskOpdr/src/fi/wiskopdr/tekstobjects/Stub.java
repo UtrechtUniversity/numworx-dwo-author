@@ -1,9 +1,9 @@
 package fi.wiskopdr.tekstobjects;
 
-import java.applet.AppletContext;
-import java.applet.AppletStub;
 import java.net.URL;
 
+import fi.beans.mainframe.AppletContext;
+import fi.beans.mainframe.AppletStub;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.wiskopdr.WiskOpdr;
 
@@ -41,7 +41,7 @@ public String getParameter(String name) {
 
 @Override
 public AppletContext getAppletContext() {
-  return WiskOpdr.applet.getAppletContext();
+  return (AppletContext) WiskOpdr.applet.getAppletContext();
 }
 
 @Override

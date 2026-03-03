@@ -1,19 +1,24 @@
 
 package fi.draaibank;
 
-import java.applet.*;
 import java.awt.*;
 import java.awt.image.*;
 import java.net.*;
 import java.io.*;
-import java.util.*;import java.awt.event.*;
+import java.util.*;
+
+import fi.beans.mainframe.AppletContext;
+import fi.beans.mainframe.AppletStub;
+import fi.beans.mainframe.JApplet;
+
+import java.awt.event.*;
 public class MainFrame extends Frame   implements WindowListener, ComponentListener, AppletStub, AppletContext
 {	private double beginBreedte, beginHoogte;
     private String name;
-    private Applet applet;
+    private JApplet applet;
 
 
-    public MainFrame( Applet applet, int width, int height )
+    public MainFrame( JApplet applet, int width, int height )
 	{	beginBreedte = width;		beginHoogte = height;
 		addWindowListener(this);		addComponentListener(this);
 		this.applet = applet;
@@ -54,8 +59,7 @@ import java.util.*;import java.awt.event.*;
 	public String getParameter(String name){return null;}
     public void appletResize( int width, int height ){}
     public AppletContext getAppletContext(){return this;}
-    	public AudioClip getAudioClip( URL url ){return null;}
-    public Image getImage( URL url )	{	Toolkit tk = Toolkit.getDefaultToolkit();
+        public Image getImage( URL url )	{	Toolkit tk = Toolkit.getDefaultToolkit();
 		try
 		{	ImageProducer prod = (ImageProducer) url.getContent();
 		    return tk.createImage( prod );
@@ -64,10 +68,7 @@ import java.util.*;import java.awt.event.*;
 		{
 			return null;
 		}
-	}	
-	public Applet getApplet( String name ){return null;}
-    public Enumeration getApplets(){return null;}
-		   
+	}			   
     public void showDocument( URL url ){}
     public void showDocument( URL url, String target ){}
     public void showStatus( String status ){}

@@ -23,21 +23,21 @@ public class TekstTeken extends JComponent implements TekstElement
 	public TekstTeken(char tk)
 	{	character = tk;
 		
-		//if(tk=='*')
-		//{	teken = null;
-		//}
-		//else 
-			if(tk=='\n')
+		if(tk=='\n' || Character.isLowSurrogate(tk))
 		{	teken = "";
 		}
-		else teken = ""+tk;
-		
+		else teken = Character.toString(tk);		
 		selected = false;
 		
 		//setOpaque(false);
 	}
 	
-	public void setChar(char tk)
+	public TekstTeken(char ch, char ch2) {
+	  this(ch);
+	  teken += ch2;
+    }
+
+  public void setChar(char tk)
 	{	character = tk;
 		teken = ""+tk;
 	}
@@ -153,6 +153,15 @@ public class TekstTeken extends JComponent implements TekstElement
 	public boolean isSpatie()
 	{	return character==' ';
 	}
+	
+	public boolean isLowSurrogate() {
+	  return Character.isLowSurrogate(character);
+	}
+
+	public boolean isHighSurrogate() {
+      return Character.isHighSurrogate(character);
+    }
+	
 	
 	public boolean isSelected()
 	{	return selected;

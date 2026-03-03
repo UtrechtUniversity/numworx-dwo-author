@@ -2,21 +2,15 @@ package fi.spot_problems_dwo.wiskopdr;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.applet.*;
 import java.util.*;
 import fi.beans.copyright.*;
 import fi.beans.mainframe.*;
 import fi.beans.scorm.*;
 import fi.beans.appletutil.*;
 import fi.beans.base64code.*;
-import fi.beans.stringutils.*;
-import fi.spot_problems_dwo.wiskopdr.tekstobjects.*;
-import fi.spot_problems_dwo.wiskopdr.formuleobjects.*;
-import fi.spot_problems_dwo.wiskopdr.expressies.*;
 import fi.spot_problems_dwo.wiskopdr.opdrnav.*;
-import java.awt.event.*;
 
-public class WiskOpdr extends Applet implements ScormAppletIF, ActionListener
+public class WiskOpdr extends JApplet implements ScormAppletIF, ActionListener
 {
 	protected SCORM12APIInterface api;
 	protected long sessionStartTime;

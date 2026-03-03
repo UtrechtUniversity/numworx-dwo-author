@@ -2,13 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.binomverdeling</groupId>
   <artifactId>binomverdeling</artifactId>
-  <version>0.0.3</version>
   <name>BinomVerdeling</name>
   <description>BinomVerdeling</description>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
-	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.2</version>
+	  <artifactId>wiskopdr-parent</artifactId>
+	  <version>2.5.48</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
    <build>
@@ -125,13 +124,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
-			<artifactId>DWO-commons-lib</artifactId>
+			<artifactId>dwo-commons-lib</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>fi.wiskopdr</groupId>
-			<artifactId>wiskopdr</artifactId>
-			<version>0.3.0</version>
+			<groupId>fi.wiskopdr.beans</groupId>
+			<artifactId>wiskopdrbeans</artifactId>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>

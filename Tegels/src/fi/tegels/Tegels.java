@@ -2,14 +2,18 @@ package fi.tegels;
 
 import java.awt.*;
 import java.util.*;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
 import java.awt.event.*;
 
 import fi.beans.base64code.*;
+import fi.beans.mainframe.JApplet;
 import fi.beans.scorm.*;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
 
-import javax.swing.*;
 /**
  * @author Peter Boon
  */

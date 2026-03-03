@@ -316,13 +316,13 @@ class ArrowCanvas extends Canvas
 
  * 		| Parameter name	|
 
- *		|  ×  Value 	 Units	|
+ *		|  Ã—  Value 	 Units	|
 
  *
 
  * </tt><p>
 
- * Value is Textfield holding value, × is picture with up- and down-arrow.
+ * Value is Textfield holding value, Ã— is picture with up- and down-arrow.
 
  * 
 

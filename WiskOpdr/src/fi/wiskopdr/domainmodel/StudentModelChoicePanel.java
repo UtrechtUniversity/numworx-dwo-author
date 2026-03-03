@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -267,6 +268,10 @@ public class StudentModelChoicePanel extends JPanel
     public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected,
         boolean expanded, boolean leaf, int row, boolean hasFocus) {
       JToggleButton returnValue;
+      if (value instanceof InvisibleNode) {
+        InvisibleNode in = (InvisibleNode) value;
+        leaf = !in.getAllowsChildren();
+      }
       if (leaf) {
         returnValue = leafRenderer;
       } else
@@ -288,11 +293,10 @@ public class StudentModelChoicePanel extends JPanel
         if (userObject instanceof Node) {
           Node node = (Node) userObject;
           String text = node.toString();
-          Double factor = null;
-          if (node instanceof NodeLeaf) factor = ids.get(((NodeLeaf) node).getId());
-          if (factor == null) factor = 1.0;
-          if (node.isValue() && node instanceof NodeLeaf && factor.doubleValue() <= 0.999)
-            text += " " + factor;
+          String variant = null;
+          if (node instanceof NodeLeaf) variant = ((NodeLeaf) node).getVariant();
+          if (node instanceof NodeLeaf && variant != null)
+            text += " " + variant;
           returnValue.setText(text);
           returnValue.setSelected(node.isValue());
         }
@@ -305,6 +309,17 @@ public class StudentModelChoicePanel extends JPanel
   public static final String BEGRIPPEN_EN_VAKTAAL = "Begrippen en vaktaal";
 
   private class MethodListener implements ItemListener {
+
+    final boolean keep;
+
+    public MethodListener(boolean keep) {
+      this.keep = keep;
+    }
+    public MethodListener() {
+      this(false);
+    }
+    
+    
 
     InvisibleTreeModel methodModel;
     StudentMethod active = new StudentMethod();
@@ -349,13 +364,31 @@ public class StudentModelChoicePanel extends JPanel
               NodeLeaf nl = (NodeLeaf) o;
               List<DomStudentModelMethodInfo> methodeInfos = nl.getMethodeInfos();
               if (methodeInfos == null) continue;
-              Set<String> infos = methodeInfos.stream().map(DomStudentModelMethodInfo::key)
-                  .collect(Collectors.toSet());
+              Map<String, DomStudentModelMethodInfo> mmap = methodeInfos.stream().collect(Collectors.toMap(DomStudentModelMethodInfo::key, Function.identity()));
+// add keys from "methode"
+              Map<String, Map<String, Collection<Number>>> methode = nl.getMethode();
+              for(String key: methode.keySet()) {
+                Map<String, Collection<Number>> boeken = methode.getOrDefault(key, Collections.emptyMap());
+                for (String book: boeken.keySet()) {
+                  Collection<Number> hoofdstukken = boeken.getOrDefault(book, Collections.emptySet());
+                  for(Number chapter: hoofdstukken) {
+                    String sleutel = key + "-" + book + "-" + chapter;
+                    mmap.putIfAbsent(sleutel, null);
+                  }                 
+                }
+              }
+              
+              
+              Set<String> infos = mmap.keySet();
               String title = nl.toString();
-              for (String mi : infos) {
+              for (String mi : infos) { String k0 = mi;
                 if (title.startsWith("W:")) mi += "-W:";
                 nodes.computeIfPresent(mi, (k, n) -> {
-                  InvisibleNode node = new InvisibleNode(o, false, true);
+                  NodeLeaf oo = nl;
+                  DomStudentModelMethodInfo smmi = mmap.get(k0); // zonder -W:
+                  String variant = smmi == null ? null : smmi.getVariant();
+                  oo = keep ? new NodeLeaf(nl) : new NodeLeaf(nl, variant);
+                  InvisibleNode node = new InvisibleNode(oo, false, true);
                   insertMethod(n, node);
                   return n;
                 });
@@ -427,6 +460,7 @@ public class StudentModelChoicePanel extends JPanel
         }
       }
       parent.add(node);
+      insertUO(parent, node);
     }
 
     private void insertUO(InvisibleNode parent, InvisibleNode node) {
@@ -464,11 +498,11 @@ public class StudentModelChoicePanel extends JPanel
   JTree tree;
   InvisibleTreeModel model;
   InvisibleNode root;
-  JLabel leerdoelTitelLabel, title;
+  JLabel leerdoelTitelLabel, title, variantLabel;
   JTextArea description;
   JButton graphButton;
   JCheckBox methods;
-  MethodListener methodListener = new MethodListener();
+  final MethodListener methodListener;
   Graph graph;
   String activeMethod;
 
@@ -479,8 +513,11 @@ public class StudentModelChoicePanel extends JPanel
   static final String JSON_SIG = "{";
   private static final Font font = new Font("SansSerif", Font.PLAIN, 12);
 
-  public StudentModelChoicePanel(Supplier<StudentModel> studentModel2) {
+  
+  
+  public StudentModelChoicePanel(boolean keep, Supplier<StudentModel> studentModel2) {
     super(new BorderLayout());
+    methodListener = new MethodListener(keep);
     this.studentModel = studentModel2;
     // North
     Box north = Box.createHorizontalBox();
@@ -497,7 +534,7 @@ public class StudentModelChoicePanel extends JPanel
     north.add(graphButton);
     add(north, BorderLayout.NORTH);
 
-    JSplitPane split = new JSplitPane();
+    split = new JSplitPane();
     BasicSplitPaneUI sui = (BasicSplitPaneUI) BasicSplitPaneUI.createUI(split);
     split.setUI(sui);
     BasicSplitPaneDivider divider = sui.getDivider();
@@ -523,7 +560,7 @@ public class StudentModelChoicePanel extends JPanel
     graph.addActionListener(new GraphTreeAction(tree));
     graph.addActionListener(this::updateGraph);
 
-    JSplitPane leftBox = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    leftBox = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     leftBox.setBorder(BorderFactory.createEmptyBorder());
     leftBox.setResizeWeight(0.9);
     BasicSplitPaneUI suiLeft = (BasicSplitPaneUI) BasicSplitPaneUI.createUI(leftBox);
@@ -543,12 +580,12 @@ public class StudentModelChoicePanel extends JPanel
     hbox.add(Box.createGlue());
     vbox.add(hbox);
     leftBox.setTopComponent(vbox);
-    sp.setMinimumSize(new Dimension(400, 300));
-    sp.setPreferredSize(sp.getMinimumSize());
+    sp.setMinimumSize(new Dimension(400, 200));
+    sp.setPreferredSize(new Dimension(400,300));
 
     split.setLeftComponent(leftBox);
 
-    Box rightBox = Box.createVerticalBox();
+    rightBox = Box.createVerticalBox();
     split.setRightComponent(rightBox);
 
     String descr = "";
@@ -570,13 +607,11 @@ public class StudentModelChoicePanel extends JPanel
       scroll.setViewportView(b.getBrowserPanel());
       b.setDescription(descr);
     }
-    slider = new JSlider(1, 10, 10);
-    slider.setToolTipText("factor");
-    slider.setMajorTickSpacing(3);
-    Hashtable<Number, JLabel> dict = new Hashtable<>();
-    dict.put(slider.getMinimum(), new JLabel("min"));
-    dict.put(slider.getMaximum(), new JLabel("max"));
-    slider.setLabelTable(dict);
+    slider = new JSlider();
+    slider.setToolTipText("Guess");
+    slider.setMajorTickSpacing(25);
+    slider.setMinorTickSpacing(5);
+    createLabels();
     slider.setPaintLabels(true);
     slider.setPaintTicks(true);
 
@@ -585,6 +620,11 @@ public class StudentModelChoicePanel extends JPanel
     leerdoelTitelLabel.setBorder(BorderFactory.createEmptyBorder(4, 20, 4, 20));
     leerdoelTitelLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
     leerdoelTitelLabel.setMaximumSize(new Dimension(450, 30));
+    variantLabel = new JLabel();
+    variantLabel.setForeground(Color.WHITE);
+    variantLabel.setBorder(BorderFactory.createEmptyBorder(4, 20, 4, 20));
+    variantLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+    
 
     Box hb = Box.createHorizontalBox();
     hb.setOpaque(true);
@@ -594,6 +634,7 @@ public class StudentModelChoicePanel extends JPanel
 
     hb.add(leerdoelTitelLabel);
     hb.add(Box.createHorizontalGlue());
+    hb.add(variantLabel);
 
     rightBox.add(hb);
     rightBox.add(scroll);
@@ -630,6 +671,25 @@ public class StudentModelChoicePanel extends JPanel
   }
 
 
+  public void createLabels() {
+    Hashtable<Number, JLabel> dict = new Hashtable<>();
+    dict.put(slider.getMinimum(), new JLabel("0%"));
+    dict.put(slider.getMaximum(), new JLabel("100%"));
+    dict.put(50, new JLabel("50%"));
+    dict.put(75, new JLabel("75%"));
+    dict.put(25, new JLabel("25%"));
+    dict.put(defaultGuess(), new JLabel(defaultGuess() + "%"));
+    slider.setLabelTable(dict);
+    setGuess(null);
+  }
+
+
+  public StudentModelChoicePanel(Supplier<StudentModel> supplier, boolean b) {
+    this(false, supplier);
+    showDescription(b);
+  }
+
+
   String key(String id) {
     if (id == null) return id;
     String[] split = id.split(";", 3);
@@ -660,12 +720,15 @@ public class StudentModelChoicePanel extends JPanel
   }
 
   private boolean[][] choices;
-  private Map<String, Double> ids;
+  private Map<String, String> ids;
   private JScrollPane scroll;
-  private JSlider slider;
+  private final JSlider slider;
   private List<String> objectives;
   private List<String> deselections = Collections.emptyList(), deselections0 = deselections;
   private Collection<String> foreknowledge;
+  private JSplitPane split;
+  private JSplitPane leftBox;
+  private Box rightBox;
 
   public List<String> getObjectives() {
     return objectives;
@@ -678,7 +741,7 @@ public class StudentModelChoicePanel extends JPanel
         .collect(Collectors.toList());
   }
 
-  private void getObjectives(Object v, Map<String, Double> ids) {
+  private void getObjectives(Object v, Map<String, String> ids) {
     if (v instanceof NodeLeaf) {
       NodeLeaf leaf = (NodeLeaf) v;
       if (!leaf.isValue()) ids.remove(leaf.getId());
@@ -719,7 +782,7 @@ public class StudentModelChoicePanel extends JPanel
       ids = new HashMap<>();
       objectives.forEach(s -> {
         String[] split = s.split("/");
-        ids.put(split[0], split.length > 1 ? Double.valueOf(split[1]) : null);
+        ids.put(split[0], split.length > 1 ? split[1] : null);
       });
     }
   }
@@ -791,9 +854,10 @@ public class StudentModelChoicePanel extends JPanel
         for (int y = 0; y < maxy; y++) {
           Object e = w.get(y);
           if (e instanceof NodeLeaf) {
-            ((NodeLeaf) e).setValue(choices[x][y]);
-            String id = ((NodeLeaf) e).getId();
-            if (choices[x][y] && !ids.containsKey(id)) ids.put(id, null);
+            NodeLeaf ne = (NodeLeaf) e;
+            ne.setValue(choices[x][y]);
+            String id = ne.getId();
+            if (choices[x][y] && !ids.containsKey(id)) ids.put(id, ne.getVariant());
           }
         }
       }
@@ -808,6 +872,7 @@ public class StudentModelChoicePanel extends JPanel
         if (u instanceof NodeLeaf) {
           NodeLeaf leaf = (NodeLeaf) u;
           leaf.setValue(ids.containsKey(leaf.getId()));
+          leaf.setVariant(ids.get(leaf.getId()));
         }
       }
     } else
@@ -850,7 +915,7 @@ public class StudentModelChoicePanel extends JPanel
       boolean on = voorkennis.contains(n.getID());
       n.setSuccesFailScore(on ? 100.0 : null);
       if (on)
-        n.setPartOfSelection(Boolean.valueOf(kennis.contains(n.getID())));
+        n.setPartOfSelection(Boolean.valueOf(ObjectivesViewAction.strip(kennis).contains(n.getID())));
       else
         n.setPartOfSelection(null);
     });
@@ -867,7 +932,14 @@ public class StudentModelChoicePanel extends JPanel
       if (!node.isLeaf()) continue;
       Object object = node.getUserObject();
       if (object instanceof NodeLeaf) {
-        if (((NodeLeaf) object).isValue()) kennis.add(((NodeLeaf) object).getId());
+        NodeLeaf leaf = (NodeLeaf) object;
+        if (leaf.isValue()) {
+          String id = leaf.getId();
+          if (leaf.getVariant() != null) {
+            id += "/" + leaf.getVariant();
+          }
+          kennis.add(id);
+        }
       }
     }
     return kennis;
@@ -885,6 +957,7 @@ public class StudentModelChoicePanel extends JPanel
       TreePath path = tree.getSelectionPath();
       if (path == null) {
         leerdoelTitelLabel.setText("");
+        variantLabel.setText("");
         description.setText("");
         scroll.setViewportView(description);
         return;
@@ -893,10 +966,13 @@ public class StudentModelChoicePanel extends JPanel
       Object u = node.getUserObject();
       leerdoelTitelLabel.setText(u.toString());
       if (u instanceof Node) {
-        Double factor = null;
-        if (u instanceof NodeLeaf) factor = ids.get(((NodeLeaf) u).getId());
-        if (factor == null) factor = 1.0;
-        slider.setValue(Math.round(slider.getMaximum() * factor.floatValue()));
+        String factor = null;
+        if (u instanceof NodeLeaf) {
+          factor = ids.get(((NodeLeaf) u).getId());
+          variantLabel.setText(((NodeLeaf) u).getVariant());
+        } else {
+          variantLabel.setText("");
+        }
 
         String descr = ((Node) u).getDescription();
         if (descr == null) descr = "";
@@ -925,8 +1001,9 @@ public class StudentModelChoicePanel extends JPanel
   private void savePath(TreePath p) {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
     Object u = node.getUserObject();
-    if (u instanceof NodeLeaf) {
-      ids.put(((NodeLeaf) u).getId(), (double) slider.getValue() / slider.getMaximum());
+    if (u instanceof NodeLeaf && ((NodeLeaf) u).isValue()) {
+      String variant = ((NodeLeaf)u).getVariant();
+      ids.put(((NodeLeaf) u).getId(), variant); 
       model.nodeChanged(node);
     }
   }
@@ -980,5 +1057,45 @@ public class StudentModelChoicePanel extends JPanel
     this.foreknowledge = foreknowledge;
   }
 
+  public void showDescription(boolean show) {
+    if (!show) {
+        remove(split);
+        add(leftBox.getTopComponent(), BorderLayout.CENTER);
+        title.getParent().setVisible(show);
+    }
+  }
 
+
+  @Override
+  public Number getGuess() {
+    int slider = this.slider.getValue();
+    if (slider == defaultGuess()) return null; // default value....
+    return Float.valueOf( slider / (float) this.slider.getMaximum());
+  }
+
+  private Supplier<Number> defaultGuess;
+  private int defaultGuess() {
+    if (defaultGuess != null) {
+      Number guess = defaultGuess.get();
+      if (guess != null) return Math.round(guess.floatValue() * slider.getMaximum());
+    }
+    return Math.round(0.1f * slider.getMaximum());
+  }
+
+
+  @Override
+  public void setGuess(Number guess) {
+    if (guess == null)
+      slider.setValue(defaultGuess());
+    else
+      slider.setValue(Math.round(guess.floatValue()*this.slider.getMaximum()));
+    
+  }
+
+  @Override
+  public void setDefaultGuess(Supplier<Number> supplier) {
+    defaultGuess = supplier;
+    createLabels();
+  }
+  
 }

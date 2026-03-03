@@ -327,8 +327,15 @@ public class ProgrammaImporter
 		if ( codeline.equals("")) return null;
 		//System.out.println("simpel: >"+codeline+"<");
 		CommandComponent cc = null;
+		if ( codeline.startsWith("#"))
+		{	CommentCComponent ccc;
+			cc =  ccc = new CommentCComponent(-100,-100, 25, 25, veld);
+			String parameter = codeline.substring(1).trim();
+			ccc.setParameter(parameter);
+			return cc;
+		} 
 		// 1: commandComponents for simple commands
-		if ( codeline.startsWith("vooruit"))
+		else if ( codeline.startsWith("vooruit"))
 		{	cc = new VooruitCComponent(-100,-100,25,25, veld);
 		}
 		else if ( codeline.startsWith("rechts"))
@@ -391,11 +398,17 @@ public class ProgrammaImporter
 		//System.out.println("     +++  was var-expressie");
 		String[] params = StringUtils.split(codeline,"=");
 		if ( params.length > 1)
-		{
+		{	if (params[1].contains("input")) {
+				VarInputComponent ccc;
+				cc = ccc = new VarInputComponent(-100,-100,25,25,veld);
+				cc.clearStapel();
+				ccc.setVariable(params[0], params[1].substring(params[1].indexOf('(')+1, params[1].lastIndexOf(')')).trim());
+			
+		} else {
 			cc = new VarCComponent(-100,-100,25,25, veld);
 			cc.clearStapel();
 			((VarCComponent)cc).setVariable(params[0], params[1]);
-		}		
+		}}		
 		return cc;
 	}
 	

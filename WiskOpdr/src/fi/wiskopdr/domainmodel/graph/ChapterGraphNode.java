@@ -169,7 +169,8 @@ public class ChapterGraphNode {
 				g.setColor(new Color(233, 239, 249));
 			g.fillOval(rx-size/2, ry-size/2, size, size);
 			String label = hfstDescriptionsMap.get(hfstCode);
-			label = label.substring(0, label.indexOf(" - "));
+			int indexOf = label.indexOf(" - ");
+            if (indexOf > 0) label = label.substring(0, indexOf);
 			int textLength = fm.stringWidth(label);
 			int textHeight = fm.getAscent();
 			g.setColor(LeerdomeinGraphPanel.colorGray3);

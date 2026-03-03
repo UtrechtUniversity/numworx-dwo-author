@@ -2,11 +2,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.graphtool</groupId>
 	<artifactId>graphtool</artifactId>
-	<version>0.0.3</version>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
-	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.2</version>
+	  <artifactId>wiskopdr-parent</artifactId>
+	  <version>2.5.48</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
 	<build>
@@ -75,15 +74,8 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>fi.wiskopdr</groupId>
-			<artifactId>wiskopdr</artifactId>
-			<version>0.3.0</version>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
-			<artifactId>DWO-commons-lib</artifactId>
+			<artifactId>dwo-commons-lib</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -100,7 +92,20 @@
 		<dependency>
 			<groupId>fi.beans</groupId>
 			<artifactId>lineairealgebra</artifactId>
-			<version>0.0.1</version>
+			<version>${dwo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fi.wiskopdr.beans</groupId>
+			<artifactId>wiskopdrbeans</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+<!-- FIXME, make a dependency to the real uncompressed thing -->
+		<dependency>
+			<groupId>fi.wiskopdr</groupId>
+			<artifactId>wiskopdr</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<properties>

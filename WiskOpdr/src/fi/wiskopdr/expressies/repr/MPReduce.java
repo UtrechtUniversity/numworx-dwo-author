@@ -1,33 +1,30 @@
 package fi.wiskopdr.expressies.repr;
 
-import geogebra.cas.mpreduce.CASmpreduce;
+import java.util.function.Function;
 
-import org.mathpiper.mpreduce.Interpreter2;
+import fi.wiskopdr.WiskOpdr;
+import fi.wiskopdr.tekstobjects.TekstInteractiePanelVak;
 
 // Utility class
 public class MPReduce {
 	private MPReduce() {}
 	
-	private static boolean loaded;
-	public  static Interpreter2 getInstance() {
-		final Interpreter2 staticInterpreter = CASmpreduce.getStaticInterpreter();
-		if(!loaded)
+	private static Function<String,String> interpreter;
+	private  static Function<String,String> getInstance() {
+		if(interpreter == null)
 		try { 
-			staticInterpreter.evaluate("load_package ineq");
-			staticInterpreter.evaluate("load_package boolean");
-			staticInterpreter.evaluate("procedure prv(f!*, a!*, b!*, x!*); limit!-(f!*,x!*,b!*)-limit!+(f!*,x!*,a!*)");
-			loaded = true;
+		  interpreter = (Function<String, String>) TekstInteractiePanelVak.newWiskOpdrApplet("nl.numworx.geogebra4.Geogebra4Widget", WiskOpdr.language);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		return staticInterpreter;
+		return interpreter;
 	}
 
 	
 	public static String evaluate(String command) {
 		String r = null;
 		try {
-			r = getInstance().evaluate(command);
+			r = getInstance().apply(command);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

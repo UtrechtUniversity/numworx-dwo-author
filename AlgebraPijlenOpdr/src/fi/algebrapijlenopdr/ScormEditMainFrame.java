@@ -1,6 +1,5 @@
 package fi.algebrapijlenopdr;
 
-import java.applet.*;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
@@ -16,7 +15,7 @@ class ScormEditMainFrame extends MainFrame implements ActionListener
 	FileDialog openDial, saveDial;
 	String titel;
 	
-	public ScormEditMainFrame(Applet applet,int width, int height )
+	public ScormEditMainFrame(JApplet applet,int width, int height )
 	{	super( applet, width, height );
 		this.setBackground(Color.white);
 		

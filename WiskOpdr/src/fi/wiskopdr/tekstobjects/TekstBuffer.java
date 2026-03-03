@@ -47,6 +47,7 @@ public class TekstBuffer
 				int indexV = completeString.lastIndexOf("$V");
 				int indexH = completeString.lastIndexOf("$H");
 				int indexI = completeString.lastIndexOf("$I");
+				int indexZ = completeString.lastIndexOf("$Z");
 				int index = -1;
 				
 				index = Math.max(indexF, indexA);
@@ -54,6 +55,7 @@ public class TekstBuffer
 				index = Math.max(index, indexH);
 				index = Math.max(index, indexV);
 				index = Math.max(index, indexI);
+				index = Math.max(index, indexZ);
 				if(index==-1) break;
 				
 				TekstDeelVak tfv = null;
@@ -89,6 +91,9 @@ public class TekstBuffer
 				{	tfv = new TekstLinkVak(tekstVak);
 					tfv.setEditable(true);
 					index = indexH;
+				} else if (indexZ == index) {
+				    tfv = new CodePointVak(tekstVak, 0);
+				    index = indexZ; 
 				}
 				String formString = completeString.substring(index,i+1);
 				if (indexF == index || indexR == index)
@@ -158,6 +163,10 @@ public class TekstBuffer
 	{	int formNr = geefAantalFormules(pos);
 		tekstDeelVakken.insertElementAt(tfv,formNr);
 	
+	}
+	
+	public void insertCodePoint(int pos, CodePointVak cpv) {
+	  tekstDeelVakken.insertElementAt(cpv, geefAantalFormules(pos));
 	}
 	
 	public void insertImageVak(int pos, TekstImageVak plv) {

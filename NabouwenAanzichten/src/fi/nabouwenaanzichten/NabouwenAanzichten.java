@@ -1,6 +1,5 @@
 package fi.nabouwenaanzichten;
 
-import java.applet.Applet;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
@@ -10,12 +9,13 @@ import fi.beans.scorm.*;
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
 import fi.beans.base64code.*;
+import fi.beans.mainframe.JApplet;
 
 /**
  * @author Peter Boon
  */
 
-public class NabouwenAanzichten extends Applet implements ScormAppletIF, ActionListener, NabouwenAanzichtenIF, WiskOpdrApplet
+public class NabouwenAanzichten extends JApplet implements ScormAppletIF, ActionListener, NabouwenAanzichtenIF, WiskOpdrApplet
 {	
 	/**
 	 * 

@@ -2,14 +2,20 @@ package fi.wiskopdr.tekstobjects;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.TextHitInfo;
 import java.awt.geom.AffineTransform;
+import java.awt.im.InputMethodRequests;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedCharacterIterator.Attribute;
+import java.text.AttributedString;
+import java.text.CharacterIterator;
 import java.util.*;
+import java.util.logging.Logger;
 import java.awt.datatransfer.*;
 
 import fi.wiskopdr.formuleobjects.*;
 import fi.wiskopdr.opdrnav.XWidgetManager;
 import fi.wiskopdr.symbolen.SymboolPanel;
-import fi.wiskopdr.tekstobjects.TekstRegel.KnipperDraad;
 import fi.wiskopdr.templatecomponents.TComponentGeneratorFactory;
 import fi.wiskopdr.*;
 import fi.beans.wiskopdrbeans.*;
@@ -18,7 +24,9 @@ import javax.swing.*;
 
 public class TekstVak extends JLayeredPane  implements TekstElement, ActionListener, MouseListener, MouseMotionListener,KeyListener, FocusListener, ClipboardOwner
 {
-	private TekstVak tekstVak;
+    private final static Logger LOG = Logger.getLogger("fi.wiskopdr.tekstobjects.TekstVak");
+  
+    private TekstVak tekstVak;
 	private int ashoogte;
 	
 	protected static String clipboard;
@@ -84,6 +92,13 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		addMouseMotionListener(this);
 		addKeyListener(this);
 		addFocusListener(this);
+		
+		if (WiskOpdr.isExperimental() && true) 
+		{
+		  TVIR = new TekstVakInputRequests();
+		  addInputMethodListener(new TekstVakInputListener());
+		}
+				
 		try
 		{	systemClipboard = getToolkit().getSystemClipboard ();
 		}
@@ -273,7 +288,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		}
 		Hashtable h = new Hashtable();
 		h.put("tekstBuffer", toCompleteString());
-		h.put("caretPos", new Integer(caretPos));
+		h.put("caretPos", (caretPos));
 		if(stateNr>maxStateNr)
 		{	states.removeElementAt(0);
 			stateNr--;
@@ -303,7 +318,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	public void undo()
 	{	Hashtable h = new Hashtable();
 		h.put("tekstBuffer", toCompleteString());
-		h.put("caretPos", new Integer(caretPos));
+		h.put("caretPos", (caretPos));
 		if(stateNr>-1 && stateNr==states.size()){
 			states.addElement(h);
 			stateNr++;
@@ -440,8 +455,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 			regels[i].setVisible(false);
 	    	regels[i].removeAll();
 	    	for(int j=0 ; regelInhouden[i]!=null && j<regelInhouden[i].length(); j++)
-			{	char c = regelInhouden[i].charAt(j);
-				if(c=='@')
+			{	char ch = regelInhouden[i].charAt(j);
+                if(ch=='@')
 				{	
 					TekstDeelVak tdv =  tekst.geefDeelVak(formNr);
 					if(tdv instanceof TekstInteractiePanelVak  
@@ -460,7 +475,17 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 					formNr++;
 				}
 				else 
-				{	TekstTeken tt = new TekstTeken(regelInhouden[i].charAt(j));
+				{   TekstTeken tt = new TekstTeken(ch);
+				    if (Character.isHighSurrogate(ch)) {
+				      char ch2 = regelInhouden[i].charAt(j+1);
+				      if (Character.isLowSurrogate(ch2)) {
+				        tt = new TekstTeken(ch, ch2);
+				      }
+				    } else if (Character.isLowSurrogate(ch)) {
+				      tt = new TekstTeken(ch); // 0 breed.
+				    }
+				  
+				  
 					tt.setForeground(getForeground());
 					if(textRtoL)regels[i].insertZZ(tt);
 					else regels[i].insert(tt);
@@ -661,6 +686,16 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 		produceAction("resize");
 	}
 
+	public void insertCodePoint(int cp) {
+	    tekst.insert(caretPos, '@');
+	    CodePointVak cpv = new CodePointVak(this, cp);
+	    tekst.insertCodePoint(caretPos, cpv);
+        vulVak(tekst.toString());
+        setCaret(caretPos+1);
+        repaint();
+
+	}
+	
 	
 	public void insertLinkVak()
 	{	tekst.insert(caretPos,'@');
@@ -1359,6 +1394,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             else if (kc == KeyEvent.VK_LEFT)
             {   if (caretPos > 0 && tekst.charAt(caretPos-1)!='@')
                 {   caretPos--;
+                    if (Character.isLowSurrogate(tekst.charAt(caretPos))) caretPos--;
                 }	
 	            else if (caretPos > 0)
 	            {	TekstFormuleVak tfv = tekst.geefTekstFormuleVak(caretPos-1);
@@ -1380,6 +1416,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             {  
             	if (caretPos < tekst.length()-1 && tekst.charAt(caretPos)!='@')
                 {   caretPos++;
+                    if (Character.isHighSurrogate(tekst.charAt(caretPos-1))) caretPos++;
 				}
 	            else if (caretPos < tekst.length()-1)
 	            {	TekstFormuleVak tfv = tekst.geefTekstFormuleVak(caretPos);
@@ -1413,6 +1450,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             {	boolean b = deleteSelection();
 	            	if(!b){
 	            		addState();
+	            		if (Character.isHighSurrogate(tekst.charAt(caretPos))) tekst.deleteCharAt(caretPos);
 	            		tekst.deleteCharAt(caretPos);
 	            		if(WiskOpdr.mac)
 		        	    	{	keyStrokeUpdated = true;
@@ -1431,6 +1469,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
                 {   if(!b)
 	            		{	addState();
 	            			tekst.deleteCharAt(caretPos-1);
+	                        if (Character.isLowSurrogate(tekst.charAt(caretPos-1))) tekst.deleteCharAt(--caretPos);
 	                		caretPos--;
 	                		if(WiskOpdr.mac)
 		            	    	{	keyStrokeUpdated = true;
@@ -1496,8 +1535,8 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	    //}
 	    
     }
-    public void keyTyped(KeyEvent e)
-    {	int kt = e.getKeyChar();
+    public void keyTyped(KeyEvent e)    {	int kt = e.getKeyChar();
+      uncommitted = committed = 0;
     		boolean templateEditable = !(getParent()instanceof TekstVakPanel && ((TekstVakPanel)getParent()).templateModeFill) || TekstVakPanel.TEMPLATE_EDITOR;
     		if (editable && templateEditable)
 		{   if (kt == KeyEvent.VK_ENTER)
@@ -1510,7 +1549,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
             		vulVak(tekst.toString());
 	            	produceAction("resize");
 	            	setCaret(caretPos);
-				keyStrokeUpdated = true;
+	            	keyStrokeUpdated = true;
 	            	e.consume();
 	            	return;
 			}
@@ -1541,14 +1580,15 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
     		
 			else if ((kt != KeyEvent.VK_ESCAPE) &&
 					(kt != KeyEvent.VK_DELETE) &&
-					(kt != KeyEvent.VK_END) &&
-					(kt != KeyEvent.VK_HOME) &&
+					(kc != KeyEvent.VK_END) &&
+					(kc != KeyEvent.VK_HOME) &&
 	                (kt != KeyEvent.VK_BACK_SPACE) &&
                		(kc != KeyEvent.VK_ENTER) && 
                		(kc != KeyEvent.VK_SHIFT) && 
                		(kc != KeyEvent.VK_LEFT) &&
                		(kc != KeyEvent.VK_RIGHT) &&
-               		(kt != '@')
+               		(kt != '@') && (kt != '$') && (kt != '#')
+               		
                     && !isControlDown(e)
                     && !(e.isAltDown() && kc == KeyEvent.VK_F)
                    )
@@ -1585,6 +1625,7 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 			    deleteSelection();
       			tekst.insert(caretPos,(char)kt);
 				caretPos++;
+				committed = 1;uncommitted = 0;
 				
 				TekstTeken tt = new TekstTeken((char)kt);
 				tt.setForeground(getForeground());
@@ -1594,6 +1635,10 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 				e.consume();
 				
             } 
+			else if (kt == '@' || kt == '$' || kt == '#') {
+			    insertCodePoint(kt);
+			}
+ 		
 			if(!keyStrokeUpdated)
 			{
 				if(actieveRegel.getWidth() > breedte-2*marge)
@@ -1904,4 +1949,111 @@ public class TekstVak extends JLayeredPane  implements TekstElement, ActionListe
 	  this.minimumHoogte = minimumHoogte;
 	}
 	
+// input methods voor tekstvak
+	
+	class TekstVakInputListener implements InputMethodListener {
+
+      @Override
+      public void inputMethodTextChanged(InputMethodEvent event) {
+      { int cnt = uncommitted;
+        while (cnt-- >0)
+        tekst.deleteCharAt(--caretPos);
+        committed -= uncommitted;
+        uncommitted = 0;
+      }
+        LOG.info("InputMethod text changed " + event.getCommittedCharacterCount());
+        StringBuffer sb = new StringBuffer();
+        // backspace compositionText
+        if (event.getText() != null)
+        {
+          CharacterIterator iter = event.getText();
+          for (char ch = iter.first(); ch != CharacterIterator.DONE; ch = iter.next()) {
+            sb.append(ch);
+          }
+          if (event.getCommittedCharacterCount() >0)
+          { int cnt = committed;
+            while (cnt-- >0)
+            tekst.deleteCharAt(--caretPos);
+          }
+          tekst.insert(caretPos, sb.toString());
+          vulVak(tekst.toString());
+        }
+        LOG.info("input changed " + committed + ", " + event.getCommittedCharacterCount() + " , " + sb.length());
+        committed = sb.length();
+        uncommitted = committed - event.getCommittedCharacterCount();
+        setCaret(caretPos + committed);
+      }
+    
+      @Override
+      public void caretPositionChanged(InputMethodEvent event) {
+        LOG.info("InputMethod caret position " + event);
+        TextHitInfo caret = event.getCaret();
+        if (caret == null) return;
+        int pos = caret.getCharIndex();
+        setCaret(pos);
+      }
+	  
+	}
+	
+	class TekstVakInputRequests implements InputMethodRequests {
+
+    @Override
+    public Rectangle getTextLocation(TextHitInfo offset) {
+      Rectangle r = new Rectangle(); // absolute position of caret?
+      if (actieveRegel != null) {
+        r.x = actieveRegel.getX() + actieveRegel.caretX;
+        r.y = actieveRegel.getY();
+        r.height = actieveRegel.getHeight();
+      }
+      Point p = getLocationOnScreen();
+      r.translate(p.x, p.y);
+      return r; // @NonNull
+    }
+
+    @Override
+    public TextHitInfo getLocationOffset(int x, int y) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public int getInsertPositionOffset() {
+      return caretPos;
+    }
+
+    @Override
+    public AttributedCharacterIterator getCommittedText(int beginIndex, int endIndex,
+        Attribute[] attributes) {
+      String tekst = TekstVak.this.tekst.toString();
+      return new java.text.AttributedString(tekst).getIterator(attributes, beginIndex, endIndex);
+    }
+
+    @Override
+    public int getCommittedTextLength() {
+      int uncommitted = 1;
+      return TekstVak.this.tekst.length()-uncommitted;
+    }
+
+    @Override
+    public AttributedCharacterIterator cancelLatestCommittedText(Attribute[] attributes) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public AttributedCharacterIterator getSelectedText(Attribute[] attributes) {
+      
+      return null;
+    }
+	  
+	}
+	
+	private TekstVakInputRequests TVIR = null;
+	private int committed, uncommitted;
+
+    @Override
+    public InputMethodRequests getInputMethodRequests() {
+      return TVIR;
+    }
+		
 }

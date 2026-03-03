@@ -3,29 +3,25 @@ package fi.wiskopdr;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.function.Supplier;
 
 import javax.swing.*;
 
-import fi.beans.base64code.*;
 import fi.wiskopdr.tekstobjects.*;
 import fi.wiskopdr.formuleobjects.*;
-import fi.wiskopdr.AntwoordTekstVakEditPanel.EditorComponentListener;
-import fi.wiskopdr.domainmodel.Constants;
-import fi.wiskopdr.expressies.*;
 import fi.wiskopdr.opdrnav.*;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
-import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.numworxlf.JScrollPane;
 
 
-public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements InteractieEditPanel, FocusListener, ActionListener,  MouseListener, MouseMotionListener, TabletOwner, HelpButtonPanelIF
+public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements InteractieEditPanel, FocusListener, ActionListener,  MouseListener, MouseMotionListener, TabletOwner, HelpButtonPanelIF, Supplier<Number>
 {
 	// Algemene attributen 
     private Font font = new Font("SansSerif",Font.PLAIN,12);//WiskOpdr.tekstFont;
 	 
     private Tablet tablet;
     private boolean tabletAdded;
-    private FormuleVakHouder tabletUser;
+    //private FormuleVakHouder tabletUser;
     
     // Basis GUI
     private JPanel mainPanel;
@@ -49,18 +45,18 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
    	private TekstEditor feedbackEditor;
    	private JLabel titleFeedbackLabel;
    	private Box feedbackBox;
-   	private DialogFacade feedbackEditorPopupFrame;
+   	//private DialogFacade feedbackEditorPopupFrame;
    	
    	// Verificatie
    	private JLabel titleVerificatieLabel;
    	private Box verificatieBox;
    	     
-    private int puntenGelijkwaardig = 10;
+    //private int puntenGelijkwaardig = 10;
     private int puntenFeedback = 0;
      
     // Score
     private JLabel titleScoreLabel;
-    private JLabel ScoringLabel; // overbodig?
+    //private JLabel ScoringLabel; // overbodig?
     private Box scoringBox;
     private JTextField  feedbackPV;
     private JTextField maxScorePV;
@@ -68,7 +64,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
    	
     // Logging/Nakijken
   	private JLabel titleLoggingLabel;
-  	private Box loggingBox;
+  	//private Box loggingBox;
     private JCheckBox checkCB;
     private JCheckBox teltMeeCB;
       
@@ -85,6 +81,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
     private JTextField aantalKeuzesTF;
    	private JCheckBox feedbackCB;
    	private JCheckBox checkExternalCB;
+    private JCheckBox randomizePositionsCB;
 	
    	private boolean hasFeedback;
      
@@ -246,7 +243,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
         logCB = makeCheckBox(450,5,70,20,WiskOpdr.rb.getString("logCBLabel"),false,true);
         logIDField = makeTextField(520,5,60,20,"0",false);
         logIDLabelField = makeTextField(520,25,60,20,"",false);
-        ScoringLabel = makeLabel(320,385,160,20,WiskOpdr.rb.getString("score"),true);
+        //ScoringLabel = makeLabel(320,385,160,20,WiskOpdr.rb.getString("score"),true);
         logIDLabelLabel = makeLabel(470,25,50,20,WiskOpdr.rb.getString("TVEP_logIDLabelLabel"),false);
 		
         logObjectivesButton = new ObjectiveChoiceButton();
@@ -254,6 +251,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
         logObjectivesButton.setBounds(600,5,120,20);
         logObjectivesButton.setPreferredSize(new Dimension(120,22));
         logObjectivesButton.setMaximumSize(new Dimension(120,22));
+        logObjectivesButton.setDefaultGuess(this);
 		        
         // Settings
         titleSettingsLabel = new JLabel(WiskOpdr.rb.getString("settingsLabel"));
@@ -268,13 +266,14 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
         
     	feedbackCB = makeCheckBox(140,-2,80,20,WiskOpdr.rb.getString("feedbackCBLabel"),false,true);
     	checkExternalCB = makeCheckBox(250,120,200,20,WiskOpdr.rb.getString("checkExternalCBLabel"),false,true);
-        
+        randomizePositionsCB = makeCheckBox(0, 0, 200, 20, WiskOpdr.rb.getString("randomPosLabel"),false,true);
+       
     	
         
     	//Overige zaken, wellicht overbodig
         antwoordLabel = makeLabel(250,160,520,20,WiskOpdr.rb.getString("antwoordLabel"),true);
         feedbackLabel = makeLabel(250,330,320,20,WiskOpdr.rb.getString("feedbackLabel"),true);
-        ScoringLabel = makeLabel(570,385,160,20,WiskOpdr.rb.getString("score"),true);
+        //ScoringLabel = makeLabel(570,385,160,20,WiskOpdr.rb.getString("score"),true);
 		checkTotaalLabel = makeLabel(620,385,160,20,WiskOpdr.rb.getString("checkTotaalLabel"),false);
 		checkTotaalLabel.setForeground(Color.red);
 				
@@ -300,7 +299,8 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 		Component[] r22 = {aantalKeuzesLabel, 	ra(10,10),	aantalKeuzesTF,		hgl()};
 		Component[] r23 = {feedbackCB, 			ra(5,0),	hgl(),	hbFeedback};
 		Component[] r24 = {checkExternalCB, 	ra(5,0),	hgl(),	hbExtern};
-		Component[] k2 = {hb(r21), vst(20),hb(r22),vst(5), hb(r23),hb(r24), vgl()};	
+		Component[] r25 = {randomizePositionsCB, hgl()};
+		Component[] k2 = {hb(r21), vst(20),hb(r22),vst(5), hb(r23),hb(r24), hb(r25), vgl()};	
 		settingsBox = vb(k2);
 		
 		// plaatsComponenten loggingBox
@@ -431,6 +431,8 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 //                add(keuzeVelden[i],0);
 //            }
 //        }   
+	    if (logObjectivesButton!=null)
+			logObjectivesButton.setDefaultGuess(this);
         repaint();
     }
 	
@@ -533,9 +535,9 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 		goedHalfFout = goedFoutIP.geefKeuze()-1;
 		
 		h.put("antwoordString",antwoordString);
-		h.put("puntenFeedback",new Integer(puntenFeedback));
+		h.put("puntenFeedback",(puntenFeedback));
 		h.put("feedback",feedback);
-		h.put("goedHalfFout",new Integer(goedHalfFout));
+		h.put("goedHalfFout",(goedHalfFout));
 		
 		return h;
 	}
@@ -595,6 +597,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				String logID = "";
 				String logIDLabel = "";
 				boolean checkExternal = false;
+				boolean randomizePositions = false;
 				
 				
 				if(interactiePanelLaunchState.containsKey("keuzeMogelijkheden")) keuzeMogelijkheden = (String[])interactiePanelLaunchState.get("keuzeMogelijkheden");
@@ -609,6 +612,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				if(interactiePanelLaunchState.containsKey("logID")) logID = (String)interactiePanelLaunchState.get("logID");
 				if(interactiePanelLaunchState.containsKey("logIDLabel")) logIDLabel = (String)interactiePanelLaunchState.get("logIDLabel");
 				if(interactiePanelLaunchState.containsKey("checkExternal")) checkExternal = ((Boolean)interactiePanelLaunchState.get("checkExternal")).booleanValue();
+		        if(interactiePanelLaunchState.containsKey("randomizePositions")) randomizePositions = ((Boolean)interactiePanelLaunchState.get("randomizePositions")).booleanValue();
 				
 				aantalKeuzes = keuzeMogelijkheden.length;
 			    aantalKeuzesTF.setText(""+aantalKeuzes);
@@ -678,6 +682,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 				//if(hasFeedback)return;
 				
 				checkExternalCB.setSelected(checkExternal);
+				randomizePositionsCB.setSelected(randomizePositions);
 				
 				((EditInteractiePanelDialog)SwingUtilities.getAncestorOfClass(EditInteractiePanelDialog.class,(Component)mainPanel)).packWidth();
 
@@ -700,6 +705,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			String logID = "";
 			String logIDLabel = "";
 			boolean checkExternal = false;
+			boolean randomizePositions = false;
 			
 			keuzeMogelijkheden = new String[aantalKeuzes];
 			for(int i=0 ; i<aantalKeuzes ; i++)
@@ -721,18 +727,21 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			logIDLabel = logIDLabelField.getText();
 			
 			checkExternal = checkExternalCB.isSelected();
+			randomizePositions = randomizePositionsCB.isSelected();
 			
 			interactiePanelLaunchState.put("keuzeMogelijkheden",keuzeMogelijkheden);
 			interactiePanelLaunchState.put("antwoordString",antwoordString);
-			interactiePanelLaunchState.put("scoreMax",new Integer(scoreMax));
+			interactiePanelLaunchState.put("scoreMax",(scoreMax));
 			if(answerModels!=null)interactiePanelLaunchState.put("answerModels",answerModels);
-			interactiePanelLaunchState.put("hasFeedback",new Boolean(hasFeedback));
-			interactiePanelLaunchState.put("check",new Boolean(check));
-			interactiePanelLaunchState.put("teltMee",new Boolean(teltMee));
-			interactiePanelLaunchState.put("logOption",new Boolean(logOption));
+			interactiePanelLaunchState.put("hasFeedback",(hasFeedback));
+			interactiePanelLaunchState.put("check",(check));
+			interactiePanelLaunchState.put("teltMee",(teltMee));
+			interactiePanelLaunchState.put("logOption",(logOption));
 			interactiePanelLaunchState.put("logID",logID);
 			interactiePanelLaunchState.put("logIDLabel",logIDLabel);
 			interactiePanelLaunchState.put("checkExternal",checkExternal);
+			if (randomizePositions)
+			  interactiePanelLaunchState.put("randomizePositions", randomizePositions);
 			
 			interactiePanelLaunchState.putAll(logObjectivesButton.getEditState(scoreMax));
 				
@@ -924,7 +933,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	public void zetTabletUser(FormuleVakHouder formuleVakHouder)
 	{	if(tablet==null) return;
 		tablet.zetFormuleVakHouder(formuleVakHouder);
-		tabletUser = formuleVakHouder;
+		//tabletUser = formuleVakHouder;
 		
 	}
 	
@@ -935,7 +944,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 			
 		}
 		tablet.zetFormuleVakHouder(formuleVakHouder);
-		tabletUser = formuleVakHouder;
+		//tabletUser = formuleVakHouder;
 		
 		
 	}
@@ -1008,7 +1017,7 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
  	}
  	//end ActionProducer
  	
- 	public class EditorComponentListener implements ComponentListener {
+ 	public class EditorComponentListener extends ComponentAdapter implements ComponentListener {
 
 	      @Override
 	      public void componentResized(ComponentEvent e) {
@@ -1017,23 +1026,6 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	    		  int h = antwoordEditorPanel.getHeight();
 	    		  antwoordvak.setBounds(0,20,w,h-20);
 	    	  }
-	      }
-	     @Override
-	      public void componentMoved(ComponentEvent e) {
-	        // TODO Auto-generated method stub
-	        
-	      }
-
-	      @Override
-	      public void componentShown(ComponentEvent e) {
-	        // TODO Auto-generated method stub
-	        
-	      }
-
-	      @Override
-	      public void componentHidden(ComponentEvent e) {
-	        // TODO Auto-generated method stub
-	        
 	      }
 	}
  	@Override
@@ -1054,5 +1046,10 @@ public class AntwoordKeuzeVakEditPanel extends JLayeredPane implements Interacti
 	public String geefHelpURL() {
 		return HELP_14_URL;
 	}
+
+  @Override
+  public Number get() {
+    return Float.valueOf(1.0f / aantalKeuzes);
+  }
 }
 

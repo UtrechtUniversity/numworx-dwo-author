@@ -1,6 +1,5 @@
 package fi.grafiek3dtest;
 
-import java.applet.Applet;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.MediaTracker;
@@ -10,9 +9,9 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.swing.*;
 
 import fi.beans.appletutil.AppletUtil;
+import fi.beans.mainframe.JApplet;
 //import fi.beans.ideas.IdeasClient;
 //import fi.beans.ideas.IdeasIF;
 import fi.beans.openmath.MathematicaLink;
@@ -24,7 +23,7 @@ import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
 
 
-public class Grafiek3DTest extends JApplet  implements WiskOpdrApplet  
+public class Grafiek3DTest extends JApplet implements WiskOpdrApplet  
 {
 	public static ResourceBundle rb;
 	public static String langArg;
@@ -35,7 +34,7 @@ public class Grafiek3DTest extends JApplet  implements WiskOpdrApplet
 	
 	public static MathematicaLink phrasebook;
 	
-	public static Applet applet;	
+	public static JApplet applet;	
 	public static boolean mac = false;
 	public static boolean zoefi = false;
 	

@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import javax.swing.JApplet;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+import fi.beans.mainframe.JApplet;
 import fi.wiskopdr.SimpleSwingBrowser;
 
 public class SVGView extends JApplet {

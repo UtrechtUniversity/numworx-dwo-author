@@ -19,15 +19,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-//import javax.validation.constraints.NotNull;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 import fi.wiskopdr.domainmodel.DomStudentModelMethodInfo;
 
 public class GraphNode {
@@ -150,10 +146,19 @@ public class GraphNode {
 
 	public void setDeselections(Collection<String> deselections, Collection<String> voorkennis) {
 	  ArrayList<String> copy = new ArrayList<>(deselections);
+	  copy.addAll(getVariantDeselections(lastCode));
 	  copy.retainAll(voorkennis);
+	  
 	  updateDeselections(copy);
 	}
 	
+	public Collection<String> getVariantDeselections(String code) {
+	  DomStudentModelMethodInfo info = methodeInfos.get(code);
+	  if (info == null) return Collections.emptyList();
+	  Collection<String> variantDeselections = info.getVariantDeselections();
+	  if (variantDeselections == null) return Collections.emptySet();
+      return variantDeselections;
+	}
 	
 	@Deprecated
 	public Point getLocation() {
@@ -171,6 +176,14 @@ public class GraphNode {
 		return null;
 	}
 
+	public String getVariant(String key) {
+        DomStudentModelMethodInfo info = methodeInfos.get(key);
+        if (info != null) 
+          return info.getVariant();
+        return null;
+	}
+	
+	
 	public Point getLocation(String key) {
 		DomStudentModelMethodInfo info = methodeInfos.get(key);
 		if (info != null && info.getX() != null && info.getY() != null) {
@@ -397,8 +410,9 @@ public class GraphNode {
 		this.font = font;
 	}
 
+	String lastCode;
 	public boolean contains(int x, int y) {
-
+	    lastCode = null;
 		if (tempLocation != null)
 			return new Rectangle(tempLocation.x - size / 2, tempLocation.y - size / 2, size, size).contains(x, y);
 		for (String code : getMethodeCodes()) {
@@ -407,7 +421,10 @@ public class GraphNode {
 				continue;
 			Rectangle r = new Rectangle(location.x - size / 2, location.y - size / 2, size, size);
 			if (r.contains(x, y))
-				return true;
+			{
+			  lastCode = code;
+			  return true;
+			}
 		}
 		return false;
 	}
@@ -760,4 +777,8 @@ public class GraphNode {
 			return stroke.createStrokedShape(result);
 		}
 	}
+
+  public Optional<DomStudentModelMethodInfo> getMethodeInfo(String key) {
+    return Optional.ofNullable(methodeInfos.get(key));
+  }
 }

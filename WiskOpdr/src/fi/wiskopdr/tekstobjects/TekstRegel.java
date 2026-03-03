@@ -27,7 +27,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 	private boolean hasFocus = false;
 	private boolean selected = false;
 	private boolean aan = false;
-	private int caretX = 0;
+	int caretX = 0;
 	private int caretPos = 0;
 	private int kc;
 	
@@ -786,7 +786,12 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 		if(caretVisible)
 		{	if(caretPos>0)
 			{	caretPos--;
-				caretX -= getComponent(caretPos) .getSize().width;
+			    Component c = getComponent(caretPos);
+			    if (c instanceof TekstTeken && ((TekstTeken) c).isLowSurrogate()) {
+			        caretX -= c.getWidth();
+	                remove(caretPos--);
+			    }
+				caretX -= getComponent(caretPos) .getWidth();
 				remove(caretPos);
 				zetMaat();
 				return true;
@@ -799,6 +804,9 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 		if(caretVisible)
 		{	if(caretPos<getComponentCount() )
 			{	remove(caretPos);
+                Component c = getComponent(caretPos);
+                if (c instanceof TekstTeken && ((TekstTeken) c).isLowSurrogate())
+                  remove(caretPos);
 				zetMaat();
 				return true;
 			}
@@ -920,7 +928,7 @@ public class TekstRegel extends JPanel implements TekstElement,MouseListener, Mo
 				{	deleteSelection();
 				}
 				add(new TekstTeken((char)kt),caretPos);
-				caretX += getComponent(caretPos) .getSize().width;
+				caretX += getComponent(caretPos) .getWidth();
 				caretPos++;
 				int nr = caretPos;
 				e.consume();

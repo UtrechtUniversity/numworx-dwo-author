@@ -1436,4 +1436,17 @@ public class OpdrNavStructEdit extends JLayeredPane implements MouseListener, Ac
 			actionListener.actionPerformed(new ActionEvent(this, 0, command));
 		}
 	}
+
+  public void setLayersVisible(Map<String, Boolean> layerinfo) {
+    String[] layerNames = instellingenPanel.layersButton.getLayerNames();
+    if (layerNames == null) return; // no layers here
+    boolean[] layerVisible = instellingenPanel.layersButton.getLayerVisible();
+    for(int i = 0; i < layerNames.length; i++) {
+      String n = layerNames[i];
+      Boolean b = n != null && layerinfo.getOrDefault(n, false);
+      if (b != null) layerVisible[i] = b;
+    }
+    instellingenPanel.layersButton.zetLayerInfo(layerNames, layerVisible);
+    // nog ergens naar doorduwen?
+  }
 }

@@ -2,12 +2,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.calculatordwo</groupId>
 	<artifactId>calculatordwo</artifactId>
-	<version>0.0.3</version>
 	<name>Calculator voor DWO</name>
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
-	  <artifactId>WiskOpdrParent</artifactId>
-	  <version>1.0.2</version>
+	  <artifactId>wiskopdr-parent</artifactId>
+	  <version>2.5.48</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
 	<build>
@@ -26,8 +25,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
  			<plugin>
@@ -140,13 +139,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>nl.uu.fi.dwo</groupId>
-			<artifactId>DWO-commons-lib</artifactId>
+			<artifactId>dwo-commons-lib</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>fi.wiskopdr</groupId>
-			<artifactId>wiskopdr</artifactId>
-			<version>0.3.0</version>
+			<groupId>fi.wiskopdr.beans</groupId>
+			<artifactId>wiskopdrbeans</artifactId>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>

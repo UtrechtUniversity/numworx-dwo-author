@@ -1,28 +1,20 @@
 package fi.algebrapijlenopdr;
 
 import java.awt.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.awt.event.*;
 
-import fi.algebrapijlenopdr.text.*;
 import fi.algebrapijlenopdr.opdrnav.*;
 import fi.algebrapijlenopdr.tekstobjects.*;
-import java.applet.Applet;
-import fi.beans.copyright.*;
+
 import fi.beans.base64code.*;
 import fi.beans.scorm.*;
-import fi.beans.mainframe.*;
 import fi.beans.mainframe.JApplet;
-import fi.beans.stringutils.*;
 import fi.beans.appletutil.*;
 import fi.beans.tooltip.ToolTipManager;
 
 import fi.beans.wiskopdrbeans.InteractiePanel;
 import fi.beans.wiskopdrbeans.WiskOpdrApplet;
-
-import javax.swing.*;
 
 /**
  * @author Peter Boon

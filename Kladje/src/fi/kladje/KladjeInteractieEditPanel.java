@@ -1,7 +1,6 @@
 package fi.kladje;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,7 +17,7 @@ import fi.beans.numworxlf.JRadioButton;
 import fi.beans.numworxlf.JTextField;
 import fi.beans.wiskopdrbeans.*;
 
-import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
+//import fi.wiskopdr.tekstobjects.EditInteractiePanelDialog;
 
 import fi.wiskopdr.ObjectiveChoiceButton;
 

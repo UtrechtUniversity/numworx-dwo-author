@@ -1,6 +1,5 @@
 package fi.wiskopdr;
 
-import java.applet.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;

@@ -581,4 +581,10 @@ System.out.println("heip set bounds " + b + " " + h);
 	{
 		
 	}
+
+	@Override
+	public int[][] getScoreObjectives() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

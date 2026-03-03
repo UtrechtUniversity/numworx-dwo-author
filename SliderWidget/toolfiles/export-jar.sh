@@ -1,13 +1,7 @@
 #!/bin/sh
 R=/Volumes/fisme-sites
+R=$USER@gemini.science.uu.nl:/science/wwwprojects/FI-Sites
 
-if ! test -d $R/www-dev
-then
-	echo "MOUNT FISME-SITES"
-	exit 1;
-else
-	echo "fisme-sites mounted"
-fi
 APPLET=sliderwidget
-cp ../target/$APPLET.jar $R/www-dev/dwo/jars/
-cp ../target/$APPLET.jar.pack.gz $R/www-dev/dwo/jars/
+scp ../target/$APPLET.jar $R/www/dwo/jars/
+scp ../target/$APPLET.jar.pack.gz $R/www/dwo/jars/

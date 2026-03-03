@@ -1,6 +1,7 @@
 package nl.numworx.samllogin;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URI;
@@ -13,6 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
@@ -158,17 +160,28 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
       return p;
     }
     String extra = "";
+    private String endpoint = "/dwo/saml/login";
 
 	private String last;    
 
     @Override
 	public void loadURL(String url) {
     	URI u = URI.create(url);
-    	String login = u.resolve("/dwo/saml/login").toString();
+    	String login = u.resolve(endpoint).toString();
     	api.LMSSetValue("dme.oauth.endpoint", login);
-        api.LMSSetValue("dme.oauth.redirect_uri", url);
-		super.loadURL(last = url + extra);
+        api.LMSSetValue("dme.oauth.redirect_uri", strip(url));
+		super.loadURL(last = add(url, extra));
 	    getJfxPanel().setName("Aanmelden");
+	}
+
+	private String strip(String url) {
+		return url.split("\\?")[0];
+	}
+
+	private String add(String url, String extra) { // extra is ?r=... of ""
+		if (extra.isEmpty()) return url;
+		if (! url.contains("?")) return url + extra;
+		return url + "&" + extra.substring(1);
 	}
 
 	public SamlLoginPanel(String url) {
@@ -211,6 +224,27 @@ public class SamlLoginPanel extends SimpleSwingBrowser implements SAMLLoginIF {
   public JComponent asComponent() {
     return this;
   }
+
+	public String getEndpoint() {
+		return endpoint;
+	}
+	
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}
+
+	@Override
+	public Promise<Properties> popup(JComponent parent, String url) {
+		if (browser instanceof Action ) {
+			Action action = (Action) browser;
+			loadURL(url);
+			ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, last);
+			action.actionPerformed(event);
+			return getPromise();
+		}
+		return SAMLLoginIF.super.popup(parent, url);
+	}
+	
 }
 
 

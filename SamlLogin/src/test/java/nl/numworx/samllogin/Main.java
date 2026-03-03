@@ -3,25 +3,18 @@ package nl.numworx.samllogin;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import javax.servlet.ServletException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-
-import fi.beans.scorm.SAMLLoginIF;
 
 public class Main {
 
   public static void main(String[] args) {
     
-    final JFrame f = new JFrame("Login entree-s");
+    final JFrame f = new JFrame("Login conext");
     SamlLoginPanel.debug = true;
     SamlLoginPanel browser = new SamlLoginPanel();
-   
-    browser.loadURL("https://entree-s.dwo.nl/dwo/oauth2/login3.jsp");
+    browser.setEndpoint("/dwo/oauth2/entree");
+    browser.loadURL("https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=conext");
     browser
       .getPromise()
       .then( p -> {

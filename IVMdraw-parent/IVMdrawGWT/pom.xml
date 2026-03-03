@@ -4,15 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>IVMdraw-parent</artifactId>
+    <artifactId>ivmdraw-parent</artifactId>
     <groupId>fi.ivmdraw</groupId>
-    <version>0.0.3</version>
+    <version>2.5.48</version>
+    <relativePath>..</relativePath>
   </parent>
-  <groupId>fi.ivmdraw</groupId>
-  <artifactId>IVMdrawGWT</artifactId>
+  <artifactId>ivmdrawgwt</artifactId>
   <packaging>war</packaging>
-  <version>0.0.3</version>
-  <name>IVM draw GWT</name>
+  <name>IVMdrawGWT</name>
 
   <properties>
     <!-- Convenience property to set the GWT version -->
@@ -59,7 +58,11 @@
     <dependency>
     	<groupId>nl.uu.fi.dwo.mobile</groupId>
     	<artifactId>interaction</artifactId>
-    	<version>0.1.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>nl.uu.fi.dwo.mobile</groupId>
+    	<artifactId>interaction</artifactId>
+    	<classifier>sources</classifier>
     </dependency>
     <dependency>
 	    <groupId>com.vaadin.addon</groupId>

@@ -40,22 +40,12 @@ public class ScormEditComponent extends JPanel implements ScormEditComponentIF
         if(WiskOpdr.ideas == null)
         {   try 
 	        {
-	        	WiskOpdr.ideas = new IdeasClient(applet,IdeasClient.IDEAS);
-	        	//WiskOpdr.ideas = new fi.servlet.ideas.Ideas();
+	        	WiskOpdr.ideas = new IdeasClient(applet.getCodeBase(),IdeasClient.IDEAS);
 	        } 
 	        catch (Exception e) 
 			{	e.printStackTrace();
 			}
         }
-//	    if(WiskOpdr.phrasebook == null)
-//	    {   try 
-//		    {  	
-//	    		WiskOpdr.phrasebook =  new MathematicaLink(applet);   
-//		    } 
-//		    catch (Exception e) 
-//		    {	e.printStackTrace();
-//			}
-//	    }
 	    if(WiskOpdr.lookAndFeel==null) WiskOpdr.lookAndFeel = UIManager.getLookAndFeel();
 	       
 	    String instellingenString = (String) launchData.get("instellingen");

@@ -5,40 +5,87 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
+import java.util.Optional;
 
 public class NodeLeaf implements Node {
 
   private boolean value;
+  private String variant;
+  void setVariant(String variant) {
+    this.variant = variant;
+  }
+
   private StudentObjective obj; 
+  private NodeLeaf delegate = this;
   
   public NodeLeaf(StudentObjective obj) {
     this.obj = obj;
+  }  
+
+  public NodeLeaf(StudentObjective obj, String variant) {
+    this.obj = obj;
+    this.variant = variant;
   }  
   
   public String toString() {
     return obj.objective;
   }
-
+  
+  public NodeLeaf(NodeLeaf org, String variant) {
+    this.obj = org.obj;
+    this.variant = variant;
+    this.value = org.value;
+    delegate = org;
+    value = delegate.value && Objects.equals( delegate.variant, this.variant);
+  }
+  
+  public NodeLeaf(NodeLeaf org) {
+    this.obj = org.obj;
+    this.variant = org.variant;
+    this.value = org.value;
+    this.delegate = org;
+  }
+  
+  
+  
+  
   @Override
   public String getDescription() {
     return obj.description;
   }
 
   public boolean isValue() {
-    return value;
+    if (Objects.equals(delegate.variant, this.variant)) {
+      return delegate.value;
+    }
+    return false;
   }
 
   public void setValue(boolean value) {
     this.value = value;
+    if (value) {
+      delegate.value = true;
+      delegate.variant = variant;
+    }
+    else if (Objects.equals(delegate.variant, this.variant))
+    {
+      delegate.value = false;
+    }
   }
 
   public String getId() {
     return obj.id;
   }
 
-  public List<String> getVoorkennis() {
-    return Arrays.asList(obj.voorkennis);
+  public List<String> getVoorkennis() { // FIXME houd rekening met variant!
+    List<String> result = Arrays.asList(obj.voorkennis);
+    if (variant != null) {
+      Optional<Variant> v = Arrays.stream(obj.variants).filter(t -> variant.equals(t.name)).findAny();
+      v=v.filter (x -> x.deselections != null);
+      v.ifPresent(x-> result.removeAll((Collection<?>) x.deselections));
+    }
+    return result;
   }
 
   public void setX(Integer x) {
@@ -73,4 +120,10 @@ public class NodeLeaf implements Node {
   public void setMethodeInfos(Collection<DomStudentModelMethodInfo> methodeInfos) {
   }
 
+  public String getVariant() {
+    return variant;
+  }
+
+  
+  
 }
