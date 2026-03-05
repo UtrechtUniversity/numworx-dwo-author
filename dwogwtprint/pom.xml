@@ -10,6 +10,10 @@
   <groupId>nl.uu.fi.dwo</groupId>
   <packaging>bundle</packaging>
   <name>DWO GWT Printer</name>
+  <properties>
+  		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+		<osgi.qualifier>${maven.build.timestamp}</osgi.qualifier>
+  </properties>
   <dependencies>
     <dependency>
     	<groupId>fi.beans</groupId>
@@ -20,19 +24,29 @@
 		    <groupId>nl.numworx.swingbrowser</groupId>
 		    <artifactId>swingbrowser-jxb</artifactId>
 		    <scope>runtime</scope>
+		    <version>0.0.20-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		    <groupId>nl.numworx.swingbrowser</groupId>
 		    <artifactId>swingbrowser-api</artifactId>
 		    <scope>provided</scope>
+		    <version>0.0.20-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		   <groupId>nl.uu.fi.dwo.rest</groupId>
     	   <artifactId>dwo-jclient-lib</artifactId>
+    	   <scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>nl.uu.fi.dwo.rest</groupId>
 			<artifactId>dwo-rest-lib</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi.promise</artifactId>
+			<version>6.0.0</version>
+			<scope>provided</scope>
 		</dependency>
   </dependencies>
   <build>
@@ -49,11 +63,7 @@
 						<_snapshot>${osgi.qualifier}</_snapshot>
 						<Bundle-SymbolicName>fi.dwo.dwogwtprint.DWOGWTPrint</Bundle-SymbolicName>
 						<Export-Package>fi.dwo.dwogwtprint</Export-Package>
-						<Import-Package>!com.google.**,!com.fasterxml.**,!org.glassfish.**,!org.springframework.**,!org.joda.**,nl.numworx.*,fi.beans.**,*;resolution:=optional</Import-Package>
 						<Main-class>fi.dwo.dwogwtprint.DWOGWTPrint</Main-class>
-						<Private-Package>nl.uu.fi.dwo.**</Private-Package>
-						<Embed-Transitive>true</Embed-Transitive>
- 						<Embed-Dependency>*;scope=compile;type=!pom;inline=true</Embed-Dependency>
 					</instructions>
 				</configuration>
 		  </plugin>

@@ -7,20 +7,12 @@ import java.awt.print.Pageable;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterIOException;
 import java.awt.print.PrinterJob;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import fi.beans.numworxlf.JFileChooser;
 import nl.numworx.swingbrowser.api.ConsoleEvent;
 import nl.numworx.swingbrowser.api.StatusEvent;
@@ -28,8 +20,6 @@ import nl.numworx.swingbrowser.api.SwingBrowser;
 import nl.numworx.swingbrowser.api.SwingBrowserFactory;
 import nl.numworx.swingbrowser.api.SwingBrowserProvider;
 import nl.numworx.swingbrowser.api.TitleEvent;
-import nl.numworx.swingbrowser.jxb.JXBFactory;
-import nl.numworx.swingbrowser.jxb.JXBStaticFactory;
 import nl.numworx.swingbrowser.print.PrintEvent;
 import nl.numworx.swingbrowser.print.PrintListener;
 import nl.numworx.swingbrowser.print.Printing;
@@ -42,16 +32,14 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 
 	private SCORM2004APIInterface painter;
 	private PageFormat format;
-	private Pageable document;
 	private int copies;
 	private String jobName;
 	private boolean cancel;
 	private File save = new File(new File(System.getProperty("user.home")), "Untitled.pdf");
 	private Component main;
 	private SwingBrowserFactory factory;
-	private PrintRequestAttributeSet attributes;
-	private JFrame stub;
-	private Pager pager;
+	JFrame stub;
+	Pager pager;
 	
 	private static final Paper A4 = new Paper();
 	private SwingBrowser browser;
@@ -60,46 +48,23 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 		A4.setImageableArea(18, 18, 559, 783);
 	}
 	
-	
-	public DWOGWTPrint() {
-		format = defaultPage(new PageFormat());
+	public DWOGWTPrint() throws IOException {
+		format = defaultPage();
 		copies = 1;
 		jobName = "Untitled";
 		SwingBrowserProvider provider = new SwingBrowserProvider();
 		factory = provider.getFactory();
 		stub = new JFrame("PDF Print");
-		pager = new Pager(1,1);
+		pager = new Pager();		
+		factory.newBrowser().close();
 	}
 	
-	public DWOGWTPrint(Component main) {
+	public DWOGWTPrint(Component main) throws IOException {
 		this();
 		this.main = main;
 	}
 
-	public static void main(String[] args) throws PrinterException, InvocationTargetException, InterruptedException {
-		Runnable r = new Runnable() {
-			public void run() {
-				JFrame f = new JFrame("Stub");
-				f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				f.setVisible(true);
-				DWOGWTPrint job = new DWOGWTPrint(f);
-				job.stub = f;
-				//job.printDialog();
-				PageFormat format = job.defaultPage();
-				format = job.pageDialog(format);
-				// wat is a4?
-				Pager painter = job.pager;
-				job.setPrintable(painter, format);
-				try {					
-					job.print();
-				} catch (PrinterException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		};
-		SwingUtilities.invokeAndWait(r);
-	}
+
 
 	@Override
 	public void setPrintable(Printable painter) {
@@ -114,8 +79,7 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 	}
 
 	@Override
-	public void setPageable(Pageable document) throws NullPointerException {
-		this.document = document;		
+	public void setPageable(Pageable document) throws NullPointerException {		
 	}
 
 	@Override
@@ -147,13 +111,6 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 		return page;
 	}
 
-
-	@Override
-	public void print(PrintRequestAttributeSet attributes) throws PrinterException {
-		this.attributes = attributes;
-		print();
-	}
-
 	@Override
 	public void print() throws PrinterException {
 		this.cancel = false;
@@ -169,14 +126,13 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 		browser.addTitleListener(this);
 		pager.reset();
 		pager.setDelegate(painter);
-		browser.setAPI(pager); // moet ik daartussen zitten, nu even niet
+		browser.setAPI(pager);
 		browser.loadURL("http://localhost:8080/dwo/" + "apps/PrintPlayer.jsp#cmi.launch_data:1");
 		Printing printing = browser.printing().get();
 		printing.setPageFormat(format);
 		printing.setPDFOutput(save);
 		printing.addPrintListener(this);
 		pager.getTerminated().onResolve(() -> {
-			System.out.println("start print");
 			printing.start();
 		}
 		);
@@ -212,8 +168,7 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 
 	@Override
 	public void cancel() {
-		this.cancel = true;
-		
+		this.cancel = true;		
 	}
 
 	@Override
@@ -237,8 +192,7 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 
 	@Override
 	public void onConsole(ConsoleEvent event) {
-		System.err.println(event.getMessage());
-		
+		System.err.println(event.getMessage());		
 	}
 
 	@Override
