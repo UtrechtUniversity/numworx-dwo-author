@@ -3,10 +3,9 @@
   <parent>
     <groupId>fi.wiskopdr</groupId>
     <artifactId>author-parent</artifactId>
-    <version>2.5.48-SNAPSHOT</version>
+    <version>2.5.49-SNAPSHOT</version>
   </parent>
   <artifactId>dwojprint</artifactId>
-  <version>2.5.49-SNAPSHOT</version>
   <groupId>nl.uu.fi.dwo</groupId>
   <packaging>bundle</packaging>
   <name>DWO Printer</name>

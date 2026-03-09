@@ -18,6 +18,7 @@
 	<module>UploadWidget/UploadWidgetRM</module>
 	<module>UploadWidget/uploadwidget</module>
 	<module>dwojprint</module>
+	<module>dwogwtprint</module>
   </modules>
   <repositories>
     <repository>

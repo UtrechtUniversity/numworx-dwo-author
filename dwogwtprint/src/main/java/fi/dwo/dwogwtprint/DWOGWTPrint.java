@@ -127,7 +127,9 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 		pager.reset();
 		pager.setDelegate(painter);
 		browser.setAPI(pager);
-		browser.loadURL("http://localhost:8080/dwo/" + "apps/PrintPlayer.jsp#cmi.launch_data:1");
+		String serverUrl = "http://localhost:8080/dwo/";
+		//serverUrl = "https://teuniz.dwo.nl/dwo/";
+		browser.loadURL(serverUrl + "apps/PrintPlayer.jsp#cmi.launch_data:1");
 		Printing printing = browser.printing().get();
 		printing.setPageFormat(format);
 		printing.setPDFOutput(save);
