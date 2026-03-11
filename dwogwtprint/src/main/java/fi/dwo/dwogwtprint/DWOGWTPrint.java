@@ -6,14 +6,21 @@ import java.awt.print.PageFormat;
 import java.awt.print.Pageable;
 import java.awt.print.Paper;
 import java.awt.print.Printable;
+import java.awt.print.PrinterAbortException;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import org.osgi.util.promise.Deferred;
+
 import fi.beans.numworxlf.JFileChooser;
+import fi.beans.numworxlf.JScrollPane;
 import nl.numworx.swingbrowser.api.ConsoleEvent;
 import nl.numworx.swingbrowser.api.StatusEvent;
 import nl.numworx.swingbrowser.api.SwingBrowser;
@@ -56,7 +63,10 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 		factory = provider.getFactory();
 		stub = new JFrame("PDF Print");
 		pager = new Pager();		
-		factory.newBrowser().close();
+		SwingBrowser b = factory.newBrowser();
+		boolean present = b.printing().isPresent();
+		b.close();
+		if (!present) throw new UnsupportedOperationException("no printing interface");
 	}
 	
 	public DWOGWTPrint(Component main) throws IOException {
@@ -101,7 +111,7 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 	@Override
 	public PageFormat defaultPage(PageFormat page) {
 		page = (PageFormat) page.clone();
-		page.setOrientation(PageFormat.LANDSCAPE);
+		page.setOrientation(PageFormat.PORTRAIT);
 		page.setPaper(A4);
 		return page; // no default
 	}
@@ -114,9 +124,10 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 	@Override
 	public void print() throws PrinterException {
 		this.cancel = false;
+		finish = new Deferred<Void>();
 		browser = factory.newBrowser();
 		JComponent comp = browser.asComponent();
-		stub.setContentPane(comp);
+		stub.setContentPane(new JScrollPane(comp, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS));
 		comp.setSize((int)format.getImageableWidth(),(int)format.getImageableHeight());
 		comp.setPreferredSize(comp.getSize());
 		stub.pack();
@@ -138,6 +149,15 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 			printing.start();
 		}
 		);
+		try {
+			finish.getPromise().getValue();
+			System.out.println("Finished");
+		} catch (InvocationTargetException | InterruptedException e) {
+			System.err.println(e);
+			PrinterException ex = new PrinterException("printing failed");
+			ex.initCause(e);
+			throw ex;
+		} // BLOCK!
 	}
 
 	
@@ -170,7 +190,8 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 
 	@Override
 	public void cancel() {
-		this.cancel = true;		
+		this.cancel = true;
+		finish.fail(new PrinterAbortException("Printing canceled"));
 	}
 
 	@Override
@@ -178,18 +199,25 @@ public class DWOGWTPrint extends PrinterJob implements PrintListener, ConsoleLis
 		return cancel;
 	}
 
+	Deferred<Void> finish;
+	
 	@Override
 	public void onPrint(PrintEvent event) {
-		if(true) return; /// keep 
-		stub.hide();
+		System.out.println(event);
+
+		if(false) {
+			finish.resolve(null);
+			return;
+		}
+		//stub.hide();
 		try {
 			browser.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		browser = null;
 		stub.setContentPane(new JPanel());
+		finish.resolve(null);
 	}
 
 	@Override
