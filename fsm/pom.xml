@@ -98,14 +98,12 @@
 		<gwtVersion>2.10.0</gwtVersion>
 	</properties>
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
             <plugin> <!-- attach-sources voor GWT -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.4</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -114,7 +112,42 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>         
+            </plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>3.5.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<createDependencyReducedPom>true</createDependencyReducedPom>
+					<niceManifest>true</niceManifest>
+					<instructions>
+						<_snapshot>${osgi.qualifier}</_snapshot>
+						<Export-Package>nl.numworx.fsm</Export-Package>
+						<Import-Package>!dagger.internal.codegen,!dagger.releasablereferences,!com.google.*,!com.googlecode.*,!nl.uu.fi.dwo.interaction.client.*,fi.*;resolution:=optional,*</Import-Package>
+						<Private-Package>
+							fi.euclides.*,
+							nl.numworx.fsm.*,
+							nl.tue.win.riaca.openmath.lang,
+							nl.uu.fi.dwo.interaction.client,
+							nl.uu.fi.dwo.interaction.client.json,
+							com.google.gwt.json.client,
+							dagger,
+							dagger.internal,
+							dagger.multibindings,
+							javax.inject.*
+						</Private-Package>
+						<Main-class>nl.numworx.fsm.FSM</Main-class>
+						<Bundle-SymbolicName>nl.numworx.fsm.FSM</Bundle-SymbolicName>
+<!--						<Embed-Transitive>true</Embed-Transitive>-->
+<!-- 						<Embed-Dependency>*;scope=compile;type=!pom;inline=true</Embed-Dependency>-->
+					</instructions>
+				</configuration>
+			</plugin>
+        
 		</plugins>
 	</build>
+	<packaging>bundle</packaging>
+	<description>Finite State Machines inspired by Evan</description>
+	<name>FSM</name>
 </project>
