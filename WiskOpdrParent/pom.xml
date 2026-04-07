@@ -114,6 +114,7 @@
 	<module>../DoorzienDWO</module>
 	<module>../Draaibank</module>
 	<module>../euclides-parent</module>
+	<module>../fsm</module>
 	<module>../geodefiner</module>
 	<module>../geodefiner-common</module>
 	<module>../GeomAlgebra</module>
