@@ -3,7 +3,7 @@
     <parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>wiskopdr-parent</artifactId>
-	  <version>2.5.49-SNAPSHOT</version>
+	  <version>2.5.50-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
     </parent>
   <groupId>fi.verknippen</groupId>
