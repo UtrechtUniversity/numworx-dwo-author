@@ -2,6 +2,7 @@ package fi.wiskopdr.expressies;
 
 import static org.junit.Assert.*;
 
+import java.util.Hashtable;
 import java.util.Vector;
 
 import org.junit.Before;
@@ -87,6 +88,18 @@ public class ExpressieTest {
   }  
   
   
+  
+  @Test
+  public void simplifyTest() throws Exception {
+    BasisExpressie vijf = new BasisExpressie(5);
+    BasisExpressie sqrvijf = new BasisExpressie(25);
+    NdeLog lg = new NdeLog(vijf, sqrvijf);
+    
+    String formule = lg.toStringStrikt();
+    String result = FormuleParser.randomizeString("$f#" + formule + "#@", new String[0], new Hashtable());
+    assertEquals("2", result);
+    
+  }
   // x*2 = x + x
   // d/dx x^2 = 2x
   // 2 = 1 + 1
