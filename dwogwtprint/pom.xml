@@ -24,13 +24,11 @@
 		    <groupId>nl.numworx.swingbrowser</groupId>
 		    <artifactId>swingbrowser-jxb</artifactId>
 		    <scope>runtime</scope>
-		    <version>0.0.20-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		    <groupId>nl.numworx.swingbrowser</groupId>
 		    <artifactId>swingbrowser-api</artifactId>
 		    <scope>provided</scope>
-		    <version>0.0.20-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 		   <groupId>nl.uu.fi.dwo.rest</groupId>
