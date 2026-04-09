@@ -296,7 +296,7 @@
 			<dependency>
 			  	<groupId>nl.numworx.repl</groupId>
 		  		<artifactId>repl</artifactId>
-		  		<version>0.0.4-SNAPSHOT</version>
+		  		<version>${project.version}</version>
 			</dependency>
 		</dependencies>
 	</profile>

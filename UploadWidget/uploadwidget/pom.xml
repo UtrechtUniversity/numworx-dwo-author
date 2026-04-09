@@ -12,7 +12,6 @@
   	<dependency>
   		<groupId>nl.numworx.uploadwidget</groupId>
   		<artifactId>uploadwidget-common</artifactId>
-  		<version>2.5.48</version> <!-- FIXME -->
   	</dependency>
 		<dependency>
 			<groupId>javax.inject</groupId>

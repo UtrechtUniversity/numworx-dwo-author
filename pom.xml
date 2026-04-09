@@ -10,7 +10,7 @@
   <version>2.5.49-SNAPSHOT</version>
   <packaging>pom</packaging>
   <properties>
-	<dwo.version>2.5.49-SNAPSHOT</dwo.version>
+	<dwo.version>2.5.49</dwo.version>
   </properties>
   <modules>
 	<module>WiskOpdrParent</module>
