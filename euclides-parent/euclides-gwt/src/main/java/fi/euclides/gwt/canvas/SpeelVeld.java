@@ -28,6 +28,7 @@ import com.vaadin.pointerevents.client.PointerUpEvent;
 
 import fi.euclides.event.EventHandler;
 import fi.euclides.event.HitTester;
+import fi.euclides.event.HumanContext;
 import fi.euclides.event.NameMapper;
 import fi.euclides.event.TrackerContext;
 import fi.euclides.model.AbstractViewer;
@@ -419,23 +420,35 @@ public class SpeelVeld extends AbstractViewer implements ViewerWidget {
 		
   @Override
   public void processMouseDown(MouseContext ctx) {
-	  DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, ctx);
+	  setMouseContext(ctx);
 	  ViewerWidget.super.processMouseDown(ctx);
-      DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, null);
+      clrMouseContext(ctx);
+  }
+
+  protected void clrMouseContext(MouseContext ctx) {
+	  DefaultAdapter adapter = DefaultAdapter.getDefault(getCtx(ctx.getID()));
+	  adapter.put(MouseContext.class, null);
+	  adapter.put(HumanContext.class, null);
+  }
+	
+  protected void setMouseContext(MouseContext ctx) {
+	  DefaultAdapter adapter = DefaultAdapter.getDefault(getCtx(ctx.getID()));
+	  adapter.put(MouseContext.class, ctx);
+	  adapter.put(HumanContext.class, ctx);
   }
 
   @Override
   public void processMouseUp(MouseContext ctx) {
-    DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, ctx);
+    setMouseContext(ctx);
     ViewerWidget.super.processMouseUp(ctx);
-    DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, null);
+    clrMouseContext(ctx);
   }
 
   @Override
   public void processMouseDrag(MouseContext ctx) {
-    DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, ctx);
+    setMouseContext(ctx);
     ViewerWidget.super.processMouseDrag(ctx);
-    DefaultAdapter.getDefault(getCtx(ctx.getID())).put(MouseContext.class, null);
+    clrMouseContext(ctx);
 
   }
 

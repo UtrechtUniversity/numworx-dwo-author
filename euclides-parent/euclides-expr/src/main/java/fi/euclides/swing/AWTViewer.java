@@ -16,6 +16,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Vector;
 
 import fi.euclides.event.EventHandler;
+import fi.euclides.event.HumanContext;
 import fi.euclides.event.TrackerContext;
 import fi.euclides.model.AbstractViewer;
 import fi.euclides.model.Destroyable;
@@ -25,6 +26,7 @@ import fi.euclides.model.Model;
 import fi.euclides.model.Segment;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.Adapter;
+import fi.euclides.util.DefaultAdapter;
 
 public abstract class AWTViewer extends AbstractViewer implements MouseListener, MouseMotionListener, TrackerContext {
 	protected Graphics2D g;
@@ -188,9 +190,37 @@ public abstract class AWTViewer extends AbstractViewer implements MouseListener,
 		g.setColor(colors[magenta]);
 	}
 	
+	private void setHumanContext(MouseEvent event) {
+		DefaultAdapter adapter = DefaultAdapter.getDefault(this);
+		HumanContext context = new HumanContext() {
+
+			@Override
+			public boolean isShiftDown() {
+				return event.isShiftDown();
+			}
+
+			@Override
+			public boolean isControlDown() {
+				return event.isControlDown();
+			}
+
+			@Override
+			public long getTimestamp() {
+				return event.getWhen();
+			} };
+		adapter.put(HumanContext.class, context);	
+	}
+	
+	private void clrHumanContext() {
+		DefaultAdapter adapter = DefaultAdapter.getDefault(this);
+		adapter.put(HumanContext.class, null);
+	}
+	
 	public void mouseClicked(MouseEvent e) {
 		if(handler != null) {
+			setHumanContext(e);
 			handler.pointerClicked(e.getX()-offX, e.getY()-offY, this);
+			clrHumanContext();
 			paint();
 		}
 	}
@@ -203,21 +233,27 @@ public abstract class AWTViewer extends AbstractViewer implements MouseListener,
 
 	public void mousePressed(MouseEvent e) {
 		if(handler != null && e.getButton() == MouseEvent.BUTTON1) {
+			setHumanContext(e);
 			handler.pointerPressed(e.getX()-offX, e.getY()-offY,this);
+			clrHumanContext();
 			paint();
 		}
 	}
 
 	public void mouseReleased(MouseEvent e) {
 		if(handler != null && e.getButton() == MouseEvent.BUTTON1) {
+			setHumanContext(e);
 			handler.pointerReleased(e.getX()-offX, e.getY()-offY,this);
+			clrHumanContext();
 			paint();
 		}
 	}
 
 	public void mouseDragged(MouseEvent e) {
 		if(handler != null && (e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == MouseEvent.BUTTON1_DOWN_MASK) {
+			setHumanContext(e);
 			handler.pointerDragged(e.getX()-offX, e.getY()-offY,this);
+			clrHumanContext();
 			paint();
 		}
 	}
