@@ -31,6 +31,7 @@ import fi.euclides.model.Model;
 import nl.numworx.fsm.shared.AddBoogHandler;
 import nl.numworx.fsm.shared.Hoekpunt;
 import nl.numworx.fsm.shared.Memento;
+import nl.numworx.fsm.shared.UnifiedHandler;
 
 
 public class Instance extends JPanel implements CBookWidgetInstanceIF {
@@ -146,6 +147,7 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 	private JToolBar tools;
 	private FSMDecorator decorator = new FSMDecorator();
 	public LessonMode lessonMode;
+	public UnifiedHandler initHandler;
 
 	@Inject
 	public Instance(CBookContext context) {
@@ -168,6 +170,12 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 		tools.add(new InnerAction());
 		tools.add(new TextAction());
 		tools.add(new RemoveAction());
+		
+		initHandler = new UnifiedHandler("FSM");
+		initHandler.setTracker(viewer);
+		initHandler.setDecorator(decorator);
+		viewer.setPointerHandler(initHandler);
+		
 	}
 
 	@Override
@@ -177,7 +185,7 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 
 	@Override
 	public void setLaunchData(Map<String, ?> data, Map<String, Number> randomValues) {
-
+		setState(data);
 	}
 
 	@Override

@@ -184,8 +184,7 @@
 		</dependency>
 		<dependency>
 			<groupId>fi.dwo</groupId>
-			<artifactId>fi.dwo.eawt</artifactId>
-			<version>2.5.48</version> <!-- FIXME -->
+			<artifactId>fi.dwo.eawt</artifactId> <!-- FIXME -->
 			<scope>runtime</scope>
 		</dependency>
 			<dependency>
