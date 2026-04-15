@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import fi.euclides.model.algo.FreePoint;
 import fi.euclides.model.algo.PointOnAlgorithm;
+import fi.euclides.model.math.Complex;
 import fi.euclides.model.math.Numbers;
 
 public class Dpunt extends PuntOp<Punt> implements PointOnAlgorithm<Punt> {
@@ -45,6 +46,12 @@ public class Dpunt extends PuntOp<Punt> implements PointOnAlgorithm<Punt> {
 		pon = this;
 	}
 
+	public Dpunt(Numbers x, Numbers y, Punt p, Numbers d) {
+		super(x,y,p);
+		pon = this;
+		setD(d);
+	}
+	
 	public Dpunt(Numbers x, Numbers y, Punt p) {
 		super(x, y, p);
 		pon = this;
@@ -71,11 +78,18 @@ public class Dpunt extends PuntOp<Punt> implements PointOnAlgorithm<Punt> {
 	protected void recalc(Numbers x, Numbers y) {
 		Punt p = op;
 //System.out.println("number " + x  + " " + y);
-		x = Numbers.sub(x, p.getX());
-		y = Numbers.sub(y, p.getY());
-		Numbers ln = Numbers.hypot(x, y);
-		ln = Numbers.div(ln, d);
-		setXY(Numbers.add(p.getX(),Numbers.div(x, ln)), Numbers.add(p.getY(),Numbers.div(y, ln)));
+		if (d instanceof Complex) {
+			x = Numbers.real(d);
+			y = Numbers.imag(d);
+		} else {
+			x = Numbers.sub(x, p.getX());
+			y = Numbers.sub(y, p.getY());
+			Numbers ln = Numbers.hypot(x, y);
+			ln = Numbers.div(ln, d);
+			x = Numbers.div(x, ln);
+			y = Numbers.div(y, ln);
+		}			
+		setXY(Numbers.add(p.getX(),x), Numbers.add(p.getY(),y));
 	}
 
 	

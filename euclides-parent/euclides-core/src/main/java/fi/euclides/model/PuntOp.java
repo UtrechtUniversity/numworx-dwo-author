@@ -25,7 +25,8 @@ public class PuntOp<T extends Destroyable> extends Punt implements Observer, Fre
 		T op = (T) codec.readDestroyable();
 		if(op != null) {
 			setOp(op);
-			setOb((OpObject<T>) op);
+			if (op instanceof OpObject) // Bij punt op punt, dan punt does not implement OpObject (pon == this)
+				setOb((OpObject<T>) op);
 		}
 	}
 	

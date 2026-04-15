@@ -162,7 +162,8 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 		setOpaque(false);setBackground(null);
 		tools = new JToolBar();
 		add(tools, BorderLayout.NORTH);
-		tools.add(new MoveAction());
+		MoveAction m;
+		tools.add(m = new MoveAction());
 		NodeAction s;
 		tools.add(s = new NodeAction());
 		s.handler.command();
@@ -175,6 +176,7 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 		initHandler.setTracker(viewer);
 		initHandler.setDecorator(decorator);
 		viewer.setPointerHandler(initHandler);
+		m.handler = initHandler; // in plaats van selectHandler
 		
 	}
 
@@ -196,12 +198,13 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 	public void setState(Map<String, ?> state) {
 		Object data = state.get("model");
 		if (data == null) {
-			model.destroyAll();
+			//model.destroyAll();
 		} else {
 			memento.setDataInputStream(new Input(data));
 			try {
 				memento.readModel(viewer);
 			} catch (Exception e) {
+				e.printStackTrace(); // should not happen!!!!
 			}
 		}
 		viewer.paint();

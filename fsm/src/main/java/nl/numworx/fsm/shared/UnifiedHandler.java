@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import fi.euclides.event.EventHandler;
 import fi.euclides.event.HumanContext;
 import fi.euclides.event.TrackerContext;
+import fi.euclides.model.Boog;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.LijnTrack;
 import fi.euclides.model.Punt;
@@ -75,9 +76,14 @@ public class UnifiedHandler extends EventHandler {
 			if (!context.selection().isEmpty()) {
 				Punt p = (Punt) context.selection().firstElement();
 				if (p != start) {
-					getModel().buildSegment(new Punt[] { p, start}, Optional.of(decorator));
-					start = null;
+					getModel().buildSegment(new Punt[] { start, p}, Optional.of(decorator));
+				} else {
+					// add booghandler?
+					Boog b = AddBoogHandler.buildBoog(p);
+					b.visit(decorator);
+					getModel().add(b);
 				}
+				start = null;
 			}
 		}
 		
