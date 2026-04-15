@@ -33,6 +33,7 @@ public class InstanceViewer extends AWTViewer {
 		pointSize = 75;
 		hitTester = new Hits();
 		mapper = new FSMMapper();
+		setTrack(this);
 	}
 
 	@Override
