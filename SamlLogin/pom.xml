@@ -67,7 +67,7 @@
 	<dependency>
 		<groupId>nl.numworx.swingbrowser</groupId>
 		<artifactId>swingbrowser-ext</artifactId>
-		<version>0.0.19</version>
+		<version>0.0.21-SNAPSHOT</version>
 		<scope>test</scope>
 	</dependency>
 	<dependency>

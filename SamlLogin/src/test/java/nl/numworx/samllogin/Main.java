@@ -10,11 +10,11 @@ public class Main {
 
   public static void main(String[] args) {
     
-    final JFrame f = new JFrame("Login conext");
+    final JFrame f = new JFrame("Login dwo");
     SamlLoginPanel.debug = true;
     SamlLoginPanel browser = new SamlLoginPanel();
     browser.setEndpoint("/dwo/oauth2/entree");
-    browser.loadURL("https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=conext");
+    browser.loadURL("https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=dwo");
     browser
       .getPromise()
       .then( p -> {

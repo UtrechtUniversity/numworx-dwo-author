@@ -19,7 +19,7 @@ public class MainPopup {
     f.getContentPane().add(btn);
     browser.setEndpoint("/dwo/oauth2/entree");
     btn.addActionListener(ev -> {
-    browser.popup(btn, "https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=conext")
+    browser.popup(btn, "https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=dwo")
 
       .then( p -> {
         p.getValue().store(System.out, "Login succeeded");
