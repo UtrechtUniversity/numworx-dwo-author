@@ -212,6 +212,7 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 
 	@Override
 	public Map<String, ?> getState() {
+		model.clearSelection();
 		Output dos = new Output();
 		memento.setDataOutputStream(dos);
 		try {

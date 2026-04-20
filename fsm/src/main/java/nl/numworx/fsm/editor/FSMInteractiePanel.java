@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.swing.JPanel;
 
@@ -25,9 +27,12 @@ public class FSMInteractiePanel extends JPanel implements InteractiePanel, CBook
 	private  final CBookEvent CHECK = new CBookEvent(this, Constants.CHECK);
 	private Instance instance;
 	private Hashtable launchdata;
+	ResourceBundle rb;
+	private int scoreMax;
 
-	public FSMInteractiePanel() {
+	public FSMInteractiePanel(ResourceBundle rb) {
 		super(new BorderLayout());
+		this.rb = rb;
 		
 		instance = new Instance(this);
 		add(instance, BorderLayout.CENTER);
@@ -35,10 +40,15 @@ public class FSMInteractiePanel extends JPanel implements InteractiePanel, CBook
 
 	@Override
 	public void zetOpdracht(Hashtable b, String[] randomVars, Hashtable randomValues) {
-		this.launchdata = b;
-		instance.setLaunchData(b, randomValues);
+		setLaunchData(b, randomValues);
 	}
 
+	private void setLaunchData(Hashtable b, Map randomValues) {
+		this.launchdata = b;
+		instance.setLaunchData(b, randomValues);
+		scoreMax = ((Number) ((Map)b).getOrDefault("scoreMax", 0)).intValue();
+	}
+		
 	@Override
 	public void setState(Hashtable b) {
 		instance.setState(b);
@@ -46,7 +56,7 @@ public class FSMInteractiePanel extends JPanel implements InteractiePanel, CBook
 
 	@Override
 	public void setEditState(Hashtable b) {
-		instance.setLaunchData(b, Collections.emptyMap());
+		setLaunchData(b, Collections.emptyMap());
 	}
 
 	@Override
@@ -61,7 +71,7 @@ public class FSMInteractiePanel extends JPanel implements InteractiePanel, CBook
 
 	@Override
 	public InteractieEditPanel getEditPanel() {
-		return new FSMInterActieEditPanel();
+		return new FSMInterActieEditPanel(this);
 	}
 
 	@Override
@@ -94,8 +104,7 @@ public class FSMInteractiePanel extends JPanel implements InteractiePanel, CBook
 
 	@Override
 	public int getScoreMax() {
-		// TODO Auto-generated method stub
-		return 0;
+		return scoreMax;
 	}
 
 	@Override

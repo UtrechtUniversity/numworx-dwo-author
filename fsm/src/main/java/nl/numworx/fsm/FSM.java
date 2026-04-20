@@ -37,7 +37,7 @@ public class FSM extends JApplet implements WiskOpdrApplet, CBookWidgetIF {
 
 	@Override
 	public InteractiePanel getInteractiePanel() {
-		return new FSMInteractiePanel(); // TODO
+		return new FSMInteractiePanel(rb); // TODO
 	}
 
 	public static void main(String[] args) {
