@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ import fi.euclides.event.DestroyHandler;
 import fi.euclides.event.EventHandler;
 import fi.euclides.event.SelectHandler;
 import fi.euclides.model.Model;
+import fi.euclides.util.Hashtable;
 import nl.numworx.fsm.shared.AddBoogHandler;
 import nl.numworx.fsm.shared.Hoekpunt;
 import nl.numworx.fsm.shared.Memento;
@@ -203,6 +205,10 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 			memento.setDataInputStream(new Input(data));
 			try {
 				memento.readModel(viewer);
+				Object names = state.get("names");
+				memento.readNames(new Input(names));
+				Object accepted = state.get("accepted");
+				memento.readAccepted(new Input(accepted));
 			} catch (Exception e) {
 				e.printStackTrace(); // should not happen!!!!
 			}
@@ -212,15 +218,28 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 
 	@Override
 	public Map<String, ?> getState() {
-		model.clearSelection();
+		Object model, names, accepted;
+		this.model.clearSelection();
 		Output dos = new Output();
 		memento.setDataOutputStream(dos);
+		Map<String, Object> result = new Hashtable<>();
 		try {
-			memento.writeModel(model);
+			memento.writeModel(this.model);
+			model = dos.getData();
+			result.put("model", model);
+			dos = new Output();
+			memento.writeNames(dos);
+			names = dos.getData();
+			result.put("names", names);
+			dos = new Output();
+			memento.writeAccepted(dos);
+			accepted = dos.getData();
+			result.put("accepted", accepted);
+			
 		} catch (IOException e) {
 			// does not occur
 		}		
-		return Collections.singletonMap("model", dos.getData());
+		return result;
 	}
 
 	@Override

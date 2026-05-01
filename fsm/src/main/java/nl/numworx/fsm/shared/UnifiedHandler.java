@@ -1,6 +1,7 @@
 package nl.numworx.fsm.shared;
 
 import java.util.Optional;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import fi.euclides.event.EventHandler;
@@ -13,6 +14,7 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
 import fi.euclides.model.math.Numbers;
+import fi.euclides.util.DefaultAdapter;
 
 public class UnifiedHandler extends EventHandler {
 	
@@ -117,16 +119,23 @@ public class UnifiedHandler extends EventHandler {
 	@Override
 	public void pointerClicked(Numbers x, Numbers y, TrackerContext context) {
 		HumanContext hc = context.getAdapter().adapt(HumanContext.class);
-		LOG.info("pointerClicked " + x + "," + y + " shift:" + hc.isShiftDown() + " ts" + hc.getTimestamp());
+		//LOG.info("pointerClicked " + x + "," + y + " shift:" + hc.isShiftDown() + " ts" + hc.getTimestamp());
 		long when = hc.getTimestamp();
 		if (near(x, y, when))
 		{
 			int cnt = accept(x, y, when);
-			LOG.info("Clickcount = " + cnt);
+			//LOG.info("Clickcount = " + cnt);
 			if (cnt == 1) {
-				getModel().clearSelection();
-				Punt p = getModel().buildPunt(x,y);
-				p.visit(decorator);
+				Vector<Destroyable> selection = context.selection();
+				if (selection.size()==1 && selection.get(0) instanceof Punt) {
+					DefaultAdapter a = DefaultAdapter.getDefault(selection.get(0));
+					boolean accept = Boolean.TRUE.equals(a.adapt(Boolean.class));
+					a.put(Boolean.valueOf(!accept)); // toggle accept state
+				} else {				
+					getModel().clearSelection();
+					Punt p = getModel().buildPunt(x,y);
+					p.visit(decorator);
+				}
 			}			
 		} else {
 			reset(x,y,when);
