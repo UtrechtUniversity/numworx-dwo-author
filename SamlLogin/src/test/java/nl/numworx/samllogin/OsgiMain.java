@@ -42,7 +42,7 @@ if (false) {
 	    panel.setEndpoint("/dwo/oauth2/entree");
 	    panel.getPromise().then(OsgiMain::succes, OsgiMain::failed);//.onResolve(() -> System.exit(0));
 	    frame.setContentPane(panel);
-	    panel.loadURL("https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=conext");
+	    panel.loadURL("https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=dwo");
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.pack();
 	    frame.show();
@@ -55,7 +55,7 @@ if (false) {
     f.getContentPane().add(btn);
     browser.setEndpoint("/dwo/oauth2/entree");
     btn.addActionListener(ev -> {
-    browser.popup(btn, "https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=conext")
+    browser.popup(btn, "https://test.dwo.nl/dwo/oauth2/login3.jsp?idphint=dwo")
 
       .then( p -> {
         p.getValue().store(System.out, "Login succeeded");

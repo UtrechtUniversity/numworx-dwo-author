@@ -3,7 +3,7 @@
   <parent>
     <groupId>fi.wiskopdr</groupId>
     <artifactId>wiskopdr-parent</artifactId>
-    <version>2.5.49</version>
+    <version>2.5.50</version>
     <relativePath>../WiskOpdrParent</relativePath>
   </parent>
 	<groupId>fi.euclides</groupId>
@@ -23,23 +23,23 @@
 	  			<dependency>
 				<groupId>fi.euclides</groupId>
 				<artifactId>euclides-core</artifactId>
-				<version>2.5.49</version>
+				<version>2.5.50</version>
 			</dependency>
 	  			<dependency>
 				<groupId>fi.euclides</groupId>
 				<artifactId>euclides-expr</artifactId>
-				<version>2.5.49</version>
+				<version>2.5.50</version>
 			</dependency>
 	  		<dependency>
 				<groupId>fi.euclides</groupId>
 				<artifactId>euclides-core</artifactId>
-				<version>2.5.49</version>
+				<version>2.5.50</version>
 				<classifier>sources</classifier>
 			</dependency>
 		  	<dependency>
 		  		<groupId>fi.euclides</groupId>
 		  		<artifactId>euclides-util</artifactId>
-		  		<version>2.5.49</version>
+		  		<version>2.5.50</version>
 		  		<optional>true</optional>
 		  	</dependency>
 	  	</dependencies>

@@ -33,6 +33,7 @@ public class InstanceViewer extends AWTViewer {
 		pointSize = 75;
 		hitTester = new Hits();
 		mapper = new FSMMapper();
+		setTrack(this);
 	}
 
 	@Override
@@ -77,7 +78,10 @@ public class InstanceViewer extends AWTViewer {
 		}
 		
 		drawCircle(punt.getXd()-p2, punt.getYd()-p2 , pointSize);
-		
+		if (Boolean.TRUE.equals(punt.adapt(Boolean.class)))
+		{	float shrink = 0.8f;
+			drawCircle(punt.getXd()-p2*shrink, punt.getYd()-p2*shrink, pointSize*shrink);
+		}		
 		String name = mapper.toString(punt);
 		if (name != null) {
 			g.drawString(name, (float) punt.getXd(), (float) punt.getYd());

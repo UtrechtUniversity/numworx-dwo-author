@@ -41,25 +41,30 @@ public class AddBoogHandler extends EventHandler {
 		} else 
 			return; // nopppes
 		model.clearSelection();
+		Boog boog = buildBoog(p1);
+		model.add(boog);
+	}
+
+	public static Boog buildBoog(Punt p1) {
+		Numbers x;
+		Numbers y;
 		x = p1.getX();
 		y = p1.getY();
 		Numbers vz = Numbers.createInteger(75);
 		Numbers vz2 = Numbers.div(vz, Numbers.TWO);
 		
-		
-		
-		
 		Numbers vz3 = Numbers.mul(vz, Numbers.createRational(5, 6));
 		Punt start, middle, end;
-		middle = new Dpunt(Numbers.add(x, vz3), Numbers.sub(y, vz3), p1);
+		middle = new Dpunt(Numbers.add(x, vz3), Numbers.sub(y, vz3), p1, Numbers.createComplex(vz3, Numbers.neg(vz3)));
 		Numbers vz4 = Numbers.createDouble(Math.sqrt(2)*0.22);
-		start = new Hoekpunt(p1, middle, vz4, vz4.neg(vz4));
+		start = new Hoekpunt(p1, middle, vz4, Numbers.neg(vz4));
 		end = new Hoekpunt(p1, middle, vz4, vz4);
 		
 		//model.add(middle);
 		//model.add(start);
 		
-		model.add(new Boog(start, middle, end));
+		Boog boog = new Boog(start, middle, end);
+		return boog;
 	}
 
 }

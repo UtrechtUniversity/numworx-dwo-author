@@ -131,6 +131,12 @@ public class DelayMouse implements MouseConsumer {
     public int getY() {
       return ctx.y0;
     }
+	public boolean isShiftDown() {
+		return delegate.isShiftDown();
+	}
+	public boolean isControlDown() {
+		return delegate.isControlDown();
+	}
     
   }
   

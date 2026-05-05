@@ -44,8 +44,8 @@ public class Input implements DataInput {
 
 	@Override
 	public long readLong() throws IOException {
-		Number l = next();
-		return l.longValue();
+		String l = next();
+		return Long.parseLong(l);
 	}
 
 	@Override

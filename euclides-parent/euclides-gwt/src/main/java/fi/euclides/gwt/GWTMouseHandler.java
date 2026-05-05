@@ -50,7 +50,15 @@ implements MouseDownHandler, MouseUpHandler, MouseMoveHandler {
       @Override
       public long getTimestamp() {
         return stamp;
-      }      
+      }
+	  @Override
+	  public boolean isShiftDown() {
+		return ev.isShiftKeyDown();
+	  }
+	  @Override
+	  public boolean isControlDown() {
+		return ev.isControlKeyDown();
+	  }      
     }
 
 	/**

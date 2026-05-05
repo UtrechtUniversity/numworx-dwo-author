@@ -3,7 +3,7 @@
   <parent>
     <groupId>fi.wiskopdr</groupId>
     <artifactId>wiskopdr-parent</artifactId>
-    <version>2.5.49</version>
+    <version>2.5.50</version>
     <relativePath>../WiskOpdrParent</relativePath>
   </parent>
   <groupId>nl.numworx.fsm</groupId>
@@ -28,7 +28,6 @@
 			<dependency>
 				<groupId>fi.wiskopdr.beans</groupId>
 				<artifactId>wiskopdrbeans</artifactId>
-				<scope>provided</scope>
 				<optional>true</optional>
 			</dependency>
 		<dependency>
@@ -118,7 +117,14 @@
 					<instructions>
 						<_snapshot>${osgi.qualifier}</_snapshot>
 						<Export-Package>nl.numworx.fsm</Export-Package>
-						<Import-Package>!dagger.internal.codegen,!dagger.releasablereferences,!com.google.*,!com.googlecode.*,!nl.uu.fi.dwo.interaction.client.*,fi.*;resolution:=optional,*</Import-Package>
+						<Import-Package>!dagger.internal.codegen,
+							!dagger.releasablereferences,!com.google.*,
+							!com.googlecode.*,
+							!nl.uu.fi.dwo.interaction.client.*,
+							fi.beans.wiskopdrbeans;resolution:="mandatory",
+							fi.beans.numworxlf,
+							fi.*;resolution:="mandatory",
+							*</Import-Package>
 						<Private-Package>
 							fi.euclides.*,
 							nl.numworx.fsm.*,
@@ -138,6 +144,26 @@
 					</instructions>
 				</configuration>
 			</plugin>
+                   <plugin>
+                        <groupId>com.github.batkinson.plugins</groupId>
+                        <artifactId>maven-pack200-plugin</artifactId>
+                        <version>1.0.1</version>
+                        <executions>
+                             <execution>
+                                <id>pack-jars</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>pack</goal>
+                                </goals>
+                                <configuration>
+                                    <normalizeOnly>false</normalizeOnly>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <processMainArtifact>true</processMainArtifact>
+                        </configuration>                
+                    </plugin>        
         
 		</plugins>
 	</build>

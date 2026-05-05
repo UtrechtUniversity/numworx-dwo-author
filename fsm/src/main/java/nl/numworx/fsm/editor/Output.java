@@ -39,7 +39,7 @@ public class Output implements DataOutput {
 
 	@Override
 	public void writeLong(long a) throws IOException {
-		objects.add(Long.valueOf(a));
+		objects.add(Long.toString(a));
 
 	}
 

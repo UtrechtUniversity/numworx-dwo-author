@@ -1,6 +1,8 @@
 package fi.euclides.gwt;
 
-public interface MouseContext {
+import fi.euclides.event.HumanContext;
+
+public interface MouseContext extends HumanContext {
   int getID();
   int getX();
   int getY();

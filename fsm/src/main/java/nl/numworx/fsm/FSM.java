@@ -3,6 +3,7 @@ package nl.numworx.fsm;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -23,6 +24,7 @@ import nl.numworx.fsm.editor.Instance;
 public class FSM extends JApplet implements WiskOpdrApplet, CBookWidgetIF {
 
 	private static final long serialVersionUID = 1L;
+	private ResourceBundle rb;
 
 	public FSM() {
 		this(JComponent.getDefaultLocale());
@@ -30,11 +32,12 @@ public class FSM extends JApplet implements WiskOpdrApplet, CBookWidgetIF {
 	
 	public FSM(Locale locale) {
 		DoubleFormat.setLocale(locale);
+		rb = ResourceBundle.getBundle("nl.numworx.fsm.shared.resources.Text", locale);
 	}
 
 	@Override
 	public InteractiePanel getInteractiePanel() {
-		return new FSMInteractiePanel(); // TODO
+		return new FSMInteractiePanel(rb); // TODO
 	}
 
 	public static void main(String[] args) {
@@ -47,7 +50,7 @@ public class FSM extends JApplet implements WiskOpdrApplet, CBookWidgetIF {
 
 	@Override
 	public CBookWidgetEditIF getEditor(CBookContext context) {
-		return new Editor(context);
+		return new Editor(context, rb);
 	}
 
 	@Override
