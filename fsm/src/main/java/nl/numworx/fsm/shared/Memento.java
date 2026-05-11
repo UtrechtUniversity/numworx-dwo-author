@@ -3,10 +3,12 @@ package nl.numworx.fsm.shared;
 import java.io.IOException;
 
 import fi.euclides.event.NameMapper;
+import fi.euclides.event.Tracker;
 import fi.euclides.model.Model;
 import fi.euclides.persist.DataInput;
 import fi.euclides.persist.DataOutput;
 import fi.euclides.util.DefaultAdapter;
+import nl.numworx.fsm.editor.InstanceViewer;
 
 public class Memento extends fi.euclides.persist.Memento {
 	public Model getModel() {
@@ -51,5 +53,14 @@ public class Memento extends fi.euclides.persist.Memento {
 			boolean accept = Boolean.TRUE.equals(writeObjects.get(i).adapt(Boolean.class));
 			if (accept) dos.writeInt(i);
 		}
+	}
+
+	public void setTracker(Tracker viewer) {
+		this.tracker = viewer;
+	}
+	
+	public void writeModel(Tracker viewer) throws IOException {
+		setTracker(viewer);
+		writeModel(viewer.getModel());
 	}
 }

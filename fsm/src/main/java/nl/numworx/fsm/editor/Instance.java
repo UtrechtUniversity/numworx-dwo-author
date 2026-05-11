@@ -224,7 +224,7 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 		memento.setDataOutputStream(dos);
 		Map<String, Object> result = new Hashtable<>();
 		try {
-			memento.writeModel(this.model);
+			memento.writeModel(viewer);
 			model = dos.getData();
 			result.put("model", model);
 			dos = new Output();
