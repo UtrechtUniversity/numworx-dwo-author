@@ -9,7 +9,7 @@ import fi.euclides.util.Observable;
 
 public class HorizontalPunt extends Punt implements FreePoint {
 
-	public static final String TYPE = "PH";
+	public static final String TYPE = "Ph";
 
 	@Override
 	public String key() {

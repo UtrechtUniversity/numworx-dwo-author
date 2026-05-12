@@ -92,6 +92,12 @@ public class UnifiedHandler extends EventHandler {
 		context.setTrack(null);
 	}
 
+	public void pointerClickedLong(Numbers x, Numbers y, TrackerContext tc) {
+		reset(x, y, System.currentTimeMillis());
+		tc.setTrack(null);
+		getModel().destroy();
+	}
+
 	private Numbers lastX = Numbers.NaN;
 	private Numbers lastY = Numbers.NaN;
 	private long lastClick;
