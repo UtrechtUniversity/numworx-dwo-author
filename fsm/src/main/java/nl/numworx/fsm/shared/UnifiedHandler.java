@@ -142,12 +142,18 @@ public class UnifiedHandler extends EventHandler {
 					Punt p = getModel().buildPunt(x,y);
 					p.visit(decorator);
 				}
-			}			
+			}
 		} else {
 			reset(x,y,when);
+			startPointerClicked(x, y, context);
 		}
 		
 		super.pointerClicked(x, y, context);
+	}
+
+	protected void startPointerClicked(Numbers x, Numbers y, TrackerContext context) {
+		// TODO Delay single click
+		
 	}
 
 }
