@@ -6,7 +6,7 @@
 		<artifactId>euclides-parent</artifactId>
 		<relativePath>..</relativePath>
 		<groupId>fi.euclides</groupId>
-		<version>2.5.51-SNAPSHOT</version>
+		<version>3.0.1-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
