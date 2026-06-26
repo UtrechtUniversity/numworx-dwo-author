@@ -8,7 +8,7 @@
     <parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>author-parent</artifactId>
-	  <version>3.0.0-SNAPSHOT</version>
+	  <version>3.0.0</version>
     </parent>
     <properties>
     		<proguard.lib>${java.home}/lib/rt.jar</proguard.lib>
@@ -156,12 +156,12 @@
                 <dependency>
                         <groupId>fi.wiskopdr</groupId>
                         <artifactId>wiskopdr</artifactId>
-                        <version>3.0.0-SNAPSHOT</version>
+                        <version>3.0.0</version>
                 </dependency>
                <dependency>
                         <groupId>fi.wiskopdr.beans</groupId>
                         <artifactId>wiskopdrbeans</artifactId>
-                        <version>3.0.0-SNAPSHOT</version>
+                        <version>3.0.0</version>
                 </dependency>
       </dependencies>
     </dependencyManagement>
