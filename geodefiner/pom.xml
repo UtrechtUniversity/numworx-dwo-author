@@ -3,7 +3,7 @@
   <parent>
     <groupId>fi.wiskopdr</groupId>
     <artifactId>wiskopdr-parent</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.0</version>
     <relativePath>../WiskOpdrParent</relativePath>
   </parent>
 	<groupId>nl.numworx.geodefiner</groupId>
