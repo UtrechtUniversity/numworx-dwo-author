@@ -92,6 +92,12 @@ public class UnifiedHandler extends EventHandler {
 		context.setTrack(null);
 	}
 
+	public void pointerClickedLong(Numbers x, Numbers y, TrackerContext tc) {
+		reset(x, y, System.currentTimeMillis());
+		tc.setTrack(null);
+		getModel().destroy();
+	}
+
 	private Numbers lastX = Numbers.NaN;
 	private Numbers lastY = Numbers.NaN;
 	private long lastClick;
@@ -136,12 +142,18 @@ public class UnifiedHandler extends EventHandler {
 					Punt p = getModel().buildPunt(x,y);
 					p.visit(decorator);
 				}
-			}			
+			}
 		} else {
 			reset(x,y,when);
+			startPointerClicked(x, y, context);
 		}
 		
 		super.pointerClicked(x, y, context);
+	}
+
+	protected void startPointerClicked(Numbers x, Numbers y, TrackerContext context) {
+		// TODO Delay single click
+		
 	}
 
 }
