@@ -3,7 +3,7 @@
 	<parent>
 	  <groupId>fi.wiskopdr</groupId>
 	  <artifactId>wiskopdr-parent</artifactId>
-	  <version>2.5.51-SNAPSHOT</version>
+	  <version>3.0.0-SNAPSHOT</version>
 	  <relativePath>../WiskOpdrParent</relativePath>
 	</parent>
   <groupId>fi.statistiek</groupId>
