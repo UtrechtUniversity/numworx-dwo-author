@@ -20,6 +20,12 @@
   	<dependency>
   		<groupId>nl.uu.fi.dwo</groupId>
   		<artifactId>dwo-commons-lib</artifactId>
+  		<exclusions>
+  			<exclusion>
+  				<groupId>junit</groupId>
+  				<artifactId>junit</artifactId>
+  			</exclusion>
+  		</exclusions>
   	</dependency>
 	<dependency>
 		<groupId>nl.numworx.swingbrowser</groupId>
