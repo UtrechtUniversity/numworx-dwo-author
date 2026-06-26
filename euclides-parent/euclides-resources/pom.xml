@@ -3,7 +3,7 @@
   <parent>
     <groupId>fi.euclides</groupId>
     <artifactId>euclides-parent</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>euclides-resources</artifactId>

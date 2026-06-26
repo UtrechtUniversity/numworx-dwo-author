@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
   	<groupId>fi.euclides</groupId>
-  	<version>3.0.0</version>
+  	<version>3.0.1-SNAPSHOT</version>
   	<artifactId>euclides-parent</artifactId>
   	<relativePath>..</relativePath>
   </parent>
