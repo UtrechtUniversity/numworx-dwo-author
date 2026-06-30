@@ -31,8 +31,10 @@ import fi.euclides.event.SelectHandler;
 import fi.euclides.model.Model;
 import fi.euclides.util.Hashtable;
 import nl.numworx.fsm.shared.AddBoogHandler;
+import nl.numworx.fsm.shared.EdgeMover;
 import nl.numworx.fsm.shared.Hoekpunt;
 import nl.numworx.fsm.shared.Memento;
+import nl.numworx.fsm.shared.MidBoogPunt;
 import nl.numworx.fsm.shared.UnifiedHandler;
 
 
@@ -70,7 +72,22 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 			handler.command();
 		}
 	}
+	public class EMAction extends AbstractAction implements Action {
 
+		private EventHandler handler;
+
+		public EMAction() {
+			super("X");
+			handler = new EdgeMover();
+			handler.setTracker(viewer);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			handler.command();
+		}
+	}
+	
 	public class EdgeAction extends AbstractAction implements Action {
 
 		private EventHandler handler;
@@ -156,6 +173,7 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 		super(new BorderLayout());
 		this.context = context;
 		Hoekpunt.addCreator();
+		MidBoogPunt.addCreator();
 		memento = new Memento();
 		model = memento.getModel();
 		viewer = new InstanceViewer(model, this);
@@ -173,6 +191,7 @@ public class Instance extends JPanel implements CBookWidgetInstanceIF {
 		tools.add(new InnerAction());
 		tools.add(new TextAction());
 		tools.add(new RemoveAction());
+		tools.add(new EMAction());
 		
 		initHandler = new UnifiedHandler("FSM");
 		initHandler.setTracker(viewer);
