@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import fi.euclides.event.EventHandler;
 import fi.euclides.event.HumanContext;
+import fi.euclides.event.NameMapper;
 import fi.euclides.event.TrackerContext;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Destroyable;
@@ -13,6 +14,7 @@ import fi.euclides.model.LijnTrack;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
+import fi.euclides.model.VrijPunt;
 import fi.euclides.model.math.Numbers;
 import fi.euclides.util.DefaultAdapter;
 
@@ -21,6 +23,8 @@ public class UnifiedHandler extends EventHandler {
 	private static final long TEN_SECS = 10000L;
 	private Logger LOG = Logger.getLogger(getClass().getName());
 	private Punt start;
+	private Boog boog;
+	private Destroyable selection;
 
 	public UnifiedHandler(String string) {
 		super(string);
@@ -63,6 +67,19 @@ public class UnifiedHandler extends EventHandler {
 					Track t = new Track(p);
 					context.setTrack(t);
 				}
+			} else if (first instanceof Segment) {
+				Segment s = (Segment) first;
+				selection = s;
+				VrijPunt mid = new MidBoogPunt(x, y, s.getP1(), s.getP2());
+				Boog b = new Boog(s.getP1(), mid, s.getP2());
+				boog = b;				
+				context.setTrack(new BoogTrack(x, y, b));				
+			} else if (first instanceof Boog) {
+				boog = (Boog) first;selection = null;
+				Punt start = Boog.startOf(boog);
+				if (start.getIndex() > 0) {
+					context.setTrack(new BoogTrack(x, y, boog));
+				}
 			}
 		}
 	}
@@ -71,7 +88,8 @@ public class UnifiedHandler extends EventHandler {
 	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
 		HumanContext hc = context.getAdapter().adapt(HumanContext.class);
 		LOG.info("pointerReleased " + x + "," + y + " shift:" + hc.isShiftDown() + " ts" + hc.getTimestamp());
-		if (context.getTrack() instanceof LijnTrack) {
+		Track track = context.getTrack();
+		if (track instanceof LijnTrack) {
 			testLijn = false;
 			testHits(x.doubleValue(), y.doubleValue(), context);
 			testLijn = true;
@@ -87,6 +105,12 @@ public class UnifiedHandler extends EventHandler {
 				}
 				start = null;
 			}
+		} else if (track instanceof BoogTrack && selection != null) {
+			NameMapper mapper = getTracker().getMapper();
+			String name = mapper.toString(selection);
+			selection.destroy(); selection = null;
+			mapper.rename(boog, name);
+			getModel().add(boog);
 		}
 		
 		context.setTrack(null);
