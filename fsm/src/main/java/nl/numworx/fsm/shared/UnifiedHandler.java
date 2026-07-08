@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import fi.euclides.event.EventHandler;
 import fi.euclides.event.HumanContext;
 import fi.euclides.event.NameMapper;
+import fi.euclides.event.SelectHandler;
 import fi.euclides.event.TrackerContext;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Destroyable;
@@ -67,13 +68,18 @@ public class UnifiedHandler extends EventHandler {
 					Track t = new Track(p);
 					context.setTrack(t);
 				}
-			} else if (first instanceof Segment) {
+			} else if (first instanceof Segment && !hc.isShiftDown()) {
 				Segment s = (Segment) first;
-				selection = s;
-				VrijPunt mid = new MidBoogPunt(x, y, s.getP1(), s.getP2());
-				Boog b = new Boog(s.getP1(), mid, s.getP2());
-				boog = b;				
-				context.setTrack(new BoogTrack(x, y, b));				
+				if (s.getP1().isVisible()) {
+					selection = s;
+					VrijPunt mid = new MidBoogPunt(x, y, s.getP1(), s.getP2());
+					Boog b = new Boog(s.getP1(), mid, s.getP2());
+					boog = b;				
+					context.setTrack(new BoogTrack(x, y, b));
+					reset(x, y, hc.getTimestamp());
+				} else {
+					context.setTrack(new Track(new SelectHandler.LineMover(x, y, s)));
+				}
 			} else if (first instanceof Boog) {
 				boog = (Boog) first;selection = null;
 				Punt start = Boog.startOf(boog);
@@ -81,19 +87,26 @@ public class UnifiedHandler extends EventHandler {
 					context.setTrack(new BoogTrack(x, y, boog));
 				}
 			}
+		} else if (hc.isShiftDown()) {
+			Punt p = getModel().buildPunt(x, y);
+			p.setVisible(false);
+			Segment s = new Segment(); s.visit(decorator);
+			Track track = new LijnTrack(p.getX(), p.getY(), s);
+			context.setTrack(track);
+			start = p;
 		}
 	}
 
 	@Override
 	public void pointerReleased(Numbers x, Numbers y, TrackerContext context) {
 		HumanContext hc = context.getAdapter().adapt(HumanContext.class);
-		LOG.info("pointerReleased " + x + "," + y + " shift:" + hc.isShiftDown() + " ts" + hc.getTimestamp());
+		LOG.fine("pointerReleased " + x + "," + y + " shift:" + hc.isShiftDown() + " ts" + hc.getTimestamp());
 		Track track = context.getTrack();
 		if (track instanceof LijnTrack) {
 			testLijn = false;
 			testHits(x.doubleValue(), y.doubleValue(), context);
 			testLijn = true;
-			if (!context.selection().isEmpty()) {
+			if (!context.selection().isEmpty() && hc.isShiftDown()) {
 				Punt p = (Punt) context.selection().firstElement();
 				if (p != start) {
 					getModel().buildSegment(new Punt[] { start, p}, Optional.of(decorator));
@@ -102,15 +115,21 @@ public class UnifiedHandler extends EventHandler {
 					Boog b = AddBoogHandler.buildBoog(p);
 					b.visit(decorator);
 					getModel().add(b);
-				}
+				}			
 				start = null;
-			}
-		} else if (track instanceof BoogTrack && selection != null) {
+			} else if (start != null && !start.isVisible())
+			{ 
+				start.destroy(); start = null;
+			}; // false alarm
+		} else if (track instanceof BoogTrack && selection != null &&
+				!near(x, y, hc.getTimestamp())) {
 			NameMapper mapper = getTracker().getMapper();
 			String name = mapper.toString(selection);
 			selection.destroy(); selection = null;
 			mapper.rename(boog, name);
 			getModel().add(boog);
+		} else if (track instanceof BoogTrack) {
+			reset(Numbers.NaN,Numbers.NaN, 0L);
 		}
 		
 		context.setTrack(null);
@@ -161,10 +180,11 @@ public class UnifiedHandler extends EventHandler {
 					DefaultAdapter a = DefaultAdapter.getDefault(selection.get(0));
 					boolean accept = Boolean.TRUE.equals(a.adapt(Boolean.class));
 					a.put(Boolean.valueOf(!accept)); // toggle accept state
-				} else {				
-					getModel().clearSelection();
+				} else if (selection.isEmpty()) {				
 					Punt p = getModel().buildPunt(x,y);
 					p.visit(decorator);
+				} else {
+					selection.clear();
 				}
 			}
 		} else {

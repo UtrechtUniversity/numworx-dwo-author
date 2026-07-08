@@ -84,7 +84,7 @@ public class SelectHandler extends EventHandler {
 	
 	
 	
-	static class LineMover extends Punt {
+	public static class LineMover extends Punt {
 		private Destroyable pl;
 		private Punt[] ps;
 
