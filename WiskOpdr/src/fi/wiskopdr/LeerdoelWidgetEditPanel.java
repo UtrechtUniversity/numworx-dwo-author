@@ -10,19 +10,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import org.json.fimple.JSONObject;
@@ -31,6 +36,7 @@ import fi.beans.numworxlf.JCheckBox;
 import fi.beans.numworxlf.JComboBox;
 import fi.beans.numworxlf.JLabel;
 import fi.beans.numworxlf.JRadioButton;
+import fi.beans.numworxlf.JScrollPane;
 import fi.beans.numworxlf.JTabbedPane;
 import fi.beans.numworxlf.JTextField;
 import fi.beans.wiskopdrbeans.InteractieEditPanel;
@@ -87,6 +93,13 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
   }
   Enabler enableGraph = new Enabler(), enableList = new Enabler(), enableRecommender = new Enabler();
   Runnable[] enablers = { enableGraph, enableList, enableRecommender };
+
+  private JPanel tekstenPanel;
+  private JTextField header;
+  private JTextArea  intro;
+  private JTextArea  allok;
+
+  private Properties teksten;
   
   
   public LeerdoelWidgetEditPanel() {
@@ -178,7 +191,34 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
     typeCB.setPreferredSize(new Dimension(150,22));
     typeCB.setMaximumSize(new Dimension(450,22));
     typeCB.setMinimumSize(new Dimension(150,22));
-  
+
+    
+    tekstenPanel = new JPanel(null);
+    BoxLayout vert = new BoxLayout(tekstenPanel, BoxLayout.PAGE_AXIS);
+    tekstenPanel.setLayout(vert);
+    header = new JTextField(); header.setToolTipText("Recommender kop");
+    Dimension size = header.getPreferredSize();
+    size.width = Short.MAX_VALUE;
+    header.setMaximumSize(size);
+    intro  = new JTextArea();; intro.setToolTipText("Intoductie");
+    intro.setLineWrap(true);
+    intro.setWrapStyleWord(true);
+    allok  = new JTextArea(); allok.setToolTipText("Alles goed");
+    allok.setLineWrap(true);
+    allok.setWrapStyleWord(true);
+    tekstenPanel.add(header);
+    tekstenPanel.add(new JScrollPane(intro, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+    tekstenPanel.add(new JScrollPane(allok, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+    teksten = new Properties();
+    try { 
+      InputStream in = getClass().getResourceAsStream("resources/LeerdoelWidgetMessages.properties");
+      teksten.load(in);
+      in.close();
+    } catch(IOException|NullPointerException oops) {} 
+    header.setText(teksten.getProperty("header", ""));
+    intro.setText(teksten.getProperty("intro", ""));
+    allok.setText(teksten.getProperty("allok", ""));
+       
     plaatsGUI();
   }
   
@@ -286,6 +326,14 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
       type = ((Number)h.get("type")).intValue();
     if (h.containsKey("objectives")) 
       objectives = (List<String>) h.get("objectives");
+    if (h.containsKey("teksten")) {
+      Map t = (Map) h.get("teksten");
+      Object tekst;
+      tekst = t.get("header"); if (tekst != null) header.setText(tekst.toString());
+      tekst = t.get("intro");  if (tekst != null) intro.setText(tekst.toString());
+      tekst = t.get("allok");  if (tekst != null) allok.setText(tekst.toString());
+    }
+    
     for(StudentModel s: studentModels) {
       if (s != null && s.id .equals(studentModelID)) { studentModel = s; break; }
     }
@@ -310,6 +358,11 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
       modelPanel.setObjectives(objectives);
       modelPanel.makeGUI();
       filterPanelContainer.addTab("Kies leerdoel", modelPanel);
+      int index = filterPanelContainer.indexOfComponent(tekstenPanel);
+      filterPanelContainer.remove(index);
+      index = filterPanelContainer.indexOfComponent(tekstenPanel);
+      if (index >= 0) filterPanelContainer.remove(index);
+      filterPanelContainer.addTab("Recommender", tekstenPanel);
     }
     leerdoelPopupCB.setSelected(leerdoelPopup);
     voorkennisKnopCB.setSelected(voorkennisKnop);
@@ -392,6 +445,16 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
       p = (JSONObject) p.get("id");
       h.put("dwoProfileID", p.get("idString"));
     }
+// recommender teksten
+    Hashtable t = new Hashtable();
+    String tekst = header.getText();
+    if (!tekst.equals(teksten.getProperty("header", ""))) t.put("header", tekst);
+    tekst = allok.getText();
+    if (!tekst.equals(teksten.getProperty("allok", ""))) t.put("allok", tekst);
+    tekst = intro.getText();
+    if (!tekst.equals(teksten.getProperty("intro", ""))) t.put("intro", tekst);
+    if (!t.isEmpty()) h.put("teksten", t);
+    
     return h;
   }
 
@@ -443,7 +506,11 @@ public class LeerdoelWidgetEditPanel extends JPanel implements InteractieEditPan
         }
         modelPanel = new StudentModelChoicePanel(this::supplyModel, false);
         modelPanel.makeGUI();
-        filterPanelContainer.addTab("Kies leerdoel", modelPanel);   
+        filterPanelContainer.addTab("Kies leerdoel", modelPanel);
+        int index = filterPanelContainer.indexOfComponent(tekstenPanel);
+        if (index >= 0) filterPanelContainer.remove(index);
+        filterPanelContainer.addTab("Recommender", tekstenPanel);
+ 
         filterPanelContainer.invalidate();
         filterPanelContainer.validate();
       }
