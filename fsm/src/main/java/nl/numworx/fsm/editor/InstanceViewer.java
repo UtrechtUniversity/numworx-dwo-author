@@ -15,6 +15,7 @@ import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
 import fi.euclides.model.VrijPunt;
+import fi.euclides.proof.DrieOpEenRij;
 import fi.euclides.swing.AWTViewer;
 import nl.numworx.fsm.shared.FSMMapper;
 import nl.numworx.fsm.shared.Hits;
@@ -142,12 +143,25 @@ public class InstanceViewer extends AWTViewer {
 		selectColor(b);
 		Float width = 3f; // segment width
 		g.setStroke(new BasicStroke(width));
-		double d = b.getD();
-		double s = b.getStart();
-		double l = b.length();
-		drawArc(b.getX(), b.getY(), d, s, l);
-		Punt end = Boog.endOf(b);
-		Punt center = b.getCenter();
+		Punt a = Boog.startOf(b);
+		final Punt c = Boog.endOf(b);
+		Segment seg = new Segment(a,c);
+		double hyp = Math.hypot(seg.getDX(), seg.getDY());
+		double x1 = seg.getX1() + pointSize/2.0 * seg.getDX() / hyp;
+		double y1 = seg.getY1() + pointSize/2.0 * seg.getDY() / hyp;
+		double x2 = seg.getX2() - pointSize/2.0 * seg.getDX() / hyp;
+		double y2 = seg.getY2() - pointSize/2.0 * seg.getDY() / hyp;
+		seg = new Segment(new VrijPunt(x1, y1), new VrijPunt(x2, y2));
+		a = (Punt) b.getDepend()[1];
+		Boog bb = 
+				c.getIndex() <= 0 ? b :
+				new Boog(seg.getP1(), a, seg.getP2());
+		double d = bb.getD();
+		double s = bb.getStart();
+		double l = bb.length();
+		drawArc(bb.getX(), bb.getY(), d, s, l);
+		Punt end = Boog.endOf(bb);
+		Punt center = bb.getCenter();
 		double xd = end.getXd();
 		double yd = end.getYd();
 		double dx = xd - center.getXd();
@@ -158,7 +172,11 @@ public class InstanceViewer extends AWTViewer {
 		if(len < tiplen*3) tiplen = len/3;
 		dx *= tiplen / len; 
 		dy *= tiplen/len; 
-		
+
+		a = (Punt) bb.getDepend()[1];
+		boolean ddd = DrieOpEenRij.bracketn(Boog.startOf(bb), end, a).doubleValue() > 0;
+		if (!ddd) { dx = -dx; dy = -dy; }
+
 		tip(end, -dy, dx, xd, yd);		
 		String name = mapper.toString(b);
 		if (name != null) {
