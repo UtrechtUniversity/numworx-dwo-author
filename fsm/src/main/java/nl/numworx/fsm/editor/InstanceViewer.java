@@ -181,6 +181,10 @@ public class InstanceViewer extends AWTViewer {
 		String name = mapper.toString(b);
 		if (name != null) {
 			Punt punt = b.getCenter();
+			if (c.getIndex()>0) 
+			{
+				punt = (Punt) b.getDepend()[1];
+			}
 			if (end.getIndex()>0) punt = (Punt) b.getDepend()[1];
 			g.drawString(name, (float) punt.getXd(), (float) punt.getYd());
 		}

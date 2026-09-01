@@ -53,7 +53,7 @@ public class FSMMapper implements NameMapper {
 		
 			if (p == d) {
 				// same? old == name?
-			} else if (d != null) {
+			} else if (d != null && d.getIndex() != 0) {
 				// don't
 			} else {
 				if (old != null) m.remove(old, p);
