@@ -184,7 +184,10 @@ public class UnifiedHandler extends EventHandler {
 					Punt p = getModel().buildPunt(x,y);
 					p.visit(decorator);
 				} else {
-					selection.clear();
+//					selection.clear();
+
+					reset(x,y,when); // boogtrack stops
+					startPointerClicked(x, y, context);
 				}
 			}
 		} else {
