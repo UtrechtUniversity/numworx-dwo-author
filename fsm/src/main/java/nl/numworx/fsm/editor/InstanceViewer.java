@@ -14,6 +14,7 @@ import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
+import fi.euclides.model.Triangle;
 import fi.euclides.model.VrijPunt;
 import fi.euclides.proof.DrieOpEenRij;
 import fi.euclides.swing.AWTViewer;
@@ -91,6 +92,12 @@ public class InstanceViewer extends AWTViewer {
 
 	@Override
 	public void visitSegment(Segment s) {
+		if (trail) {
+			g.setStroke(new BasicStroke(1));
+			super.visitSegment(s);
+			return;
+		}
+		
 		selectColor(s);
 		g.setStroke(new BasicStroke(3));
 		double hyp = Math.hypot(s.getDX(), s.getDY());
@@ -198,6 +205,12 @@ public class InstanceViewer extends AWTViewer {
 		if (clz == Component.class) return (T) parent;
 		
 		return super.adapt(clz);
+	}
+
+	@Override
+	public void visitTriangle(Triangle t) {
+		// TODO Auto-generated method stub
+		super.visitTriangle(t);
 	}
 
 }

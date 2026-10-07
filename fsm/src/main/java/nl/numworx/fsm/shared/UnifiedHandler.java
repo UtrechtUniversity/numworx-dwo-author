@@ -94,6 +94,11 @@ public class UnifiedHandler extends EventHandler {
 			Track track = new LijnTrack(p.getX(), p.getY(), s);
 			context.setTrack(track);
 			start = p;
+		} else {
+			Punt p = new VrijPunt(x,y);
+			Track track = new RechthoekTrack(x, y, p);
+			context.setTrack(track);
+			start = p;
 		}
 	}
 
