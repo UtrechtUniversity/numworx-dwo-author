@@ -180,6 +180,8 @@ public class UnifiedHandler extends EventHandler {
 					DefaultAdapter a = DefaultAdapter.getDefault(selection.get(0));
 					boolean accept = Boolean.TRUE.equals(a.adapt(Boolean.class));
 					a.put(Boolean.valueOf(!accept)); // toggle accept state
+					selection.clear(); 
+					reset(Numbers.NaN,Numbers.NaN,0L); // start fresh, there is no triple click
 				} else if (selection.isEmpty()) {				
 					Punt p = getModel().buildPunt(x,y);
 					p.visit(decorator);
