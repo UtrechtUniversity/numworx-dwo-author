@@ -144,15 +144,17 @@ public class InstanceViewer extends AWTViewer {
 		Float width = 3f; // segment width
 		g.setStroke(new BasicStroke(width));
 		Punt a = Boog.startOf(b);
+		Punt m = (Punt) b.getDepend()[1];
 		final Punt c = Boog.endOf(b);
-		Segment seg = new Segment(a,c);
+		Segment seg = new Segment(a,m);
 		double hyp = Math.hypot(seg.getDX(), seg.getDY());
 		double x1 = seg.getX1() + pointSize/2.0 * seg.getDX() / hyp;
 		double y1 = seg.getY1() + pointSize/2.0 * seg.getDY() / hyp;
+		seg = new Segment(m, c);
 		double x2 = seg.getX2() - pointSize/2.0 * seg.getDX() / hyp;
 		double y2 = seg.getY2() - pointSize/2.0 * seg.getDY() / hyp;
 		seg = new Segment(new VrijPunt(x1, y1), new VrijPunt(x2, y2));
-		a = (Punt) b.getDepend()[1];
+		a = m;
 		Boog bb = 
 				c.getIndex() <= 0 ? b :
 				new Boog(seg.getP1(), a, seg.getP2());
