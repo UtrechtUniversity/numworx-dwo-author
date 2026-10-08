@@ -37,5 +37,17 @@ public class RechthoekTrack extends Track {
 	public Numbers maxx() {
 		return Numbers.signum(Numbers.sub(p.getX(), base.getX())) >= 0 ? p.getX() : base.getX();
 	}
+	public Numbers miny() {
+		return Numbers.signum(Numbers.sub(p.getY(), base.getY())) <= 0 ? p.getY() : base.getY();
+	}
+	public Numbers maxy() {
+		return Numbers.signum(Numbers.sub(p.getY(), base.getY())) >= 0 ? p.getY() : base.getY();
+	}
+
+	public boolean inside(Punt punt) {
+		double x = punt.getXd();
+		double y = punt.getYd();
+		return minx().doubleValue() < x && maxx().doubleValue() > x  && miny().doubleValue() < y && maxy().doubleValue() > y;
+	}
 	
 }

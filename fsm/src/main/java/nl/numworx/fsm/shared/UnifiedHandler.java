@@ -12,6 +12,7 @@ import fi.euclides.event.TrackerContext;
 import fi.euclides.model.Boog;
 import fi.euclides.model.Destroyable;
 import fi.euclides.model.LijnTrack;
+import fi.euclides.model.Model;
 import fi.euclides.model.Punt;
 import fi.euclides.model.Segment;
 import fi.euclides.model.Track;
@@ -45,15 +46,80 @@ public class UnifiedHandler extends EventHandler {
 		HumanContext hc = context.getAdapter().adapt(HumanContext.class);
 		LOG.info("pointerDragged " + x + "," + y + " shift:" + hc.isShiftDown() + " ts" + hc.getTimestamp());
 		reset(Numbers.NaN, Numbers.NaN, 0L);
-		super.pointerDragged(x, y, context);
+		Track track = context.getTrack();
+		if (track instanceof RechthoekTrack) {
+			track.setXY(x, y);
+			// bepaal selection inside
+			selectInside( (RechthoekTrack) track, getModel());
+			getTracker().paint();
+		} else
+		{
+			////testHits(x.doubleValue(),y.doubleValue(), context); no change in "select"
+			Track track1 = context.getTrack();
+			if(track1!= null) 
+			{	track1.setXY(x, y);
+			} else 
+				testHits(x.doubleValue(),y.doubleValue(), context);
+		}
 		if (hc.isShiftDown())
 			getTracker().paint();
+	}
+
+	private void selectInside(RechthoekTrack track, Model model) {
+		Vector<Punt> punten = model.getPunten();
+		model.clearSelection();
+		Vector<Destroyable> select = model.getSelect();
+		for(Punt p: punten) {
+			if (track.inside(p)) select.add(p);
+		}
+		Vector<Destroyable> lijnen = model.getLijnen();
+		for (Destroyable d: lijnen) {
+			if (d instanceof Segment) {
+				Segment s = (Segment) d;
+				if (select.contains(s.getP1()) && select.contains(s.getP2())) select.add(d);
+			} else
+			if (d instanceof Boog) {
+				Boog b = (Boog)d;
+				Punt p1 = boog.startOf(b);
+				Punt p2 = boog.endOf(b);
+				if (track.inside(p1) && track.inside(p2) ) select.add(d);
+			} else {
+				System.out.println(d); // wat staat hier?
+			}
+			
+		}
+		
 	}
 
 	@Override
 	public void pointerPressed(Numbers x, Numbers y, TrackerContext context) {
 		HumanContext hc = context.getAdapter().adapt(HumanContext.class);
-		LOG.info("pointerPressed " + x + "," + y + " shift:" + hc.isShiftDown() + " ts" + hc.getTimestamp());
+		LOG.info("pointerPressed " + x + "," + y + " shift:" + hc.isShiftDown() + " ts:" + hc.getTimestamp());
+		if (context.selection().size() >= 2) {
+			Vector<Destroyable> copy = new Vector<>(context.selection());
+			testHits(x.doubleValue(), y.doubleValue(), context); 
+			if (context.selection().size() == 1 && copy.contains(context.selection().firstElement())) {
+				Destroyable start = context.selection().firstElement();
+				context.selection().clear();
+				context.selection().addAll(copy);
+				copy.clear();
+				for(Destroyable d: context.selection()) {
+					if (d instanceof Punt) copy.add(d);
+					if (d instanceof Boog) {
+						copy.add(d.getDepend()[1]);
+					}
+				}
+				Punt[] punten = new Punt[copy.size()]; copy.copyInto(punten);
+				context.setTrack(new Track(new SelectHandler.LineMover(x, y, start, punten)));
+				return;
+			}
+			
+		}
+		
+		
+		
+		
+		
 		testHits(x.doubleValue(), y.doubleValue(), context);
 		if (!context.selection().isEmpty()) {
 			Destroyable first = (Destroyable) context.selection().firstElement();
