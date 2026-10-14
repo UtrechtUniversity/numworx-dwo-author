@@ -158,6 +158,7 @@ public class UnifiedHandler extends EventHandler {
 			p.setVisible(false);
 			Segment s = new Segment(); s.visit(decorator);
 			Track track = new LijnTrack(p.getX(), p.getY(), s);
+			s.getP1().setVisible(false); // also here!
 			context.setTrack(track);
 			start = p;
 		} else {

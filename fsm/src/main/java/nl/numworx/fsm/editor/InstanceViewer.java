@@ -100,9 +100,17 @@ public class InstanceViewer extends AWTViewer {
 		
 		selectColor(s);
 		g.setStroke(new BasicStroke(3));
+
 		double hyp = Math.hypot(s.getDX(), s.getDY());
-		double x1 = s.getX1() + pointSize/2.0 * s.getDX() / hyp;
-		double y1 = s.getY1() + pointSize/2.0 * s.getDY() / hyp;
+		double x1, y1;
+		if (s.getP1().isVisible())
+		{ x1 = s.getX1() + pointSize/2.0 * s.getDX() / hyp;
+		  y1 = s.getY1() + pointSize/2.0 * s.getDY() / hyp;
+		} else {
+			x1 = s.getX1();
+			y1 = s.getY1();
+		}
+		 
 		double x2 = s.getX2() - pointSize/2.0 * s.getDX() / hyp;
 		double y2 = s.getY2() - pointSize/2.0 * s.getDY() / hyp;
 		String name = mapper.toString(s);
