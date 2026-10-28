@@ -113,6 +113,11 @@ public class InstanceViewer extends AWTViewer {
 		 
 		double x2 = s.getX2() - pointSize/2.0 * s.getDX() / hyp;
 		double y2 = s.getY2() - pointSize/2.0 * s.getDY() / hyp;
+		if (tracking) {
+			x2 = s.getX2();
+			y2 = s.getY2();
+		}
+		
 		String name = mapper.toString(s);
 		Segment o = s;
 		s = new Segment(new VrijPunt(x1, y1), new VrijPunt(x2, y2));
